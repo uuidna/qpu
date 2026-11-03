@@ -17,13 +17,10 @@ type Audit = { /** the share this run replayed: index mod n = i (n = 1 is the wh
 type ToolSpec = { name: string; description: string; inputSchema: { type?: string; required?: string[]; properties?: Record<string, unknown> } }
 
 
-/** The vacuum-gravity entropy cleaner: the codebase's entropy — data baked into a file, a path typed where a role computes it, a cap on a read,
- *  a clock or a die in a pure module, a line repeated across files, a note to self, an address that should not be in the tree — measured over the
- *  texts the client supplies and converted to leads, never rulings. Findings with one content address fuse into one lead naming every source
- *  (a fusion reaction: f findings become f − d leads, textbook_entropy_fusion); the gravity of the tree is the fold of the sorted addresses,
- *  and the vacuum is the tree whose gravity is the fold of nothing. Pure: the purify step reads the files and signals the leads it opened. */
+/** The entropy cleaner: baked data, typed paths, caps, clocks, repeated lines, notes to self and addresses in the texts the client supplies,
+ *  converted to leads; findings with one address fuse into one lead (textbook_entropy_fusion); the gravity is the fold of the sorted addresses. */
 type EntropyKind = 'literal' | 'typed-path' | 'cap' | 'clock' | 'duplicate' | 'shape' | 'todo' | 'leak'
-/** The shapes of code the cleaner recognises below the line: written out in many files, each one place should hold — the helper named beside it. */
+/** Shapes written out in many files that one helper (named beside each) should hold. */
 const CODE_SHAPES: readonly { shape: string; re: RegExp; holder: string }[] = [
   { shape: 'the tools/call envelope', re: /handle\(\{ jsonrpc: '2\.0', id: \d+, method: 'tools\/call', params: \{ name/, holder: 'toolCallerOf(name) in mcp.ts' },
   { shape: 'a JSON file read and parsed', re: /JSON\.parse\(readFileSync\(/, holder: 'one reader of the published files, null when a file is missing' },
@@ -31,21 +28,15 @@ const CODE_SHAPES: readonly { shape: string; re: RegExp; holder: string }[] = [
   { shape: 'a request with its timeout', re: /signal: AbortSignal\.timeout\(/, holder: 'one fetcher with the named user agent and the timeout' },
   { shape: 'the tools/list envelope', re: /handle\(\{ jsonrpc: '2\.0', id: \d+, method: 'tools\/list' \}\)/, holder: 'one reader of the tool list' },
 ]
-/** Every kind of entropy says how its leads are explored (the tool a client follows it with) and which configuration settles it (the configure kind
- *  that absorbs the difference), so a difference is never a ruling: it is a lead to explore and to config. */
+/** Each kind of entropy: the tool that explores its leads and the configure kind that settles them. */
 export const ENTROPY_KINDS = TABLES.ENTROPY_KINDS as readonly { kind: EntropyKind; says: string; explore: string; config: string | null }[]
 type EntropyFinding = { kind: EntropyKind; file: string; line: number; excerpt: string; address: string }
 type EntropyLead = { id: string; kind: EntropyKind; source: string; statement: string; status: 'open'; tool: 'audit'; occurrences: number; address: string; explore: string; config: string | null }
 export const LEAK_ALLOWED = new Set(['payloadcms.com', 'example.com', 'test.com', 'thirdparty.com', 'github.com', 'anthropic.com', 'localhost.test', 'local.test'])
-/** Paths and URLs each live in their one registry: a repo path is named by its role (FILE_ROLES / fileOf, in the Payload toolbox, and the
- *  generated files' table in the repository toolbox), an external URL in the sources, discovery and leads tables. A literal anywhere else in
- *  hand-written source is dirty code, priced harmonically by its own bytes; a file a generator wrote, the examples' fixtures and the tests are
- *  not hand-written source, and the licence and attribution URLs the licence requires verbatim are exempt, stated as such. A literal is clean
- *  exactly when it sits in its registry (textbook_literal_in_registry). Its antimatter names the move — fileOf(role) for a path, the registry
- *  entry (or a docket entry through the Payload MCP when it is tenant data) for a URL — and waits on confirm: whether the substitution typechecks
- *  is known only after it is made. */
-/** The generator that writes each generated file, the remedy of its drift: an automated gap's antimatter runs it, then restages what drifted. A
- *  table of paths, so it lives in a path registry. */
+/** Paths and URLs each live in one registry (a path by its role, fileOf; a URL in the sources, discovery and leads tables): a literal elsewhere in
+ *  hand-written source is dirty, priced by its bytes, its antimatter the move to its registry (textbook_literal_in_registry). Generated files,
+ *  fixtures, tests and the licence's verbatim URLs are exempt. */
+/** The generator of each generated file: the antimatter of its drift runs it and restages what drifted. */
 export const GENERATOR_REMEDIES: readonly [RegExp, { cmd: string; args: string[] }][] = [
   [/theorems-index\.ts$/, { cmd: 'npm', args: ['run', '-s', 'purify'] }],
   [/clay-statements\.ts$/, { cmd: 'node', args: ['scripts/gen-clay.ts'] }],
@@ -76,11 +67,8 @@ export const listLiterals = (files: Readonly<Record<string, string>>) => {
   const byFile = Object.entries(dirty.reduce<Record<string, number>>((a, x) => ({ ...a, [x.file]: (a[x.file] ?? 0) + 1 }), {})).sort((a, b) => b[1] - a[1])
   return { urls: all.filter((x) => x.kind === 'url').length, distinctUrls: new Set(all.filter((x) => x.kind === 'url').map((x) => x.literal)).size, paths: all.filter((x) => x.kind === 'path').length, clean: all.length - dirty.length, outside: dirty.length, tokens: dirty.reduce((n, x) => n + x.tokens, 0), byFile, dirty, registries: LITERAL_REGISTRIES, theorem: 'textbook_literal_in_registry' }
 }
-/** Manual docs: a docs page is generated when a generator writes its path — read from the scripts' own write targets (a script line that writes a
- *  file and names the page), never from a header — and manual otherwise. A manual page is a listed gap of the automated family, priced in its own
- *  bytes, whose antimatter is a generator for the page from the tool, theorems and examples it describes; a new manual page blocks its commit.
- *  The dated audit dockets are records, exempt and stated as such. A write target built at run time from a variable is not seen by this read, so
- *  a page it writes is listed as manual until its generator names it: a lead, never a ruling. */
+/** Manual docs: a page is generated when a script's write target names it, manual otherwise (a gap of the automated family, its antimatter a
+ *  generator); a new manual page blocks its commit. Dated audit dockets are exempt; a target built from a variable reads as manual: a lead. */
 const DOCS_EXEMPT = /^docs\/audit\/\d{4}-\d{2}-\d{2}-[^/]+\.md$/
 export const listManualDocs = (pages: readonly { path: string; bytes: number }[], scripts: Readonly<Record<string, string>>) => {
   const writes = Object.entries(scripts).flatMap(([file, text]) => text.split('\n').filter((l) => /writeFileSync|appendFileSync|writePage|write\(/.test(l)).map((l) => ({ file, l })))
@@ -129,10 +117,8 @@ export const getEntropy = (files: Readonly<Record<string, string>>) => {
   return { literals: listLiterals(files), files: Object.keys(files).length, lines, findings: findings.length, fused: leads.length, reactions: findings.length - leads.length, byKind, gravity: uuidOf(addresses.join('\n')), vacuum: findings.length === 0, kinds: ENTROPY_KINDS, leads, found: findings, toExplore: Object.fromEntries([...new Set(leads.map((l) => l.explore))].map((t) => [t, leads.filter((l) => l.explore === t).length])), toConfig: Object.fromEntries([...new Set(leads.map((l) => l.config ?? 'none'))].map((c) => [c, leads.filter((l) => (l.config ?? 'none') === c).length])), says: 'entropy measured over the texts supplied, every finding a lead and none a ruling; findings of one address fuse into one lead (f findings, f − d leads); the gravity is the fold of the sorted addresses and the vacuum is a tree whose gravity folds nothing' }
 }
 
-/** Differences become leads, agnostic of what differs and proven by theorem: two named sets of members (addresses, paths, ids, lines,
- *  whatever a caller names) and every member on one side only is a lead to explore (the tool a client follows it with: a tool by match, an
- *  example by imagine, a file or a path by configure, anything else by imagine) and to config (the configure kind the caller says absorbs
- *  it). textbook_difference_leads: with a and b members sharing c, the leads are (a − c) + (b − c) = a + b − 2c — never a ruling, never more. */
+/** Two named sets of members: every member on one side only is a lead to explore and to config, agnostic of what differs
+ *  (textbook_difference_leads: a and b sharing c give a + b − 2c leads). */
 type DifferenceLead = { id: string; member: string; side: string; statement: string; status: 'open'; explore: string; config: string | null; theorem: string }
 const exploreTool = (member: string): string => (member.startsWith('tool:') ? 'match' : member.startsWith('example:') ? 'imagine' : /(^|\/)[\w.-]+\.(ts|tsx|vue|md|mts|jsonc?)(:\d+)?$|^[\w.-]+(\.[\w-]+)+$/.test(member) ? 'configure' : 'imagine')
 export const diffMembers = (a: { name: string; members: readonly string[] }, b: { name: string; members: readonly string[] }, policy: { config?: string | null; explore?: (member: string) => string } = {}) => {
@@ -146,25 +132,20 @@ export const diffMembers = (a: { name: string; members: readonly string[] }, b: 
   return { a: a.name, b: b.name, sizes: { a: A.size, b: B.size, shared, onlyA: onlyA.length, onlyB: onlyB.length }, leads, proven: leads.length === (A.size - shared) + (B.size - shared), theorem: 'textbook_difference_leads', toExplore: Object.fromEntries([...new Set(leads.map((l) => l.explore))].map((t) => [t, leads.filter((l) => l.explore === t).length])), agnostic: 'members compared as the strings they are, whatever they name; the sides are named by the caller, the config kind by its policy' }
 }
 
-/** What manual work taught, as remedies by signature, applied in mass: every error text a step or a client sees is matched here and
- *  answered with the remedy learned (textbook_error_remedies: the remedied and the unremedied make the errors); in an error-free environment
- *  the table stays dormant and the stream's gravity is the vacuum. An error without a remedy is a lead that teaches the next row. */
+/** Remedies manual work taught, by signature: every error text answered with its remedy, one without a lead that teaches the next row
+ *  (textbook_error_remedies: the remedied and the unremedied make the errors). */
 export const ERROR_REMEDIES = TABLES.ERROR_REMEDIES as readonly { signature: string; learned: string; remedy: string; automated: boolean }[]
 export const listRemedies = (errors: readonly string[]) => {
   const leads = errors.map((text) => { const row = ERROR_REMEDIES.find((r) => new RegExp(r.signature).test(text)); const address = uuidOf(`error\n${text.trim()}`); return { id: `error-${address.slice(0, 8)}`, address, signature: row?.signature ?? null, remedy: row?.remedy ?? null, automated: row?.automated ?? false, learned: row?.learned ?? null, statement: row ? `${text.trim().split('\n')[0]} — remedy: ${row.remedy}` : `${text.trim().split('\n')[0]} — no remedy learned yet: a lead that teaches the next row`, status: 'open' as const } })
   const remedied = leads.filter((l) => l.remedy).length
   return { errors: errors.length, remedied, unremedied: errors.length - remedied, leads, table: ERROR_REMEDIES.length, gravity: uuidOf(leads.map((l) => l.address).sort().join('\n')), vacuum: errors.length === 0, says: 'every error matched against what manual work taught; the remedied and the unremedied make the errors; in an error-free environment the table is dormant and the gravity is the vacuum' }
 }
-/** The remedy for a hacked or vulnerable system, computed from the advisories a client reads (npm/pnpm audit --json, an NVD/CVE feed): every advisory
- *  that names a patched version yields the override that repairs it ({ "<module>@<vulnerable>": ">=<patched>" }) and the steps to apply it; one with no
- *  published patch (patched empty, or a sentinel like "<0.0.0") is a lead — a real fix (pin away, replace, isolate), never a false upgrade. Pure: the
- *  client feeds the advisories and applies the overrides at their own will through qpu.uuidna.com; licensed with the result, priced as any tool call
- *  (textbook_repair_partitions: the repaired and the unrepairable make the advisories). This is how the public MCP hands a hacked system its repair. */
+/** The repair of a vulnerable system from the advisories a client reads (npm audit --json, an NVD/CVE feed): a patched version yields its override,
+ *  one with no patch a lead, never a false upgrade (textbook_repair_partitions: the repaired and the unrepairable make the advisories). Pure. */
 export const repairOf = (advisories: readonly { module: string; severity?: string; vulnerable?: string; patched?: string; title?: string; cve?: string; kind?: 'kernel' | 'os' | 'npm' }[]) => {
   const has = (p?: string) => !!p && /\d/.test(p) && !/^\s*<\s*0\.0\.0\s*$/.test(p)
-  // the upstream Linux kernel is the top-priority audit flow: a kernel or OS advisory outranks any application-package one, because a kernel compromise
-  // is a compromise of everything above it; the kernel is also live-patchable (kpatch / Ubuntu Livepatch), so its repair is applied with no reboot — the
-  // SLA stays 100 %. kindOf infers the kernel from the module name when not given, so a plain NVD/CVE feed still sorts the kernel first.
+  // a kernel or OS advisory outranks any package one (its compromise is of everything above it) and is live-patched with no reboot;
+  // kindOf infers the kernel from the module name, so a plain NVD/CVE feed still sorts it first
   const SEV = { critical: 4, high: 3, moderate: 2, medium: 2, low: 1, info: 0, unknown: 0 } as Record<string, number>
   const kindOf = (a: { module: string; kind?: string }) => (a.kind ?? (/^(linux|linux-kernel|kernel|glibc|openssl|openssh|systemd|sudo|glib)$/i.test(a.module) ? 'kernel' : 'npm')) as 'kernel' | 'os' | 'npm'
   const rank = (a: { module: string; severity?: string; kind?: string }) => (kindOf(a) !== 'npm' ? 100 : 0) + (SEV[a.severity ?? 'unknown'] ?? 0)
@@ -174,15 +155,12 @@ export const repairOf = (advisories: readonly { module: string; severity?: strin
   const leads = ordered.filter((a) => !has(a.patched)).map((a) => ({ id: `repair-${uuidOf(`repair\n${a.module}\n${a.cve ?? a.title ?? ''}`).slice(0, 8)}`, module: a.module, severity: a.severity ?? 'unknown', kind: kindOf(a), status: 'open' as const, statement: `${a.module} (${a.severity ?? '?'}): ${a.title ?? a.cve ?? 'vulnerable'} has no published patch — repair by pinning away from the range, replacing the dependency, or isolating it`, reason: 'no patched version to override to: an upgrade would be a false fix, so the repair is a lead, not a silent bump' }))
   const severityCounts = advisories.reduce((o, a) => { const s = a.severity ?? 'info'; o[s] = (o[s] ?? 0) + 1; return o }, {} as Record<string, number>)
   const topPriority = ordered.filter((a) => kindOf(a) !== 'npm').map((a) => ({ module: a.module, cve: a.cve ?? null, severity: a.severity ?? 'unknown', kind: kindOf(a) }))
-  // the repair is live: a package's patched version is installed and verified beside the running one then cut over by content address, and the kernel is
-  // live-patched in place — so no request in flight fails and the SLA stays 100 % (the RAID's blob-then-head ordering, textbook_binding_zero_hex_path)
+  // live: the patched version is verified beside the running one, then cut over by address (textbook_binding_zero_hex_path)
   const sla = { uptime: '100%', downtime: 0, how: 'a package: install and verify the patched version beside the running one, then cut over by content address (blob then head); the kernel: live-patch the running kernel (kpatch / Ubuntu Livepatch), no reboot — every request is served throughout, none fails during the repair' }
   const commands = [...(livepatch.length ? ['live-patch the running kernel to the fixed version (kpatch / Ubuntu Livepatch) — no reboot, SLA 100%'] : []), ...(Object.keys(overrides).length ? ['add the overrides under pnpm.overrides in package.json (or to the lockfile)', 'pnpm install / npm install (the patched version resolves beside the running one)'] : []), ...(fixable.length ? ['re-run the audit to confirm zero'] : [])]
   return { phase: 'repair' as const, advisories: advisories.length, fixable: fixable.length, unfixable: leads.length, topPriority, livepatch, overrides, commands, severityCounts, sla, leads, theorems: ['textbook_repair_partitions', 'textbook_repair_live_sla', 'textbook_repair_kernel_top'], says: `${fixable.length} of ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} repaired, kernel first (${topPriority.length} kernel/OS, live-patched with no reboot) then packages by severity, applied live so the SLA stays 100%; ${leads.length} have no patch and stay leads (pin away, replace, isolate); a client applies them through qpu.uuidna.com and re-audits to zero` }
 }
-/** The fallback combinations: correction and handling are each other's fallback (the involution σ: correction ↔ handling, σ∘σ = id), and
- *  every adapter names the adapter it falls back to when its environment fails; all declared, so the theorems compute and the gate cross-checks
- *  them online on every host. */
+/** The fallbacks: correction and handling fall back to each other (σ∘σ = id), and every adapter names the one it falls back to. */
 export const FALLBACKS = TABLES.FALLBACKS as readonly { failure: string; correction: string; handling: string; involution: string }[]
 export const FALLBACK_ADAPTERS = TABLES.FALLBACK_ADAPTERS as readonly { when: string; from: string; to: string; involution: string }[]
 const flipMode = (mode: 'correction' | 'handling'): 'correction' | 'handling' => (mode === 'correction' ? 'handling' : 'correction')
@@ -198,9 +176,8 @@ export const handleOrCorrect = (errors: readonly string[], majority: boolean, mo
   }
   return { mode: m, steps, swaps: 2, terminated: true, says: 'σ applied twice is the identity: the fallback returned to where it started and stops with the lead' }
 }
-/** The security audit from the client and the developer perspectives merged as one list: what a client of the MCP measures (headers, CORS,
- *  the token a write needs, the surface audit, the plugin\'s key) and what the developer measures (dependencies, leaks, access rules, hooks,
- *  signing, theorems), each check named by its perspective, the same count from either side (textbook_security_perspectives). */
+/** The security audit as one list from the client's perspective (headers, CORS, write tokens, the surface) and the developer's (dependencies,
+ *  leaks, access, hooks, signing), each check named by its perspective (textbook_security_perspectives). */
 type SecurityClient = { hosts: readonly { host: string; status: number; headers: Record<string, string>; optionsStatus?: number; writeWithoutToken?: number; audit?: { total: number; failed: number } }[]; payloadMcp?: { unauthenticated: number | null } }
 type SecurityDeveloper = { vulnerabilities: Record<string, Record<string, number>>; leaks: number; envExampleValueless: boolean; access: { entries?: { update?: string }; tenants?: { write?: string } }; hooks: readonly string[]; signing: string; theorems: number; autoLogin?: boolean }
 export const auditSecurity = (client: SecurityClient, developer: SecurityDeveloper) => {
@@ -231,18 +208,16 @@ export const auditSecurity = (client: SecurityClient, developer: SecurityDevelop
   return { checks, total: checks.length, passed: checks.length - failed.length, failed: failed.length, perspectives, merged: 'one list: each check from the client, the developer, or both; the same count from either side', leads: failed.map((f) => ({ id: `security-${f.id.replace(/[^a-z0-9]+/gi, '-')}`, statement: `${f.id} (${f.perspective}): ${f.evidence}`, status: 'open' as const, remedy: f.remedy ?? null, tool: 'audit' })), verdict: failed.length === 0 ? 'clean' : `${failed.length} finding(s), each a lead with its remedy`, says: 'the security audit performed by MCP from both perspectives merged as one; every finding a lead with the remedy manual work taught' }
 }
 
-/** The quantum advantage of a gate run as a magnitude, unlimited by default and computed from the counts alone — no credential, no
- *  interaction, no bound: the copies proven by hash (304 by involution, nothing computed, nothing sent) over the copies recomputed; when
- *  every copy is an involution the ratio has no bound and the result says so (textbook_advantage_unbounded). Pure. */
+/** The quantum advantage of a gate run from its counts alone: copies proven by hash over copies recomputed, unbounded when every copy is an
+ *  involution (textbook_advantage_unbounded). Pure. */
 export const getAdvantage = (copies: number, verified: number) => {
   if (!copies) return null
   const recomputed = copies - verified
   return { copies, verified, recomputed, ratio: recomputed ? Number((copies / recomputed).toFixed(2)) : null, unbounded: recomputed === 0, interaction: 'none: computed from the run\'s own counts, no token, no approval, no bound', basis: 'verify beats recompute by magnitude: copies over copies recomputed; the unit bills the same counts (advantageByUnit)' }
 }
 
-/** The leads addressed by the theorems, never assigned in advance: a lead's words are matched against every textbook theorem's statement and the
- *  examples it backs; the theorem sharing the most stems (two at least) addresses the lead, and that theorem's example names the tool that explores
- *  it; what no theorem reaches stays open and says so. Addressed and unaddressed make the leads (textbook_leads_addressed). Pure. */
+/** The leads addressed by the theorems: the theorem sharing the most stems (two at least) with a lead addresses it, its example naming the tool
+ *  that explores it; addressed and unaddressed make the leads (textbook_leads_addressed). Pure. */
 export const wordStems = (text: string): Set<string> => new Set(text.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/[\s-]+/).filter((w) => w.length > 3).map((w) => w.replace(/(ing|ed|es|s)$/, '')))
 export const getAddressedByTheorem = (leads: readonly { id: string; statement: string; status: string }[], theorems: readonly { key: string; says: string; examples: readonly string[] }[], examples: readonly { id: string; tool: string }[]) => {
   const toolOf = new Map(examples.map((e) => [e.id, e.tool]))
@@ -258,9 +233,8 @@ export const getAddressedByTheorem = (leads: readonly { id: string; statement: s
   return { leads: rows.map((r) => ({ id: r.id, status: r.status, ...(r.tool ? { tool: r.tool } : {}), statement: `${r.theorem ?? 'open: no theorem reaches it yet'} (${r.shared} shared stems) at ${r.address}` })), counts: byTheorem, total: leads.length, addressed: addressed.length, unaddressed: leads.length - addressed.length, byTheorem, rows, says: 'every lead addressed by the theorem sharing its words, that theorem\'s example naming the tool; nothing assigned in advance; the unaddressed stay open until a theorem reaches them' }
 }
 
-/** The usage bill, complete: the tokens a model carries, the bits a computation moved, their thermodynamic cost at a temperature by Landauer's
- *  limit (k_B T ln 2 a bit), the time the computation took, the coins the unit conserves; the joules as kilowatt-hours priced by the tariff a tenant
- *  names (the energy sector), every IoT reading a docket entry billed by this bill per device (textbook_billing_complete, textbook_kwh_joules). Pure. */
+/** The usage bill: tokens, bits moved and their Landauer cost (k_B T ln 2 a bit), time, coins, and the joules as kWh at a tenant's tariff
+ *  (textbook_billing_complete, textbook_kwh_joules). Pure. */
 const BOLTZMANN_J_PER_K = 1.380649e-23
 const JOULES_PER_KWH = 3600 * 1000
 export const getBill = (u: { tokens?: number; bits?: number; ms?: number; temperatureK?: number; coins?: number; saved?: { tokens?: number; bits?: number; ms?: number }; tariffEurPerKwh?: number | null; devices?: number }) => {
@@ -296,9 +270,8 @@ const checkAccessibility = (html: string): string[] => {
   return misses
 }
 
-/** The textbook's axioms, each with its theorem: every example (the textbook) names the kernel-accepted theorem it rests on — on itself
- *  (theorem:) or in the examples of a textbook theorem — and every theorem names only examples that exist. An example with no theorem is an
- *  axiom (a lead), a theorem the kernel does not accept is a broken link, a named example that is gone a dangling one (textbook_axioms_linked). */
+/** Every example names the kernel-accepted theorem it rests on and every theorem only examples that exist: an example with none is an axiom,
+ *  an unaccepted theorem a broken link, a missing example a dangling one (textbook_axioms_linked). */
 export const linkAxioms = (examples: readonly Example[], textbook: readonly { key: string; examples: readonly string[] }[], kernel: ReadonlySet<string>) => {
   const byExample = new Map<string, string[]>(); for (const t of textbook) for (const e of t.examples) byExample.set(e, [...(byExample.get(e) ?? []), t.key])
   const ids = new Set(examples.map((e) => e.id))
@@ -310,10 +283,8 @@ export const linkAxioms = (examples: readonly Example[], textbook: readonly { ke
   return { examples: rows.length, linked, axioms, broken, dangling, complete: axioms.length === 0 && broken.length === 0 && dangling.length === 0, byTool: Object.fromEntries([...new Set(rows.map((r) => r.tool))].map((tool) => [tool, rows.filter((r) => r.tool === tool && r.theorems.length > 0).length + '/' + rows.filter((r) => r.tool === tool).length])), theorem: 'textbook_axioms_linked', says: axioms.length || broken.length || dangling.length ? `${axioms.length} example(s) with no theorem, ${broken.length} linked to a theorem the kernel does not accept, ${dangling.length} theorem link(s) to a missing example` : `all ${rows.length} examples rest on kernel-accepted theorems: no axiom left in the textbook` }
 }
 
-/** Leaks found before they are published: every text the client hands over (a served answer, a published file, a live copy) scanned for what
- *  must not leave the machine — personal e-mail addresses, keys and tokens, private keys, local paths (the user and the layout), private network
- *  addresses — the tree's own notations set aside (a block address <uuid>@<host>, the reserved test domains, the placeholders). A finding is
- *  redacted in the answer (its kind and place, never its value), a lead with its remedy, and the case the court computes when it is served. */
+/** Leaks found before publishing: e-mail addresses, keys and tokens, local paths and private addresses in the texts handed over, the tree's own
+ *  notations set aside; a finding is redacted (kind and place, never value), a lead with its remedy and the court's case. */
 export const LEAK_PATTERNS: readonly { kind: string; re: RegExp; remedy: string }[] = [
   { kind: 'email', re: /[A-Za-z0-9._%+-]{1,64}@(?:[A-Za-z0-9-]{1,63}\.)+[A-Za-z]{2,24}/g, remedy: 'a contact is a URL; an address never enters the tree (purify)' },
   { kind: 'stripe-secret', re: /\b(?:sk|rk)_(?:live|test)_[A-Za-z0-9]{8,}|\bwhsec_[A-Za-z0-9]{8,}/g, remedy: 'rotate the key at Stripe; the tenant\'s secret lives in the Worker\'s secrets only' },
@@ -329,8 +300,7 @@ const NOT_A_LEAK = (kind: string, m: string) => kind === 'email' && (LEAK_ALLOWE
  *  onto them: one item get, a plural noun list. */
 const STANDARD_VERBS = ['get', 'list', 'create', 'update', 'delete'] as const
 const VERB_MAP: Readonly<Record<string, 'one' | 'create'>> = { read: 'one', parse: 'one', find: 'one', fetch: 'one', load: 'one', search: 'one', pick: 'one', render: 'one', compute: 'one', measure: 'one', build: 'create', make: 'create' }
-/** Every function declaration of the given sources read for its leading word: the standard verbs kept, the readers and builders mapped onto
- *  them (a name the file already holds kept and listed), every other leading word listed as a custom verb, to convert or to tie to the rosetta. */
+/** Every function declaration's leading word: standard verbs kept, readers and builders mapped onto them, any other listed as a custom verb. */
 export const listDeclarations = (files: Readonly<Record<string, string>>) => {
   const renames: [string, string, string][] = [], custom: Record<string, string[]> = {}, kept: string[] = []; let declarations = 0, standard = 0
   for (const [file, text] of Object.entries(files)) { const names = new Set([...text.matchAll(/[A-Za-z_$][\w$]*/g)].map((m) => m[0]))
@@ -359,12 +329,10 @@ export const runAudit = (handle: (m: Rpc) => any, examples: readonly Example[], 
   // textbook_shards_disjoint), and the checks made once for the whole surface run in shard 0 alone
   const n = shard && Number.isInteger(shard.n) && shard.n > 0 ? shard.n : 1, si = shard && Number.isInteger(shard.i) ? ((shard.i % n) + n) % n : 0
   const mine = (index: number) => index % n === si, once = si === 0
-  // integers first: an example (keyed by its own definition) whose answer and widget fold to the integers recorded when every text check
-  // passed is decided by those integers; the text checks (the licence strings, the CSS variables, the accessibility parse, the expectation)
-  // run only for an integer not yet seen, to confirm it, and a confirmed pass records it (textbook_integers_first)
+  // integers first: an example whose answer folds to integers a confirmed pass recorded is decided by them; the text checks run only for an
+  // integer not yet seen (textbook_integers_first)
   const integers: Record<string, string> = {}
-  // sealed under the code: when the core's source fingerprint equals the one the ledger was sealed under, an unchanged example backed by a
-  // kernel-accepted theorem is decided without its call being run at all; any change to the code invalidates every seal (textbook_integers_first)
+  // sealed under the code: with the ledger's source fingerprint, an unchanged theorem-backed example is decided without its call; any code change unseals
   const sealed = code !== null && known.__code === code
   if (code !== null) integers.__code = code
   let byInteger = 0, byText = 0, bySeal = 0
@@ -402,7 +370,7 @@ export const runAudit = (handle: (m: Rpc) => any, examples: readonly Example[], 
     if ('error' in reply) { check(`example:${e.id}`, false, `${reply.error.code} ${reply.error.message}`); continue }
     const r = reply.result
     const key = uuidOf(`${e.id}|${JSON.stringify(e.arguments)}|${e.expect.toString()}|${e.shows}`)
-    // the decision is the theorem's: the example names a kernel-accepted theorem, and the integers its answer folds to are the ones that theorem's confirmed pass recorded (a deterministic check of equal inputs has an equal verdict: textbook_integers_first)
+    // the theorem decides: equal integers from a deterministic check have an equal verdict (textbook_integers_first)
     const integer = `${e.theorem ?? ''}:${r._meta?.integrity?.sha256 ?? ''}:${uuidOf(r._meta?.widget ?? '')}`
     if (e.theorem && THEOREM_KEYS.has(e.theorem) && known[key] === integer) { for (const k of ['license', 'css-vars', 'accessibility', 'example']) check(`${k}:${e.id}`, true, `decided by theorem ${e.theorem}: the answer and its widget fold to the integers its confirmed pass recorded`); integers[key] = integer; byInteger++; continue }
     const before = checks.length
@@ -427,7 +395,7 @@ export const runAudit = (handle: (m: Rpc) => any, examples: readonly Example[], 
     }
   }
   const backed = examples.filter((e) => e.theorem)
-  // a theorem of the textbook table is kernel-checked by the lean step of the same run and enters the kernel index one run later (purify): the table counts as declared, measured as the cause of every first-attempt failure after a theorem was added
+  // a textbook theorem enters the kernel index one run after the lean step checks it (purify), so the table counts as declared
   const declared = (key: string) => THEOREM_KEYS.has(key) || TEXTBOOK_THEOREMS.some((t) => t.key === key)
   for (const e of backed) if (mine(examples.indexOf(e))) check(`theorem-exists:${e.id}`, declared(e.theorem!), THEOREM_KEYS.has(e.theorem!) ? `${e.theorem} is kernel-accepted (${THEOREMS.find((t) => t.key === e.theorem)?.statement.slice(0, 80)})` : TEXTBOOK_THEOREMS.some((t) => t.key === e.theorem) ? `${e.theorem} is declared in the textbook table (${TEXTBOOK_THEOREMS.find((t) => t.key === e.theorem)!.says}); the kernel index records it after this run's lean step` : `${e.theorem} is not among the ${THEOREMS.length} hand-written theorems the kernel accepted: a fabricated citation`)
   checkOnce('examples-backed-by-theorems', true, `${backed.length} of ${examples.length} examples name the theorem that makes them true (${backed.map((e) => `${e.id}→${e.theorem}`).join(', ') || 'none'}); the rest are the textbook, respected, each a lead for a theorem`)
@@ -457,10 +425,8 @@ export const runAudit = (handle: (m: Rpc) => any, examples: readonly Example[], 
   return { shard: { i: si, n }, integers, decided: { bySeal, byInteger, byText, sealed, theorem: 'textbook_integers_first' }, slowest: [...checks].sort((a, b) => (b.ms ?? 0) - (a.ms ?? 0)).slice(0, 8).map((c) => `${c.id} ${c.ms} ms`), total: checks.length, passed, failed: checks.length - passed, tools: tools.length, examples: examples.length, leads: leads.length, checks }
 }
 
-/** A lexical document scanned before anything in it runs: every node walked (no cap; its count and depth reported), each finding named with
- *  where it is and whether it blocks. Blocking: a link whose scheme is not http, https or a relative path (javascript:, data:, vbscript: and the
- *  rest), a qpu block naming a tool the catalogue does not serve, a block whose arguments carry a prototype key (__proto__, constructor,
- *  prototype). Noted: markup written inside text (rendered as text, never as markup), a node type the editor does not define, a leak by kind. */
+/** A lexical document scanned before it runs, every node walked: blocking a link that is not http(s) or relative, a block naming an unserved tool
+ *  or carrying a prototype key; noted markup inside text, an undefined node type, a leak by kind. */
 const LEXICAL_NODE_TYPES = ['root', 'paragraph', 'heading', 'text', 'list', 'listitem', 'quote', 'link', 'autolink', 'block', 'inlineBlock', 'linebreak', 'horizontalrule', 'upload', 'relationship', 'tab', 'code', 'table', 'tablerow', 'tablecell'] as const
 export const scanLexical = (doc: unknown, tools: readonly string[]) => {
   const findings: { at: string; kind: string; blocks: boolean; detail: string; uuid?: string }[] = []

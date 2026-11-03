@@ -5,7 +5,7 @@ import { existsSync, readFileSync, writeFileSync, appendFileSync, mkdirSync } fr
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import './teleport.ts'
-import { handle, toolCallerOf } from '../src/quantum/processing/mcp.ts'
+import { toolCallerOf } from '../src/quantum/processing/mcp.ts'
 import { isShard, isMerge, takeShare, leaveShard, gatherShards, shardLabel } from './shard.ts'
 import { recordDeposit } from '../src/quantum/processing/unit/coins.ts'
 import { openSession, getJson, listLeads } from './mcp.ts'

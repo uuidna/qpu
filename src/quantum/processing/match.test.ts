@@ -32,10 +32,10 @@ test('a statement that exceeds a schema bound is proved impossible by the schema
   assert.equal(m.lead.status, 'blocked')
 })
 
-test('a statement about an out-of-scope lead is impossible with the lead\'s own reason', () => {
+test('a statement about an out-of-scope lead is unknown, the lead its missing witness: a stored reason is no refutation recomputed now', () => {
   const m = match('list the careers jobs page')
-  assert.equal(m.verdict, 'impossible')
-  assert.ok(m.evidence[0]!.includes('out_of_scope'))
+  assert.equal(m.verdict, 'unknown'); assert.equal(m.state, 'gas')
+  assert.ok(m.evidence[0]!.includes('out_of_scope') && m.witnesses!.missing[0]!.includes('out_of_scope'))
 })
 
 test('a statement nothing serves becomes a new lead to develop', () => {

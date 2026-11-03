@@ -6,7 +6,6 @@ import { join } from 'node:path'
 import './teleport.ts'
 import { handle, toolCallerOf, TOOLBOXES as toolboxes, cellOf as cell } from '../src/quantum/processing/mcp.ts'
 import { getCss, hueOf, KEY } from '../src/quantum/processing/unit/theme.ts'
-import { uuidOf } from '../src/quantum/processing/unit/blocks.ts'
 import { TEXTBOOK_LEAN, TEXTBOOK_THEOREMS } from '../src/quantum/processing/textbook-theorems.ts'
 import { getJson, listLeads } from './mcp.ts'
 const { all: LEADS } = await listLeads()

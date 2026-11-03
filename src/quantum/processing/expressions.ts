@@ -1,8 +1,6 @@
-// The textbook's combinatorial expressions as full-featured tools: every textbook theorem's Lean statement read back as arithmetic — its
-// variables (the binders), its hypotheses, its conjuncts — and evaluated exactly, natural numbers in BigInt with Lean's own semantics
-// (subtraction truncated at zero, division and remainder floored, a power a power), so a client calls any theorem as a computation:
-// with no values a closed statement is checked side by side, with values a statement over variables is computed for them, and what it needs
-// is named. The prose audit reads the numbers a text states and finds the expression each one rests on, or leaves a lead.
+// Every textbook theorem's Lean statement read back as arithmetic (variables, hypotheses, conjuncts) and evaluated exactly in BigInt with
+// Lean's Nat semantics (truncated subtraction, floored division), so a client calls any theorem as a computation; the prose audit finds the
+// expression each number of a text rests on, or leaves a lead.
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { routeStatement } from './match.ts'
 import type { Example } from './examples.ts'
@@ -106,14 +104,19 @@ export const listExpressions = () => {
   return { theorems: rows.length, closed: rows.filter((r) => r.closed && r.evaluable).length, withVariables: rows.filter((r) => !r.closed && r.evaluable).length, quantified: rows.filter((r) => !r.evaluable).length, closedHold: rows.filter((r) => r.closed && r.holds === true).length, closedFail: rows.filter((r) => r.closed && r.holds === false).map((r) => r.theorem), rows, theorem: 'textbook_expressions_evaluate' }
 }
 
-// The prose audit: the numbers a text states, each resting on an expression of the textbook or left as a lead; verdict words beside the Clay problems flagged.
-const NUMBER = /(?<![\w./:#-])(\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?)(?![\w./:-]|\.\d)/g
+// The prose audit: each number a text states rests on a textbook expression or is a lead; verdict words beside the Clay problems flagged.
+const NUMBER = /(?<![\w./:#-])(\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?(?:e[-+]?\d+)?)(?![\w/:-]|\.\w)/gi
 const IGNORE = [/https?:\/\/\S+/g, /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi, /\b\d{4}-\d{2}-\d{2}(?:T[\d:.]+Z?)?\b/g, /\bv?\d+\.\d+\.\d+\b/g, /\b10\.\d{4,}\/\S+/g, /`[^`]*`/g, /\b(?:RFC|ISO|FIPS|ML-DSA|ML-KEM|SLH-DSA)[ -]?\d+(?:-\d+)?\b/g, /\b(?:19|20)\d{2}\b/g]
-// a verdict is solved, unsolved, not solved or disproved beside the Clay problems; "proved by the kernel" states what the kernel accepts and stays
+// a verdict word beside the Clay problems; "proved by the kernel" states what the kernel accepts and stays
 const VERDICT = /\b(Clay|Millennium)\b[^.]{0,120}\b(solved|unsolved|not solved|disproved)\b|\b(solved|unsolved|not solved|disproved)\b[^.]{0,120}\b(Clay|Millennium)\b/i
+/** The numbers a text states, read once for the prose audit, the match and the chat: links, addresses, dates, versions, DOIs, code, standards
+ *  and years set aside, thousands' commas dropped, a decimal and an exponent kept, a number ending its sentence read. */
+export const numbersOf = (text: string): string[] => { let clean = text; for (const re of IGNORE) clean = clean.replace(re, () => ' '); return [...clean.matchAll(NUMBER)].map((m) => m[1]!.replace(/,/g, () => '')) }
+/** The values a theorem states, its variables bound to the values given: both sides of each relation of its conclusion computed (432 % 360 = 72
+ *  states 72, never 432), else a side that is a numeral alone. */
+export const sidesOf = (lean: string, values: Readonly<Record<string, string>> = {}): string[] => { const env: Env = Object.fromEntries(Object.entries(values).map(([k, v]) => [k, BigInt(v)])); return [...new Set(getStatement(lean).conclusion.split('∧').flatMap((part) => { try { return evaluate(part, env).parts.flatMap((x) => [x.left, x.right]) } catch { return part.split(/[=≠≤≥<>]/).map((x) => x.trim()) } }).filter((x) => /^\d+$/.test(x)))] }
 export const getProse = (texts: Readonly<Record<string, string>>, examples: readonly Example[]) => {
-  const numbersOfTheorem = new Map(TEXTBOOK_THEOREMS.map((t) => [t.key, new Set([...t.lean.replace(/^theorem\s+\S+/, '').matchAll(/\d+/g)].map((m) => m[0]))]))
-  const rows: { text: string; sentence: string; number: string; expression: string | null; by: 'route' | 'number' | null }[] = []
+  const rows: { text: string; sentence: string; number: string; expression: string | null; by: 'route' | null }[] = []
   const verdicts: { text: string; sentence: string }[] = []
   let sentences = 0
   for (const [name, raw] of Object.entries(texts)) {
@@ -121,14 +124,13 @@ export const getProse = (texts: Readonly<Record<string, string>>, examples: read
     for (const sentence of body.split(/(?<=[.!?])\s+|\n{2,}|\n(?=[-*#|])/).map((x) => x.trim()).filter((x) => x.length > 0)) {
       sentences++
       if (VERDICT.test(sentence)) verdicts.push({ text: name, sentence: sentence.slice(0, 200) })
-      let clean = sentence; for (const re of IGNORE) clean = clean.replace(re, ' ')
-      const numbers = [...clean.matchAll(NUMBER)].map((m) => m[1]!.replace(/,/g, '')).filter((n) => !/\./.test(n) && Number(n) >= 2)
+      const numbers = numbersOf(sentence).filter((n) => /^\d+$/.test(n) && Number(n) >= 2)
       if (!numbers.length) continue
-      const route = routeStatement(sentence, examples, 8).theorems.map((t) => t.theorem)
+      // a number rests on the first routed theorem when that theorem computes it, never on a numeral it merely contains
+      const route = routeStatement(sentence, examples, 1).theorems
       for (const n of numbers) {
-        const byRoute = route.find((k) => numbersOfTheorem.get(k)?.has(n))
-        const byNumber = byRoute ? undefined : TEXTBOOK_THEOREMS.find((t) => numbersOfTheorem.get(t.key)!.has(n) && route.length > 0 && t.key === route[0])
-        rows.push({ text: name, sentence: sentence.slice(0, 200), number: n, expression: byRoute ?? byNumber?.key ?? null, by: byRoute ? 'route' : byNumber ? 'number' : null })
+        const byRoute = route.find((t) => sidesOf(t.lean).includes(n))?.theorem
+        rows.push({ text: name, sentence, number: n, expression: byRoute ?? null, by: byRoute ? 'route' : null })
       }
     }
   }

@@ -175,7 +175,7 @@ The Clay register recomputed in exact integer arithmetic
 
 ## match
 
-Any statement, matched against everything the surface can do
+Any statement, matched against everything the surface can do and decided by its witnesses
 
 ```json
 {

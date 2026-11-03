@@ -21,7 +21,7 @@ Every figure below was measured on this tree on 2026-11-03.
 | Type check (`tsc --noEmit`) | 0 errors |
 | Runtime dependencies | 1 |
 | Lean 4 modules built (`lake build`, Lean 4.33.0) | 34 modules, 36 jobs, 0 errors |
-| Theorems declared / accepted by the kernel | 1410 / 2064 (1411 hand-written, 653 generated equation lemmas) |
+| Theorems declared / accepted by the kernel | 1416 / 2073 (1417 hand-written, 656 generated equation lemmas) |
 | Theorems using `sorry` | 0 |
 | Axioms used by the kernel-accepted theorems | `Classical.choice`, `Quot.sound`, `propext` |
 | Self-audit checks | see docs/audit |
@@ -78,7 +78,7 @@ Without the witness a blind climb from ⌈√N⌉ takes ~2^489 centres; with it,
 
 ## 3. What the Lean kernel accepts
 
-2064 constants in the `Qpu` modules, 1411 hand-written and 653 compiler-generated equation lemmas; 0 use `sorry`; axioms: Classical.choice, Quot.sound, propext. `docs/theorems.md` lists every key, statement and axiom. What a statement *means* is decided by the tools (`match`, `compete`), never by this prose.
+2073 constants in the `Qpu` modules, 1417 hand-written and 656 compiler-generated equation lemmas; 0 use `sorry`; axioms: Classical.choice, Quot.sound, propext. `docs/theorems.md` lists every key, statement and axiom. What a statement *means* is decided by the tools (`match`, `compete`), never by this prose.
 
 | Module | Hand-written theorems |
 |---|---:|
@@ -114,7 +114,7 @@ Without the witness a blind climb from ⌈√N⌉ takes ~2^489 centres; with it,
 | Qpu.Sigma | 17 |
 | Qpu.Stabilizer | 1 |
 | Qpu.Surfacecode | 1 |
-| Qpu.Textbook | 928 |
+| Qpu.Textbook | 934 |
 
 ## 4. The MCP surface — every tool a client can call
 
@@ -137,7 +137,7 @@ Without the witness a blind climb from ⌈√N⌉ takes ~2^489 centres; with it,
 | `fault-tolerant-design` | Resource counts read from the circuits this repository builds: the QFT on n qubits, Grover, teleportation, Shor for N up to 21, the QAOA instance and  |
 | `leads` | Every lead on quantumai.google (every page of its sitemap, as its client hands it), its PDFs and the quantumlib repositories, with its status (served, |
 | `audit` | The surface audits itself through tools/call: every tool has a schema and an example, every documented example replays as documented, every served lea |
-| `match` | Any statement, matched against everything the surface can do. |
+| `match` | Any statement, matched against everything the surface can do and decided by its witnesses. |
 | `clay` | The Clay register recomputed in exact integer arithmetic: the Lean definitions of Qpu/Clay.lean and its imports ported one for one, every relation_N s |
 | `verify` | Cheap verification of one UUID: its seal (the version nibble the other 31 nibbles decide, one modular power, no content needed), its content (one fold |
 | `metrics` | The computable metrics of this tree in real time: tools and toolboxes, examples and how many name the kernel-accepted theorem that makes them true, th |

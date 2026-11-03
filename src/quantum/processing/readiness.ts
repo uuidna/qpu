@@ -2,7 +2,7 @@
 // discovered doors to offer a theorem to, with what arguments) and the border read (what they answered); the unit plan (the
 // calls the client makes to the unit) and the page. The client fetches and asks; nothing here does I/O.
 import { listCleanupSubjects, type Lead } from './leads.ts'
-import type { Discovery, Door } from './discovery.ts'
+import type { Discovery } from './discovery.ts'
 import type { WaveResult } from './wave.ts'
 import { TAKES } from './discovery.ts'
 import { cellOf as cell } from './widgets.ts'
