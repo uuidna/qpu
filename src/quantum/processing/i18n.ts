@@ -6,7 +6,7 @@ import { TABLES as PAYLOAD_TABLES } from './tables-index.ts'
 export const LOCALES = PAYLOAD_TABLES.LOCALES as unknown as Record<string, { name: string; native: string; filled: boolean }>
 
 /** English → Bulgarian for every term the surface emits. The inverse is derived, so the table reads both ways. */
-const BG: Record<string, string> = PAYLOAD_TABLES.I18N_BG as Record<string, string>
+const BG = PAYLOAD_TABLES.I18N_BG as Record<string, string>
 export const TABLES: Record<string, Record<string, string>> = { bg: BG }
 const inverted = (t: Record<string, string>): Record<string, string> => Object.fromEntries(Object.entries(t).filter(([, v]) => v).map(([k, v]) => [v, k]))
 

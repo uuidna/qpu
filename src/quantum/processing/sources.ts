@@ -19,7 +19,7 @@ export type SourceRequest = { id: string; source: string; kind: SourceKind; meth
 export type SourceAnswer = { id: string; url: string; status: number; text: string }
 export type SourceContext = { repository: string; owner: string; package: string; hosts: readonly string[]; subjects?: readonly string[]; maintainers?: readonly string[] }
 
-export const SOURCES: readonly { id: string; kind: SourceKind; name: string; immutable: string; url: string }[] = TABLES.SOURCES as readonly { id: string; kind: SourceKind; name: string; immutable: string; url: string }[]
+export const SOURCES = TABLES.SOURCES as readonly { id: string; kind: SourceKind; name: string; immutable: string; url: string }[]
 /** the subjects Open Library is asked for: the fields the QPU's theorems compute in */
 const SUBJECTS = TABLES.SUBJECTS
 const MCP_TERMS = ['book', 'textbook', 'library', 'scholar', 'paper', 'doi', 'arxiv', 'patent', 'citation'] as const

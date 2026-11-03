@@ -14,4 +14,4 @@ type Milestone = {
 export const ROADMAP = TABLES.ROADMAP as unknown as readonly Milestone[]
 
 /** The applications Google's roadmap figure predicts, by the physical qubits each needs with quantum error correction. */
-export const APPLICATIONS: readonly { band: string; low: number; high: number; applications: readonly string[] }[] = TABLES.APPLICATIONS as readonly { band: string; low: number; high: number; applications: readonly string[] }[]
+export const APPLICATIONS = TABLES.APPLICATIONS as readonly { band: string; low: number; high: number; applications: readonly string[] }[]

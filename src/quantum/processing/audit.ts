@@ -33,7 +33,7 @@ const CODE_SHAPES: readonly { shape: string; re: RegExp; holder: string }[] = [
 ]
 /** Every kind of entropy says how its leads are explored (the tool a client follows it with) and which configuration settles it (the configure kind
  *  that absorbs the difference), so a difference is never a ruling: it is a lead to explore and to config. */
-export const ENTROPY_KINDS: readonly { kind: EntropyKind; says: string; explore: string; config: string | null }[] = TABLES.ENTROPY_KINDS as readonly { kind: EntropyKind; says: string; explore: string; config: string | null }[]
+export const ENTROPY_KINDS = TABLES.ENTROPY_KINDS as readonly { kind: EntropyKind; says: string; explore: string; config: string | null }[]
 type EntropyFinding = { kind: EntropyKind; file: string; line: number; excerpt: string; address: string }
 type EntropyLead = { id: string; kind: EntropyKind; source: string; statement: string; status: 'open'; tool: 'audit'; occurrences: number; address: string; explore: string; config: string | null }
 export const LEAK_ALLOWED = new Set(['payloadcms.com', 'example.com', 'test.com', 'thirdparty.com', 'github.com', 'anthropic.com', 'localhost.test', 'local.test'])
@@ -149,7 +149,7 @@ export const diffMembers = (a: { name: string; members: readonly string[] }, b: 
 /** What manual work taught, as remedies by signature, applied in mass: every error text a step or a client sees is matched here and
  *  answered with the remedy learned (textbook_error_remedies: the remedied and the unremedied make the errors); in an error-free environment
  *  the table stays dormant and the stream's gravity is the vacuum. An error without a remedy is a lead that teaches the next row. */
-export const ERROR_REMEDIES: readonly { signature: string; learned: string; remedy: string; automated: boolean }[] = TABLES.ERROR_REMEDIES as readonly { signature: string; learned: string; remedy: string; automated: boolean }[]
+export const ERROR_REMEDIES = TABLES.ERROR_REMEDIES as readonly { signature: string; learned: string; remedy: string; automated: boolean }[]
 export const listRemedies = (errors: readonly string[]) => {
   const leads = errors.map((text) => { const row = ERROR_REMEDIES.find((r) => new RegExp(r.signature).test(text)); const address = uuidOf(`error\n${text.trim()}`); return { id: `error-${address.slice(0, 8)}`, address, signature: row?.signature ?? null, remedy: row?.remedy ?? null, automated: row?.automated ?? false, learned: row?.learned ?? null, statement: row ? `${text.trim().split('\n')[0]} — remedy: ${row.remedy}` : `${text.trim().split('\n')[0]} — no remedy learned yet: a lead that teaches the next row`, status: 'open' as const } })
   const remedied = leads.filter((l) => l.remedy).length
@@ -183,8 +183,8 @@ export const repairOf = (advisories: readonly { module: string; severity?: strin
 /** The fallback combinations: correction and handling are each other's fallback (the involution σ: correction ↔ handling, σ∘σ = id), and
  *  every adapter names the adapter it falls back to when its environment fails; all declared, so the theorems compute and the gate cross-checks
  *  them online on every host. */
-export const FALLBACKS: readonly { failure: string; correction: string; handling: string; involution: string }[] = TABLES.FALLBACKS as readonly { failure: string; correction: string; handling: string; involution: string }[]
-export const FALLBACK_ADAPTERS: readonly { when: string; from: string; to: string; involution: string }[] = TABLES.FALLBACK_ADAPTERS as readonly { when: string; from: string; to: string; involution: string }[]
+export const FALLBACKS = TABLES.FALLBACKS as readonly { failure: string; correction: string; handling: string; involution: string }[]
+export const FALLBACK_ADAPTERS = TABLES.FALLBACK_ADAPTERS as readonly { when: string; from: string; to: string; involution: string }[]
 const flipMode = (mode: 'correction' | 'handling'): 'correction' | 'handling' => (mode === 'correction' ? 'handling' : 'correction')
 /** Correction or handling, swapped when the one in hand errors: at most two swaps (σ∘σ = id), so it terminates with what it has. */
 export const handleOrCorrect = (errors: readonly string[], majority: boolean, mode: 'correction' | 'handling' = 'correction') => {

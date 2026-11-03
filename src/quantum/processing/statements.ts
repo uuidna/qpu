@@ -7,4 +7,4 @@ export const STATEMENTS = TABLES.STATEMENTS
 export type StatementTopic = keyof typeof STATEMENTS
 
 /** The five open-source tools the Software page names, as it describes them. Only Cirq is implemented in this repository. */
-export const SOFTWARE: readonly { name: string; description: string; implemented: boolean }[] = TABLES.SOFTWARE as readonly { name: string; description: string; implemented: boolean }[]
+export const SOFTWARE = TABLES.SOFTWARE as readonly { name: string; description: string; implemented: boolean }[]

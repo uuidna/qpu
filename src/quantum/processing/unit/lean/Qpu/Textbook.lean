@@ -214,10 +214,10 @@ theorem textbook_capacity_conserved_reflected (capacity used : Nat) (h : used �
 theorem textbook_capacity_conserved_contrapositive (capacity used : Nat) : ¬ (used + (capacity - used) = capacity) → ¬ ((used ≤ capacity)) := fun hc hh => hc (textbook_capacity_conserved capacity used hh)
 /-- the converse of textbook_capacity_conserved, proved (examples: repository-capacity) -/
 theorem textbook_capacity_conserved_converse (capacity used : Nat) : (used + (capacity - used) = capacity) → (used ≤ capacity) := fun hc => by omega
-/-- the ten gap kinds less the ten with antimatter leave none without: every one of the ten gap kinds has antimatter, so from any gap the next step is defined and the way never dead-ends (examples: repository-antimatter-total) -/
-theorem textbook_antimatter_total : 10 - 10 = 0 := by decide
+/-- the 12 gap kinds the example opens, counted by countPenalties, less the 12 with antimatter leave none without: every one of them has antimatter, so from any gap the next step is defined and the way never dead-ends (examples: repository-antimatter-total) -/
+theorem textbook_antimatter_total : 12 - 12 = 0 := by decide
 /-- textbook_antimatter_total reflected by its shape, equality (examples: repository-antimatter-total) -/
-theorem textbook_antimatter_total_reflected (σ : Nat) : σ - (0) = σ - (10 - 10) := congrArg (σ - ·) (Eq.symm (textbook_antimatter_total))
+theorem textbook_antimatter_total_reflected (σ : Nat) : σ - (0) = σ - (12 - 12) := congrArg (σ - ·) (Eq.symm (textbook_antimatter_total))
 /-- coins and coils booked in double entry net to zero, the burn account included: every balanced line debits one account and credits another of the same value, so the debits and the credits are both the coins plus the coils, and a line to itself or to no account is refused (examples: repository-reactor) -/
 theorem textbook_coins_coils_balanced (coins coils debits credits : Nat) (hd : debits = coins + coils) (hc : credits = coins + coils) : debits - credits = 0 := by omega
 /-- textbook_coins_coils_balanced reflected by its shape, equality (examples: repository-reactor) -/
@@ -1762,3 +1762,31 @@ theorem textbook_relation_rsa_reflected (σ : Nat) : (σ - (7) = σ - (Nat.gcd (
 theorem textbook_ancient_law : 4 + 5 = 9 := by decide
 /-- textbook_ancient_law reflected by its shape, equality (examples: legal-ancient) -/
 theorem textbook_ancient_law_reflected (σ : Nat) : σ - (9) = σ - (4 + 5) := congrArg (σ - ·) (Eq.symm (textbook_ancient_law))
+/-- balanceOf: a journal entry is balanced exactly when its syndrome is zero — the debits d and the credits c, each summed from its own side of the stored postings (a debit +, a credit −), differ by (d − c) + (c − d) on the naturals, zero iff d = c; so Σ = 0 is a parity check like a stabilizer's +1, and a nonzero syndrome { amount, count, entry } is the unbalanced gap that blocks, the postings untouched (examples: stripe-journal-parity, stripe-ledger-sides, stripe-ledger) -/
+theorem textbook_postings_parity (d c : Nat) : d - c + (c - d) = 0 ↔ d = c := by omega
+/-- textbook_postings_parity reflected by its shape, equivalence (examples: stripe-journal-parity, stripe-ledger-sides, stripe-ledger) -/
+theorem textbook_postings_parity_reflected (d c : Nat) : (d = c) ↔ (d - c + (c - d) = 0) := Iff.symm (textbook_postings_parity d c)
+/-- royaltyOf: the fractal shares never exceed the fee — at the ratio 2/110 the example's royalty reports, the first share ⌊f·2/110⌋ leaves a remainder at least 108/2 times itself, and while the remainder r covers 108/2 of the last share p, the next share s = ⌊p·2/110⌋ fits under r and leaves r − s covering 108/2 of s: by induction over the levels the shares sum to at most the fee (examples: stripe-royalty) -/
+theorem textbook_royalty_fractal (f p s r : Nat) (hp : 2 * p ≤ 108 * r) (hs : s * 110 ≤ p * 2) : f * 2 / 110 ≤ f ∧ 2 * (f * 2 / 110) ≤ 108 * (f - f * 2 / 110) ∧ s ≤ r ∧ 2 * s ≤ 108 * (r - s) := by omega
+/-- textbook_royalty_fractal reflected by its shape, conjunction (examples: stripe-royalty) -/
+theorem textbook_royalty_fractal_reflected (f p s r : Nat) (hp : 2 * p ≤ 108 * r) (hs : s * 110 ≤ p * 2) (σ : Nat) : (σ - (f) ≤ σ - (f * 2 / 110)) ∧ (σ - (108 * (f - f * 2 / 110)) ≤ σ - (2 * (f * 2 / 110))) ∧ (σ - (r) ≤ σ - (s)) ∧ (σ - (108 * (r - s)) ≤ σ - (2 * s)) := ⟨Nat.sub_le_sub_left (textbook_royalty_fractal f p s r hp hs).1 σ, Nat.sub_le_sub_left (textbook_royalty_fractal f p s r hp hs).2.1 σ, Nat.sub_le_sub_left (textbook_royalty_fractal f p s r hp hs).2.2.1 σ, Nat.sub_le_sub_left (textbook_royalty_fractal f p s r hp hs).2.2.2 σ⟩
+/-- the contrapositive of textbook_royalty_fractal (examples: stripe-royalty) -/
+theorem textbook_royalty_fractal_contrapositive (f p s r : Nat) : ¬ (f * 2 / 110 ≤ f ∧ 2 * (f * 2 / 110) ≤ 108 * (f - f * 2 / 110) ∧ s ≤ r ∧ 2 * s ≤ 108 * (r - s)) → ¬ ((2 * p ≤ 108 * r) ∧ (s * 110 ≤ p * 2)) := fun hc hh => hc (textbook_royalty_fractal f p s r hh.1 hh.2)
+/-- the converse of textbook_royalty_fractal, refuted by a counterexample the kernel decides (examples: stripe-royalty) -/
+theorem textbook_royalty_fractal_converse_refuted : ¬ ∀ (f p s r : Nat), (f * 2 / 110 ≤ f ∧ 2 * (f * 2 / 110) ≤ 108 * (f - f * 2 / 110) ∧ s ≤ r ∧ 2 * s ≤ 108 * (r - s)) → (2 * p ≤ 108 * r) ∧ (s * 110 ≤ p * 2) := fun h => absurd (h 0 0 1 2 (by decide)) (by decide)
+/-- royaltyOf: the shares paid p stay under the fee f (textbook_royalty_fractal), so the remainder x = f − p to revenue:author makes shares and remainder the fee exactly: the entry posts +f and −p − x, Σ = 0, which balanceOf measures again from the stored postings; a share held in escrow is still posted, never lost (examples: stripe-royalty, stripe-royalty-escrow) -/
+theorem textbook_royalty_conserved (f p x : Nat) (hp : p ≤ f) (hx : x = f - p) : p + x = f ∧ f - p - x = 0 := by omega
+/-- textbook_royalty_conserved reflected by its shape, conjunction (examples: stripe-royalty, stripe-royalty-escrow) -/
+theorem textbook_royalty_conserved_reflected (f p x : Nat) (hp : p ≤ f) (hx : x = f - p) (σ : Nat) : (σ - (f) = σ - (p + x)) ∧ (σ - (0) = σ - (f - p - x)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_royalty_conserved f p x hp hx).1), congrArg (σ - ·) (Eq.symm (textbook_royalty_conserved f p x hp hx).2)⟩
+/-- the contrapositive of textbook_royalty_conserved (examples: stripe-royalty, stripe-royalty-escrow) -/
+theorem textbook_royalty_conserved_contrapositive (f p x : Nat) : ¬ (p + x = f ∧ f - p - x = 0) → ¬ ((p ≤ f) ∧ (x = f - p)) := fun hc hh => hc (textbook_royalty_conserved f p x hh.1 hh.2)
+/-- the converse of textbook_royalty_conserved, proved (examples: stripe-royalty, stripe-royalty-escrow) -/
+theorem textbook_royalty_conserved_converse (f p x : Nat) : (p + x = f ∧ f - p - x = 0) → (p ≤ f) ∧ (x = f - p) := fun hc => ⟨by omega, by omega⟩
+/-- witnessOf, mintWitnessCoins and contributionOf: every item is passed (p), missing (m) or contradicted (c), the three summing to the items n, and the coins booked k are the passed alone, so k + m + c = n and k ≤ n − m − c — a missing witness books nothing (a witness gap, listed, its share held in escrow), a contradicted one books nothing (a refusal) (examples: stripe-mint-witnesses, stripe-idea-contribution, stripe-royalty-escrow, verify-witnesses-merge) -/
+theorem textbook_witness_books_nothing (n p m c k : Nat) (h : p + m + c = n) (hk : k = p) : k + m + c = n ∧ k ≤ n - m - c := by omega
+/-- textbook_witness_books_nothing reflected by its shape, conjunction (examples: stripe-mint-witnesses, stripe-idea-contribution, stripe-royalty-escrow, verify-witnesses-merge) -/
+theorem textbook_witness_books_nothing_reflected (n p m c k : Nat) (h : p + m + c = n) (hk : k = p) (σ : Nat) : (σ - (n) = σ - (k + m + c)) ∧ (σ - (n - m - c) ≤ σ - (k)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_witness_books_nothing n p m c k h hk).1), Nat.sub_le_sub_left (textbook_witness_books_nothing n p m c k h hk).2 σ⟩
+/-- the contrapositive of textbook_witness_books_nothing (examples: stripe-mint-witnesses, stripe-idea-contribution, stripe-royalty-escrow, verify-witnesses-merge) -/
+theorem textbook_witness_books_nothing_contrapositive (n p m c k : Nat) : ¬ (k + m + c = n ∧ k ≤ n - m - c) → ¬ ((p + m + c = n) ∧ (k = p)) := fun hc hh => hc (textbook_witness_books_nothing n p m c k hh.1 hh.2)
+/-- the converse of textbook_witness_books_nothing, refuted by a counterexample the kernel decides (examples: stripe-mint-witnesses, stripe-idea-contribution, stripe-royalty-escrow, verify-witnesses-merge) -/
+theorem textbook_witness_books_nothing_converse_refuted : ¬ ∀ (n p m c k : Nat), (k + m + c = n ∧ k ≤ n - m - c) → (p + m + c = n) ∧ (k = p) := fun h => absurd (h 0 1 0 0 0 (by decide)) (by decide)

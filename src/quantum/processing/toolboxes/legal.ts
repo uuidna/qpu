@@ -22,7 +22,7 @@ type Answer = Call & { answer?: unknown; refusal?: string }
 /** The court every cheap gate leads a violator to: the rules a gate refuses by, each named by the theorem that states it and the remedy that
  *  satisfies it; a refusal computes the case (its content address) and the MCP call the violator makes to file it — the gate writes nothing
  *  (textbook_cheap_gates), the violator's own client carries the case to the docket (kind case) or appeals through the match tool. */
-const COURT_RULES: readonly { rule: string; violated: string; theorem: string; remedy: string; statuses: readonly number[] }[] = TABLES.COURT_RULES as readonly { rule: string; violated: string; theorem: string; remedy: string; statuses: readonly number[] }[]
+const COURT_RULES = TABLES.COURT_RULES as readonly { rule: string; violated: string; theorem: string; remedy: string; statuses: readonly number[] }[]
 type Summons = { gate: string; status?: number; code?: number; rule?: string; theorem?: string; remedy?: string; violated?: string; duty?: string; evidence?: unknown; tenant?: string }
 export const summonCourt = (v: Summons) => {
   // the court is summoned on any security finding, lead or capability decline — not only the ten HTTP gate rules. A matter that brings its own
@@ -112,7 +112,7 @@ const checkLegalSecurity = (texts: Texts): { id: string; passed: boolean; eviden
 
 /** The public news APIs wired as adapters of the DOI research: the open ones answer mentions of each record of precedence without a key, the keyed ones
  *  wait for a tenant's name (never a value); the mentions by source are the measure the acceptance rule reads, never a verdict (textbook_news_adapters). */
-export const NEWS_APIS: readonly { id: string; name: string; url: string; open: boolean; key: string | null; reads: string }[] = TABLES.NEWS_APIS as readonly { id: string; name: string; url: string; open: boolean; key: string | null; reads: string }[]
+export const NEWS_APIS = TABLES.NEWS_APIS as readonly { id: string; name: string; url: string; open: boolean; key: string | null; reads: string }[]
 const createNewsRequests = () => PRECEDENCE.flatMap((p) => NEWS_APIS.filter((a) => a.open).map((a) => ({ id: `${a.id}:${p.doi}`, api: a.id, doi: p.doi, method: 'GET' as const, url: a.url.replace('<doi>', encodeURIComponent(p.doi)).replace('<query>', encodeURIComponent(a.id === 'crossref-events' ? p.doi : p.title)), accept: 'application/json' })))
 const countMentions = (answers: readonly { id: string; status: number; text: string }[]) => {
   const read = (api: string, text: string): number | null => { try { const j = JSON.parse(text) as Record<string, unknown>; switch (api) { case 'gdelt': return Array.isArray((j as { articles?: unknown[] }).articles) ? (j as { articles: unknown[] }).articles.length : 0; case 'hn-algolia': return Number((j as { nbHits?: number }).nbHits ?? 0); case 'crossref-events': return Number((j as { message?: { 'total-results'?: number } }).message?.['total-results'] ?? 0); case 'wikipedia-search': return Number((j as { query?: { searchinfo?: { totalhits?: number } } }).query?.searchinfo?.totalhits ?? 0); default: return null } } catch { return null } }
@@ -226,7 +226,7 @@ const FIXTURE_TEXTS: Texts = { citation: 'cff-version: 1.2.0\ntitle: QPU\nauthor
  * a rule is satisfied, pending (the author's act), closed (the window has passed) or open (a lead). Nothing is claimed won; what the rules
  * require and what the tree holds are stated, and the gap is the author's act or a lead. */
 type Rule = { rule: string; needs: string; status: 'satisfied' | 'pending' | 'closed' | 'open'; evidence: string; act?: string }
-export const COMPETITIONS: readonly { id: string; name: string; prize: string; rules: string; read: string; kind: 'prize' | 'funding'; entry: 'open' | 'closed' | 'rolling' | 'unknown'; note: string; /** the competitors: who else is in, as the public page measures it (never claimed) */ competitors: { source: string; read: string; measured: string; known: readonly string[] }; requires: readonly Omit<Rule, 'status' | 'evidence'>[] }[] = TABLES.COMPETITIONS as readonly { id: string; name: string; prize: string; rules: string; read: string; kind: 'prize' | 'funding'; entry: 'open' | 'closed' | 'rolling' | 'unknown'; note: string; /** the competitors: who else is in, as the public page measures it (never claimed) */ competitors: { source: string; read: string; measured: string; known: readonly string[] }; requires: readonly Omit<Rule, 'status' | 'evidence'>[] }[]
+export const COMPETITIONS = TABLES.COMPETITIONS as readonly { id: string; name: string; prize: string; rules: string; read: string; kind: 'prize' | 'funding'; entry: 'open' | 'closed' | 'rolling' | 'unknown'; note: string; /** the competitors: who else is in, as the public page measures it (never claimed) */ competitors: { source: string; read: string; measured: string; known: readonly string[] }; requires: readonly Omit<Rule, 'status' | 'evidence'>[] }[]
 /** The registry's MCPs for grants and funding (2026-10-26: grant 20, funding 20, competition 2, prize 0, hackathon 0): proposed, extended by the discover step through the lead, never called here. */
 export const FUNDING_MCPS = TABLES.FUNDING_MCPS
 /** A competition's window read from its page: "Registration opens on <date>, and closes on <date>" → open, closed or upcoming at `now`; "applications are open" → open; nothing read → unknown. Autonomy: the entry state is measured from the page on every run, never hand-set. */
@@ -305,7 +305,7 @@ const compete = defineTool('legal', {
 })
 
 /** Every patent API found and measured (2026-10-26): what answers in the open, what takes a key (named, never valued), what refuses an automated read. */
-export const PATENT_APIS: readonly { id: string; name: string; url: string; open: boolean; key: string | null; measured: string; format: 'google-xhr' | 'epo-dates-html' | 'json' | 'xml' }[] = TABLES.PATENT_APIS as readonly { id: string; name: string; url: string; open: boolean; key: string | null; measured: string; format: 'google-xhr' | 'epo-dates-html' | 'json' | 'xml' }[]
+export const PATENT_APIS = TABLES.PATENT_APIS as readonly { id: string; name: string; url: string; open: boolean; key: string | null; measured: string; format: 'google-xhr' | 'epo-dates-html' | 'json' | 'xml' }[]
 /** The registry\'s patent MCPs (2026-10-26: patent 20, patents 13, uspto 7; remotes marked by the discover step): proposed, never called here. */
 export const PATENT_MCPS = TABLES.PATENT_MCPS
 type Patent = { number: string; title: string; priority: string | null; filing: string | null; publication: string | null; grant: string | null; assignee: string | null; inventor: string | null; office: string; kind: string | null }
