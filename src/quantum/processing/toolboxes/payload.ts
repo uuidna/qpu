@@ -5072,14 +5072,14 @@ const cloudflareObserveTask: TaskConfig<{ input: Record<string, any>; output: { 
   },
 }
 // the merged index kept in sync: after any change of pages, tenants, entries or keys the three providers' operations are re-read (Payload from
-// its config, Cloudflare from the held contract, Google from the endpoints table), addressed by the program with the doors and the coverage of
+// its config, Cloudflare from the held contract, Google from the endpoints table, shadcn from the registry contract), addressed by the program with the doors and the coverage of
 // Payload's own packages, templates, examples and plugins, and written on the qpu global as apis
 const apisOf = async (req: PayloadRequest) => {
   const origin = (req.payload.config.serverURL || 'https://qpu.uuidna.com').replace(/\\/$/, '')
   const held = await heldCloudflareOperations(req)
   const paths: Record<string, Record<string, { operationId: string; tags: string[] }>> = {}
   for (const o of held) (paths[o.path] ??= {})[o.method.toLowerCase()] = { operationId: o.id, tags: o.tags }
-  const index = caller('apis')({ index: { payload: { collections: req.payload.config.collections.map((c) => ({ slug: c.slug })), globals: req.payload.config.globals.map((g) => ({ slug: g.slug })), server: origin }, cloudflare: { servers: [{ url: 'https://api.cloudflare.com/client/v4' }], paths }, google: true } })
+  const index = caller('apis')({ index: { payload: { collections: req.payload.config.collections.map((c) => ({ slug: c.slug })), globals: req.payload.config.globals.map((g) => ({ slug: g.slug })), server: origin }, cloudflare: { servers: [{ url: 'https://api.cloudflare.com/client/v4' }], paths }, google: true, shadcn: true } })
   const doors = apisDoors(origin), coverage = caller('apis')({ coverage: true })
   return { syncedAt: new Date().toISOString(), doors: { total: doors.total, byProvider: doors.byProvider, holds: doors.holds, rows: doors.rows }, index: { total: index.total, distinct: index.distinct, byProvider: index.byProvider, byTag: index.byTag, holds: index.holds, held: held.length }, coverage: { total: coverage.total, covered: coverage.covered, gaps: coverage.gaps, byKind: coverage.byKind, next: coverage.next ? { kind: coverage.next.kind, name: coverage.next.name, address: coverage.next.address, step: coverage.next.step } : null, holds: coverage.holds } }
 }
@@ -5128,7 +5128,7 @@ export const qpuApis = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-apis', o
   ...hooked(config, Object.fromEntries(['pages', 'tenants', 'entries', 'payload-mcp-api-keys'].map((s) => [s, (c: CollectionConfig) => first(c, 'afterChange', measureApis as never)]))),
   endpoints: [...(config.endpoints ?? []).filter((e) => e.path !== '/qpu/apis'), ...qpuApisEndpoints],
   jobs: withTask({ ...config, jobs: withTask(config, cloudflareCallTask) as never }, cloudflareObserveTask),
-  globals: (config.globals ?? []).map((g) => (g.slug !== 'qpu' || g.fields.some((f) => 'name' in f && f.name === 'apis') ? g : { ...g, fields: [...g.fields, { name: 'apis', type: 'json', admin: { readOnly: true, description: 'Payload, Cloudflare and Google admin APIs as one UUID program: the doors, the merged operation index, the coverage of Payload\\'s own surface with the next gap, the Cloudflare meters and their bill' } } as Field] })),
+  globals: (config.globals ?? []).map((g) => (g.slug !== 'qpu' || g.fields.some((f) => 'name' in f && f.name === 'apis') ? g : { ...g, fields: [...g.fields, { name: 'apis', type: 'json', admin: { readOnly: true, description: 'Payload, Cloudflare, Google and shadcn admin APIs as one UUID program: the doors, the merged operation index, the coverage of Payload\\'s own surface with the next gap, the Cloudflare meters and their bill' } } as Field] })),
 }) })
 export const qpuHooks = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-hooks', order: Number.MAX_SAFE_INTEGER, plugin: ({ config, enabled }) => (enabled === false ? config : qpuHooksOf(config).config) })
 /** The umbrella: the capabilities, the storage, the plugins the configs order and the tenant's own, each seeing the others in the plugins map */

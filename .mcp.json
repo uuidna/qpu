@@ -1,13 +1,7 @@
 {
   "mcpServers": {
     "qpu": {
-      "type": "stdio",
-      "command": "node",
-      "args": [
-        "--import",
-        "tsx",
-        "scripts/stdio.ts"
-      ]
+      "url": "https://qpu.uuidna.com/api/mcp"
     }
   }
 }

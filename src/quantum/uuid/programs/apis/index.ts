@@ -5,8 +5,9 @@
 // allowances (textbook_bill_covered). Nothing is fetched here: the readings come in, the contracts come in, the rows come out.
 import { seal, uuid } from '../../index.ts'
 import { TABLES } from '../../../processing/tables-index.ts'
+import { SHADCN_COMPONENTS, SHADCN_MCP } from '../shadcn/index.ts'
 
-export type ApiDoor = { provider: 'payload' | 'cloudflare' | 'google'; kind: 'mcp' | 'rest' | 'graphql' | 'openapi' | 'discovery'; name: string; url: string; about: string; maps: string }
+export type ApiDoor = { provider: 'payload' | 'cloudflare' | 'google' | 'shadcn'; kind: 'mcp' | 'rest' | 'graphql' | 'openapi' | 'discovery' | 'registry'; name: string; url: string; about: string; maps: string }
 export type ApiRow = ApiDoor & { address: string; sealed: boolean }
 
 /** Cloudflare's MCP servers, as https://github.com/cloudflare/mcp-server-cloudflare lists them (read 2026-11-08): the API server first (recommended), then the domain servers; each mapped to what it is for the Payload plugin. */
@@ -33,11 +34,41 @@ export const payloadDoors = (origin: string): readonly ApiDoor[] => [
 /** Google's MCP servers from the table Payload holds, as doors of this program. */
 export const googleDoors = (): readonly ApiDoor[] => (TABLES.GOOGLE_MCP as readonly { host: string; url: string; about: string; maps: string }[]).map((g) => ({ provider: 'google', kind: 'mcp', name: g.host.replace(/\.googleapis\.com$/, ''), url: g.url, about: g.about, maps: g.maps }))
 
+/** shadcn as a door of the QPU, not a second server: its MCP (npx shadcn@latest mcp) answers from the public registry, so the registry index is the
+ *  contract and every tool of that MCP is served here from it (textbook: the shadcn program already gives each item its UUID). */
+export const SHADCN_DOORS: readonly ApiDoor[] = [
+  { provider: 'shadcn', kind: 'registry', name: 'registry', url: SHADCN_MCP.registry, about: 'the shadcn registry index: every registry:ui item, the contract the shadcn MCP reads', maps: 'apis { shadcn }: list, search, view and the add command answered from this index; each item one UUID program (shadcnPrograms)' },
+  { provider: 'shadcn', kind: 'mcp', name: 'mcp', url: 'https://ui.shadcn.com/docs/mcp', about: `the shadcn MCP server (${SHADCN_MCP.command} ${SHADCN_MCP.args.join(' ')}): registries, items, examples, add commands, an audit checklist`, maps: 'folded into the QPU: the same seven tools reached through qpu, so no second server is declared in .mcp.json' },
+  { provider: 'shadcn', kind: 'rest', name: 'create', url: SHADCN_MCP.create, about: 'the shadcn create page: a preset of components, styled from a URL', maps: 'the shadcn program\'s shadcnCreatePreset: a preset addressed by UUID' },
+]
+/** The shadcn MCP's tools (https://ui.shadcn.com/docs/mcp) as operations of this program, each served by apis { shadcn } from the registry contract. */
+export const SHADCN_TOOLS = ['get_project_registries', 'list_items_in_registries', 'search_items_in_registries', 'view_items_in_registries', 'get_item_examples_from_registries', 'get_add_command_for_items', 'get_audit_checklist'] as const
+export const shadcnOperations = (index: { items?: readonly { name: string; type?: string }[] } = {}): Operation[] => {
+  const server = 'https://ui.shadcn.com'
+  const items = index.items?.length ? index.items.map((i) => i.name) : SHADCN_COMPONENTS
+  return [
+    ...SHADCN_TOOLS.map((tool) => ({ provider: 'shadcn' as const, method: 'TOOL', server, path: `/mcp/${tool}`, id: tool, tags: ['mcp', 'shadcn'] })),
+    ...items.map((name) => ({ provider: 'shadcn' as const, method: 'GET', server, path: `/r/${name}.json`, id: `registry:ui.${name}`, tags: ['registry:ui', 'shadcn'] })),
+  ]
+}
+/** The shadcn MCP's surface answered from the registry contract: the registries a project names, the items (listed, searched, viewed with their
+ *  URLs and UUID addresses), the add command for items. Nothing is fetched; the index given stands for the registry, else the saved component list. */
+export const shadcnSurface = (ask: { registries?: Record<string, string>; search?: string; items?: readonly string[]; index?: { items?: readonly { name: string; type?: string; description?: string }[] } } = {}) => {
+  const registries = { '@shadcn': 'https://ui.shadcn.com/r/{name}.json', ...(ask.registries ?? {}) }
+  const known = ask.index?.items?.length ? ask.index.items.map((i) => ({ name: i.name, type: i.type ?? 'registry:ui', description: i.description ?? '' })) : SHADCN_COMPONENTS.map((name) => ({ name, type: 'registry:ui', description: '' }))
+  const q = ask.search?.toLowerCase().trim()
+  const found = q ? known.filter((i) => i.name.includes(q) || i.description.toLowerCase().includes(q)) : known
+  const wanted = ask.items?.length ? known.filter((i) => ask.items!.includes(i.name)) : found
+  const missing = (ask.items ?? []).filter((n) => !known.some((i) => i.name === n))
+  const view = wanted.map((i) => { const address = uuid(`shadcn\n${i.name}`); return { ...i, url: registries['@shadcn']!.replace('{name}', i.name), address, sealed: seal(address).valid } })
+  const add = view.length ? `npx shadcn@latest add ${view.map((i) => i.name).join(' ')}` : null
+  return { phase: 'shadcn' as const, registries, tools: SHADCN_TOOLS, items: known.length, found: found.length, view, missing, add, holds: view.every((i) => i.sealed && i.address.length === 36) && missing.length === 0, theorem: 'textbook_uuid_is_36' as const }
+}
 const rowOf = (d: ApiDoor): ApiRow => { const address = uuid(`${d.provider}\n${d.kind} ${d.url}`); return { ...d, address, sealed: seal(address).valid } }
 /** Every door of the three providers, addressed and sorted by address: the stream the admin reads. */
 export const apisDoors = (origin = 'https://qpu.uuidna.com') => {
-  const rows = [...payloadDoors(origin), ...CLOUDFLARE_MCP, ...googleDoors()].map(rowOf).sort((a, b) => (a.address < b.address ? -1 : 1))
-  const byProvider = { payload: rows.filter((r) => r.provider === 'payload').length, cloudflare: rows.filter((r) => r.provider === 'cloudflare').length, google: rows.filter((r) => r.provider === 'google').length }
+  const rows = [...payloadDoors(origin), ...CLOUDFLARE_MCP, ...googleDoors(), ...SHADCN_DOORS].map(rowOf).sort((a, b) => (a.address < b.address ? -1 : 1))
+  const byProvider = { payload: rows.filter((r) => r.provider === 'payload').length, cloudflare: rows.filter((r) => r.provider === 'cloudflare').length, google: rows.filter((r) => r.provider === 'google').length, shadcn: rows.filter((r) => r.provider === 'shadcn').length }
   return { phase: 'doors' as const, rows, byProvider, total: rows.length, holds: rows.every((r) => r.sealed && r.address.length === 36), theorem: 'textbook_uuid_is_36' as const }
 }
 
@@ -61,7 +92,7 @@ export const apisCost = (readings: Readings, pricing: readonly Meter[] = CLOUDFL
   return { phase: 'cost' as const, rows, microUsd, usd: microUsd / 1_000_000, covered: microUsd === 0, leads, theorem: 'textbook_bill_covered' as const }
 }
 
-export type Operation = { provider: 'payload' | 'cloudflare' | 'google'; method: string; server: string; path: string; id: string; tags: readonly string[] }
+export type Operation = { provider: 'payload' | 'cloudflare' | 'google' | 'shadcn'; method: string; server: string; path: string; id: string; tags: readonly string[] }
 export type OperationRow = Operation & { address: string; sealed: boolean }
 /** Payload's REST operations from its config: five verbs a collection, two a global. */
 export const payloadOperations = (config: { collections?: readonly { slug: string }[]; globals?: readonly { slug: string }[] }, server = 'https://qpu.uuidna.com'): Operation[] => [
@@ -85,7 +116,7 @@ export const googleOperations = (discovery: { name?: string; version?: string; r
 /** The merged index: every operation of the three providers one addressed row, counted by provider and by tag, sorted by address. */
 export const apisIndex = (ops: readonly Operation[]) => {
   const rows: OperationRow[] = ops.map((o) => { const address = uuid(`${o.provider}\n${o.method} ${o.server}${o.path}`); return { ...o, address, sealed: seal(address).valid } }).sort((a, b) => (a.address < b.address ? -1 : 1))
-  const byProvider = { payload: rows.filter((r) => r.provider === 'payload').length, cloudflare: rows.filter((r) => r.provider === 'cloudflare').length, google: rows.filter((r) => r.provider === 'google').length }
+  const byProvider = { payload: rows.filter((r) => r.provider === 'payload').length, cloudflare: rows.filter((r) => r.provider === 'cloudflare').length, google: rows.filter((r) => r.provider === 'google').length, shadcn: rows.filter((r) => r.provider === 'shadcn').length }
   const byTag: Record<string, number> = {}
   for (const r of rows) for (const t of r.tags) byTag[t] = (byTag[t] ?? 0) + 1
   const distinct = new Set(rows.map((r) => r.address)).size
