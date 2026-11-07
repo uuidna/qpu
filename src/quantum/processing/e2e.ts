@@ -4,13 +4,13 @@
 // — the syndrome names the hosts. Every error is a block with a UUID (host, tool, the arguments' address, the hashes), so
 // errors travel in UUID streams between hosts without their bodies. Pure: the client fetches; the tree computes and decodes.
 import { TABLES } from './tables-index.ts'
-import { uuidOf, canonicalTextOf } from './unit/blocks.ts'
+import { uuid, canonicalText } from '../uuid/index.ts'
 import { getEventData, rpcBody } from './discovery.ts'
 import { textbookLogicalError } from './qec.ts'
 import { handleOrCorrect } from './audit.ts'
 import { listTools, type Context } from './toolbox.ts'
 
-export type E2eRequest = { id: string; combo: string; tool: string; toolbox: string; from: 'example' | 'cell'; arguments: Record<string, unknown>; host: string; url: string; method: 'POST'; accept: string; headers: Record<string, string>; body: unknown; local: string; localError?: string }
+type E2eRequest = { id: string; combo: string; tool: string; toolbox: string; from: 'example' | 'cell'; arguments: Record<string, unknown>; host: string; url: string; method: 'POST'; accept: string; headers: Record<string, string>; body: unknown; local: string; localError?: string }
 export type E2eAnswer = E2eRequest & { status: number; ms: number; text: string; etag?: string | null; address?: string | null; version?: string | null }
 type Rpc = { result?: { structuredContent?: unknown; isError?: boolean; content?: { text: string }[] }; error?: { message: string } }
 type ErrorBlock = { uuid: string; kind: 'flip' | 'erasure' | 'refusal'; host: string; tool: string; combo: string; expected: string; got: string; syndrome: string[] }
@@ -63,27 +63,27 @@ const E2E_SKIP = new Set(['discover', 'wave', 'readiness', 'imagine', 'e2e', 'au
 /** A combination the Worker executes at the edge with the tenant's secret (a Stripe checkout plan) answers per tenant, not as a copy of a pure value: the gate does not decode it, and says so. */
 const executedAtEdge = (tool: string, args: Record<string, unknown>): boolean => (tool === 'stripe' && args.op === 'plan') || (tool === 'seal' && !!args.sign)
 /** The hash of a result with the clock masked: ISO 8601 instants and epoch-shaped integers (seconds or milliseconds since 2020) become one token, so copies computed at different moments agree and only what the arguments determine is compared. Read as it travels (JSON), by its canonical text: one value, one hash, whatever its keys' order. */
-export const hashOf = (v: unknown) => uuidOf(canonicalTextOf(JSON.parse(JSON.stringify(v) ?? 'null')).replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})/g, '<instant>').replace(/(?<![\d.])1[6-9]\d{8}(\d{3})?(?![\d.])/g, '<epoch>'))
+export const hash = (v: unknown) => uuid(canonicalText(JSON.parse(JSON.stringify(v) ?? 'null')).replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})/g, '<instant>').replace(/(?<![\d.])1[6-9]\d{8}(\d{3})?(?![\d.])/g, '<epoch>'))
 
 /** The combinations: every example and every dashboard cell, once per host, with the tree's own answer hashed. */
 export const createE2eRequests = (ctx: Context, hosts: readonly string[], only?: readonly string[]): E2eRequest[] => {
   const tools = listTools(ctx)
-  const boxOf = new Map(tools.map((t) => [t.name, t._meta?.toolbox ?? 'none']))
+  const box = new Map(tools.map((t) => [t.name, t._meta?.toolbox ?? 'none']))
   const combos = new Map<string, { tool: string; from: 'example' | 'cell'; arguments: Record<string, unknown> }>()
-  const add = (tool: string, args: Record<string, unknown>, from: 'example' | 'cell') => { if (E2E_SKIP.has(tool) || args.selftest || !boxOf.has(tool) || (only && !only.includes(tool)) || executedAtEdge(tool, args)) return; const combo = uuidOf(`${tool}${JSON.stringify(args)}`); if (!combos.has(combo)) combos.set(combo, { tool, from, arguments: args }) }
+  const add = (tool: string, args: Record<string, unknown>, from: 'example' | 'cell') => { if (E2E_SKIP.has(tool) || args.selftest || !box.has(tool) || (only && !only.includes(tool)) || executedAtEdge(tool, args)) return; const combo = uuid(`${tool}${JSON.stringify(args)}`); if (!combos.has(combo)) combos.set(combo, { tool, from, arguments: args }) }
   for (const e of ctx.examples) add(e.tool, e.arguments, 'example')
   for (const t of tools) if (!E2E_SKIP.has(t.name) && (!only || only.includes(t.name))) { const d = ctx.call('dashboard', { tool: t.name }) as { cellList: { arguments: Record<string, unknown> }[] } | undefined; for (const c of d?.cellList ?? []) add(t.name, c.arguments, 'cell') }
   const out: E2eRequest[] = []
   for (const [combo, c] of combos) {
-    const { local, localError } = treeOf(ctx)(c.tool, c.arguments)
-    for (const host of hosts) out.push({ id: `${combo}@${new URL(host).host}`, combo, tool: c.tool, toolbox: boxOf.get(c.tool)!, from: c.from, arguments: c.arguments, host: new URL(host).host, url: host, method: 'POST', accept: 'application/json, text/event-stream', headers: { 'if-none-match': `"${local}"` }, body: rpcBody('tools/call', { name: c.tool, arguments: c.arguments }), local, ...(localError ? { localError } : {}) })
+    const { local, localError } = tree(ctx)(c.tool, c.arguments)
+    for (const host of hosts) out.push({ id: `${combo}@${new URL(host).host}`, combo, tool: c.tool, toolbox: box.get(c.tool)!, from: c.from, arguments: c.arguments, host: new URL(host).host, url: host, method: 'POST', accept: 'application/json, text/event-stream', headers: { 'if-none-match': `"${local}"` }, body: rpcBody('tools/call', { name: c.tool, arguments: c.arguments }), local, ...(localError ? { localError } : {}) })
   }
   return out
 }
 /** The tree's own answer to a call, hashed: recomputed by the handler, never a caller's. */
-export const treeOf = (ctx: Context) => (tool: string, args: Record<string, unknown>): { local: string; localError?: string } => { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: tool, arguments: args } }) as { result?: { structuredContent: unknown }; error?: { message: string } }; return r.result ? { local: hashOf(r.result.structuredContent) } : { local: hashOf({ error: r.error?.message }), localError: r.error?.message } }
+export const tree = (ctx: Context) => (tool: string, args: Record<string, unknown>): { local: string; localError?: string } => { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: tool, arguments: args } }) as { result?: { structuredContent: unknown }; error?: { message: string } }; return r.result ? { local: hash(r.result.structuredContent) } : { local: hash({ error: r.error?.message }), localError: r.error?.message } }
 /** What a body's value is recomputed from (the structuredContent, a refusal's message): a client keeps it, releases the rest (870 bodies ran the heap out). */
-export const witnessOf = (text: string): string => { try { const j = JSON.parse(getEventData(text)) as Rpc; return JSON.stringify(j.error ? { error: { message: j.error.message } } : { result: j.result?.isError ? { isError: true, content: [{ text: j.result.content?.[0]?.text }] } : { structuredContent: j.result?.structuredContent } }) } catch { return text } }
+export const witness = (text: string): string => { try { const j = JSON.parse(getEventData(text)) as Rpc; return JSON.stringify(j.error ? { error: { message: j.error.message } } : { result: j.result?.isError ? { isError: true, content: [{ text: j.result.content?.[0]?.text }] } : { structuredContent: j.result?.structuredContent } }) } catch { return text } }
 
 /** One host's answer read into the hash of what it computed, or the error it answered, from its body or witness: never a value handed over. */
 export const decodeValue = (a: { status: number; text: string; local?: string; etag?: string | null; address?: string | null; combo?: string }): { value: string; kind?: 'erasure' | 'refusal'; involution?: true; materialised?: boolean } => {
@@ -94,14 +94,14 @@ export const decodeValue = (a: { status: number; text: string; local?: string; e
   if (a.status !== 200) return { value: `HTTP ${a.status}`, kind: 'erasure' }
   try {
     const j = JSON.parse(getEventData(a.text)) as Rpc
-    if (j.error) return { value: hashOf({ error: j.error.message }), kind: 'refusal' }
-    if (j.result?.isError) return { value: hashOf({ error: j.result.content?.[0]?.text }), kind: 'refusal' }
-    return { value: hashOf(j.result?.structuredContent) }
+    if (j.error) return { value: hash({ error: j.error.message }), kind: 'refusal' }
+    if (j.result?.isError) return { value: hash({ error: j.result.content?.[0]?.text }), kind: 'refusal' }
+    return { value: hash(j.result?.structuredContent) }
   } catch { return { value: 'not JSON', kind: 'erasure' } }
 }
 
 /** The answers decoded, combination by combination: majority over the tree's copy and the hosts' copies. */
-export const decodeE2e = (answers: readonly E2eAnswer[], tree?: ReturnType<typeof treeOf>) => {
+export const decodeE2e = (answers: readonly E2eAnswer[], tree?: ReturnType<typeof tree>) => {
   const groups = new Map<string, E2eAnswer[]>()
   for (const a of answers) (groups.get(a.combo) ?? groups.set(a.combo, []).get(a.combo)!).push(a)
   const decoded: Decoded[] = []
@@ -122,7 +122,7 @@ export const decodeE2e = (answers: readonly E2eAnswer[], tree?: ReturnType<typeo
     const flipped = [...(majority && logical !== local ? [{ host: 'tree', value: local }] : []), ...copies.filter((c) => !c.kind && c.value !== logical)]
     const erased = copies.filter((c) => c.kind)
     const syndrome = [...flipped, ...erased].map((c) => c.host)
-    const errors: ErrorBlock[] = [...flipped.map((c) => ({ kind: 'flip' as const, host: c.host, got: c.value })), ...erased.map((c) => ({ kind: c.kind!, host: c.host, got: c.value }))].map((e) => ({ uuid: uuidOf(`e2e${e.kind}${e.host}${combo}${local}${e.got}`), ...e, tool: first.tool, combo, expected: logical, syndrome }))
+    const errors: ErrorBlock[] = [...flipped.map((c) => ({ kind: 'flip' as const, host: c.host, got: c.value })), ...erased.map((c) => ({ kind: c.kind!, host: c.host, got: c.value }))].map((e) => ({ uuid: uuid(`e2e${e.kind}${e.host}${combo}${local}${e.got}`), ...e, tool: first.tool, combo, expected: logical, syndrome }))
     const outcome: Decoded['outcome'] = !majority ? 'uncorrectable' : flipped.length ? 'corrected' : erased.length ? 'erased' : 'agree'
     // a combination with errors starts in correction with the real majority; without one, handling takes over: the involution σ, at most two swaps
     const fallback = errors.length ? handleOrCorrect(errors.map((e) => `${e.kind} at ${e.host}: ${e.got}`), majority, 'correction') : null

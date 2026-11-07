@@ -14,9 +14,15 @@ export const mayChoose = (role: Role, tool: string, prop: string, value: unknown
 
 /** A role a request claims in a header counts only when signed: HMAC-SHA-256 under the deployment's secret (QPU_ROLE_SECRET) over
  *  role|tenant|METHOD. A header alone is no claim — anyone can send one — and without the secret configured no claim is honoured. */
-export const roleClaimMessageOf = (role: string, tenant: string, method: string) => `${role}|${tenant}|${method.toUpperCase()}`
-export const roleMacOf = (secret: string, role: string, tenant: string, method: string) => hex(hmacSha256(utf8(secret), utf8(roleClaimMessageOf(role, tenant, method))))
-export const signedRoleOf = (h: { role?: string | null; tenant?: string | null; mac?: string | null; method: string }, secret?: string | null): Role | null => {
-  if (!secret || !h.role || !h.mac || !(h.role in ROLE_RANK)) return null
-  return sameHex(roleMacOf(secret, h.role, h.tenant ?? '', h.method), h.mac.toLowerCase()) ? (h.role as Role) : null
+const FORGEABLE_ROLE_SECRET = 'qpu-default-role-secret-432'
+const liveRoleSecret = (secret?: string | null) => {
+  const s = secret === undefined ? process.env.QPU_ROLE_SECRET : secret
+  return typeof s === 'string' && s.length > 0 && s !== FORGEABLE_ROLE_SECRET ? s : null
+}
+const roleClaimMessage = (role: string, tenant: string, method: string) => `${role}|${tenant}|${method.toUpperCase()}`
+export const roleMac = (secret: string, role: string, tenant: string, method: string) => hex(hmacSha256(utf8(secret), utf8(roleClaimMessage(role, tenant, method))))
+export const signedRole = (h: { role?: string | null; tenant?: string | null; mac?: string | null; method: string }, secret?: string | null): Role | null => {
+  const live = liveRoleSecret(secret)
+  if (!live || !h.role || !h.mac || !(h.role in ROLE_RANK)) return null
+  return sameHex(roleMac(live, h.role, h.tenant ?? '', h.method), h.mac.toLowerCase()) ? (h.role as Role) : null
 }

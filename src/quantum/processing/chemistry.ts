@@ -262,6 +262,86 @@ export const vqeSweep = (terms: readonly PauliTerm[], steps = 180, tolerance = 1
   return { grid, best: { theta, energy: at(theta) }, evaluations }
 }
 
+/** One ladder operator in a fermionic term: mode j, creation when dagger is set. */
+export type Ladder = { mode: number; dagger: boolean }
+
+/** One Pauli string from the Jordan–Wigner map. `coefficient` and `imaginary` are the real and imaginary parts. */
+type QubitOperatorTerm = { coefficient: number; imaginary: number; paulis: Record<string, 'X' | 'Y' | 'Z'>; label: string }
+
+type PauliName = 'X' | 'Y' | 'Z'
+type PauliString = { re: number; im: number; ops: Map<number, PauliName> }
+
+const pauliMul = (left: PauliName | 'I', right: PauliName): { re: number; im: number; op: PauliName | 'I' } => {
+  if (left === 'I') return { re: 1, im: 0, op: right }
+  if (left === right) return { re: 1, im: 0, op: 'I' }
+  const phase = left + right
+  if (phase === 'XY') return { re: 0, im: 1, op: 'Z' }
+  if (phase === 'YZ') return { re: 0, im: 1, op: 'X' }
+  if (phase === 'ZX') return { re: 0, im: 1, op: 'Y' }
+  if (phase === 'YX') return { re: 0, im: -1, op: 'Z' }
+  if (phase === 'ZY') return { re: 0, im: -1, op: 'X' }
+  return { re: 0, im: -1, op: 'Y' }
+}
+
+const mulStrings = (left: PauliString, right: PauliString): PauliString => {
+  const ops = new Map(left.ops)
+  let re = left.re * right.re - left.im * right.im
+  let im = left.re * right.im + left.im * right.re
+  for (const mode of [...right.ops.keys()].sort((a, b) => a - b)) {
+    const next = right.ops.get(mode)!
+    const product = pauliMul(ops.get(mode) ?? 'I', next)
+    const nr = re * product.re - im * product.im
+    im = re * product.im + im * product.re
+    re = nr
+    if (product.op === 'I') ops.delete(mode)
+    else ops.set(mode, product.op)
+  }
+  return { re, im, ops }
+}
+
+/** One ladder, a_j or a†_j, as the two Pauli strings (X ± iY)/2 with a Z on every lower mode. */
+const ladderStrings = (ladder: Ladder): PauliString[] => {
+  if (!Number.isInteger(ladder.mode) || ladder.mode < 0) throw new Error('a Jordan–Wigner mode is an integer of at least 0')
+  const z = new Map<number, PauliName>()
+  for (let i = 0; i < ladder.mode; i++) z.set(i, 'Z')
+  const x = new Map(z)
+  x.set(ladder.mode, 'X')
+  const y = new Map(z)
+  y.set(ladder.mode, 'Y')
+  return [{ re: 0.5, im: 0, ops: x }, { re: 0, im: ladder.dagger ? -0.5 : 0.5, ops: y }]
+}
+
+const stringLabel = (ops: Map<number, PauliName>): string => {
+  const modes = [...ops.keys()].sort((a, b) => a - b)
+  return modes.length === 0 ? 'I' : modes.map((mode) => `${ops.get(mode)}${mode}`).join('')
+}
+
+/** OpenFermion's Jordan–Wigner transform of one fermionic term. The operators multiply left to right, a†_j a_k as written. A term with no operators is that coefficient times the identity. */
+export const jordanWigner = (term: { coefficient: number; operators: readonly Ladder[] }): QubitOperatorTerm[] => {
+  if (!Number.isFinite(term.coefficient)) throw new Error('a Jordan–Wigner coefficient is finite')
+  let rows: PauliString[] = [{ re: term.coefficient, im: 0, ops: new Map() }]
+  for (const ladder of term.operators) {
+    if (typeof ladder.dagger !== 'boolean') throw new Error('a Jordan–Wigner ladder names dagger')
+    const pieces = ladderStrings(ladder)
+    rows = rows.flatMap((left) => pieces.map((right) => mulStrings(left, right)))
+  }
+  const merged = new Map<string, PauliString>()
+  for (const row of rows) {
+    const label = stringLabel(row.ops)
+    const prior = merged.get(label)
+    if (!prior) merged.set(label, { re: row.re, im: row.im, ops: row.ops })
+    else { prior.re += row.re; prior.im += row.im }
+  }
+  return [...merged.values()]
+    .filter((row) => Math.hypot(row.re, row.im) > 1e-12)
+    .map((row) => {
+      const paulis: Record<string, PauliName> = {}
+      for (const [mode, pauli] of row.ops) paulis[`line:${mode}`] = pauli
+      return { coefficient: row.re, imaginary: row.im, paulis, label: stringLabel(row.ops) }
+    })
+    .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0))
+}
+
 /** The computed figures against the tutorial's printed ones, at the bond lengths it prints: each a stated value, the value the
  *  integrals here give, and their difference. */
 export const tutorialChecks = (): { bondLength: number; figure: string; stated: number; computed: number; difference: number }[] =>

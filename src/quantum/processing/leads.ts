@@ -4,12 +4,46 @@
 import { TABLES } from './tables-index.ts'
 import * as cirq from './cirq.ts'
 import { recomputeClay } from './clay-register.ts'
-import { uuidOf } from './unit/blocks.ts'
+import { uuid } from '../uuid/index.ts'
 import { LEAD_ROWS } from './leads-index.ts'
+import { quantumStandardLeads } from './quantum-vocabulary.ts'
 
 export type LeadStatus = 'served' | 'partial' | 'blocked' | 'out_of_scope' | 'open'
 
 export type Lead = { id: string; source: string; statement: string; status: LeadStatus; tool?: string; reason?: string; lastmod?: string; /** the door that serves it, run as the Payload job qpu-lead-run */ run?: { tool: string; arguments?: Record<string, unknown> } }
+
+/** The src directories. Each one is an inode. A lead is developed in the inode of the module that serves it. */
+const SRC_INODES = [
+  'src',
+  'src/app',
+  'src/collections',
+  'src/components',
+  'src/globals',
+  'src/plugins',
+  'src/quantum',
+  'src/quantum/password',
+  'src/quantum/payload',
+  'src/quantum/processing',
+  'src/quantum/processing/crypto',
+  'src/quantum/processing/toolboxes',
+  'src/quantum/processing/unit',
+  'src/quantum/uuid',
+] as const
+
+const TOOLBOX_TOOLS = new Set(['payload', 'configure', 'stripe', 'currency', 'translate', 'prose', 'fold', 'seal', 'attest', 'repository', 'legal', 'compete', 'patents', 'discover', 'e2e', 'shard', 'wave', 'readiness', 'imagine', 'jsonld', 'codes', 'validate', 'mongo', 'extend'])
+
+/** The inode a lead is developed in: the toolbox directory when the tool lives there, otherwise the processing directory. */
+const leadInode = (tool?: string): (typeof SRC_INODES)[number] => tool && TOOLBOX_TOOLS.has(tool) ? 'src/quantum/processing/toolboxes' : 'src/quantum/processing'
+
+/** Every src inode is one superposition: 2 to the number of leads developed there. An empty inode is 2^0 = 1. */
+export const inodeSuperpositions = (leads: readonly { tool?: string }[]) => {
+  const counts = new Map<string, number>(SRC_INODES.map((inode) => [inode, 0]))
+  for (const lead of leads) counts.set(leadInode(lead.tool), (counts.get(leadInode(lead.tool)) ?? 0) + 1)
+  return SRC_INODES.map((inode) => {
+    const bits = counts.get(inode) ?? 0
+    return { inode, parent: inode.includes('/') ? inode.slice(0, inode.lastIndexOf('/')) : null, bits, superposition: (1n << BigInt(bits)).toString(), address: uuid(inode) }
+  })
+}
 /** The leads that run themselves: open, partial or blocked, and naming the door that serves them; each run by next as a Payload job. */
 export const listRunnableLeads = (leads: readonly Lead[]) => leads.filter((l) => l.run?.tool && l.status !== 'served' && l.status !== 'out_of_scope').map((l) => ({ lead: l.id, tool: l.run!.tool, arguments: l.run!.arguments ?? {} }))
 
@@ -24,8 +58,25 @@ export const listCleanupSubjects = (l: Lead): { kind: 'branches' | 'paths'; name
 
 /** The Cirq API symbols the sitemap documents that cirq.ts implements, each with its export; an entry without one is never used. */
 const CIRQ_SYMBOLS = TABLES.CIRQ_SYMBOLS as unknown as readonly [symbol: string, exported: string, note: string][]
-
-const CIRQ_IMPLEMENTED = new Map(CIRQ_SYMBOLS.filter(([, exported]) => exported in cirq).map(([symbol, exported, note]) => [symbol, { exported, note }]))
+const CIRQ_EXPORT_ALIASES: Readonly<Record<string, keyof typeof cirq>> = {
+  key: 'qubitKey',
+  power: 'raiseGate',
+  adjoint: 'adjointGate',
+  expectation: 'getExpectation',
+  Result: 'Simulator',
+}
+const EXTRA_CIRQ_SYMBOLS: readonly [symbol: string, exported: keyof typeof cirq, note: string][] = [
+  ['QuantumVirtualMachine', 'QuantumVirtualMachine', 'simulated hardware validating device constraints and applying chip noise'],
+  ['exponentiateGate', 'exponentiateGate', 'exp(−iθG) for every gate'],
+  ['seededRandom', 'seededRandom', 'deterministic mulberry32 PRNG for reproducible sampling'],
+  ['PhasedXZGate', 'phasedXZGate', 'Z^{−a} X^x Z^{a+z}: every one-qubit unitary'],
+]
+const CIRQ_IMPLEMENTED = new Map(
+  [...CIRQ_SYMBOLS, ...EXTRA_CIRQ_SYMBOLS]
+    .map(([symbol, exported, note]) => [symbol, (exported in cirq ? exported : CIRQ_EXPORT_ALIASES[exported]) ?? '', note] as const)
+    .filter(([, exported]) => exported in cirq)
+    .map(([symbol, exported, note]) => [symbol, { exported, note }]),
+)
 
 /** The paths a hand-written lead names on quantumai.google, so the sitemap's leads do not repeat them. */
 const coveredPaths = (): Set<string> => {
@@ -61,6 +112,7 @@ const sitemapLead = (path: string, lastmod: string): Lead => {
       return open(`API reference of cirq_google.${symbol.replace(/\//g, '.')}, not implemented here`)
     }
     if (pkg === 'openfermion') {
+      if (symbol === 'transforms/jordan_wigner') return { ...base, statement: 'API reference of openfermion.transforms.jordan_wigner; one fermionic term of ladder operators becomes Pauli strings', status: 'served', tool: 'chemistry-simulation' }
       if (symbol === 'chem/MolecularData' || symbol === 'ops/QubitOperator') return { ...base, statement: `API reference of openfermion.${symbol.replace(/\//g, '.')}; for H₂ in STO-3G its content (the integrals, the Pauli-term Hamiltonian) is computed here`, status: 'partial', tool: 'chemistry-simulation', reason: 'one molecule in its minimal basis is computed here; the general class is not implemented' }
       return open(`API reference of openfermion.${symbol.replace(/\//g, '.')}, not implemented here`)
     }
@@ -80,12 +132,13 @@ export const sitemapLeads = (urls: readonly { loc: string; lastmod?: string }[])
 
 /** Every relation of the Clay register as a lead served by the clay tool, its integers facts for the wave. */
 const CLAY_LEADS: readonly Lead[] = recomputeClay().relations.map((r) => ({ id: `clay-${r.name}`, source: `src/quantum/processing/unit/lean/Qpu/Clay.lean ${r.name}`, statement: `${r.name}: ${r.statement} = ${r.sides[0]!.value} (${r.bits} bits, seed ${1 + ((r.sides[0]!.value - 1) % 9)})`, status: 'served', tool: 'clay' }))
+const STANDARD_LEADS: readonly Lead[] = quantumStandardLeads().map(({ id, source, statement, status, tool, reason, run }) => ({ id, source, statement, status, tool, ...(reason ? { reason } : {}), ...(run ? { run } : {}) }))
 
 // every lead Payload holds, the ones this module computes taking their place: Payload is the source, the generated index its copy
-const COMPUTED = new Set(CLAY_LEADS.map((l) => l.id))
+const COMPUTED = new Set([...CLAY_LEADS, ...STANDARD_LEADS].map((l) => l.id))
 // a lead is its id: of the docket's entries for one lead (one per run), the tree carries the first
 const byId = (ls: readonly Lead[]): Lead[] => { const seen = new Set<string>(); return ls.filter((l) => (seen.has(l.id) ? false : (seen.add(l.id), true))) }
-export const LEADS: readonly Lead[] = byId([...LEAD_ROWS.filter((l) => !COMPUTED.has(l.id)), ...CLAY_LEADS])
+export const LEADS: readonly Lead[] = byId([...LEAD_ROWS.filter((l) => !COMPUTED.has(l.id)), ...CLAY_LEADS, ...STANDARD_LEADS])
 
 /** The leads by status: the counts the leads tool reports. */
 export const leadCounts = (leads: readonly Lead[] = LEADS): Record<LeadStatus, number> => {
@@ -116,7 +169,7 @@ const digitsOfLead = (l: CellLead): number[] => {
   const blocked = l.status === 'blocked' || (!closed && BLOCKER.test(l.statement))
   const cleanable = !blocked && (gravity || closed)
   const priority = l.priority ?? (HIGH.test(l.statement) ? 'high' : closed ? 'low' : 'mid')
-  const root = Number(BigInt(`0x${uuidOf(l.id).replace(/-/g, '')}`) % 9n)
+  const root = Number(BigInt(`0x${uuid(l.id).replace(/-/g, '')}`) % 9n)
   return [closed ? 1 : 0, l.payload || /^site\/|payload/i.test(source) ? 1 : 0, ONLINE.test(source) && !/^(src|scripts|docs|site)\//.test(source) ? 1 : 0, gravity ? 1 : 0, blocked ? 2 : cleanable ? 0 : 1, ['high', 'mid', 'low'].indexOf(priority), root === 0 ? 2 : root % 3 === 0 ? 1 : 0]
 }
 const cellOfLead = (l: CellLead) => digitsOfLead(l).reduce((n, d, k) => n + d * PLACES[k]!, 0)
@@ -165,7 +218,7 @@ export type SessionInput = {
   files?: string[]; now?: string
   /** the bytes the quality wave frees (measured from the entropy docket) and the net bytes one predicted file of a lead adds (measured from the history) */
   quality?: { freed: number; cost: number }
-  /** the forecast of one commit of one predicted file, in ms, with its 95 % interval (forecastOf over the commit runs) */
+  /** the forecast of one commit of one predicted file, in ms, with its 95 % interval (forecast over the commit runs) */
   forecast?: { ms: number; interval?: readonly [number, number] | null }
 }
 /** The waves as a Routes API route: each wave a leg lasting its longest item, the route their sum; staticDuration the items one after another,
@@ -204,10 +257,10 @@ export const runSession = (input: SessionInput, route: (statement: string) => { 
   const once = proposals.filter((p) => !evident.includes(p)).reduce((n, p) => n + p.folded.length, 0)
   const fileStems = (input.files ?? []).map((f) => ({ f, s: new Set(f.split('/').pop()!.replace(/([a-z])([A-Z])/g, (_, a: string, b: string) => `${a} ${b}`).toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 4 && !/^(test|lean|index|config)$/.test(w)).map((w) => w.replace(/(?:ings|ing|es|s)$/, (m) => (w.length - m.length >= 4 ? '' : m)))) }))
   const fdf = new Map<string, number>(); for (const { s } of fileStems) for (const w of s) fdf.set(w, (fdf.get(w) ?? 0) + 1)
-  const filesOf = (stems: Set<string>): string[] => { const scored = fileStems.map(({ f, s }) => ({ f, v: [...s].filter((w) => stems.has(w)).reduce((n, w) => n + Math.log((1 + fileStems.length) / (fdf.get(w) ?? 1)), 0) })); const top = Math.max(0, ...scored.map((x) => x.v)); return top > 0 ? scored.filter((x) => x.v === top).map((x) => x.f) : [] }
+  const files = (stems: Set<string>): string[] => { const scored = fileStems.map(({ f, s }) => ({ f, v: [...s].filter((w) => stems.has(w)).reduce((n, w) => n + Math.log((1 + fileStems.length) / (fdf.get(w) ?? 1)), 0) })); const top = Math.max(0, ...scored.map((x) => x.v)); return top > 0 ? scored.filter((x) => x.v === top).map((x) => x.f) : [] }
   const all = [
     ...items.filter((i) => !CLOSED.test(i.status ?? 'draft')).map((i) => ({ id: i.id, title: i.title, statement: i.statement ?? '', created: i.createdAt ?? null, started: !!i.started, stems: i.stems, folded: i.folded, proposed: false })),
-    ...evident.map((p) => ({ id: `proposed-${uuidOf(p.title)}`, title: p.title, statement: '', created: p.folded.map((d) => d.at).sort()[0] ?? null, started: false, stems: p.stems, folded: p.folded, proposed: true })),
+    ...evident.map((p) => ({ id: `proposed-${uuid(p.title)}`, title: p.title, statement: '', created: p.folded.map((d) => d.at).sort()[0] ?? null, started: false, stems: p.stems, folded: p.folded, proposed: true })),
   ].map((i) => {
     const emphatic = HIGH.test(`${i.title} ${i.statement}`) || i.folded.some((d) => HIGH.test(d.text))
     const ageDays = i.created ? Math.max(0, (now - Date.parse(i.created)) / 86_400_000) : 0
@@ -217,7 +270,7 @@ export const runSession = (input: SessionInput, route: (statement: string) => { 
     const cell = cellOfLead({ id: i.id, statement: `${i.title} ${i.statement}`, status: 'open', source: 'payload open work', payload: true, priority })
     return {
       id: i.id, title: i.title, kind: QUALITY.test(`${i.title} ${i.statement}`) ? 'quality' as const : 'lead' as const, proposed: i.proposed, act: !i.proposed || (!/\?\s*$/.test(i.title) && !NOT_AN_ACT.test(i.title.trim()) && leadStems(i.title).size >= 3), started: i.started, priority, rank: (emphatic ? 3 : 0) + i.folded.length + ageDays / 7, directives: i.folded.length, sessions: new Set(i.folded.map((d) => d.session)).size,
-      how: r.call ?? null, by: r.by ?? null, files: filesOf(i.stems), cell, labels: labelsOfCell(cell),
+      how: r.call ?? null, by: r.by ?? null, files: files(i.stems), cell, labels: labelsOfCell(cell),
       blocker: blocked ? { id: `probe-${i.id}`, probe: r.call ?? { name: 'readiness', arguments: {} }, closes: 'when its probe answers without the blocker; never a wait' } : null,
       acceptance: STANDING,
       evident: [['tests', 'audit'], ['docs page', 'textbook'], ['textbook theorem and example', 'textbook'], ['measure', 'metrics']].map(([what, tool]) => ({ title: `${i.title}: ${what}`, tool })),

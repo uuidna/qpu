@@ -1,0 +1,135 @@
+// The three admin APIs as one UUID program: Payload's own (REST, GraphQL, its MCP plugin), Cloudflare's (the API MCP server, its domain
+// servers, the OpenAPI contract) and Google's (the Discovery documents, the googleapis.com MCP servers). Every door and every operation is
+// one row addressed by its UUID (uuid(provider\nmethod server/path)), sealed, so the admin, the endpoint and the stream read one index.
+// The Cloudflare meters are priced from Cloudflare's published tables; the cost is the fold Σ max(0, used − included) × rate, zero inside the
+// allowances (textbook_bill_covered). Nothing is fetched here: the readings come in, the contracts come in, the rows come out.
+import { seal, uuid } from '../../index.ts'
+import { TABLES } from '../../../processing/tables-index.ts'
+
+export type ApiDoor = { provider: 'payload' | 'cloudflare' | 'google'; kind: 'mcp' | 'rest' | 'graphql' | 'openapi' | 'discovery'; name: string; url: string; about: string; maps: string }
+export type ApiRow = ApiDoor & { address: string; sealed: boolean }
+
+/** Cloudflare's MCP servers, as https://github.com/cloudflare/mcp-server-cloudflare lists them (read 2026-11-08): the API server first (recommended), then the domain servers; each mapped to what it is for the Payload plugin. */
+export const CLOUDFLARE_MCP: readonly ApiDoor[] = [
+  { provider: 'cloudflare', kind: 'mcp', name: 'api', url: 'https://mcp.cloudflare.com/mcp', about: 'the Cloudflare API MCP server: broad access across the APIs through code execution', maps: 'the qpu-cloudflare-call job: every call planned against the held OpenAPI operations, the token the tenant bindings name' },
+  { provider: 'cloudflare', kind: 'mcp', name: 'observability', url: 'https://observability.mcp.cloudflare.com/mcp', about: 'Workers logs and analytics', maps: 'the qpu-cloudflare-observe job: requests, CPU time, D1 rows, R2 operations, log events read into the qpu global' },
+  { provider: 'cloudflare', kind: 'mcp', name: 'graphql', url: 'https://graphql.mcp.cloudflare.com/mcp', about: 'analytics through the GraphQL Analytics API', maps: 'the observe job\'s datasets: workersInvocationsAdaptive, d1AnalyticsAdaptiveGroups, r2OperationsAdaptiveGroups' },
+  { provider: 'cloudflare', kind: 'mcp', name: 'bindings', url: 'https://bindings.mcp.cloudflare.com/mcp', about: 'Workers bindings: storage, AI, compute', maps: 'the adapters profile cloudflare: D1, R2, KV, Durable Objects as the app\'s wrangler bindings' },
+  { provider: 'cloudflare', kind: 'mcp', name: 'builds', url: 'https://builds.mcp.cloudflare.com/mcp', about: 'Workers Builds insight and management', maps: 'the machine\'s dispatch of deploy.yml: a build read back as its receipt' },
+  { provider: 'cloudflare', kind: 'mcp', name: 'logpush', url: 'https://logs.mcp.cloudflare.com/mcp', about: 'Logpush job health', maps: 'a paid route the observe job names only when logs exceed the included events' },
+  { provider: 'cloudflare', kind: 'mcp', name: 'auditlogs', url: 'https://auditlogs.mcp.cloudflare.com/mcp', about: 'audit logs and reports', maps: 'the docket: every account change an entry beside the app\'s own calls' },
+  { provider: 'cloudflare', kind: 'mcp', name: 'docs', url: 'https://docs.mcp.cloudflare.com/mcp', about: 'up-to-date Cloudflare reference', maps: 'the leads: a remedy cites its page' },
+  { provider: 'cloudflare', kind: 'mcp', name: 'radar', url: 'https://radar.mcp.cloudflare.com/mcp', about: 'Cloudflare Radar internet insights', maps: 'the match tool\'s news and search sources' },
+  { provider: 'cloudflare', kind: 'mcp', name: 'ai-gateway', url: 'https://ai-gateway.mcp.cloudflare.com/mcp', about: 'AI Gateway logs, prompts and responses', maps: 'free AI by hooks: Gemini first, every route logged through the gateway' },
+  { provider: 'cloudflare', kind: 'openapi', name: 'openapi', url: 'https://raw.githubusercontent.com/cloudflare/api-schemas/main/openapi.json', about: 'the Cloudflare API contract (OpenAPI 3, 27.8 MB on 2026-11-08)', maps: 'entries of kind openapi-operation held in Payload: the call job allows a path only when an operation names it' },
+  { provider: 'cloudflare', kind: 'graphql', name: 'analytics', url: 'https://api.cloudflare.com/client/v4/graphql', about: 'the GraphQL Analytics API endpoint', maps: 'the observe job posts its one query here with the Account Analytics Read token' },
+]
+/** Payload's own doors of the app: its REST, GraphQL and MCP under the app's origin. */
+export const payloadDoors = (origin: string): readonly ApiDoor[] => [
+  { provider: 'payload', kind: 'rest', name: 'rest', url: `${origin}/api`, about: 'Payload\'s REST API: every collection and global', maps: 'the merged index: one operation row per collection verb and per global' },
+  { provider: 'payload', kind: 'graphql', name: 'graphql', url: `${origin}/api/graphql`, about: 'Payload\'s GraphQL API', maps: 'the same collections and globals as one schema' },
+  { provider: 'payload', kind: 'mcp', name: 'mcp', url: `${origin}/api/mcp`, about: 'the Payload MCP plugin serving the QPU\'s tools', maps: 'the door every other door is reached through' },
+]
+/** Google's MCP servers from the table Payload holds, as doors of this program. */
+export const googleDoors = (): readonly ApiDoor[] => (TABLES.GOOGLE_MCP as readonly { host: string; url: string; about: string; maps: string }[]).map((g) => ({ provider: 'google', kind: 'mcp', name: g.host.replace(/\.googleapis\.com$/, ''), url: g.url, about: g.about, maps: g.maps }))
+
+const rowOf = (d: ApiDoor): ApiRow => { const address = uuid(`${d.provider}\n${d.kind} ${d.url}`); return { ...d, address, sealed: seal(address).valid } }
+/** Every door of the three providers, addressed and sorted by address: the stream the admin reads. */
+export const apisDoors = (origin = 'https://qpu.uuidna.com') => {
+  const rows = [...payloadDoors(origin), ...CLOUDFLARE_MCP, ...googleDoors()].map(rowOf).sort((a, b) => (a.address < b.address ? -1 : 1))
+  const byProvider = { payload: rows.filter((r) => r.provider === 'payload').length, cloudflare: rows.filter((r) => r.provider === 'cloudflare').length, google: rows.filter((r) => r.provider === 'google').length }
+  return { phase: 'doors' as const, rows, byProvider, total: rows.length, holds: rows.every((r) => r.sealed && r.address.length === 36), theorem: 'textbook_uuid_is_36' as const }
+}
+
+/** Cloudflare's meters on the Workers Paid plan, from its pricing pages (read 2026-11-08): the included allowance a month, the rate past it in micro-dollars per unit, the remedy that lowers the meter. Workers Logs moves to Observability pricing on 2026-12-01 (50 GB ingested and 10 GB-month included). */
+export type Meter = { meter: string; unit: string; included: number; perMillionUsd: number; source: string; remedy: string }
+export const CLOUDFLARE_PRICING: readonly Meter[] = [
+  { meter: 'workers.requests', unit: 'requests', included: 10_000_000, perMillionUsd: 0.30, source: 'https://developers.cloudflare.com/workers/platform/pricing/', remedy: 'cache-control on the public reads (the feeds, the discovery document, the registry); static assets served by the ASSETS binding, never by the Worker' },
+  { meter: 'workers.cpuMs', unit: 'CPU milliseconds', included: 30_000_000, perMillionUsd: 0.02, source: 'https://developers.cloudflare.com/workers/platform/pricing/', remedy: 'answer from the content address before recomputing; keep the heavy recompute in jobs on AC (battery: zero compute)' },
+  { meter: 'd1.rowsRead', unit: 'rows read', included: 25_000_000_000, perMillionUsd: 0.001, source: 'https://developers.cloudflare.com/d1/platform/pricing/', remedy: 'an index on every column a where filters on; wrangler d1 insights names the queries that scan' },
+  { meter: 'd1.rowsWritten', unit: 'rows written', included: 50_000_000, perMillionUsd: 1.00, source: 'https://developers.cloudflare.com/d1/platform/pricing/', remedy: 'no row per page view (events are log lines); one entry per call, never per retry' },
+  { meter: 'r2.classA', unit: 'class A operations', included: 1_000_000, perMillionUsd: 4.50, source: 'https://developers.cloudflare.com/r2/pricing/', remedy: 'write media once by content address; list with prefixes, never whole buckets' },
+  { meter: 'r2.classB', unit: 'class B operations', included: 10_000_000, perMillionUsd: 0.36, source: 'https://developers.cloudflare.com/r2/pricing/', remedy: 'cache media at the edge (cache-control, immutable by address)' },
+  { meter: 'logs.events', unit: 'log events', included: 20_000_000, perMillionUsd: 0.60, source: 'https://developers.cloudflare.com/workers/observability/logs/workers-logs/#pricing', remedy: 'observability.logs.head_sampling_rate below 1 in wrangler.jsonc; one structured line per event, no per-request chatter' },
+]
+export type Readings = Partial<Record<string, number>>
+/** The bill of the readings against the meters, in integer micro-dollars: zero inside every allowance, Σ max(0, used − included) × rate past them. */
+export const apisCost = (readings: Readings, pricing: readonly Meter[] = CLOUDFLARE_PRICING) => {
+  const rows = pricing.map((m) => { const used = Math.max(0, Math.floor(readings[m.meter] ?? 0)); const over = Math.max(0, used - m.included); const microUsd = Math.ceil((over * m.perMillionUsd * 1_000_000) / 1_000_000); const share = m.included ? Math.floor((used * 100) / m.included) : 0; return { ...m, used, over, share, microUsd, lead: share >= 80 } })
+  const microUsd = rows.reduce((n, r) => n + r.microUsd, 0)
+  const leads = rows.filter((r) => r.lead).map((r) => ({ id: `cloudflare-${r.meter.replace('.', '-')}-${r.share}`, statement: `${r.meter} at ${r.share}% of the included ${r.included.toLocaleString('en')} ${r.unit} this month (${r.used.toLocaleString('en')}): ${r.remedy}`, status: 'open' as const, tool: 'apis' as const, source: r.source }))
+  return { phase: 'cost' as const, rows, microUsd, usd: microUsd / 1_000_000, covered: microUsd === 0, leads, theorem: 'textbook_bill_covered' as const }
+}
+
+export type Operation = { provider: 'payload' | 'cloudflare' | 'google'; method: string; server: string; path: string; id: string; tags: readonly string[] }
+export type OperationRow = Operation & { address: string; sealed: boolean }
+/** Payload's REST operations from its config: five verbs a collection, two a global. */
+export const payloadOperations = (config: { collections?: readonly { slug: string }[]; globals?: readonly { slug: string }[] }, server = 'https://qpu.uuidna.com'): Operation[] => [
+  ...(config.collections ?? []).flatMap((c) => [['GET', `/api/${c.slug}`, 'find'], ['POST', `/api/${c.slug}`, 'create'], ['GET', `/api/${c.slug}/{id}`, 'findByID'], ['PATCH', `/api/${c.slug}/{id}`, 'update'], ['DELETE', `/api/${c.slug}/{id}`, 'delete']].map(([method, path, verb]) => ({ provider: 'payload' as const, method: method!, server, path: path!, id: `${c.slug}.${verb}`, tags: ['collections', c.slug] }))),
+  ...(config.globals ?? []).flatMap((g) => [['GET', 'findGlobal'], ['POST', 'updateGlobal']].map(([method, verb]) => ({ provider: 'payload' as const, method: method!, server, path: `/api/globals/${g.slug}`, id: `${g.slug}.${verb}`, tags: ['globals', g.slug] }))),
+]
+/** Cloudflare's operations from its OpenAPI paths (the whole document or the held entries), each with its operationId and tags. */
+export const cloudflareOperations = (openapi: { servers?: readonly { url: string }[]; paths?: Record<string, Record<string, { operationId?: string; tags?: readonly string[] }>> }): Operation[] => {
+  const server = openapi.servers?.[0]?.url ?? 'https://api.cloudflare.com/client/v4'
+  return Object.entries(openapi.paths ?? {}).flatMap(([path, methods]) => Object.entries(methods).filter(([m]) => /^(get|post|put|patch|delete|head|options)$/.test(m)).map(([m, op]) => ({ provider: 'cloudflare' as const, method: m.toUpperCase(), server, path, id: op.operationId ?? `${m}:${path}`, tags: op.tags ?? [] })))
+}
+/** Google's operations from a Discovery document's methods (top level and resources), as one list. */
+export const googleOperations = (discovery: { name?: string; version?: string; rootUrl?: string; servicePath?: string; methods?: Record<string, { httpMethod: string; path: string; id?: string }>; resources?: Record<string, unknown> }): Operation[] => {
+  const server = `${discovery.rootUrl ?? 'https://www.googleapis.com/'}${discovery.servicePath ?? ''}`.replace(/\/$/, '')
+  const walk = (node: { methods?: Record<string, { httpMethod: string; path: string; id?: string }>; resources?: Record<string, unknown> }, tags: string[]): Operation[] => [
+    ...Object.entries(node.methods ?? {}).map(([name, m]) => ({ provider: 'google' as const, method: m.httpMethod, server, path: `/${m.path}`, id: m.id ?? [...tags, name].join('.'), tags })),
+    ...Object.entries(node.resources ?? {}).flatMap(([name, r]) => walk(r as typeof node, [...tags, name])),
+  ]
+  return walk(discovery, [discovery.name ?? 'google', discovery.version ?? 'v1'].filter(Boolean))
+}
+/** The merged index: every operation of the three providers one addressed row, counted by provider and by tag, sorted by address. */
+export const apisIndex = (ops: readonly Operation[]) => {
+  const rows: OperationRow[] = ops.map((o) => { const address = uuid(`${o.provider}\n${o.method} ${o.server}${o.path}`); return { ...o, address, sealed: seal(address).valid } }).sort((a, b) => (a.address < b.address ? -1 : 1))
+  const byProvider = { payload: rows.filter((r) => r.provider === 'payload').length, cloudflare: rows.filter((r) => r.provider === 'cloudflare').length, google: rows.filter((r) => r.provider === 'google').length }
+  const byTag: Record<string, number> = {}
+  for (const r of rows) for (const t of r.tags) byTag[t] = (byTag[t] ?? 0) + 1
+  const distinct = new Set(rows.map((r) => r.address)).size
+  return { phase: 'index' as const, rows, byProvider, byTag, total: rows.length, distinct, holds: distinct === rows.length && rows.every((r) => r.sealed && r.address.length === 36), theorem: 'textbook_uuid_is_36' as const }
+}
+/** The one GraphQL query of the observe job: month-to-date requests, errors, CPU quantiles, D1 rows, R2 operations for the account. */
+export const OBSERVE_QUERY = `query QpuObserve($accountTag: string!, $since: Time!, $until: Time!) {
+  viewer { accounts(filter: { accountTag: $accountTag }) {
+    workersInvocationsAdaptive(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }) { sum { requests errors } quantiles { cpuTimeP50 cpuTimeP99 } }
+    d1AnalyticsAdaptiveGroups(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }) { sum { readQueries writeQueries rowsRead rowsWritten } }
+    r2OperationsAdaptiveGroups(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }) { dimensions { actionType } sum { requests } }
+  } }
+}`
+const R2_CLASS_A = new Set(['PutObject', 'CopyObject', 'ListObjects', 'CreateMultipartUpload', 'UploadPart', 'CompleteMultipartUpload', 'ListParts', 'PutBucket', 'ListBuckets', 'PutBucketEncryption', 'PutBucketCors', 'PutBucketLifecycleConfiguration', 'LifecycleStorageTierTransition', 'PutObjectRetention'])
+/** The GraphQL answer read into meter readings (requests and CPU ms summed over the invocations, D1 rows summed, R2 operations split by class). */
+export const readingsOf = (answer: { data?: { viewer?: { accounts?: { workersInvocationsAdaptive?: { sum: { requests: number; errors: number }; quantiles?: { cpuTimeP50?: number; cpuTimeP99?: number } }[]; d1AnalyticsAdaptiveGroups?: { sum: { readQueries: number; writeQueries: number; rowsRead: number; rowsWritten: number } }[]; r2OperationsAdaptiveGroups?: { dimensions: { actionType: string }; sum: { requests: number } }[] }[] } } }): Readings & { errors: number; cpuTimeP50Us: number; cpuTimeP99Us: number } => {
+  const a = answer.data?.viewer?.accounts?.[0] ?? {}
+  const inv = a.workersInvocationsAdaptive ?? [], d1 = a.d1AnalyticsAdaptiveGroups ?? [], r2 = a.r2OperationsAdaptiveGroups ?? []
+  const requests = inv.reduce((n, x) => n + (x.sum?.requests ?? 0), 0), errors = inv.reduce((n, x) => n + (x.sum?.errors ?? 0), 0)
+  const p50 = inv.length ? Math.round(inv.reduce((n, x) => n + (x.quantiles?.cpuTimeP50 ?? 0), 0) / inv.length) : 0, p99 = inv.reduce((n, x) => Math.max(n, x.quantiles?.cpuTimeP99 ?? 0), 0)
+  return { 'workers.requests': requests, 'workers.cpuMs': Math.ceil((requests * p50) / 1000), 'd1.rowsRead': d1.reduce((n, x) => n + (x.sum?.rowsRead ?? 0), 0), 'd1.rowsWritten': d1.reduce((n, x) => n + (x.sum?.rowsWritten ?? 0), 0), 'r2.classA': r2.filter((x) => R2_CLASS_A.has(x.dimensions?.actionType)).reduce((n, x) => n + (x.sum?.requests ?? 0), 0), 'r2.classB': r2.filter((x) => !R2_CLASS_A.has(x.dimensions?.actionType)).reduce((n, x) => n + (x.sum?.requests ?? 0), 0), errors, cpuTimeP50Us: p50, cpuTimeP99Us: p99 }
+}
+
+import { hexbit, next as turnNext, uuidQubits } from '../../index.ts'
+import { OFFICIAL_PLUGINS } from '../../../plugin.ts'
+/** Payload's monorepo beside its packages (https://github.com/payloadcms/payload, read 2026-11-08): the templates a site starts from and the examples a capability is shown by. */
+export const PAYLOAD_TEMPLATES = ['_data', '_template', 'blank-tanstack', 'blank', 'ecommerce', 'plugin', 'website', 'with-cloudflare-d1', 'with-postgres', 'with-vercel-mongodb', 'with-vercel-postgres', 'with-vercel-website'] as const
+export const PAYLOAD_EXAMPLES = ['astro', 'auth', 'custom-components', 'custom-server', 'draft-preview', 'email', 'form-builder', 'live-preview', 'localization', 'multi-tenant', 'remix', 'tailwind-shadcn-ui', 'whitelabel'] as const
+export type CoverageRow = { kind: 'package' | 'plugin' | 'template' | 'example'; name: string; covered: boolean; address: string; sealed: boolean }
+const packageName = (dir: string) => (dir === 'payload' ? 'payload' : `@payloadcms/${dir}`)
+/** Full quantum coverage of Payload's own surface: every package of the monorepo, every official plugin, every template and example one sealed
+ *  UUID row, covered when the app mounts it (a dependency, a plugin slug, the template it was forked from, an example whose capability it uses).
+ *  The register is the hexbit qubits of the first gap's address and `next` is the unit's own turn of that address: the step the plugin takes. */
+export const apisCoverage = (mounted: readonly string[], templateOf = 'website', examplesUsed: readonly string[] = ['multi-tenant', 'form-builder', 'live-preview', 'email', 'auth', 'tailwind-shadcn-ui']) => {
+  const names = (TABLES.PAYLOAD_PACKAGES as { names?: readonly string[] }).names ?? []
+  const has = new Set(mounted)
+  const rows: CoverageRow[] = [
+    ...names.map((n) => ({ kind: 'package' as const, name: packageName(n), covered: has.has(packageName(n)) })),
+    ...OFFICIAL_PLUGINS.map((p) => ({ kind: 'plugin' as const, name: p, covered: has.has(p === 'lexical' ? '@payloadcms/richtext-lexical' : `@payloadcms/plugin-${p}`) || has.has(p) })),
+    ...PAYLOAD_TEMPLATES.map((t) => ({ kind: 'template' as const, name: t, covered: t === templateOf })),
+    ...PAYLOAD_EXAMPLES.map((e) => ({ kind: 'example' as const, name: e, covered: examplesUsed.includes(e) })),
+  ].map((r) => { const address = uuid(`payload\n${r.kind} ${r.name}`); return { ...r, address, sealed: seal(address).valid } }).sort((a, b) => (a.address < b.address ? -1 : 1))
+  const gaps = rows.filter((r) => !r.covered), first = gaps[0] ?? null
+  const register = uuidQubits(4)
+  const nextStep = first ? { ...first, qubits: { effective: register.effective, hexbit: hexbit(first.address) }, turn: turnNext(first.address), step: first.kind === 'package' ? `pnpm add ${first.name}` : first.kind === 'plugin' ? `mount @payloadcms/plugin-${first.name} in payload.config.ts (plugins by capability)` : first.kind === 'template' ? `read templates/${first.name} of payloadcms/payload for the conventions this fork lacks` : `read examples/${first.name} of payloadcms/payload and serve its capability as a tool` } : null
+  return { phase: 'coverage' as const, rows, total: rows.length, covered: rows.length - gaps.length, gaps: gaps.length, byKind: Object.fromEntries((['package', 'plugin', 'template', 'example'] as const).map((k) => [k, { total: rows.filter((r) => r.kind === k).length, covered: rows.filter((r) => r.kind === k && r.covered).length }])), next: nextStep, holds: gaps.length === 0, sealed: rows.every((r) => r.sealed && r.address.length === 36), theorem: 'textbook_uuid_is_36' as const }
+}

@@ -149,5 +149,78 @@ export const willowNoise = (chip: 'errorCorrection' | 'randomCircuitSampling'): 
 /** Every device this repository can build a circuit against, by its name. */
 export const DEVICES = { Willow: WILLOW, Sycamore: SYCAMORE, Sycamore23: SYCAMORE23 } as const
 
+/** Bristlecone, Google Quantum AI's 72-qubit superconducting processor (12 rows, 72 grid sites, nearest-neighbour couplers). */
+const BRISTLECONE_ROWS: readonly [row: number, from: number, to: number][] = [
+  [0, 5, 5], [1, 4, 6], [2, 3, 7], [3, 2, 8], [4, 1, 9], [5, 0, 10],
+  [6, 0, 10], [7, 1, 9], [8, 2, 8], [9, 3, 7], [10, 4, 6], [11, 5, 5],
+]
+const BRISTLECONE_SITES: readonly Site[] = BRISTLECONE_ROWS.flatMap(([row, from, to]) =>
+  Array.from({ length: to - from + 1 }, (_, i) => GridQubit.of(row, from + i)))
+const BRISTLECONE = {
+  name: 'Bristlecone',
+  technology: 'superconducting',
+  qubits: BRISTLECONE_SITES.length,
+  sites: BRISTLECONE_SITES,
+  couplers: deriveCouplers(BRISTLECONE_SITES),
+  statedQubits: 72,
+  layout: 'the 72-qubit 12-row diamond array in Cirq\'s Bristlecone device specification',
+} as const
+
+/** Foxtail, Google Quantum AI's 22-qubit two-row superconducting test processor (2 × 11 ladder grid, 31 couplers). */
+const FOXTAIL_SITES: readonly Site[] = [0, 1].flatMap((row) =>
+  Array.from({ length: 11 }, (_, col) => GridQubit.of(row, col)))
+const FOXTAIL = {
+  name: 'Foxtail',
+  technology: 'superconducting',
+  qubits: FOXTAIL_SITES.length,
+  sites: FOXTAIL_SITES,
+  couplers: deriveCouplers(FOXTAIL_SITES),
+  statedQubits: 22,
+  statedCouplers: 31,
+  layout: 'the 2 × 11 two-row ladder grid in Cirq\'s Foxtail device specification',
+} as const
+
+/** All 5 Google Quantum AI processors managed by the Quantum Computer OS Hardware Abstraction Layer (HAL). */
+export const ALL_PROCESSORS = {
+  Willow: WILLOW,
+  Sycamore: SYCAMORE,
+  Sycamore23: SYCAMORE23,
+  Bristlecone: BRISTLECONE,
+  Foxtail: FOXTAIL,
+} as const
+
+/** Physical qubit modalities, superconducting transmon & tunable-coupler physics, cryo/control stack, and calibration benchmarks. */
+export const QUANTUM_HARDWARE_STACK = {
+  modality: 'superconducting transmon qubits with frequency-tunable couplers',
+  physics: {
+    t1RelaxationMicroseconds: { willowQec: WILLOW.chips.errorCorrection.t1Microseconds, willowRcs: WILLOW.chips.randomCircuitSampling.t1Microseconds },
+    t2DephasingMicroseconds: { mean: 85, echoHahn: true, floquetProtected: true },
+    singleQubitGateError: { willowQec: WILLOW.chips.errorCorrection.singleQubitGateError, willowRcs: WILLOW.chips.randomCircuitSampling.singleQubitGateError },
+    twoQubitGates: ['CZ', 'iSWAP-like', 'fSim', 'CNOT', 'SWAP'],
+    twoQubitGateError: { cz: WILLOW.chips.errorCorrection.twoQubitGateError, iswap: WILLOW.chips.randomCircuitSampling.twoQubitGateError },
+    readoutError: { repetitiveMeasureQubits: WILLOW.chips.errorCorrection.measurementError, terminalAllQubits: WILLOW.chips.randomCircuitSampling.measurementError },
+    leakageAndReset: RESET,
+    crosstalkMitigation: 'tunable coupler zero-coupling parking + dynamic decoupling',
+  },
+  cryoAndControl: {
+    dilutionRefrigeratorStagesKelvin: [300, 50, 4, 0.8, 0.1, 0.01],
+    mixingChamberMillikelvin: 10,
+    controlElectronics: 'custom microwave AWG (4–8 GHz XY drive), fast flux Z bias DACs, and multiplexed dispersive readout resonators',
+  },
+  calibrationAndBenchmarking: {
+    protocols: ['Cross-Entropy Benchmarking (XEB)', 'Randomized Benchmarking (RB)', 'Floquet Periodic Calibration', 'Speckle Purity Drift Tracking', 'Out-of-Time-Order Correlator (OTOC Quantum Echoes)'],
+    noiseModels: ['willow_error_correction', 'willow_random_circuit_sampling'],
+    krausChannels: ['bit_flip', 'phase_flip', 'depolarize', 'asymmetric_depolarize', 'amplitude_damp', 'phase_damp', 'generalized_amplitude_damp', 'reset'],
+  },
+  faultTolerantArchitecture: {
+    surfaceCodeDistances: [3, 5, 7],
+    lambdaSuppression: WILLOW.chips.errorCorrection.errorSuppression,
+    cycleMicroseconds: WILLOW.chips.errorCorrection.surfaceCodeCycleMicroseconds,
+    decoderLatencyMicroseconds: WILLOW.errorCorrectionPreprint.decoderLatencyMicroseconds,
+    magicStateCultivation: WILLOW.magicStateCultivation,
+    roadmapScaling: '10^2 → 10^6 physical qubits across 6 milestones',
+  },
+} as const
+
 /** True when a circuit's qubit count fits the processor. */
 export const fitsProcessor = (processor: { qubits: number }, qubits: number): boolean => qubits <= processor.qubits

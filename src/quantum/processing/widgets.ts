@@ -6,7 +6,7 @@ import type { WILLOW } from './processor.ts'
 import { QUANTUM_ECHOES } from './echo.ts'
 /** A markdown table cell is text, never markup or a link: the characters a table, Vue or a link would read are escaped, and a URL to a
  *  local host is never linkable, so no generated page carries a dead link. The one escaper every page writer folds onto. */
-export const cellOf = (t: unknown): string => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '\\|').replace(/\n/g, ' ').replace(/\{/g, '&#123;').replace(/\}/g, '&#125;').replace(/\]\(/g, () => '&#93;(').replace(/:\/\/(localhost|127\.0\.0\.1)/g, (_m, h: string) => `:&#47;&#47;${h}`)
+export const cell = (t: unknown): string => String(t ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '\\|').replace(/\n/g, ' ').replace(/\{/g, '&#123;').replace(/\}/g, '&#125;').replace(/\]\(/g, () => '&#93;(').replace(/:\/\/(localhost|127\.0\.0\.1)/g, (_m, h: string) => `:&#47;&#47;${h}`)
 
 const escape = (text: string): string => text.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
 
@@ -186,8 +186,12 @@ export const errorCorrectionWidget = (d: { code: string; channel: string; logica
     ...d.sweep.map((s) => bar(s.logicalError * 100)),
   ])
 
-export const chemistryWidget = (d: { molecule: { bondLength: number; hartreeFock: number; fci: number }; terms: readonly { label: string; coefficient: number }[]; vqe: { best: { theta: number; energy: number }; grid: readonly { theta: number; energy: number }[] } | null; at: { theta: number; energy: number } | null }): string =>
-  stack([
+export const chemistryWidget = (d: { phase?: string; mapping?: string; says?: string; molecule?: { bondLength: number; hartreeFock: number; fci: number }; terms?: readonly { label: string; coefficient: number; imaginary?: number }[]; vqe?: { best: { theta: number; energy: number }; grid: readonly { theta: number; energy: number }[] } | null; at?: { theta: number; energy: number } | null }): string =>
+  d.mapping === 'Jordan–Wigner' && d.terms ? stack([
+    cards([['Mapping', d.mapping], ['Terms', String(d.terms.length)]]),
+    ...(d.says ? [`<p>${escape(d.says)}</p>`] : []),
+    table(['Term', 'Real', 'Imaginary'], d.terms.map((t) => [t.label, t.coefficient.toFixed(8), (t.imaginary ?? 0).toFixed(8)])),
+  ]) : !d.molecule || !d.terms ? stack([cards([['Phase', d.phase ?? 'unlimited']])]) : stack([
     cards([
       ['Bond length (Å)', d.molecule.bondLength.toFixed(4)],
       ['Hartree-Fock (Ha)', d.molecule.hartreeFock.toFixed(6)],
@@ -245,8 +249,43 @@ export const matchWidget = (d: { statement: string; verdict: string; evidence: s
   ])
 
 /** The Clay register: the totals, then every relation with its sides, values and width. */
-export const clayWidget = (d: { total: number; holding?: number; maxBits?: number; relations?: readonly { name: string; statement: string; sides: readonly { expression: string; value: number }[]; holds: boolean; bits: number }[]; products?: readonly { title: string; taxonomy: readonly string[]; variants: readonly unknown[]; variations: readonly unknown[]; price: { coins: number; superposition: number } }[] }): string =>
-  d.products
+/** Public SEO of the product relations: every formula and its proof, then the backend role, subscription and coin bill. */
+export const seoWidget = (d: { public: boolean; coverage: { full: boolean; covered: number; of: number }; coins: { count: number; merged: number; by: string }; pages: readonly { title: string; formula: string; proof: string; coin: string; gap: boolean }[]; backend: { roles: readonly { role: string; abilities: readonly string[]; subscription: { product: string; variant: string; monthlyEur: number } }[]; call: { allowed: boolean; ability: string; coins: { address: string | null; booked: boolean } } | null } }): string =>
+  stack([
+    cards([['Public', d.public ? 'yes' : 'no'], ['Coverage', `${d.coverage.covered} / ${d.coverage.of}`], ['Full', d.coverage.full ? 'yes' : 'no'], ['Coins', String(d.coins.count)], ['Merged', String(d.coins.merged)], ['By', d.coins.by]]),
+    table(['Title', 'Formula', 'Proof', 'Coin', 'Gap'], d.pages.map((p) => [p.title, p.formula, p.proof, p.coin, p.gap ? 'gap' : ''])),
+    table(['Role', 'Abilities', 'Subscription', 'EUR / month'], d.backend.roles.map((r) => [r.role, r.abilities.join(', '), `${r.subscription.product}/${r.subscription.variant}`, String(r.subscription.monthlyEur)])),
+    ...(d.backend.call ? [cards([['API', d.backend.call.allowed ? 'allowed' : 'refused'], ['Ability', d.backend.call.ability], ['Coin', d.backend.call.coins.address ?? ''], ['Booked', d.backend.call.coins.booked ? 'yes' : 'no']])] : []),
+  ])
+
+export const clayWidget = (d: { phase?: string; total?: number; holding?: number; solved?: number; open?: readonly unknown[]; families?: number; hz?: number; relationCount?: number; categories?: readonly { name: string }[]; variants?: readonly { product: string; variant: string; relation: string }[]; maxBits?: number; space?: string; crossVerified?: boolean; depth?: number; axioms?: readonly { name: string; formula: string; value: number; proved?: boolean }[]; hooks?: { iso: string; validated: boolean; proved: boolean }; rows?: readonly { problem?: string; products?: number; combinations?: string; solved: boolean; family?: string; relations?: number; own?: readonly string[]; next?: string | null; handle?: string; hz?: number }[]; relations?: readonly { name: string; statement: string; sides: readonly { expression: string; value: number }[]; holds: boolean; bits: number }[]; products?: readonly { title: string; taxonomy: readonly string[]; variants: readonly unknown[]; variations: readonly unknown[]; price: { coins: number; superposition: number } }[]; teams?: number; players?: number; against?: number; plays?: number; combinations?: number; productCount?: number; squares?: number; period?: number; roster?: readonly { family: string; piece: string; formulas: readonly unknown[]; players: readonly unknown[] }[]; nist?: { pieces?: number }; cern?: { pieces?: number }; scenarios?: readonly { nist: { formula: string; seed: number }; cern: { formula: string; seed: number }; mover: string | null; piece: string | null; product: string }[] }): string =>
+  d.phase === 'combinations'
+    ? stack([
+        cards([['Axioms', String(d.axioms?.length ?? 0)], ['ISO 9001', d.hooks?.validated ? 'yes' : ''], ['Cross-verified', d.crossVerified ? 'yes' : ''], ['Depth', String(d.depth ?? 0)], ['Proved', d.hooks?.proved ? 'yes' : ''], ['Combinations', d.space ?? '0']]),
+        table(['Axiom', 'Formula', 'Parameter', 'Proved'], (d.axioms ?? []).map((a) => [a.name, a.formula, String(a.value), a.proved ? 'yes' : ''])),
+        table(['Problem', 'Products', 'Combinations', 'Solved'], (d.rows ?? []).map((r) => [r.problem ?? '', String(r.products ?? 0), r.combinations ?? '', r.solved ? 'yes' : ''])),
+      ])
+    : d.phase === 'solve'
+    ? stack([
+        cards([['Solved', `${d.solved ?? 0} / ${d.total}`], ['Open', String(d.open?.length ?? 0)], ['Categories', String(d.categories?.length ?? 0)], ['Variants', String(d.variants?.length ?? 0)]]),
+        table(['Product', 'Variant', 'Relation'], (d.variants ?? []).map((v) => [v.product, v.variant, v.relation])),
+      ])
+    : d.phase === 'chess'
+    ? stack([
+        cards([['NIST', String(d.nist?.pieces ?? 0)], ['CERN', String(d.cern?.pieces ?? 0)], ['Scenarios', String(d.scenarios?.length ?? 0)], ['Plays', String(d.plays ?? 0)], ['Products', String(d.productCount ?? 0)]]),
+        table(['NIST', 'CERN', 'Mover', 'Piece', 'Product'], (d.scenarios ?? []).map((s) => [s.nist.formula, s.cern.formula, s.mover ?? '', s.piece ?? '', s.product])),
+      ])
+    : d.phase === 'programs'
+    ? stack([
+        cards([['Programs', String(d.families ?? 0)], ['Hz', String(d.hz ?? 0)], ['Schema', 'program'], ['Params', 'tail']]),
+        table(['Family', 'Handle', 'Hz', 'Next', 'Solved'], (d.rows ?? []).map((r) => [r.family ?? '', r.handle ?? '', String(r.hz ?? ''), r.next ?? '', r.solved ? 'yes' : ''])),
+      ])
+    : d.phase === 'waves'
+    ? stack([
+        cards([['Families', String(d.families ?? 0)], ['Hz', String(d.hz ?? 0)], ['Relations', String(d.relationCount ?? 0)]]),
+        table(['Family', 'Relations', 'Own drift', 'Next', 'Solved'], (d.rows ?? []).map((r) => [r.family ?? '', String(r.relations ?? 0), String(r.own?.length ?? 0), r.next ?? '', r.solved ? 'yes' : ''])),
+      ])
+    : d.products
     ? stack([
         cards([['Products', String(d.total)], ['Variants', String(d.products.reduce((n, p) => n + p.variants.length, 0))], ['Cross-use variations', String(d.products.reduce((n, p) => n + p.variations.length, 0))]]),
         table(['Product', 'Variants', 'Variations', 'Taxonomy', 'Coins / superposition'], d.products.map((p) => [p.title, String(p.variants.length), String(p.variations.length), p.taxonomy.join(', '), `${p.price.coins} / ${p.price.superposition}`])),
@@ -269,4 +308,19 @@ export const flowWidget = (d: Record<string, unknown>): string => {
   const scalars = Object.entries(d).filter(([, v]) => typeof v === 'number' || typeof v === 'string' || typeof v === 'boolean').map(([k, v]) => [k, String(v)] as [string, string])
   const checks = Array.isArray(d.checks) ? (d.checks as { id: string; passed: boolean; evidence: string }[]) : null
   return stack([cards(scalars), ...(checks ? [table(['Check', 'Passed', 'Evidence'], checks.map((c) => [c.id, mark(c.passed), c.evidence]))] : [])])
+}
+
+/** The three admin APIs as one surface: the doors by provider, the Cloudflare meters and their bill, the merged operation index by provider and tag, the coverage of Payload's own packages, templates, examples and plugins with the next gap named. */
+export const apisWidget = (d: Record<string, any>): string => {
+  const parts: string[] = []
+  const doors = d.phase === 'doors' ? d : d.doors
+  if (doors) parts.push(cards([['Doors', String(doors.total)], ['Payload', String(doors.byProvider.payload)], ['Cloudflare', String(doors.byProvider.cloudflare)], ['Google', String(doors.byProvider.google)], ['Sealed', doors.holds ? 'all' : 'no']]), table(['Provider', 'Kind', 'Door', 'URL', 'Maps to'], doors.rows.map((r: any) => [r.provider, r.kind, r.name, r.url, r.maps])))
+  const cost = d.phase === 'cost' ? d : (d.cost ?? (d.cloudflare?.cost ? d.cloudflare : undefined))
+  if (cost?.rows || cost?.meters) { const rows = cost.rows ?? cost.meters; parts.push(cards([['Bill (USD)', String(cost.usd ?? cost.cost?.usd ?? 0)], ['Covered', (cost.covered ?? cost.cost?.covered) ? 'yes: inside every allowance' : 'no'], ['Leads', String((cost.leads ?? []).length)]]), table(['Meter', 'Used', 'Included', 'Share %', 'USD', 'Remedy'], rows.map((r: any) => [r.meter, String(r.used), String(r.included), String(r.share), String(r.usd ?? r.microUsd / 1_000_000), r.remedy ?? '']))); if (cost.leads?.length) parts.push(table(['Lead', 'Statement'], cost.leads.map((l: any) => [l.id, l.statement]))) }
+  const index = d.phase === 'index' ? d : d.index
+  if (index) parts.push(cards([['Operations', String(index.total)], ['Payload', String(index.byProvider.payload)], ['Cloudflare', String(index.byProvider.cloudflare)], ['Google', String(index.byProvider.google)], ['Distinct addresses', String(index.distinct ?? index.total)]]), table(['Tag', 'Operations'], Object.entries(index.byTag ?? {}).sort((a: any, b: any) => b[1] - a[1]).map(([t, n]) => [t, String(n)])))
+  const coverage = d.phase === 'coverage' ? d : d.coverage
+  if (coverage) parts.push(cards([['Payload surface', String(coverage.total)], ['Covered', String(coverage.covered)], ['Gaps', String(coverage.total - coverage.covered)], ['Next', coverage.next ? coverage.next.name : 'none: full coverage']]), table(['Kind', 'Name', 'Covered', 'Address'], (coverage.rows ?? []).map((r: any) => [r.kind, r.name, r.covered ? 'yes' : 'no', r.address])))
+  if (d.pricing && !cost) parts.push(table(['Meter', 'Included a month', 'USD per million past it', 'Remedy'], d.pricing.map((m: any) => [m.meter, String(m.included), String(m.perMillionUsd), m.remedy])))
+  return stack(parts.length ? parts : [table(['Phase'], [[String(d.phase ?? 'apis')]])])
 }

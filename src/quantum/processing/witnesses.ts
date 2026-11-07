@@ -3,13 +3,13 @@
 // Each witness maps back exactly — σ is an involution, a rotation is undone by its inverse — so the witnesses verify the UUID, and each
 // other through it. Two UUIDs' sets merged share the witnesses with the same address: work that exists once, not twice, booked as a coin
 // credited to the author at zero price — a count of free work, never money. Pure.
-import { channelOf, uuidFromParts, sealOf } from './unit/blocks.ts'
+import { channel, uuidFromParts, seal } from '../uuid/index.ts'
 
 type Witness = { face: 'square' | 'triangle'; index: number; uuid: string; how: string }
 const rotate = (p: readonly number[], k: number) => p.map((_, i) => p[(i + k) % p.length]!)
 const sigma = (x: number) => 15 - x
-const uuidParts = (uuid: string) => { const c = channelOf(uuid); return { handle: c.handle, program: c.program, tail: c.tail } }
-/** The UUID rebuilt from its own parts (uuidFromParts): what every witness maps back to. A UUID made from parts equals it; one made by uuidOf
+const uuidParts = (uuid: string) => { const c = channel(uuid); return { handle: c.handle, program: c.program, tail: c.tail } }
+/** The UUID rebuilt from its own parts (uuidFromParts): what every witness maps back to. A UUID made from parts equals it; one made by uuid
  *  carries a different stamp and differs from it in that nibble alone, which the check reports (isCanonical) rather than hides. */
 const canonicalUuid = (uuid: string) => { const p = uuidParts(uuid); return uuidFromParts(p.handle, p.program, p.tail) }
 const reflectHandle = (handle: string, i: number) => handle.slice(0, i) + sigma(parseInt(handle[i]!, 16)).toString(16) + handle.slice(i + 1)
@@ -37,8 +37,8 @@ export const checkWitnesses = (uuid: string) => {
  *  the verify door checks); a move of ±1 in k is ±2 in the span, so it steps to 2(k − 1) and 2(k + 1) — the doubled neighbours (2·7 = 14 → 12 and 16;
  *  2·55 = 110 → 108 and 112). The cycles the span and its two neighbours land on are the clocks (12-hour, 24-hour) and calendars (7-day week, 12 months,
  *  the 16 the hex nibble counts) covered, so moving across superpositions walks every clock and calendar. Pure arithmetic (textbook_witness_clock_move). */
-export const CLOCKS = [12, 24] as const
-export const CALENDARS = [7, 12, 16] as const
+const CLOCKS = [12, 24] as const
+const CALENDARS = [7, 12, 16] as const
 /** The integer reflection of a step: its digital-root seed (1..9, the fold of its digits) and the σ₁₀ reflection 10 − seed, fixed at 5. Looked for at
  *  every step of the sequence, so a value never stands without its reflection (textbook_reflection_sums_to_ten). */
 const stepReflection = (value: number) => { const seed = value === 0 ? 0 : 1 + ((value - 1) % 9); return { value, seed, reflection: seed === 0 ? 0 : 10 - seed, fixed: seed === 5 } }
@@ -61,7 +61,7 @@ export const witnessMove = (k: number) => {
  *  are validated first — a coin is a UUID, so the witnesses (and the coins they mint) are only computed from sealed addresses; a side that is not a
  *  valid sealed UUID is named in `invalid` and contributes no witnesses, so no coin is ever minted from a malformed address (never a thrown error). */
 export const mergeWitnesses = (referrer: string, destination: string) => {
-  const invalid = [referrer, destination].filter((u) => !sealOf(u).valid)
+  const invalid = [referrer, destination].filter((u) => !seal(u).valid)
   if (invalid.length) return { referrer: { uuid: referrer, witnesses: [] as Witness[] }, destination: { uuid: destination, witnesses: [] as Witness[] }, shared: [] as string[], distinct: 0, of: 0, invalid, says: `${invalid.length} side(s) are not a sealed UUID; no witnesses computed and no coin minted (a coin is a validated address)` }
   const a = listWitnesses(referrer), b = listWitnesses(destination)
   const inB = new Set(b.map((w) => w.uuid))

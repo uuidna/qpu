@@ -4,9 +4,9 @@
 import { extractFacts, createVerifyRequests, TREE_FACTS, type Fact } from './verifiers.ts'
 import type { Lead } from './leads.ts'
 import { getEventData } from './discovery.ts'
-import { cellOf as cell } from './widgets.ts'
+import { cell } from './widgets.ts'
 
-export type WaveRequest = { verifier: string; url: string; check: string; leads: string[]; method?: 'GET' | 'POST'; body?: unknown; accept?: string }
+type WaveRequest = { verifier: string; url: string; check: string; leads: string[]; method?: 'GET' | 'POST'; body?: unknown; accept?: string }
 export type WaveResult = WaveRequest & { status: number; ok: boolean; ms: number; text?: string; note?: string; contracted?: 'yes' | 'no' | 'unknown' }
 type WaveSummary = Record<string, { requests: number; ok: number; contracted: number; uncontracted: number }>
 

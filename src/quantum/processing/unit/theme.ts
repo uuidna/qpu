@@ -15,7 +15,7 @@ export const toFrames = (uuid: string) => [...uuid.toLowerCase()].map((char, i) 
 export const getFramesGradient = (uuid: string): string => `linear-gradient(90deg, ${toFrames(uuid).map((f, i) => `${f.hue === null ? 'hsl(0 0% 0%)' : `hsl(${f.hue} 62% 44%)`} ${((i / SCAN.frames) * 100).toFixed(3)}% ${(((i + 1) / SCAN.frames) * 100).toFixed(3)}%`).join(', ')})`
 /** The harmonic series of the key downward by halving, each read as a hue in degrees. */
 export const HARMONICS = [432, 216, 108, 54, 27] as const
-export const hueOf = (hz: number): number => hz % 360
+export const hue = (hz: number): number => hz % 360
 
 type Cmyk = { c: number; m: number; y: number; k: number }
 /** The UUID's middle part (time_mid, time_hi_and_version, clock_seq) as four CMYK channels from three hex digits each. */
@@ -29,8 +29,21 @@ export const cmykOfUuid = (uuid: string): Cmyk => {
  *  --qpu-coin and --qpu-coil carry both hues, the block rule turns green under data-coil. */
 const cmykOfRgb = ([r, g, b]: [number, number, number]): Cmyk => { const k = 1 - Math.max(r, g, b) / 255; const f = (v: number) => (k === 1 ? 0 : Math.round(((1 - v / 255 - k) / (1 - k)) * 100) / 100); return { c: f(r), m: f(g), y: f(b), k: Math.round(k * 100) / 100 } }
 const rgbOfHsl = (h: number, s: number, l: number): [number, number, number] => { const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = l - c / 2; const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x]; return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)] }
+/** The eight UUID versions are eight dimensions. Two versions a channel: 1 and 5 cyan, 2 and 6 magenta, 3 and 7 yellow, 4 and 8 black.
+ *  The odd pairs are full and the even pairs are empty, which is the coil's CMYK. Their sum is 36, and 432 divides 36, so the a432 key opens it. */
+export const resonance = (key: number = KEY) => {
+  const versions = [1, 2, 3, 4, 5, 6, 7, 8] as const
+  const inks = ['c', 'm', 'y', 'k'] as const
+  const dimensions = versions.map((version) => ({ version, ink: inks[(version - 1) % 4]! }))
+  const channels = inks.map((ink) => { const held = versions.filter((v) => inks[(v - 1) % 4] === ink); return { ink, versions: [...held], value: held.every((v) => v % 2 === 1) ? 1 as const : 0 as const } })
+  const sum = versions.reduce((n, v) => n + v, 0)
+  const unlocked = key === KEY && KEY % sum === 0
+  const cmyk = unlocked ? { c: channels[0]!.value, m: channels[1]!.value, y: channels[2]!.value, k: channels[3]!.value } : null
+  const angle = unlocked ? hue(KEY) + KEY / sum * 4 : null
+  return { key, dimensions: dimensions.length, versions: [...versions], channels, sum, quotient: KEY / sum, unlocked, cmyk, hue: angle, theorem: 'textbook_coil_green' as const, says: unlocked ? `eight UUID versions, eight dimensions, paired into cyan, magenta, yellow and black; the odd pairs are full and the even pairs are empty, and the key ${key} divides their sum ${sum}, so the resonance opens` : `eight UUID versions stay eight dimensions; the key ${key} does not open them` }
+}
 export const coilColour = (key: number = KEY) => {
-  const coin = hueOf(key), coil = coin + key / 9
+  const coin = hue(key), coil = coin + key / 9
   const rgb = rgbOfHsl(coil, 1, 0.5), cmyk = cmykOfRgb(rgb)
   return { coin: { hue: coin, css: `hsl(${coin} 62% 44%)`, says: 'the a432 hue: the free, harmonic side' }, coil: { hue: coil, css: `hsl(${coil} 62% 44%)`, rgb, cmyk, cmykCss: `device-cmyk(${cmyk.c} ${cmyk.m} ${cmyk.y} ${cmyk.k})`, chakra: { index: 4, of: 7, name: 'heart' }, says: 'green: the coin\'s hue advanced by a ninth of the key, the heart chakra, cyan and yellow full in CMYK' }, theorem: 'textbook_coil_green', relation: `${key} % 360 + ${key} / 9 = ${coil}` }
 }
@@ -71,13 +84,15 @@ export const castRays = (uuids: readonly string[]) => {
 export const ANGLES = TABLES.ANGLES
 export const getCss = (key: number = KEY): string => {
   const accent = 'var(--qpu-accent, var(--a432-accent))', period = `var(--qpu-period, ${key * 9}ms)`
-  const lines = [`:root {`, `  --a432-key: ${key};`, `  --a432-hue: ${hueOf(key)};`, ...HARMONICS.map((h, i) => `  --a432-${i + 1}: hsl(${hueOf(h)} 62% ${44 + i * 8}%);`), `  --a432-accent: hsl(${hueOf(key)} 62% 44%);`, `  --qpu-coin: hsl(${hueOf(key)} 62% 44%);`, `  --qpu-coil: hsl(${hueOf(key) + key / 9} 62% 44%);`, `  --qpu-coil-cmyk: ${(() => { const c = coilColour(key).coil.cmyk; return `${c.c} ${c.m} ${c.y} ${c.k}` })()};`, `}`,
+  const lines = [`:root {`, `  --a432-key: ${key};`, `  --a432-hue: ${hue(key)};`, ...HARMONICS.map((h, i) => `  --a432-${i + 1}: hsl(${hue(h)} 62% ${44 + i * 8}%);`), `  --a432-accent: hsl(${hue(key)} 62% 44%);`, `  --qpu-coin: hsl(${hue(key)} 62% 44%);`, `  --qpu-coil: hsl(${hue(key) + key / 9} 62% 44%);`, `  --qpu-coil-cmyk: ${(() => { const c = coilColour(key).coil.cmyk; return `${c.c} ${c.m} ${c.y} ${c.k}` })()};`, `}`,
     `.qpu-block { border-left: 3px solid ${accent}; padding-left: var(--pad-sm, 8px); content-visibility: auto; contain-intrinsic-size: auto 240px; background: linear-gradient(90deg, color-mix(in oklab, ${accent} 6%, transparent), transparent 60%); }`,
     `.qpu-block::before { content: ''; display: block; height: 3px; margin-bottom: var(--gap-sm, 6px); background: conic-gradient(from calc(var(--qpu-angle, 0) * 1deg) at 50% 120%, ${accent}, var(--qpu-tail, var(--a432-2)), ${accent}); }`,
     `.qpu-block [data-status] { --qpu-status: var(--a432-3); border-left: 2px solid var(--qpu-status); padding-left: 4px; } .qpu-block [data-status="pass"] { --qpu-status: var(--a432-1); } .qpu-block [data-status="pending"] { --qpu-status: var(--a432-2); } .qpu-block [data-status="fail"] { --qpu-status: var(--a432-5); }`,
     `@media (prefers-reduced-motion: no-preference) { .qpu-block::before { animation: qpu-vortex ${period} linear infinite; } @keyframes qpu-vortex { to { filter: hue-rotate(360deg); } } .qpu-block :is([data-status="pending"], [data-status="fail"]) { animation: qpu-status ${period} ease-in-out infinite alternate; } .qpu-block [data-status="fail"] { animation-duration: calc(${period} / 2); } @keyframes qpu-status { to { border-left-color: ${accent}; } } }`,
     `@media (prefers-color-scheme: dark) { .qpu-block { background: linear-gradient(90deg, color-mix(in oklab, ${accent} 12%, transparent), transparent 60%); } }`,
-    `@media print { .qpu-block::before, .qpu-block [data-status] { animation: none; } } :root[data-power="battery"] .qpu-block::before, :root[data-power="battery"] .qpu-block [data-status] { animation: none; }`,
+    `.qpu-hero { display: flex; align-items: flex-end; gap: var(--qpu-gap); height: calc(var(--qpu-gap) * var(--qpu-amps, 1)); } .qpu-amp { flex: 1 1 0; background: var(--qpu-accent); height: calc(var(--qpu-amp, 0) * 100%); } .qpu-type { color: var(--qpu-ink, currentColor); margin-right: var(--qpu-gap); }`,
+    `@media (prefers-reduced-motion: no-preference) { .qpu-amp { animation: qpu-superposition var(--qpu-period) ease-in-out infinite alternate; animation-delay: calc(var(--qpu-amp-at, 0) / var(--qpu-amps, 1) * var(--qpu-period) * -1); } @keyframes qpu-superposition { to { height: calc(var(--qpu-amp-to, 1) * 100%); } } }`,
+    `@media print { .qpu-block::before, .qpu-block [data-status], .qpu-amp { animation: none; } } :root[data-power="battery"] .qpu-block::before, :root[data-power="battery"] .qpu-block [data-status], :root[data-power="battery"] .qpu-amp { animation: none; }`,
     `.qpu-program { background: var(--qpu-program); border-radius: 50%; aspect-ratio: 1; width: 3em; transform: rotate(calc(var(--qpu-shift, 0) * 1deg)); }`,
     `.qpu-scan { background-image: var(--qpu-frames); background-size: ${36 * 100}% 100%; background-repeat: no-repeat; animation: qpu-scan ${period} steps(36, end) infinite; min-height: 1.5em; } @keyframes qpu-scan { to { background-position: 100% 0; } }`,
     `@supports (animation-delay: random(0ms, 1ms)) { .qpu-block::before, .qpu-scan { animation-delay: random(0ms, ${key * 9}ms); } }`,
@@ -96,42 +111,43 @@ export const getCss = (key: number = KEY): string => {
  *  item (registry:item, as shadcn's own init answers): app/globals.css with the shadcn variables in light and dark plus the a432 stylesheet,
  *  components.json naming this registry, the QPU items as registry dependencies. npx shadcn init <this item's url> is the create command. */
 export const createTheme = (key: number = KEY, origin = 'https://qpu.uuidna.com', registryItems: readonly string[] = []) => {
-  const hue = hueOf(key), hues = HARMONICS.map(hueOf)
+  const angle = hue(key), hues = HARMONICS.map(hue)
   const radius = `${(key / 1000).toFixed(3)}rem`
   const settings = {
-    style: 'nova', baseColor: 'neutral', theme: `a432: hsl(${hue} 62% 44%)`, chartColor: `the harmonics: hsl(${hues.join(' | ')} 62% 50%)`, heading: 'Inter', font: 'Inter', iconLibrary: 'lucide', radius, menu: 'default', menuAccent: 'subtle',
+    style: 'nova', baseColor: 'neutral', theme: `a432: hsl(${angle} 62% 44%)`, chartColor: `the harmonics: hsl(${hues.join(' | ')} 62% 50%)`, heading: 'Inter', font: 'Inter', iconLibrary: 'lucide', radius, menu: 'default', menuAccent: 'subtle',
   }
   const light: Record<string, string> = {
     background: 'oklch(1 0 0)', foreground: 'oklch(0.145 0 0)', card: 'oklch(1 0 0)', 'card-foreground': 'oklch(0.145 0 0)', popover: 'oklch(1 0 0)', 'popover-foreground': 'oklch(0.145 0 0)',
-    primary: `hsl(${hue} 62% 44%)`, 'primary-foreground': `hsl(${hue} 62% 98%)`, secondary: `hsl(${hue} 30% 96%)`, 'secondary-foreground': `hsl(${hue} 62% 20%)`, muted: 'oklch(0.97 0 0)', 'muted-foreground': 'oklch(0.556 0 0)',
-    accent: `hsl(${hue} 40% 94%)`, 'accent-foreground': `hsl(${hue} 62% 20%)`, destructive: 'oklch(0.577 0.245 27.325)', 'destructive-foreground': 'oklch(0.985 0 0)', border: 'oklch(0.922 0 0)', input: 'oklch(0.922 0 0)', ring: `hsl(${hue} 62% 44%)`,
+    primary: `hsl(${angle} 62% 44%)`, 'primary-foreground': `hsl(${angle} 62% 98%)`, secondary: `hsl(${angle} 30% 96%)`, 'secondary-foreground': `hsl(${angle} 62% 20%)`, muted: 'oklch(0.97 0 0)', 'muted-foreground': 'oklch(0.556 0 0)',
+    accent: `hsl(${angle} 40% 94%)`, 'accent-foreground': `hsl(${angle} 62% 20%)`, destructive: 'oklch(0.577 0.245 27.325)', 'destructive-foreground': 'oklch(0.985 0 0)', border: 'oklch(0.922 0 0)', input: 'oklch(0.922 0 0)', ring: `hsl(${angle} 62% 44%)`,
     ...Object.fromEntries(hues.map((h, i) => [`chart-${i + 1}`, `hsl(${h} 62% 50%)`])),
   }
   // the sidebar wears the page's own tokens (its foreground, primary, accent, border, ring), only its background its own: derived, never written twice
-  const sidebarOf = (v: Record<string, string>, sidebar: string) => ({ ...v, sidebar, ...Object.fromEntries(['foreground', 'primary', 'primary-foreground', 'accent', 'accent-foreground', 'border', 'ring'].map((k) => [`sidebar-${k}`, v[k]!])) })
-  Object.assign(light, sidebarOf(light, 'oklch(0.985 0 0)'), { radius })
-  const dark: Record<string, string> = sidebarOf({
+  const sidebar = (v: Record<string, string>, sidebar: string) => ({ ...v, sidebar, ...Object.fromEntries(['foreground', 'primary', 'primary-foreground', 'accent', 'accent-foreground', 'border', 'ring'].map((k) => [`sidebar-${k}`, v[k]!])) })
+  Object.assign(light, sidebar(light, 'oklch(0.985 0 0)'), { radius })
+  const dark: Record<string, string> = sidebar({
     background: 'oklch(0.145 0 0)', foreground: 'oklch(0.985 0 0)', card: 'oklch(0.205 0 0)', 'card-foreground': 'oklch(0.985 0 0)', popover: 'oklch(0.205 0 0)', 'popover-foreground': 'oklch(0.985 0 0)',
-    primary: `hsl(${hue} 62% 56%)`, 'primary-foreground': `hsl(${hue} 62% 10%)`, secondary: `hsl(${hue} 20% 18%)`, 'secondary-foreground': `hsl(${hue} 40% 92%)`, muted: 'oklch(0.269 0 0)', 'muted-foreground': 'oklch(0.708 0 0)',
-    accent: `hsl(${hue} 30% 22%)`, 'accent-foreground': `hsl(${hue} 40% 92%)`, destructive: 'oklch(0.704 0.191 22.216)', 'destructive-foreground': 'oklch(0.985 0 0)', border: 'oklch(1 0 0 / 10%)', input: 'oklch(1 0 0 / 15%)', ring: `hsl(${hue} 62% 56%)`,
+    primary: `hsl(${angle} 62% 56%)`, 'primary-foreground': `hsl(${angle} 62% 10%)`, secondary: `hsl(${angle} 20% 18%)`, 'secondary-foreground': `hsl(${angle} 40% 92%)`, muted: 'oklch(0.269 0 0)', 'muted-foreground': 'oklch(0.708 0 0)',
+    accent: `hsl(${angle} 30% 22%)`, 'accent-foreground': `hsl(${angle} 40% 92%)`, destructive: 'oklch(0.704 0.191 22.216)', 'destructive-foreground': 'oklch(0.985 0 0)', border: 'oklch(1 0 0 / 10%)', input: 'oklch(1 0 0 / 15%)', ring: `hsl(${angle} 62% 56%)`,
     ...Object.fromEntries(hues.map((h, i) => [`chart-${i + 1}`, `hsl(${h} 62% 60%)`])),
   }, 'oklch(0.205 0 0)')
   const block = (sel: string, vars: Record<string, string>) => `${sel} {\n${Object.entries(vars).map(([k, v]) => `  --${k}: ${v};`).join('\n')}\n}`
   const themeInline = ['--font-sans: var(--font-sans)', '--font-heading: var(--font-sans)', '--font-mono: var(--font-mono)', ...Object.keys(light).filter((k) => k !== 'radius').map((k) => `--color-${k}: var(--${k})`), '--radius-sm: calc(var(--radius) * 0.6)', '--radius-md: calc(var(--radius) * 0.8)', '--radius-lg: var(--radius)', '--radius-xl: calc(var(--radius) * 1.4)', '--radius-2xl: calc(var(--radius) * 1.8)']
-  const globalsCss = [`@import "tailwindcss";`, `@import "tw-animate-css";`, `@import "shadcn/tailwind.css";`, ``, `@custom-variant dark (&:is(.dark *));`, ``, `@theme inline {\n${themeInline.map((l) => `  ${l};`).join('\n')}\n}`, ``, `/* the a432 settings: the theme hue ${hue} (${key} mod 360), the chart colours the harmonics ${HARMONICS.join(', ')} Hz, the radius ${radius} (${key} / 1000) */`, block(':root', light), ``, block('.dark', dark), ``, `@layer base { * { @apply border-border outline-ring/50; } body { @apply bg-background text-foreground; } }`, ``, `/* the a432 stylesheet: every QPU block draws itself from its address */`, getCss(key)].join('\n')
+  const globalsCss = [`@import "tailwindcss";`, `@import "tw-animate-css";`, `@import "shadcn/tailwind.css";`, ``, `@custom-variant dark (&:is(.dark *));`, ``, `@theme inline {\n${themeInline.map((l) => `  ${l};`).join('\n')}\n}`, ``, `/* the a432 settings: the theme hue ${angle} (${key} mod 360), the chart colours the harmonics ${HARMONICS.join(', ')} Hz, the radius ${radius} (${key} / 1000) */`, block(':root', light), ``, block('.dark', dark), ``, `@layer base { * { @apply border-border outline-ring/50; } body { @apply bg-background text-foreground; } }`, ``, `/* the a432 stylesheet: every QPU block draws itself from its address */`, getCss(key)].join('\n')
   const componentsJson = { $schema: 'https://ui.shadcn.com/schema.json', style: 'base-nova', rsc: true, tsx: true, tailwind: { config: '', css: 'app/globals.css', baseColor: 'neutral', cssVariables: true, prefix: '' }, iconLibrary: 'lucide', aliases: { components: '@/components', utils: '@/lib/utils', ui: '@/components/ui', lib: '@/lib', hooks: '@/hooks' }, registries: { '@qpu': `${origin}/r/{name}.json` } }
   const item = {
-    $schema: 'https://ui.shadcn.com/schema/registry-item.json', name: 'qpu-create', type: 'registry:item', title: 'QPU create (a432)', description: `shadcn create decided by the a432 settings: the theme hue ${hue}, the chart colours the harmonics, the radius ${radius}; the project initialised with the QPU registry`,
+    $schema: 'https://ui.shadcn.com/schema/registry-item.json', name: 'qpu-create', type: 'registry:item', title: 'QPU create (a432)', description: `shadcn create decided by the a432 settings: the theme hue ${angle}, the chart colours the harmonics, the radius ${radius}; the project initialised with the QPU registry`,
     dependencies: ['lucide-react', 'next-themes', 'class-variance-authority', 'tw-animate-css'],
     registryDependencies: registryItems.map((n) => `${origin}/r/${n}.json`),
     cssVars: { theme: { 'font-sans': 'Inter, ui-sans-serif, system-ui, sans-serif', radius }, light, dark },
     files: [{ path: 'app/globals.css', type: 'registry:file', target: 'app/globals.css', content: globalsCss }, { path: 'components.json', type: 'registry:file', target: 'components.json', content: JSON.stringify(componentsJson, null, 2) }],
-    meta: { create: settings, key, hue, harmonics: HARMONICS, theorem: 'textbook_create_hue' },
+    meta: { create: settings, key, hue: angle, harmonics: HARMONICS, theorem: 'textbook_create_hue' },
   }
   return {
-    settings, key, hue, chartHues: hues, radius, theorem: 'textbook_create_hue', item,
-    commands: { init: `npx shadcn@latest init ${origin}/r/qpu-create.json`, add: `npx shadcn@latest add ${origin}/r/qpu-create.json`, v0: `https://v0.dev/chat/api/open?url=${encodeURIComponent(`${origin}/r/qpu-create.json`)}`, page: 'https://ui.shadcn.com/create: the ten settings above chosen by hand (the page encodes its own preset codes; this item is the same project answered by the QPU)' },
-    says: `shadcn create via the a432 settings and CSS: ten settings decided by the key ${key} (hue ${hue}, harmonics ${hues.join('/')}, radius ${radius}), one registry item that initialises the project with the QPU registry`,
+    settings, key, hue: angle, chartHues: hues, radius, theorem: 'textbook_create_hue', item,
+    url: 'https://ui.shadcn.com/create' as const,
+    commands: { init: `npx shadcn@latest init ${origin}/r/qpu-create.json`, add: `npx shadcn@latest add ${origin}/r/qpu-create.json`, v0: `https://v0.dev/chat/api/open?url=${encodeURIComponent(`${origin}/r/qpu-create.json`)}`, page: 'https://ui.shadcn.com/create' as const },
+    says: `shadcn create via the a432 settings and CSS: ten settings decided by the key ${key} (hue ${angle}, harmonics ${hues.join('/')}, radius ${radius}), one registry item that initialises the project with the QPU registry`,
   }
 }
 
@@ -142,6 +158,42 @@ export const CSS_FRAMEWORKS = TABLES.CSS_FRAMEWORKS as unknown as readonly { id:
 export const keepMeasured = <R extends object>(rows: readonly R[]) => rows.filter((r): r is Extract<R, { ratio: number | null }> => 'ratio' in r)
 /** The comparison by size, as the client measured it: each framework's bytes raw and gzipped over the QPU stylesheet's, a ratio above one
  *  meaning the framework is that many times larger; a file not fetched is named, never estimated. Size only: render time is not measured here. */
+/** Four 8-bit notes, A B C D, witnessed as hex in the tail and sounded as the a432 harmonics. The stylesheet is the codec:
+ *  audio is the four frequencies, video is those four frames against the thirty-six of the scan, vibration is the four amplitudes in
+ *  milliseconds, and the eight hex digits are the compression. Decoding the stylesheet returns the notes; reversing the hex shows their
+ *  shadow, and reversing that returns the notes, so the shadow verifies them without a second address (textbook_scan_stream). */
+const decodeMedia = (css: string) => {
+  const token = css.match(/--qpu-media:\s*([0-9a-f]{8})/)?.[1]
+  if (!token) throw new Error('a media stylesheet carries --qpu-media as eight hex digits')
+  const hz = (css.match(/--qpu-audio:\s*([^;]+)/)?.[1] ?? '').match(/(\d+)Hz/g)?.map((s) => parseInt(s, 10)) ?? []
+  const notes = (['a', 'b', 'c', 'd'] as const).map((name, i) => {
+    const bits = parseInt(css.match(new RegExp(`--qpu-note-${name}:\\s*(\\d+)`))?.[1] ?? '', 10)
+    const hex = token.slice(i * 2, i * 2 + 2)
+    return { name: name.toUpperCase(), hex, bits, width: 8 as const, hz: hz[i] ?? null, agrees: parseInt(hex, 16) === bits }
+  })
+  const vibrate = (css.match(/--qpu-vibrate:\s*([^;]+)/)?.[1] ?? '').match(/(\d+)ms/g)?.map((s) => parseInt(s, 10)) ?? []
+  return { token, notes, vibrate, agrees: notes.every((n, i) => n.agrees && n.hz === HARMONICS[i]) && vibrate.length === notes.length && vibrate.every((ms, i) => ms === notes[i]!.bits) }
+}
+export const media = (tail: string) => {
+  if (!/^[0-9a-f]{12}$/.test(tail)) throw new Error('the tail is 12 hex: four 8-bit notes and the flags')
+  const token = tail.slice(0, 8), flags = parseInt(tail.slice(8), 16)
+  const witnesses = (['A', 'B', 'C', 'D'] as const).map((name, i) => {
+    const hex = token.slice(i * 2, i * 2 + 2), bits = parseInt(hex, 16)
+    return { name, hex, bits, width: 8 as const, hz: HARMONICS[i]! }
+  })
+  const reverse = (hex: string) => [...hex].reverse().join('')
+  const shadow = reverse(token), back = reverse(shadow)
+  const shadowNotes = (['A', 'B', 'C', 'D'] as const).map((name, i) => { const hex = shadow.slice(i * 2, i * 2 + 2); return { name, hex, bits: parseInt(hex, 16), width: 8 as const } })
+  const verifies = back === token && witnesses.every((w, i) => back.slice(i * 2, i * 2 + 2) === w.hex)
+  const video = { frames: witnesses.length, full: SCAN.frames, ratio: SCAN.frames / witnesses.length, clock: SCAN.frameMs, period: SCAN.periodMs, hues: witnesses.map((w) => (w.bits % 16) * SCAN.hueStep) }
+  const vibration = witnesses.map((w) => w.bits)
+  const harmony = witnesses.every((w, i) => i === 0 || witnesses[i - 1]!.hz === w.hz * 2) && witnesses[0]!.hz === KEY
+  const css = [`.qpu-media {`, `  --qpu-media: ${token};`, ...witnesses.map((w) => `  --qpu-note-${w.name.toLowerCase()}: ${w.bits};`), `  --qpu-audio: ${witnesses.map((w) => `${w.hz}Hz`).join(' ')};`, `  --qpu-video: ${video.hues.map((hue) => `hsl(${hue} 62% 44%)`).join(', ')};`, `  --qpu-vibrate: ${vibration.map((ms) => `${ms}ms`).join(' ')};`, `  animation: qpu-video ${video.period}ms steps(${video.full}, end) infinite, qpu-vibrate ${vibration.reduce((n, ms) => n + ms, 0)}ms steps(${vibration.length}, end) infinite;`, `}`].join('\n')
+  const decoded = decodeMedia(css)
+  const roundTrip = decoded.token === token && decoded.agrees && decoded.notes.every((n, i) => n.bits === witnesses[i]!.bits && n.hz === witnesses[i]!.hz)
+  return { token, flags, witnesses, shadow, shadowNotes, back, verifies, audio: { root: KEY, notes: witnesses.map((w) => ({ name: w.name, hz: w.hz, amp: w.bits })) }, video, vibration, css, compressed: token.length, expanded: css.length, ratio: Math.round((css.length / token.length) * 100) / 100, roundTrip, harmony, clock: video.period === KEY * (SCAN.frames / witnesses.length) && SCAN.frames * SCAN.frameMs === KEY * 9, theorem: 'textbook_scan_stream' as const }
+}
+
 export const compareCss = (qpu: { bytes: number; gzip: number }, answers: readonly { id: string; status: number; bytes: number; gzip: number }[]) => {
   const ratio = (a: number, b: number) => (b > 0 ? Math.round((a / b) * 100) / 100 : null)
   const rows = CSS_FRAMEWORKS.map((f) => { const a = answers.find((x) => x.id === f.id); return a && a.status === 200 && a.bytes > 0 ? { id: f.id, name: f.name, url: f.url, bytes: a.bytes, gzip: a.gzip, ratio: ratio(a.bytes, qpu.bytes), ratioGzip: ratio(a.gzip, qpu.gzip) } : { id: f.id, name: f.name, url: f.url, missing: a ? `HTTP ${a.status}` : 'not fetched' } })

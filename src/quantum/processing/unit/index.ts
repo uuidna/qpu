@@ -1,7 +1,7 @@
-// The QPU: the quantum processing unit. Its proofs are the Lean kernel beside this file (./lean), its compute is the
-// quantum core (../../blocks.ts) served over MCP (../../mcp.ts). This index is the unit's own surface: the one unscoped
-// account (qpu.uuidna.com), and the pure resolver that scopes it down to a tenant by either address — the subdomain
-// <slug>.uuidna.com or the internal path qpu.uuidna.com/<slug>/. Pure: host and path in, the tenant address out.
+// The unit over the quantum core (src/quantum/uuid). Its proofs are the Lean kernel beside this file (./lean).
+// This index is the unit's own surface: the one unscoped account (qpu.uuidna.com), and the pure resolver that
+// scopes it down to a tenant by either address — the subdomain <slug>.uuidna.com or the path qpu.uuidna.com/<slug>/.
+// Pure: host and path in, the tenant address out.
 
 import { VERSION } from './version.ts'
 
@@ -18,9 +18,9 @@ export const RESERVED_SEGMENTS: ReadonlySet<string> = new Set(['admin', 'api', '
 const isSegment = (s: string): boolean => /^[a-z][a-z0-9-]*$/.test(s) || /^[0-9a-f]{8}$/.test(s)
 
 /** How the address was reached: a tenant by subdomain or by origin path, the unscoped origin account, or not the unit. */
-export type AddressVia = 'subdomain' | 'origin-path' | 'origin-unscoped' | 'none'
+type AddressVia = 'subdomain' | 'origin-path' | 'origin-unscoped' | 'none'
 /** The tenant a request names, with both of its equal addresses; slug null is the unscoped origin account. */
-export type TenantAddress = { slug: string | null; subdomain: string | null; internalPath: string | null; via: AddressVia }
+type TenantAddress = { slug: string | null; subdomain: string | null; internalPath: string | null; via: AddressVia }
 
 /**
  * The unit resolving itself: from EITHER address to the same tenant, the slug (the UUID head) the invariant.
@@ -29,7 +29,7 @@ export type TenantAddress = { slug: string | null; subdomain: string | null; int
  *   qpu.uuidna.com (no segment)   -> { slug: null, via: 'origin-unscoped' }   (the main unscoped account)
  * A reserved first segment under the origin defers to the app's routes, so it stays unscoped, not a tenant.
  */
-export const tenantAddressOf = (host: string, pathname: string = '/'): TenantAddress => {
+export const tenantAddress = (host: string, pathname: string = '/'): TenantAddress => {
   const h = (host || '').split(':')[0].toLowerCase()
   // form A — the subdomain <slug>.uuidna.com (the origin qpu.uuidna.com is excluded: it is the unscoped account, handled below)
   if (h !== QPU_ORIGIN && h.endsWith('.' + QPU_APEX)) {
@@ -57,5 +57,51 @@ export const QPU = {
   kernel: QPU_LEAN,
   unscoped: `${QPU_ORIGIN} is the main unscoped account: every tenant, super-admin; never a tenant`,
   address: '<slug>.uuidna.com == qpu.uuidna.com/<slug>/ ; slug = the UUID head, the invariant',
-  resolve: tenantAddressOf,
+  resolve: tenantAddress,
 } as const
+
+// The coil is unit math. A Payload plugin calls these functions; this file does not import a plugin.
+export {
+  LATTICE_COINS,
+  LATTICE_RAYS,
+  LATTICE_FACES,
+  LATTICE_COIL,
+  LATTICE_PLANE,
+  SHOR_MODULUS,
+  NATIVE_PAYLOAD_PLUGINS,
+  mintTokenCoil,
+  coinAsToken,
+  canonicalCoilUuid,
+  fuseCoinsToCoilInfinityInOneUuid,
+  buildCoinCoilBlockchain,
+  verifyCoinCoilBlockchain,
+  solveAllViaCoins,
+  coinsCoilsAccounting,
+  qpuAccountingEndpoint,
+  documentCoinCoilReceipt,
+  searchCoilPriority,
+  type TokenCoil,
+  type TokenImprint,
+  type CoinUnfold,
+  type CoinTokenDuality,
+  type CoinCoilBlock,
+  type CoinCoilChain,
+} from './coil.ts'
+export {
+  verifyIsoQuantumEquivalence,
+  verifyIsoOnline,
+  validateStandards,
+  ciCdIso,
+  dryCleanMintsCoins,
+  isoTopographicTypographicCryptographicMcpMatrix,
+  mintAllMintable,
+  prePushTrackedCommitsGapFinder,
+  standardsFundingMonetisation,
+  legalStandardsInCoinDimensions,
+  STANDARDS,
+  type IsoQuantumPostulateReceipt,
+  type IsoQuantumSoundnessGuard,
+  type IsoBlockchainStandardLayer,
+  type DryCleanSliceMintReceipt,
+} from '../standards.ts'
+export { crypto1000Bit, N1000 } from '../crypto/index.ts'

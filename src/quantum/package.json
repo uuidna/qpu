@@ -1,0 +1,18 @@
+{
+  "name": "@qpu/password",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./password/password-hash.js",
+    "./unit": "./processing/unit/index.ts",
+    "./mcp": "./processing/mcp.ts",
+    "./blocks": "./uuid/index.ts",
+    "./apis": "./uuid/programs/apis/index.ts",
+    "./feeds": "./processing/feeds.ts",
+    "./discovery-document": "./processing/discovery-document.ts",
+    "./version": "./processing/unit/version.ts",
+    "./roles": "./processing/unit/roles.ts",
+    "./machine": "./processing/machine.ts",
+    "./payload": "./processing/toolboxes/payload.ts"
+  }
+}

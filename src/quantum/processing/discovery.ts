@@ -3,12 +3,17 @@
 // fetches. An MCP host is asked for tools/list and, where it serves one, its catalogue door; an API host for the OpenAPI,
 // index or identify document the verifiers registry names; both domains for /.well-known/qpu.json.
 import type { Verifier } from './verifiers.ts'
-import { STANDARDS, detectStandard } from './standards.ts'
+import { ISO_OPEN_DATA, STANDARDS, detectStandard, verifyIsoOnline } from './standards.ts'
 import { stem } from './match.ts'
-import { keepMeasured } from './unit/theme.ts'
+import { KEY, keepMeasured } from './unit/theme.ts'
+import { decodeImpossible, seededTrapdoor } from './algorithms.ts'
+import { CODATA_URL, listConstants } from './unit/constants.ts'
+import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
+import { THEOREM_KEYS } from './theorems-index.ts'
+import { PRECEDENCE } from './unit/license.ts'
 
-type Purpose = 'mcp-list' | 'catalogue' | 'contract' | 'well-known' | 'api-contract' | 'sitemap'
-export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string; headers?: Record<string, string> }
+type Purpose = 'mcp-list' | 'mcp-call' | 'mcp-find' | 'catalogue' | 'contract' | 'well-known' | 'api-contract' | 'sitemap'
+export type Request = { id: string; method: 'GET' | 'POST'; url: string; body?: unknown; purpose: Purpose; host: string; name?: string; headers?: Record<string, string>; server?: 'payload-rbac' }
 export const CLOUDFLARE_DOCS_MCP = 'https://docs.mcp.cloudflare.com/mcp'
 /** Cloudflare's MCP servers: the documentation server answers in the open; the rest answer 401 until a tenant brings its OAuth token. */
 export const CLOUDFLARE_MCP = TABLES.CLOUDFLARE_MCP as readonly { host: string; url: string; about: string }[]
@@ -47,12 +52,23 @@ export const CLAUDE_API = TABLES.CLAUDE_API
 export const KNOWN_MCP = TABLES.KNOWN_MCP as readonly { host: string; url: string; about: string; auth: 'none' | 'token'; maps: string }[]
 /** The hosts discovered when a tenant names none: the unit, this tree, Cloudflare's eight servers and GitHub's. */
 export const UNIT_MCP = 'https://uuidna.com/mcp', QPU_MCP = 'https://qpu.uuidna.com/mcp', DEFAULT_MCP_HOSTS: readonly string[] = [UNIT_MCP, QPU_MCP, ...CLOUDFLARE_MCP.map((c) => c.url), ...GITHUB_MCP.map((g) => g.url), ...GOOGLE_MCP.map((g) => g.url)]
+/** Every MCP host this tree names, one row per URL. They are doors of the one Payload RBAC MCP, not separate servers. */
+let hostList: { name: string; url: string }[] | undefined
+export const mcpHostList = (): { name: string; url: string }[] => hostList ??= (() => {
+  const rows = [
+    ...DEFAULT_MCP_HOSTS.map((url) => ({ name: new URL(url).host, url })),
+    ...KNOWN_MCP.map((row) => ({ name: row.host, url: row.url })),
+    ...WORKSPACE_MCP.map((row) => ({ name: row.host, url: row.url })),
+  ]
+  const seen = new Set<string>()
+  return rows.filter((row) => (seen.has(row.url) ? false : (seen.add(row.url), true)))
+})()
 /** The JSON of an MCP answer, whether the host answered JSON or an event stream (the data line that is JSON). */
 export const getEventData = (text: string): string => (/^(event|data):/m.test(text) ? (text.split('\n').filter((l) => l.startsWith('data:')).map((l) => l.slice(5).trim()).find((l) => l.startsWith('{')) ?? text) : text)
 export type Answer = Request & { status: number; type: string; text: string }
 export type Door = { name: string; description: string; takes: string[]; required: string[]; answers: string[]; readOnly: boolean | null; contract: 'tools/list' | 'catalogue' }
 type Host = { host: string; kind: 'mcp' | 'api' | 'well-known'; contract: string; status: number; detected: string; note: string; doors?: Door[]; paths?: string[] }
-export type Discovery = { hosts: Host[]; doors: (Door & { host: string; url: string })[]; capabilities: { statementVerdict: string[]; signing: string[]; readiness: string[]; addressing: string[]; rbac: string[]; metaphysics: string[] }; leads: { id: string; source: string; statement: string; status: 'open'; reason: string }[]; sitemap: { index: string; sitemaps: Loc[]; urls: Loc[] } }
+export type Discovery = { hosts: Host[]; doors: (Door & { host: string; url: string })[]; capabilities: { statementVerdict: string[]; signing: string[]; readiness: string[]; addressing: string[]; rbac: string[]; metaphysics: string[] }; leads: { id: string; source: string; statement: string; status: 'open'; reason: string }[]; sitemap: { index: string; sitemaps: Loc[]; urls: Loc[] }; lead: LeadDecode; upgrade: TextbookUpgrade }
 // a sitemap read as sitemaps.org defines it: each <sitemap> of an index and each <url> of a urlset, its loc and its lastmod
 type Loc = { loc: string; lastmod?: string }
 const listLocs = (xml: string, tag: 'sitemap' | 'url'): Loc[] => [...xml.matchAll(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, 'g'))].map((m) => { const lastmod = /<lastmod>\s*([^<]+?)\s*<\/lastmod>/.exec(m[1]!)?.[1]; return { loc: /<loc>\s*([^<]+?)\s*<\/loc>/.exec(m[1]!)?.[1] ?? '', ...(lastmod ? { lastmod } : {}) } })
@@ -65,15 +81,74 @@ const ANSWERS = ['verdict', 'receipt', 'deposited', 'sealed', 'signed', 'verifie
 export const rpcBody = (method: string, params?: unknown) => ({ jsonrpc: '2.0', id: 1, method, params })
 const requestId = (purpose: Purpose, host: string, name?: string) => `${purpose}:${host}${name ? `:${name}` : ''}`
 
-/** The first wave: every host's contract address. */
+const CERN_OPEN_DATA = 'https://opendata.cern.ch/api/records/?size=1'
+const FIPS_PAGES = ['https://csrc.nist.gov/pubs/fips/180-4/upd1/final', 'https://csrc.nist.gov/pubs/fips/202/final', 'https://csrc.nist.gov/pubs/fips/203/final', 'https://csrc.nist.gov/pubs/fips/204/final', 'https://csrc.nist.gov/pubs/fips/205/final'] as const
+/** The online research the 1000-bit decode leads. ISO Open Data, the CERN Open Data record, the NIST CODATA table, and the FIPS pages the textbook already names. */
+export const leadResearch = (): Request[] => [
+  { id: 'research:iso-open-data', method: 'GET', url: ISO_OPEN_DATA, purpose: 'api-contract', host: new URL(ISO_OPEN_DATA).host, name: 'iso-open-data' },
+  { id: 'research:cern-opendata', method: 'GET', url: CERN_OPEN_DATA, purpose: 'api-contract', host: new URL(CERN_OPEN_DATA).host, name: 'cern-opendata' },
+  { id: 'research:nist-codata', method: 'GET', url: CODATA_URL, purpose: 'api-contract', host: new URL(CODATA_URL).host, name: 'nist-codata' },
+  ...FIPS_PAGES.map((url) => ({ id: `research:nist:${url}`, method: 'GET' as const, url, purpose: 'api-contract' as const, host: new URL(url).host, name: `nist:${url}` })),
+]
+type LeadDecode = { bits: number; seed: number; decoded: boolean; verified: boolean; route: 'witness' | null; searched: string; blind: string; advantage: boolean; theorems: readonly ['textbook_impossible_trapdoor', 'textbook_witness_gates_decode', 'textbook_advantage_unbounded', 'textbook_decode_not_search'] }
+/** The seeded 1000-bit trapdoor, decoded by its witness in one reflection. The blind climb is not walked. The primes stay with the mint. */
+export const leadDecode = (): LeadDecode => {
+  const made = seededTrapdoor(1000, BigInt(KEY))
+  const opened = decodeImpossible(made.N, made.witness)
+  const advantage = opened.decoded && opened.verified && opened.route === 'witness' && opened.searched === 1n && made.p * made.q === made.N && made.bits === 1000 && made.blindReflections > opened.searched
+  return { bits: made.bits, seed: KEY, decoded: opened.decoded, verified: opened.verified, route: opened.route, searched: opened.searched.toString(), blind: made.blindReflections.toString(), advantage, theorems: ['textbook_impossible_trapdoor', 'textbook_witness_gates_decode', 'textbook_advantage_unbounded', 'textbook_decode_not_search'] }
+}
+const wordsOf = (text: string) => new Set(text.toLowerCase().match(/[a-z]{4,}/g) ?? [])
+const citedByPrecedence = (says: string) => {
+  const mine = wordsOf(says)
+  return PRECEDENCE.some((row) => [...wordsOf(`${row.title} ${row.states}`)].filter((word) => mine.has(word)).length >= 3)
+}
+const fipsId = (says: string) => /FIPS\s+\d+(?:-\d+)?/.exec(says)?.[0] ?? null
+type TextbookUpgrade = { textbooks: number; kernel: number; opendata: { fetched: boolean; covered: number }; nist: { fetched: boolean; covered: number }; both: number; awaiting: number; uncovered: number; novelties: number; cited: number; advantage: boolean }
+/** Every kernel textbook read against the Open Data and NIST answers the client brought. A source that was not read does not cover a theorem. A theorem the sources do not state stays uncovered. A theorem the precedence already states is cited. */
+export const textbookUpgrade = (answers: readonly { name?: string; status?: number; text?: string }[] = []): TextbookUpgrade => {
+  const lead = leadDecode()
+  const textOf = (name: string) => answers.find((row) => row.name === name && row.status === 200 && typeof row.text === 'string' && row.text.length > 0)?.text ?? ''
+  const isoText = textOf('iso-deliverables') || textOf('iso-open-data')
+  const iso = isoText.includes('{') ? verifyIsoOnline({ status: 200, text: isoText }) : null
+  const isoRefs = new Set((iso && iso.phase === 'verified' ? iso.rows : []).flatMap((row) => row.reference ? [row.reference, row.key] : []))
+  const cernText = textOf('cern-opendata')
+  const nistText = [textOf('nist-codata'), ...FIPS_PAGES.map((url) => textOf(`nist:${url}`))].filter((text) => text.length > 0).join('\n')
+  const quantities = nistText.includes('Quantity') ? listConstants(nistText).constants.map((row) => row.quantity.toLowerCase()).filter((name) => name.length >= 8) : []
+  const opendataFetched = isoRefs.size > 0 || cernText.length > 0
+  const nistFetched = nistText.length > 0
+  let kernel = 0, openCovered = 0, nistCovered = 0, both = 0, awaiting = 0, uncovered = 0, novelties = 0, cited = 0
+  for (const book of TEXTBOOK_THEOREMS) {
+    if (!THEOREM_KEYS.has(book.key)) continue
+    kernel += 1
+    const body = `${book.says}\n${book.lean}`
+    const wantsOpen = /ISO\/IEC|ISO \d|opendata\.cern|Open Data/.test(body)
+    const wantsNist = /\b(?:NIST|FIPS|CODATA)\b/.test(body)
+    const fips = fipsId(book.says)
+    const doi = /10\.7483\/[A-Z0-9.]+/.exec(body)?.[0] ?? ''
+    const openHit = (isoRefs.size > 0 && [...isoRefs].some((ref) => ref.length > 0 && body.includes(ref))) || (doi.length > 0 && cernText.includes(doi))
+    const nistHit = (fips !== null && nistText.includes(fips)) || (/\b(?:CODATA|Planck)\b/.test(book.says) && quantities.some((name) => book.says.toLowerCase().includes(name)))
+    const covered = openHit || nistHit
+    if (openHit) openCovered += 1
+    if (nistHit) nistCovered += 1
+    if (openHit && nistHit) both += 1
+    if (!covered && ((wantsOpen && !opendataFetched) || (wantsNist && !nistFetched))) awaiting += 1
+    else if (!covered) uncovered += 1
+    if (citedByPrecedence(book.says)) cited += 1
+    else if (!covered) novelties += 1
+  }
+  return { textbooks: TEXTBOOK_THEOREMS.length, kernel, opendata: { fetched: opendataFetched, covered: openCovered }, nist: { fetched: nistFetched, covered: nistCovered }, both, awaiting, uncovered, novelties, cited, advantage: lead.advantage }
+}
+/** The first wave: the 1000-bit research, then every host's contract address. */
 export const createDiscoveryRequests = (mcpHosts: readonly string[], verifiers: readonly Verifier[], auth: Readonly<Record<string, string>> = {}): Request[] => {
-  const out: Request[] = []
+  const out: Request[] = [...leadResearch()]
   for (const url of mcpHosts) {
     const host = new URL(url).host
     const headers = auth[host] ? { authorization: `Bearer ${auth[host]}` } : undefined
-    out.push({ id: requestId('mcp-list', host), method: 'POST', url, body: rpcBody('tools/list'), purpose: 'mcp-list', host, headers })
-    out.push({ id: requestId('catalogue', host), method: 'POST', url, body: rpcBody('tools/call', { name: 'list_tools', arguments: {} }), purpose: 'catalogue', host, headers })
-    out.push({ id: requestId('well-known', host), method: 'GET', url: `https://${host}/.well-known/qpu.json`, purpose: 'well-known', host })
+    const server = 'payload-rbac' as const
+    out.push({ id: requestId('mcp-list', host), method: 'POST', url, body: rpcBody('tools/list'), purpose: 'mcp-list', host, headers, server })
+    out.push({ id: requestId('catalogue', host), method: 'POST', url, body: rpcBody('tools/call', { name: 'list_tools', arguments: {} }), purpose: 'catalogue', host, headers, server })
+    out.push({ id: requestId('well-known', host), method: 'GET', url: `https://${host}/.well-known/qpu.json`, purpose: 'well-known', host, server })
   }
   for (const [name, url] of [...verifiers.flatMap((v) => (v.contract ? [[v.id, v.contract]] : [])), ...STANDARDS.map((s) => [s.id, s.contract]), ...Object.entries(GOOGLE_DOCUMENTS).map(([k, u]) => [`google-${k}`, u])]) { const host = new URL(url!).host; out.push({ id: requestId('api-contract', host, name), method: 'GET', url: url!, purpose: 'api-contract', host, name }) }
   out.push({ id: requestId('sitemap', SITEMAP.host), method: 'GET', url: SITEMAP.url, purpose: 'sitemap', host: SITEMAP.host })
@@ -114,7 +189,7 @@ export const listFollowUps = (answers: readonly Answer[]): Request[] => {
     for (const t of names) {
       if (listed.has(t.name) || !toDoor({ name: t.name, description: t.description }, 'catalogue').answers.length) continue
       const id = requestId('contract', a.host, t.name)
-      if (!done.has(id)) out.push({ id, method: 'POST', url: a.url, body: rpcBody('tools/call', { name: 'list_tools', arguments: { name: t.name } }), purpose: 'contract', host: a.host, name: t.name })
+      if (!done.has(id)) out.push({ id, method: 'POST', url: a.url, body: rpcBody('tools/call', { name: 'list_tools', arguments: { name: t.name } }), purpose: 'contract', host: a.host, name: t.name, server: 'payload-rbac' })
     }
   }
   // every API Google's directory lists asked once for its own Discovery document, through the one Google door
@@ -124,6 +199,14 @@ export const listFollowUps = (answers: readonly Answer[]): Request[] => {
   }
   // every child an index names is asked once
   for (const a of answers.filter((x) => x.purpose === 'sitemap' && x.status === 200)) for (const s of listLocs(a.text, 'sitemap')) if (!done.has(requestId('sitemap', a.host, s.loc))) out.push({ id: requestId('sitemap', a.host, s.loc), method: 'GET', url: s.loc, purpose: 'sitemap', host: a.host, name: s.loc })
+  // the ISO Open Data page names the JSONLines file; the dimensions stay unread until that file is the answer
+  for (const a of answers.filter((x) => x.name === 'iso-open-data' && x.status === 200)) {
+    const next = verifyIsoOnline({ status: a.status, text: a.text })
+    if (next.phase === 'requests' && next.request.url !== a.url) {
+      const id = 'research:iso-deliverables'
+      if (!done.has(id)) out.push({ id, method: 'GET', url: next.request.url, purpose: 'api-contract', host: new URL(next.request.url).host, name: 'iso-deliverables' })
+    }
+  }
   return out
 }
 
@@ -197,11 +280,14 @@ export const getDiscovery = (answers: readonly Answer[], verifiers: readonly Ver
     ...hosts.filter((h) => h.kind === 'api' && !/^openapi|json index|oai-pmh|json-ld|cldr|graphql/.test(h.detected)).map((h) => ({ id: `contract-${h.host}`, source: h.contract, statement: `${h.host} publishes no machine-readable contract at the address the registry names (${h.detected})`, status: 'open' as const, reason: 'the client is built from documentation read by a person; an OpenAPI or index document would let it be built from the host' })),
   ]
   const read = answers.filter((a) => a.purpose === 'sitemap' && a.status === 200)
-  return { hosts, doors, capabilities, leads, sitemap: { index: SITEMAP.url, sitemaps: read.flatMap((a) => listLocs(a.text, 'sitemap')), urls: read.flatMap((a) => listLocs(a.text, 'url')) } }
+  const lead = leadDecode()
+  const upgrade = textbookUpgrade(answers)
+  return { hosts, doors, capabilities, leads, sitemap: { index: SITEMAP.url, sitemaps: read.flatMap((a) => listLocs(a.text, 'sitemap')), urls: read.flatMap((a) => listLocs(a.text, 'url')) }, lead, upgrade }
 }
 
 /** The discovery page, from the discovery alone. */
 export const getDiscoveryPage = (d: Discovery, date: string): string => ['---', 'title: Discovery', 'order: 46', '---', '', '# Discovery before use', '',
+  `The 1000-bit trapdoor leads, seeded by ${d.lead.seed} and decoded by its witness in ${d.lead.searched} step. The blind climb is ${d.lead.blind} and is not walked. ${d.upgrade.kernel} kernel textbooks: ${d.upgrade.opendata.covered} stated by Open Data, ${d.upgrade.nist.covered} stated by NIST, ${d.upgrade.awaiting} still waiting on those sources, ${d.upgrade.uncovered} not stated by them, ${d.upgrade.novelties} not in the DOI precedence. Asked on ${date}.`, '',
   `Every host this tree talks to, asked for its contract on ${date} by \`npm run next\` through the \`discover\` tool: MCP hosts for tools/list and their catalogue door, API hosts for the OpenAPI, index or identify document the verifiers registry names, both domains for \`/.well-known/qpu.json\`. The client tools choose their doors from this table by capability, never from a name in code.`, '',
   '| Host | Kind | Contract | Status | Detected | Note |', '|---|---|---|---:|---|---|', ...d.hosts.map((h) => `| ${h.host} | ${h.kind} | ${h.contract} | ${h.status || '—'} | ${h.detected} | ${h.note.replace(/\|/g, '\\|')} |`), '',
   '## Capabilities found', '', `Statement → verdict: ${d.capabilities.statementVerdict.join(', ') || 'none'}. Signing: ${d.capabilities.signing.join(', ') || 'none'}. Readiness: ${d.capabilities.readiness.join(', ') || 'none'}. Addressing: ${d.capabilities.addressing.join(', ') || 'none'}. RBAC (a token in, a role out): ${d.capabilities.rbac.join(', ') || 'none: roles come from the tenant secrets until a Payload MCP host is named'}. Metaphysics (the arithmetic mod 9 every tail carries): ${d.capabilities.metaphysics.join(', ') || 'none'}.`, '',

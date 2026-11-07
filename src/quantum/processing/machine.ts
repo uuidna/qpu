@@ -6,7 +6,7 @@
 // command: the one runner (scripts/machine.ts), called by the stdio transport and by the Payload MCP plugin's machine tool, executes only
 // the argument vector a plan returns, streaming its lines as progress to a caller that sent a progress token.
 import { TABLES } from './tables-index.ts'
-import { uuidOf, entryTextOf } from './unit/blocks.ts'
+import { uuid, entryText } from '../uuid/index.ts'
 import { sha256, utf8, hex } from './unit/hmac.ts'
 import { listLeaks, LEAK_PATTERNS } from './audit.ts'
 import { summonCourt } from './toolboxes/legal.ts'
@@ -27,7 +27,7 @@ const SHA_RE = /^[0-9a-f]{40}$/
 
 export type MachineRequest = { action?: string; message?: string; confirm?: boolean; branch?: string; path?: string; tag?: string; commit?: string; from?: string; file?: string; archived?: boolean; worktree?: string; pattern?: string; patch?: string; facts?: WorkflowFacts }
 /** The plan of one action: allowed with its argument vector (and the message as its input), or refused with the court's case. */
-export const planMachine = (r: MachineRequest, decideOf: Decide) => {
+export const planMachine = (r: MachineRequest, decide: Decide) => {
   const a = MACHINE_ACTIONS.find((x) => x.id === r.action)
   const refuse = (rule: string, why: string, evidence: unknown) => ({ allowed: false as const, action: r.action ?? null, refused: why, court: summonCourt({ gate: `machine ${r.action ?? '?'}`, rule, evidence }), theorems: ['textbook_machine_allow_list', 'textbook_cheap_gates'] })
   if (!a) return refuse('route', `the allow-list names no action ${String(r.action)}: ${MACHINE_ACTIONS.map((x) => x.id).join(', ')}`, { asked: r.action })
@@ -50,7 +50,7 @@ export const planMachine = (r: MachineRequest, decideOf: Decide) => {
     if (!args) return refuse('shape', `${a.id} takes its own parameters only: a worktree under .claude/worktrees, a branch other than main, an archive/ tag at a full commit, or a relative file of a worktree`, { action: a.id })
     return { allowed: true as const, action: a.id, kind: a.kind, command: { cmd: a.cmd, args }, input: null, worktree, decision: null, says: a.says, theorems: ['textbook_machine_allow_list'] }
   }
-  const decision = a.workflow ? decideOf(a.workflow, r.facts ?? {}) : null
+  const decision = a.workflow ? decide(a.workflow, r.facts ?? {}) : null
   // a commit runs the pre-commit hook itself, which reads the facts only the staged tree holds (the generated files compared, the staged literals)
   // and decides the same rules strictly: a rule unknown here is deferred to it, a rule violated here refuses at once; a push decides here, all of it
   const deferred = a.workflow === 'pre-commit' && decision && !decision.allowed && decision.violated.length === 0
@@ -69,13 +69,13 @@ export const redact = (text: string, root?: string, home?: string, leaks = true)
 export const recordMachine = (run: MachineRun) => {
   const relative = redact(`${run.stdout}${run.stderr ? `\n${run.stderr}` : ''}`, run.root, run.home, false), found = listLeaks({ output: relative }), output = redact(relative)
   const body = { action: run.action, command: [run.command.cmd, ...run.command.args].join(' '), status: run.status, ms: run.ms, output, leaks: found.byKind }
-  const text = entryTextOf({ kind: 'machine', from: 'local', body })
-  const id = uuidOf(text)
+  const text = entryText({ kind: 'machine', from: 'local', body })
+  const id = uuid(text)
   return { entry: { id, kind: 'machine', from: 'local', body, sha256: hex(sha256(utf8(text))) }, ok: run.status === 0, redacted: found.total, says: `${run.action} ${run.status === 0 ? 'ran' : `ended with status ${run.status}`} in ${run.ms} ms; ${found.total ? `${found.total} leak(s) redacted by kind; ` : ''}recorded at ${id}`, theorems: ['textbook_machine_allow_list', 'textbook_leaks_redacted'] }
 }
 
 /** One event of the stream: every step start and end, commit, penalty, question, decision and receipt, and a heartbeat every second while work runs. */
-export type StreamEvent = { at: string; kind: string; subject: string; ms?: number; says: string; address?: string; eta?: number | null; elapsed?: number; options?: readonly string[] }
+type StreamEvent = { at: string; kind: string; subject: string; ms?: number; says: string; address?: string; eta?: number | null; elapsed?: number; options?: readonly string[] }
 /** The forecast of a step's next time from its recorded times, estimated and labelled so, or absent when none is recorded (textbook_eta_from_receipts):
  *  the additive decomposition BigQuery ML's ARIMA_PLUS documents (a one-period moving-average trend, one index per phase summing to zero) when two
  *  periods are recorded, then simple exponential smoothing in exact rationals (each time weighed a/q, the level (q - a)/q; numerator and q^n kept
