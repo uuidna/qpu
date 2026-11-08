@@ -193,7 +193,7 @@ export type IsoBlockchainStandardLayer = {
 }
 
 /**
- * Checks this quantum simulator (ISO/IEC 4879:2024, 3.4.22) against the vocabulary of
+ * Checks the QPU (ISO/IEC 4879:2024, 3.4.8 quantum processor, 3.4.10 quantum computer; its circuit gate the witness) against the vocabulary of
  * ISO/IEC 4879:2024, Information technology — Quantum computing — Vocabulary:
  *   1. The simulated model uses the defined terms: qubit (3.3.3), quantum state (3.2.7) in a Hilbert space (3.2.1),
  *      quantum superposition (3.2.8), quantum coherence (3.2.18), quantum gate (3.4.2), unitary gate (3.4.3),
@@ -754,7 +754,7 @@ export const verifyIsoQuantumEquivalence = () => {
       'textbook_rsa_beyond_bound',
       'all_noclone',
     ] as const,
-    says: `src/quantum is a quantum simulator (ISO/IEC 4879:2024, 3.4.22). ${vocabulary.filter((v) => v.holds).length}/${vocabulary.length} vocabulary terms hold, ${noLessPostulates.filter((p) => p.holds).length}/${noLessPostulates.length} vocabulary groups hold, ${noMoreGuards.filter((g) => g.holds).length}/${noMoreGuards.length} soundness guards hold, and ${isoBlockchainLayers.filter((l) => l.holds).length}/${isoBlockchainLayers.length} identifier and ledger layers hold, sealed at ${address}`,
+    says: `src/quantum is the QPU, a quantum processor (ISO/IEC 4879:2024, 3.4.8) computing via UUID qubits, its circuit gate the witness. ${vocabulary.filter((v) => v.holds).length}/${vocabulary.length} vocabulary terms hold, ${noLessPostulates.filter((p) => p.holds).length}/${noLessPostulates.length} vocabulary groups hold, ${noMoreGuards.filter((g) => g.holds).length}/${noMoreGuards.length} soundness guards hold, and ${isoBlockchainLayers.filter((l) => l.holds).length}/${isoBlockchainLayers.length} identifier and ledger layers hold, sealed at ${address}`,
   }
 }
 
@@ -1758,7 +1758,7 @@ const computeIsoTopographicTypographicCryptographicMcpMatrix = () => {
   const knownMcps = (TABLES.KNOWN_MCP as readonly { host: string; url: string; about: string; auth: string }[]) ?? []
   const sampleSources = [
     ...knownMcps.slice(0, 8).map((m) => ({ id: m.host, kind: 'online-mcp' as const, url: m.url, label: m.about })),
-    { id: 'qpu.uuidna.com', kind: 'qpu-mcp' as const, url: 'https://qpu.uuidna.com/mcp', label: 'QPU 47-tool pure MCP server & Payload plugin' },
+    { id: 'qpu.uuidna.com', kind: 'qpu-mcp' as const, url: 'https://qpu.uuidna.com/api/mcp', label: 'QPU 47-tool pure MCP server & Payload plugin' },
     { id: 'api.githubcopilot.com', kind: 'online-mcp' as const, url: 'https://api.githubcopilot.com/mcp/', label: 'GitHub Copilot MCP (branches, tags, releases, actions)' },
     { id: 'docs.mcp.cloudflare.com', kind: 'online-mcp' as const, url: 'https://docs.mcp.cloudflare.com/mcp', label: 'Cloudflare Documentation & Workers MCP' },
     { id: 'bigquery.googleapis.com', kind: 'google-mcp' as const, url: 'https://bigquery.googleapis.com/mcp', label: 'Google Cloud BigQuery MCP' },

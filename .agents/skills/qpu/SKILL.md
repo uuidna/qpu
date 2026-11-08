@@ -27,7 +27,7 @@ The quantum processing unit as skills: one per toolbox, generated from the toolb
 
 ## Vocabulary coverage (ISO/IEC 4879:2024)
 
-86 of 86 terms are named by at least one skill: 86 checked on the circuit simulator by qpu-google (each one sealed UUID, e2e { standards: true } replays them), 53 namings by the skills' own text.
+86 of 86 terms are named by at least one skill: 86 computed by the QPU through qpu-google (each term one sealed UUID register, its circuit gate the witness; e2e { standards: true } replays them), 51 namings by the skills' own text.
 
 Every term is named by a skill.
 

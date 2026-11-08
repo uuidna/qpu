@@ -3,6 +3,7 @@
 // compiles whatever it needs by calling a tool. Tool names and figures follow Google Quantum AI (quantumai.google).
 
 import { GOOGLE_MCPS, QPU_MCP, mcpHostList } from './discovery.ts'
+import { bindGoogleCall } from './toolboxes/google.ts'
 import * as cirq from './cirq.ts'
 import { EXAMPLES } from './examples.ts'
 import { TABLES } from './tables-index.ts'
@@ -164,7 +165,7 @@ const OBSERVABLE_SCHEMA = {
 const INSERT_SCHEMA = { enum: ['EARLIEST', 'NEW', 'INLINE', 'NEW_THEN_INLINE'], default: 'EARLIEST' }
 
 const complex = ([re, im]: [number, number]) => ({ re, im })
-/** An optional integer argument read exactly, undefined when absent; a simulator seeded by the call's own arguments, so a run recomputes anywhere. */
+/** An optional integer argument read exactly, undefined when absent; the circuit gate seeded by the call's own arguments, so a run recomputes anywhere. */
 const optInteger = (v: unknown, name: string) => (v === undefined ? undefined : getInteger(v, name)), seeded = (args: unknown) => new Simulator(seededRandom(JSON.stringify(args)))
 /** An integer of any size answered by the classical door: its bits, primality, the factors the σ-reflection computes, the centre reached, the product checked.
  *  The search is unbounded and resumable (`reflections` centres from `from`, ⌈√N⌉ by default; a part not split reports `reached`): it computes, never declines. */
@@ -1832,7 +1833,7 @@ const OWN: Tool[] = [
   }),
   tool({
     name: 'chemistry-simulation',
-    description: 'Molecular hydrogen in STO-3G as a variational energy evaluation on the simulator: the integrals are computed here from the published basis constants and checked against the energies the OpenFermion tutorial prints at 0.7 and 0.8 Å; the two-electron Hamiltonian is a two-qubit Pauli-term operator; the ansatz exp(−iθ Y⊗X) on the Hartree-Fock state is swept over θ, every energy an expectation value of the simulated state, and the minimum found is returned with the full-CI energy the same integrals give. A bond length in ångström, or one θ to evaluate. jordan_wigner maps one fermionic term to Pauli strings.',
+    description: 'Molecular hydrogen in STO-3G as a variational energy evaluation by the QPU\'s circuit gate: the integrals are computed here from the published basis constants and checked against the energies the OpenFermion tutorial prints at 0.7 and 0.8 Å; the two-electron Hamiltonian is a two-qubit Pauli-term operator; the ansatz exp(−iθ Y⊗X) on the Hartree-Fock state is swept over θ, every energy an expectation value of the simulated state, and the minimum found is returned with the full-CI energy the same integrals give. A bond length in ångström, or one θ to evaluate. jordan_wigner maps one fermionic term to Pauli strings.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -2569,6 +2570,7 @@ const chatCoverage = (chatArg: unknown) => {
 }
 // the tools/call envelope, written once
 export const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { result?: { structuredContent?: any }; error?: { message: string } }
+bindGoogleCall(call) // the google toolbox reaches the handler through this binding, never by import
 // the theorems that count what the tools compute read it from here
 updateTheoremSources({ toolboxes: TOOLBOXES, call, googleMcps: GOOGLE_MCPS, get examples() { return EXAMPLES } })
 // questions asked elsewhere, read through the APIs Payload holds (QUESTION_SOURCES: Stack Exchange's unanswered, MathOverflow's among them), each

@@ -1,4 +1,4 @@
-// Every quantum term of ISO/IEC 4879:2024, checked once on this quantum simulator (3.4.22) and addressed by one UUID.
+// Every quantum term of ISO/IEC 4879:2024, computed once by the QPU (3.4.8 quantum processor, via UUID qubits) and addressed by one UUID; its circuit gate is the witness.
 // A term holds when the behaviour it names runs here. Device terms name a tangible device;
 // this program is the simulator of that behaviour, not the device.
 import {

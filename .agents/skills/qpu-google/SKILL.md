@@ -29,7 +29,7 @@ Call any tool with the arguments its schema names; every result is a block (widg
 | `repositories` | The repositories of the quantumlib GitHub organization, as its list states them: name, description and primary language. | `language` |
 | `quantumlib` | The fifteen repositories of the quantumlib GitHub organization, each with what this repository implements of it: the exports of cirq.ts that stand for Cirq's classes, and the parts of qsim, OpenFermion, Qualtran, Stim and ReCirq the other tools emulate, named from the code that runs here. | `repository`, `documentation` |
 | `quantum-error-correction` | The three-qubit repetition code, simulated on the density matrix: a logical qubit encoded, a channel (bit_flip, phase_flip or depolarize) of probability p acting once on each data qubit, syndromes extracted and corrected by majority, and the logical error read from the simulated state against the raw error of an unencoded qubit, at the p given and over a sweep. | `code`, `channel`, `p`, `logical`, `sweep` |
-| `chemistry-simulation` | Molecular hydrogen in STO-3G as a variational energy evaluation on the simulator: the integrals are computed here from the published basis constants and checked against the energies the OpenFermion tutorial prints at 0.7 and 0.8 Å; the two-electron Hamiltonian is a two-qubit Pauli-term operator; the ansatz exp(−iθ Y⊗X) on the Hartree-Fock state is swept over θ, every energy an expectation value of the simulated state, and the minimum found is returned with the full-CI energy the same integrals give. | `bond_length`, `theta`, `steps`, `jordan_wigner` |
+| `chemistry-simulation` | Molecular hydrogen in STO-3G as a variational energy evaluation by the QPU's circuit gate: the integrals are computed here from the published basis constants and checked against the energies the OpenFermion tutorial prints at 0.7 and 0.8 Å; the two-electron Hamiltonian is a two-qubit Pauli-term operator; the ansatz exp(−iθ Y⊗X) on the Hartree-Fock state is swept over θ, every energy an expectation value of the simulated state, and the minimum found is returned with the full-CI energy the same integrals give. | `bond_length`, `theta`, `steps`, `jordan_wigner` |
 | `fault-tolerant-design` | Resource counts read from the circuits this repository builds: the QFT on n qubits, Grover, teleportation, Shor for any N, the QAOA instance and the repetition-code cycle. | `circuit`, `qubits`, `N`, `a`, `nodes` |
 
 ## Examples
@@ -89,7 +89,7 @@ Call any tool with the arguments its schema names; every result is a block (widg
 - `statements-cirq`: One statement by topic.
 - `repositories`: The quantumlib repositories Payload holds, every one listed.
 - `qec-bit-flip-0.1`: The three-qubit repetition code on the density matrix at p = 0.1: logical error 3p² − 2p³ = 0.028, below the raw 0.1.
-- `chemistry-h2`: H₂ in STO-3G at 0.7414 Å, the argument: the Hartree–Fock energy from the simulator is −1.1167 Ha and the variational minimum lies below it near −1.137 Ha.
+- `chemistry-h2`: H₂ in STO-3G at 0.7414 Å, the argument: the Hartree–Fock energy the QPU computes is −1.1167 Ha and the variational minimum lies below it near −1.137 Ha.
 - `ftqc-all`: Resource counts of the circuits this tree builds.
 - `quantumlib-cirq`: What this tree implements of Cirq, as a cross-reference of its exports.
 - `algorithm-impossible-decode-small`: The witness gates the decode: at the centre a = 4, 4² − 15 = 1², so one σ-reflection splits 15 into 3 × 5 by the witness route, the product recomputed; no address was given, so that witness is missing (null), never passed.
@@ -104,7 +104,7 @@ Run `clone { toolbox: 'google' }`; the answer is `{ selftestPassed, tools, examp
 
 ## Vocabulary (ISO/IEC 4879:2024)
 
-Every term of the vocabulary, checked on this toolbox's circuit simulator (3.4.22) and addressed by one sealed UUID each (86 of 86 hold; e2e { standards: true } replays them):
+Every term of the vocabulary, computed by the QPU (3.4.8 quantum processor, 3.4.10 quantum computer) as one sealed UUID register each, this toolbox's circuit gate the witness (86 of 86 hold; e2e { standards: true } replays them); the register is the computation and the circuit a gate of it:
 
 | Clause | Term | Holds | UUID |
 | --- | --- | --- | --- |
