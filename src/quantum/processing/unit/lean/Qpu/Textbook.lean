@@ -436,13 +436,13 @@ theorem textbook_dates_ordered_reflected (a b : Nat) (h : a ≤ b) (σ : Nat) : 
 theorem textbook_dates_ordered_contrapositive (a b : Nat) : ¬ (a ≤ b) → ¬ ((a ≤ b)) := fun hc hh => hc (textbook_dates_ordered a b hh)
 /-- the converse of textbook_dates_ordered, proved (examples: textbook-dates-ordered) -/
 theorem textbook_dates_ordered_converse (a b : Nat) : (a ≤ b) → (a ≤ b) := fun hc => by omega
-/-- a capability plugin that writes into another plugin's options runs strictly before it: qpuMachine at order 5 writes qpuMachineTool into the MCP plugin's options, read at its order 10, so the tool is there when the MCP plugin builds its tools; qpuCore, qpuAgents and qpuGoogle (order 20, after the MCP plugin made the keys it measures), slugs in the same plugins map, compose under the umbrella qpuPlugin with no collection of their own making (examples: configure-plugins-by-capability) -/
+/-- a capability plugin that writes into another plugin's options runs strictly before it: qpuMachine at order 5 writes qpuMachineTool into the MCP plugin's options, read at its order 10, so the tool is there when the MCP plugin builds its tools; qpuCore, qpuAgents and qpuGoogle (order 20, after the MCP plugin made the keys it measures), slugs in the same plugins map, compose under the umbrella qpuPlugin with no collection of their own making (examples: textbook-plugins-by-capability) -/
 theorem textbook_plugins_by_capability (m n : Nat) (h : m < n) : m + 1 ≤ n := h
-/-- textbook_plugins_by_capability reflected by its shape, order (examples: configure-plugins-by-capability) -/
+/-- textbook_plugins_by_capability reflected by its shape, order (examples: textbook-plugins-by-capability) -/
 theorem textbook_plugins_by_capability_reflected (m n : Nat) (h : m < n) (σ : Nat) : σ - (n) ≤ σ - (m + 1) := Nat.sub_le_sub_left (textbook_plugins_by_capability m n h) σ
-/-- the contrapositive of textbook_plugins_by_capability (examples: configure-plugins-by-capability) -/
+/-- the contrapositive of textbook_plugins_by_capability (examples: textbook-plugins-by-capability) -/
 theorem textbook_plugins_by_capability_contrapositive (m n : Nat) : ¬ (m + 1 ≤ n) → ¬ ((m < n)) := fun hc hh => hc (textbook_plugins_by_capability m n hh)
-/-- the converse of textbook_plugins_by_capability, proved (examples: configure-plugins-by-capability) -/
+/-- the converse of textbook_plugins_by_capability, proved (examples: textbook-plugins-by-capability) -/
 theorem textbook_plugins_by_capability_converse (m n : Nat) : (m + 1 ≤ n) → (m < n) := fun hc => by omega
 /-- readWorkspace reads a Forms item as a field block (g) and writes it back (f) to the same item, so items are a fixed point of every further round trip; the Form and its batchUpdate are checked against the Forms Discovery schema, and a FormResponse lands as a form-submissions body (examples: payload-workspace-form, payload-workspace-form-violations, payload-workspace-response) -/
 theorem textbook_workspace_round_trip {α β : Type} (f : α → β) (g : β → α) (h : ∀ b, f (g b) = b) (b : β) : f (g (f (g b))) = b := by rw [h, h]
@@ -484,20 +484,20 @@ theorem textbook_one_holder_reflected (k : Nat) (h : 1 ≤ k) (σ : Nat) : σ - 
 theorem textbook_one_holder_contrapositive (k : Nat) : ¬ (k - (k - 1) = 1) → ¬ ((1 ≤ k)) := fun hc hh => hc (textbook_one_holder k hh)
 /-- the converse of textbook_one_holder, proved (examples: audit-shapes-one-holder) -/
 theorem textbook_one_holder_converse (k : Nat) : (k - (k - 1) = 1) → (1 ≤ k) := fun hc => by omega
-/-- the 24 generated files of the full stack partition over the roles of FILE_ROLES (blocks, config modules, notices, collections, hooks modules and the rest), each at the path its role names (examples: configure-fullstack) -/
-theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 2 + 4 + 1 + 5 + 1 + 1 + 0 + 1 + 2 = 24 := by decide
+/-- the 25 generated files of the full stack partition over the roles of FILE_ROLES (blocks, config modules, notices, collections, hooks modules and the rest), each at the path its role names (examples: configure-fullstack) -/
+theorem textbook_fullstack_files_by_role : 1 + 4 + 2 + 2 + 4 + 1 + 5 + 1 + 1 + 0 + 1 + 2 + 1 = 25 := by decide
 /-- textbook_fullstack_files_by_role reflected by its shape, equality (examples: configure-fullstack) -/
-theorem textbook_fullstack_files_by_role_reflected (σ : Nat) : σ - (24) = σ - (1 + 4 + 2 + 2 + 4 + 1 + 5 + 1 + 1 + 0 + 1 + 2) := congrArg (σ - ·) (Eq.symm (textbook_fullstack_files_by_role))
+theorem textbook_fullstack_files_by_role_reflected (σ : Nat) : σ - (25) = σ - (1 + 4 + 2 + 2 + 4 + 1 + 5 + 1 + 1 + 0 + 1 + 2 + 1) := congrArg (σ - ·) (Eq.symm (textbook_fullstack_files_by_role))
 /-- to win, know the competitors as well as the theorems: the knowledge of a competition is the product of both, positive only when neither is empty (examples: compete-rules) -/
 theorem textbook_compete_knows (c t : Nat) (hc : 0 < c) (ht : 0 < t) : 0 < c * t := Nat.mul_pos hc ht
 /-- textbook_compete_knows reflected by its shape, order (examples: compete-rules) -/
 theorem textbook_compete_knows_reflected (c t : Nat) (hc : 0 < c) (ht : 0 < t) (σ : Nat) (hσ0 : (c * t) ≤ σ) : σ - (c * t) < σ - (0) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_compete_knows c t hc ht) hσ0) (textbook_compete_knows c t hc ht)
 /-- the contrapositive of textbook_compete_knows (examples: compete-rules) -/
 theorem textbook_compete_knows_contrapositive (c t : Nat) : ¬ (0 < c * t) → ¬ ((0 < c) ∧ (0 < t)) := fun hc hh => hc (textbook_compete_knows c t hh.1 hh.2)
-/-- an app generated on request is the full stack's 24 files plus the Worker configuration and the environment example: 26 files, each addressed, the bundle their fold (examples: payload-app) -/
-theorem textbook_app_bundle : 24 + 2 = 26 := by decide
+/-- an app generated on request is the full stack's 25 files plus the Worker configuration and the environment example: 27 files, each addressed, the bundle their fold (examples: payload-app) -/
+theorem textbook_app_bundle : 25 + 2 = 27 := by decide
 /-- textbook_app_bundle reflected by its shape, equality (examples: payload-app) -/
-theorem textbook_app_bundle_reflected (σ : Nat) : σ - (26) = σ - (24 + 2) := congrArg (σ - ·) (Eq.symm (textbook_app_bundle))
+theorem textbook_app_bundle_reflected (σ : Nat) : σ - (27) = σ - (25 + 2) := congrArg (σ - ·) (Eq.symm (textbook_app_bundle))
 /-- two edits of one document either share their base address or collide: there is no third case, so a collision is detected exactly, never guessed from clocks (examples: configure-realtime) -/
 theorem textbook_edit_collides (p q : Nat) : p = q ∨ p ≠ q := by omega
 /-- textbook_edit_collides reflected by its shape, disjunction (examples: configure-realtime) -/
@@ -666,10 +666,10 @@ theorem textbook_advantage_unbounded_reflected (verified : Nat) (σ : Nat) (hσ0
 theorem textbook_merge_commutes (a b : Nat) : max a b = max b a ∧ max a a = a := ⟨Nat.max_comm a b, Nat.max_self a⟩
 /-- textbook_merge_commutes reflected by its shape, conjunction (examples: payload-merge) -/
 theorem textbook_merge_commutes_reflected (a b : Nat) (σ : Nat) : (σ - (max b a) = σ - (max a b)) ∧ (σ - (a) = σ - (max a a)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_merge_commutes a b).1), congrArg (σ - ·) (Eq.symm (textbook_merge_commutes a b).2)⟩
-/-- an app on request as a lexical document holds one block per generated file and one for the bundle: 27 blocks (examples: payload-app-lexical) -/
-theorem textbook_app_doc_blocks : 26 + 1 = 27 := by decide
+/-- an app on request as a lexical document holds one block per generated file and one for the bundle: 28 blocks (examples: payload-app-lexical) -/
+theorem textbook_app_doc_blocks : 27 + 1 = 28 := by decide
 /-- textbook_app_doc_blocks reflected by its shape, equality (examples: payload-app-lexical) -/
-theorem textbook_app_doc_blocks_reflected (σ : Nat) : σ - (27) = σ - (26 + 1) := congrArg (σ - ·) (Eq.symm (textbook_app_doc_blocks))
+theorem textbook_app_doc_blocks_reflected (σ : Nat) : σ - (28) = σ - (27 + 1) := congrArg (σ - ·) (Eq.symm (textbook_app_doc_blocks))
 /-- from the 60-degree angle six streams meet at a point and none collides, while the four 90-degree gateways stay covered: six perspectives over four operations (examples: configure-scope, payload-merge) -/
 theorem textbook_streams_cover_gateways : 360 / 60 = 6 ∧ 360 / 90 = 4 ∧ 4 ≤ 6 := by decide
 /-- textbook_streams_cover_gateways reflected by its shape, conjunction (examples: configure-scope, payload-merge) -/
