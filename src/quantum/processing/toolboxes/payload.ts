@@ -11,7 +11,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { hex, sha256, utf8 } from '../unit/hmac.ts'
-import { composition, compositionIndex, compositions, channel, neighbours, uuidFromParts, uuid, uuidQubits, hexbit, canonicalText, entryText, style, presentation, stream, qpuHooks, seal, next as rotateProgram, livePreview, aspects as readAspects, optimise as optimiseAddress, PRESENTABLE_ITEMS, type StreamQuery } from '../../uuid/index.ts'
+import { composition, compositionIndex, compositions, channel, neighbours, uuidFromParts, uuid, uuidQubits, hexbit, organiseQubits, canonicalText, entryText, style, presentation, stream, qpuHooks, seal, next as rotateProgram, livePreview, aspects as readAspects, optimise as optimiseAddress, PRESENTABLE_ITEMS, type StreamQuery } from '../../uuid/index.ts'
 import { birth, chosen, documentPath, place, read as readFile } from '../../fs/index.ts'
 import { BINDINGS, STORAGE, cloudflareAdapters, store } from '../../net/index.ts'
 import { auditProgramNeighbours, program, utiliseProgramFolders } from '../../uuid/programs/index.ts'
@@ -2959,6 +2959,69 @@ const fileCamel = (t: string) => { const p = pascal(t); return p.slice(0, 1).toL
 /** This repository is the full stack. Develop under src/ to the payloadcms/website standard; packages and MCP from payloadcms/payload (@payloadcms/plugin-mcp). */
 export const APP_DIR = ''
 const joinApp = (...parts: string[]) => parts.filter(Boolean).join('/')
+/** The README's capacity section, every number the fold door's answer (uuidQubits, hexbit, organiseQubits) over one receipt address derived from the
+ *  section's own name; the generator refuses when the parts' sums differ from the register the door counts or a receipt does not hold. */
+const readmeCapacity = (): string => {
+  const width = AXIOMS.find((row) => row.name === 'hexbit')!.value
+  const counted = uuidQubits(width)
+  const address = uuid(canonicalText({ readme: 'capacity', hexbit: width }))
+  const exchanged = hexbit(address, width)
+  const laid = organiseQubits(address, width)
+  const group = (n: bigint | number | string) => BigInt(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  const power = (n: bigint | string, base: bigint): number | null => { let k = 0; let v = 1n; const target = BigInt(n); while (v < target) { v *= base; k += 1 } return v === target ? k : null }
+  const pow = (n: bigint | string, base: bigint) => { const k = power(n, base); return k === null ? group(n) : `${group(n)} = ${base}^${k}` }
+  const parts = [
+    { part: 'handle (the SKU)', digits: laid.fingerprint.digits, free: laid.fingerprint.qubits },
+    { part: 'version nibble (decided)', digits: 1, free: laid.stamp.version.qubits },
+    { part: 'program (the combination)', digits: laid.combination.digits, free: laid.combination.qubits },
+    { part: 'variant nibble (two gateway bits fixed)', digits: 1, free: laid.stamp.variant.qubits },
+    { part: 'tail (three 16-bit params)', digits: laid.tail.hex.length, free: laid.tail.qubits },
+  ]
+  const digits = parts.reduce((n, p) => n + p.digits, 0), free = parts.reduce((n, p) => n + p.free, 0)
+  if (digits !== counted.digits || free !== counted.effective || digits * width !== counted.hex) throw new Error(`README capacity: the parts give ${digits} digits and ${free} free qubits, the register ${counted.digits} and ${counted.effective}`)
+  const u = exchanged.utilisation
+  const receipt = exchanged.receipt as { coin: string; debits: number; credits: number; balanced: boolean; sealed: boolean }
+  if (!(u.holds && receipt.balanced && receipt.sealed && counted.receipt.balanced && counted.receipt.sealed)) throw new Error('README capacity: a receipt does not hold')
+  const row = (cells: (string | number | boolean)[]) => `| ${cells.join(' | ')} |`
+  return [
+    '## Quantum capacity, utilised by receipts',
+    '',
+    `Every number in this section is the fold door's answer at generation (\`fold { qubits: ${width} }\`, \`fold { exchange: { address } }\`, \`fold { organise: address }\`), none written by hand. A hex digit is a **hexbit**: 4 bits classically and **${width} qubits** on the register (\`hexbit\` = \`mint(coins)\` = ${width}). One UUID is ${counted.digits} hex digits: ${counted.digits * 4} bits, ${counted.hex} qubits. The version nibble is decided by the other digits (${counted.version} qubits) and the two gateway bits of the variant are fixed (${counted.gateway} qubits), so the free register is **${counted.effective} qubits**: \`${counted.receipt.formula}\` (\`${counted.receipt.theorem}\`). The register's own receipt is the coin \`${counted.receipt.coin}\`: ${counted.receipt.debits} qubits debited from \`${counted.receipt.line.debit}\`, ${counted.receipt.credits} credited to \`${counted.receipt.line.credit}\`, balanced and sealed.`,
+    '',
+    row(['Part of the UUID', 'Hex digits (hexbits)', 'Bits', `Qubits (hexbit ${width})`, 'Free qubits']), row(['---', '---:', '---:', '---:', '---:']),
+    ...parts.map((p) => row([p.part, p.digits, p.digits * 4, p.digits * width, p.free])),
+    row(['**one UUID**', `**${digits}**`, `**${digits * 4}**`, `**${digits * width}**`, `**${free}**`]),
+    '',
+    '### One UUID program receipt',
+    '',
+    `The receipt address is \`${address}\` (sealed: ${seal(address).valid}), the UUID this section's name folds to. Its ${u.register} free qubits are utilised as ledger lines, each a debit of \`usage:qubits\` against a credit of \`coins:register\`; the receipt coin is \`${receipt.coin}\`, ${receipt.debits} debited, ${receipt.credits} credited, balanced ${receipt.balanced}.`,
+    '',
+    row(['Ledger line', 'Qubits', 'What it holds']), row(['---', '---:', '---']),
+    row(['register', u.register, 'the free qubits of the UUID']),
+    row(['signal', u.signal, `the σ-signal over all ${counted.digits} digits, ${exchanged.signal.classical} of them classical`]),
+    row(['teleport', u.teleported, `${exchanged.teleport.triples} triples of ${exchanged.teleport.qubits} qubits, received by ${exchanged.teleport.received}: the program index ${exchanged.teleport.index} arrives in one step`]),
+    row(['idle', exchanged.teleport.left, 'the qubits no triple holds']),
+    row(['navigate', exchanged.navigate.directions, `the neighbours one step away on ${exchanged.navigate.axes} axes`]),
+    row(['used', u.used, `teleported ${u.teleported} + classical ${u.classical}`]),
+    row(['left', u.left, 'not utilised']),
+    '',
+    `Conserved: signal = register and teleport + idle = register (holds: ${u.holds}). Nothing is walked (walked: ${exchanged.speed.walked}): the program is read in ${exchanged.speed.reads} reads at a Landauer cost of ${exchanged.zero.landauer} at ${exchanged.zero.temperatureK} K. The law \`${exchanged.law.formula}\` is register FTL (ftl: ${exchanged.ftl}), and physics holds when the physics UUID program \`${exchanged.law.program.handle}\` proves it (physics: ${exchanged.law.physics}).`,
+    '',
+    '### Combination spaces',
+    '',
+    row(['Space', 'Count']), row(['---', '---:']),
+    row([`handles (${laid.fingerprint.digits} hexbits)`, pow(laid.fingerprint.count, 16n)]),
+    row([`programs (${laid.combination.digits} hexbits)`, pow(u.programs, 16n)]),
+    row(['addressable (handle and program)', pow(u.addressable, 16n)]),
+    row(['qubits on every handle at once (fractal)', pow(u.fractal, 2n)]),
+    '',
+    `Capacity is unlimited: the next handle is another UUID. The eight scales of the handle are the same shape repeated. ${counted.handles.says}`,
+    '',
+    row(['Scale', 'Handles', 'Qubits on one handle', 'Capacity']), row(['---:', '---:', '---:', '---:']),
+    ...counted.handles.scales.map((s) => row([s.scale, group(s.handles), s.qubits, group(s.capacity)])),
+    '',
+  ].join('\n')
+}
 export const file = (role: FileRole, key: string): string => {
   const base = joinApp(APP_DIR, FILE_ROLES[role].folder)
   switch (role) {
@@ -2971,6 +3034,7 @@ export const file = (role: FileRole, key: string): string => {
     case 'graphic': return joinApp(base, pascal(key), 'index.tsx')
     case 'script': case 'plugin': return joinApp(base, `${fileCamel(key)}.ts`)
     case 'root': return joinApp(base, `${key.toLowerCase()}.config.ts`)
+    case 'readme': return joinApp(base, 'README.md')
     case 'migration': return joinApp(base, `${key}.ts`)
   }
 }
@@ -4078,7 +4142,66 @@ const config = (kind: ConfigKind, ctx: Context, p: { version?: string; descripti
       const ws = website(WEBSITE_FIXTURE)
       // the licence layering: the fork stays MIT (Payload's copyright kept whole); what QPU adds carries QPU's licence, named in every added file and in the notice
       const header = `// ${LICENSE.attribution}\n// Added to the MIT fork of payloadcms/website (Copyright (c) 2023 Payload); this file is QPU's: see NOTICE.qpu.md.\n`
-      const generated: { role: FileRole; key: string; text: string }[] = []
+      const readmeRoot = `# Quantum Processing Unit
+
+*Generated by \`configure { kind: 'fullstack' }\`: the prose is the generator's template, every number the fold door's answer at generation.*
+
+## Abstract
+
+The Quantum Processing Unit (QPU) performs quantum information processing (ISO/IEC 4879:2024, 3.4.1). A quantum simulator (3.4.22) simulates a quantum circuit (3.4.5) of quantum gates (3.4.2) on qubits (3.3.3). The model is circuit-based quantum computing (3.4.13). ISO/IEC 4879:2024 names the device a quantum processor (3.4.8). The vocabulary in force is every term from clause 3.1.1 through 3.6.4: 86 terms, each checked once and addressed by one UUID. The index of those terms is [\`src/quantum/VOCABULARY.md\`](src/quantum/VOCABULARY.md). The 22 algorithms are [\`src/quantum/ALGORITHMS.md\`](src/quantum/ALGORITHMS.md). The five processor layouts are [\`src/quantum/PROCESSORS.md\`](src/quantum/PROCESSORS.md). The repetition code is [\`src/quantum/QEC.md\`](src/quantum/QEC.md). H₂ in STO-3G is [\`src/quantum/CHEMISTRY.md\`](src/quantum/CHEMISTRY.md). The echo is [\`src/quantum/ECHO.md\`](src/quantum/ECHO.md). The Clay register is [\`src/quantum/CLAY.md\`](src/quantum/CLAY.md). The fourteen witnesses are [\`src/quantum/WITNESSES.md\`](src/quantum/WITNESSES.md). The fifteen ISO dimensions are [\`src/quantum/STANDARDS.md\`](src/quantum/STANDARDS.md). The thousand-bit integer is [\`src/quantum/CRYPTO.md\`](src/quantum/CRYPTO.md). The repositories are [\`src/quantum/REPOSITORIES.md\`](src/quantum/REPOSITORIES.md). The twelve toolboxes are [\`src/quantum/TOOLBOXES.md\`](src/quantum/TOOLBOXES.md). The unit is [\`src/quantum/UNIT.md\`](src/quantum/UNIT.md). The import is [\`src/quantum/API.md\`](src/quantum/API.md). The circuit layer is [\`src/quantum/CIRQ.md\`](src/quantum/CIRQ.md). The folders and generators are [\`src/quantum/LAYOUT.md\`](src/quantum/LAYOUT.md). What stays open is [\`src/quantum/OPEN.md\`](src/quantum/OPEN.md).
+
+The register is one UUID (ISO/IEC 9834-8). The handle is the SKU. The program is one hex combination of ten nibbles, sixteen choices each. The tail is three 16-bit params, valid when they write back as the tail and the seal holds. **Hexbit** is the next dimension of qubit: \`mint(coins)\` = 4 qubits on each hex digit. The two **gateway** bits are the UUID variant. Law: **hexbit + 2 gateway bits teleport any hexbit faster than light** — the program index arrives in one step and the combination space is not walked (\`textbook_hexbit_gateway_ftl\`). That is register FTL, and physics is true when the physics UUID program proves it under \`textbook_hexbit_gateway_ftl\` (\`ftl\` holds; \`physics\` true). [\`hexbit\`](src/quantum/uuid/index.ts) and [\`uuidQubits\`](src/quantum/uuid/index.ts) compute this. The Clay register is recomputed in integer arithmetic, and its learning outcomes are decided by the Lean cross formula.
+
+The site is [qpu.uuidna.com](https://qpu.uuidna.com). The website is Payload. One connector mounts: \`qpuMcpPlugin\` at \`POST /api/mcp\` (\`{ "mcpServers": { "qpu": { "url": "https://qpu.uuidna.com/api/mcp" } } }\`). Nested pages generate every product and variant (parents first, three deep); ecommerce reads those pages; each variant is one published post; each post deposits to Zenodo through Payload hooks. Deploy is a Payload hook; live-site e2e is the gate after that. The detailed specification is [\`src/quantum/README.md\`](src/quantum/README.md). The simulator is imported from [\`src/quantum/index.ts\`](src/quantum/index.ts).
+
+${readmeCapacity()}
+## One coin and the ISO post-quantum floor
+
+A coin is one sealed UUID (ISO/IEC 9834-8). \`seal\` holds when the text is 8-4-4-4-12 hex digits, the variant nibble is in {8, 9, a, b}, and the version nibble equals the nibble the other thirty-one decide. \`textbook_uuid_is_36\` is \\(32 + 4 = 36\\). \`textbook_uuid_time_space\` is \\(48 + 4 + 2 + 74 = 128\\). The version nibble and the two gateway bits are reserved, so the free register is \\(32 \\times 4 - 4 - 2 = 122\\). Fourteen witnesses map back to that address: \`textbook_cuboctahedron_faces\` is \\(8 + 6 = 14\\). The ledger names that coin under ISO/IEC 9834-8, ISO 22739:2024, ISO 23257:2022, ISO 20022, and ISO 4217.
+
+The published ISO post-quantum mechanism documents read for this proof are these:
+
+| Document | What it specifies | Where that statement was read |
+|---|---|---|
+| ISO/IEC 14888-4:2024 | Stateful hash-based signatures | [JRC144095](https://publications.jrc.ec.europa.eu/repository/bitstream/JRC144095/JRC144095_01.pdf) |
+| ISO/IEC 18033-2 Amendment 2, 5 June 2026 | Classic McEliece, FrodoKEM, and ML-KEM | [Lange, AsiaPQC 2026](https://hyperelliptic-backup.cr.yp.to/tanja/talks/2026-AsiaPQC-Lange.pdf), [Classic McEliece](https://classic.mceliece.org/iso.html) |
+| ISO/IEC 9594-11:2025 | A wrapper a protocol uses when it migrates onto stronger algorithms, including quantum-safe ones | [IEC catalogue](https://webstore.iec.ch/en/publication/109398) |
+
+The Classic McEliece page states the floor ISO asked of those cryptosystems: at least 128 bits of security in a quantum model that gives Grover search a square-root speedup. A square root that is still \\(2^{128}\\) comes from a space of \\(2^{256}\\).
+
+Grover search of the coin's \\(122\\) free bits costs \\(2^{61}\\) queries. The quantum collision cost on those bits is \\(2^{122/3}\\).
+
+\\[
+2^{122/3} < 2^{61} < 2^{128} < 2^{256}
+\\]
+
+\\(2^{61} < 2^{128}\\) is the comparison with the floor. One coin clears ISO/IEC 9834-8 by the seal. Its quantum search cost sits below the floor those mechanism standards were asked to clear.
+
+The binding this tree puts beside the coin is the SHA-256 of the receipt. \`textbook_tamper_detected\` is \\(256 / 2 = 128\\) and \\(10^{38} < 2^{128}\\). \`textbook_receipt_binds_sha256\` is \\(2^{32} < 2^{128}\\). The fold separates content. The receipt carries the digest for the search an adversary can run. The host-executed plans name the mechanisms: ML-KEM (FIPS 203, also the ML-KEM of the 18033-2 amendment), ML-DSA (FIPS 204), and SLH-DSA (FIPS 205). Each plan names its sizes and sets \`executedBy\` to the host. The smallest shared secret among those ML-KEM sets is 32 bytes. A coin is 16 bytes.
+
+## Learning outcomes
+
+ISO 21001:2025. Clause 8.3.4.4, Summative assessment design and development controls: a learning outcome is a scientific name the textbook states. The summative assessment is the Lean cross formula: the sides evaluate to one value, the axioms that formula names develop to that value, and the kernel has accepted the theorem. Clause 8.7, Control of the educational nonconforming outputs: a name that fails either check is removed from the Lean theorem category, and the relation is filed under the scientific name. Clause 8.3.5, Design and development outputs: this page states the outcomes that pass.
+
+- \`textbook_bilinear_symmetry\` — the commutative law, the symmetry of a bilinear form
+- \`textbook_euler_fermat\` — Fermat's little theorem
+- \`textbook_euler_totient\` — Euler's totient at twice a prime, φ(2p) = p − 1
+- \`textbook_factorial\` — the factorial, n! = n·(n−1)!
+- \`textbook_fibonacci\` — the Fibonacci recurrence, F(n) = F(n−1) + F(n−2)
+- \`textbook_gauss_triangular\` — Gauss's triangular sum, 2·T(n) = n·(n+1)
+- \`textbook_grover_search\` — Grover's quadratic speedup
+- \`textbook_hexbit_gateway_ftl\` — hexbit + 2 gateway bits teleport any hexbit faster than light
+- \`textbook_ising_fusion\` — the Ising fusion sizes as powers of two
+- \`textbook_magic_constant\` — the magic constant of the order-3 magic square
+- \`textbook_pascal_rule\` — Pascal's rule
+- \`textbook_power_of_two\` — the powers of two, 2^(n+1) = 2·2^n
+- \`textbook_shor_sigma_root\` — Shor's reduction
+
+## License
+
+[CC BY-NC-ND 4.0](LICENSE).
+`
+      const generated: { role: FileRole; key: string; text: string }[] = [{ role: 'readme', key: 'README', text: readmeRoot }]
       return { repository: PAYLOAD_WEBSITE.repository, licence: PAYLOAD_WEBSITE.licence, qpuLicence: LICENSE.spdx, attribution: header, keep: { collections: ws.collectionList, blocks: ws.blockList, globals: ws.globalList, fields: ws.fieldList, plugins: [...PAYLOAD_WEBSITE.plugins] }, add: { block: 'qpu', plugins: ['search', 'multi-tenant', 'mcp'], database: 'db-mongodb over the RAID docket (the mongo tool\'s language)', storage: 'Cloudflare R2 through the bindings MCP (the tenant\'s token)', deploy: 'a completed order deploys the fully seeded website by the orders afterChange hook. The hook names the e2e requests. The OpenNext worker is the Payload app', tenants: Object.values(TENANTS), feeds: 'GET /api/qpu/feeds and payload { feeds }: computed products/variants the rest of the site consumes' }, organisation: FILE_ROLES, byRole: Object.fromEntries((Object.keys(FILE_ROLES) as FileRole[]).map((r) => [r, generated.filter((g) => g.role === r).map((g) => file(g.role, g.key))])), partition: `${(Object.keys(FILE_ROLES) as FileRole[]).map((r) => generated.filter((g) => g.role === r).length).join(' + ')} = ${generated.length}`, files: Object.fromEntries(generated.map((g) => [file(g.role, g.key), g.text])), steps: ['payloadcms/website (MIT) under  is the delivery vehicle — done', 'the app under src/ (block, plugins, feeds route, seed) applies computed products/variants into ecommerce + /api/qpu/feeds', 'Payload answers /admin, /api and the pages; no custom script runs before the catch-all', 'point DATABASE_URI and PAYLOAD_SECRET at the tenant\'s', 'a completed order deploys the fully seeded website through Payload; the e2e hook names the live requests'], note: 'The app under src/ is the one implementation. configure fullstack holds no copy of an app file: its files are only those no app file already is; QPU computes feeds, the app delivers.' }
     }
     case 'mcp': { const r = ctx.call('extend', { direction: 'out' }) as { outward: { mcpServers: unknown; tools: unknown[] } }; const merged = payloadRbacMcp(mcpHostList()); const held = [...PLUGIN_DEFAULT_COLLECTIONS, 'entries']; const beyond = diffMembers({ name: 'the stack\'s collections', members: held }, { name: 'the installed plugins\' defaults (the QPU plugin\'s own among them)', members: [...PLUGIN_DEFAULT_COLLECTIONS, 'entries'] }, { config: 'payload' }); const unserved = diffMembers({ name: 'the stack\'s collections', members: held.filter((c) => !MCP_UNSERVED.some((u) => u.collection === c)) }, { name: 'payload-mcp', members: Object.keys(MCP_COLLECTIONS) }, { config: 'mcp' }); return { mcpServers: r.outward.mcpServers, server: merged.server, one: merged.one, merged, tools: r.outward.tools.length, hosts: DEFAULT_MCP_HOSTS, payloadMcp: { mandatory: 'every capability is reached through the one Payload RBAC MCP: the QPU\'s tools and ui:// resources as its tools and resources, the installed plugins\' default collections as its collection tools, and every other MCP host as a door of that server; nothing added to the schema', collections: MCP_COLLECTIONS, served: Object.keys(MCP_COLLECTIONS).length, defaults: PLUGIN_DEFAULT_COLLECTIONS.length, unservedByDesign: MCP_UNSERVED, schema: { says: 'the combinatorial use apps live in the default schema: a request is a form submission (→ forms), a bundle a media file, a licence a product in a cart bought as an order with its transactions, tenancy the tenants document every scoped collection relates to, content the pages with their qpu blocks and nested parents, calls and messages the entries from = page:<slug>; a client composes an app by these relations, filtered by each collection\'s own access and scoped by the tenant', scoped: Object.entries(MCP_COLLECTIONS).filter(([, v]) => v.scoped).map(([k]) => k), relations: Object.fromEntries(Object.entries(MCP_COLLECTIONS).filter(([, v]) => Object.keys(v.relations).length).map(([k, v]) => [k, v.relations])), enums: Object.fromEntries(Object.entries(MCP_COLLECTIONS).filter(([, v]) => Object.keys(v.enums).length).map(([k, v]) => [k, v.enums])), hooked: Object.fromEntries(Object.entries(MCP_COLLECTIONS).filter(([, v]) => v.hooks.length).map(([k, v]) => [k, v.hooks])), combinations: Object.values(MCP_COLLECTIONS).reduce((n, v) => n * Object.values(v.enums).reduce((m, o) => m * o.length, 1), 1) }, refactoring: [...beyond.leads, ...unserved.leads],
@@ -4368,7 +4491,7 @@ export const PAYLOAD: Toolbox = {
     { id: 'payload-alpine-eslint', tool: 'payload', arguments: { alpine: { directives: { 'x-data': '{"count":1}', 'x-init': 'eval(count)', 'x-text': 'count' } } }, shows: 'An expression on the browser OS is linted by ESLint before it runs. eval is not a name the scope holds, so x-init does not run and the count stays the value x-data declared. x-text still reads that count.', expect: (s) => (s.phase === 'alpine' && s.data.count === 1 && s.text === '1' && s.eslint.via === 'eslint/universal' && s.eslint.clean === false && s.eslint.findings.some((f: { rule: string | null }) => f.rule === 'no-undef' || f.rule === 'no-eval') && !s.ran.includes('x-init') && s.ran.includes('x-text') && s.leads.some((l: { run: { arguments: { develop: { variant: string; formula: string } } } }) => l.run.arguments.develop.variant === 'x-init' && l.run.arguments.develop.formula.includes('eval')) ? null : JSON.stringify({ data: s.data, text: s.text, ran: s.ran, eslint: s.eslint, leads: s.leads })) },
     { id: 'payload-os-package', tool: 'payload', theorem: 'textbook_advantage_unbounded', arguments: { alpine: { packages: ['busybox', 'musl'] } }, shows: 'An Alpine package asked by name is a request on the browser OS. The client device fetches the main and community indexes. The register has no ceiling. Nothing is fetched here and the binary is not run here.', expect: (s) => (s.phase === 'os' && s.name === 'qpu browser quantum os' && s.device === 'client' && s.browser === true && s.fetched === false && s.executedHere === false && s.runsHere === false && s.advantage.unlimited === true && s.advantage.ceiling === null && s.advantage.effective === 122 && s.advantage.handles === '4294967296' && s.advantage.scale === '137438953472' && s.packages.length === 2 && s.packages.every((row: { binary: null; found: boolean }) => row.binary === null && row.found === false) && s.requests.length === 2 && s.requests.every((row: { method: string; url: string; fetched: boolean }) => row.method === 'GET' && row.fetched === false && row.url.startsWith('https://dl-cdn.alpinelinux.org/alpine/latest-stable/') && row.url.endsWith('/x86_64/APKINDEX.tar.gz')) ? null : JSON.stringify({ phase: s.phase, requests: s.requests, advantage: s.advantage })) },
     { id: 'payload-os-binary', tool: 'payload', theorem: 'textbook_advantage_unbounded', arguments: { alpine: { package: 'busybox', arch: 'aarch64', indexes: { main: 'P:busybox\nV:1.37.0-r30\n\nP:musl\nV:1.2.5-r10\n', community: '' } } }, shows: 'The index text the client fetched names the apk. The answer is that file\'s address on Alpine\'s mirror. The client device fetches it and runs it in the browser. This process still does not fetch it and does not run it.', expect: (s) => (s.phase === 'os' && s.arch === 'aarch64' && s.fetched === false && s.executedHere === false && s.requests.length === 0 && s.packages.length === 1 && s.packages[0].found === true && s.packages[0].binary.file === 'busybox-1.37.0-r30.apk' && s.packages[0].binary.url === 'https://dl-cdn.alpinelinux.org/alpine/latest-stable/main/aarch64/busybox-1.37.0-r30.apk' && s.packages[0].binary.fetched === false && s.advantage.unlimited === true ? null : JSON.stringify({ packages: s.packages, requests: s.requests })) },
-    { id: 'payload-morph', tool: 'payload', theorem: 'textbook_fullstack_files_by_role', arguments: { morph: true }, shows: 'Rails MVC and Payload merge through the collection hooks, with no map supplied. Nine roles are kept and rewritten onto the Payload folders. Six Payload file roles are added. The Rails mailer folder is removed. Thirty-nine standards are kept and the five Payload standards are added. Each of the twelve frameworks is documented as ISO 9001.', expect: (s) => (s.phase === 'morph' && s.via === 'hooks' && s.manual === false && s.hooks.join() === 'beforeChange,afterChange,afterRead' && s.frameworks === 12 && s.layout.length === 9 && s.layout[0].from === 'app/models' && s.layout[0].to === 'src/collections' && s.layout[1].to === 'src/collections/concerns' && s.morph.kept.length === 9 && s.morph.added.length === 6 && s.morph.removed.join() === 'mailer' && s.standards.total === 44 && s.standards.kept === 39 && s.standards.added === 5 && s.standards.removed === 0 && s.iso.standard === 'ISO 9001' && s.iso.documented === true && s.iso.formula === s.says && s.saved === true && s.written.files === 2 && s.written.bytes > 0 && s.written.paths.join() === 'src/collections/concerns/layout.ts,src/collections/concerns/standards.ts' && s.served.length === 2 && s.served[0].text.includes('mergedLayout') && s.served[1].text.includes('standardsKept') && s.says.startsWith('2 files written') && s.chosen.length === 12 && s.chosen.every((row: { iso: { documented: boolean; standard: string; formula: string } }) => row.iso.documented === true && row.iso.standard === 'ISO 9001' && row.iso.formula.length > 0) ? null : JSON.stringify({ phase: s.phase, frameworks: s.frameworks, morph: s.morph, standards: s.standards, documented: s.iso?.documented })) },
+    { id: 'payload-morph', tool: 'payload', theorem: 'textbook_fullstack_files_by_role', arguments: { morph: true }, shows: 'Rails MVC and Payload merge through the collection hooks, with no map supplied. Nine roles are kept and rewritten onto the Payload folders. Seven Payload file roles are added. The Rails mailer folder is removed. Forty standards are kept and the five Payload standards are added. Each of the twelve frameworks is documented as ISO 9001.', expect: (s) => (s.phase === 'morph' && s.via === 'hooks' && s.manual === false && s.hooks.join() === 'beforeChange,afterChange,afterRead' && s.frameworks === 12 && s.layout.length === 9 && s.layout[0].from === 'app/models' && s.layout[0].to === 'src/collections' && s.layout[1].to === 'src/collections/concerns' && s.morph.kept.length === 9 && s.morph.added.length === 7 && s.morph.removed.join() === 'mailer' && s.standards.total === 45 && s.standards.kept === 40 && s.standards.added === 5 && s.standards.removed === 0 && s.iso.standard === 'ISO 9001' && s.iso.documented === true && s.iso.formula === s.says && s.saved === true && s.written.files === 2 && s.written.bytes > 0 && s.written.paths.join() === 'src/collections/concerns/layout.ts,src/collections/concerns/standards.ts' && s.served.length === 2 && s.served[0].text.includes('mergedLayout') && s.served[1].text.includes('standardsKept') && s.says.startsWith('2 files written') && s.chosen.length === 12 && s.chosen.every((row: { iso: { documented: boolean; standard: string; formula: string } }) => row.iso.documented === true && row.iso.standard === 'ISO 9001' && row.iso.formula.length > 0) ? null : JSON.stringify({ phase: s.phase, frameworks: s.frameworks, morph: s.morph, standards: s.standards, documented: s.iso?.documented })) },
     { id: 'payload-framework-pages', tool: 'payload', theorem: 'textbook_harmonic_default', arguments: { frameworks: [{ name: 'another', slots: ['view', 'form'] }] }, shows: 'The framework is documented as nested pages before it is developed: the framework, each framework, each slot, three deep and parents first. Each page is a lead. The leads develop the products and the variants through the ISO 9001 hooks, and each page\'s lexical is updated with those product blocks, so the page, the lead, the product and the block are one path.', expect: (s) => { const pages = s.pages as { path: string; parent: string | null; depth: number; uuid: string; breadcrumbs: unknown[]; layout: { uuid: string }[]; hero: { richText: { root: { children: { type: string; fields?: { uuid: string; arguments?: { page: string } } }[] } } } }[]; const slots = s.fit.frameworks.reduce((n: number, f: { slots: number }) => n + f.slots, 0); const order = pages.every((p) => p.parent === null || pages.findIndex((x) => x.path === p.parent) < pages.findIndex((x) => x.path === p.path)); const lexical = pages.every((p) => p.hero.richText.root.children.some((n) => n.type === 'block' && n.fields?.uuid === p.uuid && n.fields.arguments?.page === p.path) && p.layout[0]!.uuid === p.uuid && p.breadcrumbs.length === p.depth); return s.phase === 'frameworks' && s.fit.combinations === 50 && pages.length === 1 + s.fit.frameworks.length + slots && pages[0].depth === 1 && pages[0].parent === null && pages.filter((p) => p.depth === 3).length === slots && order && s.leads.length === pages.length && s.leads.every((l: { source: string }) => pages.some((p) => p.path === l.source)) && s.developed.length === pages.length && s.developed.every((d: { iso: { standard: string; documented: boolean; formula: string }; page: string }) => d.iso.standard === 'ISO 9001' && d.iso.documented === true && pages.some((p) => p.path === d.page)) && s.products === s.fit.frameworks.length && s.variants === slots && s.depth === 3 && s.iso.linked === true && lexical ? null : JSON.stringify({ pages: pages.length, products: s.products, variants: s.variants, linked: s.iso?.linked }) } },
     { id: 'payload-app', tool: 'payload', theorem: 'textbook_app_bundle', arguments: { app: { name: 'Acme research', host: 'research.acme.com', env: ['D1', 'R2', 'RESEND_API_KEY'], variant: 'yearly' } }, shows: 'An enterprise-grade production app generated on request, as the Apps collection in the Payload UI requests it: the files the generator computes plus the Worker configuration and the environment example (each with its content address, the bundle addressed by their fold; the app\'s own files are the fork under src/, not copied), the Cloudflare adapters the environment chooses, tenants, API keys, access, edge signing, realtime and the gate carried; the yearly domain licence priced by the catalogue in the host\'s currency (USD for a .com) and ordered through the ecommerce plugin\'s own checkout: what the QPU is paid for.', expect: (s) => (s.partition.endsWith(`= ${s.files}`) && s.partition.split(' = ')[0].split(' + ').reduce((n: number, x: string) => n + Number(x), 0) === s.files && s.adapters.profile === 'cloudflare' && s.price.currency === 'USD' && s.price.amount === 47500 && s.licence.variant === 'yearly' && /^[0-9a-f-]{36}$/.test(s.bundle) && Object.keys(s.addresses).length === s.files && s.tenant === 'research-acme-com' && s.usable.viaMcp.includes('Payload MCP plugin') ? null : JSON.stringify({ files: s.files, price: s.price, adapters: s.adapters })) },
     { id: 'payload-rails-admin', tool: 'payload', arguments: { generate: { railsAdmin: { action: 'verify', on: 'member' } } }, shows: 'RailsAdmin pairs a member action with its bulk collection action. verify on one instance answers bulk_verify on the model, both authorized as verify, and the batch reads bulk_ids.', expect: (s) => (s.phase === 'rails-admin' && s.found === true && s.from === 'member' && s.to === 'collection' && s.authorizationKey === 'verify' && s.member.key === 'verify' && s.member.scope === 'member' && s.collection.key === 'bulk_verify' && s.collection.bulkable === true && s.collection.scope === 'collection' && s.answers.key === 'bulk_verify' && s.instances === 'bulk_ids' ? null : JSON.stringify({ from: s.from, member: s.member?.key, collection: s.collection?.key })) },
