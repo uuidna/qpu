@@ -4,7 +4,6 @@
 // SEO plugin's fields from the block's Open Graph, carrying its JSON-LD and its licence. Pure and small: computed once per
 // block by the balancer, so the cost is a few kilobytes and no computation on the device — the battery is the result.
 import { narrowScope, createSandbox, type NarrowRequest } from '../unit/namespaces.ts'
-import { qpuFormFields, qpuLexicalBlocks } from '../unit/lexical.ts'
 import { defineTool, createChecks, listTools, isObj, unlimited, type Toolbox, type Context } from '../toolbox.ts'
 import { createHash } from 'node:crypto'
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -869,102 +868,6 @@ const frameworksDoor = (raw: unknown) => {
   const block = { ...qpuFields(id, 'qpu', { frameworks: fitted.frameworks }, null), prev: 'payload' as const, referrer: 'payload' as const }
   const documented = documentFramework(fitted, listed)
   return { phase: 'frameworks' as const, via: 'payload' as const, referrer: 'payload' as const, fit: fitted, block, ...documented, says: `${fitted.says} ${documented.says}` }
-}
-/** The lexical node hooks Payload declares. beforeValidate records the block, beforeChange nests the page, afterChange rotates the program, afterRead serves the product. */
-const lexicalHooks = () => {
-  const pairs = qpuHooks({}).pairs.node
-  return pairs.flatMap((pair) => [pair.before, pair.after].filter((name): name is string => typeof name === 'string'))
-}
-/**
- * The Payload blocks and the form fields make the nested pages. Parents first, three deep:
- * the programs, the blocks and the forms under them, each block and each form field under its own.
- * The lexical hooks make each page a program. The handle is the object, the program is ten nibbles, the tail is twelve hex.
- * afterRead serves that program as a product. Nothing is fetched and nothing is written.
- */
-const pagePrograms = () => {
-  const hooks = lexicalHooks()
-  const theorem = 'textbook_witness_pair' as const
-  const rootPath = '/programs'
-  const blocksPath = `${rootPath}/blocks`
-  const formsPath = `${rootPath}/forms`
-  type Kind = 'programs' | 'blocks' | 'forms' | 'block' | 'form'
-  type Spec = { id: string; kind: Kind; title: string; path: string; parent: string | null; product: string; variant: string; blockType: string; statement: string }
-  const blockCount = qpuLexicalBlocks.length
-  const formCount = Object.keys(qpuFormFields).length
-  const specs: Spec[] = [
-    { id: 'programs', kind: 'programs', title: 'Programs', path: rootPath, parent: null, product: 'programs', variant: 'index', blockType: 'content', statement: '' },
-    { id: 'blocks', kind: 'blocks', title: 'Blocks', path: blocksPath, parent: rootPath, product: 'blocks', variant: 'section', blockType: 'content', statement: '' },
-  ]
-  for (const block of qpuLexicalBlocks) {
-    const path = `${blocksPath}/${block.slug}`
-    specs.push({ id: `block-${block.slug}`, kind: 'block', title: block.slug, path, parent: blocksPath, product: block.slug, variant: 'block', blockType: block.slug, statement: `${block.slug} is a Payload block. The lexical hooks make it the program of ${path}, and that program is the product.` })
-  }
-  specs.push({ id: 'forms', kind: 'forms', title: 'Forms', path: formsPath, parent: rootPath, product: 'forms', variant: 'section', blockType: 'form', statement: '' })
-  for (const [name, field] of Object.entries(qpuFormFields)) {
-    const path = `${formsPath}/${name}`
-    specs.push({ id: `form-${name}`, kind: 'form', title: name, path, parent: formsPath, product: name, variant: 'form', blockType: field.type, statement: `${name} is a form field of type ${field.type}. The lexical hooks make it the program of ${path}, and that program is the product.` })
-  }
-  const pagesCount = specs.length
-  specs[0]!.statement = `${blockCount} Payload blocks and ${formCount} form fields make ${pagesCount} nested pages. The lexical hooks make each page a program, and each program is a product.`
-  specs[1]!.statement = `${blockCount} Payload blocks sit under ${blocksPath}. Each block is a nested page, a program, and a product.`
-  specs[specs.findIndex((spec) => spec.id === 'forms')]!.statement = `${formCount} form fields sit under ${formsPath}. Each field is a nested page, a program, and a product.`
-  const developed = specs.map((spec) => {
-    const address = uuid(spec.path)
-    const read = channel(address)
-    const step = rotateProgram(address)
-    const placed = program(read.handle)
-    const parent = spec.parent === null ? null : specs.find((row) => row.path === spec.parent) ?? null
-    const breadcrumbs = parent
-      ? [
-          crumb(rootPath, 'Programs'),
-          ...(spec.path === blocksPath || spec.path === formsPath ? [] : [crumb(spec.parent!, spec.parent === blocksPath ? 'Blocks' : 'Forms')]),
-          crumb(spec.path, spec.title),
-        ]
-      : [crumb(rootPath, 'Programs')]
-    const node = { type: 'block' as const, version: 2, format: '' as const, fields: { id: address, blockName: spec.blockType, blockType: spec.blockType, uuid: address, handle: read.handle, program: read.program.join(''), tail: read.tail, next: step.next, page: spec.path, product: spec.product, variant: spec.variant } }
-    const children = specs.filter((child) => child.parent === spec.path)
-    const richText = lx.doc([
-      lx.heading(spec.title, 'h1'),
-      node,
-      lx.paragraph([lx.text(spec.statement)]),
-      ...(spec.parent ? [lx.paragraph([lx.text('Nested under '), lx.link(spec.parent, spec.parent)])] : []),
-      ...children.map((child) => lx.paragraph([lx.link(child.path, child.title)])),
-    ])
-    const iso = developViaHooks({ formula: spec.statement, product: spec.product, variant: spec.variant, title: spec.title, theorem })
-    const record = { title: spec.title, product: spec.product, variant: spec.variant, iso: iso.iso, docs: iso.docs }
-    const page = auditedSave({ collection: 'pages', data: { ...record, slug: `/${spec.id}`, path: spec.path, parent: spec.parent, breadcrumbs, hero: { type: 'default' as const, richText }, layout: [node.fields], meta: { title: spec.title, description: spec.statement } } })
-    const product = auditedSave({ collection: 'products', data: { ...record, page: spec.path, program: node.fields.program, handle: read.handle, tail: read.tail } })
-    const depth = breadcrumbs.length as 1 | 2 | 3
-    const beforeValidate = { hook: 'beforeValidate' as const, node: node.fields.blockType, recorded: node.fields.blockType === spec.blockType }
-    const beforeChange = { hook: 'beforeChange' as const, page: spec.path, parent: spec.parent, address }
-    const afterChange = { hook: 'afterChange' as const, handle: read.handle, program: node.fields.program, rotated: step.rotated, product: spec.product }
-    const afterRead = { hook: 'afterRead' as const, collection: 'products' as const, product: spec.product, variant: spec.variant, served: product.saved }
-    return {
-      ...spec, uuid: address, depth, breadcrumbs, node: node.fields, lexical: richText, children: children.length,
-      handle: read.handle, program: node.fields.program, rotated: step.rotated, tail: read.tail, next: step.next,
-      sealed: seal(address).valid && step.sealed, kept: step.kept, back: step.back, around: step.around, places: step.places,
-      aspects: step.aspects.length, witnessed: step.hooks, declared: step.declared, witnessedAll: step.all,
-      object: placed.path, installed: placed.installed, depthOf: placed.depth,
-      beforeValidate, beforeChange, afterChange, afterRead,
-      exit: { code: iso.exit.code, exited: iso.exit.exited, before: iso.exit.research.before, fetched: iso.exit.research.fetched, url: iso.exit.research.request.url },
-      page, product,
-    }
-  })
-  const made = developed.filter((row) => row.kind === 'block' || row.kind === 'form')
-  const holds = hooks.join() === 'beforeValidate,beforeChange,afterChange,afterRead' && developed.length === 2 + blockCount + formCount && made.length === blockCount + formCount && developed.every((row, index) => {
-    const parent = row.parent === null || developed.findIndex((item) => item.path === row.parent) < index
-    const turned = row.program.slice(1) + row.program[0]
-    const lexical = row.lexical.root.type === 'root' && row.lexical.root.children.some((child) => isObj(child) && child.type === 'block' && (child as { fields?: { uuid?: string; blockType?: string } }).fields?.uuid === row.uuid && (child as { fields?: { blockType?: string } }).fields?.blockType === row.blockType)
-    const linked = developed.filter((child) => child.parent === row.path).every((child) => JSON.stringify(row.lexical).includes(child.path))
-    return parent && row.depth === row.breadcrumbs.length && row.depth <= 3 && lexical && linked && row.sealed && row.kept && row.back && row.around && row.places === 10 && row.handle.length === 8 && row.program.length === 10 && row.tail.length === 12 && row.rotated === turned && row.next !== row.uuid && seal(row.next).valid && row.aspects === 4 && row.witnessed === row.declared && row.witnessedAll === true && row.installed === 9 && row.object === `src/quantum/uuid/programs/${[...row.handle].join('/')}/index.ts` && row.depthOf === 7 && row.beforeValidate.recorded && row.beforeChange.address === row.uuid && row.afterChange.rotated === turned && row.afterChange.product === row.node.product && row.afterRead.served === true && row.afterRead.collection === 'products' && row.exit.code === 0 && row.exit.exited === false && row.exit.before === true && row.exit.fetched === false && row.exit.url === 'https://www.iso.org/open-data.html' && row.page.saved === true && row.page.api === 'create' && row.page.args?.collection === 'pages' && row.product.saved === true && row.product.api === 'create' && row.product.args?.collection === 'products' && row.product.args?.data?.product === row.node.product && row.product.args?.data?.page === row.path
-  })
-  return {
-    phase: 'programs' as const, via: 'lexical' as const, to: 'products' as const, theorem,
-    hooks, blocks: blockCount, forms: formCount, pages: developed.length, products: developed.filter((row) => row.product.saved).length,
-    depth: 3 as const, fetched: false as const, written: false as const, tokens: 0 as const, queue: 0 as const, holds,
-    rows: developed.map(({ lexical: _lexical, page, product, ...row }) => { const data = product.args && 'data' in product.args ? product.args.data : undefined; return { ...row, page: { saved: page.saved, api: page.api, collection: page.args?.collection ?? null }, product: { saved: product.saved, api: product.api, collection: product.args?.collection ?? null, product: data?.product ?? null, variant: data?.variant ?? null, page: data?.page ?? null } } }),
-    says: holds ? `${blockCount} Payload blocks and ${formCount} form fields make ${developed.length} nested pages. The lexical hooks make each page a program, and each program is a product.` : 'the blocks and the forms did not become products',
-  }
 }
 /** The open-source application frameworks a self clone of this website can be built in. TypeScript and Ruby are already served. The rest are the ones that rank with them. Each clone keeps the website's own slots. */
 const CLONE_FRAMEWORKS = [

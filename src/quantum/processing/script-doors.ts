@@ -249,7 +249,7 @@ const SCRIPT_INVOKE = {
   clay: { tool: 'clay', via: 'MCP clay; statements via payload { scripts: { clay } }', npm: 'npm run clay:gen' },
   machine: { tool: 'payload machine (plugin)', via: 'scripts/machine.ts allow-list', npm: 'repository { machine } / Payload MCP machine' },
   next: { tool: 'qpuMcpPlugin tools/call', via: 'payloadMcpNext — Authorization: Bearer <payload-mcp-api-keys>; refused without the key', npm: 'no shell next — MCP only' },
-  hook: { tool: 'repository { workflow }', via: 'scripts/hook.ts', npm: 'npm run precheck' },
+  hook: { tool: 'repository { workflow }', via: 'src/quantum/processing/machine-run.ts hook <name>', npm: '.githooks/<name>' },
   purify: { tool: 'audit + leads + metrics', via: 'scripts/purify.ts (writes indexes Payload owns)', npm: 'npm run purify' },
   publish: { tool: 'docket entries', via: 'scripts/publish.ts', npm: 'npm run publish' },
   stdio: { tool: 'Payload /api/mcp', via: 'scripts/stdio.ts', npm: 'MCP stdio transport' },

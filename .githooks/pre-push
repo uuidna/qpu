@@ -1,0 +1,3 @@
+#!/bin/sh
+# pre-push is the client of its workflow: the machine runner asks repository { workflow: 'pre-push' }, walks its steps, hands back the facts and obeys the decision.
+exec node src/quantum/processing/machine-run.ts hook pre-push "$@"
