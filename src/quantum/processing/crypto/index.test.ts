@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+// physics is only a UUID program: the handler binds it by loading the programs, and each test file runs in its own process, so this one loads them too
+import '../../uuid/programs/index.ts'
 
 import {
   crypto1000Bit,
