@@ -53,7 +53,6 @@ import {
   RichText as SerializedRichText,
 } from '@payloadcms/richtext-lexical/react'
 import { Download } from '@root/components/blocks/Download'
-import { qpuLexicalConverters } from '@root/components/blocks/Qpu/Lexical'
 import { getVideo } from '@root/utilities/get-video'
 import React, { useCallback, useMemo, useState } from 'react'
 
@@ -123,7 +122,6 @@ export const jsxConverters: (args: {
       ...defaultConverters,
       ...CustomTableJSXConverters,
       blocks: {
-        ...qpuLexicalConverters,
         Arrow: ({ node }) => {
           return <Arrow direction={node.fields.direction} />
         },

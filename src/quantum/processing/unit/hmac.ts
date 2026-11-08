@@ -3,8 +3,8 @@
 /** FIPS 180-4 §4.2.2-3 and §5.3.3-5: the constants are the first 64 bits of the fractional parts of the cube roots of the first 80 primes, the
  *  initial hash those of the square roots of the first 8; SHA-256 keeps the first 64 constants and the first 32 bits of each; derived, never copied */
 const PRIMES: number[] = []; for (let n = 2; PRIMES.length < 80; n++) if (PRIMES.every((p) => n % p)) PRIMES.push(n)
-const rootOf = (x: bigint, k: bigint) => { let r = 1n << BigInt(Math.ceil(x.toString(2).length / Number(k))), y; while ((y = ((k - 1n) * r + x / r ** (k - 1n)) / k) < r) r = y; return r }
-const M64 = (1n << 64n) - 1n, K512 = PRIMES.map((p) => rootOf(BigInt(p) << 192n, 3n) & M64), H512 = PRIMES.slice(0, 8).map((p) => rootOf(BigInt(p) << 128n, 2n) & M64)
+const root = (x: bigint, k: bigint) => { let r = 1n << BigInt(Math.ceil(x.toString(2).length / Number(k))), y; while ((y = ((k - 1n) * r + x / r ** (k - 1n)) / k) < r) r = y; return r }
+const M64 = (1n << 64n) - 1n, K512 = PRIMES.map((p) => root(BigInt(p) << 192n, 3n) & M64), H512 = PRIMES.slice(0, 8).map((p) => root(BigInt(p) << 128n, 2n) & M64)
 const K = Int32Array.from(K512.slice(0, 64), (x) => Number(x >> 32n)) // no cap: SHA-256's fixed 64 round constants, structural — not a read or walk cap
 const rotr = (x: number, n: number) => (x >>> n) | (x << (32 - n))
 const ENCODER = new TextEncoder()
@@ -177,8 +177,10 @@ const gmul128 = (x: Uint8Array, y: Uint8Array): Uint8Array => {
 const ghash = (h: Uint8Array, data: Uint8Array): Uint8Array => { let y: Uint8Array = new Uint8Array(16); for (let off = 0; off < data.length; off += 16) { const blk = new Uint8Array(16); blk.set(data.subarray(off, off + 16)); for (let j = 0; j < 16; j++) y[j]! ^= blk[j]!; y = gmul128(y, h) } return y }
 /** The two halves of GCM both directions share, under the key and the IV: the counter-mode keystream XORed over the input, and the tag GHASH(aad ‖ ct ‖ lengths) ⊕ E(J0). */
 const pad16 = (n: number) => (16 - (n % 16)) % 16
-const gcmOf = (key: Uint8Array, iv: Uint8Array) => {
-  const rk = aesExpandKey256(key), h = aesEncBlock(rk, new Uint8Array(16)), j0 = new Uint8Array(16); j0.set(iv.subarray(0, 12)); j0[15] = 1
+const gcm = (key: Uint8Array, iv: Uint8Array) => {
+  if (key.length !== 32) throw new Error('AES-256-GCM key is 32 bytes')
+  if (iv.length !== 12) throw new Error('AES-256-GCM iv is 12 bytes')
+  const rk = aesExpandKey256(key), h = aesEncBlock(rk, new Uint8Array(16)), j0 = new Uint8Array(16); j0.set(iv); j0[15] = 1
   const ctr = (input: Uint8Array) => { const out = new Uint8Array(input.length), c = Uint8Array.from(j0); for (let off = 0; off < input.length; off += 16) { for (let i = 15; i >= 12; i--) { c[i] = (c[i]! + 1) & 0xff; if (c[i]) break } const ks = aesEncBlock(rk, c); for (let i = 0; i < 16 && off + i < input.length; i++) out[off + i] = input[off + i]! ^ ks[i]! } return out }
   const tag = (aad: Uint8Array, ct: Uint8Array) => {
     const g = new Uint8Array(aad.length + pad16(aad.length) + ct.length + pad16(ct.length) + 16), p = g.length - 16; g.set(aad, 0); g.set(ct, aad.length + pad16(aad.length))
@@ -188,13 +190,13 @@ const gcmOf = (key: Uint8Array, iv: Uint8Array) => {
   return { ctr, tag }
 }
 export const aes256gcmEncrypt = (key: Uint8Array, iv: Uint8Array, plaintext: Uint8Array, aad: Uint8Array = new Uint8Array(0)): { ciphertext: Uint8Array; tag: Uint8Array } => {
-  const gcm = gcmOf(key, iv), ct = gcm.ctr(plaintext)
-  return { ciphertext: ct, tag: gcm.tag(aad, ct) }
+  const box = gcm(key, iv), ct = box.ctr(plaintext)
+  return { ciphertext: ct, tag: box.tag(aad, ct) }
 }
 /** AES-256-GCM decrypt: the inverse — the tag recomputed and compared in constant time before any plaintext is returned, so a forged or altered ciphertext yields null, never plaintext. */
 export const aes256gcmDecrypt = (key: Uint8Array, iv: Uint8Array, ciphertext: Uint8Array, tag: Uint8Array, aad: Uint8Array = new Uint8Array(0)): Uint8Array | null => {
-  const gcm = gcmOf(key, iv)
-  return sameHex(hex(gcm.tag(aad, ciphertext)), hex(tag)) ? gcm.ctr(ciphertext) : null
+  const box = gcm(key, iv)
+  return sameHex(hex(box.tag(aad, ciphertext)), hex(tag)) ? box.ctr(ciphertext) : null
 }
 
 /** X25519 (RFC 7748), pure: Diffie-Hellman key agreement on Curve25519 by the Montgomery ladder over GF(2^255-19); the shared secret both sides compute without any key leaving either. */
@@ -238,12 +240,27 @@ const poly1305 = (otk: Uint8Array, msg: Uint8Array): Uint8Array => {
   acc = (acc + s) & ((1n << 128n) - 1n)
   const out = new Uint8Array(16); for (let i = 0; i < 16; i++) { out[i] = Number(acc & 0xffn); acc >>= 8n } return out
 }
-export const chacha20poly1305Encrypt = (key: Uint8Array, nonce: Uint8Array, plaintext: Uint8Array, aad: Uint8Array = new Uint8Array(0)): { ciphertext: Uint8Array; tag: Uint8Array } => {
+const chachaLengths = (key: Uint8Array, nonce: Uint8Array) => {
+  if (key.length !== 32) throw new Error('ChaCha20-Poly1305 key is 32 bytes')
+  if (nonce.length !== 12) throw new Error('ChaCha20-Poly1305 nonce is 12 bytes')
+}
+const chachaTag = (key: Uint8Array, nonce: Uint8Array, aad: Uint8Array, ct: Uint8Array): Uint8Array => {
   const otk = chachaBlock(key, 0, nonce).subarray(0, 32)
-  const ct = chacha20(key, nonce, plaintext, 1)
-  const mac = new Uint8Array(aad.length + pad16(aad.length) + ct.length + pad16(ct.length) + 16), o = mac.length - 16; mac.set(aad, 0); mac.set(ct, aad.length + pad16(aad.length))
+  const mac = new Uint8Array(aad.length + pad16(aad.length) + ct.length + pad16(ct.length) + 16), o = mac.length - 16
+  mac.set(aad, 0); mac.set(ct, aad.length + pad16(aad.length))
   const dv = new DataView(mac.buffer); dv.setBigUint64(o, BigInt(aad.length), true); dv.setBigUint64(o + 8, BigInt(ct.length), true)
-  return { ciphertext: ct, tag: poly1305(otk, mac) }
+  return poly1305(otk, mac)
+}
+export const chacha20poly1305Encrypt = (key: Uint8Array, nonce: Uint8Array, plaintext: Uint8Array, aad: Uint8Array = new Uint8Array(0)): { ciphertext: Uint8Array; tag: Uint8Array } => {
+  chachaLengths(key, nonce)
+  const ciphertext = chacha20(key, nonce, plaintext, 1)
+  return { ciphertext, tag: chachaTag(key, nonce, aad, ciphertext) }
+}
+/** ChaCha20-Poly1305 decrypt: the tag recomputed and compared before any plaintext is returned. A forged or altered ciphertext yields null. */
+export const chacha20poly1305Decrypt = (key: Uint8Array, nonce: Uint8Array, ciphertext: Uint8Array, tag: Uint8Array, aad: Uint8Array = new Uint8Array(0)): Uint8Array | null => {
+  chachaLengths(key, nonce)
+  if (tag.length !== 16) return null
+  return sameHex(hex(chachaTag(key, nonce, aad, ciphertext)), hex(tag)) ? chacha20(key, nonce, ciphertext, 1) : null
 }
 
 /** SHA-1 (FIPS 180-4), pure: deprecated for signatures but still required to read legacy systems (Git object ids, old TLS, HMAC-SHA1); provided for interop, KAT-verified — a gap, not a skip. */

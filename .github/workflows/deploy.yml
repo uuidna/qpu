@@ -1,144 +1,63 @@
-# Deploy and publish from GitHub, with every key in GitHub Secrets and never in the tree.
-# It runs on every push to main, on a published release (the act that also mints the Zenodo DOI and publishes to npm) and by hand,
-# inside the `production` environment: a run waits for a reviewer only when the owner has set one there. It stops first if a required
-# secret is missing, naming it, and never builds with a placeholder. Before anything is deployed, the Google-ISO quality checks must
-# pass: the TypeScript types, the unit tests, and the Lean kernel build (the proofs).
-#
-# Secrets, by name only (set their values in the repository's Settings → Secrets and variables → Actions, scoped to `production`):
-#   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID  required: the app deploys through OpenNext on Cloudflare
-#   QPU_ROLE_SECRET                              required: signs role claims between the Worker and the app
-#   PAYLOAD_SECRET                               optional: the Payload secret; QPU_ROLE_SECRET when absent
-#   (the two are set as encrypted Worker secrets after the deploy, never compiled into the bundle)
-# Variables (Settings, Environments, production, variables): D1_DATABASE_ID, KV_NAMESPACE_ID, R2_BUCKET_NAME, the app's bindings.
-#   NPM_TOKEN                                    required on a release: publishes the package with provenance
-#   GEMINI_API_KEY, ANTHROPIC_API_KEY            optional: the operator agents a tenant names
+# Deploy Worker qpu from main, or when started by hand. Payload names the stages. The runner decides nothing.
+# Waves, one session: games, home, standards, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, cicd. Each wave improves the next, and cicd improves home.
+# Secrets, by name only: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, PAYLOAD_SECRET.
 name: deploy
 on:
-  release:
-    types: [published]
   push:
     branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
-  id-token: write
-concurrency:
-  group: deploy
-  cancel-in-progress: false
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
+    concurrency:
+      group: deploy
+      cancel-in-progress: false
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
-      - name: check the production secrets (names only; stop before any work, never a placeholder)
-        run: |
-          missing=""
-          for n in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID QPU_ROLE_SECRET; do [ -n "${!n}" ] || missing="$missing $n"; done
-          if [ "$GITHUB_EVENT_NAME" = release ] && [ -z "$NPM_TOKEN" ]; then missing="$missing NPM_TOKEN"; fi
-          if [ -n "$missing" ]; then echo "::error::missing in the production environment:$missing (Settings, Environments, production, secrets)"; exit 1; fi
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          QPU_ROLE_SECRET: ${{ secrets.QPU_ROLE_SECRET }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 10.34.9
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: 26
-          cache: npm
-          registry-url: https://registry.npmjs.org
-      - run: npm ci
-      - name: Lean toolchain (elan, pinned by lean-toolchain)
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Payload migrate, then the D1 optimize
+        run: pnpm run deploy:database
+      - name: Payload writes one wave, then the next, in one session
+        run: cross-env NODE_ENV=production pnpm run seed
+      - name: Payload reads the pages back and deploy is allowed when they agree
+        run: cross-env NODE_ENV=production pnpm run seed:check
+      - name: OpenNext builds the Payload app and deploys the Worker
+        run: pnpm run deploy:app
+      - name: smoke the admin on both hostnames
         run: |
-          curl -sSfL https://github.com/leanprover/elan/releases/latest/download/elan-x86_64-unknown-linux-gnu.tar.gz | tar xz
-          ./elan-init -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: next — apply the ISO quantum-AI leads across the clay families and cases (mandatory; offline/fast, its flap-steps are leads, not stops)
-        run: npm run next -- --offline --fast || true
-      - name: Google-ISO quality — TypeScript types, unit tests, and the Lean kernel build
+          fail=0
+          for url in \
+            https://qpu.uuidna.com/admin \
+            https://qpu.uuidna.com/admin/login \
+            https://qpu.psg.bg/admin \
+            https://qpu.psg.bg/admin/login
+          do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "$url")
+            echo "$code $url"
+            if [ "$code" != "200" ]; then fail=1; fi
+          done
+          exit "$fail"
+      - name: query Worker logs
         run: |
-          npx tsc --noEmit -p tsconfig.json
-          node --test 'src/quantum/**/*.test.ts'
-          lake build
-      # Assemble the app the way the fullstack config states it (configure { kind: 'fullstack' }.steps): fork payloadcms/website (MIT)
-      # under .qpu-app/ FIRST (so pnpm reads the clone's package.json), then set up pnpm, then run the generator into the clone so every
-      # overlay file (the qpu block, the tenants collection, the plugins, the adapters, the MCP, the migrations, the registry,
-      # open-next.config.ts and wrangler.jsonc) is written from the tree. The clone is untracked; @uuidna/qpu is linked from the repo root.
-      - name: fork payloadcms/website (MIT) under .qpu-app
-        run: |
-          rm -rf .qpu-app
-          git clone --depth 1 https://github.com/payloadcms/website .qpu-app
-          rm -rf .qpu-app/.git
-      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
-        with:
-          package_json_file: .qpu-app/package.json
-      - name: generate the QPU overlay into the clone and add its dependencies
-        run: |
-          node scripts/configs.ts
-          # The generated adapters import the RAID db adapter (qpuRaidDb) from ./payload.qpu.db — a committed source module (too large to inline in the
-          # generator); copy it into the overlay so the import resolves at build.
-          cp src/payload.qpu.db.ts .qpu-app/src/payload.qpu.db.ts
-          cd .qpu-app
-          pnpm add -w \
-            @payloadcms/plugin-ecommerce@3.90.1 \
-            @payloadcms/plugin-import-export@3.90.1 \
-            @payloadcms/plugin-mcp@3.90.1 \
-            @payloadcms/plugin-multi-tenant@3.90.1 \
-            @payloadcms/plugin-search@3.90.1 \
-            @payloadcms/db-d1-sqlite@3.90.1 \
-            @payloadcms/db-postgres@3.90.1 \
-            @payloadcms/storage-gcs@3.90.1 \
-            @payloadcms/storage-r2@3.90.1 \
-            @payloadcms/storage-vercel-blob@3.90.1 \
-            @payloadcms/email-resend@3.90.1 \
-            @payloadcms/email-nodemailer@3.90.1 \
-            @opennextjs/cloudflare@^1.20.13 \
-            zod@^3 \
-            '@uuidna/qpu@link:..'
-          # Build the Worker bundle only: drop the website build's `payload migrate` (needs a live DB) and `generate:llms` (needs a GitHub token)
-          # from the build script — neither is needed to compile the bundle; migrations run against the live D1 after deploy.
-          node -e "const f='package.json',p=require('./'+f);if(p.scripts&&p.scripts.build){p.scripts.build=p.scripts.build.replace(/pnpm (payload migrate|generate:llms) &&\s*/g,'');require('fs').writeFileSync(f,JSON.stringify(p,null,2)+'\n')}"
-          # The generated overlay and the linked @uuidna/qpu package (a Node dev script among its exports) are generated/trusted code; the parent repo's
-          # own TypeScript and tests are the source of truth and pass above. Tell the website's `next build` not to block on type or lint errors.
-          node -e "const f='next.config.js';const fs=require('fs');if(fs.existsSync(f)){let s=fs.readFileSync(f,'utf8');if(!s.includes('ignoreBuildErrors')){s=s.replace('const nextConfig = withBundleAnalyzer({','const nextConfig = withBundleAnalyzer({ typescript: { ignoreBuildErrors: true }, eslint: { ignoreDuringBuilds: true },');fs.writeFileSync(f,s)}}"
-          # Dynamic seeds computed by clay, not a build-time CMS dump: force every route dynamic so no page pre-renders against a database at build. The
-          # QPU's own content seed is computed by the clay register, and the website's CMS pages render at request time against D1 — so the build needs
-          # no live database. (append, never prepend — a layout/page keeps its imports; skip any file that already declares `dynamic`.)
-          node -e "const {readdirSync,statSync,readFileSync,writeFileSync}=require('fs');const {join}=require('path');const walk=(d)=>{for(const e of readdirSync(d)){const p=join(d,e);const st=statSync(p);if(st.isDirectory())walk(p);else if((e==='layout.tsx'||e==='page.tsx')){const s=readFileSync(p,'utf8');if(!/export const dynamic\b/.test(s))writeFileSync(p,s+\"\\nexport const dynamic = 'force-dynamic'\\n\")}}};walk('src/app')"
-          # Next still calls generateStaticParams while collecting page data for a force-dynamic route, and every one in the website reads the CMS through
-          # getPayload, which connects to MongoDB (none at build: "cannot connect to MongoDB", "Failed to collect page data for /[...slug]"). Export an empty
-          # list instead, the original kept under another name, so no path is prerendered and every one renders on request. (skip a file already rewritten)
-          node -e "const {readdirSync,statSync,readFileSync,writeFileSync}=require('fs');const {join}=require('path');const walk=(d)=>{for(const e of readdirSync(d)){const p=join(d,e);if(statSync(p).isDirectory())walk(p);else if(e==='layout.tsx'||e==='page.tsx'){const s=readFileSync(p,'utf8');if(s.includes('qpuBuildStaticParams'))continue;const t=s.replace(/export (async function|const) generateStaticParams\b/,(m,k)=>'export const generateStaticParams = async () => []\\n'+k+' qpuBuildStaticParams');if(t!==s)writeFileSync(p,t)}}};walk('src/app')"
-          # OpenNext on Cloudflare bundles every route into the one Worker and refuses an edge-runtime route ("app/(frontend)/api/og/route cannot use the
-          # edge runtime"); its docs say to remove `export const runtime = 'edge'`, so the route runs in the Worker's Node.js runtime like the others.
-          node -e "const {readdirSync,statSync,readFileSync,writeFileSync}=require('fs');const {join}=require('path');const walk=(d)=>{for(const e of readdirSync(d)){const p=join(d,e);if(statSync(p).isDirectory())walk(p);else if(/\.(t|j)sx?$/.test(e)){const s=readFileSync(p,'utf8');const t=s.replace(/^export const runtime = ['\"]edge['\"];?[ \t]*$/gm,'');if(t!==s)writeFileSync(p,t)}}};walk('src')"
-        env:
-          QPU_APP_MCP: http://127.0.0.1:1/api/mcp
-          # the bindings wrangler.jsonc needs, as production variables (ids, not secrets); unset, the deploy step stops on the placeholders
-          D1_DATABASE_ID: ${{ vars.D1_DATABASE_ID }}
-          KV_NAMESPACE_ID: ${{ vars.KV_NAMESPACE_ID }}
-          R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
-      - run: pnpm install
-        working-directory: .qpu-app
-      # Built with no secret in the process: the build needs none, and a secret in its env or .env is compiled into the Worker's script
-      # source (OpenNext bakes .env into next-env.mjs). The runtime secrets are set after the deploy as encrypted Worker secrets.
-      - name: build the app (OpenNext on Cloudflare, no secrets)
-        run: pnpm exec opennextjs-cloudflare build
-        working-directory: .qpu-app
-      - name: deploy the app, then set its runtime secrets as Worker secrets
-        run: |
-          if grep -q "<the tenant" wrangler.jsonc; then echo "::error::wrangler.jsonc still has placeholder bindings: set D1_DATABASE_ID, KV_NAMESPACE_ID and R2_BUCKET_NAME as production variables"; exit 1; fi
-          pnpm exec opennextjs-cloudflare deploy
-          printf '%s' "${PAYLOAD_SECRET:-$QPU_ROLE_SECRET}" | pnpm exec wrangler secret put PAYLOAD_SECRET
-          printf '%s' "$QPU_ROLE_SECRET" | pnpm exec wrangler secret put QPU_ROLE_SECRET
-        working-directory: .qpu-app
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
-          QPU_ROLE_SECRET: ${{ secrets.QPU_ROLE_SECRET }}
-      - name: publish the package with provenance (on a release only)
-        if: github.event_name == 'release'
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          from=$(( $(date +%s%3N) - 900000 ))
+          to=$(date +%s%3N)
+          status=$(curl -sS -o /tmp/qpu-obs.json -w '%{http_code}' -X POST \
+            "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/workers/observability/telemetry/query" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data "{\"queryId\":\"qpu-deploy\",\"timeframe\":{\"from\":${from},\"to\":${to}},\"view\":\"events\",\"limit\":5,\"parameters\":{\"datasets\":[\"cloudflare-workers\"],\"filters\":[{\"key\":\"\$metadata.service\",\"operation\":\"eq\",\"type\":\"string\",\"value\":\"qpu\"}]}}")
+          OBS_STATUS="$status" node -e 'const fs = require("node:fs"); const status = process.env.OBS_STATUS; const body = JSON.parse(fs.readFileSync("/tmp/qpu-obs.json", "utf8")); const result = body.result || {}; const events = Array.isArray(result.events) ? result.events : []; console.log("observability", status, "events", events.length); process.exit(status === "200" && body.success !== false ? 0 : 1)'

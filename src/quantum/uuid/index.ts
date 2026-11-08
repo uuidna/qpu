@@ -965,7 +965,8 @@ const witness = (w: Where, h: string) => made.get(w + h) ?? made.set(w + h, (a: 
 const into = (have: unknown[] = [], w: Where, h: string) => { const f = witness(w, h); return have.includes(f) ? have : side(h).side === 'before' ? [f, ...have] : [...have, f] }
 const bound = (hooks: Record<string, unknown[]> = {}, w: Where) => ({ ...hooks, ...Object.fromEntries(DECLARED[w].split(' ').map((h) => [h, into(hooks[h], w, h)])) })
 const nodes = (adapter: any) => { const f = adapter?.editorConfig?.features; for (const [h, m] of Object.entries((f?.nodeHooks ?? {}) as Record<string, Map<string, unknown[]>>)) for (const t of f.getSubFields?.keys() ?? []) m.set(t, into(m.get(t), 'node', h)); return adapter }
-const editor = (e: any) => (typeof e !== 'function' ? nodes(e) : e.qpuWitness ? e : Object.assign(async (a: unknown) => nodes(await e(a)), { qpuWitness: true }))
+// synchronous as Payload requires: sanitizeConfig assigns the provider's return without awaiting it, so an async wrapper left every editor a Promise (editor.validate is not a function)
+const editor = (e: any) => (typeof e !== 'function' ? nodes(e) : e.qpuWitness ? e : Object.assign((a: unknown) => { const r = e(a); return r && typeof r.then === 'function' ? r.then(nodes) : nodes(r) }, { qpuWitness: true }))
 /** qpuHooks: the witnesses bound to any config walked whole, every rich text field and Lexical block node (textbook_witness_pair) */
 export const qpuHooks = (config: Record<string, any>) => {
   const n = { richText: 0, blocks: 0 }, box = (b: any): any => (typeof b === 'string' ? b : (n.blocks++, { ...b, fields: fields(b.fields) }))

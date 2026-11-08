@@ -6,9 +6,9 @@ import { execSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { toolCallerOf } from '@uuidna/qpu/mcp'
+import { caller } from '@uuidna/qpu/mcp'
 
-const payloadTool = toolCallerOf('payload'), configureTool = toolCallerOf('configure')
+const payloadTool = caller('payload'), configureTool = caller('configure')
 
 const main = async () => {
   const payload = await getPayload({ config })
@@ -63,7 +63,18 @@ const main = async () => {
   const form = payloadTool({ app: { form: true } }).form as Record<string, unknown> & { title: string }
   let formState = 'kept'
   if (!(await payload.find({ collection: 'forms', where: { title: { equals: form.title } }, limit: 1, overrideAccess: true })).totalDocs) { await payload.create({ collection: 'forms', overrideAccess: true, context: { disableRevalidate: true }, data: form as never }); formState = 'created' }
-  console.log(`seed: ${created} page(s) created, ${kept} kept (${updated} relaid), from ${site.length} documents; ${tenantsCreated} tenant(s) created of ${Object.keys(tenants).length}; ${products} product(s) created of ${catalogue.length}; the request form ${formState}; first user: ${firstUser}`)
+  const plan = payloadTool({ deploy: { seed: true } }) as { seed: { complete: boolean; creates: { collection: string; where: Record<string, unknown>; data: Record<string, unknown>; parentSlug: string | null; productTitle: string | null }[] } }
+  if (!plan.seed.complete) throw new Error('the website is not fully seeded')
+  let added = 0
+  for (const row of plan.seed.creates) {
+    const found = await payload.find({ collection: row.collection as never, where: row.where as never, limit: 1, overrideAccess: true, draft: true })
+    if (found.totalDocs) continue
+    const parent = row.parentSlug ? ((await payload.find({ collection: 'pages', where: { slug: { equals: row.parentSlug } }, limit: 1, overrideAccess: true, draft: true })).docs[0] as { id: string } | undefined)?.id ?? null : null
+    const product = row.productTitle ? ((await payload.find({ collection: 'products' as never, where: { title: { equals: row.productTitle } }, limit: 1, overrideAccess: true })).docs[0] as { id: string } | undefined)?.id ?? null : null
+    await payload.create({ collection: row.collection as never, overrideAccess: true, context: { disableRevalidate: true }, data: { ...row.data, tenant: tenant.id, ...(row.parentSlug ? { parent } : {}), ...(row.productTitle && product ? { product } : {}) } as never })
+    added += 1
+  }
+  console.log(`seed: ${created} page(s) created, ${kept} kept (${updated} relaid), from ${site.length} documents; ${tenantsCreated} tenant(s) created of ${Object.keys(tenants).length}; ${products} product(s) created of ${catalogue.length}; ${added} catalogue page(s), variant(s) and post(s) created of ${plan.seed.creates.length}; the request form ${formState}; first user: ${firstUser}; deploy is the completed order's afterChange hook`)
 }
 // awaited at the top level: payload run returns when the module has loaded, so a pending promise would be left behind (measured: the seed printed nothing and wrote nothing)
 await main()

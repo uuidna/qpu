@@ -1,3 +1,0 @@
-#!/bin/sh
-# pre-push is a client MCP workflow: the repository tool answers its steps (repository { workflow: 'pre-push' }); scripts/hook.ts walks them and decides nothing itself.
-exec node --import tsx scripts/hook.ts pre-push "$@"

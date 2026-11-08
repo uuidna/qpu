@@ -1,0 +1,13 @@
+---
+description: Finish ideas to production by default; never destroy unfinished work
+alwaysApply: true
+---
+
+# Production
+
+**Finish by default.** An unfinished idea is completed into the production path — not deleted, not stubbed out of existence, not replaced by a weaker slogan.
+
+- Cut only when the user explicitly asks to remove or replace something.
+- **RAID / adapters:** `qpuRaidDb` (`payload.qpu.db.ts`) is the composite db when `QPU_ADAPTERS=raid`; profile adapters + `qpuRaid` remain. Do not remove `qpuRaidDb` because it was hard.
+- Generated overlay imports must resolve to committed modules (finish the module, do not drop the import).
+- Same for SEO, entropy, MCP, one-word merges: complete the path; do not torch parallel work that was mid-flight.

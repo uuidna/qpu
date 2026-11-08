@@ -4,17 +4,21 @@
 // titles neighbour the author's records, dated before or after them; every open textbook (OpenStax, the Open Textbook Library, Open Library's
 // subjects, Project Gutenberg via Gutendex) routed through the theorems: the subjects a theorem reaches are the domain, a book of the domain no theorem reaches is a lead, the
 // rest counted outside; and the MCP servers that serve books, proposed as doors. Public metadata only (titles, subjects, dates, licences), no
-// text of any book, no credential, nothing written anywhere. Every page followed to its end (nextOf): unlimited, and the more the QPU is used
+// text of any book, no credential, nothing written anywhere. Every page followed to its end (next): unlimited, and the more the QPU is used
 // the more it holds (textbook_use_completes). Pure: the client fetches what the plan names and hands the answers back.
-import { uuidOf } from './unit/blocks.ts'
+import { compositions, uuid } from '../uuid/index.ts'
+import { pageSeed } from './page-seed.ts'
 import { summonCourt } from './toolboxes/legal.ts'
 import { PRECEDENCE } from './unit/license.ts'
 import { routeStatement } from './match.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 import { TABLES } from './tables-index.ts'
+import { accountBytes } from './toolboxes/billing.ts'
+import { ISO_EXIT } from './iso-exit.ts'
+import { DOMAINS_URL, scientificDomains } from './domains.ts'
 
-type SourceKind = 'immutable' | 'licence' | 'precedence' | 'textbook' | 'mcp'
+type SourceKind = 'immutable' | 'licence' | 'precedence' | 'textbook' | 'mcp' | 'science'
 export type SourceRequest = { id: string; source: string; kind: SourceKind; method: 'GET'; url: string; accept: string; page?: number }
 export type SourceAnswer = { id: string; url: string; status: number; text: string }
 export type SourceContext = { repository: string; owner: string; package: string; hosts: readonly string[]; subjects?: readonly string[]; maintainers?: readonly string[] }
@@ -27,7 +31,7 @@ const MCP_TERMS = ['book', 'textbook', 'library', 'scholar', 'paper', 'doi', 'ar
 const accept = 'application/json'
 const req = (source: string, kind: SourceKind, id: string, url: string, page?: number): SourceRequest => ({ id: `${source}:${id}${page === undefined ? '' : `:${page}`}`, source, kind, method: 'GET', url, accept, ...(page === undefined ? {} : { page }) })
 
-/** the first page of every source; the rest are followed by nextOf until each source ends */
+/** the first page of every source; the rest are followed by next until each source ends */
 export const planSources = (c: SourceContext): SourceRequest[] => {
   const repo = c.repository.replace(/\.git$/, '').replace(/^https:\/\/github\.com\//, '')
   const terms = [...new Set([c.owner, c.package.replace(/^@/, '').replace('/', ' '), repo.split('/')[1] ?? ''].filter(Boolean))]
@@ -47,18 +51,27 @@ export const planSources = (c: SourceContext): SourceRequest[] => {
     req('open-textbook-library', 'textbook', 'books', 'https://open.umn.edu/opentextbooks/textbooks.json?page=1', 1),
     ...(c.subjects ?? SUBJECTS).map((s) => req('open-library-subject', 'textbook', s, `https://openlibrary.org/subjects/${s}.json?limit=1000&offset=0`, 0)),
     req('gutendex', 'textbook', 'books', 'https://gutendex.com/books/?page=1', 1),
+    req('openalex-domains', 'science', 'all', DOMAINS_URL, 1),
     ...MCP_TERMS.map((t) => req('mcp-registry', 'mcp', t, `https://registry.modelcontextprotocol.io/v0/servers?search=${encodeURIComponent(t)}&limit=100`)),
   ]
 }
 
 const json = (t: string): any => { try { return JSON.parse(t) } catch { return null } }
 
-/** the next page of an answer, from what the source itself says (a next link, a cursor, a count); null when the source has ended */
-export const nextOf = (r: SourceRequest, a: SourceAnswer): SourceRequest | null => {
-  if (a.status !== 200) return null
-  const j = json(a.text); if (!j) return null
+/** One status, as a step that has a next and a step back (textbook_double_torus). Status 0 is the zero bit. The walk does not stop on the status. Every exit code from 0 through 255 is reported here, each with its ISO 9001 strategy. */
+const exitStep = (r: SourceRequest, status: number) => {
+  const mark = status === 0 ? ':0bit' : `:exit:${status}`
+  const forth = status + 1, back = forth - 1
+  const id = r.id.endsWith(mark) ? r.id.slice(0, -mark.length) : `${r.id}${mark}`
+  const step = { ...r, id, status, bit: status === 0 ? 0 : null, forth, back, closed: back === status && status < forth, unhandled: 0, exited: false as const, theorem: 'textbook_double_torus' as const }
+  return { ...step, ...ISO_EXIT }
+}
+/** the next page of an answer, from what the source itself says (a next link, a cursor, a count). A status other than 200 is that status as the next step, and status 0 is the zero bit. Every exit code from 0 through 255 is on the result. A read page with no further page ends. */
+export const next = (r: SourceRequest, a: SourceAnswer) => {
+  if (a.status === 0) return exitStep(r, 0)
+  const j = json(a.text)
   const base = r.id.slice(0, r.id.lastIndexOf(':')), page = r.page ?? 0
-  switch (r.source) {
+  const followed = !j ? null : (() => { switch (r.source) {
     case 'open-textbook-library': return j.links?.next ? { ...r, id: `${base}:${page + 1}`, url: j.links.next, page: page + 1 } : null
     case 'openstax': { const n = (j.items ?? []).length; return n && page + n < (j.meta?.total_count ?? 0) ? { ...r, id: `${base}:${page + n}`, url: r.url.replace(/offset=\d+/, `offset=${page + n}`), page: page + n } : null }
     case 'open-library-subject': { const n = (j.works ?? []).length; return n && page + n < (j.work_count ?? 0) ? { ...r, id: `${base}:${page + n}`, url: r.url.replace(/offset=\d+/, `offset=${page + n}`), page: page + n } : null }
@@ -68,8 +81,11 @@ export const nextOf = (r: SourceRequest, a: SourceAnswer): SourceRequest | null 
     case 'github-search': return (j.items ?? []).length === 100 && page * 100 < (j.total_count ?? 0) ? { ...r, id: `${base}:${page + 1}`, url: r.url.replace(/page=\d+/, `page=${page + 1}`), page: page + 1 } : null
     case 'github-forks': return Array.isArray(j) && j.length === 100 ? { ...r, id: `${base}:${page + 1}`, url: r.url.replace(/page=\d+/, `page=${page + 1}`), page: page + 1 } : null
     case 'mcp-registry': return j.metadata?.nextCursor ? { ...r, id: `${r.id}+`, url: `${r.url.replace(/&cursor=[^&]*/, '')}&cursor=${encodeURIComponent(j.metadata.nextCursor)}` } : null
+    case 'openalex-domains': { const n = (j.results ?? []).length; const per = j.meta?.per_page ?? n; return n && page * per < (j.meta?.count ?? 0) ? { ...r, id: `${base}:${page + 1}`, url: r.url.replace(/page=\d+/, `page=${page + 1}`), page: page + 1 } : null }
     default: return null
-  }
+  } })()
+  if (a.status !== 200) return followed ? { ...followed, ...ISO_EXIT } : exitStep(r, a.status)
+  return followed ? { ...followed, ...ISO_EXIT } : { ended: true as const, ...ISO_EXIT }
 }
 
 type Book = { source: string; id: string; title: string; subjects: string[]; licence: string | null; year: number | null }
@@ -113,7 +129,7 @@ export const listSources = (c: SourceContext, answers: readonly SourceAnswer[], 
   const books: Book[] = [
     ...by('openstax').flatMap((a) => (ok(a)?.items ?? []) as { id: number; title: string; book_state?: string; book_subjects?: { subject_name?: string }[] }[]).map((b) => ({ source: 'openstax', id: String(b.id), title: b.title, subjects: (b.book_subjects ?? []).map((s) => s.subject_name ?? '').filter(Boolean), licence: 'CC BY', year: null })),
     ...by('open-textbook-library').flatMap((a) => (ok(a)?.data ?? []) as { id: number; title: string; license?: string; copyright_year?: number; subjects?: { name: string }[] }[]).map((b) => ({ source: 'open-textbook-library', id: String(b.id), title: b.title, subjects: (b.subjects ?? []).map((s) => s.name), licence: b.license ?? null, year: b.copyright_year ?? null })),
-    ...by('open-library-subject').flatMap((a) => (ok(a)?.works ?? []).map((w: { key: string; title: string; subject?: string[]; first_publish_year?: number }) => ({ source: 'open-library', id: w.key, title: w.title, subjects: [a.id.split(':')[1]!.replace(/_/g, ' '), ...(w.subject ?? []).slice(0, 12)], licence: null, year: w.first_publish_year ?? null })) as Book[]),
+    ...by('open-library-subject').flatMap((a) => (ok(a)?.works ?? []).map((w: { key: string; title: string; subject?: string[]; first_publish_year?: number }) => ({ source: 'open-library', id: w.key, title: w.title, subjects: [a.id.split(':')[1]!.replace(/_/g, ' '), ...(w.subject ?? [])], licence: null, year: w.first_publish_year ?? null })) as Book[]),
     // Project Gutenberg through Gutendex: public-domain books by subject (titles, subjects, licence only — never the text; Gutendex's own summaries and format links are left unread)
     ...by('gutendex').flatMap((a) => (ok(a)?.results ?? []) as { id: number; title: string; subjects?: string[]; copyright?: boolean | null }[]).map((b) => ({ source: 'gutendex', id: String(b.id), title: b.title, subjects: (b.subjects ?? []).flatMap((s) => s.split(' -- ')).map((s) => s.trim()).filter(Boolean), licence: b.copyright === false ? 'Public domain' : b.copyright === true ? 'In copyright' : null, year: null })),
   ]
@@ -125,10 +141,15 @@ export const listSources = (c: SourceContext, answers: readonly SourceAnswer[], 
   const reached = routed.filter(strong), inDomain = routed.filter((x) => !strong(x) && x.b.subjects.some((s) => domain.has(s))), outside = routed.length - reached.length - inDomain.length
   const byTheorem: Record<string, number> = {}; for (const x of reached) { const k = x.r.theorems[0]!.theorem; byTheorem[k] = (byTheorem[k] ?? 0) + 1 }
   const textbookLeads: Lead[] = inDomain.map((x) => ({ id: `textbook-${x.b.source}-${x.b.id.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()}`, source: `${x.b.source} ${x.b.id}`, statement: `${x.b.title} (${x.b.subjects.slice(0, 3).join(', ')}${x.b.licence ? `; ${x.b.licence}` : ''}) teaches a subject the theorems reach, and no theorem reaches this book yet`, status: 'open' as const, reason: 'a book of the domain no theorem reaches: develop the theorem its subject names' }))
+  const tally = new Map<string, number>()
+  for (const b of uniqueBooks) { const key = b.source === 'open-library' ? `open-library:${b.subjects[0] ?? ''}` : b.source; tally.set(key, (tally.get(key) ?? 0) + 1); pageSeed(b.title || b.id, [b.source, b.id, ...b.subjects, b.licence ?? '', b.year === null ? '' : String(b.year)].filter((part) => part.length > 0).join('\n')) }
+  const radices = [...tally.values()]
+  const combinations = compositions(radices)
   // MCP doors
   const servers = by('mcp-registry').flatMap((a) => ((ok(a)?.servers ?? []) as { server: { name: string; description?: string; version?: string; remotes?: { type: string; url: string }[]; repository?: { url?: string } } }[]).map((s) => s.server))
   const doors = [...new Map(servers.map((s) => [s.name, { name: s.name, version: s.version ?? null, description: s.description ?? '', remote: s.remotes?.[0]?.url ?? null, repository: s.repository?.url ?? null }])).values()]
   const reachedCount = answers.filter((a) => a.status === 200).length
+  const bytes = accountBytes(answers.map((a) => a.text))
   const leads: Lead[] = [
     ...licence.map((x) => ({ id: `licence-${x.where}-${x.name.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`, source: x.url, statement: `${x.name} (${x.where}): ${x.why}; the case ${x.case.case} is the author's to file`, status: 'open' as const, reason: 'a candidate, never a verdict: the court computes the case, the author decides' } as Lead)),
     ...textbookLeads,
@@ -136,12 +157,13 @@ export const listSources = (c: SourceContext, answers: readonly SourceAnswer[], 
   ]
   const summary = { requests: answers.length, reached: reachedCount, versions: versions.length, visits: visits.length, captures: captures.filter((x) => x.url).length, records: records.length, candidates: licence.length, books: uniqueBooks.length, routed: reached.length, domainLeads: inDomain.length, outside, doors: doors.length, leads: leads.length }
   return {
-    phase: 'judged' as const, address: uuidOf(JSON.stringify(summary)), summary,
+    phase: 'judged' as const, address: uuid(JSON.stringify(summary)), summary,
     immutable: { package: c.package, versions, visits, captures, records, artifacts },
     precedence, licence,
-    textbooks: { books: uniqueBooks.length, routed: reached.length, domain: [...domain].sort(), inDomain: inDomain.length, outside, byTheorem, theorem: 'textbook_textbooks_partition' },
+    textbooks: { books: uniqueBooks.length, routed: reached.length, domain: [...domain].sort(), inDomain: inDomain.length, outside, byTheorem, seeds: uniqueBooks.length, radices, combinations: combinations.toString(), groups: Object.fromEntries(tally), theorem: 'textbook_textbooks_partition' },
+    domains: (() => { const hit = by('openalex-domains').map((a) => json(a.text)).find((j) => j && typeof j.meta?.count === 'number' && Array.isArray(j.results) && j.results.length === j.meta.count); return hit ? scientificDomains(hit) : scientificDomains() })(),
     mcp: { doors, says: 'servers that serve books, papers and libraries: proposed as doors of discovery, never called from the tree' },
-    leads, theorems: ['textbook_use_completes', 'textbook_textbooks_partition', 'textbook_route_or_lead', 'textbook_cheap_gates'],
-    says: `${summary.reached} of ${summary.requests} answers read: ${summary.versions} immutable versions, ${summary.visits} archived snapshots, ${summary.candidates} licence candidate(s) with their cases, ${summary.books} open books of which ${summary.routed} the theorems reach and ${summary.domainLeads} of their domain are leads; ${summary.doors} MCP doors proposed`,
+    leads, bytes, theorems: ['textbook_use_completes', 'textbook_textbooks_partition', 'textbook_route_or_lead', 'textbook_cheap_gates', 'textbook_chain_bits'],
+    says: `${summary.reached} of ${summary.requests} answers read: ${summary.versions} immutable versions, ${summary.visits} archived snapshots, ${summary.candidates} licence candidate(s) with their cases, ${summary.books} open books of which ${summary.routed} the theorems reach and ${summary.domainLeads} of their domain are leads; ${summary.doors} MCP doors proposed; ${bytes.says}`,
   }
 }

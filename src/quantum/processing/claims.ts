@@ -4,6 +4,8 @@
 // docket (a reader who read the work), "unrecognised" when no candidate is found. Pure: the client asks OpenAlex and hands the answers back.
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { getStatement } from './expressions.ts'
+import { LICENSE, PRECEDENCE } from './unit/license.ts'
+import { createVerifyRequests } from './verifiers.ts'
 
 const PRECEDENCE_YEAR = 2026
 const words = (s: string) => new Set(s.toLowerCase().match(/[a-z]{4,}/g) ?? [])
@@ -24,3 +26,43 @@ export const listClaims = (answers: readonly { id: string; status: number; text:
   const confirmed = confirmations.find((c) => c.theorem === t.key)
   return { theorem: t.key, kind, status: confirmed ? 'recognised' : candidates.length ? 'candidate' : 'unrecognised', candidates, recognisedBy: confirmed ? { doi: confirmed.doi, by: confirmed.by } : null }
 })
+
+const cleanDoi = (value: string) => value.trim().replace(/^https?:\/\/(?:dx\.)?doi\.org\//, '')
+/** Novelty under ISO 690 and ISO 26324. An earlier DOI-registered work that resembles the claim is prior art and is cited. None, and the author's DOI naming the author, makes the claim the author's. Nothing is fetched. */
+export const claimNovelty = (raw: unknown) => {
+  const given = raw && typeof raw === 'object' ? raw as { statement?: unknown; doi?: unknown; answers?: unknown; items?: unknown } : {}
+  const items = Array.isArray(given.items) ? given.items : [given]
+  const author = { name: LICENSE.author, orcid: LICENSE.orcid }
+  const rows = items.map((item) => {
+    const one = item && typeof item === 'object' ? item as { statement?: unknown; doi?: unknown; answers?: unknown } : {}
+    const statement = typeof one.statement === 'string' ? one.statement.trim() : ''
+    const named = typeof one.doi === 'string' ? cleanDoi(one.doi) : ''
+    const record = PRECEDENCE.find((entry) => entry.doi === named) ?? null
+    const doi = record?.doi ?? ''
+    const year = record?.year ?? null
+    const verify = doi ? createVerifyRequests({ kind: 'doi', value: doi }) : []
+    const search = statement ? { id: 'openalex-novelty' as const, method: 'GET' as const, url: `https://api.openalex.org/works?search=${encodeURIComponent(statement)}&filter=has_doi:true&per-page=25`, accept: 'application/json' as const, check: 'DOI-registered works that resemble the claim, dated against the author\'s record' } : null
+    const answers = one.answers && typeof one.answers === 'object' ? one.answers as Record<string, unknown> : {}
+    const text = (url: string) => (typeof answers[url] === 'string' ? answers[url] : '')
+    const verified = doi !== '' && verify.length > 0 && verify.every((request) => { const body = text(request.url); return body.length > 0 && (!request.check.includes(LICENSE.author) || (body.includes(LICENSE.author) && body.includes(LICENSE.orcid))) })
+    const searched = search ? text(search.url) : ''
+    let results: { doi?: string; title?: string; publication_year?: number; authorships?: { author?: { display_name?: string } }[] }[] = []
+    if (searched) { try { results = (JSON.parse(searched) as { results?: typeof results }).results ?? [] } catch { results = [] } }
+    const mine = words(statement)
+    const prior = results.flatMap((work) => {
+      if (!work.doi || !work.title || year === null) return []
+      const workDoi = cleanDoi(work.doi)
+      if (!workDoi || workDoi === doi || (work.publication_year ?? year) >= year) return []
+      const shared = [...words(work.title)].filter((word) => mine.has(word)).length
+      if (shared < 3 || shared * 2 < words(work.title).size) return []
+      const creator = work.authorships?.find((entry) => entry.author?.display_name)?.author?.display_name ?? null
+      return [{ doi: workDoi, title: work.title, year: work.publication_year ?? null, shared, citation: { standards: ['ISO 690', 'ISO 26324'] as const, source: 'doi' as const, elements: { identifier: workDoi, creator, title: work.title, date: work.publication_year ?? null }, holds: Boolean(creator && work.title && work.publication_year) } }]
+    })
+    const known = verified && searched.length > 0
+    const novel = known ? prior.length === 0 : null
+    const claimed = novel ? { author: author.name, orcid: author.orcid, doi, statement } : null
+    return { statement, doi: doi || null, year, verified, novel, claimed, prior, requests: [...verify, ...(search ? [search] : [])] }
+  })
+  const claimed = rows.flatMap((row) => (row.claimed ? [row.claimed] : []))
+  return { phase: 'novelty' as const, standards: ['ISO 690', 'ISO 26324'] as const, source: 'doi' as const, fetched: false as const, author, rows, claimed, says: `${rows.length} claim(s) read against the DOI ecosystem: ${claimed.length} novel and claimed for ${author.name}, ${rows.filter((row) => row.novel === false).length} cited as earlier work` }
+}

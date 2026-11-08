@@ -7,6 +7,6 @@ Grover quantum-search iteration counts, exact Nat with no π literal and no floa
 the lattice constants — 355 = plane·(faces−seed) − n·n, 113 = plane·hexbit + seed. The kernel proves the values; there
 is no holds. -/
 
-def groverIters (k : Nat) : Nat := (plane * (faces - seed) - n * n) * mintOf k / (coins * coins * (plane * hexbit + seed))
-def groverSize (k : Nat) : Nat := mintOf (2 * k)
+def groverIters (k : Nat) : Nat := (plane * (faces - seed) - n * n) * mint k / (coins * coins * (plane * hexbit + seed))
+def groverSize (k : Nat) : Nat := mint (2 * k)
 theorem grover_all : groverIters 2 = 3 ∧ groverIters 5 = 25 ∧ groverSize 5 = 1024 := ⟨rfl, rfl, rfl⟩

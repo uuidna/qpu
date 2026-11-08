@@ -1,0 +1,52 @@
+// The website's own blocks and the form-builder field kinds, named for the document door.
+// ISO 690 cites the work the site already publishes; these are that work's block slugs, not a second schema.
+
+export const qpuLexicalBlocks = [
+  { slug: 'banner' },
+  { slug: 'blogContent' },
+  { slug: 'blogMarkdown' },
+  { slug: 'cta' },
+  { slug: 'callout' },
+  { slug: 'cardGrid' },
+  { slug: 'caseStudiesHighlight' },
+  { slug: 'caseStudyCards' },
+  { slug: 'caseStudyParallax' },
+  { slug: 'code' },
+  { slug: 'codeFeature' },
+  { slug: 'comparisonTable' },
+  { slug: 'content' },
+  { slug: 'contentGrid' },
+  { slug: 'downloadBlock' },
+  { slug: 'exampleTabs' },
+  { slug: 'form' },
+  { slug: 'hoverCards' },
+  { slug: 'hoverHighlights' },
+  { slug: 'linkGrid' },
+  { slug: 'logoGrid' },
+  { slug: 'mediaBlock' },
+  { slug: 'mediaContent' },
+  { slug: 'mediaContentAccordion' },
+  { slug: 'pricing' },
+  { slug: 'reusableContentBlock' },
+  { slug: 'slider' },
+  { slug: 'statement' },
+  { slug: 'steps' },
+  { slug: 'stickyHighlights' },
+] as const
+
+/** Field block types the form-builder plugin already admits on a form document. */
+export const qpuFormFields = {
+  text: { type: 'text' },
+  textarea: { type: 'textarea' },
+  select: { type: 'select' },
+  email: { type: 'email' },
+  number: { type: 'number' },
+  checkbox: { type: 'checkbox' },
+  country: { type: 'country' },
+  state: { type: 'state' },
+  message: { type: 'message' },
+  payment: { type: 'payment' },
+  date: { type: 'date' },
+  radio: { type: 'radio' },
+  upload: { type: 'upload' },
+} as const

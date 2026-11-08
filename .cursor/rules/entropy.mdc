@@ -1,0 +1,26 @@
+---
+description: Entropy — dictionary first, then verified; wrong MCP meaning is a security issue
+alwaysApply: true
+---
+
+# Entropy
+
+**Order of meaning (always):**
+
+1. **Dictionary first** — disorder, unpredictability, unavailable energy or information. No project phrase redefines the word.
+2. **Then verify** — ISO 80000-5 (`S = k ln W`), fusion, vacuum `W = 1 → S = 0`. Verification confirms the dictionary sense; it does not replace it.
+
+**MCP security:** Wrong meaning on the connector misleads the user. That is a security issue. Never ship a bare `entropy: 0|1` or “X is entropy” slogan without the dictionary text and the verified measure. Do not strip or overwrite a tool’s entropy findings to fake order.
+
+```typescript
+// ❌ BAD — bare bit / redefinition (misleading)
+entropy: 0
+law: 'anything not a UUID program is entropy'
+
+// ✅ GOOD — dictionary, then verified measure
+entropy: {
+  law: 'first the dictionary meaning; then the meaning is verified',
+  dictionary: { means: 'disorder; unpredictability; unavailable energy or information', … },
+  verified: { standard: 'ISO 80000-5:2019', definition: 'S = k ln W', W, S, holds },
+}
+```

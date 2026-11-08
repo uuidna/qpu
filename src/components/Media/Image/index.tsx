@@ -35,10 +35,7 @@ export const Image: React.FC<Props> = (props) => {
   let src: null | StaticImageData | string | undefined = srcFromProps
 
   const hasDarkModeFallback =
-    resource &&
-    typeof resource === 'object' &&
-    'darkModeFallback' in resource &&
-    resource.darkModeFallback &&
+    resource?.darkModeFallback &&
     typeof resource.darkModeFallback === 'object' &&
     resource.darkModeFallback !== null &&
     typeof resource.darkModeFallback.filename === 'string'
@@ -46,7 +43,7 @@ export const Image: React.FC<Props> = (props) => {
   if (!src && resource && typeof resource !== 'string') {
     width = resource.width
     height = resource.height
-    alt = 'alt' in resource ? resource.alt : alt
+    alt = resource.alt
     src = resource.url
   }
 
@@ -87,9 +84,6 @@ export const Image: React.FC<Props> = (props) => {
         width={!fill ? (width ?? undefined) : undefined}
       />
       {hasDarkModeFallback &&
-        resource &&
-        typeof resource === 'object' &&
-        'darkModeFallback' in resource &&
         typeof resource.darkModeFallback === 'object' &&
         resource.darkModeFallback !== null && (
           <NextImage

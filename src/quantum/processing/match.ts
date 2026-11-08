@@ -5,12 +5,12 @@ import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 import type { Rpc } from './audit.ts'
 import { extractFacts, createVerifyRequests, type VerifyRequest } from './verifiers.ts'
-import { listNumerals, translateOf } from './i18n.ts'
+import { listNumerals, translate } from './i18n.ts'
 import { THEOREMS } from './theorems-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { TABLES } from './tables-index.ts'
-import { evaluate, evaluateTheorem, getStatement, numbersOf, sidesOf } from './expressions.ts'
-import { testPrimality } from './algorithms.ts'
+import { evaluate, evaluateTheorem, getStatement, numbers, sides } from './expressions.ts'
+import { listFactors, testPrimality } from './algorithms.ts'
 
 /** A prompt routed to the kernel-accepted theorems by the weight of the words it shares with them (a word weighs ln(theorems / theorems using
  *  it), so a common word routes nowhere); each theorem's examples are its routes, and a prompt that reaches none is a lead (textbook_route_or_lead). */
@@ -23,17 +23,18 @@ export const routeStatement = (statement: string, examples: readonly Example[], 
     const textbook = new Set(TEXTBOOK_THEOREMS.map((t) => t.key))
     // a textbook theorem routes by its key and what it says, any other by its key and its module; the examples naming it are its routes
     const named = new Map<string, string[]>(); for (const e of examples) if (e.theorem) named.set(e.theorem, [...(named.get(e.theorem) ?? []), e.id])
-    const keyOf = (k: string) => routeStems(k.replace(/^textbook_/, '').replace(/^Qpu\./, ''))
+    const key = (k: string) => routeStems(k.replace(/^textbook_/, '').replace(/^Qpu\./, ''))
     routeIndex = [
-      ...TEXTBOOK_THEOREMS.filter((t) => KERNEL.has(t.key)).map((t) => { const keyStems = keyOf(t.key); return { key: t.key, says: t.says, lean: t.lean, examples: [...new Set([...t.examples, ...(named.get(t.key) ?? [])])], keyStems, stems: new Set([...keyStems, ...routeStems(t.says)]) } }),
-      ...THEOREMS.filter((t) => !textbook.has(t.key)).map((t) => { const keyStems = keyOf(t.key); return { key: t.key, says: `${t.module}: ${t.statement}`, lean: `theorem ${t.key} : ${t.statement}`, examples: named.get(t.key) ?? [], keyStems, stems: new Set([...keyStems, ...routeStems(t.module.replace(/^Qpu\./, ''))]) } }),
+      ...TEXTBOOK_THEOREMS.filter((t) => KERNEL.has(t.key)).map((t) => { const keyStems = key(t.key); return { key: t.key, says: t.says, lean: t.lean, examples: [...new Set([...t.examples, ...(named.get(t.key) ?? [])])], keyStems, stems: new Set([...keyStems, ...routeStems(t.says)]) } }),
+      ...THEOREMS.filter((t) => !textbook.has(t.key)).map((t) => { const keyStems = key(t.key); return { key: t.key, says: `${t.module}: ${t.statement}`, lean: `theorem ${t.key} : ${t.statement}`, examples: named.get(t.key) ?? [], keyStems, stems: new Set([...keyStems, ...routeStems(t.module.replace(/^Qpu\./, ''))]) } }),
     ]
     const df = new Map<string, number>(); for (const t of routeIndex) for (const w of t.stems) df.set(w, (df.get(w) ?? 0) + 1)
     routeIdf = new Map([...df].map(([w, n]) => [w, Math.log(routeIndex!.length / n)]))
   }
   // a word of the theorem's key weighs twice; a route needs two shared words or one key word, above the threshold. a prompt that is a theorem's own sentence routes to that theorem first
   const s = routeStems(statement)
-  const ranked = routeIndex.map((t) => { const shared = [...t.stems].filter((w) => s.has(w)); const subject = shared.filter((w) => t.keyStems.has(w)); return { t, shared, subject, weight: shared.reduce((n, w) => n + (routeIdf!.get(w) ?? 0) * (t.keyStems.has(w) ? 2 : 1), 0) } }).filter((r) => (r.shared.length >= 2 || r.subject.length >= 1) && r.weight >= ROUTE_THRESHOLD).sort((a, b) => b.weight - a.weight || a.t.key.localeCompare(b.t.key)).slice(0, top ?? Infinity) // top undefined: every theorem past the threshold, used at once (no cap — both sides, however many)
+  const row = (t: NonNullable<typeof routeIndex>[number]) => { const shared = [...t.stems].filter((w) => s.has(w)); const subject = shared.filter((w) => t.keyStems.has(w)); return { t, shared, subject, weight: shared.reduce((n, w) => n + (routeIdf!.get(w) ?? 0) * (t.keyStems.has(w) ? 2 : 1), 0) } }
+  const ranked = routeIndex.map(row).filter((r) => r.t.says === statement || ((r.shared.length >= 2 || r.subject.length >= 1) && r.weight >= ROUTE_THRESHOLD)).sort((a, b) => Number(b.t.says === statement) - Number(a.t.says === statement) || b.weight - a.weight || a.t.key.localeCompare(b.t.key)).slice(0, top ?? Infinity) // top undefined: every theorem past the threshold, used at once (no cap — both sides, however many)
   const byId = new Map(examples.map((e) => [e.id, e]))
   const theorems = ranked.map((r) => ({ theorem: r.t.key, lean: r.t.lean, says: r.t.says, shared: r.shared, subject: r.subject, weight: Math.round(r.weight * 100) / 100, routes: r.t.examples.map((id) => byId.get(id)).filter((e): e is Example => !!e).map((e) => ({ example: e.id, call: { name: e.tool, arguments: e.arguments } })) }))
   return { routed: theorems.length > 0, theorems, threshold: ROUTE_THRESHOLD, theorem: 'textbook_route_or_lead', says: theorems.length ? `routed to ${theorems.map((t) => t.theorem).join(', ')} by the weight of the words the prompt shares with them` : 'no theorem reached by its subject or two specific words: the prompt is a lead' }
@@ -44,21 +45,21 @@ const KERNEL = new Set(THEOREMS.map((t) => t.key))
 /** A routed textbook theorem computed as the match and the chat read it, the statement's whole numbers bound to its variables in order; null
  *  for a theorem quantified or needing a value the statement lacks. */
 export const evaluateRouted = (theorem: string, statement: string) => {
-  const t = TEXTBOOK_THEOREMS.find((x) => x.key === theorem), nums = numbersOf(statement).filter((n) => /^\d+$/.test(n)); if (!t) return null
+  const t = TEXTBOOK_THEOREMS.find((x) => x.key === theorem), nums = numbers(statement).filter((n) => /^\d+$/.test(n)); if (!t) return null
   const values: Record<string, string> = Object.fromEntries(getStatement(t.lean).variables.flatMap((v, i) => (nums[i] ? [[v, nums[i]]] : []))), ev = evaluateTheorem(theorem, values) as { evaluable?: boolean; needs?: string[] }
   return ev.evaluable && !ev.needs?.length ? { theorem, lean: t.lean, values } : null
 }
 /** A number read exactly as digits × 10^e (6.62607015e-34 is 662607015e-42); a stated one agrees with a witness's when equal, a decimal to the
  *  places it is written to (3.5 agrees with 3.47). */
-const decOf = (s: string) => { const m = /^(\d+)(?:\.(\d+))?(?:e([-+]?\d+))?$/i.exec(s.trim()); return m ? { d: BigInt(m[1]! + (m[2] ?? '')), e: Number(m[3] ?? 0) - (m[2] ?? '').length, exact: !m[2] && !m[3] } : null }
-const agree = (stated: string, witness: string) => { const s = decOf(stated), w = decOf(witness); if (!s || !w) return false; const k = 10n ** BigInt(Math.abs(s.e - w.e)); return w.e >= s.e ? w.d * k === s.d : s.exact ? w.d === s.d * k : (2n * w.d + k) / (2n * k) === s.d }
+const dec = (s: string) => { const m = /^(\d+)(?:\.(\d+))?(?:e([-+]?\d+))?$/i.exec(s.trim()); return m ? { d: BigInt(m[1]! + (m[2] ?? '')), e: Number(m[3] ?? 0) - (m[2] ?? '').length, exact: !m[2] && !m[3] } : null }
+const agree = (stated: string, witness: string) => { const s = dec(stated), w = dec(witness); if (!s || !w) return false; const k = 10n ** BigInt(Math.abs(s.e - w.e)); return w.e >= s.e ? w.d * k === s.d : s.exact ? w.d === s.d * k : (2n * w.d + k) / (2n * k) === s.d }
 /** A negation; a value claimed (a number after a verb or =, never inside a word or an expression, its unit after it, a percent in hundredths);
  *  an arithmetic relation. */
 const NEGATION = /\b(?:not|never|false|untrue|wrong|cannot|disprove[sd]?|refute[sd]?)\b|\b\w+n['’]t\b/gi
 const VERB = /\b(?:is|are|was|were|equals?|has|have|had|makes?|gives?|totals?)\b/.source
 const CLAIM = new RegExp(`(${VERB}\\s*(?:to\\s+|about\\s+|exactly\\s+)?|=\\s*)?(?<![\\w.-])(\\d[\\d,.]*(?:e[-+]?\\d+)?)(%?)(?![.,]?\\w)(?!\\s*[+\\-−*/×·^]\\s*[\\w(])(\\s+(?!${VERB})[a-z]+)?`, 'gi')
 const RELATION = /(?<![\w.])[\d(][\d\s().,+\-*/%^×·−]*?(?:=|≠|≤|≥|<|>)[\d\s().,+\-*/%^×·−]*\d\)*/g
-import { uuidOf, navigate } from './unit/blocks.ts'
+import { uuid, navigate } from '../uuid/index.ts'
 
 type Verdict = 'served' | 'impossible' | 'unknown'
 /** The unit's verdict vocabularies mapped onto this tree's, so a verdict crossing the border is translated, never guessed.
@@ -172,19 +173,19 @@ const MIRROR: Readonly<Record<string, readonly string[]>> = TABLES.MIRROR as Rea
 export const stem = (t: string): string => t.replace(/(ing|ed|es|s)$/, '')
 /** A text's words as stems (camelCase split; numbers, the surface's names and negations dropped); every number a result states with the
  *  words naming it: the keys on its path and the labels beside and above it (says names nothing). */
-const stemsOf = (text: string) => tokens(text.replace(/([a-z])([A-Z])/g, (_, a: string, b: string) => `${a} ${b}`).replace(NEGATION, () => ' ')).filter((t) => /^[a-z]/.test(t) && !BRAND.has(t)).map(stem)
-const valuesOf = (v: unknown, at = '', words: readonly string[] = []): { n: string; at: string; words: Set<string> }[] => {
-  const o = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>, n = 'mantissa' in o ? `${o.mantissa}e${o.exponent}` : String(v), labels = Object.entries(o).flatMap(([k, x]) => (k !== 'says' && typeof x === 'string' && !decOf(x) ? stemsOf(x) : []))
-  return (typeof v !== 'object' || 'mantissa' in o) ? (decOf(n) ? [{ n, at, words: new Set(words) }] : []) : Object.entries(o).flatMap(([k, x]) => valuesOf(x, Array.isArray(v) ? `${at}[${k}]` : at ? `${at}.${k}` : k, [...words, ...labels, ...(Array.isArray(v) ? [] : stemsOf(k))]))
+const stems = (text: string) => tokens(text.replace(/([a-z])([A-Z])/g, (_, a: string, b: string) => `${a} ${b}`).replace(NEGATION, () => ' ')).filter((t) => /^[a-z]/.test(t) && !BRAND.has(t)).map(stem)
+const values = (v: unknown, at = '', words: readonly string[] = []): { n: string; at: string; words: Set<string> }[] => {
+  const o = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>, n = 'mantissa' in o ? `${o.mantissa}e${o.exponent}` : String(v), labels = Object.entries(o).flatMap(([k, x]) => (k !== 'says' && typeof x === 'string' && !dec(x) ? stems(x) : []))
+  return (typeof v !== 'object' || 'mantissa' in o) ? (dec(n) ? [{ n, at, words: new Set(words) }] : []) : Object.entries(o).flatMap(([k, x]) => values(x, Array.isArray(v) ? `${at}[${k}]` : at ? `${at}.${k}` : k, [...words, ...labels, ...(Array.isArray(v) ? [] : stems(k))]))
 }
 /** The values a text claims, each with its subject (the words before it in its clause, and its unit), after a verb or anywhere when bare; a
  *  number alone in its clause continues the claim before it (the factors are 3 and 7); an input is no claim. */
-const claimsOf = (text: string, bare = false, taken: readonly string[] = []) => {
+const claims = (text: string, bare = false, taken: readonly string[] = []) => {
   let last: string[] = []
   return text.split(/[,;]|\band\b|\bbut\b/).flatMap((clause) => [...clause.matchAll(CLAIM)].flatMap((c) => {
-    const n = numbersOf(c[2]!)[0], before = stemsOf(`${clause.slice(0, c.index)} ${c[4] ?? ''}`), more = !c[1] && !before.length && last.length > 0
+    const n = numbers(c[2]!)[0], before = stems(`${clause.slice(0, c.index)} ${c[4] ?? ''}`), more = !c[1] && !before.length && last.length > 0
     if (!n || !(bare || c[1] || more) || taken.some((x) => agree(n, x))) return []
-    last = before.length ? before : more ? last : stemsOf(text)
+    last = before.length ? before : more ? last : stems(text)
     return [{ n: c[3] ? `${n}e-2` : n, shown: n + c[3], subject: last }]
   }))
 }
@@ -231,7 +232,8 @@ export const PATTERNS: readonly Pattern[] = [
   { name: 'scan', test: /\bscan\b[^[]*(\[[\s\S]*\])/i, tool: 'verify', args: (m) => { try { return { scan: JSON.parse(m[1]!) } } catch { return { scan: [] } } }, shows: 'a stream of frames (time, hue) a device sampled, read back to the address it links, by majority per frame' },
   { name: 'metrics', test: /\b(metrics|how many (?:tools|examples|theorems|leads)|coins paid)\b/i, tool: 'metrics', args: () => ({}), shows: 'the tree\'s metrics now' },
   { name: 'textbook', test: /\b(?:reuse|replay) (?:example )?([a-z0-9-]+)/i, tool: 'textbook', args: (m) => ({ reuse: m[1]!.toLowerCase() }), shows: 'an example reused by id' },
-  { name: 'shor', test: /\bfactor(?:ise|ize)?\s+(\d+)\b/i, tool: 'algorithm', args: (m) => (BigInt(m[1]!) <= 21n ? { name: 'shor', N: Number(m[1]) } : { name: 'factor', integer: m[1]! }), shows: 'an integer factored: by Shor within the state-vector bound, by the classical door beyond it' },
+  { name: 'first-user', test: /\badmin\b[\s/-]*create[\s/-]*first[\s/-]*user\b/i, tool: 'configure', args: () => ({ kind: 'hooks' }), shows: 'the admin create-first-user form: the first user created is the super admin, and the request host is that user\'s tenant when the collection carries one' },
+  { name: 'shor', test: /\bfactor(?:ise|ize)?\s+(\d+)\b/i, tool: 'algorithm', args: (m) => ({ name: 'factor', integer: m[1]! }), shows: 'an integer factored on a register of any width: trial, the σ-reflection, and order-finding' },
   { name: 'prime', test: /\bis\s+(\d+)\s+(?:a\s+)?prime\b/i, tool: 'algorithm', args: (m) => ({ name: 'factor', integer: m[1]! }), shows: 'an integer of any size decided prime or composite (Miller–Rabin) and factored within its budget' },
   // an exploit is re-fused to patching: a hack, vulnerability, breach or CVE opens audit { repair } (a live patch, or a remediation lead), never a denial
   { name: 'repair', test: /\b(?:hack(?:ed|ing)?|exploit(?:ed|s|ing)?|vulnerab(?:le|ility|ilities)|breach(?:ed|es)?|compromis(?:e|ed)|malware|ransomware|CVE-\d{4}-\d{1,7})\b/i, tool: 'audit', args: (m, statement) => { const cve = /\bCVE-\d{4}-\d{1,7}\b/i.exec(statement)?.[0]; const mod = /\b(?:in|package|module|library|dependency|the)\s+([a-z0-9@._/-]{2,})/i.exec(statement)?.[1] ?? /\b(linux|kernel|openssl|openssh|glibc|systemd|sudo|log4j|node)\b/i.exec(statement)?.[1]; return { repair: [{ module: (mod ?? 'reported').toLowerCase(), severity: 'critical', ...(cve ? { cve } : {}), title: statement }] } }, shows: 'an exploit re-fused to the patching tool: audit { repair } ranks the kernel first, live-patches with no reboot (SLA 100%), turns an unpatched advisory into a remediation lead — the attack becomes a patch, never a denial' },
@@ -242,7 +244,7 @@ export const PATTERNS: readonly Pattern[] = [
 ]
 /** The pattern a statement carries, if any, and the call it makes; the first pattern that matches wins, in the order above. */
 export const getPattern = (statement: string): { pattern: Pattern; call: { name: string; arguments: Record<string, unknown> }; sealed: string } | null => {
-  for (const p of PATTERNS) { const m = statement.match(p.test); if (m) { const call = { name: p.tool, arguments: p.args(m, statement) }; return { pattern: p, call, sealed: uuidOf(`${call.name}${JSON.stringify(call.arguments)}`) } } }
+  for (const p of PATTERNS) { const m = statement.match(p.test); if (m) { const call = { name: p.tool, arguments: p.args(m, statement) }; return { pattern: p, call, sealed: uuid(`${call.name}${JSON.stringify(call.arguments)}`) } } }
   return null
 }
 
@@ -252,11 +254,11 @@ export const createMatcher = (handle: (m: Rpc) => any, allExamples: readonly Exa
   const { match: inner, judge } = indexOf(handle, allExamples, leads)
   return (given: string, locale?: string): Match => {
     const num = listNumerals(given)
-    const tr = locale && locale !== 'en' ? translateOf(num.text, locale, 'en') : null
+    const tr = locale && locale !== 'en' ? translate(num.text, locale, 'en') : null
     const text = tr ? tr.text : num.text
     const recognised = getPattern(text)
     // whichever door answers, the judge decides; the route is read when the statement states a number
-    const route = numbersOf(text).length ? routeStatement(text, allExamples) : undefined
+    const route = numbers(text).length ? routeStatement(text, allExamples) : undefined
     const m = { ...judge(text, (() => {
       if (recognised && recognised.call.name !== 'leads') {
         const reply = toolsCall(handle, recognised.call)
@@ -268,7 +270,7 @@ export const createMatcher = (handle: (m: Rpc) => any, allExamples: readonly Exa
       return recognised ? { ...base, pattern: recognised.pattern.name, sealed: recognised.sealed } : base
     })(), route), route }
     if (!num.numerals.length && !tr) return m
-    return { ...m, read: { given, numerals: num.numerals, locale, untranslated: tr?.untranslated ?? [], verdictIn: tr ? translateOf(m.verdict, 'en', locale!).text : undefined } }
+    return { ...m, read: { given, numerals: num.numerals, locale, untranslated: tr?.untranslated ?? [], verdictIn: tr ? translate(m.verdict, 'en', locale!).text : undefined } }
   }
 }
 
@@ -291,7 +293,10 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
   const servedLeads = new Set(leads.filter((l) => l.status === 'served').map((l) => l.id))
   const bounds: { property: string; d: number }[] = tools.flatMap((t) => Object.entries(t.inputSchema.properties ?? {}).filter(([, p]) => typeof p.maximum === 'number').map(([property, p]) => ({ property, d: p.maximum as number })))
   /** each bound a statement names and the schema bounds it exceeds */
-  const boundsOf = (statement: string) => numbersNear(statement).map(({ property, value, phrase }) => ({ property, phrase, text: /\d+(?:\.\d+)?/.exec(phrase)![0], exceeded: tools.flatMap((t) => { const p = t.inputSchema.properties?.[property]; return p && typeof p.maximum === 'number' && (value > p.maximum || (typeof p.minimum === 'number' && value < p.minimum)) ? [`${t.name}.${property} is bounded to [${p.minimum ?? '…'}, ${p.maximum}] by its schema; the statement asks for ${phrase}${p.description ? ` (${p.description})` : ''}`] : [] }) }))
+  const exceeded = (statement: string) => numbersNear(statement).map(({ property, value, phrase }) => {
+    const bounded = tools.some((t) => typeof t.inputSchema.properties?.[property]?.maximum === 'number')
+    return { property, phrase, text: /\d+(?:\.\d+)?/.exec(phrase)![0], bounded, exceeded: tools.flatMap((t) => { const p = t.inputSchema.properties?.[property]; return p && typeof p.maximum === 'number' && (value > p.maximum || (typeof p.minimum === 'number' && value < p.minimum)) ? [`${t.name}.${property} is bounded to [${p.minimum ?? '…'}, ${p.maximum}] by its schema; the statement asks for ${phrase}${p.description ? ` (${p.description})` : ''}`] : [] }) }
+  })
 
   const match = (statement: string): Match => {
   const q = tokens(statement), substantive = q.filter((t) => !BRAND.has(t))
@@ -337,18 +342,20 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
   // the hidden factors and angles in the reflection, each a lead
   const integers = [...new Set((statement.match(/\b\d+\b/g) ?? []).map(Number).filter((n) => n >= 2))]
   const factors: Reflection['factors'] = integers.map((n) => {
-    const shor = tools.find((t) => t.name === 'algorithm')?.inputSchema.properties?.N
-    if (shor && typeof shor.maximum === 'number' && n <= shor.maximum && n >= (shor.minimum ?? 3)) {
-      const reply = SHOR.get(n) ?? (() => { const r = toolsCall(handle, { name: 'algorithm', arguments: { name: 'shor', N: n } }); SHOR.set(n, r); return r })()
+    const width = BigInt(n).toString(2).length
+    if (width <= 8 && n >= 3) {
+      const reply = SHOR.get(n) ?? (() => { const r = toolsCall(handle, { name: 'algorithm', arguments: { name: 'shor', N: n, a: 7 } }); SHOR.set(n, r); return r })()
       if ('result' in reply) {
         const rows: unknown[][] = reply.result.structuredContent?.summary ?? []
         const f = rows.find((r) => r[0] === 'Factors')?.[1] as string | undefined
         const o = rows.find((r) => r[0] === 'Order of a mod N')?.[1] as string | undefined
-        return { n, factors: f, order: o, by: "the algorithm tool's Shor circuit on the state-vector simulator" }
+        if (f && f !== 'not found') return { n, factors: f, order: o, by: `the register of ${3 * width} qubits, Shor's circuit` }
       }
-      return { n, by: `the algorithm tool refused: ${reply.error.message}` }
     }
-    return { n, by: `beyond the simulator's bound N ≤ ${shor?.maximum ?? '?'}: not factored here` }
+    const done = listFactors(BigInt(n), 1n << 12n)
+    const door = done.left.length ? 'cofactor' : done.factors.length <= 1 ? 'prime' : done.searched > 0n ? 'σ-reflection' : 'trial'
+    const shown = [...done.factors, ...done.left].map(String).join(' × ')
+    return { n, factors: shown || undefined, by: door }
   })
   const angles: Reflection['angles'] = integers.flatMap((x) => bounds.filter((b) => x <= b.d).map((b) => ({ x, property: b.property, d: b.d, sigma: b.d - x, angle: (2 * Math.PI * x) / b.d })))
   const queries = reflectStatement(statement)
@@ -372,13 +379,13 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
     ...found.map((c) => ({ id: `mirror-${c.id}`, ...mirror, statement: c.text, tool: c.kind === 'tool' ? c.id : examples.find((e) => e.id === c.id)?.tool, reason: 'found only in the mirror form of the statement' })),
   ]
   const verify: VerifyRequest[] = [...new Map([...matchedLeads, ...reflectionLeads].flatMap((l) => extractFacts(l).flatMap(createVerifyRequests)).map((r) => [r.url + JSON.stringify(r.body), r])).values()]
-  const possibilities = navigate(uuidOf(statement), { execute: true })
+  const possibilities = navigate(uuid(statement), { execute: true })
   const reflection: Reflection = { factors, angles, queries, found, leads: reflectionLeads }, around = { candidates, cluster, verify, reflection, possibilities }, asLead = { id: slug(statement), source: 'statement', statement }
-  const callOf = (c: Candidate) => { const example = c.kind === 'example' ? examples.find((e) => e.id === c.id)! : examples.find((e) => e.tool === c.id), tool = c.kind === 'example' ? example!.tool : c.id, call = { name: tool, arguments: example?.arguments ?? {} }; return { example, tool, call, reply: toolsCall(handle, call) } }
+  const replay = (c: Candidate) => { const example = c.kind === 'example' ? examples.find((e) => e.id === c.id)! : examples.find((e) => e.tool === c.id), tool = c.kind === 'example' ? example!.tool : c.id, call = { name: tool, arguments: example?.arguments ?? {} }; return { example, tool, call, reply: toolsCall(handle, call) } }
 
   if ((!top || top.hits < 2) && found.length > 0) {
     // the reflection serves as an example does: its replay as documented and its share of the statement's words are its witnesses
-    const f = found[0]!, { example, tool, call, reply } = callOf(f), share = f.hits / Math.max(1, substantive.length)
+    const f = found[0]!, { example, tool, call, reply } = replay(f), share = f.hits / Math.max(1, substantive.length)
     if ('result' in reply && share >= 0.7 && (!example || example.expect(reply.result.structuredContent) === null)) return { statement, verdict: 'served', evidence: [`found in the reflection: ${f.text}`], tool, call, result: reply.result.structuredContent, example: example?.id, coverage: share, ...around, cluster: [f, ...cluster], lead: { ...asLead, status: 'served', tool } }
   }
   const coverage = top ? top.hits / Math.max(1, substantive.length) : 0
@@ -391,13 +398,13 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
     // audit here would replay every lead), its call is the witness missing
     if (lead.status === 'served' && lead.tool && !callable.has(lead.tool)) return { statement, verdict: 'unknown', evidence: [`lead ${lead.id} is served by ${lead.tool}, a tool the matcher does not call to serve (it fetches, judges or lays out): the call that witnesses it is not made here`], tool: lead.tool, ...around, lead: { ...asLead, status: 'open', tool: lead.tool, reason: `the call to ${lead.tool} is its witness` } }
     if (lead.status === 'served' && lead.tool) {
-      const { call, reply } = callOf({ kind: 'tool', id: lead.tool, score: 0, hits: 0, text: '' })
+      const { call, reply } = replay({ kind: 'tool', id: lead.tool, score: 0, hits: 0, text: '' })
       if ('result' in reply) return { statement, verdict: 'served', evidence: [`lead ${lead.id} is served by ${lead.tool}; called it`], tool: lead.tool, call, result: reply.result.structuredContent, ...around, lead: { ...lead, statement } }
       return { statement, verdict: 'impossible', evidence: [`lead ${lead.id} names ${lead.tool}, which refused: ${reply.error.message}`], tool: lead.tool, call, ...around, lead: { ...lead, status: 'blocked', reason: reply.error.message } }
     }
     return { statement, verdict: 'unknown', evidence: [`lead ${lead.id} is ${lead.status}: ${lead.reason ?? 'no reason recorded'}`], ...around, lead: { ...lead, statement } }
   }
-  const { example, tool, call, reply } = callOf(top)
+  const { example, tool, call, reply } = replay(top)
   if ('result' in reply) {
     const why = example ? example.expect(reply.result.structuredContent) : null
     // only the proven is admitted (legal_only_the_proven_is_admitted): a weak or unreplayed match is unknown, a discovery lead, never a false "served"
@@ -413,34 +420,36 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
     const w: Witnesses = { present: [], missing: [], contradicted: [] }, put = (ok: boolean | null, why: string) => void w[ok === null ? 'missing' : ok ? 'present' : 'contradicted'].push(why)
     const negated = statement.search(NEGATION) >= 0, plain = statement.replace(NEGATION, () => ' '), served = m.verdict === 'served', proven = served && !!m.theorem && !m.call
     const computed = route?.theorems[0] ? evaluateRouted(route.theorems[0].theorem, statement) : null, example = examples.find((e) => e.id === m.example), theorem = THEOREMS.find((t) => t.key === m.theorem), door = allTools.find((t) => t.name === m.call?.name)
-    const relations = [...plain.matchAll(RELATION)].map((r) => r[0].trim()), inputs = [...leaves(m.call?.arguments ?? {}).flatMap((v) => (m.pattern ? numbersOf(v.replace(/_/g, () => ' ')) : [v])), ...(proven ? m.theorem!.split(/[_.]/) : []), ...Object.values(computed?.values ?? {})], has = (xs: string[], n: string) => xs.some((x) => agree(n, x))
+    const relations = [...plain.matchAll(RELATION)].map((r) => r[0].trim()), inputs = [...leaves(m.call?.arguments ?? {}).flatMap((v) => (m.pattern ? numbers(v.replace(/_/g, () => ' ')) : [v])), ...(proven ? m.theorem!.split(/[_.]/) : []), ...Object.values(computed?.values ?? {})], has = (xs: string[], n: string) => xs.some((x) => agree(n, x))
     // a bound exceeded refutes when the answering door (or no door) is bounded by it; beside a door it does not bind it is a claim (Willow has 105 qubits)
-    const held = boundsOf(statement).filter((b) => !b.exceeded.length || has(inputs, b.text) || (door ? !!door.inputSchema.properties?.[b.property] : !proven))
-    for (const b of held) if (!b.exceeded.length || has(inputs, b.text)) put(true, `${b.phrase}: within ${b.exceeded.length ? `the call ${m.call!.name} answered` : 'every schema bound'}`); else for (const e of b.exceeded) put(false, e)
+    const onDoor = (property: string) => door ? !!door.inputSchema.properties?.[property] : !proven
+    // a property with no maximum is not a ceiling. On the door that takes it, the number is within the call. Beside a door that does not take it, the claim checker still compares it with the answer.
+    const held = exceeded(statement).filter((b) => b.bounded ? !b.exceeded.length || has(inputs, b.text) || onDoor(b.property) : onDoor(b.property) || has(inputs, b.text))
+    for (const b of held) if (!b.exceeded.length || has(inputs, b.text)) put(true, `${b.phrase}: within ${b.exceeded.length ? `the call ${m.call!.name} answered` : b.bounded ? 'every schema bound' : `the call ${m.call?.name ?? 'answered'} answered`}`); else for (const e of b.exceeded) put(false, e)
     for (const r of relations) { try { const e = evaluate(r.replace(/[×·]/g, () => '*').replace(/−/g, () => '-'), {}); if (typeof e.value === 'boolean') put(e.value !== negated, `${r}: recomputed ${e.parts.map((x) => `${x.left} ${x.op} ${x.right}`).join(', ')}`) } catch { /* no arithmetic the evaluator reads */ } }
     // a primality claim is recomputed, never taken from a door that answered about the number (91 is prime: 91 = 7 × 13)
     for (const p of plain.matchAll(/\b(\d+)\s+is\s+(?:an?\s+)?(prime|composite)\b/gi)) { const r = testPrimality(BigInt(p[1]!)); put((r.prime === (p[2]!.toLowerCase() === 'prime')) !== negated, `${p[1]} is ${p[2]}: recomputed, ${p[1]} is ${r.prime ? 'prime' : 'composite'}${r.certain ? '' : ' (probable)'}`) }
     if (served) put(true, proven ? `the kernel accepts ${m.theorem}` : `${m.tool} answered the call now${example ? `; example ${example.id} replays as documented` : ''}`)
     else for (const e of m.evidence) if (!w.contradicted.includes(e)) put(m.verdict === 'impossible' ? false : null, e)
     // a named theorem witnesses only its own words (sigma reflect proves P equals NP)
-    const wordsOf = (key = '', text = '') => new Set(stemsOf(`${key.replace(/[_.]/g, () => ' ')} ${text} ${TEXTBOOK_THEOREMS.find((t) => t.key === key)?.says ?? ''}`)), own = wordsOf(m.theorem, `${theorem?.statement} ${theorem?.module}`), near = wordsOf(computed?.theorem)
-    const uncovered = proven ? [...new Set(stemsOf(plain))].filter((x) => !own.has(x)) : []
+    const words = (key = '', text = '') => new Set(stems(`${key.replace(/[_.]/g, () => ' ')} ${text} ${TEXTBOOK_THEOREMS.find((t) => t.key === key)?.says ?? ''}`)), own = words(m.theorem, `${theorem?.statement} ${theorem?.module}`), near = words(computed?.theorem)
+    const uncovered = proven ? [...new Set(stems(plain))].filter((x) => !own.has(x)) : []
     if (uncovered.length) put(null, `the words ${uncovered.join(', ')}: ${m.theorem} states none of them`)
     // a claim is decided by the values its subject names in full, else passed by any agreeing value, else missing
-    const taken = [...inputs, ...relations.flatMap(numbersOf), ...held.map((b) => b.text)]
-    const claims = claimsOf(plain, proven, taken), stated = numbersOf(plain).filter((n) => !has(taken, n) && !claims.some((c) => c.shown === n || c.shown === `${n}%`))
+    const taken = [...inputs, ...relations.flatMap(numbers), ...held.map((b) => b.text)]
+    const found = claims(plain, proven, taken), stated = numbers(plain).filter((n) => !has(taken, n) && !found.some((c) => c.shown === n || c.shown === `${n}%`))
     // a side its theorem's own words name (the order is 4) decides first
-    const sides = (lean: string, by: string, words: Set<string>, values = {}) => { const named = claimsOf(TEXTBOOK_THEOREMS.find((t) => t.key === by)?.says ?? ''); return sidesOf(lean, values).map((n) => ({ n, by, words, label: named.filter((l) => agree(l.n, n)).flatMap((l) => l.subject) })) }
-    const values = [...((claims.length || stated.length) && served && m.result !== undefined ? valuesOf(m.result).map((v) => ({ ...v, by: `${m.example ?? m.tool} at ${v.at}` })) : []), ...(proven && theorem ? sides(`theorem ${theorem.key} : ${theorem.statement}`, theorem.key, own) : []), ...(computed ? sides(computed.lean, computed.theorem, near, computed.values) : [])]
-    for (const c of claims) {
-      const all = values.map((v) => ({ ...v, full: c.subject.every((x) => v.words.has(x)), named: 'label' in v && v.label.length > 0 && v.label.every((x) => c.subject.includes(x)), agrees: agree(c.n, v.n) })), full = all.filter((v) => v.full)
+    const labelled = (lean: string, by: string, words: Set<string>, values = {}) => { const named = claims(TEXTBOOK_THEOREMS.find((t) => t.key === by)?.says ?? ''); return sides(lean, values).map((n) => ({ n, by, words, label: named.filter((l) => agree(l.n, n)).flatMap((l) => l.subject) })) }
+    const witnessed = [...((found.length || stated.length) && served && m.result !== undefined ? values(m.result).map((v) => ({ ...v, by: `${m.example ?? m.tool} at ${v.at}` })) : []), ...(proven && theorem ? labelled(`theorem ${theorem.key} : ${theorem.statement}`, theorem.key, own) : []), ...(computed ? labelled(computed.lean, computed.theorem, near, computed.values) : [])]
+    for (const c of found) {
+      const all = witnessed.map((v) => ({ ...v, full: c.subject.every((x) => v.words.has(x)), named: 'label' in v && v.label.length > 0 && v.label.every((x) => c.subject.includes(x)), agrees: agree(c.n, v.n) })), full = all.filter((v) => v.full)
       const decisive = full.some((v) => v.named) ? full.filter((v) => v.named || !('label' in v)) : full
       const ok = decisive.length ? decisive.some((v) => v.agrees) : all.some((v) => v.agrees) || null, shown = (decisive.length ? decisive : all).filter((v) => (ok ? v.agrees : ok === false))
       put(ok === null ? null : ok !== negated, `${c.shown} (${c.subject.join(' ')}): ${[...new Set(shown.map((v) => v.by))].map((b) => `${b} states ${shown.filter((v) => v.by === b).map((v) => v.n).join(', ')}`).join('; ') || 'no witness states it'}`)
     }
     // a number stated but neither an input nor a claim is witnessed only by a value equal to it (91 is prime, answered about another integer)
-    for (const n of stated) if (served && !values.some((v) => agree(n, v.n))) put(null, `${n}: no witness states it`)
-    if (negated && served && !claims.length && !relations.length) put(proven && !uncovered.length ? false : null, `the statement negates what ${proven ? `${m.theorem} proves` : `${m.tool} answers`}`)
+    for (const n of stated) if (served && !witnessed.some((v) => agree(n, v.n))) put(null, `${n}: no witness states it`)
+    if (negated && served && !found.length && !relations.length) put(proven && !uncovered.length ? false : null, `the statement negates what ${proven ? `${m.theorem} proves` : `${m.tool} answers`}`)
     const state = w.contradicted.length ? 'collision' : w.missing.length || !w.present.length ? 'gas' : KERNEL.has(m.theorem ?? example?.theorem ?? '') ? 'solid' : 'liquid'
     const verdict = state === 'collision' ? 'impossible' : state === 'gas' && served ? 'unknown' : m.verdict, why = verdict === 'impossible' ? w.contradicted : w.missing
     return { ...m, witnesses: w, state, ...(verdict === m.verdict ? {} : { verdict, evidence: [...new Set(verdict === 'impossible' ? [...why, ...m.evidence] : [...m.evidence, ...why])], lead: { ...m.lead, status: verdict === 'impossible' ? 'blocked' : 'open', reason: why.join('; ') } }) }
@@ -458,11 +467,11 @@ export const matchNews = (items: readonly { title: string; source?: string; url?
 }
 /** The day's news solved (matchNews) into a tenant's blog: each served problem a draft post (Payload publishing, the tenant's editor publishes
  *  it) bodied by its solution, the unknowns the backlog; the posts and the backlog make the items (textbook_editorial_posts). Pure. */
-export const editorialOf = (items: readonly { title: string; source?: string; url?: string }[], tenant: string, handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[], locale?: string) => {
+export const editorial = (items: readonly { title: string; source?: string; url?: string }[], tenant: string, handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[], locale?: string) => {
   const news = matchNews(items, handle, allExamples, leads, locale)
   // the post body: a blogMarkdown block holding the served call and its result
-  const bodyOf = (p: { problem: string; source: string | null; solution: { name: string } | null; result: unknown }) => `## ${p.problem}\n\nSolved by \`${p.solution?.name ?? 'the surface'}\`${p.source ? ` — from ${p.source}` : ''}.\n\n\`\`\`json\n${JSON.stringify(p.result ?? p.solution ?? {}, null, 2)}\n\`\`\``
-  const drafts = news.problems.filter((p) => p.verdict === 'served').map((p) => ({ collection: 'posts', tenant, _status: 'draft' as const, title: p.problem, slug: slug(p.problem), source: p.source, url: p.url, content: [{ blockType: 'blogMarkdown', blogMarkdownFields: { markdown: bodyOf(p) } }], solution: p.solution, result: p.result, address: uuidOf(`post\n${tenant}\n${p.problem}`), monetisation: `priced by ${tenant}'s own catalogue (its variants and currency), sold through the tenant's ecommerce` }))
+  const body = (p: { problem: string; source: string | null; solution: { name: string } | null; result: unknown }) => `## ${p.problem}\n\nSolved by \`${p.solution?.name ?? 'the surface'}\`${p.source ? ` — from ${p.source}` : ''}.\n\n\`\`\`json\n${JSON.stringify(p.result ?? p.solution ?? {}, null, 2)}\n\`\`\``
+  const drafts = news.problems.filter((p) => p.verdict === 'served').map((p) => ({ collection: 'posts', tenant, _status: 'draft' as const, title: p.problem, slug: slug(p.problem), source: p.source, url: p.url, content: [{ blockType: 'blogMarkdown', blogMarkdownFields: { markdown: body(p) } }], solution: p.solution, result: p.result, address: uuid(`post\n${tenant}\n${p.problem}`), monetisation: `priced by ${tenant}'s own catalogue (its variants and currency), sold through the tenant's ecommerce` }))
   // every unknown lead becomes its own tenant app at <slug>.uuidna.com, sold through its own catalogue
   const apps = news.problems.filter((p) => p.verdict !== 'served').map((p) => { const s = slug(p.problem); return { lead: p.lead!, slug: s, host: `${s}.uuidna.com`, app: { name: s, host: `${s}.uuidna.com` }, monetisation: `a tenant app of its own at ${s}.uuidna.com, priced by its catalogue and sold through its ecommerce`, says: `the lead "${p.problem}" implemented as the tenant app ${s}.uuidna.com` } })
   return { phase: 'editorial' as const, tenant, items: items.length, posts: drafts.length, backlog: apps.length, drafts, apps, leads: apps.map((a) => a.lead), theorems: ['textbook_editorial_posts', 'textbook_news_problems'], says: `${tenant}: ${drafts.length} solved news item(s) written as draft blog posts (the solution the body), ${apps.length} unknown ones split into tenant apps at <slug>.uuidna.com — each monetised on its own catalogue; the posts and the apps make the items, run daily as the qpu-news-solve Payload job, never auto-deployed` }

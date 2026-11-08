@@ -11,7 +11,7 @@ export const TABLES: Record<string, Record<string, string>> = { bg: BG }
 const inverted = (t: Record<string, string>): Record<string, string> => Object.fromEntries(Object.entries(t).filter(([, v]) => v).map(([k, v]) => [v, k]))
 
 /** Translate text between two locales by vocabulary, longest phrase first, case-aware; report every word no table knows. */
-export const translateOf = (text: string, from: string, to: string): { text: string; untranslated: string[]; via: string } => {
+export const translate = (text: string, from: string, to: string): { text: string; untranslated: string[]; via: string } => {
   if (from === to) return { text, untranslated: [], via: 'identity' }
   const table = from === 'en' ? TABLES[to] : to === 'en' ? (TABLES[from] ? inverted(TABLES[from]!) : undefined) : undefined
   if (!table) {
@@ -50,9 +50,21 @@ export const listNumerals = (text: string): { text: string; numerals: { glyphs: 
   const out = text.replace(GLAGOLITIC_RUN, (glyphs) => { const value = [...glyphs].reduce((n, g) => n + GLAGOLITIC[g.toUpperCase()]!, 0); numerals.push({ glyphs, value }); return String(value) })
   return { text: out, numerals }
 }
-/** A hex spoken in Glagolitic numerals: each digit the numeral of its own value written by glagoliticOf (0 silent, 1 to 9 the units Ⰰ to Ⰸ,
+/** A hex spoken in Glagolitic numerals: each digit the numeral of its own value written by glagolitic (0 silent, 1 to 9 the units Ⰰ to Ⰸ,
  *  10 Ⰺ, 11 to 15 Ⰺ and a unit, additive as the system adds), every position kept so a silent zero still has its place, then read back through
  *  the same table to the digits it came from; the dialect is how often each letter speaks across the hex. The table decides both ways. */
+/** The thousand-bit width spoken and understood in Glagolitic: 1000 is the one letter the table gives it, read back as 1000. The integer 2^999+1 is not written (textbook_thousand_bit_width). */
+export const speakThousand = (raw: unknown) => {
+  const spec = raw === 1000 || raw === true ? { bits: 1000 as const } : typeof raw === 'string' ? { text: raw } : raw !== null && typeof raw === 'object' ? raw as { bits?: number; text?: string } : null
+  if (!spec) throw new Error('a thousand bits is spoken as { bits: 1000 }, or as the Glagolitic numeral of 1000')
+  const spoken = toGlagolitic(1000)
+  if (!spoken) throw new Error('the Glagolitic table has no letter for 1000')
+  const heard = typeof spec.text === 'string' ? spec.text.trim() : spoken
+  const understood = listNumerals(heard).numerals[0]?.value ?? null
+  if (spec.bits !== undefined && spec.bits !== 1000) throw new Error('this speech is the thousand-bit width; a wider integer is not written')
+  const bits = understood === 1000 ? 1000 as const : null
+  return { bits, spoken, heard, understood, roundTrip: heard === spoken && understood === 1000, materialised: false as const, theorem: 'textbook_thousand_bit_width' as const, says: understood === 1000 ? '1000 bits spoken in Glagolitic and read back as 1000; the integer is not written' : 'the speech is not the Glagolitic thousand' }
+}
 export const speakHex = (hex: string) => {
   const clean = hex.toLowerCase().replace(/[^0-9a-f]/g, '')
   const letters = [...clean].map((digit, at) => { const value = parseInt(digit, 16); return { at, digit, value, spoken: value === 0 ? '' : toGlagolitic(value)! } })

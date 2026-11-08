@@ -22,6 +22,7 @@ import Qpu.Fusion
 import Qpu.Physics
 import Qpu.Pi
 import Qpu.Primes
+import Qpu.Program
 import Qpu.Sigma
 import Qpu.Textbook
 import Qpu.Surfacecode

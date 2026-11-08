@@ -4,7 +4,7 @@ export const isAdminOrSelf: Access = ({ req: { user } }) => {
   // Need to be logged in
   if (user) {
     // If user has role of 'admin'
-    if ('roles' in user && user.roles?.includes('admin')) {
+    if (user.roles?.includes('admin')) {
       return true
     }
 
@@ -22,7 +22,7 @@ export const isAdminOrSelf: Access = ({ req: { user } }) => {
 
 export const isAdminOrSelfFieldLevel: FieldAccess = ({ id, req: { user } }) => {
   // Return true or false based on if the user has an admin role
-  if (user && 'roles' in user && user.roles?.includes('admin')) {
+  if (user?.roles?.includes('admin')) {
     return true
   }
   if (user?.id === id) {

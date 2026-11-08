@@ -5,7 +5,7 @@ import { listCleanupSubjects, type Lead } from './leads.ts'
 import type { Discovery } from './discovery.ts'
 import type { WaveResult } from './wave.ts'
 import { TAKES } from './discovery.ts'
-import { cellOf as cell } from './widgets.ts'
+import { cell } from './widgets.ts'
 
 type Judged = { lead: string; source: string; status: string; class: 'served' | 'refuted' | 'trial'; by: string }
 type Source = { source: string; reached: true; settled: number; why: string; open: { source: string; what: string; owes: string }[] }

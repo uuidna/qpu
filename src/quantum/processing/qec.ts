@@ -65,23 +65,23 @@ const countErrors = (circuit: Circuit): number => {
 /** A channel of one probability, as the three the code is tried against are named in Cirq. */
 export type ErrorChannel = 'bit_flip' | 'phase_flip' | 'depolarize'
 
-export const channelOf = (name: ErrorChannel, p: number): Channel => ({ name, p })
+export const channel = (name: ErrorChannel, p: number): Channel => ({ name, p })
 
 /** One point of the code's performance: the raw error of the unencoded qubit and the logical error after one cycle, both from
  *  the simulated density matrix, at the channel probability p. */
 type CodePoint = { p: number; physicalError: number; logicalError: number }
 
-export const codePoint = (code: RepetitionCode, channel: ErrorChannel, p: number, logical: LogicalState = '0'): CodePoint => ({
+export const codePoint = (code: RepetitionCode, kind: ErrorChannel, p: number, logical: LogicalState = '0'): CodePoint => ({
   p,
-  physicalError: countErrors(unencodedCycle(channelOf(channel, p), logical)),
-  logicalError: countErrors(repetitionCycle(code, channelOf(channel, p), logical)),
+  physicalError: countErrors(unencodedCycle(channel(kind, p), logical)),
+  logicalError: countErrors(repetitionCycle(code, channel(kind, p), logical)),
 })
 
 /** The textbook figure for the code matched to its channel on a logical |0⟩ or |1⟩: 3p² − 2p³, the probability of two or more
  *  flips among three, each pair of flips acting as the logical X the code cannot see. On |+⟩ or |−⟩ that logical X does nothing,
  *  and for a channel the code is not built for the textbook gives no single formula; in both cases none is claimed. */
-export const textbookLogicalError = (code: RepetitionCode, channel: ErrorChannel, logical: LogicalState, p: number): number | null => {
-  const matched = ((code === 'bit_flip' && channel === 'bit_flip') || (code === 'phase_flip' && channel === 'phase_flip')) && (logical === '0' || logical === '1')
+export const textbookLogicalError = (code: RepetitionCode, kind: ErrorChannel, logical: LogicalState, p: number): number | null => {
+  const matched = ((code === 'bit_flip' && kind === 'bit_flip') || (code === 'phase_flip' && kind === 'phase_flip')) && (logical === '0' || logical === '1')
   return matched ? 3 * p * p - 2 * p * p * p : null
 }
 

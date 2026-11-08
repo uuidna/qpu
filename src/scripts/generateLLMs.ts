@@ -265,4 +265,5 @@ async function generateLLMs() {
   }
 }
 
+// @ts-expect-error - this script is executed directly by Payload's TypeScript runner
 await generateLLMs()

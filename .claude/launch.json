@@ -2,12 +2,25 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "payload",
-      "runtimeExecutable": "scripts/site-local.sh",
+      "name": "qpu",
+      "runtimeExecutable": "pnpm",
       "runtimeArgs": [
         "dev"
       ],
       "port": 3000
+    },
+    {
+      "name": "qpu-3001",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "exec",
+        "next",
+        "dev",
+        "--webpack",
+        "-p",
+        "3001"
+      ],
+      "port": 3001
     }
   ]
 }

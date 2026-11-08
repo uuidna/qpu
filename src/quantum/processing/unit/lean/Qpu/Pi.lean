@@ -6,8 +6,8 @@ import Qpu.Lattice
 approximations. These are checked identities about the numerators and denominators of π's convergents, not a closed form
 for π (π is irrational); they are the exact ingredients the clay family's analytic wing reads. -/
 
-/-- the integer floor of π (3) equals mintOf coins − seed. -/
-theorem pi_floor : mintOf coins - seed = 3 := rfl
+/-- the integer floor of π (3) equals mint coins − seed. -/
+theorem pi_floor : mint coins - seed = 3 := rfl
 /-- Archimedes' upper bound 22/7: the numerator (22) equals faces + vertices. -/
 theorem pi_archimedes_num : faces + vertices = 22 := rfl
 /-- Archimedes' upper bound 22/7: the denominator (7) equals rays. -/
@@ -22,5 +22,5 @@ theorem pi_turn_degrees : (faces - coins) * (plane + coins) = 360 := rfl
 theorem pi_half_turn : (faces - coins) * (faces + seed) = 180 := rfl
 
 /-- Every convergent at once: π's floor and its classical rational approximations, the analytic-wing ingredients. -/
-theorem pi_all : mintOf coins - seed = 3 ∧ faces + vertices = 22 ∧ rays = 7 ∧ plane * (faces - seed) - n * n = 355 ∧ plane * hexbit + seed = 113 ∧ (faces - coins) * (plane + coins) = 360 ∧ (faces - coins) * (faces + seed) = 180 :=
+theorem pi_all : mint coins - seed = 3 ∧ faces + vertices = 22 ∧ rays = 7 ∧ plane * (faces - seed) - n * n = 355 ∧ plane * hexbit + seed = 113 ∧ (faces - coins) * (plane + coins) = 360 ∧ (faces - coins) * (faces + seed) = 180 :=
   ⟨pi_floor, pi_archimedes_num, pi_archimedes_den, pi_zu_num, pi_zu_den, pi_turn_degrees, pi_half_turn⟩

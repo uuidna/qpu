@@ -1,8 +1,8 @@
 // The standards toolbox: schema.org JSON-LD for any block, page or offer, and the tree's ISO codes validated against the
 // CLDR lists a client fetched. Pure; the discover tool reads the standards' documents as contracts.
 import { TABLES } from '../tables-index.ts'
-import { defineTool, createChecks, type Toolbox } from '../toolbox.ts'
-import { blockJsonLd, pageJsonLdOf, offerJsonLd, listCodes, validateCodes, validateStandardsOf, STANDARDS, detectStandard } from '../standards.ts'
+import { defineTool, createChecks, isObj, type Toolbox } from '../toolbox.ts'
+import { blockJsonLd, pageJsonLd, offerJsonLd, listCodes, validateCodes, validateStandards, verifyIsoOnline, verifyIsoQuantumEquivalence, STANDARDS, detectStandard, ISO_DIMENSIONS } from '../standards.ts'
 import { LOCALES } from '../i18n.ts'
 import { CATALOGUE } from './billing.ts'
 import { flowWidget } from '../widgets.ts'
@@ -14,7 +14,7 @@ const jsonld = defineTool('standards', {
   run: (args, ctx) => {
     const kind = String(args.kind ?? 'block')
     if (kind === 'block') return { kind, jsonLd: blockJsonLd({ tool: String(args.tool ?? 'qpu'), id: String(args.id ?? ''), description: String(args.description ?? ''), url: typeof args.url === 'string' ? args.url : undefined, locale: typeof args.locale === 'string' ? args.locale : undefined }) }
-    if (kind === 'page') return { kind, jsonLd: pageJsonLdOf({ url: String(args.url ?? 'https://qpu.uuidna.com/'), title: String(args.title ?? '@uuidna/qpu'), description: String(args.description ?? ''), uuid: typeof args.uuid === 'string' ? args.uuid : undefined, locale: typeof args.locale === 'string' ? args.locale : undefined }) }
+    if (kind === 'page') return { kind, jsonLd: pageJsonLd({ url: String(args.url ?? 'https://qpu.uuidna.com/'), title: String(args.title ?? '@uuidna/qpu'), description: String(args.description ?? ''), uuid: typeof args.uuid === 'string' ? args.uuid : undefined, locale: typeof args.locale === 'string' ? args.locale : undefined }) }
     const currency = String(args.currency ?? 'eur')
     const offers = CATALOGUE.filter((v) => (kind === 'offer' ? v.product === args.product && v.variant === args.variant : true) && currency in v.amounts).map((v) => offerJsonLd({ product: v.product, variant: v.variant, unit: v.unit, interval: v.interval, currency, amount: v.amounts[currency]!, description: v.description }))
     if (kind === 'offer' && !offers.length) throw new Error(`no variant ${String(args.product)} ${String(args.variant)} in ${currency}`)
@@ -38,9 +38,14 @@ const codes = defineTool('standards', {
 
 const validate = defineTool('standards', {
   name: 'validate',
-  description: 'Validate against all standards via Payload\'s standard implementation, in the cheapest possible slices: every standard (the vocabularies, the ISO code lists, the references) with the Payload mechanism that validates it, split into content-addressed slices so validation, reindexing and cleanup run per slice (a page, a job) — the cheapest unit, an unchanged slice skipped by its address (the 304 involution), never the whole at once.',
-  inputSchema: { type: 'object', properties: { bound: { type: 'integer', minimum: 1, description: 'standards per slice (default 6)' }, selftest: { type: 'boolean' } } },
-  run: (args, ctx) => { return validateStandardsOf(typeof args.bound === 'number' ? args.bound : 6) },
+  description: 'Validate against all standards via Payload\'s standard implementation, in the cheapest possible slices: every standard (the vocabularies, the ISO code lists, the references) with the Payload mechanism that validates it, split into content-addressed slices so validation, reindexing and cleanup run per slice (a page, a job) — the cheapest unit, an unchanged slice skipped by its address (the 304 involution), never the whole at once. online: true asks the ISO Open Data page. A page answer yields the JSONLines link that page publishes. A file answer verifies each ISO dimension by a reference in that file and defines it by the English title and the scope. The catalogue number is the row id.',
+  inputSchema: { type: 'object', properties: { bound: { type: 'integer', minimum: 1, description: 'standards per slice (default 6)' }, online: { description: 'true: the ISO Open Data page. { status, text }: that page, or the JSONLines file the page linked' }, selftest: { type: 'boolean' } } },
+  run: (args, ctx) => {
+    if (args.online === true) return verifyIsoOnline() as never
+    if (isObj(args.online)) { const o = args.online as { status?: unknown; text?: unknown }; return verifyIsoOnline({ status: typeof o.status === 'number' ? o.status : 0, text: typeof o.text === 'string' ? o.text : '' }) as never }
+    if (args.iso === true || args.quantum === true) return verifyIsoQuantumEquivalence() as never
+    return validateStandards(typeof args.bound === 'number' ? args.bound : 6)
+  },
   widget: flowWidget,
 })
 
@@ -49,12 +54,12 @@ const CLDR_FIXTURE = Object.fromEntries(Object.entries(TABLES.CLDR_FIXTURE).map(
 export const STANDARDS_BOX: Toolbox = {
   name: 'standards',
   idea: 'the standards fused: schema.org on every block, page and offer; ISO 8601, 639-1, 4217 and 3166-1 in every date, language, price and country, validated against the CLDR lists discovery reads as contracts',
-  tools: [jsonld, codes, validate],
+  tools: [validate],
   examples: [
-    { id: 'jsonld-block', tool: 'jsonld', arguments: { kind: 'block', tool: 'clay', id: '941ef62e-d97b-2438-bfc8-22ae9e5da781', description: 'The Clay register recomputed' }, shows: 'A block as schema.org JSON-LD: a CreativeWork of the SoftwareApplication, the author a Person with an ORCID, the licence a URL, the date ISO 8601.', expect: (s) => (s.jsonLd['@type'] === 'CreativeWork' && s.jsonLd.author?.['@id']?.includes('orcid.org') && s.jsonLd.license === 'https://uuidna.com/license' && /^\d{4}-\d{2}-\d{2}T/.test(s.jsonLd.dateModified) ? null : JSON.stringify(s.jsonLd).slice(0, 160)) },
-    { id: 'jsonld-catalogue', tool: 'jsonld', arguments: { kind: 'catalogue', currency: 'eur' }, shows: 'The whole catalogue as an OfferCatalog of Offers priced in ISO 4217 EUR, each a UnitPriceSpecification by month or year where recurring.', expect: (s) => (s.offers === 9 && s.jsonLd['@type'] === 'OfferCatalog' && s.jsonLd.itemListElement.every((o: { priceCurrency: string }) => o.priceCurrency === 'EUR') ? null : `${s.offers} offers`) },
-    { id: 'codes-plan', tool: 'codes', arguments: {}, shows: 'What the codes tool would validate and where the CLDR lists are: eleven locales, three currencies, the tenants\' countries.', expect: (s) => (s.phase === 'plan' && s.locales === Object.keys(LOCALES).length && s.currencies === 3 && s.standards.length === 3 ? null : `${s.phase} ${s.locales} ${s.currencies}`) },
-    { id: 'standards-validate', tool: 'validate', theorem: 'textbook_standards_sliced', arguments: { bound: 6 }, shows: 'validateStandardsOf validates against all standards via Payload\'s standard implementation, in the cheapest possible slices: every standard (a codes list by a select/validate against CLDR, a vocabulary by schema.org JSON-LD, a reference by the generated config and its field validations) covered, split into content-addressed slices of six so validation, reindexing (referenceIndexOf) and cleanup (purify, the RAID GC) run per slice as a job — the cheapest unit, an unchanged slice skipped by its address; the covered and the uncovered make the standards.', expect: (s) => (s.phase === 'standards-validate' && s.standards === STANDARDS.length && s.covered === s.standards && s.uncovered === 0 && s.slices === Math.ceil(STANDARDS.length / 6) && s.bySlice.every((sl: { address: string }) => /^[0-9a-f-]{36}$/.test(sl.address)) && /304 involution/.test(s.cheapest) ? null : JSON.stringify({ std: s.standards, covered: s.covered, slices: s.slices })) },
+    { id: 'standards-validate', tool: 'validate', theorem: 'textbook_standards_sliced', arguments: { bound: 6 }, shows: 'validateStandards validates against all standards via Payload\'s standard implementation, in the cheapest possible slices: every standard (a codes list by a select/validate against CLDR, a vocabulary by schema.org JSON-LD, a reference by the generated config and its field validations) covered, split into content-addressed slices of six so validation, reindexing (referenceIndex) and cleanup (purify, the RAID GC) run per slice as a job — the cheapest unit, an unchanged slice skipped by its address; the covered and the uncovered make the standards.', expect: (s) => (s.phase === 'standards-validate' && s.standards === STANDARDS.length && s.covered === s.standards && s.uncovered === 0 && s.slices === Math.ceil(STANDARDS.length / 6) && s.bySlice.every((sl: { address: string }) => /^[0-9a-f-]{36}$/.test(sl.address)) && /304 involution/.test(s.cheapest) ? null : JSON.stringify({ std: s.standards, covered: s.covered, slices: s.slices })) },
+    { id: 'standards-iso-online', tool: 'validate', arguments: { online: true }, shows: 'Every ISO dimension is asked of the ISO Open Data page. The deliverables file is the JSONLines link that page publishes. No catalogue number is kept here. Nothing is verified until that file is the answer. Research and citations are asked of the DOI ecosystem: ISO 690 names the elements, ISO 26324 names the identifier.', expect: (s) => (s.phase === 'requests' && s.source === 'https://www.iso.org/open-data.html' && s.request.url === s.source && s.request.accept === 'text/html' && s.dataset === 'iso_deliverables_metadata' && s.asked === ISO_DIMENSIONS.length && s.holds === false && s.verified === 0 && s.rows.every((r: { verified: boolean }) => r.verified === false) && s.research.source === 'doi' && s.research.standards.join() === 'ISO 690,ISO 26324' && s.research.ecosystem.some((item: { url: string }) => item.url === 'https://api.crossref.org') && s.research.ecosystem.some((item: { url: string }) => item.url === 'https://api.datacite.org') ? null : JSON.stringify({ phase: s.phase, url: s.request?.url, holds: s.holds, research: s.research?.source })) },
+    { id: 'standards-iso-page', tool: 'validate', arguments: { online: { status: 200, text: '<a href="https://www.iso.org/open-data/iso_deliverables_metadata.jsonl">JSONLines</a>' } }, shows: 'The ISO Open Data page is the way in. The next request is the JSONLines address that page published, and the dimensions stay unverified until that file is the answer.', expect: (s) => (s.phase === 'requests' && s.holds === false && s.verified === 0 && s.source === 'https://www.iso.org/open-data.html' && s.request.url === 'https://www.iso.org/open-data/iso_deliverables_metadata.jsonl' && s.request.accept === 'application/x-ndjson' ? null : JSON.stringify({ phase: s.phase, url: s.request?.url })) },
+    { id: 'standards-iso-joined', tool: 'validate', arguments: { online: { status: 200, text: '{"reference":"ISO 9001:2015","id":1,"currentStage":9093}\n' } }, shows: 'One row of the open dataset verifies the dimension its reference names. The catalogue page is that row\'s id. The dimensions the file does not name stay unverified.', expect: (s) => { const named = s.rows.find((r: { dimension: string }) => r.dimension === 'ISO 9001'); return s.phase === 'verified' && s.holds === false && named?.verified === true && named.reference === 'ISO 9001:2015' && named.url === 'https://www.iso.org/standard/1.html' && s.verified === 1 ? null : JSON.stringify({ verified: s.verified, named }) } },
   ],
   skill: {
     instructions: 'jsonld needs no fetch. codes: the client fetches the three CLDR documents the plan names (GET, free, no credential) and calls codes with them; a code the standard does not know is a lead. The discover step reads schema.org\'s vocabulary and the CLDR lists as contracts; every tools/call result carries _meta.jsonLd and every documentation page a JSON-LD script.',
@@ -63,7 +68,7 @@ export const STANDARDS_BOX: Toolbox = {
       const { check, done } = createChecks()
       const b = blockJsonLd({ tool: 'clay', id: 'x', description: 'd', date: '2026-01-01T00:00:00.000Z' })
       check('standards:block', b['@type'] === 'CreativeWork' && (b.author as { '@id': string })['@id'] === 'https://orcid.org/0009-0000-7312-9778' && b.dateModified === '2026-01-01T00:00:00.000Z' && b.inLanguage === 'en', 'CreativeWork with ORCID author, ISO 8601 date, ISO 639-1 language')
-      const p = pageJsonLdOf({ url: 'https://qpu.uuidna.com/abc', title: 't', description: 'd', uuid: 'abc', locale: 'bg' })
+      const p = pageJsonLd({ url: 'https://qpu.uuidna.com/abc', title: 't', description: 'd', uuid: 'abc', locale: 'bg' })
       check('standards:page', p['@type'] === 'WebPage' && p.identifier === 'abc' && p.inLanguage === 'bg' && (p.isPartOf as { url: string }).url === 'https://qpu.uuidna.com', 'WebPage with identifier and locale')
       const o = offerJsonLd({ product: 'qpu-domain', variant: 'yearly', unit: 'domain', interval: 'year', currency: 'bgn', amount: 84500, description: 'd' })
       check('standards:offer', o.priceCurrency === 'BGN' && o.price === '845.00' && (o.priceSpecification as { unitCode: string }).unitCode === 'ANN', 'Offer in ISO 4217 with a yearly UnitPriceSpecification')
@@ -72,6 +77,17 @@ export const STANDARDS_BOX: Toolbox = {
       const none = validateCodes(listCodes({}), { locales: ['en'], currencies: ['eur'] })
       check('standards:unmeasured', !none.measured && none.languagesUnknown.length === 0, 'without the lists nothing is called unknown')
       check('standards:detect', detectStandard(JSON.stringify({ '@context': 'x', '@graph': [1, 2] }))?.detected === 'json-ld vocabulary' && detectStandard(JSON.stringify(CLDR_FIXTURE.languages))?.detected === 'cldr json' && detectStandard('<html>') === null, 'the vocabulary and a CLDR list are told apart')
+      const iso = verifyIsoQuantumEquivalence()
+      check('standards:iso-quantum-equivalence', iso.bijective && iso.noLessQuantum && iso.noMoreQuantum && iso.isoBlockchainProgrammable && iso.sealed, iso.says)
+      const plan = verifyIsoOnline()
+      const page = verifyIsoOnline({ status: 200, text: '<a href="https://www.iso.org/open-data/iso_deliverables_metadata.jsonl">JSONLines</a>' })
+      const joined = verifyIsoOnline({ status: 200, text: '{"reference":"ISO 9001:2015","id":62085,"currentStage":9093}\n{"reference":"ISO 639-1:2002","id":22109,"currentStage":9599}\n' })
+      const named = joined.rows.find((row) => row.dimension === 'ISO 9001')
+      const retired = joined.rows.find((row) => row.dimension === 'ISO 639-1')
+      const defined = verifyIsoOnline({ status: 200, text: '{"reference":"ISO 9001:2015","id":62085,"currentStage":9093,"title":{"en":"Quality management systems — Requirements"},"scope":{"en":"<p>This document specifies requirements.</p>"}}\n{"reference":"ISO 80000-10:2019/Amd 1:2025","id":1,"currentStage":6060,"supplementType":"Amd","title":{"en":"Amendment 1"}}\n{"reference":"ISO 80000-10:2019","id":64980,"currentStage":9093,"title":{"en":"Quantities and units — Part 10: Atomic and nuclear physics"},"scope":{"en":"<p>This document gives names, symbols, definitions and units.</p>"}}\n' })
+      const quality = defined.rows.find((row) => row.dimension === 'ISO 9001')
+      const quantity = defined.rows.find((row) => row.dimension === 'ISO 80000-10')
+      check('standards:iso-online', plan.phase === 'requests' && plan.request.url === 'https://www.iso.org/open-data.html' && plan.defined === 0 && page.phase === 'requests' && page.request.url === 'https://www.iso.org/open-data/iso_deliverables_metadata.jsonl' && plan.holds === false && plan.asked === ISO_DIMENSIONS.length && joined.holds === false && joined.defined === 0 && named?.verified === true && named.defined === false && named.current === true && named.catalogue === 62085 && retired?.verified === true && retired.current === false && quality?.defined === true && quality.definition === 'This document specifies requirements.' && quality.title === 'Quality management systems — Requirements' && quantity?.reference === 'ISO 80000-10:2019' && quantity.defined === true && quantity.catalogue === 64980, `${plan.asked} dimensions asked through the ISO Open Data page; a published row verifies, a title and a scope define it, and a base document is kept ahead of an amendment`)
       return done()
     },
   },

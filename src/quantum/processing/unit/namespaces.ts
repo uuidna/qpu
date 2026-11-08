@@ -3,7 +3,7 @@
 // ?namespace= of a page), the credential's user is narrowed to that one tenant for the request — the intersection of the tenants the
 // user holds with the one named, never more (a super admin is narrowed too, its all-tenants role dropped for the request) — so the
 // plugin's own read filter and write check keep every other tenant's records out of reach. Pure: the decision here, the app applies it.
-import { uuidOf } from './blocks.ts'
+import { uuid } from '../../uuid/index.ts'
 
 /** A DNS label is 63 octets at most (RFC 1035 §2.3.4): the standard's bound, not a cap of ours. */
 const DNS_LABEL = 63
@@ -35,7 +35,7 @@ export const createSandbox = (r: { name?: string; app?: string; scoped?: readonl
   const namespace = toNamespace(r.app ? `app-${r.app.slice(0, 8)}` : name)
   const scoped = r.scoped ?? []
   return {
-    namespace, id: uuidOf(JSON.stringify({ namespace })),
+    namespace, id: uuid(JSON.stringify({ namespace })),
     tenant: { name, slug: namespace, namespace, domains: [], settings: { sandbox: true, ...(r.app ? { app: r.app } : {}) } },
     key: { label: `sandbox ${namespace}`, says: 'an MCP key bound to a user whose tenants row holds this tenant: the credential is the sandbox', collections: Object.fromEntries(scoped.map((c) => [c, { find: true, create: true, update: c !== 'orders' }])) },
     header: { [NAMESPACE_HEADER]: namespace },

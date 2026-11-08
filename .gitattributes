@@ -1,4 +1,0 @@
-# parallel branches each append their own examples, theorems and leads: a union merge keeps both sides, and the full checks run after it
-src/quantum/examples.ts merge=union
-src/quantum/textbook-theorems.ts merge=union
-src/quantum/leads.ts merge=union

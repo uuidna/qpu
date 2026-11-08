@@ -59,7 +59,6 @@ export const Pages: CollectionConfig = {
               name: 'layout',
               type: 'blocks',
               blockReferences: [
-                'qpu',
                 'callout',
                 'cta',
                 'cardGrid',
@@ -98,9 +97,7 @@ export const Pages: CollectionConfig = {
   ],
   hooks: {
     afterChange: [
-      ({ doc, previousDoc, req: { context } }) => {
-        // outside a Next request (a seed, a migration) there is no cache to revalidate: the caller says so with context.disableRevalidate
-        if (context?.disableRevalidate) return
+      ({ doc, previousDoc }) => {
         if (doc._status === 'published' || doc._status !== previousDoc._status) {
           if (doc.breadcrumbs && doc.breadcrumbs.length > 0) {
             revalidatePath(doc.breadcrumbs[doc.breadcrumbs.length - 1].url)

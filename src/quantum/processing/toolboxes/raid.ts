@@ -6,7 +6,8 @@
 // the shape this ports to, not Cloudflare's D1.
 import { TABLES } from '../tables-index.ts'
 import { defineTool, isObj, createChecks, type Toolbox, type Context } from '../toolbox.ts'
-import { uuidOf, canonicalTextOf } from '../unit/blocks.ts'
+import { documentPath } from '../../fs/index.ts'
+import { uuid, canonicalText } from '../../uuid/index.ts'
 import { flowWidget } from '../widgets.ts'
 import { createAssociation, createValidation, valueAt, type Association, type Validation } from './payload.ts'
 
@@ -73,13 +74,13 @@ const applyUpdate = (doc: Doc, update: Record<string, unknown>): Doc => {
 /** A document as a docket entry: content-addressed by its body's canonical text (any key order, one address), in a collection family, linked to the version it replaces. */
 const toEntry = (collection: string, doc: Doc, replaces?: string): { id: string; kind: string; collection: string; body: Doc; links: string[] } => {
   const body = { ...doc }
-  const id = uuidOf(`${collection}${canonicalTextOf(body)}`)
+  const id = uuid(`${collection}${canonicalText(body)}`)
   return { id, kind: 'document', collection, body: { ...body, _id: body._id ?? id }, links: replaces ? [replaces] : [] }
 }
 
 /** Binding 0 of the storage dimension, the filesystem: a document once at its content address in hex folders named by the UUID's middle, g1/g2/g3/<uuid>
  *  (one program's versions in one folder), its R2 key and its GCS object, and beside the address of its collection and id a pointer to its latest version. */
-const hexPath = (uuid: string) => { const [, a, b, c] = uuid.split('-'); return `${a}/${b}/${c}/${uuid}` }
+const hexPath = documentPath
 /** The RAID's order by profile: Payload, then the profile's database and object store, then binding 0, which always answers. */
 const RAID_ORDER = { cloudflare: ['payload', 'd1', 'r2', 'filesystem'], google: ['payload', 'cloudsql', 'gcs', 'filesystem'], vercel: ['payload', 'filesystem'], local: ['payload', 'filesystem'] } as const
 // every file by the address its name ends with (a version, or its pointer with .latest), wherever it lies, the first-four-digit folders included
@@ -89,7 +90,7 @@ const addressed = (id: string, text = '') => { try { const e = JSON.parse(text) 
 /** Documents mirrored to binding 0 (each file to write: the version at its address, the pointer naming it), or a collection read back from the
  *  files: every pointer's version verified by its address, a file not at its address refused by path, never read. Pure: Payload's hook writes. */
 export const getBinding0 = (collection: string, docs: readonly Doc[] | null, files: Readonly<Record<string, string>> = {}) => {
-  if (docs) return { files: docs.flatMap((d) => { const e = toEntry(collection, d); return [{ path: hexPath(e.id), text: JSON.stringify(e) }, { path: `${hexPath(uuidOf(`${collection}/${String(d.id ?? e.id)}`))}.latest`, text: e.id }] }), order: RAID_ORDER }
+  if (docs) return { files: docs.flatMap((d) => { const e = toEntry(collection, d); return [{ path: hexPath(e.id), text: JSON.stringify(e) }, { path: `${hexPath(uuid(`${collection}/${String(d.id ?? e.id)}`))}.latest`, text: e.id }] }), order: RAID_ORDER }
   const all = named(files), at = Object.fromEntries(all.map((f) => [f.to, f.text])), ids = all.filter((f) => f.latest).map((f) => f.text.trim()), back = ids.map((id) => addressed(id, at[hexPath(id)]))
   return { docs: back.flatMap((e) => (e?.collection === collection ? [e.doc] : [])), refused: ids.filter((id, i) => !back[i] && at[hexPath(id)]?.includes(`"collection":${JSON.stringify(collection)}`)).map(hexPath), pointers: ids.length, order: RAID_ORDER }
 }
@@ -148,7 +149,7 @@ export const RAID: Toolbox = {
   ],
   skill: {
     instructions: 'A client that is a database adapter (Payload\'s mongodb adapter interface) reads a collection\'s rows from the docket (GET /docket?collection=…, the bodies), calls mongo with the op and the rows, and writes the entries the tool returns (POST /docket, writer role) or deletes the ids (DELETE, admin role; a linked entry is refused and kept). Every query is pure and recomputable; every write is content-addressed and linked to what it replaces.',
-    directions: ['server only: the query language on a sample collection', 'toolbox → toolbox: entries are addressed with the tree\'s uuidOf and verified by the tree toolbox\'s verify', 'client → server: the rows come from the docket; the entries go back to it'],
+    directions: ['server only: the query language on a sample collection', 'toolbox → toolbox: entries are addressed with the tree\'s uuid and verified by the tree toolbox\'s verify', 'client → server: the rows come from the docket; the entries go back to it'],
     selftest: () => {
       const { check, done } = createChecks()
       check('raid:find-ops', listDocs(SAMPLE, { $or: [{ qubits: { $lt: 60 } }, { 'meta.year': 2025 }] }, { title: 1 }).map((d) => d._id).join() === 'c,b' && listDocs(SAMPLE, { title: { $regex: '^Q', $options: 'i' } }).length === 1 && listDocs(SAMPLE, { tags: { $in: ['google'] } })[0]?._id === 'a' && listDocs(SAMPLE, { meta: { $exists: true }, qubits: { $nin: [54] } }).length === 2, 'or sorted by title (Quantum Echoes before Sycamore), dotted path, regex, in, nin, exists')

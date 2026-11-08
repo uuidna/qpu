@@ -13,7 +13,7 @@ const NATIVE = ['text', 'textarea', 'radio', 'select', 'date', 'message'], OWN =
 const mirrorName = ([item, q]: [string, string?, unknown?]) => (item === 'questionItem' ? q! : item).replace(/^./, (c) => c.toUpperCase())
 const eq = (a: J, b: J) => JSON.stringify(Object.entries(a).sort()) === JSON.stringify(Object.entries(b).sort())
 const lexical = (children: J[]) => ({ root: { type: 'root', version: 1, children } })
-const text = (t: string, format = 0) => ({ type: 'text', version: 1, text: t, format })
+const textNode = (t: string, format = 0) => ({ type: 'text', version: 1, text: t, format })
 const plain = (d?: J): string => (d?.root?.children ?? []).flatMap((p: J) => (p.children ?? []).map((t: J) => t.text ?? '')).join('\n')
 const toItem = (b: J): J => {
   const [item, q, d] = FORM_KINDS[b.blockType] ?? FORM_KINDS.text!, rest = keep(b, OWN)
@@ -23,7 +23,7 @@ const toItem = (b: J): J => {
 const toBlock = (it: J): J => {
   const q = it.questionItem?.question ?? {}, kind = Object.keys(it).find((k) => /Item$/.test(k))!, qk = Object.keys(q).find((k) => /Question$/.test(k)), own = (qk ? q[qk] : it[kind]) ?? {}
   const type = Object.entries(FORM_KINDS).find(([, [i, k, d]]) => i === kind && (!qk || (k === qk && (d === undefined || d === (qk === 'textQuestion' ? !!own.paragraph : own.type)))))?.[0] ?? 'text'
-  return { blockType: type, name: q.questionId ?? it.itemId, ...(type === 'message' ? { message: lexical([{ type: 'paragraph', version: 1, children: [text(it.title ?? '')] }]) } : { label: it.title }), ...(qk ? { required: !!q.required } : {}), ...(own.options ? { options: own.options.map((o: J) => ({ label: o.value, value: o.value })) } : {}), ...keep(own, qk ? ['type', 'paragraph', 'options'] : []) }
+  return { blockType: type, name: q.questionId ?? it.itemId, ...(type === 'message' ? { message: lexical([{ type: 'paragraph', version: 1, children: [textNode(it.title ?? '')] }]) } : { label: it.title }), ...(qk ? { required: !!q.required } : {}), ...(own.options ? { options: own.options.map((o: J) => ({ label: o.value, value: o.value })) } : {}), ...keep(own, qk ? ['type', 'paragraph', 'options'] : []) }
 }
 /** A value against a Discovery schema: fields it does not define, wrong types, values outside an enum */
 const listViolations = (schemas: J, ref: string, v: unknown): string[] => {
@@ -59,17 +59,17 @@ const getDoc = (doc: J) => {
   }
   return { document: { body: { content: [{ sectionBreak: { sectionStyle: { sectionType: 'CONTINUOUS' } } }, ...(doc.root?.children ?? []).flatMap(of)] }, lists, inlineObjects }, lost }
 }
-/** A Docs Document as Lexical: docsOf's inverse; what Lexical has no node for is named as lost */
+/** A Docs Document as Lexical: docs's inverse; what Lexical has no node for is named as lost */
 const toLexical = (d: J) => {
-  const lost: string[] = [], textOf = (e: J): J[] => { const s = e.textRun?.textStyle ?? {}, t = text(String(e.textRun?.content ?? '').replace(/\n$/, ''), FORMAT.reduce((f, [b, k]) => f | (s[k] ? b : 0), 0)); return !e.textRun || !t.text ? [] : [s.link?.url ? { type: 'link', version: 3, fields: { url: s.link.url, linkType: 'custom' }, children: [t] } : t] }
+  const lost: string[] = [], runs = (e: J): J[] => { const s = e.textRun?.textStyle ?? {}, t = textNode(String(e.textRun?.content ?? '').replace(/\n$/, ''), FORMAT.reduce((f, [b, k]) => f | (s[k] ? b : 0), 0)); return !e.textRun || !t.text ? [] : [s.link?.url ? { type: 'link', version: 3, fields: { url: s.link.url, linkType: 'custom' }, children: [t] } : t] }
   const walk = (content: J[]): J[] => content.reduce<J[]>((out, s: J, i: number) => {
     const p = s.paragraph, e = p?.elements ?? [], last = out[out.length - 1], style = /^HEADING_(\d)$/.exec(p?.paragraphStyle?.namedStyleType ?? '')
     if (s.table) out.push({ type: 'table', version: 1, children: s.table.tableRows.map((r: J) => ({ type: 'tablerow', version: 1, children: r.tableCells.map((c: J) => ({ type: 'tablecell', version: 1, headerState: 0, children: walk(c.content ?? []) })) })) })
-    else if (p?.bullet) { const item = { type: 'listitem', version: 1, value: 1, children: e.flatMap(textOf) }; if (last?.type === 'list' && last.listId === p.bullet.listId) { item.value = last.children.length + 1; last.children.push(item) } else { const listType = /DECIMAL|ALPHA|ROMAN/.test(d.lists?.[p.bullet.listId]?.listProperties?.nestingLevels?.[0]?.glyphType ?? '') ? 'number' : 'bullet'; out.push({ type: 'list', version: 1, listType, tag: listType === 'number' ? 'ol' : 'ul', start: 1, listId: p.bullet.listId, children: [item] }) } }
+    else if (p?.bullet) { const item = { type: 'listitem', version: 1, value: 1, children: e.flatMap(runs) }; if (last?.type === 'list' && last.listId === p.bullet.listId) { item.value = last.children.length + 1; last.children.push(item) } else { const listType = /DECIMAL|ALPHA|ROMAN/.test(d.lists?.[p.bullet.listId]?.listProperties?.nestingLevels?.[0]?.glyphType ?? '') ? 'number' : 'bullet'; out.push({ type: 'list', version: 1, listType, tag: listType === 'number' ? 'ol' : 'ul', start: 1, listId: p.bullet.listId, children: [item] }) } }
     else if (e[0]?.horizontalRule) out.push({ type: 'horizontalrule', version: 1 })
     else if (e[0]?.inlineObjectElement) out.push({ type: 'upload', version: 3, relationTo: 'media', value: e[0].inlineObjectElement.inlineObjectId })
     else if (e[0]?.richLink) { const r = e[0].richLink.richLinkProperties ?? {}; out.push({ type: 'block', version: 2, fields: { blockType: 'driveFile', fileId: /\/d\/([\w-]+)/.exec(r.uri ?? '')?.[1], name: r.title, mimeType: r.mimeType, webViewLink: r.uri } }) }
-    else if (p) out.push({ type: style ? 'heading' : 'paragraph', version: 1, ...(style ? { tag: `h${style[1]}` } : {}), children: e.flatMap(textOf) })
+    else if (p) out.push({ type: style ? 'heading' : 'paragraph', version: 1, ...(style ? { tag: `h${style[1]}` } : {}), children: e.flatMap(runs) })
     else if (!(s.sectionBreak && i === 0)) lost.push(Object.keys(s).find((k) => !/Index$/.test(k)) ?? 'unknown')
     for (const k of e.flatMap((x: J) => Object.keys(x)).filter((k: string) => !/Index$|^(textRun|horizontalRule|inlineObjectElement|richLink)$/.test(k))) lost.push(k)
     return out

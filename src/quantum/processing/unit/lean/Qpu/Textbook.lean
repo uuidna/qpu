@@ -602,10 +602,10 @@ theorem textbook_widget_skilled_tools_reflected (w s : Nat) (h : w = s) (σ : Na
 theorem textbook_widget_skilled_tools_contrapositive (w s : Nat) : ¬ (min w s = w) → ¬ ((w = s)) := fun hc hh => hc (textbook_widget_skilled_tools w s hh)
 /-- the converse of textbook_widget_skilled_tools, refuted by a counterexample the kernel decides (examples: configure-sets) -/
 theorem textbook_widget_skilled_tools_converse_refuted : ¬ ∀ (w s : Nat), (min w s = w) → (w = s) := fun h => absurd (h 0 1 (by decide)) (by decide)
-/-- the tool set partitions over the 12 toolboxes: 44 tools (examples: configure-sets, extend-out) -/
-theorem textbook_mcp_tools_by_toolbox : 13 + 11 + 4 + 2 + 1 + 2 + 3 + 1 + 1 + 2 + 1 + 3 = 44 := by decide
+/-- the tool set partitions over the 12 toolboxes: 46 tools (examples: configure-sets, extend-out) -/
+theorem textbook_mcp_tools_by_toolbox : 13 + 11 + 6 + 2 + 1 + 2 + 3 + 1 + 1 + 2 + 1 + 3 = 46 := by decide
 /-- textbook_mcp_tools_by_toolbox reflected by its shape, equality (examples: configure-sets, extend-out) -/
-theorem textbook_mcp_tools_by_toolbox_reflected (σ : Nat) : σ - (44) = σ - (13 + 11 + 4 + 2 + 1 + 2 + 3 + 1 + 1 + 2 + 1 + 3) := congrArg (σ - ·) (Eq.symm (textbook_mcp_tools_by_toolbox))
+theorem textbook_mcp_tools_by_toolbox_reflected (σ : Nat) : σ - (46) = σ - (13 + 11 + 6 + 2 + 1 + 2 + 3 + 1 + 1 + 2 + 1 + 3) := congrArg (σ - ·) (Eq.symm (textbook_mcp_tools_by_toolbox))
 /-- every API is a gate: the doors of the toolboxes (own) and the addresses of the categories Payload holds (external: patents, certificates, currency, competitions, energy, news, MCP servers, references) partition the gates, each a nested doc of its leads, however many the tables grow to (examples: configure-gates) -/
 theorem textbook_gates_partition (parts : List Nat) (own external : Nat) (h : own + external = parts.sum) : parts.sum - external = own := by omega
 /-- textbook_gates_partition reflected by its shape, equality (examples: configure-gates) -/
@@ -1993,3 +1993,7 @@ theorem textbook_cloudflare_cost_gate_reflected (σ : Nat) : (σ - (537000000) =
 theorem textbook_receipts_partitioned : 1 + 1 + 1 = 3 ∧ 3 - 1 = 1 + 1 ∧ 0 < 1 ∧ 1 < 3 := by decide
 /-- textbook_receipts_partitioned reflected by its shape, conjunction (examples: seal-receipts) -/
 theorem textbook_receipts_partitioned_reflected (σ : Nat) (hσ0 : (1) ≤ σ) (hσ1 : (3) ≤ σ) : (σ - (3) = σ - (1 + 1 + 1)) ∧ (σ - (1 + 1) = σ - (3 - 1)) ∧ (σ - (1) < σ - (0)) ∧ (σ - (3) < σ - (1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_receipts_partitioned).1), congrArg (σ - ·) (Eq.symm (textbook_receipts_partitioned).2.1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_receipts_partitioned).2.2.1 hσ0) (textbook_receipts_partitioned).2.2.1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_receipts_partitioned).2.2.2 hσ1) (textbook_receipts_partitioned).2.2.2⟩
+/-- a deploy waits on every recorded receipt: of the two the docket holds by id after the newest record of each is taken (quintessay-payload's resealed contribution and an unresealed mirror), holds + stale + wrong = 1 + 1 + 0 = 2, the invalidated ones are total − holds = stale + wrong = 1, and one invalidated receipt is enough to refuse; findStaleReceipts decides the pre-deploy rule receipts (examples: repository-predeploy-receipts) -/
+theorem textbook_stale_receipt_refuses_deploy : 1 + 1 + 0 = 2 ∧ 2 - 1 = 1 + 0 ∧ 0 < 2 - 1 := by decide
+/-- textbook_stale_receipt_refuses_deploy reflected by its shape, conjunction (examples: repository-predeploy-receipts) -/
+theorem textbook_stale_receipt_refuses_deploy_reflected (σ : Nat) (hσ0 : (2 - 1) ≤ σ) : (σ - (2) = σ - (1 + 1 + 0)) ∧ (σ - (1 + 0) = σ - (2 - 1)) ∧ (σ - (2 - 1) < σ - (0)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_stale_receipt_refuses_deploy).1), congrArg (σ - ·) (Eq.symm (textbook_stale_receipt_refuses_deploy).2.1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_stale_receipt_refuses_deploy).2.2 hσ0) (textbook_stale_receipt_refuses_deploy).2.2⟩

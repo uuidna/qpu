@@ -6,7 +6,7 @@ const GITHUB_RELEASES_URL = 'https://api.github.com/repos/payloadcms/payload/rel
 
 const createReleasePostFromAdmin: PayloadHandler = async (req) => {
   try {
-    if (!(req.user && 'roles' in req.user && req.user.roles?.includes('admin'))) {
+    if (!req.user?.roles?.includes('admin')) {
       return new Response('Unauthorized', { status: 401 })
     }
 

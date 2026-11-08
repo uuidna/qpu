@@ -5,14 +5,14 @@
 // The catch-all hands a single UUID segment to this component. Nothing is fetched from anywhere else; no custom endpoint.
 import React from 'react'
 import { getPayload } from 'payload'
-import { entryTextOf, uuidOf } from '@uuidna/qpu/blocks'
+import { entryText, uuid } from '@uuidna/qpu/blocks'
 import { handle } from '@uuidna/qpu/mcp'
 import { QpuApp } from './App'
 
 type Call = { id: string; result?: { structuredContent?: Record<string, unknown>; _meta?: { widget?: string; theme?: Record<string, string> }; error?: { message: string } } }
 // the tenant of the request: the host that names it (the tenants' domains, as the Worker's TENANTS), else the first tenant (a local run)
 type Tenant = { id: string; slug: string; settings?: { arguments?: Record<string, unknown> } }
-const tenantOf = async (payload: Awaited<ReturnType<typeof getPayload>>): Promise<Tenant> => {
+const tenant = async (payload: Awaited<ReturnType<typeof getPayload>>): Promise<Tenant> => {
   // next/headers is loaded when the module runs (never imported statically): the block renderer is reached by the Pages Router too, where that API does not exist (measured at build)
   let host = ''
   try { const { headers } = await import('next/headers'); host = (await headers()).get('host')?.split(':')[0] ?? '' } catch { /* no request: the first tenant */ }
@@ -21,22 +21,22 @@ const tenantOf = async (payload: Awaited<ReturnType<typeof getPayload>>): Promis
   if (!t) throw new Error('no tenant: seed the tenants first (src/scripts/seedQpu.ts)')
   return t
 }
-export const callOf = async (tool: string, args: Record<string, unknown>): Promise<Call> => {
+export const call = async (tool: string, args: Record<string, unknown>): Promise<Call> => {
   // the config loaded when the module runs, never imported statically: the block renderer is reached by the Pages Router too, and the config's hooks name App Router caches (measured at build)
   const { default: config } = await import('@payload-config')
   const payload = await getPayload({ config })
-  const tenant = await tenantOf(payload)
+  const tenant = await tenant(payload)
   // the tenant's settings (its tenants document, in this UI or through the Payload MCP plugin) configure every call under its hosts
   const from = 'page:' + tenant.slug // the same call at two tenants is two entries: the address folds the tenant through from
   const body = { tool, arguments: { ...args, ...(tenant.settings?.arguments ?? {}) } }
-  const id = uuidOf(entryTextOf({ kind: 'call', from, body }))
+  const id = uuid(entryText({ kind: 'call', from, body }))
   // the collection is QPU's own (the generated types of the fork name the site's); the id is the content address of the call
   try { return await payload.findByID({ collection: 'entries' as never, id }) as unknown as Call } catch { /* not yet called: created once below */ }
   return await payload.create({ collection: 'entries' as never, data: { id, kind: 'call', from, body, tenant: tenant.id } as never }) as unknown as Call
 }
 
 export const QpuPage = async ({ uuid }: { uuid: string }) => {
-  const verify = await callOf('verify', { uuid })
+  const verify = await call('verify', { uuid })
   // the view read by the server from the handler's own resources/read (the MCP plugin takes a key from every client; the app is its own server)
   const view = (handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: 'ui://qpu/verify' } }) as { result?: { contents: { text: string }[] } }).result?.contents[0]?.text ?? ''
   const r = verify.result

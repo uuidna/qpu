@@ -14,7 +14,7 @@ The quantum processing unit as skills: one per toolbox, generated from the toolb
 | --- | --- | --- | --- | --- | --- |
 | `qpu-google` | the Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes, the roadmap, the software, the statements and the repositories. | 13 | 61 | 86 | `0ab3da4a-453a-77fe-b97f-9a161f01ba21` |
 | `qpu-tree` | the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply, its metrics in real time. | 11 | 171 | 10 | `f341aa25-2c3a-6eb8-b83f-7b8b0159473c` |
-| `qpu-flow` | the run of the tree as tools: discover the hosts, verify the leads, let the unit judge, imagine the next leads; the client only fetches and writes. | 4 | 14 | 6 | `e7ea0466-a96f-87de-9f5c-6db08846bd26` |
+| `qpu-flow` | the run of the tree as tools: discover the hosts, verify the leads, let the unit judge, imagine the next leads; the client only fetches and writes. | 6 | 16 | 6 | `c5f961f7-be55-3b7e-a4f7-8c80971a92af` |
 | `qpu-language` | any language and dialect, offline and token-free: translation by vocabulary both ways, the vocabulary measured against every term the surface emits, and prose programmed from a tool's result and its toolbox's skill. | 2 | 2 | 0 | `49c73d75-4b4e-25cd-bfff-bdcf7e939669` |
 | `qpu-raid` | the docket as a database: MongoDB's query and update language ported as pure functions over content-addressed entries, so any document framework (Payload first) stores on the RAID through its mongodb adapter. | 1 | 2 | 0 | `1bedd3f0-317f-1255-8bf5-163c384a2fd8` |
 | `qpu-billing` | Stripe per tenant: a licence bought at one tenant is an entry valid on the domains it names, every event idempotent and linked, every signature verified with the tenant's own secret, every refusal a lead. | 2 | 9 | 3 | `3f29a587-93a7-2a89-a5a4-82c74e685573` |
@@ -33,4 +33,4 @@ Every term is named by a skill.
 
 ## Register
 
-Every skill is one UUID (ISO/IEC 9834-8) of its canonical text, a register of 122 qubits at hexbit width 4 (32 × 4 − 4 − 2 = 122); this index is `ad8b1bc0-8347-8ccd-9aa3-e85c51bd8669`, the UUID of the 12 skill addresses in order. Recompute to verify; a different address is a different skill.
+Every skill is one UUID (ISO/IEC 9834-8) of its canonical text, a register of 122 qubits at hexbit width 4 (32 × 4 − 4 − 2 = 122); this index is `d55a68ea-2fb5-18dc-80f7-36994c637bc0`, the UUID of the 12 skill addresses in order. Recompute to verify; a different address is a different skill.

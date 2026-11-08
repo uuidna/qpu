@@ -7,7 +7,7 @@
 // non-Clifford gate, an arbitrary-angle rotation or a gate this repository has not decomposed, is listed and left uncounted,
 // and the count says so: no synthesis cost is invented.
 
-import { pauliProduct, type Circuit, type Gate } from './cirq.ts'
+import { T, adjointGate, pauliProduct, type Circuit, type Gate } from './cirq.ts'
 
 type Complex = [number, number]
 type Matrix = Complex[]
@@ -94,9 +94,20 @@ const powerOfName = (name: string): { base: string; t: number } | null => {
 const period = (t: number): number => ((t % 2) + 2) % 2
 const near = (a: number, b: number): boolean => Math.abs(a - b) < 1e-9
 
+const sameUnitary = (a: Gate, b: Gate): boolean => a.arity === b.arity && a.matrix.every(([re, im], i) => Math.abs(re - b.matrix[i]![0]) < 1e-8 && Math.abs(im - b.matrix[i]![1]) < 1e-8)
+let tAdjoint: Gate | null = null
+/** T or T†, including a PhasedXZ whose matrix is that gate. A name is not required. */
+const isT = (gate: Gate): boolean => {
+  if (gate.arity !== 1) return false
+  if (gate.name === 'T' || sameUnitary(gate, T)) return true
+  tAdjoint ??= adjointGate(T)
+  return sameUnitary(gate, tAdjoint)
+}
+
 export const classify = (gate: Gate): GateClass => {
   if (gate.arity > CLIFFORD_CHECK_ARITY) return { kind: 'undecomposed' }
   if (isClifford(gate)) return { kind: 'clifford' }
+  if (isT(gate)) return { kind: 't', tCount: 1 }
   if (gate.name === 'TOFFOLI') return { kind: 'toffoli', tCount: 7 }
   const power = powerOfName(gate.name)
   if (power) {

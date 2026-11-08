@@ -4,7 +4,7 @@
 // backward run applies the adjoint of each forward operation, in reverse order: the true inverse for any unitary, gate powers
 // included, so the echo returns with certainty when nothing perturbs it.
 
-import { Circuit, Simulator, adjointGate, type Operation } from './cirq.ts'
+import { Circuit, Simulator, adjointGate, applied, type Operation } from './cirq.ts'
 import { TABLES } from './tables-index.ts'
 
 /** Google's Quantum Echoes result as its blog states it: the OTOC protocol run on the 105-qubit array of Willow, 13,000x
@@ -16,7 +16,7 @@ export const echoCircuit = (forward: Operation[], perturbation?: Operation): Cir
   const circuit = new Circuit()
   for (const op of forward) circuit.append(op)
   if (perturbation) circuit.append(perturbation)
-  for (const op of [...forward].reverse()) circuit.append(op.kind === 'gate' ? { ...op, gate: adjointGate(op.gate) } : op)
+  for (const op of [...forward].reverse()) circuit.append(op.kind === 'gate' ? applied(adjointGate(op.gate), ...op.qubits) : op)
   return circuit
 }
 

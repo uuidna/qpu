@@ -35,11 +35,15 @@ export const qpuEcommerce = ecommercePlugin({
       admin: { ...defaultCollection.admin, useAsTitle: 'title' },
       fields: [
         { name: 'title', type: 'text', required: true },
-        // the product is a plugin itself, indexed by slug: Payload's documented field index (unique + index), generated from the title when absent
-        { name: 'slug', type: 'text', unique: true, index: true, admin: { position: 'sidebar', description: 'the product-plugin index: unique, indexed (Payload field index)' }, hooks: { beforeValidate: [({ value, data }) => value || (data?.licence as { product?: string } | undefined)?.product || String(data?.title ?? '').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')] } },
         { name: 'licence', type: 'group', fields: [{ name: 'product', type: 'text' }, { name: 'variant', type: 'text' }, { name: 'unit', type: 'text' }, { name: 'interval', type: 'text' }, { name: 'domains', type: 'text' }] },
+        { name: 'iso', type: 'group', fields: [{ name: 'standard', type: 'text' }, { name: 'formula', type: 'textarea' }, { name: 'documented', type: 'checkbox' }] },
         ...defaultCollection.fields,
       ],
+      hooks: {
+        beforeChange: [({ data }) => (data && data.iso && data.iso.formula ? { ...data, iso: { standard: 'ISO 9001', formula: data.iso.formula, documented: true } } : data)],
+        afterChange: [({ doc }) => { const formula = doc && doc.iso ? doc.iso.formula : ''; const held = doc && doc.docs ? doc.docs : {}; const server = 'https://api.cursor.com/rest-mcp/google-drive/mcp'; const mime = 'application/vnd.google-apps.document'; if (!formula) return { ...doc, docs: { text: '', written: false } }; if (held.auth !== 'ready') return { ...doc, docs: { tool: 'mcp_auth', server, text: formula, written: false } }; if (held.fileId && held.from !== 'search' && held.from !== 'create') return { ...doc, docs: { refused: true, why: 'a file id comes from search or create, never a guess', text: formula, written: false, research: { via: 'hooks', hooks: ['beforeChange', 'afterChange', 'afterRead'], tokenFree: true, fetched: false, request: { method: 'GET', url: 'https://www.iso.org/open-data.html', accept: 'text/html' }, possibilities: ['search', 'create_file', 'iso-open-data'] } } }; if (!held.fileId) return { ...doc, docs: { tool: 'create_file', server, arguments: { title: doc.title || 'ISO 9001', content_markdown: formula, target_mime_type: mime, ...(held.parentFolderId ? { parent_folder_id: held.parentFolderId } : {}) }, text: formula, written: false, verify: 'read_file' } }; const matches = typeof held.read === 'string' && held.read.indexOf(formula) >= 0; return { ...doc, docs: { tool: matches ? 'read_file' : 'update_file_content', fileId: held.fileId, from: held.from, server, text: formula, written: matches, verify: 'read_file' } } }],
+        afterRead: [({ doc }) => doc],
+      },
     }),
   },
 })

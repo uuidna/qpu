@@ -1,435 +1,66 @@
 {
- "license": "Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)",
- "date": "2026-11-03T04:13:53.162Z",
- "ms": 358,
- "approval": {
-  "represents": "1.4.0+dc1613a9",
-  "package": "1.4.0+dc1613a9",
-  "agrees": true,
-  "lastTag": "1.4.0",
-  "violation": null,
-  "approved": true
- },
- "selftest": {
-  "passed": true
- },
- "tested": 25,
- "kinds": 25,
- "closed": true,
- "partition": "8 + 2 + 15 = 25",
- "improved": [
-  ".qpu-app/src/payload.qpu.config.ts"
- ],
- "held": [
-  {
-   "kind": "payload",
-   "path": ".qpu-app/src/payload.config.ts",
-   "drift": [
-    "plugins.qpuPlugin",
-    "env.PAYLOAD_SECRET"
-   ]
-  },
-  {
-   "kind": "api",
-   "path": ".qpu-app/next.config.js",
-   "drift": [
-    "rewrite./api/globals/qpu",
-    "rewrite./api/mcp",
-    "rewrite./api/entries/:uuid"
-   ]
-  }
- ],
- "drift": 5,
- "experience": {
-  "measured": {
-   "copies": 1398,
-   "involutions": 381,
-   "msByHost": {
-    "qpu.psg.bg": 33,
-    "qpu.uuidna.com": 31,
-    "qpu.ceci.workers.dev": 32
-   }
-  },
-  "freeShare": 27,
-  "slowestMedianMs": 33,
-  "shardSize": 30,
-  "says": "27% of the gate's copies answered free (304 by involution); the slowest host answers in 33 ms, so a batch is sharded to 30 calls a shard to stay within a second"
- },
- "configs": [
-  {
-   "kind": "payload",
-   "torus": {
-    "address": "845df436-afd0-3026-a236-29f5e1ff22be",
-    "seed": 1,
-    "reflection": 9,
-    "trinity": [
-     7,
-     4,
-     1
+  "kinds": 25,
+  "tested": 25,
+  "closed": true,
+  "byTrinity": {
+    "258": [
+      "payload",
+      "wrangler",
+      "mcp",
+      "versions",
+      "fullstack",
+      "hooks",
+      "branding",
+      "policies"
     ],
-    "closed": true,
-    "bytes": 2070
-   }
-  },
-  {
-   "kind": "wrangler",
-   "torus": {
-    "address": "4bab6b0f-5c2b-6438-8346-46d6f5dc2eea",
-    "seed": 9,
-    "reflection": 1,
-    "trinity": [
-     3,
-     6,
-     9
+    "369": [
+      "tenant",
+      "fields",
+      "validations",
+      "access",
+      "actions",
+      "packages",
+      "adapters",
+      "gates",
+      "sets"
     ],
-    "closed": true,
-    "bytes": 5425
-   }
+    "741": [
+      "pwa",
+      "migration",
+      "api",
+      "bindings",
+      "scopes",
+      "ecommerce",
+      "ui",
+      "realtime"
+    ]
   },
-  {
-   "kind": "tenant",
-   "torus": {
-    "address": "a6357926-5365-3407-97e6-8b3a8b3feec4",
-    "seed": 7,
-    "reflection": 3,
-    "trinity": [
-     7,
-     4,
-     1
-    ],
-    "closed": true,
-    "bytes": 4362
-   }
+  "mcpServers": {
+    "qpu": {
+      "url": "https://qpu.uuidna.com/api/mcp",
+      "transport": "http",
+      "routes": 4,
+      "toolboxes": [
+        "tree",
+        "google",
+        "flow",
+        "language",
+        "raid",
+        "billing",
+        "legal",
+        "repository",
+        "standards",
+        "payload",
+        "extension",
+        "crypto"
+      ],
+      "server": "payload-rbac",
+      "one": true,
+      "first": true,
+      "managedBy": "payload-mcp",
+      "asked": "QPU_RBAC_MCP",
+      "tool": "payload"
+    }
   },
-  {
-   "kind": "pwa",
-   "torus": {
-    "address": "7757778e-cde8-4410-9a95-c3318b691402",
-    "seed": 2,
-    "reflection": 8,
-    "trinity": [
-     2,
-     5,
-     8
-    ],
-    "closed": true,
-    "bytes": 1027
-   }
-  },
-  {
-   "kind": "mcp",
-   "torus": {
-    "address": "3b35c066-8f50-2163-802c-f055908e039a",
-    "seed": 1,
-    "reflection": 9,
-    "trinity": [
-     7,
-     4,
-     1
-    ],
-    "closed": true,
-    "bytes": 10830
-   }
-  },
-  {
-   "kind": "versions",
-   "torus": {
-    "address": "7843eab2-7e5f-2cb6-aabc-31ddc9401868",
-    "seed": 5,
-    "reflection": 5,
-    "trinity": [
-     2,
-     5,
-     8
-    ],
-    "closed": true,
-    "bytes": 3953
-   }
-  },
-  {
-   "kind": "migration",
-   "torus": {
-    "address": "f38ceaa2-3d5b-129a-ab77-2af7187e78ca",
-    "seed": 4,
-    "reflection": 6,
-    "trinity": [
-     7,
-     4,
-     1
-    ],
-    "closed": true,
-    "bytes": 1434
-   }
-  },
-  {
-   "kind": "fullstack",
-   "torus": {
-    "address": "bf22edc3-6f5a-1fde-b1de-c4f4ca1b63ed",
-    "seed": 3,
-    "reflection": 7,
-    "trinity": [
-     3,
-     6,
-     9
-    ],
-    "closed": true,
-    "bytes": 122200
-   }
-  },
-  {
-   "kind": "api",
-   "torus": {
-    "address": "4f9ca304-fa6a-1160-907c-f3f073280d6a",
-    "seed": 7,
-    "reflection": 3,
-    "trinity": [
-     7,
-     4,
-     1
-    ],
-    "closed": true,
-    "bytes": 134799
-   }
-  },
-  {
-   "kind": "hooks",
-   "torus": {
-    "address": "07bca09e-9b32-26e6-952a-5027ea82b8fb",
-    "seed": 8,
-    "reflection": 2,
-    "trinity": [
-     2,
-     5,
-     8
-    ],
-    "closed": true,
-    "bytes": 1751
-   }
-  },
-  {
-   "kind": "bindings",
-   "torus": {
-    "address": "7187737d-6753-2603-9247-3503d425a2d3",
-    "seed": 4,
-    "reflection": 6,
-    "trinity": [
-     7,
-     4,
-     1
-    ],
-    "closed": true,
-    "bytes": 7511
-   }
-  },
-  {
-   "kind": "scopes",
-   "torus": {
-    "address": "4257cba8-2b14-3040-af0f-34f8a6a6d847",
-    "seed": 8,
-    "reflection": 2,
-    "trinity": [
-     2,
-     5,
-     8
-    ],
-    "closed": true,
-    "bytes": 1918
-   }
-  },
-  {
-   "kind": "fields",
-   "torus": {
-    "address": "2cb563b8-f456-749c-9276-51c92f018275",
-    "seed": 9,
-    "reflection": 1,
-    "trinity": [
-     3,
-     6,
-     9
-    ],
-    "closed": true,
-    "bytes": 1708
-   }
-  },
-  {
-   "kind": "validations",
-   "torus": {
-    "address": "14cb4fca-0a9c-2c0c-9be1-8b52abbc0175",
-    "seed": 9,
-    "reflection": 1,
-    "trinity": [
-     3,
-     6,
-     9
-    ],
-    "closed": true,
-    "bytes": 5846
-   }
-  },
-  {
-   "kind": "access",
-   "torus": {
-    "address": "81debe41-f2ab-2879-a561-585d8380d99f",
-    "seed": 6,
-    "reflection": 4,
-    "trinity": [
-     3,
-     6,
-     9
-    ],
-    "closed": true,
-    "bytes": 1320
-   }
-  },
-  {
-   "kind": "actions",
-   "torus": {
-    "address": "4959a8ab-8c36-57ec-bf71-f7da910b3f87",
-    "seed": 9,
-    "reflection": 1,
-    "trinity": [
-     3,
-     6,
-     9
-    ],
-    "closed": true,
-    "bytes": 1207
-   }
-  },
-  {
-   "kind": "packages",
-   "torus": {
-    "address": "55c051e2-8f19-1652-bcc7-40c41f976ae1",
-    "seed": 9,
-    "reflection": 1,
-    "trinity": [
-     3,
-     6,
-     9
-    ],
-    "closed": true,
-    "bytes": 2200
-   }
-  },
-  {
-   "kind": "ecommerce",
-   "torus": {
-    "address": "5dfc5597-ce92-7444-97b0-63063f8c4d99",
-    "seed": 9,
-    "reflection": 1,
-    "trinity": [
-     3,
-     6,
-     9
-    ],
-    "closed": true,
-    "bytes": 4306
-   }
-  },
-  {
-   "kind": "ui",
-   "torus": {
-    "address": "599efde3-e180-701d-8678-fbea05d67733",
-    "seed": 6,
-    "reflection": 4,
-    "trinity": [
-     3,
-     6,
-     9
-    ],
-    "closed": true,
-    "bytes": 3446
-   }
-  },
-  {
-   "kind": "adapters",
-   "torus": {
-    "address": "af057bfb-b9c5-4f3b-876a-bc9f1ea93b25",
-    "seed": 1,
-    "reflection": 9,
-    "trinity": [
-     7,
-     4,
-     1
-    ],
-    "closed": true,
-    "bytes": 19060
-   }
-  },
-  {
-   "kind": "gates",
-   "torus": {
-    "address": "575eaad4-149c-26b0-8c28-9d48baca978f",
-    "seed": 8,
-    "reflection": 2,
-    "trinity": [
-     2,
-     5,
-     8
-    ],
-    "closed": true,
-    "bytes": 1073928
-   }
-  },
-  {
-   "kind": "sets",
-   "torus": {
-    "address": "03cb711c-d1e7-6b02-97e7-6cfc814292ad",
-    "seed": 2,
-    "reflection": 8,
-    "trinity": [
-     2,
-     5,
-     8
-    ],
-    "closed": true,
-    "bytes": 171290
-   }
-  },
-  {
-   "kind": "realtime",
-   "torus": {
-    "address": "8ee8764d-b001-6d8c-8e2a-58022de1e45e",
-    "seed": 4,
-    "reflection": 6,
-    "trinity": [
-     7,
-     4,
-     1
-    ],
-    "closed": true,
-    "bytes": 507
-   }
-  },
-  {
-   "kind": "branding",
-   "torus": {
-    "address": "e1199497-2c32-3a57-9622-e8b188121165",
-    "seed": 2,
-    "reflection": 8,
-    "trinity": [
-     2,
-     5,
-     8
-    ],
-    "closed": true,
-    "bytes": 1750
-   }
-  },
-  {
-   "kind": "policies",
-   "torus": {
-    "address": "6894d9bf-40c5-26a1-aab4-acbd2e18c12e",
-    "seed": 1,
-    "reflection": 9,
-    "trinity": [
-     7,
-     4,
-     1
-    ],
-    "closed": true,
-    "bytes": 1277
-   }
-  }
- ]
+  "generated": "2026-11-07"
 }

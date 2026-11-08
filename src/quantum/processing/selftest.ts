@@ -9,7 +9,7 @@ import { VERIFIERS } from './verifiers.ts'
 import { createDiscoveryRequests, listFollowUps, getDiscovery, getDiscoveryPage, type Answer, type Request } from './discovery.ts'
 import { createWaveRequests, getWave, getWavePage, type WaveResult } from './wave.ts'
 import { indexPages, judgeLead, listSources, planBorder, getBorder, getReadinessPage } from './readiness.ts'
-import { imagineLeads, getImaginePage } from './imagine.ts'
+import { imagineLeads, getImaginePage, claySession, allAsUuid } from './imagine.ts'
 import { createMatcher } from './match.ts'
 import { decodeE2e, judgeRules, decodeValue, type E2eAnswer } from './e2e.ts'
 import { createRegistryRequests, listRelatedServers, rankBestDoors } from './discovery.ts'
@@ -113,6 +113,8 @@ export const runFlowSelftest = (handle: (m: Rpc) => any, examples: readonly Exam
 
   // imagine: the matcher feeds the imagination (toolbox → toolbox), on a subset
   safe('imagine:subset', () => { const im = imagineLeads(handle, examples, leads, ['willow-spec', 'learn']); check('imagine:subset', im.leads === 2 && im.rows.length === 2 && Object.values(im.verdicts).reduce((a, b) => a + b, 0) === 2 && im.imagined.some((l) => l.id.startsWith('application-')) && getImaginePage(im, '2026-01-01', 10).includes('| willow-spec |'), `${im.rows.map((r) => `${r.lead}:${r.verdict}`).join(' ')}; ${im.imaginedLeads} imagined`) })
+  safe('imagine:clay-session', () => { const plan = claySession(leads, { session: 's1' }); const done = claySession(leads, { session: 's1', microdata: [{ '@type': 'DefinedTerm', identifier: 'clay-relation_15' }] }); const searches = plan.phase === 'search' ? plan.requestList.every((r) => r.url.startsWith('https://')) : false; const verified = done.phase === 'verified' ? done.verified === 1 && done.open === leads.length - 1 && done.rows.length === leads.length : false; check('imagine:clay-session', searches && plan.tokenFree === true && plan.possible === leads.length && verified, `${plan.phase === 'search' ? plan.requestList.length : 0} searches, ${done.phase === 'verified' ? done.verified : 0} of ${done.possible} leads verified`) })
+  safe('imagine:all-uuid', () => { const u = allAsUuid([{ id: 'a', statement: 'same' }, { id: 'a', statement: 'same', status: 'open' }, { id: 'b', statement: 'other' }]); check('imagine:all-uuid', u.phase === 'uuid' && u.leads === 3 && u.members === 2 && u.collapsed === 1 && u.members + u.collapsed === u.leads && u.sealed && u.core && u.rows[0]!.uuid === u.rows[1]!.uuid && u.rows[0]!.uuid !== u.rows[2]!.uuid, `${u.members} addresses of ${u.leads}, ${u.collapsed} collapsed`) })
 
     // sharding: the shares of n shards cover the list exactly once
   {

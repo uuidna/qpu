@@ -1,4 +1,4 @@
-// The programmatic surface of Payload CMS as its documentation and source state it (payloadcms.com/docs, payloadcms/payload on main), read on 2026-10-26:
+// The programmatic surface of Payload CMS as its documentation and source state it (payloadcms.com/docs, uuidna/qpu on main), read on 2026-10-26:
 // every field type with the JSON Schema and GraphQL type it generates, every operation with its REST path and GraphQL form, every where
 // operator, query option, hook, access function, version option, realtime channel, the MCP plugin's tools, and the standards each part
 // is described by. A table with URLs, like STANDARDS and CATALOGUE: the textbook step re-reads the sources and measures the drift as leads;

@@ -1,0 +1,26 @@
+---
+description: This repo is the full stack; develop in src against upstream payloadcms/* standards.
+alwaysApply: true
+---
+
+# Full stack = this repository
+
+This tree is the QPU full stack. There is no second app under `.qpu-app`.
+
+## Upstream standards for `src`
+
+Develop in `src/` against these `github.com/payloadcms/*` repositories:
+
+| Upstream | Role in this repo |
+|---|---|
+| `payloadcms/website` | Layout standard for `src/` (collections, blocks, globals, App Router) |
+| `payloadcms/payload` | Every `@payloadcms/*` package under `packages/*` — pin one version across the set |
+| `payloadcms/skills` | Agent skill names/paths mapped in `TABLES.SKILL_MAP` |
+
+## MCP
+
+Mount one connector: `qpuMcpPlugin` from `@payloadcms/plugin-mcp` at `POST /api/mcp`. Do not invent a second MCP server or a second catalogue in `src`.
+
+## Configure overlay
+
+`configure { kind: 'fullstack' }` refreshes overlay files in this repository (`src/…`, notices, OpenNext). It does not clone or target a side fork.

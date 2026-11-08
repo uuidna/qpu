@@ -502,6 +502,60 @@ export const derivePbkdf2 = (raw: unknown) => {
   const salt = a.hex === true ? fromHex(a.salt, 'salt') : utf8(a.salt)
   return { phase: 'pbkdf2' as const, kdf: 'PBKDF2-HMAC-SHA256' as const, rfc: 8018 as const, iterations: a.iterations, length, derived: hex(pbkdf2Sha256(password, salt, a.iterations as number, length)) }
 }
+// The stale-receipt finder: each recorded receipt (uuidna's merkleGravity over addresses) recomputed under the current fold, then under each earlier
+// one; reproduced by an earlier fold it is stale (the fold's history, reseal), by none wrong. uuidna's mint is ported, so nothing is fetched or read.
+const mul32 = (a: number, b: number): number => { a >>>= 0; b >>>= 0; return (((a & 0xffff) * b) + ((((a >>> 16) * b) & 0xffff) * 65536)) >>> 0 }
+const fmix32 = (h: number): number => { h = mul32(h ^ (h >>> 16), 0x85ebca6b); h = mul32(h ^ (h >>> 13), 0xc2b2ae35); return (h ^ (h >>> 16)) >>> 0 }
+/** uuidna's toUuid: FNV-1a over four 32-bit lanes seeded 0, φ, π, e, each finalised by fmix32, the RFC 4122 version and variant bits stamped (122 bits of the 128 carry entropy). toUuid('coins:2') = 1d258da4-cbdf-8e22-890e-a68b5592fe86. */
+const uuidnaAddress = (seed: string): string => {
+  const lanes = [0, 0x9e3779b9, 0x243f6a88, 0xb7e15162].map((s) => (0x811c9dc5 ^ s) >>> 0)
+  for (let i = 0; i < seed.length; i++) { const x = seed.charCodeAt(i); for (let l = 0; l < 4; l++) { const h = mul32(lanes[l]! ^ x, 0x01000193); lanes[l] = (h ^ (h >>> 13)) >>> 0 } }
+  const b: number[] = []
+  for (const w of lanes.map(fmix32)) b.push((w >>> 24) & 0xff, (w >>> 16) & 0xff, (w >>> 8) & 0xff, w & 0xff)
+  b[6] = (b[6]! & 0x0f) | 0x80
+  b[8] = (b[8]! & 0x3f) | 0x80
+  const h = b.map((v) => v.toString(16).padStart(2, '0')).join('')
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`
+}
+/** uuidna's merkleGravity under a leaf rule: leaves sorted, paired left to right, a lone leaf carried up, a pair merged as toUuid('a:b'), no leaves toUuid('empty-mind'). */
+const receiptFold = (leaves: readonly string[], leaf: (x: string) => string): string => {
+  let layer = [...leaves].sort().map(leaf)
+  if (layer.length === 0) return uuidnaAddress('empty-mind')
+  while (layer.length > 1) {
+    const next: string[] = []
+    for (let i = 0; i < layer.length; i += 2) { const a = layer[i]!, b = layer[i + 1]; next.push(b === undefined ? a : uuidnaAddress(`${a}:${b}`)) }
+    layer = next
+  }
+  return layer[0]!
+}
+/** The folds merkleGravity has been, the current one first. */
+const RECEIPT_FOLDS: readonly { id: string; change: string; leaf: (x: string) => string }[] = [
+  { id: 'uuidna-0a4c4e9d87', change: 'uuidna commit 0a4c4e9d87 (2026-09-25) tagged every leaf toUuid(\'leaf:\' + x), as RFC 6962 does, after merkleFold([a,b,c]) === merkleFold([merge(a,b),c]) was witnessed', leaf: (x) => uuidnaAddress(`leaf:${x}`) },
+  { id: 'uuidna-untagged', change: 'the fold before uuidna commit 0a4c4e9d87: bare addresses as leaves, shaped like a node', leaf: (x) => x },
+]
+type ReceiptRow = { id: string; leaves: string[]; recorded: string; computed: string; verdict: 'holds' | 'stale' | 'wrong'; fold: string | null; change: string | null; says: string }
+export const findStaleReceipts = (raw: unknown) => {
+  if (!Array.isArray(raw)) throw new Error('receipts takes [{ id, leaves: [uuid… | { seed }], recorded }]')
+  const [current, ...earlier] = RECEIPT_FOLDS as [typeof RECEIPT_FOLDS[number], ...typeof RECEIPT_FOLDS[number][]]
+  const rows: ReceiptRow[] = raw.map((r, i) => {
+    if (!isObj(r) || !Array.isArray(r.leaves) || typeof r.recorded !== 'string') throw new Error(`receipts[${i}] is { id, leaves: [uuid… | { seed }], recorded }`)
+    const leaves = (r.leaves as unknown[]).map((x, j) => {
+      if (typeof x === 'string') return x
+      if (isObj(x) && typeof x.seed === 'string') return uuidnaAddress(x.seed)
+      throw new Error(`receipts[${i}].leaves[${j}] is an address or { seed } to mint one from`)
+    })
+    const id = typeof r.id === 'string' ? r.id : String(i), recorded = r.recorded
+    const computed = receiptFold(leaves, current.leaf)
+    if (computed === recorded) return { id, leaves, recorded, computed, verdict: 'holds', fold: current.id, change: null, says: `recomputes under ${current.id}` }
+    const stale = earlier.find((f) => receiptFold(leaves, f.leaf) === recorded)
+    if (stale) return { id, leaves, recorded, computed, verdict: 'stale', fold: stale.id, change: current.change, says: `${stale.id} reproduces ${recorded} exactly and ${current.id} folds the same leaves to ${computed}: the fold's history, not a correction of the record; reseal under ${current.id}` }
+    return { id, leaves, recorded, computed, verdict: 'wrong', fold: null, change: null, says: `no known fold of these ${leaves.length} leaves gives ${recorded}; ${current.id} gives ${computed}` }
+  })
+  const count = (v: ReceiptRow['verdict']) => rows.filter((r) => r.verdict === v).length
+  const holds = count('holds'), stale = count('stale'), wrong = count('wrong')
+  return { phase: 'receipts' as const, receipts: rows.length, holds, stale, wrong, invalidated: rows.filter((r) => r.verdict !== 'holds').map((r) => r.id), folds: RECEIPT_FOLDS.map(({ id, change }) => ({ id, change })), rows, theorems: ['textbook_receipts_partitioned'] as const, says: `${rows.length} recorded receipt${rows.length === 1 ? '' : 's'} recomputed under ${current.id}: ${holds} hold, ${stale} stale (an earlier fold reproduces them exactly: reseal, the inputs did not move), ${wrong} wrong (no known fold does); ${holds} + ${stale} + ${wrong} = ${rows.length}` }
+}
+
 /** RFC 6962 Merkle tree over SHA-256 (the Certificate Transparency log the attest tool reads): leaves as hex or utf-8 text; the root; an inclusion proof at an index; or verify { leaf, proof, root }. */
 export const merkleTree = (raw: unknown) => {
   const a = (isObj(raw) ? raw : {}) as { leaves?: unknown; index?: number; leaf?: string; proof?: unknown; root?: string; hex?: boolean }

@@ -1,4 +1,0 @@
-#!/bin/sh
-# post-commit is a client MCP workflow: the repository tool answers its steps (repository { workflow: 'post-commit' }); scripts/hook.ts walks them and decides nothing itself.
-node --import tsx scripts/hook.ts post-commit "$@"
-exit 0

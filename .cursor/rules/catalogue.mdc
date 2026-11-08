@@ -1,0 +1,14 @@
+---
+description: MCP serves the ecommerce catalogue generated from nested pages.
+alwaysApply: true
+---
+
+# Nested pages, then ecommerce, then the post, then Zenodo
+
+MCP is not a product. It serves the Payload ecommerce catalogue.
+
+- Nested pages generate every product and every variant, parents first, three deep.
+- Ecommerce reads those pages. A product is a depth-2 page. A variant is a depth-3 page under it.
+- Each variant is one published blog post.
+- Each post is a Zenodo publication through the Payload deposit hooks. The handler does not fetch and does not write.
+- Deploy is a Payload hook. The live site tests are the e2e gate after that deploy.

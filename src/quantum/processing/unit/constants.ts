@@ -2,10 +2,12 @@
 // nothing is rounded — each constant sealed by its content address and SHA-256 with its stated uncertainty kept beside it. A defined constant
 // (the Planck constant since 2019) is exact and carries none; a measured one (the Newtonian constant of gravitation) carries the uncertainty
 // its experiments give, which no seal and no factoring removes: the seal proves the value is the one published, never that it is truer. Pure.
-import { uuidOf } from './blocks.ts'
+import { uuid } from '../../uuid/index.ts'
 import { sha256, utf8, hex } from './hmac.ts'
+import { TABLES } from '../tables-index.ts'
 
-export const CODATA_URL = 'https://physics.nist.gov/cuu/Constants/Table/allascii.txt'
+/** NIST CODATA allascii table URL — Payload `ATTEST_APIS` id `nist-codata` only (STANDARDS may mirror the contract; code never reads it). */
+export const CODATA_URL = String((TABLES.ATTEST_APIS as readonly { id: string; url: string }[]).find((a) => a.id === 'nist-codata')?.url ?? '')
 /** A decimal as written in the table ("6.674 30 e-11") as exact integers: mantissa × 10^exponent. */
 const getDecimal = (s: string): { mantissa: string; exponent: number } | null => {
   const m = /^(-?)(\d+)(?:\.(\d+))?(?:e([+-]?\d+))?$/.exec(s.replace(/\s+/g, '').replace(/\.\.\.$/, ''))
@@ -32,7 +34,7 @@ export const listConstants = (text: string) => {
     const abs = (s: string) => BigInt(s.replace('-', '') || '0'), d = uncertainty ? uncertainty.exponent - value.exponent + 9 : 0
     const relativePpb = uncertainty && abs(value.mantissa) > 0n ? Number(d >= 0 ? (abs(uncertainty.mantissa) * 10n ** BigInt(d)) / abs(value.mantissa) : abs(uncertainty.mantissa) / (abs(value.mantissa) * 10n ** BigInt(-d))) : null
     const body = JSON.stringify({ quantity, value, exact, uncertainty, unit, adjustment })
-    constants.push({ quantity, value, written, exact, uncertainty, unit, relativePpb, address: uuidOf(body), sha256: hex(sha256(utf8(body))) })
+    constants.push({ quantity, value, written, exact, uncertainty, unit, relativePpb, address: uuid(body), sha256: hex(sha256(utf8(body))) })
   }
   return { adjustment, source: CODATA_URL, constants, exact: constants.filter((c) => c.exact).length, measured: constants.filter((c) => !c.exact).length, says: `${constants.length} constants of the ${adjustment ?? '?'} CODATA adjustment as integers, each sealed: ${constants.filter((c) => c.exact).length} exact by definition, ${constants.filter((c) => !c.exact).length} measured with their stated uncertainty kept; a seal proves a value is the one published, never that it is truer` }
 }

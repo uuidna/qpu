@@ -22,9 +22,9 @@ What is formalised (everything is computable and kernel-checked, no axioms):
   distinct vectors of equal length are separated by the class's own vector.
 * Triangle inequality for agreement (`agree_triangle`) and the honest
   replacement of the sketch's "semantic transitivity".
-* Pigeonhole: `dim` binary attributes distinguish at most `mintOf dim = 2^dim`
-  classes (`distinct_le_mintOf`), via the binary code of a vector; the bound is
-  sharp (`allVecs`), and specialised to the lattice (`vertices = mintOf n`).
+* Pigeonhole: `dim` binary attributes distinguish at most `mint dim = 2^dim`
+  classes (`distinct_le_mint`), via the binary code of a vector; the bound is
+  sharp (`allVecs`), and specialised to the lattice (`vertices = mint n`).
 * Seen/unseen split by a predicate: disjoint and covering by construction, and
   a zero-shot prediction over the unseen list is unchanged when a seen class is
   added to the pool.
@@ -358,16 +358,16 @@ theorem separable {c d : Class} (hl : c.attr.length = d.attr.length) (h : c.attr
   rw [score, score, agree_self]
   exact agree_lt_of_ne c.attr d.attr hl h
 
-/-! ## Pigeonhole: `dim` binary attributes distinguish at most `mintOf dim` classes -/
+/-! ## Pigeonhole: `dim` binary attributes distinguish at most `mint dim` classes -/
 
 /-- Binary code of an attribute vector (little-endian). -/
 def code : Attr → Nat
   | [] => 0
   | b :: bs => (if b then 1 else 0) + 2 * code bs
 
-theorem code_lt (a : Attr) : code a < mintOf a.length := by
+theorem code_lt (a : Attr) : code a < mint a.length := by
   induction a with
-  | nil => simp [code, mintOf]
+  | nil => simp [code, mint]
   | cons b bs ih =>
     simp only [code, List.length_cons, mintOf_succ]
     split <;> omega
@@ -412,35 +412,35 @@ theorem nodup_lt_length_le (m : Nat) : ∀ (l : List Nat), l.Nodup → (∀ x �
       omega
 
 /-- The pigeonhole bound: pairwise distinct attribute vectors of length `dim` number at
-most `mintOf dim = 2^dim`. -/
-theorem distinct_le_mintOf {dim : Nat} {cs : List Class} (hu : Uniform dim cs) (hd : Distinct cs) :
-    cs.length ≤ mintOf dim := by
+most `mint dim = 2^dim`. -/
+theorem distinct_le_mint {dim : Nat} {cs : List Class} (hu : Uniform dim cs) (hd : Distinct cs) :
+    cs.length ≤ mint dim := by
   have hnd : (cs.map (fun c => code c.attr)).Nodup := by
     unfold List.Nodup
     refine List.Pairwise.map _ (fun a b (h : code a.attr ≠ code b.attr) => h) ?_
     exact hd.imp_of_mem (fun {a b} ha hb hne hc =>
       hne (code_inj a.attr b.attr ((hu a ha).trans (hu b hb).symm) hc))
-  have hlt : ∀ x ∈ cs.map (fun c => code c.attr), x < mintOf dim := by
+  have hlt : ∀ x ∈ cs.map (fun c => code c.attr), x < mint dim := by
     intro x hx
     obtain ⟨c, hc, rfl⟩ := List.mem_map.mp hx
     have := code_lt c.attr
     rw [hu c hc] at this
     exact this
-  have := nodup_lt_length_le (mintOf dim) _ hnd hlt
+  have := nodup_lt_length_le (mint dim) _ hnd hlt
   rwa [List.length_map] at this
 
 /-- Honest replacement of the sketch's `dim_sufficiency` (`embedding_dim ≥ log num_distinctions`):
 with fewer than `cs.length` codes available, two classes share an attribute vector. -/
 theorem dim_insufficient {dim : Nat} {cs : List Class} (hu : Uniform dim cs)
-    (h : mintOf dim < cs.length) : ¬ Distinct cs :=
-  fun hd => Nat.lt_irrefl _ (Nat.lt_of_lt_of_le h (distinct_le_mintOf hu hd))
+    (h : mint dim < cs.length) : ¬ Distinct cs :=
+  fun hd => Nat.lt_irrefl _ (Nat.lt_of_lt_of_le h (distinct_le_mint hu hd))
 
 /-- All attribute vectors of length `d`. -/
 def allVecs : Nat → List Attr
   | 0 => [[]]
   | d + 1 => (allVecs d).map (true :: ·) ++ (allVecs d).map (false :: ·)
 
-theorem allVecs_length (d : Nat) : (allVecs d).length = mintOf d := by
+theorem allVecs_length (d : Nat) : (allVecs d).length = mint d := by
   induction d with
   | zero => rfl
   | succ d ih => simp [allVecs, List.length_append, List.length_map, ih, mintOf_succ]
@@ -476,10 +476,10 @@ theorem allVecs_nodup (d : Nat) : (allVecs d).Nodup := by
       obtain ⟨_, _, rfl⟩ := List.mem_map.mp hb
       simp
 
-/-- The bound is sharp: `mintOf dim` pairwise distinct classes of length `dim` exist. -/
+/-- The bound is sharp: `mint dim` pairwise distinct classes of length `dim` exist. -/
 def allClasses (d : Nat) : List Class := (allVecs d).map (fun v => ⟨code v, v⟩)
 
-theorem allClasses_length (d : Nat) : (allClasses d).length = mintOf d := by
+theorem allClasses_length (d : Nat) : (allClasses d).length = mint d := by
   rw [allClasses, List.length_map, allVecs_length]
 
 theorem allClasses_uniform (d : Nat) : Uniform d (allClasses d) := by
@@ -491,10 +491,10 @@ theorem allClasses_distinct (d : Nat) : Distinct (allClasses d) := by
   unfold Distinct allClasses
   exact List.pairwise_map.mpr (allVecs_nodup d)
 
-/-- On the lattice: `n` binary attributes distinguish at most `vertices = mintOf n` classes. -/
+/-- On the lattice: `n` binary attributes distinguish at most `vertices = mint n` classes. -/
 theorem vertices_bound {cs : List Class} (hu : Uniform n cs) (hd : Distinct cs) :
     cs.length ≤ vertices :=
-  distinct_le_mintOf hu hd
+  distinct_le_mint hu hd
 
 /-! ## Seen and unseen classes -/
 

@@ -1,4 +1,3 @@
-import { uuidOf } from '@uuidna/qpu/blocks'
 import type { Media } from '@root/payload-types'
 import type { Metadata } from 'next'
 
@@ -6,7 +5,6 @@ import { Hero } from '@components/Hero/index'
 import { PayloadRedirects } from '@components/PayloadRedirects'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave'
 import { RenderBlocks } from '@components/RenderBlocks/index'
-import { QpuPage } from '@blocks/Qpu/page'
 import { fetchPage, fetchPages } from '@data'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
 import { unstable_cache } from 'next/cache'
@@ -29,10 +27,6 @@ const Page = async ({
 
   const page = await getPage(slug, draft)
 
-  // a UUID as the whole path is one address: the page document of that slug when one exists (its layout's qpu block rendered through the
-  // MCP App host), else the block computed by the app from the handler (the catch-all makes prefixes useless; no Worker behind it)
-  if (!page && Array.isArray(slug) && slug.length === 1 && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(slug[0])) return <QpuPage uuid={slug[0]} />
-
   if (!page) {
     return <PayloadRedirects url={url} />
   }
@@ -53,12 +47,9 @@ export async function generateStaticParams() {
   const getPages = unstable_cache(fetchPages, ['pages'])
   const pages = await getPages()
 
-  // Content-addressed UUID pages are computed on demand (the qpu block renders by compute): rendering them at build
-  // exceeds the static-generation timeout, and they are dynamic by nature, so keep them out of the pre-render set —
-  // dynamicParams (default true) serves them SSR at request time. Real-slug pages are still statically generated.
-  return pages
-    .map(({ breadcrumbs, id, slug }) => ({ slug: (breadcrumbs?.at(-1)?.url ?? `/${slug || uuidOf(String(id))}`).replace(/^\/|\/$/g, '').split('/') }))
-    .filter(({ slug }) => !(slug.length === 1 && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(slug[0])))
+  return pages.map(({ breadcrumbs }) => ({
+    slug: breadcrumbs?.[breadcrumbs.length - 1]?.url?.replace(/^\/|\/$/g, '').split('/'),
+  }))
 }
 
 export async function generateMetadata({

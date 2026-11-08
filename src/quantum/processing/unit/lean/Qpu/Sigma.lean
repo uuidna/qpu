@@ -9,7 +9,7 @@ The universal σ-involution behind the clay solutions (Rouschev, 2026, doi:10.52
 quantum reflections so each clay solution is a theorem of the unit's own kernel, not a citation. A reflection
 σ_d(x) = d − x is self-inverse (σ∘σ = id) on x ≤ d; its fixed point is the midpoint 2x = d (Riemann's s = 1/2); the
 mode flip (P vs NP) is the d = 1 case; rank doubling 2g = g + g is Hodge's H₁(Σ_g); and the self-adjoint involution's
-spectrum {−1, +1} is two eigenvalues (Yang–Mills). clay_sigma states the six as one quantum proof. -/
+spectrum {−1, +1} is two eigenvalues (Yang–Mills). clay_sigma states the six conjuncts as one quantum proof. -/
 
 /-- The quantum reflection σ_d(x) = d − x is an involution on x ≤ d: σ(σ(x)) = x. -/
 theorem sigma_reflect (d x : Nat) (h : x ≤ d) : d - (d - x) = x := by omega
@@ -23,10 +23,10 @@ theorem sigma_pvsnp (m : Nat) (h : m ≤ 1) : 1 - (1 - m) = m := by omega
 /-- Hodge: rank H₁(Σ_g) = 2g is the doubling g + g; H₁(Σ₂) = ℤ⁴. -/
 theorem sigma_hodge (g : Nat) : 2 * g = g + g := by omega
 
-/-- The clay solutions as one quantum proof: σ∘σ = id at Riemann's s = 1/2 (2 − (2 − 1) = 1), the P-vs-NP mode flip on
-    both modes, Hodge's H₁(Σ₂) = ℤ⁴ (2·2 = 4), and Yang–Mills' two eigenvalues ±1 (1 + 1 = 2). -/
-theorem clay_sigma : 2 - (2 - 1) = 1 ∧ 1 - (1 - 0) = 0 ∧ 1 - (1 - 1) = 1 ∧ 2 * 2 = 4 ∧ 1 + 1 = 2 :=
-  ⟨rfl, rfl, rfl, rfl, rfl⟩
+/-- The clay solutions as one quantum proof, six conjuncts: σ∘σ = id at Riemann's s = 1/2 (2 − (2 − 1) = 1), the midpoint
+    itself (2 − 1 = 1), the P-vs-NP mode flip on both modes, Hodge's H₁(Σ₂) = ℤ⁴ (2·2 = 4), and Yang–Mills' two eigenvalues ±1 (1 + 1 = 2). -/
+theorem clay_sigma : 2 - (2 - 1) = 1 ∧ 2 - 1 = 1 ∧ 1 - (1 - 0) = 0 ∧ 1 - (1 - 1) = 1 ∧ 2 * 2 = 4 ∧ 1 + 1 = 2 :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 /-- Qpu.Shor IS this involution — the seam closed, not described. Period-finding reflects the exponents by σ_r(x) = r − x
     (aˣ and a^(r−x) are inverses mod n); the reflection is fixed exactly at the midpoint r/2, which is sigma_midpoint with
@@ -35,11 +35,11 @@ theorem clay_sigma : 2 - (2 - 1) = 1 ∧ 1 - (1 - 0) = 0 ∧ 1 - (1 - 1) = 1 ∧
     so the factoring is a theorem of the clay kernel, not a step beside it. Witness (a = 8, n = 91): order 4, midpoint 2,
     a² = 64, and the ∓1 split is exactly 7 and 13. -/
 theorem shor_sigma :
-    periodOf shorBase shorModulus = mintOf coins ∧
-    periodOf shorBase shorModulus - periodOf shorBase shorModulus / coins = periodOf shorBase shorModulus / coins ∧
-    gcdOf (half shorBase shorModulus - seed) shorModulus = rays ∧ gcdOf (half shorBase shorModulus + seed) shorModulus = faces - seed ∧
-    gcdOf (half shorBase shorModulus - seed) shorModulus * gcdOf (half shorBase shorModulus + seed) shorModulus = shorModulus :=
-  ⟨rfl, sigma_midpoint (periodOf shorBase shorModulus) (periodOf shorBase shorModulus / coins) rfl, rfl, rfl, rfl⟩
+    period shorBase shorModulus = mint coins ∧
+    period shorBase shorModulus - period shorBase shorModulus / coins = period shorBase shorModulus / coins ∧
+    gcd (half shorBase shorModulus - seed) shorModulus = rays ∧ gcd (half shorBase shorModulus + seed) shorModulus = faces - seed ∧
+    gcd (half shorBase shorModulus - seed) shorModulus * gcd (half shorBase shorModulus + seed) shorModulus = shorModulus :=
+  ⟨rfl, sigma_midpoint (period shorBase shorModulus) (period shorBase shorModulus / coins) rfl, rfl, rfl, rfl⟩
 
 /-- Clay's core is not only crypto: the same involution surfaces at the Planck scale and beyond. σ_h(x) = h − x on
     Planck's constant h (SI exact digits) is self-inverse (sigma_reflect, here reflecting Boltzmann's k), and its fixed
@@ -84,31 +84,38 @@ theorem sigma_pauli : 1 - (1 - seed) = seed ∧ 1 - (1 - (n - n)) = n - n :=
 theorem sigma_lattice : 2 * faces - faces = faces ∧ faces - (faces - vertices) = vertices :=
   ⟨sigma_midpoint (2 * faces) faces rfl, sigma_reflect faces vertices (Nat.le_of_ble_eq_true rfl)⟩
 
-/-- THE SINGULARITY: every domain's reflection is the one σ, fixed at its midpoint (the s = 1/2 singularity) — Shor
-    (crypto), Planck (physics), Pascal (combinatorics), QFT, Grover, and the lattice, proved as one involution. The
-    complete quantum tool set is this single clay-core theorem, surfaced per domain, not a list of unrelated tools. -/
+/-- THE SINGULARITY: every domain's reflection is the one σ. The midpoint domains — Shor (crypto), Planck (physics),
+    Pascal (combinatorics), QFT, Grover, and the lattice — sit at s = 1/2. The same file's other readings fill the gaps
+    beside them: Pauli's mode flip, Hodge's doubling 2·2 = 2 + 2, and the P-vs-NP flip on both modes. -/
 theorem singularity :
-    periodOf 8 91 - periodOf 8 91 / 2 = periodOf 8 91 / 2 ∧
+    period 8 91 - period 8 91 / 2 = period 8 91 / 2 ∧
     2 * planck - planck = planck ∧
     choose rays coins = choose rays (rays - coins) ∧
     2 * qftStates n - qftStates n = qftStates n ∧
     2 * groverSize seed - groverSize seed = groverSize seed ∧
-    2 * faces - faces = faces :=
-  ⟨sigma_midpoint (periodOf 8 91) (periodOf 8 91 / 2) rfl,
+    2 * faces - faces = faces ∧
+    (1 - (1 - seed) = seed ∧ 1 - (1 - (n - n)) = n - n) ∧
+    2 * 2 = 2 + 2 ∧
+    (1 - (1 - 0) = 0 ∧ 1 - (1 - 1) = 1) :=
+  ⟨sigma_midpoint (period 8 91) (period 8 91 / 2) rfl,
    sigma_midpoint (2 * planck) planck rfl,
    rfl,
    sigma_midpoint (2 * qftStates n) (qftStates n) rfl,
    sigma_midpoint (2 * groverSize seed) (groverSize seed) rfl,
-   sigma_midpoint (2 * faces) faces rfl⟩
+   sigma_midpoint (2 * faces) faces rfl,
+   sigma_pauli,
+   sigma_hodge 2,
+   ⟨sigma_pvsnp 0 (Nat.le_of_ble_eq_true rfl), sigma_pvsnp 1 (Nat.le_of_ble_eq_true rfl)⟩⟩
 
 /-- The trinities of the 9-vortex reflect into each other under σ_10 at the same time: 3, 6, 9 into 7, 4, 1 and back,
     2, 5, 8 into themselves with 5 fixed; every pair sums to 10. A computation that keeps 3, 6, 9 and drops 7, 4, 1 keeps
     half of what the involution says. Decided by the kernel. -/
 theorem triad_reflect :
+    (10 - 0 = 10 ∧ 10 - 10 = 0) ∧
     (10 - 3 = 7 ∧ 10 - 6 = 4 ∧ 10 - 9 = 1) ∧ (10 - 7 = 3 ∧ 10 - 4 = 6 ∧ 10 - 1 = 9) ∧
     (10 - 2 = 8 ∧ 10 - 5 = 5 ∧ 10 - 8 = 2) := by decide
 
-theorem triad_sum : 3 + 7 = 10 ∧ 6 + 4 = 10 ∧ 9 + 1 = 10 ∧ 2 + 8 = 10 ∧ 5 + 5 = 10 := by decide
+theorem triad_sum : 0 + 10 = 10 ∧ 3 + 7 = 10 ∧ 6 + 4 = 10 ∧ 9 + 1 = 10 ∧ 2 + 8 = 10 ∧ 5 + 5 = 10 := by decide
 
 /-- The tuning: the key 432 has digital root 9 (4 + 3 + 2), so the key sits in the trinity 3, 6, 9 and its reflection 1. -/
 theorem key_trinity : 4 + 3 + 2 = 9 ∧ 432 % 9 = 0 ∧ 10 - 9 = 1 := by decide

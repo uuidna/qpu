@@ -32,7 +32,7 @@ What is formalised and kernel-checked:
 * **Compression.** Integer quantisation `x ↦ (x / q) · q` has error in `[0, q)`, and a clipped
   value quantises into `[(−c)/q, c/q]`.
 * **Convergence.** A loss that halves each round reaches `0` within `k` rounds once it is below
-  `mintOf k = 2^k` (`Qpu.Mint`), and within `L` rounds from loss `L`.
+  `mint k = 2^k` (`Qpu.Mint`), and within `L` rounds from loss `L`.
 
 Deliberately **not** formalised (the sketch's real-valued axioms had no concrete content):
 `(ε, δ)`-differential privacy, membership-inference and model-inversion "hardness",
@@ -533,13 +533,13 @@ theorem halve_le (r L : Nat) : halve r L ≤ L := by
   | zero => exact Nat.le_refl L
   | succ r ih => exact Nat.le_trans (ih (L / 2)) (Nat.div_le_self L 2)
 
-/-- A loss below `mintOf r = 2^r` reaches `0` within `r` halving rounds. -/
-theorem halving_converges (r : Nat) : ∀ L, L < mintOf r → halve r L = 0 := by
+/-- A loss below `mint r = 2^r` reaches `0` within `r` halving rounds. -/
+theorem halving_converges (r : Nat) : ∀ L, L < mint r → halve r L = 0 := by
   induction r with
   | zero => intro L h; rw [mintOf_zero] at h; show L = 0; omega
   | succ r ih => intro L h; rw [mintOf_succ] at h; exact ih (L / 2) (by omega)
 
-theorem lt_mintOf_self (L : Nat) : L < mintOf L := by
+theorem lt_mintOf_self (L : Nat) : L < mint L := by
   induction L with
   | zero => rw [mintOf_zero]; exact Nat.zero_lt_one
   | succ L ih => rw [mintOf_succ]; omega

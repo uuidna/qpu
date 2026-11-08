@@ -29,7 +29,7 @@ deliberately tiny language, with no axioms, no `sorry`, no `opaque`, no `partial
 * Sketches with holes (`Sketch`, `fill`, `holes`, `skeleton`): the size law `size_fill`,
   rigidity of hole-free sketches, and a sound/complete sketch-completion search `complete`.
 * Observational equivalence `Equiv`, spec decomposition `satisfies_append`, specification
-  learning from traces `traceOf`, a monotonicity obstruction showing some specs have no
+  learning from traces `trace`, a monotonicity obstruction showing some specs have no
   program at all (`satisfiable_monotone`, `unsatisfiable_spec`), affine expressibility.
 * Labelled concrete worked examples checked by `decide` (`succ_synth`, `double_synth`, ...).
 
@@ -368,25 +368,25 @@ theorem size_compose (a b : Expr) :
 
 /-- Sketch "constraint_learning" / "implicit_specification_learning": learn a spec from the
 trace of a program on chosen inputs. -/
-def traceOf (e : Expr) (inputs : List Nat) : Spec := inputs.map fun x => (x, eval e x)
+def trace (e : Expr) (inputs : List Nat) : Spec := inputs.map fun x => (x, eval e x)
 
 /-- Sketch "trace_based_synthesis": the traced program satisfies its own learned spec. -/
-theorem satisfies_traceOf (e : Expr) (inputs : List Nat) : satisfies e (traceOf e inputs) := by
+theorem satisfies_trace (e : Expr) (inputs : List Nat) : satisfies e (trace e inputs) := by
   intro ex hex
-  simp [traceOf, List.mem_map] at hex
+  simp [trace, List.mem_map] at hex
   obtain ⟨x, _, rfl⟩ := hex
   rfl
 
 /-- Any program equivalent to the traced one satisfies the learned spec. -/
-theorem equiv_satisfies_traceOf {e₁ e₂ : Expr} (h : Equiv e₁ e₂) (inputs : List Nat) :
-    satisfies e₂ (traceOf e₁ inputs) :=
-  (satisfies_of_equiv h).mp (satisfies_traceOf e₁ inputs)
+theorem equiv_satisfies_trace {e₁ e₂ : Expr} (h : Equiv e₁ e₂) (inputs : List Nat) :
+    satisfies e₂ (trace e₁ inputs) :=
+  (satisfies_of_equiv h).mp (satisfies_trace e₁ inputs)
 
 /-- Sketch "trace_based_synthesis": a learned spec is always solved by the bounded synthesiser
 at the size of its source program, with a result no larger than the source. -/
-theorem synth_traceOf (e : Expr) (inputs : List Nat) :
-    ∃ e', synth (size e) (traceOf e inputs) = some e' ∧ size e' ≤ size e := by
-  obtain ⟨e', h⟩ := synth_complete (satisfies_traceOf e inputs) (Nat.le_refl (size e))
+theorem synth_trace (e : Expr) (inputs : List Nat) :
+    ∃ e', synth (size e) (trace e inputs) = some e' ∧ size e' ≤ size e := by
+  obtain ⟨e', h⟩ := synth_complete (satisfies_trace e inputs) (Nat.le_refl (size e))
   exact ⟨e', h, synth_size h⟩
 
 /-! ## Monotonicity, refinement types and bidirectional checking -/

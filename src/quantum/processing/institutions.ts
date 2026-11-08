@@ -5,7 +5,7 @@
 // every closed equation the kernel accepted becomes a Classroom question whose answer the kernel decided, and an answer is graded by
 // recomputing the equation, never by a key typed by hand. Pure: the client (the institution's MCP session) performs every call.
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
-import { uuidOf, compositionsOf, compositionOf, compositionIndexOf, presentationOf } from './unit/blocks.ts'
+import { uuid, canonicalText, seal, compositions, composition, compositionIndex, presentation } from '../uuid/index.ts'
 import { TABLES } from './tables-index.ts'
 
 /** Google Workspace's MCP servers (developers.google.com/workspace/guides/configure-mcp-servers, read 2026-10-26): Developer Preview,
@@ -54,7 +54,30 @@ export const planInstitution = (r: InstitutionRequest) => {
     'publish the coursework drafts in Classroom: a teacher\'s act',
   ]
   const content = JSON.stringify({ edition: e.id, users, coursework: coursework.map((c) => c.theorem) })
-  return { id: uuidOf(content), edition: { id: e.id, family: e.family, name: e.name, needs: e.needs ?? null, adds: e.adds, source: e.source }, users, within, cap: e.cap, bill, doors, coursework, questions: all.length, graded, tenant: { settings: { institution: { edition: e.id, users } } }, acts, payloadMcp: 'every door\'s records and every coursework land through the Payload MCP plugin as createEntries calls (the docket, the RAID); the plugin serves this door as the textbook tool', says: `${e.name} for ${users} user(s): ${within ? 'within' : 'beyond'} the cap${e.cap === null ? ' (none)' : ` of ${e.cap}`}; ${bill ? `${bill.perMonth} ${bill.currency} a month` : 'no published price'}; ${doors.length} Workspace doors; ${coursework.length} textbook question(s) as Classroom coursework`, theorems: ['textbook_institution_bill', 'textbook_integrations_are_thirty_five'] }
+  return { id: uuid(content), edition: { id: e.id, family: e.family, name: e.name, needs: e.needs ?? null, adds: e.adds, source: e.source }, users, within, cap: e.cap, bill, doors, coursework, questions: all.length, graded, tenant: { settings: { institution: { edition: e.id, users } } }, acts, payloadMcp: 'every door\'s records and every coursework land through the Payload MCP plugin as createEntries calls (the docket, the RAID); the plugin serves this door as the textbook tool', says: `${e.name} for ${users} user(s): ${within ? 'within' : 'beyond'} the cap${e.cap === null ? ' (none)' : ` of ${e.cap}`}; ${bill ? `${bill.perMonth} ${bill.currency} a month` : 'no published price'}; ${doors.length} Workspace doors; ${coursework.length} textbook question(s) as Classroom coursework`, theorems: ['textbook_institution_bill', 'textbook_integrations_are_thirty_five'] }
+}
+
+/** The requirement to prove a theorem under ISO 21001:2025, strict. 8.3.4.4: the learning outcome is a scientific name the textbook states. The summative assessment is the Lean cross formula: both sides evaluate to one value, the axioms that formula names develop to that same value, and the kernel has accepted the theorem. 8.7: a name that fails either check is not proved and is removed from the Lean theorem category; a relation is filed under the scientific name. */
+const EDUCATION_CLAUSES = [
+  { clause: '8.3.4.4', title: 'Summative assessment design and development controls' },
+  { clause: '8.3.5', title: 'Design and development outputs' },
+  { clause: '8.7', title: 'Control of the educational nonconforming outputs' },
+  { clause: '9.1.5', title: 'Analysis and evaluation' },
+  { clause: '10.2', title: 'Nonconformity and corrective action' },
+] as const
+export const assessEducation = (proof: { scientific: readonly string[]; proved: readonly { theorem: string; relations: readonly string[] }[]; removed: readonly string[]; category: readonly string[] }) => {
+  const scientific = new Set(proof.scientific)
+  const proved = proof.proved.map((p) => p.theorem)
+  const provedSet = new Set(proved)
+  const holds = proved.length > 0 && proved.length === provedSet.size && proved.every((k) => scientific.has(k)) && proof.removed.every((k) => !provedSet.has(k)) && proof.category.every((k) => provedSet.has(k))
+  const address = uuid(canonicalText({ standard: 'ISO 21001:2025', proved, removed: proof.removed, category: proof.category }))
+  return {
+    phase: 'education' as const, standard: 'ISO 21001:2025' as const, strict: true as const, clauses: EDUCATION_CLAUSES,
+    requirement: { clause: '8.3.4.4' as const, name: 'a scientific name the textbook states' as const, cross: 'Lean cross formula: the sides evaluate to one value, the axioms it names develop to that value, and the kernel has accepted the theorem' as const, category: '8.7: fail either check and the name is removed from the Lean theorem category; a relation is filed under the scientific name' as const },
+    scientific: proof.scientific, proved, provedCount: proved.length, relations: proof.proved, removed: proof.removed, removedCount: proof.removed.length, category: proof.category, holds,
+    address, traced: seal(address).valid,
+    says: `${proved.length} theorems proved under ISO 21001:2025; ${proof.removed.length} removed from the Lean theorem category`,
+  }
 }
 
 // ── Sets of use cases: every institution family by every door off, read or write ─────────────────────────────────────────────────
@@ -71,11 +94,11 @@ const listModes = (d: (typeof WORKSPACE_MCP)[number]) => (d.scopes.some((s) => !
 export const SET_RADICES: readonly number[] = [SET_FAMILIES.length, ...WORKSPACE_MCP.map((d) => listModes(d).length)]
 const ACTION = TABLES.ACTION as Readonly<Record<string, { read: string; write: string }>>
 const fill = (s: string, f: SetFamily) => s.replace(/\{(\w+)\}/g, (_m, k: string) => WHO[f][k as keyof (typeof WHO)[SetFamily]])
-export const SET_SPACE = compositionsOf(SET_RADICES)
+export const SET_SPACE = compositions(SET_RADICES)
 /** One set: by its index in the space, or by its family and the mode of each door it names. */
 export const createFamilySet = (p: { index?: number | string; family?: string; doors?: Record<string, string> }) => {
   let digits: number[]
-  if (p.index !== undefined) { const i = BigInt(p.index); if (i < 0n || i >= SET_SPACE) throw new Error(`a set index is below ${SET_SPACE}`); digits = compositionOf(SET_RADICES, i) }
+  if (p.index !== undefined) { const i = BigInt(p.index); if (i < 0n || i >= SET_SPACE) throw new Error(`a set index is below ${SET_SPACE}`); digits = composition(SET_RADICES, i) }
   else {
     const f = SET_FAMILIES.indexOf(p.family as SetFamily); if (f < 0) throw new Error(`a family is one of ${SET_FAMILIES.join(', ')}`)
     digits = [f, ...WORKSPACE_MCP.map((d) => { const m = p.doors?.[d.product] ?? 'off'; const k = (listModes(d) as readonly string[]).indexOf(m); if (k < 0) throw new Error(`${d.product} is ${listModes(d).join(' or ')}`); return k })]
@@ -84,11 +107,11 @@ export const createFamilySet = (p: { index?: number | string; family?: string; d
   const doors = WORKSPACE_MCP.map((d, i) => ({ d, mode: listModes(d)[digits[i + 1]!]! })).filter((x) => x.mode !== 'off')
   const scopes = [...new Set(doors.flatMap(({ d, mode }) => d.scopes.filter((s) => mode === 'write' || isRead(s))))].map((s) => WORKSPACE_SCOPE_PREFIX + s)
   const role = doors.some((x) => x.mode === 'write') ? 'writer' : 'reader'
-  const index = compositionIndexOf(SET_RADICES, digits)
-  const id = uuidOf(JSON.stringify({ set: 'workspace', digits }))
+  const index = compositionIndex(SET_RADICES, digits)
+  const id = uuid(JSON.stringify({ set: 'workspace', digits }))
   const uses = doors.map(({ d, mode }) => `${d.product}: ${fill(ACTION[d.product]![mode as 'read' | 'write'], family)}`)
   const title = doors.length ? `${family[0]!.toUpperCase()}${family.slice(1)}: ${doors.map(({ d, mode }) => `${d.product} ${mode}`).join(', ')}` : `${family[0]!.toUpperCase()}${family.slice(1)}: no door`
-  return { id, index: index.toString(), family, doors: doors.map(({ d, mode }) => ({ product: d.product, mode, url: d.url })), scopes, role, uses, title, editions: EDITIONS.filter((e) => e.family === family).map((e) => e.id), lands: doors.map(({ d }) => createCreateCall('entries', { kind: 'document', from: d.product.toLowerCase(), body: '<the record the door answered>' })), ui: presentationOf(id.replace(/-/g, '')).layout, theorem: 'textbook_workspace_sets' }
+  return { id, index: index.toString(), family, doors: doors.map(({ d, mode }) => ({ product: d.product, mode, url: d.url })), scopes, role, uses, title, editions: EDITIONS.filter((e) => e.family === family).map((e) => e.id), lands: doors.map(({ d }) => createCreateCall('entries', { kind: 'document', from: d.product.toLowerCase(), body: '<the record the door answered>' })), ui: presentation(id.replace(/-/g, '')).layout, theorem: 'textbook_workspace_sets' }
 }
 /** The space and its named singles: every family with one door in one mode. */
 export const listFamilySets = () => {

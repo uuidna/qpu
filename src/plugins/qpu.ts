@@ -12,7 +12,7 @@ import { call, caller, redact } from '@uuidna/qpu/mcp'
 import { manageApi } from '@uuidna/qpu/payload-api'
 import { canonicalText, qpuHooks as qpuHooksOf, uuid } from '@uuidna/qpu/blocks'
 import { feeds, googleChallenges, type FeedRates } from '@uuidna/qpu/feeds'
-import { apisCost, apisCoverage, apisDoors, apisIndex, cloudflareOperations, payloadOperations, readingsOf, OBSERVE_QUERY } from '@uuidna/qpu/apis'
+import { apisCost, apisCoverage, apisDoors, apisIndex, cloudflareOperations, payloadOperations, readingsOf, zoneReadingsOf, OBSERVE_QUERY, OBSERVE_ZONE_QUERY } from '@uuidna/qpu/apis'
 import { Qpu } from '../blocks/Qpu/config'
 import { qpuMcpDescribeEndpoint } from './qpuMcp'
 import { Entries } from '../collections/Entries'
@@ -296,11 +296,12 @@ export const qpuRaid = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-raid', p
 // every Cloudflare call one job on the server, qpu-cloudflare-call: a method and path are allowed only when an entry of kind openapi-operation held
 // in Payload names them (Cloudflare's OpenAPI read into entries) or they are the GraphQL Analytics endpoint; the token is the variable the tenant's
 // bindings name (CLOUDFLARE_API_TOKEN when none is named), never in the entry; the answer is an entry of kind call from qpu-cloudflare-call
-const cloudflareToken = async (req: PayloadRequest, tenant: unknown): Promise<{ by: string; bearer?: string; account?: string }> => {
+const cloudflareToken = async (req: PayloadRequest, tenant: unknown): Promise<{ by: string; bearer?: string; account?: string; zone?: string }> => {
   const t = tenant ? await req.payload.findByID({ collection: 'tenants' as never, id: String(tenant), depth: 0, overrideAccess: true }).catch(() => null) : null
   const named = ((t as { bindings?: { variables?: { name: string }[] } } | null)?.bindings?.variables ?? []).map((v) => v.name).filter((n) => process.env[n])
   const by = named.find((n) => /^CLOUDFLARE_[A-Z_]*TOKEN$/.test(n)) ?? (process.env.CLOUDFLARE_API_TOKEN ? 'CLOUDFLARE_API_TOKEN' : null)
-  return by ? { by, bearer: process.env[by], account: process.env.CLOUDFLARE_ACCOUNT_ID } : { by: 'unnamed' }
+  const zone = process.env[named.find((n) => /^CLOUDFLARE_[A-Z_]*ZONE_ID$/.test(n)) ?? 'CLOUDFLARE_ZONE_ID']
+  return by ? { by, bearer: process.env[by], account: process.env.CLOUDFLARE_ACCOUNT_ID, zone } : { by: 'unnamed' }
 }
 type HeldOperation = { method: string; server: string; path: string; id: string; tags: string[] }
 const heldCloudflareOperations = async (req: PayloadRequest): Promise<HeldOperation[]> => {
@@ -330,13 +331,17 @@ const cloudflareCallTask: TaskConfig<{ input: Record<string, any>; output: { ent
 // allowance), the bill and its meters written on the qpu global as apis.cloudflare, a lead entry per meter past 80% with its remedy
 const cloudflareObserveTask: TaskConfig<{ input: Record<string, any>; output: { entry: string } }> = {
   slug: 'qpu-cloudflare-observe', retries: 0,
-  inputSchema: [{ name: 'request', type: 'text' }, { name: 'tenant', type: 'text' }],
+  inputSchema: [{ name: 'request', type: 'text' }, { name: 'tenant', type: 'text' }, { name: 'zone', type: 'text' }],
   outputSchema: [{ name: 'entry', type: 'text' }],
   handler: async ({ input, req }) => {
     const auth = await cloudflareToken(req, input.tenant), now = new Date(), since = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString()
-    const answer = auth.bearer && auth.account ? await fetch('https://api.cloudflare.com/client/v4/graphql', { method: 'POST', headers: { authorization: 'Bearer ' + auth.bearer, 'content-type': 'application/json' }, body: JSON.stringify({ query: OBSERVE_QUERY, variables: { accountTag: auth.account, since, until: now.toISOString() } }), signal: AbortSignal.timeout(20000) }).then((r) => r.json(), (e: Error) => ({ errors: [{ message: e.message }] })) : { errors: [{ message: auth.account ? 'no tenant binding names a Cloudflare token' : 'CLOUDFLARE_ACCOUNT_ID is not named' }] }
+    const post = (query: string, variables: Record<string, string>) => fetch('https://api.cloudflare.com/client/v4/graphql', { method: 'POST', headers: { authorization: 'Bearer ' + auth.bearer, 'content-type': 'application/json' }, body: JSON.stringify({ query, variables: { ...variables, since, until: now.toISOString() } }), signal: AbortSignal.timeout(20000) }).then((r) => r.json(), (e: Error) => ({ errors: [{ message: e.message }] }))
+    const answer = auth.bearer && auth.account ? await post(OBSERVE_QUERY, { accountTag: auth.account }) : { errors: [{ message: auth.account ? 'no tenant binding names a Cloudflare token' : 'CLOUDFLARE_ACCOUNT_ID is not named' }] }
     const readings = readingsOf(answer as never), cost = apisCost(readings)
-    const observed = { at: now.toISOString(), since, by: auth.by, readings, cost: { usd: cost.usd, microUsd: cost.microUsd, covered: cost.covered }, meters: cost.rows.map((r) => ({ meter: r.meter, used: r.used, included: r.included, share: r.share, usd: r.microUsd / 1_000_000, remedy: r.remedy })), leads: cost.leads, errors: (answer as { errors?: { message: string }[] }).errors ?? [] }
+    // the zone's requests by cacheStatus, edgeResponseStatus, clientRequestPath, userAgent and clientIP, when a zone tag is named (the input, a tenant binding CLOUDFLARE_*ZONE_ID, CLOUDFLARE_ZONE_ID)
+    const zoneTag = typeof input.zone === 'string' && input.zone ? input.zone : auth.zone
+    const zone = zoneReadingsOf((auth.bearer && zoneTag ? await post(OBSERVE_ZONE_QUERY, { zoneTag }) : { errors: [{ message: zoneTag ? 'no tenant binding names a Cloudflare token' : 'no zone tag is named: the input zone, a tenant binding CLOUDFLARE_*ZONE_ID or CLOUDFLARE_ZONE_ID' }] }) as never)
+    const observed = { at: now.toISOString(), since, by: auth.by, readings, cost: { usd: cost.usd, microUsd: cost.microUsd, covered: cost.covered }, meters: cost.rows.map((r) => ({ meter: r.meter, used: r.used, included: r.included, share: r.share, usd: r.microUsd / 1_000_000, remedy: r.remedy })), leads: cost.leads, zone: { tag: zoneTag ?? null, ...zone }, errors: (answer as { errors?: { message: string }[] }).errors ?? [] }
     const current = (await req.payload.findGlobal({ slug: 'qpu' as never, depth: 0, overrideAccess: true }).catch(() => ({}))) as { apis?: Record<string, unknown> }
     await req.payload.updateGlobal({ slug: 'qpu' as never, data: { apis: { ...(current.apis ?? {}), cloudflare: observed } } as never, context: { qpuApis: true }, overrideAccess: true })
     for (const lead of cost.leads) await entry(req, { kind: 'lead', from: 'qpu-cloudflare-observe', ...(input.tenant ? { tenant: input.tenant } : {}), body: lead }, { qpuApis: true }).catch(() => null)

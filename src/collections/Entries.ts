@@ -4,19 +4,19 @@
 // fold address of what it holds, the sha256 beside it — never overwritten; the four verbs are Payload's REST (/api/entries).
 import { createHmac, hkdfSync } from 'node:crypto'
 import type { CollectionConfig, Where } from 'payload'
-import { entryTextOf, uuidOf } from '@uuidna/qpu/blocks'
-import { callOf, toolCallerOf } from '@uuidna/qpu/mcp'
+import { entryText, uuid } from '@uuidna/qpu/blocks'
+import { call, caller } from '@uuidna/qpu/mcp'
 import { appCall } from '../payload.qpu.mcp'
-import { signedRoleOf } from '@uuidna/qpu/roles'
+import { signedRole } from '@uuidna/qpu/roles'
 
 type TenantUser = { roles?: string[]; tenants?: { tenant?: { id?: string } | string; roles?: string[] }[] } | null | undefined
 const isSuperAdmin = (user: unknown): boolean => ((user as TenantUser)?.roles ?? []).includes('admin')
-const tenantIdOf = (t: unknown): string | null => (typeof t === 'string' ? t : (t as { id?: string } | undefined)?.id ?? null)
-const tenantsWithRole = (user: unknown, roles: readonly string[]): string[] => ((user as TenantUser)?.tenants ?? []).filter((row) => (row.roles ?? []).some((r) => roles.includes(r))).map((row) => tenantIdOf(row.tenant)).filter((id): id is string => !!id)
-const memberOf = (user: unknown, tenant: string | null, roles: readonly string[]): boolean => !!tenant && tenantsWithRole(user, roles).includes(tenant)
-const tenantsOf = (user: unknown): string[] => ((user as TenantUser)?.tenants ?? []).map((row) => tenantIdOf(row.tenant)).filter((x): x is string => !!x)
+const tenantId = (t: unknown): string | null => (typeof t === 'string' ? t : (t as { id?: string } | undefined)?.id ?? null)
+const tenantsWithRole = (user: unknown, roles: readonly string[]): string[] => ((user as TenantUser)?.tenants ?? []).filter((row) => (row.roles ?? []).some((r) => roles.includes(r))).map((row) => tenantId(row.tenant)).filter((id): id is string => !!id)
+const member = (user: unknown, tenant: string | null, roles: readonly string[]): boolean => !!tenant && tenantsWithRole(user, roles).includes(tenant)
+const tenants = (user: unknown): string[] => ((user as TenantUser)?.tenants ?? []).map((row) => tenantId(row.tenant)).filter((x): x is string => !!x)
 // a role claimed in a header counts only when signed under the deployment's secret (x-qpu-role-mac over role|tenant|METHOD); a bare header is no claim
-const claimedRole = (req: { headers: Headers; method?: string }) => signedRoleOf({ role: req.headers.get('x-qpu-role'), tenant: req.headers.get('x-qpu-tenant'), mac: req.headers.get('x-qpu-role-mac'), method: req.method ?? '' }, process.env.QPU_ROLE_SECRET)
+const claimedRole = (req: { headers: Headers; method?: string }) => signedRole({ role: req.headers.get('x-qpu-role'), tenant: req.headers.get('x-qpu-tenant'), mac: req.headers.get('x-qpu-role-mac'), method: req.method ?? '' }, process.env.QPU_ROLE_SECRET)
 export const Entries: CollectionConfig = {
   slug: 'entries',
   admin: { useAsTitle: 'id', defaultColumns: ['id', 'kind', 'from', 'createdAt'] },
@@ -24,8 +24,8 @@ export const Entries: CollectionConfig = {
   // access by tenant roles and the Worker's roles: a reader reads; a call is created by anyone; an entry of other kinds by a super admin, a tenant-admin or editor of its tenant, or a writer role signed under the deployment's secret; no one updates (an entry is its content address); a super admin, a tenant-admin of its tenant or a signed admin role deletes
   access: {
     // the operational kinds (a machine's runs, chats, penalties, sessions) to their tenant and admins alone; the rest is the public docket
-    read: ({ req }) => isSuperAdmin(req.user) || claimedRole(req) === 'admin' || ({ or: [{ kind: { not_in: ['machine', 'chat', 'penalty', 'session', 'call', 'message', 'google-user-data'] } }, { and: [{ kind: { in: ['machine', 'chat', 'penalty', 'session', 'call', 'message'] } }, { tenant: { in: tenantsOf(req.user) } }] }, { and: [{ kind: { in: ['google-user-data'] } }, { or: [{ from: { equals: String((req.user as { id?: unknown } | null)?.id ?? '') } }, { tenant: { in: tenantsWithRole(req.user, ['tenant-admin']) } }] }] }] } as Where),
-    create: ({ req, data }) => data?.kind === 'call' || data?.kind === 'chat' || isSuperAdmin(req.user) || memberOf(req.user, tenantIdOf(data?.tenant), ['tenant-admin', 'editor']) || claimedRole(req) === 'writer' || claimedRole(req) === 'admin',
+    read: ({ req }) => isSuperAdmin(req.user) || claimedRole(req) === 'admin' || ({ or: [{ kind: { not_in: ['machine', 'chat', 'penalty', 'session', 'call', 'message', 'google-user-data'] } }, { and: [{ kind: { in: ['machine', 'chat', 'penalty', 'session', 'call', 'message'] } }, { tenant: { in: tenants(req.user) } }] }, { and: [{ kind: { in: ['google-user-data'] } }, { or: [{ from: { equals: String((req.user as { id?: unknown } | null)?.id ?? '') } }, { tenant: { in: tenantsWithRole(req.user, ['tenant-admin']) } }] }] }] } as Where),
+    create: ({ req, data }) => data?.kind === 'call' || data?.kind === 'chat' || isSuperAdmin(req.user) || member(req.user, tenantId(data?.tenant), ['tenant-admin', 'editor']) || claimedRole(req) === 'writer' || claimedRole(req) === 'admin',
     update: () => false,
     delete: ({ req }) => isSuperAdmin(req.user) || claimedRole(req) === 'admin' || { tenant: { in: tenantsWithRole(req.user, ['tenant-admin']) } },
   },
@@ -46,9 +46,11 @@ export const Entries: CollectionConfig = {
     // which answers the entry its docket holds or the UUID's own page computed from the id alone; unreachable, the same page is computed here by the handler
     afterError: [async ({ error, req }) => {
       const id = String((req as { routeParams?: { id?: unknown } } | undefined)?.routeParams?.id ?? (req?.url ?? '').split('?')[0]!.split('/').pop() ?? '')
-      if ((error as { status?: number }).status !== 404 || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id)) return
+      if ((error as { status?: number }).status !== 404) return
+      if (/^[a-z][a-z0-9]*$/.test(id)) return { response: { id, kind: 'keyword', from: 'afterError', computed: true, written: false, thrown: false, bit: 0, closed: true, unhandled: 0, beyond: true, says: 'a one-word path the collection does not hold falls back to the zero bit, so the 404 left is zero, beyond what was imagined' }, status: 200 }
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id)) return
       try { const res = await fetch((process.env.QPU_ORIGIN ?? 'https://qpu.uuidna.com') + '/' + id, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(10000) }); if (res.ok) { const entry = await res.json() as { id?: string; kind?: string; from?: string; body?: unknown; links?: string[]; computed?: boolean }; if (entry && entry.kind && entry.from && !entry.computed) { try { await req.payload.create({ collection: 'entries' as never, data: { kind: entry.kind, from: entry.from, body: entry.body, links: entry.links ?? [] } as never, overrideAccess: true, context: { disableRevalidate: true } }) } catch { /* seeded already, or refused: the answer stands */ } } return { response: entry, status: 200 } } } catch { /* the Worker unreached: computed here */ }
-      const v = toolCallerOf('verify')({ uuid: id })
+      const v = caller('verify')({ uuid: id })
       return { response: { id, kind: 'uuid', from: 'computed', computed: true, body: v ?? null, says: 'no entry at this address: the page of the UUID from the id alone, nothing written (no content address to seed at)' }, status: 200 }
     }],
     beforeValidate: [async ({ data, operation, req }) => {
@@ -58,9 +60,9 @@ export const Entries: CollectionConfig = {
       // a call salted under the server's data key: the same request keeps its address, but no one who knows the request can compute it, nor its answer's
       if (data.kind === 'call' && process.env.QPU_DATA_KEY && data.body && typeof data.body === 'object' && !('salt' in data.body)) data.body = { ...data.body, salt: createHmac('sha256', Buffer.from(hkdfSync('sha256', process.env.QPU_DATA_KEY, '', 'qpu call salt', 32))).update(JSON.stringify(data.body)).digest('hex') }
       // the caller's role, from Payload's user and the tenant (a signed role claim counts too): the chat door corrects what the role may not choose
-      const tenantId = tenantIdOf(data.tenant)
-      const role = isSuperAdmin(req.user) || claimedRole(req) === 'admin' || memberOf(req.user, tenantId, ['tenant-admin']) ? 'admin' : claimedRole(req) === 'writer' || memberOf(req.user, tenantId, ['editor']) ? 'writer' : 'reader'
-      const chatDoor = (statement: string, chat: Record<string, unknown>) => toolCallerOf('match')({ statement, chat })
+      const tenant = tenantId(data.tenant) // the local name must not shadow the tenantId helper it calls (a shadowed const is in its temporal dead zone)
+      const role = isSuperAdmin(req.user) || claimedRole(req) === 'admin' || member(req.user, tenant, ['tenant-admin']) ? 'admin' : claimedRole(req) === 'writer' || member(req.user, tenant, ['editor']) ? 'writer' : 'reader'
+      const chatDoor = (statement: string, chat: Record<string, unknown>) => caller('match')({ statement, chat })
       // a call is folded as it will run: its arguments corrected for the role first, so the same address always holds the same reply
       const asked = data.body as { tool?: string; arguments?: Record<string, unknown>; statement?: string; choice?: string } | undefined
       let corrected: unknown[] = []
@@ -70,7 +72,7 @@ export const Entries: CollectionConfig = {
       const chat = data.kind === 'chat' ? chatDoor(String(asked?.statement ?? ''), { role, choice: asked?.choice }) : undefined
       // the address folds the entry's canonical text and the ids it links: the same body linking other entries is another entry
       const links = Array.isArray(data.links) ? data.links.map((l) => String(typeof l === 'object' && l ? (l as { id?: unknown }).id : l)) : []
-      const text = entryTextOf({ kind: data.kind, from: data.from, body: data.body, links })
+      const text = entryText({ kind: data.kind, from: data.from, body: data.body, links })
       const bytes = new TextEncoder().encode(text)
       const digest = await crypto.subtle.digest('SHA-256', bytes)
       // the API built from the config: an entry of kind call carries a tool and its arguments, and the hook answers it from the handler; the address folds the call, not the reply, so the same call is the same entry (read free, computed once)
@@ -78,7 +80,7 @@ export const Entries: CollectionConfig = {
       // the reply's result stands as the entry's result (content, structuredContent, _meta with the widget); a refusal stands as { error }
       const reply = data.kind === 'call' && body?.tool ? appCall(body.tool, body.arguments ?? {}) : undefined
       const result = chat ? chat : reply ? { ...((reply.result ?? { error: reply.error }) as object), ...(corrected.length ? { corrected } : {}) } : undefined
-      return { ...data, id: uuidOf(text), sha256: [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join(''), ...(result ? { result } : {}) }
+      return { ...data, id: uuid(text), sha256: [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join(''), ...(result ? { result } : {}) }
     }],
     // no revalidation hook: an entry is its content address and never updates, so nothing cached under it ever changes (measured: a revalidateTag during the render that creates a call is refused by Next)
   },

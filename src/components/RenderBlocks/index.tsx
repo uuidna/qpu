@@ -2,7 +2,7 @@
 
 import type { RelatedPostsBlock } from '@blocks/RelatedPosts/index'
 import type { PaddingProps, Settings } from '@components/BlockWrapper/index'
-import type { Page, ReusableContent, QpuBlock as QpuBlockType } from '@root/payload-types'
+import type { Page, ReusableContent } from '@root/payload-types'
 import type { Theme } from '@root/providers/Theme/types'
 
 import { BannerBlock } from '@blocks/Banner/index'
@@ -19,7 +19,6 @@ import { CodeFeature } from '@blocks/CodeFeature/index'
 import { ComparisonTable } from '@blocks/ComparisonTable'
 import { ContentBlock } from '@blocks/Content/index'
 import { ContentGrid } from '@blocks/ContentGrid/index'
-import { QpuBlock } from '@blocks/Qpu/index'
 import { FormBlock } from '@blocks/FormBlock/index'
 import { HoverCards } from '@blocks/HoverCards/index'
 import { HoverHighlights } from '@blocks/HoverHighlights/index'
@@ -56,7 +55,6 @@ const blockComponents = {
   comparisonTable: ComparisonTable,
   content: ContentBlock,
   contentGrid: ContentGrid,
-  qpu: QpuBlock,
   cta: CallToAction,
   form: FormBlock,
   hoverCards: HoverCards,
@@ -75,7 +73,7 @@ const blockComponents = {
   stickyHighlights: StickyHighlights,
 }
 
-export type BlocksProp = RelatedPostsBlock | ReusableContent['layout'][0] | ReusableContentBlockType | QpuBlockType
+export type BlocksProp = RelatedPostsBlock | ReusableContent['layout'][0] | ReusableContentBlockType
 
 type Props = {
   blocks: BlocksProp[]

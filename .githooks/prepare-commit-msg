@@ -1,4 +1,0 @@
-#!/bin/sh
-# prepare-commit-msg is a client MCP workflow: the repository tool answers its steps (repository { workflow: 'prepare-commit-msg' }); scripts/hook.ts walks them and decides nothing itself.
-node --import tsx scripts/hook.ts prepare-commit-msg "$@"
-exit 0

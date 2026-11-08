@@ -1,11 +1,11 @@
 // The scannable stream: a block's address spread over time as a multidimensional animation — one frame per character of the UUID
 // (36 frames of 108 ms, the third harmonic's period: 36 × 108 = 3888 = 432 × 9, the vortex period, textbook_scan_stream), each digit a hue
 // (sixteen hues, 22.5° apart), a glyph (the Glagolitic numeral of the digit) and an angle (its place in the stream), the four dashes
-// black frames — so a single frame links nothing and only a stream of frames, sampled by a device, reads the address back (scanOf).
+// black frames — so a single frame links nothing and only a stream of frames, sampled by a device, reads the address back (scan).
 // The same stream is the device's randomness: the phase at which an interaction lands is one of 3888 milliseconds (eleven bits a sample,
-// textbook_phase_bits), folded with the device's own crypto nonce into a seed the seal tool takes (entropyOf). Used in the Open Graph
+// textbook_phase_bits), folded with the device's own crypto nonce into a seed the seal tool takes (entropy). Used in the Open Graph
 // image of every block (an animated SVG: a scraper shows one frame, a stream reads the link) and in the shadcn items (the CSS of the stream).
-import { uuidOf, sealOf } from './unit/blocks.ts'
+import { uuid, seal } from '../uuid/index.ts'
 import { SCAN, KEY, coilColour } from './unit/theme.ts'
 import { orderUsage } from './toolboxes/billing.ts'
 
@@ -33,14 +33,14 @@ export const getScan = (samples: readonly ScanSample[]) => {
   const complete = read === SCAN.frames
   const dashesInPlace = [8, 13, 18, 23].every((i) => chars[i] === '-')
   const uuid = complete && dashesInPlace ? text : null
-  const seal = uuid ? sealOf(uuid) : null
-  const linked = !!(seal && seal.valid)
+  const stamp = uuid ? seal(uuid) : null
+  const linked = !!(stamp && stamp.valid)
   const checks = [
     { check: 'frames', passed: complete, evidence: `${read} of ${SCAN.frames} frames sampled` },
     { check: 'dashes', passed: complete ? dashesInPlace : null, evidence: complete ? (dashesInPlace ? 'the four dashes in place' : 'the dashes out of place: not a UUID') : 'undecided until every frame is read' },
-    { check: 'seal', passed: uuid ? (seal?.valid ?? false) : null, evidence: uuid ? (seal?.valid ? 'the seal holds' : 'the seal fails') : 'no address read' },
+    { check: 'seal', passed: uuid ? (stamp?.valid ?? false) : null, evidence: uuid ? (stamp?.valid ? 'the seal holds' : 'the seal fails') : 'no address read' },
   ]
-  return { samples: samples.length, framesRead: read, of: SCAN.frames, text, uuid: uuid ?? text, read: uuid, rate: priceScan(samples.length), linked, valid: linked, decided: checks.filter((c) => c.passed !== null).length, checks, cost: 'one pass over the samples (a vote per frame), one modular power for the seal', seal, impossibleFromOne: read < SCAN.frames, says: uuid ? (seal?.valid ? 'the stream read the address and its seal holds: linked' : 'the stream read 36 characters but the seal fails: not an address') : `${read} of ${SCAN.frames} frames read: a stream links only when every frame was sampled` }
+  return { samples: samples.length, framesRead: read, of: SCAN.frames, text, uuid: uuid ?? text, read: uuid, rate: priceScan(samples.length), linked, valid: linked, decided: checks.filter((c) => c.passed !== null).length, checks, cost: 'one pass over the samples (a vote per frame), one modular power for the seal', seal: stamp, impossibleFromOne: read < SCAN.frames, says: uuid ? (stamp?.valid ? 'the stream read the address and its seal holds: linked' : 'the stream read 36 characters but the seal fails: not an address') : `${read} of ${SCAN.frames} frames read: a stream links only when every frame was sampled` }
 }
 
 /** The device's randomness: the phase of the animation at each interaction (eleven bits a sample within the 3888 ms period) and the device's own
@@ -48,7 +48,7 @@ export const getScan = (samples: readonly ScanSample[]) => {
 export const foldEntropy = (samples: readonly EntropySample[]) => {
   const phaseBits = Math.floor(Math.log2(SCAN.periodMs))
   const bits = samples.reduce((n, s) => n + phaseBits + (typeof s.nonce === 'number' ? 32 : 0), 0)
-  const seed = uuidOf(JSON.stringify(samples.map((s) => [Math.floor(((s.phase % SCAN.periodMs) + SCAN.periodMs) % SCAN.periodMs), Math.floor(s.t), s.nonce ?? 0, s.x ?? 0, s.y ?? 0])))
+  const seed = uuid(JSON.stringify(samples.map((s) => [Math.floor(((s.phase % SCAN.periodMs) + SCAN.periodMs) % SCAN.periodMs), Math.floor(s.t), s.nonce ?? 0, s.x ?? 0, s.y ?? 0])))
   const phase = samples.length ? Math.floor(((samples[samples.length - 1]!.phase % SCAN.periodMs) + SCAN.periodMs) % SCAN.periodMs) : 0
   return { samples: samples.length, periodMs: SCAN.periodMs, phaseBits, bits, seed, phase, rate: priceScan(samples.length), angle: Math.round((phase / SCAN.periodMs) * 360), frame: Math.floor(phase / SCAN.frameMs), key: KEY, theorem: 'textbook_phase_bits', says: `${samples.length} interaction(s) with the stream: ${bits} bits (${phaseBits} a phase, 32 a nonce), folded to the seed ${seed}; the last phase ${phase} ms is the frame ${Math.floor(phase / SCAN.frameMs)} and the angle ${Math.round((phase / SCAN.periodMs) * 360)}°` }
 }

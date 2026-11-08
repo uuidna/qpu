@@ -85,13 +85,6 @@ export const Posts: CollectionConfig = {
       required: true,
     },
     {
-      // the tenant whose autonomous editorial blog this post belongs to (qpu-news-solve writes it); each tenant's posts are its own, monetised on its catalogue
-      name: 'tenant',
-      type: 'relationship',
-      relationTo: 'tenants',
-      admin: { position: 'sidebar' },
-    },
-    {
       name: 'featuredMedia',
       type: 'select',
       defaultValue: 'upload',

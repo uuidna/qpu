@@ -1,0 +1,13 @@
+---
+description: No duplicate logic — one SEO/path surface, one concept
+alwaysApply: true
+---
+
+# No duplicate logic
+
+Scattered copies are not Google quality. Meaningless SEO paths in `src` are the symptom.
+
+- **SEO / nested pages:** `crumb`, `seoMeta`, `seoPath`, `seoFrom` live in `src/plugins/websiteClient.ts` only. Do not redefine them in toolboxes.
+- Paths are one-word nested segments (`seoPath`), parents first, three deep — catalogue rule. Do not invent parallel trees (`/plugins/<hex>`, `/quantum/<tool>/<hex>`) beside the catalogue.
+- One concept → one function (see `one-word.mdc`). If you are about to paste a helper, import the existing one.
+- Wrong or duplicate meaning on MCP is a security issue (see `entropy.mdc`).

@@ -16,7 +16,13 @@ import { QUANTUM_ECHOES } from '../echo.ts'
 import { APPLICATIONS, ROADMAP } from '../roadmap.ts'
 import { GOOGLE_DISCOVERY, GOOGLE_DOCUMENTS, GOOGLE_ENDPOINTS, GEMINI_API, WORKSPACE_MCP } from '../discovery.ts'
 import { TABLES } from '../tables-index.ts'
-import { call } from '../mcp.ts'
+
+// the handler's call, bound by mcp.ts once it is defined: a toolbox imports nothing from the handler, so the chooser's import of raid
+// (raid → payload → google) no longer pulls the handler and its examples in while raid is still loading (the cycle that threw on RAID)
+type Call = (name: string, args: unknown) => { result?: { structuredContent?: any }; error?: { message: string } }
+let boundCall: Call | null = null
+export const bindGoogleCall = (c: Call): void => { boundCall = c }
+const call: Call = (name, args) => { if (!boundCall) throw new Error('the MCP handler has not bound call yet: import mcp.ts before the google toolbox runs'); return boundCall(name, args) }
 
 export const GOOGLE_CHALLENGE_IDS = [
   'willow-connectivity',
