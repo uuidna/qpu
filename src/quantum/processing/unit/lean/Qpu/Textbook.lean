@@ -484,9 +484,9 @@ theorem textbook_one_holder_reflected (k : Nat) (h : 1 ≤ k) (σ : Nat) : σ - 
 theorem textbook_one_holder_contrapositive (k : Nat) : ¬ (k - (k - 1) = 1) → ¬ ((1 ≤ k)) := fun hc hh => hc (textbook_one_holder k hh)
 /-- the converse of textbook_one_holder, proved (examples: audit-shapes-one-holder) -/
 theorem textbook_one_holder_converse (k : Nat) : (k - (k - 1) = 1) → (1 ≤ k) := fun hc => by omega
-/-- the 1 generated files of the full stack partition over the roles of FILE_ROLES (blocks, config modules, notices, collections, hooks modules and the rest), each at the path its role names (examples: configure-fullstack) -/
+/-- the 1 generated files of the full stack partition over the roles of FILE_ROLES (blocks, config modules, notices, collections, hooks modules and the rest), each at the path its role names (examples: configure-fullstack, configure-fullstack-readme) -/
 theorem textbook_fullstack_files_by_role : 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 1 = 1 := by decide
-/-- textbook_fullstack_files_by_role reflected by its shape, equality (examples: configure-fullstack) -/
+/-- textbook_fullstack_files_by_role reflected by its shape, equality (examples: configure-fullstack, configure-fullstack-readme) -/
 theorem textbook_fullstack_files_by_role_reflected (σ : Nat) : σ - (1) = σ - (0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 1) := congrArg (σ - ·) (Eq.symm (textbook_fullstack_files_by_role))
 /-- to win, know the competitors as well as the theorems: the knowledge of a competition is the product of both, positive only when neither is empty (examples: compete-rules) -/
 theorem textbook_compete_knows (c t : Nat) (hc : 0 < c) (ht : 0 < t) : 0 < c * t := Nat.mul_pos hc ht
