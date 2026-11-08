@@ -1125,7 +1125,7 @@ const OWN: Tool[] = [
   tool({
     name: 'processor',
     description: 'A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures; beside the stated figures, the average connectivity computed from the couplers of the grid (2E/N) and whether error correction runs below threshold (Λ above 1). Names and RBAC come from payload { cryptoConfig } ISO/IEC 4879 tenant inventory.',
-    inputSchema: { type: 'object', properties: { name: { enum: Object.keys(ALL_PROCESSORS), description: 'a processor on the tenant crypto ISO/IEC 4879 inventory. Omit it and every allowed processor is computed, unlimited, at 432 Hz' }, role: { enum: ['reader', 'writer', 'admin'], description: 'Payload RBAC role that may choose the processor under cryptoConfig.processors.roles' } } },
+    inputSchema: { type: 'object', properties: { name: { enum: Object.keys(ALL_PROCESSORS), description: 'a processor on the tenant crypto ISO/IEC 4879 inventory. An engine device is chosen under the role; a layout outside the engine (Bristlecone, Foxtail) is its spec sheet, read by any role, with the role that may choose it stated. Omit it and every allowed processor is computed, unlimited, at 432 Hz' }, role: { enum: ['reader', 'writer', 'admin'], description: 'Payload RBAC role that may choose the processor under cryptoConfig.processors.roles' } } },
     run: (args) => {
       const cfg = cryptoConfig()
       const qc = cfg.iso.quantumComputer
@@ -1161,10 +1161,10 @@ const OWN: Tool[] = [
         }
       }
       const deviceName = String(args.name)
-      if (!mayUseProcessor(cfg, deviceName, role)) reject(`processor ${deviceName} is not on the tenant ISO/IEC 4879 crypto inventory for role ${role}; allowed: ${allowed.join(', ')}`)
+      if (deviceName in DEVICES && !mayUseProcessor(cfg, deviceName, role)) reject(`processor ${deviceName} is not on the tenant ISO/IEC 4879 crypto inventory for role ${role}; allowed: ${allowed.join(', ')}`)
       if (deviceName !== 'Willow' && deviceName in ALL_PROCESSORS) {
         const device = ALL_PROCESSORS[deviceName as keyof typeof ALL_PROCESSORS]
-        return { name: device.name, qubits: device.qubits, couplers: device.couplers.length, layout: 'layout' in device ? device.layout : '', iso: { standard: qc.standard, via: cfg.via ?? 'qpuMcpPlugin' }, role: qc.processors.roles[deviceName as CryptoProcessorName], ...('statedQubits' in device ? { statedQubits: device.statedQubits } : {}), ...('statedCouplers' in device ? { statedCouplers: device.statedCouplers } : {}) }
+        return { name: device.name, qubits: device.qubits, couplers: device.couplers.length, layout: 'layout' in device ? device.layout : '', iso: { standard: qc.standard, via: cfg.via ?? 'qpuMcpPlugin' }, role: qc.processors.roles[deviceName as CryptoProcessorName], chosen: mayUseProcessor(cfg, deviceName, role), engine: deviceName in DEVICES, ...('statedQubits' in device ? { statedQubits: device.statedQubits } : {}), ...('statedCouplers' in device ? { statedCouplers: device.statedCouplers } : {}) }
       }
       const processor = PROCESSORS[args.name as keyof typeof PROCESSORS] ?? reject(`processor ${String(args.name)} is not described here`)
       return { name: processor.name, technology: processor.technology, qubits: processor.qubits, statedAverageConnectivity: processor.statedAverageConnectivity, averageConnectivity: Math.round(getAverageConnectivity(processor.sites, processor.couplers) * 100) / 100, belowThreshold: isBelowThreshold(processor), typicalConnectivity: processor.typicalConnectivity, chips: processor.chips, magicStateCultivation: processor.magicStateCultivation, errorCorrectionPreprint: processor.errorCorrectionPreprint, iso: { standard: qc.standard, via: cfg.via ?? 'qpuMcpPlugin' }, role: qc.processors.roles.Willow }
