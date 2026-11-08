@@ -3284,7 +3284,7 @@ const quantumPages = () => {
   const eq = verifyIsoQuantumEquivalence()
   const theorem = 'textbook_standards_sliced' as const
   const rootPath = '/quantum'
-  const slug = (raw: string) => raw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/iso-iec-/g, '').replace(/iso-tr-/g, '').replace(/iso-/g, '').replace(/^-|-$/g, '').replace(/-{2,}/g, '-').slice(0, 72) || 'page'
+  const slug = (raw: string) => raw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/iso-iec-/g, '').replace(/iso-tr-/g, '').replace(/iso-/g, '').replace(/^-|-$/g, '').replace(/-{2,}/g, '-') || 'page'
   const named = (kind: string, raw: string) => `${kind}-${slug(raw)}`
   const definedFor = (dimension: string) => {
     const key = dimension.replace(/\s*\(.*$/, '').trim()
@@ -3408,7 +3408,7 @@ const quantumPages = () => {
 /** A theorem name is a deliverable, or it is not. A deliverable number, or a term the vocabulary names, stays a theorem and points at that page. Every other name moves from theorems to the place its own word already has. The kernel key is not renamed. The word iso is not a prefix. Nothing is fetched and nothing is written. */
 const theoremNames = () => {
   const theorem = 'textbook_standards_sliced' as const
-  const slug = (raw: string) => raw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/iso-iec-/g, '').replace(/iso-tr-/g, '').replace(/iso-/g, '').replace(/^-|-$/g, '').replace(/-{2,}/g, '-').slice(0, 72) || 'page'
+  const slug = (raw: string) => raw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/iso-iec-/g, '').replace(/iso-tr-/g, '').replace(/iso-/g, '').replace(/^-|-$/g, '').replace(/-{2,}/g, '-') || 'page'
   const glue = new Set(['a', 'an', 'the', 'of', 'to', 'and', 'or', 'is', 'are', 'by', 'for', 'in', 'on', 'with', 'from', 'its', 'no', 'not', 'per'])
   const companionOf = (number: string) => {
     const row = ISO_OPEN_DEFINITIONS.find((item) => item.reference.match(/\d{3,}/)?.[0] === number)
