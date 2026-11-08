@@ -3,7 +3,7 @@
 // read into one graph; its cycles found by Tarjan's strongly connected components, iteratively so no depth overflows the stack; the dangling
 // references named. Whatever collides is fused, never refused: every strongly connected component is one node of the condensation, its members
 // in address order, and the condensation is always acyclic, so it always has an order. Pure: the client hands the documents over.
-import { uuidOf } from './unit/blocks.ts'
+import { uuid } from '../uuid/index.ts'
 export type RefDoc = { id: string; slug?: string; doc?: unknown; markdown?: string }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 /** The internal targets a path names: /slug or /<uuid>, its query and fragment dropped; an absolute URL is not internal. */
@@ -38,10 +38,10 @@ export const createReferenceGraph = (docs: readonly RefDoc[]) => {
   const cycles = sccs.filter((c) => c.length > 1 || edges.some((e) => e.from === c[0] && e.to === c[0]))
   // the condensation: each component fused into one node, its members in address order; Tarjan emits components in reverse topological order,
   // so reversed, a node comes before every node it references — the condensation never has a cycle, so this order always exists
-  const byAddress = (a: string, b: string) => (uuidOf(a) < uuidOf(b) ? -1 : uuidOf(a) > uuidOf(b) ? 1 : 0)
-  const fused = sccs.map((c) => { const members = [...c].sort(byAddress); return { id: members.length > 1 ? uuidOf(JSON.stringify(members)) : members[0]!, members, fused: members.length > 1 || edges.some((e) => e.from === members[0] && e.to === members[0]) } })
-  const nodeOf = new Map<string, string>(); for (const f of fused) for (const m of f.members) nodeOf.set(m, f.id)
-  const condensedEdges = [...new Set(edges.map((e) => [nodeOf.get(e.from)!, nodeOf.get(e.to)!]).filter(([a, b]) => a !== b).map((p) => p.join('→')))].map((p) => { const [from, to] = p.split('→') as [string, string]; return { from, to } })
+  const byAddress = (a: string, b: string) => (uuid(a) < uuid(b) ? -1 : uuid(a) > uuid(b) ? 1 : 0)
+  const fused = sccs.map((c) => { const members = [...c].sort(byAddress); return { id: members.length > 1 ? uuid(JSON.stringify(members)) : members[0]!, members, fused: members.length > 1 || edges.some((e) => e.from === members[0] && e.to === members[0]) } })
+  const node = new Map<string, string>(); for (const f of fused) for (const m of f.members) node.set(m, f.id)
+  const condensedEdges = [...new Set(edges.map((e) => [node.get(e.from)!, node.get(e.to)!]).filter(([a, b]) => a !== b).map((p) => p.join('→')))].map((p) => { const [from, to] = p.split('→') as [string, string]; return { from, to } })
   const condensation = { nodes: fused, edges: condensedEdges, order: [...fused].reverse().map((f) => f.id), acyclic: true as const }
   return { nodes: ids.length, edges, cycles, dangling, collisions, acyclic: cycles.length === 0, order: cycles.length ? null : condensation.order, condensation, says: `${ids.length} document(s), ${edges.length} reference(s): ${cycles.length ? `${cycles.length} cycle(s) fused into one node each (${cycles.map((c) => c.join(' ↔ ')).join('; ')})` : 'no cycle'}; the condensation of ${fused.length} node(s) is acyclic and ordered${dangling.length ? `; ${dangling.length} dangling reference(s) noted` : ''}${collisions.length ? `; ${collisions.length} name(s) claimed by two documents, resolved to none` : ''}`, theorem: 'textbook_references_acyclic' }
 }
@@ -52,14 +52,14 @@ export const createReferenceGraph = (docs: readonly RefDoc[]) => {
  *  (scope, from, to): equal queries share one hash, so a repeated lookup is served from one address (the 304 involution, the best caching). The index
  *  partitions by scope; the distinct hashes and the cache hits make the references (textbook_reference_index_cached). Pure. */
 export type ScopedRefDoc = RefDoc & { scope?: string; title?: string; description?: string; ai?: string }
-export const referenceIndexOf = (docs: readonly ScopedRefDoc[], seo = true) => {
-  const graph = createReferenceGraph(docs), scopeOf = new Map(docs.map((d) => [d.id, d.scope ?? 'default']))
-  type Entry = { scope: string; from: string; to: string; source: 'link' | 'seo' | 'ai'; queryHash: string }
-  const links: Entry[] = graph.edges.map((e) => { const scope = scopeOf.get(e.from) ?? 'default'; return { scope, from: e.from, to: e.to, source: 'link' as const, queryHash: uuidOf(`ref\n${scope}\n${e.from}\n${e.to}`) } })
-  const seoRefs: Entry[] = seo ? docs.filter((d) => d.title || d.description).map((d) => { const scope = scopeOf.get(d.id) ?? 'default'; return { scope, from: d.id, to: d.id, source: 'seo' as const, queryHash: uuidOf(`seo\n${scope}\n${d.id}\n${d.title ?? ''}`) } }) : []
+export const referenceIndex = (docs: readonly ScopedRefDoc[], seo = true) => {
+  const graph = createReferenceGraph(docs), scope = new Map(docs.map((d) => [d.id, d.scope ?? 'default']))
+  type Entry = { lane: string; from: string; to: string; source: 'link' | 'seo' | 'ai'; queryHash: string }
+  const links: Entry[] = graph.edges.map((e) => { const lane = scope.get(e.from) ?? 'default'; return { scope: lane, from: e.from, to: e.to, source: 'link' as const, queryHash: uuid(`ref\n${lane}\n${e.from}\n${e.to}`) } })
+  const seoRefs: Entry[] = seo ? docs.filter((d) => d.title || d.description).map((d) => { const lane = scope.get(d.id) ?? 'default'; return { scope: lane, from: d.id, to: d.id, source: 'seo' as const, queryHash: uuid(`seo\n${lane}\n${d.id}\n${d.title ?? ''}`) } }) : []
   // an AI binding call (Workers AI, a prompt) is a reference too, cached by the content hash of (scope, prompt): the same prompt in a tenant's scope is
   // one address, so a repeat is served from it — no second paid AI binding call, Cloudflare cost minimised; the scope is the tenant, gated by its rolify role
-  const aiRefs: Entry[] = docs.filter((d) => d.ai).map((d) => { const scope = scopeOf.get(d.id) ?? 'default'; return { scope, from: d.id, to: 'ai', source: 'ai' as const, queryHash: uuidOf(`ai\n${scope}\n${d.ai}`) } })
+  const aiRefs: Entry[] = docs.filter((d) => d.ai).map((d) => { const lane = scope.get(d.id) ?? 'default'; return { scope: lane, from: d.id, to: 'ai', source: 'ai' as const, queryHash: uuid(`ai\n${lane}\n${d.ai}`) } })
   const all = [...links, ...seoRefs, ...aiRefs], scopes = [...new Set(all.map((e) => e.scope))].sort()
   const byScope = Object.fromEntries(scopes.map((s) => { const es = all.filter((e) => e.scope === s), hashes = new Set(es.map((e) => e.queryHash)); return [s, { references: es.length, combinations: hashes.size, queryHashes: [...hashes], cached: es.length - hashes.size }] }))
   const distinctHashes = new Set(all.map((e) => e.queryHash)).size, cacheHits = all.length - distinctHashes
