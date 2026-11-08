@@ -9,10 +9,12 @@ import { homedir } from 'node:os'
 import path from 'node:path'
 import { createSign } from 'node:crypto'
 import { call, caller, redact } from '@uuidna/qpu/mcp'
+import { manageApi } from '@uuidna/qpu/payload-api'
 import { canonicalText, qpuHooks as qpuHooksOf, uuid } from '@uuidna/qpu/blocks'
 import { feeds, googleChallenges, type FeedRates } from '@uuidna/qpu/feeds'
 import { apisCost, apisCoverage, apisDoors, apisIndex, cloudflareOperations, payloadOperations, readingsOf, OBSERVE_QUERY } from '@uuidna/qpu/apis'
 import { Qpu } from '../blocks/Qpu/config'
+import { qpuMcpDescribeEndpoint } from './qpuMcp'
 import { Entries } from '../collections/Entries'
 import { Tenants } from '../collections/Tenants'
 import { QpuGlobal } from '../globals/Qpu'
@@ -22,7 +24,7 @@ import { firstUserBootstrap } from '../collections/users.qpu.hooks'
 import { appRequest } from '../collections/form-submissions.qpu.hooks'
 import { deployAfterSeed } from '../collections/orders.qpu.hooks'
 import { qpuDb, qpuEmail, qpuAdapterPlugins } from '../payload.qpu.adapters'
-import { appCall, qpuMachineTool } from '../payload.qpu.mcp'
+import { appCall, qpuMachineTask, qpuMachineTool } from '../payload.qpu.mcp'
 
 // the block added wherever a layout takes blocks: by object, or by reference where the field references the config's blocks
 const withBlock = (fields: Field[], block: Block): Field[] => fields.map((f): Field => {
@@ -79,16 +81,34 @@ const readGltfUpload = (async ({ data, req }: { data: Record<string, unknown>; r
   return { ...data, gltf: answer }
 }) as never
 const gltfMedia = (c: CollectionConfig): CollectionConfig => first({ ...c, fields: [...c.fields.filter((f) => !('name' in f) || f.name !== 'gltf'), { name: 'gltf', type: 'json', admin: { readOnly: true, description: 'a glTF 2.0 asset as Unreal Engine reads it: what the scene holds and its extensions by prefix (seal { gltf })' } }] }, 'beforeChange', readGltfUpload)
-export const qpuCore = definePlugin<QpuPluginOptions>({ slug: 'qpu', plugin: ({ config: incoming, enabled, branding, feeds }) => (enabled === false ? incoming : hooked({
+// a blocks field that names its blocks by reference (blockReferences) resolved to the block configs themselves: the Mongo adapter of Payload
+// 4.0.0-beta.7 builds its schemas from field.blocks alone and drops every referenced row on read (91 pages read back empty), while the D1 adapter
+// stores blocks as JSON; resolved once here, both adapters hold the same rows (payloadcms.com/docs/fields/blocks)
+const resolveBlockReferences = (fields: Field[], blocks: readonly Block[]): Field[] => fields.map((f): Field => {
+  if (f.type === 'blocks') {
+    const named = (r: Block | string): Block | undefined => (typeof r === 'string' ? blocks.find((b) => b.slug === r) : r)
+    const refs = ((f as { blockReferences?: (Block | string)[] }).blockReferences ?? []).map(named).filter((b): b is Block => !!b)
+    const { blockReferences: _refs, ...rest } = f as typeof f & { blockReferences?: unknown }
+    const seen = new Set<string>()
+    return { ...rest, blocks: [...((f.blocks ?? []) as (Block | string)[]).map(named).filter((b): b is Block => !!b), ...refs].filter((b) => (seen.has(b.slug) ? false : (seen.add(b.slug), true))).map((b) => ({ ...b, fields: resolveBlockReferences(b.fields, blocks) })) } as Field
+  }
+  if (f.type === 'tabs') return { ...f, tabs: f.tabs.map((t) => ({ ...t, fields: resolveBlockReferences(t.fields, blocks) })) }
+  if ('fields' in f && Array.isArray(f.fields)) return { ...f, fields: resolveBlockReferences(f.fields, blocks) } as Field
+  return { ...f } as Field // a copy per field object: a leaf shared with the config's own block would be sanitized twice (its editor wrapped twice: editor.validate is not a function)
+})
+export const qpuCore = definePlugin<QpuPluginOptions>({ slug: 'qpu', plugin: ({ config: incoming, enabled, branding, feeds }) => (enabled === false ? incoming : withResolvedBlocks(hooked({
   ...incoming,
   db: incoming.db ?? qpuDb(),
   email: incoming.email ?? qpuEmail(),
-  endpoints: [...(incoming.endpoints ?? []).filter((e) => !(e.path === '/qpu/feeds' && e.method === 'get')), ...(feeds === false ? [] : [qpuFeedsEndpoint])],
+  // the MCP door described first (GET /api/mcp answers 200, not the plugin's 405 that a connector check reads as a sign-in demand), then the rest
+  endpoints: [qpuMcpDescribeEndpoint, ...(incoming.endpoints ?? []).filter((e) => !(e.path === '/qpu/feeds' && e.method === 'get') && !(e.path === '/mcp' && e.method === 'get')), ...(feeds === false ? [] : [qpuFeedsEndpoint])],
   admin: branding === false ? incoming.admin : { ...incoming.admin, meta: { ...incoming.admin?.meta, titleSuffix: incoming.admin?.meta?.titleSuffix ?? ' · QPU' }, components: { ...incoming.admin?.components, beforeDashboard: [...(incoming.admin?.components?.beforeDashboard ?? []), ...[{ tool: 'clay', args: { technique: 'reflection' } }, { tool: 'dashboard', args: {} }, { tool: 'leads', args: {} }, { tool: 'metrics', args: {} }, { tool: 'apis', args: {} }, { tool: 'imagine', args: { open: 4 } }, { tool: 'match', args: {} }, { tool: 'repository', args: { machine: { actions: true } } }].map((p) => ({ path: '@root/components/blocks/Qpu/App#QpuApp', clientProps: p }))], graphics: { Logo: '@root/components/blocks/Qpu/Branding#QpuLogo', Icon: '@root/components/blocks/Qpu/Branding#QpuIcon', ...incoming.admin?.components?.graphics } } },
   collections: [...(incoming.collections ?? []).filter((c) => c.slug !== Tenants.slug && c.slug !== Entries.slug), Tenants, Entries],
   globals: [...(incoming.globals ?? []).filter((g) => g.slug !== QpuGlobal.slug), QpuGlobal],
   blocks: [...(incoming.blocks ?? []).filter((b) => b.slug !== Qpu.slug), Qpu],
-}, { pages, 'form-submissions': submissions, media: gltfMedia, orders: ordersHook })) })
+}, { pages, 'form-submissions': submissions, media: gltfMedia, orders: ordersHook }))) })
+// every collection's block references resolved against the blocks the config holds once the qpu block is among them
+const withResolvedBlocks = (config: Config): Config => ({ ...config, collections: (config.collections ?? []).map((c) => ({ ...c, fields: resolveBlockReferences(c.fields, config.blocks ?? []) })) })
 /** qpu-agents: an API key per user (an agent's key to the MCP), the first user from the deploy */
 export const qpuAgents = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-agents', plugin: ({ config, enabled }) => (enabled === false ? config : hooked(config, { users })) })
 const entry = async (req: PayloadRequest, data: object, context?: object) => String(((await req.payload.create({ collection: 'entries' as never, data: data as never, overrideAccess: true, context })) as { id: string }).id)
@@ -207,10 +227,10 @@ const leadRunTask: TaskConfig<{ input: { lead?: string; request?: string }; outp
   handler: async ({ input, req }) => {
     const pages = await pagesWith(req, 'leads')
     const page = pages.find((p) => p.layout.some((b) => b.arguments?.lead?.id === input.lead)), block = page?.layout.find((b) => b.arguments?.lead?.id === input.lead), run = block?.arguments?.lead?.run
-    const answer: { result?: unknown; error?: string } = !run ? { error: 'the lead names no door' } : run.tool === 'machine' ? await qpuMachineTool.handler(run.arguments ?? {}, req as never).then((r) => ({ result: r }), (e: Error) => ({ error: e.message })) : ((r) => (r.error ? { error: r.error.message } : { result: r.result?.structuredContent ?? null }))(call(run.tool, run.arguments ?? {}) as { result?: { structuredContent?: unknown }; error?: { message: string } })
-    const entry = await entry(req, { kind: 'lead-run', from: 'qpu-lead-run', body: { lead: input.lead ?? null, tool: run?.tool ?? null, ok: !answer.error, answer }, links: input.request ? [input.request] : [] })
-    if (page && block && !answer.error) await relayout(req, page.id, page.layout.map((b) => (b === block ? { ...b, arguments: { ...b.arguments, lead: { ...b.arguments!.lead, status: 'served', reason: 'served by ' + run!.tool + ' (entry ' + entry + ')' } } } : b)))
-    return { output: { entry } }
+    const answer: { result?: unknown; error?: string } = !run ? { error: 'the lead names no door' } : run.tool === 'machine' ? await qpuMachineTool.handler({ input: run.arguments ?? {}, req } as never).then((r) => ({ result: r }), (e: Error) => ({ error: e.message })) : ((r) => (r.error ? { error: r.error.message } : { result: r.result?.structuredContent ?? null }))(call(run.tool, run.arguments ?? {}) as { result?: { structuredContent?: unknown }; error?: { message: string } })
+    const written = await entry(req, { kind: 'lead-run', from: 'qpu-lead-run', body: { lead: input.lead ?? null, tool: run?.tool ?? null, ok: !answer.error, answer }, links: input.request ? [input.request] : [] })
+    if (page && block && !answer.error) await relayout(req, page.id, page.layout.map((b) => (b === block ? { ...b, arguments: { ...b.arguments, lead: { ...b.arguments!.lead, status: 'served', reason: 'served by ' + run!.tool + ' (entry ' + written + ')' } } } : b)))
+    return { output: { entry: written } }
   },
 }
 // the daily editorial loop as a Payload job (payloadcms.com/docs/jobs-queue/tasks, scheduled daily, never a deploy): a tenant's news read as problems,
@@ -231,8 +251,8 @@ export const newsSolveTask: TaskConfig<{ input: { tenant?: string; news?: unknow
 }
 export const qpuMachine = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-machine', order: 5, plugin: ({ config, plugins, enabled }) => {
   const o = plugins['@payloadcms/plugin-mcp']?.options
-  if (o && enabled !== false) o.mcp = { ...o.mcp, tools: [...(o.mcp?.tools ?? []).filter((t) => t.name !== qpuMachineTool.name), qpuMachineTool as never] }
-  return enabled === false ? config : { ...config, jobs: withTask({ ...config, jobs: withTask(config, leadRunTask) }, newsSolveTask) }
+  if (o && enabled !== false) o.tools = { ...(o.tools ?? {}), machine: qpuMachineTool as never }
+  return enabled === false ? config : { ...config, jobs: withTask({ ...config, jobs: withTask({ ...config, jobs: withTask(config, leadRunTask) }, newsSolveTask) }, qpuMachineTask) }
 } })
 // binding 0 (payloadcms.com/docs/hooks/collections): every document a collection changes or reads, at its content address in hex folders by the UUID's
 // middle beside the repository (its R2 key, its GCS object) with a pointer to its latest version, the copy the RAID reads back verified when no other binding answers
@@ -537,5 +557,7 @@ export const qpuPlugin = (options: QpuPluginOptions = {}): Plugin => async (inco
   const inner = [qpuCore(options), qpuAgents({}), qpuMachine({}), ...(options.adapters === 'none' ? [] : qpuAdapterPlugins()), ...qpuPlugins, qpuGoogle({}), qpuApis({}), qpuImagine({}), qpuMcps({}), ...(options.plugins ?? []), qpuRaid({}), qpuHooks({})]
   let config: Config = { ...incoming, plugins: [...(incoming.plugins ?? []), ...inner] }
   for (const plugin of inner) config = await plugin(config)
-  return { ...config, plugins: incoming.plugins }
+  // the inner plugins stay listed: Payload's buildConfig runs only the list it started with, so nothing runs twice, and a plugin that looks itself
+  // up later by slug (plugin-mcp's getPluginConfig reads its sanitized options from config.plugins at every request) still finds itself
+  return { ...config, plugins: [...(incoming.plugins ?? []), ...inner] }
 }

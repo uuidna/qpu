@@ -13,6 +13,8 @@
     "./version": "./processing/unit/version.ts",
     "./roles": "./processing/unit/roles.ts",
     "./machine": "./processing/machine.ts",
+    "./machine-run": "./processing/machine-run.ts",
+    "./payload-api": "./payload/index.ts",
     "./payload": "./processing/toolboxes/payload.ts"
   }
 }

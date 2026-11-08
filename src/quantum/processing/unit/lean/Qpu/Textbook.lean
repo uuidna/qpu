@@ -494,10 +494,10 @@ theorem textbook_compete_knows (c t : Nat) (hc : 0 < c) (ht : 0 < t) : 0 < c * t
 theorem textbook_compete_knows_reflected (c t : Nat) (hc : 0 < c) (ht : 0 < t) (σ : Nat) (hσ0 : (c * t) ≤ σ) : σ - (c * t) < σ - (0) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_compete_knows c t hc ht) hσ0) (textbook_compete_knows c t hc ht)
 /-- the contrapositive of textbook_compete_knows (examples: compete-rules) -/
 theorem textbook_compete_knows_contrapositive (c t : Nat) : ¬ (0 < c * t) → ¬ ((0 < c) ∧ (0 < t)) := fun hc hh => hc (textbook_compete_knows c t hh.1 hh.2)
-/-- an app generated on request is the full stack's 0 files plus the Worker configuration and the environment example: 2 files, each addressed, the bundle their fold (examples: payload-app) -/
-theorem textbook_app_bundle : 0 + 2 = 2 := by decide
+/-- an app generated on request is the full stack's 1 files plus the Worker configuration and the environment example: 3 files, each addressed, the bundle their fold (examples: payload-app) -/
+theorem textbook_app_bundle : 1 + 2 = 3 := by decide
 /-- textbook_app_bundle reflected by its shape, equality (examples: payload-app) -/
-theorem textbook_app_bundle_reflected (σ : Nat) : σ - (2) = σ - (0 + 2) := congrArg (σ - ·) (Eq.symm (textbook_app_bundle))
+theorem textbook_app_bundle_reflected (σ : Nat) : σ - (3) = σ - (1 + 2) := congrArg (σ - ·) (Eq.symm (textbook_app_bundle))
 /-- two edits of one document either share their base address or collide: there is no third case, so a collision is detected exactly, never guessed from clocks (examples: configure-realtime) -/
 theorem textbook_edit_collides (p q : Nat) : p = q ∨ p ≠ q := by omega
 /-- textbook_edit_collides reflected by its shape, disjunction (examples: configure-realtime) -/
@@ -666,10 +666,10 @@ theorem textbook_advantage_unbounded_reflected (verified : Nat) (σ : Nat) (hσ0
 theorem textbook_merge_commutes (a b : Nat) : max a b = max b a ∧ max a a = a := ⟨Nat.max_comm a b, Nat.max_self a⟩
 /-- textbook_merge_commutes reflected by its shape, conjunction (examples: payload-merge) -/
 theorem textbook_merge_commutes_reflected (a b : Nat) (σ : Nat) : (σ - (max b a) = σ - (max a b)) ∧ (σ - (a) = σ - (max a a)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_merge_commutes a b).1), congrArg (σ - ·) (Eq.symm (textbook_merge_commutes a b).2)⟩
-/-- an app on request as a lexical document holds one block per generated file and one for the bundle: 3 blocks (examples: payload-app-lexical) -/
-theorem textbook_app_doc_blocks : 2 + 1 = 3 := by decide
+/-- an app on request as a lexical document holds one block per generated file and one for the bundle: 4 blocks (examples: payload-app-lexical) -/
+theorem textbook_app_doc_blocks : 3 + 1 = 4 := by decide
 /-- textbook_app_doc_blocks reflected by its shape, equality (examples: payload-app-lexical) -/
-theorem textbook_app_doc_blocks_reflected (σ : Nat) : σ - (3) = σ - (2 + 1) := congrArg (σ - ·) (Eq.symm (textbook_app_doc_blocks))
+theorem textbook_app_doc_blocks_reflected (σ : Nat) : σ - (4) = σ - (3 + 1) := congrArg (σ - ·) (Eq.symm (textbook_app_doc_blocks))
 /-- from the 60-degree angle six streams meet at a point and none collides, while the four 90-degree gateways stay covered: six perspectives over four operations (examples: configure-scope, payload-merge) -/
 theorem textbook_streams_cover_gateways : 360 / 60 = 6 ∧ 360 / 90 = 4 ∧ 4 ≤ 6 := by decide
 /-- textbook_streams_cover_gateways reflected by its shape, conjunction (examples: configure-scope, payload-merge) -/
@@ -1390,6 +1390,20 @@ theorem textbook_eta_from_receipts_reflected (a q x : Nat) (h : a ≤ q) (σ : N
 theorem textbook_eta_from_receipts_contrapositive (a q x : Nat) : ¬ (a * x + (q - a) * x = q * x) → ¬ ((a ≤ q)) := fun hc hh => hc (textbook_eta_from_receipts a q x hh)
 /-- the converse of textbook_eta_from_receipts, refuted by a counterexample the kernel decides (examples: repository-status-eta, repository-status-forecast) -/
 theorem textbook_eta_from_receipts_converse_refuted : ¬ ∀ (a q x : Nat), (a * x + (q - a) * x = q * x) → (a ≤ q) := fun h => absurd (h 1 0 0 (by decide)) (by decide)
+/-- next runs in waves: a step of a later wave starts only after every step of the earlier wave ended (w < v is w + 1 ≤ v), and the lanes of a wave never exceed the cores nor press more heap on the memory than it has (lanes × heap ≤ capacity); the runner in the tree applies exactly this bound (examples: repository-machine-next) -/
+theorem textbook_next_waves_ordered (lanes cores heap cap w v : Nat) (hl : lanes ≤ cores) (hm : lanes * heap ≤ cap) (hw : w < v) : lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w + 1 ≤ v := ⟨hl, hm, hw⟩
+/-- textbook_next_waves_ordered reflected by its shape, conjunction (examples: repository-machine-next) -/
+theorem textbook_next_waves_ordered_reflected (lanes cores heap cap w v : Nat) (hl : lanes ≤ cores) (hm : lanes * heap ≤ cap) (hw : w < v) (σ : Nat) : (σ - (cores) ≤ σ - (lanes)) ∧ (σ - (cap) ≤ σ - (lanes * heap)) ∧ (σ - (v) ≤ σ - (w + 1)) := ⟨Nat.sub_le_sub_left (textbook_next_waves_ordered lanes cores heap cap w v hl hm hw).1 σ, Nat.sub_le_sub_left (textbook_next_waves_ordered lanes cores heap cap w v hl hm hw).2.1 σ, Nat.sub_le_sub_left (textbook_next_waves_ordered lanes cores heap cap w v hl hm hw).2.2 σ⟩
+/-- the contrapositive of textbook_next_waves_ordered (examples: repository-machine-next) -/
+theorem textbook_next_waves_ordered_contrapositive (lanes cores heap cap w v : Nat) : ¬ (lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w + 1 ≤ v) → ¬ ((lanes ≤ cores) ∧ (lanes * heap ≤ cap) ∧ (w < v)) := fun hc hh => hc (textbook_next_waves_ordered lanes cores heap cap w v hh.1 hh.2.1 hh.2.2)
+/-- an action whose budget exceeds the request it is asked in cannot answer within that request: the door queues it as a job and answers the job id at once, the queue runs it in child processes for the rest of the budget (budget − request > 0), and its record is an entry when it ends; the request is never held and the app never stalls behind it (examples: repository-machine-next-long) -/
+theorem textbook_long_action_queued (budget request ms : Nat) (h : request < budget) (hr : request ≤ ms) : request < budget ∧ request ≤ ms ∧ 0 < budget - request := ⟨h, hr, Nat.sub_pos_of_lt h⟩
+/-- textbook_long_action_queued reflected by its shape, conjunction (examples: repository-machine-next-long) -/
+theorem textbook_long_action_queued_reflected (budget request ms : Nat) (h : request < budget) (hr : request ≤ ms) (σ : Nat) (hσ0 : (budget) ≤ σ) (hσ1 : (budget - request) ≤ σ) : (σ - (budget) < σ - (request)) ∧ (σ - (ms) ≤ σ - (request)) ∧ (σ - (budget - request) < σ - (0)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_long_action_queued budget request ms h hr).1 hσ0) (textbook_long_action_queued budget request ms h hr).1, Nat.sub_le_sub_left (textbook_long_action_queued budget request ms h hr).2.1 σ, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_long_action_queued budget request ms h hr).2.2 hσ1) (textbook_long_action_queued budget request ms h hr).2.2⟩
+/-- the contrapositive of textbook_long_action_queued (examples: repository-machine-next-long) -/
+theorem textbook_long_action_queued_contrapositive (budget request ms : Nat) : ¬ (request < budget ∧ request ≤ ms ∧ 0 < budget - request) → ¬ ((request < budget) ∧ (request ≤ ms)) := fun hc hh => hc (textbook_long_action_queued budget request ms hh.1 hh.2)
+/-- the converse of textbook_long_action_queued, proved (examples: repository-machine-next-long) -/
+theorem textbook_long_action_queued_converse (budget request ms : Nat) : (request < budget ∧ request ≤ ms ∧ 0 < budget - request) → (request < budget) ∧ (request ≤ ms) := fun hc => ⟨by omega, by omega⟩
 /-- neighbours: one step in program space moves g1 by one modulo 2^16 or g2, g3 by one modulo 2^12 (their stamp nibble decided, never walked), and the step back returns the program, at every edge of the torus (examples: fold-neighbours) -/
 theorem textbook_neighbour_step (x y : Nat) (hx : x < 65536) (hy : y < 4096) : ((x + 1) % 65536 + 65535) % 65536 = x ∧ ((y + 1) % 4096 + 4095) % 4096 = y := by omega
 /-- textbook_neighbour_step reflected by its shape, conjunction (examples: fold-neighbours) -/

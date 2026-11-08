@@ -107,3 +107,37 @@ export const machineStatus = (s: { events: readonly StreamEvent[]; times?: Recor
   const questions = ev.filter((e) => e.kind === 'question' && !ev.some((x) => x.kind === 'decision' && x.subject === e.subject && x.at >= e.at))
   return { running: started ? { subject: started.subject, since: started.at, elapsed, eta, interval: f?.interval ?? null, remaining: eta !== null && elapsed !== null ? Math.max(0, eta - elapsed) : null } : null, last: ev.slice(-(s.last ?? 10)), questions, forecasts, held: s.held ?? null, silence: getSilence(ev), theorems: ['textbook_eta_from_receipts', 'textbook_stream_no_silence'] }
 }
+
+// The next step of the tree as the machine runs it (src/quantum/processing/machine-run.ts, no shell): waves of steps, a step a door call on
+// the handler in a child process of its own, a generator writing the path and text its door answers, or a process (the type checker, the
+// tests, the Lean kernel). A wave waits for the one before it (textbook_next_waves_ordered); the lanes of a wave are bounded by the cores and
+// by the memory (lanes × heap ≤ capacity); a step past its budget is killed and recorded red, never waited for; a red step is retried once
+// after the generators ran. `{ $file: path }` in a door's arguments is that file's text; `{ $exec: { cmd, args, script } }` is the output of
+// that command over the script text another door answers. `{ tool: '*', arguments: { selftest: true } }` is every tool whose schema names
+// selftest, expanded at run time from tools/list. offline skips the steps that need the network; fast skips the long ones (the pre-commit form).
+export type NextStep = { name: string; wave: number; budgetMs: number; via: 'door' | 'generator' | 'process'; tool?: string; arguments?: Record<string, unknown>; cmd?: string; args?: readonly string[]; needs?: 'online'; long?: true; shards?: number }
+export const NEXT_STEPS: readonly NextStep[] = [
+  { name: 'clay:gen', wave: 1, budgetMs: 120_000, via: 'generator', tool: 'payload', arguments: { scripts: { clay: { lean: { $file: 'src/quantum/processing/unit/lean/Qpu/Clay.lean' } } } } },
+  { name: 'docs:gen', wave: 1, budgetMs: 120_000, via: 'generator', tool: 'payload', arguments: { scripts: { textbookLean: true } } },
+  { name: 'lean', wave: 1.5, budgetMs: 1_800_000, via: 'process', cmd: 'lake', args: ['build'] },
+  { name: 'theorems:index', wave: 1.75, budgetMs: 600_000, via: 'generator', tool: 'payload', arguments: { scripts: { theoremsIndex: { output: { $exec: { cmd: 'lake', args: ['env', 'lean'], script: { tool: 'payload', arguments: { scripts: { theoremsIndex: {} } }, key: 'lean' } } } } } } },
+  { name: 'typecheck', wave: 2, budgetMs: 900_000, via: 'process', cmd: 'npx', args: ['tsc', '--noEmit', '-p', 'tsconfig.json'] },
+  { name: 'test', wave: 2, budgetMs: 600_000, via: 'process', cmd: 'node', args: ['--test', 'src/quantum/**/*.test.ts'] },
+  { name: 'selftest', wave: 2, budgetMs: 300_000, via: 'door', tool: '*', arguments: { selftest: true } },
+  { name: 'configs', wave: 2, budgetMs: 300_000, via: 'door', tool: 'configure', arguments: {} },
+  { name: 'audit', wave: 2, budgetMs: 300_000, via: 'door', tool: 'audit', arguments: { access: true } },
+  { name: 'imagine', wave: 3, budgetMs: 300_000, via: 'door', tool: 'imagine', arguments: { open: 8 }, long: true },
+  { name: 'leads', wave: 3, budgetMs: 300_000, via: 'door', tool: 'leads', arguments: { status: 'open' }, long: true },
+  { name: 'e2e', wave: 3, budgetMs: 300_000, via: 'door', tool: 'e2e', arguments: { hosts: ['http://localhost:3000/api/mcp'] }, needs: 'online', long: true },
+  { name: 'metrics', wave: 5, budgetMs: 300_000, via: 'door', tool: 'metrics', arguments: {}, long: true },
+]
+/** The runner of every action: planned here, run there, no shell. */
+export const MACHINE_RUNNER = 'src/quantum/processing/machine-run.ts'
+/** The actions longer than a request: the Payload MCP's machine tool queues each as a job and answers the job's id at once; the queue runs it
+ *  in child processes and writes its record as an entry (textbook_long_action_queued). Every other action answers within the request. */
+export const LONG_ACTIONS: readonly string[] = ['next', 'regenerate', 'precheck', 'site-audit', 'site-install', 'site-build']
+/** The waves of next in their order, and the bound on the lanes of each: min(cores, ⌊capacity ÷ heap⌋), the formula the runner applies. */
+export const nextWaves = (steps: readonly NextStep[] = NEXT_STEPS) => {
+  const waves = [...new Set(steps.map((s) => s.wave))].sort((a, b) => a - b)
+  return { phase: 'machine-next' as const, runner: MACHINE_RUNNER, steps, waves, lanes: { formula: 'min(cores, floor(0.7 × memory ÷ heap))', heapDefaultMb: 4096 }, long: LONG_ACTIONS, ordered: waves.every((w, i) => i === 0 || waves[i - 1]! < w), budgets: steps.every((s) => s.budgetMs > 0), kinds: { door: steps.filter((s) => s.via === 'door').length, generator: steps.filter((s) => s.via === 'generator').length, process: steps.filter((s) => s.via === 'process').length }, theorems: ['textbook_next_waves_ordered', 'textbook_long_action_queued'], says: `${steps.length} step(s) in ${waves.length} wave(s), run by ${MACHINE_RUNNER} with no shell; ${LONG_ACTIONS.length} action(s) longer than a request are queued as jobs` }
+}
