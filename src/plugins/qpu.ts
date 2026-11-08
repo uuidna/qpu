@@ -300,7 +300,7 @@ export const qpuRaid = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-raid', p
 // in Payload names them (Cloudflare's OpenAPI read into entries) or they are the GraphQL Analytics endpoint; the token is the variable the tenant's
 // bindings name (CLOUDFLARE_API_TOKEN when none is named), never in the entry; the answer is an entry of kind call from qpu-cloudflare-call
 const qpuOf = async (req: PayloadRequest) => (await req.payload.findGlobal({ slug: 'qpu' as never, depth: 0, overrideAccess: true }).catch(() => ({}))) as { apis?: Record<string, unknown>; imagination?: unknown }
-const tenantOf = (tenant: unknown) => (tenant ? { tenant } : {})
+const tenantOf = (tenant?: string) => (tenant ? { tenant } : {})
 const cloudflareToken = async (req: PayloadRequest, tenant: unknown): Promise<{ by: string; bearer?: string; account?: string; zone?: string }> => {
   const t = tenant ? await req.payload.findByID({ collection: 'tenants' as never, id: String(tenant), depth: 0, overrideAccess: true }).catch(() => null) : null
   const named = ((t as { bindings?: { variables?: { name: string }[] } } | null)?.bindings?.variables ?? []).map((v) => v.name).filter((n) => process.env[n])
