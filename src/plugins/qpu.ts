@@ -160,7 +160,7 @@ const googleCallTask: TaskConfig<{ input: Record<string, any>; output: { entry: 
     const auth = plan.allowed ? await googleAuth(req, input.tenant, plan.token, plan.request.scopes, plan.secret) : null, url = plan.allowed ? new URL(plan.request.url) : null, body = plan.request?.body
     for (const [k, v] of Object.entries(auth?.query ?? {})) url?.searchParams.set(k, v)
     const res = url ? await fetch(url, { method: plan.request.httpMethod, headers: { ...(auth?.bearer ? { authorization: 'Bearer ' + auth.bearer } : {}), ...(body != null ? { 'content-type': 'application/json' } : {}) }, body: body != null ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(20000) }).then(async (r) => ({ status: r.status, text: await r.text() }), (e: Error) => ({ status: 0, text: e.message })) : null
-    return { output: { entry: await entry(req, { kind: 'call', from: 'qpu-google-call', ...(input.tenant ? { tenant: input.tenant } : {}), body: { request: input.request ?? null, method: plan.method ?? null, allowed: plan.allowed === true, why: plan.why ?? (plan.allowed ? null : 'the Discovery document was not read'), by: auth?.by ?? null, status: res?.status ?? null, answer: res?.text == null ? null : redact(res.text) } }, { qpuGoogle: true }) } }
+    return { output: { entry: await entry(req, { kind: 'call', from: 'qpu-google-call', ...tenantOf(input.tenant), body: { request: input.request ?? null, method: plan.method ?? null, allowed: plan.allowed === true, why: plan.why ?? (plan.allowed ? null : 'the Discovery document was not read'), by: auth?.by ?? null, status: res?.status ?? null, answer: res?.text == null ? null : redact(res.text) } }, { qpuGoogle: true }) } }
   },
 }
 // a call asked of a job (qpu-google-call, qpu-raid-verify) is queued and run at once, so its answer entry stands when createEntries answers
@@ -229,7 +229,10 @@ const leadRunTask: TaskConfig<{ input: { lead?: string; request?: string }; outp
     const page = pages.find((p) => p.layout.some((b) => b.arguments?.lead?.id === input.lead)), block = page?.layout.find((b) => b.arguments?.lead?.id === input.lead), run = block?.arguments?.lead?.run
     const answer: { result?: unknown; error?: string } = !run ? { error: 'the lead names no door' } : run.tool === 'machine' ? await qpuMachineTool.handler({ input: run.arguments ?? {}, req } as never).then((r) => ({ result: r }), (e: Error) => ({ error: e.message })) : ((r) => (r.error ? { error: r.error.message } : { result: r.result?.structuredContent ?? null }))(call(run.tool, run.arguments ?? {}) as { result?: { structuredContent?: unknown }; error?: { message: string } })
     const written = await entry(req, { kind: 'lead-run', from: 'qpu-lead-run', body: { lead: input.lead ?? null, tool: run?.tool ?? null, ok: !answer.error, answer }, links: input.request ? [input.request] : [] })
-    if (page && block && !answer.error) await relayout(req, page.id, page.layout.map((b) => (b === block ? { ...b, arguments: { ...b.arguments, lead: { ...b.arguments!.lead, status: 'served', reason: 'served by ' + run!.tool + ' (entry ' + written + ')' } } } : b)))
+    // a run whose answer carries its continuation adds that lead as the next block of the page: served and open are one involution, nothing stops the chain
+    const next = (answer.result as { continue?: { lead?: { id?: string } } } | null | undefined)?.continue?.lead
+    const chained = next?.id && !page?.layout.some((b) => b.arguments?.lead?.id === next.id) ? [{ blockType: 'qpu', tool: 'leads', arguments: { lead: next } }] : []
+    if (page && block && !answer.error) await relayout(req, page.id, [...page.layout.map((b) => (b === block ? { ...b, arguments: { ...b.arguments, lead: { ...b.arguments!.lead, status: 'served', reason: 'served by ' + run!.tool + ' (entry ' + written + ')' } } } : b)), ...chained])
     return { output: { entry: written } }
   },
 }
@@ -296,6 +299,8 @@ export const qpuRaid = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-raid', p
 // every Cloudflare call one job on the server, qpu-cloudflare-call: a method and path are allowed only when an entry of kind openapi-operation held
 // in Payload names them (Cloudflare's OpenAPI read into entries) or they are the GraphQL Analytics endpoint; the token is the variable the tenant's
 // bindings name (CLOUDFLARE_API_TOKEN when none is named), never in the entry; the answer is an entry of kind call from qpu-cloudflare-call
+const qpuOf = async (req: PayloadRequest) => (await req.payload.findGlobal({ slug: 'qpu' as never, depth: 0, overrideAccess: true }).catch(() => ({}))) as { apis?: Record<string, unknown>; imagination?: unknown }
+const tenantOf = (tenant: unknown) => (tenant ? { tenant } : {})
 const cloudflareToken = async (req: PayloadRequest, tenant: unknown): Promise<{ by: string; bearer?: string; account?: string; zone?: string }> => {
   const t = tenant ? await req.payload.findByID({ collection: 'tenants' as never, id: String(tenant), depth: 0, overrideAccess: true }).catch(() => null) : null
   const named = ((t as { bindings?: { variables?: { name: string }[] } } | null)?.bindings?.variables ?? []).map((v) => v.name).filter((n) => process.env[n])
@@ -324,7 +329,7 @@ const cloudflareCallTask: TaskConfig<{ input: Record<string, any>; output: { ent
     const allowed = Boolean(op && auth?.bearer), why = !op ? 'no held openapi-operation names this method and path' : !auth?.bearer ? 'no tenant binding names a Cloudflare token' : null
     const url = allowed ? op!.server + path.split('{account_id}').join(auth!.account ?? '') : null
     const res = url ? await fetch(url, { method, headers: { authorization: 'Bearer ' + auth!.bearer, ...(input.body != null ? { 'content-type': 'application/json' } : {}) }, body: input.body != null ? JSON.stringify(input.body) : undefined, signal: AbortSignal.timeout(20000) }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => null) }), (e: Error) => ({ status: 0, body: { error: e.message } })) : null
-    return { output: { entry: await entry(req, { kind: 'call', from: 'qpu-cloudflare-call', ...(input.tenant ? { tenant: input.tenant } : {}), body: { request: input.request ?? null, method, path, operation: op?.id ?? null, allowed, why, by: auth?.by ?? null, status: res?.status ?? null, answer: res?.body ?? null } }, { qpuApis: true }) } }
+    return { output: { entry: await entry(req, { kind: 'call', from: 'qpu-cloudflare-call', ...tenantOf(input.tenant), body: { request: input.request ?? null, method, path, operation: op?.id ?? null, allowed, why, by: auth?.by ?? null, status: res?.status ?? null, answer: res?.body ?? null } }, { qpuApis: true }) } }
   },
 }
 // the meters read once a run, qpu-cloudflare-observe: one GraphQL query month-to-date, the readings priced by the program (zero inside every
@@ -338,14 +343,13 @@ const cloudflareObserveTask: TaskConfig<{ input: Record<string, any>; output: { 
     const post = (query: string, variables: Record<string, string>) => fetch('https://api.cloudflare.com/client/v4/graphql', { method: 'POST', headers: { authorization: 'Bearer ' + auth.bearer, 'content-type': 'application/json' }, body: JSON.stringify({ query, variables: { ...variables, since, until: now.toISOString() } }), signal: AbortSignal.timeout(20000) }).then((r) => r.json(), (e: Error) => ({ errors: [{ message: e.message }] }))
     const answer = auth.bearer && auth.account ? await post(OBSERVE_QUERY, { accountTag: auth.account }) : { errors: [{ message: auth.account ? 'no tenant binding names a Cloudflare token' : 'CLOUDFLARE_ACCOUNT_ID is not named' }] }
     const readings = readingsOf(answer as never), cost = apisCost(readings)
-    // the zone's requests by cacheStatus, edgeResponseStatus, clientRequestPath, userAgent and clientIP, when a zone tag is named (the input, a tenant binding CLOUDFLARE_*ZONE_ID, CLOUDFLARE_ZONE_ID)
     const zoneTag = typeof input.zone === 'string' && input.zone ? input.zone : auth.zone
     const zone = zoneReadingsOf((auth.bearer && zoneTag ? await post(OBSERVE_ZONE_QUERY, { zoneTag }) : { errors: [{ message: zoneTag ? 'no tenant binding names a Cloudflare token' : 'no zone tag is named: the input zone, a tenant binding CLOUDFLARE_*ZONE_ID or CLOUDFLARE_ZONE_ID' }] }) as never)
     const observed = { at: now.toISOString(), since, by: auth.by, readings, cost: { usd: cost.usd, microUsd: cost.microUsd, covered: cost.covered }, meters: cost.rows.map((r) => ({ meter: r.meter, used: r.used, included: r.included, share: r.share, usd: r.microUsd / 1_000_000, remedy: r.remedy })), leads: cost.leads, zone: { tag: zoneTag ?? null, ...zone }, errors: (answer as { errors?: { message: string }[] }).errors ?? [] }
-    const current = (await req.payload.findGlobal({ slug: 'qpu' as never, depth: 0, overrideAccess: true }).catch(() => ({}))) as { apis?: Record<string, unknown> }
+    const current = await qpuOf(req)
     await req.payload.updateGlobal({ slug: 'qpu' as never, data: { apis: { ...(current.apis ?? {}), cloudflare: observed } } as never, context: { qpuApis: true }, overrideAccess: true })
-    for (const lead of cost.leads) await entry(req, { kind: 'lead', from: 'qpu-cloudflare-observe', ...(input.tenant ? { tenant: input.tenant } : {}), body: lead }, { qpuApis: true }).catch(() => null)
-    return { output: { entry: await entry(req, { kind: 'call', from: 'qpu-cloudflare-observe', ...(input.tenant ? { tenant: input.tenant } : {}), body: { request: input.request ?? null, allowed: Boolean(auth.bearer), by: auth.by, observed } }, { qpuApis: true }) } }
+    for (const lead of cost.leads) await entry(req, { kind: 'lead', from: 'qpu-cloudflare-observe', ...tenantOf(input.tenant), body: lead }, { qpuApis: true }).catch(() => null)
+    return { output: { entry: await entry(req, { kind: 'call', from: 'qpu-cloudflare-observe', ...tenantOf(input.tenant), body: { request: input.request ?? null, allowed: Boolean(auth.bearer), by: auth.by, observed } }, { qpuApis: true }) } }
   },
 }
 // the merged index kept in sync: after any change of pages, tenants, entries or keys the three providers' operations are re-read (Payload from
@@ -362,7 +366,7 @@ const apisOf = async (req: PayloadRequest) => {
 }
 let apisTimer: ReturnType<typeof setTimeout> | undefined
 const syncApis = async (req: PayloadRequest) => {
-  const current = (await req.payload.findGlobal({ slug: 'qpu' as never, depth: 0, overrideAccess: true }).catch(() => ({}))) as { apis?: Record<string, unknown> }
+  const current = await qpuOf(req)
   await req.payload.updateGlobal({ slug: 'qpu' as never, data: { apis: { ...(current.apis ?? {}), ...(await apisOf(req)) } } as never, context: { qpuApis: true }, overrideAccess: true })
 }
 const measureApis: CollectionAfterChangeHook = async ({ doc, req, context }) => {
@@ -381,7 +385,7 @@ const qpuApisEndpoints: Endpoint[] = [
     path: '/qpu/apis',
     method: 'get',
     handler: async (req) => {
-      const current = (await req.payload.findGlobal({ slug: 'qpu' as never, depth: 0, overrideAccess: true }).catch(() => ({}))) as { apis?: { cloudflare?: unknown } }
+      const current = await qpuOf(req)
       return Response.json({ ...(await apisOf(req)), cloudflare: current.apis?.cloudflare ?? null }, { headers: { 'cache-control': 'public, max-age=60', 'x-qpu-apis': 'payload-cloudflare-google' } })
     },
   },
@@ -395,7 +399,7 @@ const qpuApisEndpoints: Endpoint[] = [
       if (body.observe) jobs.observe = await runApisJob(req, 'qpu-cloudflare-observe', { ...(body.tenant ? { tenant: body.tenant } : {}) })
       if (body.call) jobs.call = await runApisJob(req, 'qpu-cloudflare-call', { method: body.call.method ?? 'GET', path: body.call.path ?? '', body: body.call.body ?? null, ...(body.tenant ? { tenant: body.tenant } : {}) })
       if (body.sync || body.observe || body.call) await syncApis(req)
-      const current = (await req.payload.findGlobal({ slug: 'qpu' as never, depth: 0, overrideAccess: true }).catch(() => ({}))) as { apis?: unknown }
+      const current = await qpuOf(req)
       return Response.json({ jobs, apis: current.apis ?? null }, { headers: { 'x-qpu-apis': 'payload-cloudflare-google' } })
     },
   },
@@ -423,12 +427,12 @@ const imagineTask: TaskConfig<{ input: Record<string, any>; output: { entry: str
       const address = uuid('lead\n' + lead.id + '\n' + lead.statement)
       const held = (await req.payload.find({ collection: 'entries' as never, where: { and: [{ kind: { equals: 'lead' } }, { 'body.address': { equals: address } }] }, pagination: false, depth: 0, overrideAccess: true })) as { totalDocs: number }
       if (held.totalDocs > 0) continue
-      written.push(await entry(req, { kind: 'lead', from: 'qpu-imagine', ...(input.tenant ? { tenant: input.tenant } : {}), body: { ...lead, address, tool: 'imagine' } }, { qpuImagine: true }))
+      written.push(await entry(req, { kind: 'lead', from: 'qpu-imagine', ...tenantOf(input.tenant), body: { ...lead, address, tool: 'imagine' } }, { qpuImagine: true }))
     }
     const imagination = { at: new Date().toISOString(), asked: ask, leads: im.leads, verdicts: { served: im.served, impossible: im.impossible, unknown: im.unknown }, verifyRequests: im.verifyRequests, imaginedLeads: im.imaginedLeads, written: written.length, ms: im.ms, rows: im.imagination.rows }
-    const current = (await req.payload.findGlobal({ slug: 'qpu' as never, depth: 0, overrideAccess: true }).catch(() => ({}))) as { imagination?: unknown }
+    const current = await qpuOf(req)
     await req.payload.updateGlobal({ slug: 'qpu' as never, data: { imagination } as never, context: { qpuImagine: true }, overrideAccess: true }).catch(() => current)
-    return { output: { entry: await entry(req, { kind: 'call', from: 'qpu-imagine', ...(input.tenant ? { tenant: input.tenant } : {}), body: { request: input.request ?? null, imagination, entries: written } }, { qpuImagine: true }) } }
+    return { output: { entry: await entry(req, { kind: 'call', from: 'qpu-imagine', ...tenantOf(input.tenant), body: { request: input.request ?? null, imagination, entries: written } }, { qpuImagine: true }) } }
   },
 }
 const imagineAfterRun: CollectionAfterChangeHook = async ({ doc, req, operation, context }) => {
@@ -446,7 +450,7 @@ const qpuImagineEndpoints: Endpoint[] = [
       const body = (typeof req.json === 'function' ? await req.json().catch(() => ({})) : (req.data ?? {})) as { open?: number; leads?: string[]; statements?: (string | { id: string; statement: string })[]; tenant?: string }
       const job = (await req.payload.jobs.queue({ task: 'qpu-imagine' as never, input: { ...(typeof body.open === 'number' ? { open: body.open } : {}), ...(body.leads ? { leads: body.leads } : {}), ...(body.statements ? { statements: body.statements } : {}), ...(body.tenant ? { tenant: body.tenant } : {}) } as never, req })) as { id: string }
       await req.payload.jobs.runByID({ id: job.id, req })
-      const current = (await req.payload.findGlobal({ slug: 'qpu' as never, depth: 0, overrideAccess: true }).catch(() => ({}))) as { imagination?: unknown }
+      const current = await qpuOf(req)
       return Response.json({ job: job.id, imagination: current.imagination ?? null }, { headers: { 'x-qpu-imagine': 'leads' } })
     },
   },
@@ -493,7 +497,7 @@ const mcpCallTask: TaskConfig<{ input: Record<string, any>; output: { entry: str
     const url = String(input.url ?? ''), method = String(input.method ?? 'tools/list')
     const row = (await mcpRows(req, input.tenant)).find((m) => m.url === url)
     const res = url.startsWith('https://') ? await mcpFetch(url, method, input.params, row) : { status: 0, text: 'an https url is fetched, nothing else' }
-    return { output: { entry: await entryOnce(req, { kind: 'call', from: 'qpu-mcp-call', ...(input.tenant ? { tenant: input.tenant } : {}), body: { request: input.request ?? null, url, method, allowed: url.startsWith('https://'), by: row?.token ?? null, status: res.status, answer: res.text } }, { 'body.url': { equals: url }, 'body.method': { equals: method } }) } }
+    return { output: { entry: await entryOnce(req, { kind: 'call', from: 'qpu-mcp-call', ...tenantOf(input.tenant), body: { request: input.request ?? null, url, method, allowed: url.startsWith('https://'), by: row?.token ?? null, status: res.status, answer: res.text } }, { 'body.url': { equals: url }, 'body.method': { equals: method } }) } }
   },
 }
 // the body as Payload's own REST reads it (addDataAndFileToRequest: JSON, or multipart with the _payload field a form carries), nothing parsed here

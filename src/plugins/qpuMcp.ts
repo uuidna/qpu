@@ -1,6 +1,7 @@
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import type { Endpoint } from 'payload'
-import { call, handle } from '../quantum/processing/mcp.ts'
+import { handle } from '../quantum/processing/mcp.ts'
+import { appCall } from '../payload.qpu.mcp'
 import { VERSION } from '../quantum/processing/unit/version.ts'
 
 import { fuseToolResponse } from './isoSolution.ts'
@@ -37,7 +38,8 @@ const handlerTools = Object.fromEntries(
       // access would hide it from a client without a key); the collection tools keep the key's roles
       access: () => true,
       handler: async ({ input }: { input: Record<string, unknown> }) => {
-        const r = call(t.name, input) as { result?: { structuredContent: unknown }; error?: { message: string } }
+        // answered as the app answers a tool (appCall): its own files handed to the access audit, a mint without a seed drawn from its crypto randomness
+        const r = appCall(t.name, input, { draw: true }) as { result?: { structuredContent: unknown }; error?: { message: string } }
         if (r.error) return { content: [{ type: 'text' as const, text: JSON.stringify({ error: r.error.message }) }], isError: true }
         return {
           content: [{ type: 'text' as const, text: JSON.stringify(r.result!.structuredContent) }],

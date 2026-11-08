@@ -30,8 +30,14 @@ const list = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { resul
 // the audit measured on the app's own files: when the handler answers audit { access } with files missing, the local app hands the texts it
 // holds under its root (the Worker holds none: the unmeasured answer stands); the arguments stored on the entry stay the caller's, so the
 // same call is the same entry; the paths are the handler's own (FILE_ROLES), under src/, read from the app's working directory alone
-export const appCall = (name: string, args: Record<string, unknown>) => {
+export const appCall = (name: string, args: Record<string, unknown>, o: { draw?: boolean } = {}) => {
   const first = call(name, args)
+  // a mint without a seed continues with one drawn here, on the MCP door alone (o.draw): an entry keeps the core's reproducible answer
+  const asked = (first as { result?: { structuredContent?: { mode?: unknown; continue?: { run?: { arguments?: Record<string, unknown> } } } } }).result?.structuredContent
+  if (o.draw && name === 'algorithm' && asked?.mode === 'seed') {
+    const bytes = crypto.getRandomValues(new Uint8Array(32)), seed = BigInt('0x' + [...bytes].map((b) => b.toString(16).padStart(2, '0')).join('')).toString()
+    return call(name, { ...args, create: { ...(args.create as object), seed } })
+  }
   const answered = (first as { result?: { structuredContent?: { missing?: unknown } } }).result?.structuredContent?.missing
   const given = args.access
   if (name !== 'audit' || !given || (typeof given === 'object' && 'files' in (given as object))) return first
