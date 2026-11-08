@@ -9,7 +9,7 @@ import { createWaveRequests, getWave, getWavePage, type WaveResult } from '../wa
 import { followWave, processPhysics } from '../lead-wave.ts'
 import { indexPages, judgeLead, listSources, planBorder, getBorder, getReadinessPage, type BorderAnswer, type UnitAnswers } from '../readiness.ts'
 import { imagineLeads, getImaginePage, claySession, allAsUuid, integerLlm, imagineClayNext, imagineNilGame } from '../imagine.ts'
-import { canonicalText, seal, uuid } from '../../uuid/index.ts'
+import { block, canonicalText, seal, uuid } from '../../uuid/index.ts'
 import { runFlowSelftest } from '../selftest.ts'
 import { createMatcher } from '../match.ts'
 import { VERIFIERS } from '../verifiers.ts'
@@ -20,8 +20,8 @@ import { TENANTS } from '../unit/tenants.ts'
 import { clock, stamp } from '../unit/clock.ts'
 
 const BLOCK_IDS = new WeakMap<readonly unknown[], { example: string; id: string | undefined }[]>()
-/** The content address of every example's block, computed once per examples registry (a readiness call must not replay the examples). */
-const listBlockIds = (ctx: Context) => { const found = BLOCK_IDS.get(ctx.examples); if (found) return found; const ids = ctx.examples.filter((e) => e.tool !== 'audit' && !['readiness', 'imagine', 'discover', 'wave'].includes(e.tool)).map((e) => { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }); return { example: e.id, id: r.result?._meta?.block?.meta?.id as string | undefined } }).filter((x) => x.id); BLOCK_IDS.set(ctx.examples, ids); return ids }
+/** Every example's block address, once per examples registry: the core's pure function of tool and arguments, no replay. */
+const listBlockIds = (ctx: Context) => { const found = BLOCK_IDS.get(ctx.examples); if (found) return found; const ids = ctx.examples.filter((e) => e.tool !== 'audit' && !['readiness', 'imagine', 'discover', 'wave'].includes(e.tool)).map((e) => ({ example: e.id, id: block(e.tool, e.arguments, null, '', '').id })); BLOCK_IDS.set(ctx.examples, ids); return ids }
 const SELFTEST = { selftest: { type: 'boolean', description: 'run the flow toolbox\'s cross-test instead: every direction, every toolbox feeding the next' } }
 
 const discover = defineTool('flow', {
@@ -168,8 +168,10 @@ const imagine = defineTool('flow', {
 export const FLOW: Toolbox = {
   name: 'flow',
   idea: 'the run of the tree as tools: discover the hosts, verify the leads, let the unit judge, imagine the next leads; the client only fetches and writes',
-  tools: [discover, imagine, e2e, shard],
+  tools: [discover, wave, readiness, imagine, e2e, shard],
   examples: [
+    { id: 'wave-requests', tool: 'wave', theorem: 'textbook_wave_requests_by_lead', arguments: { leads: ['willow-spec', 'repo-cirq'] }, shows: 'Phase one of the wave: the requests two leads need, once per URL, each naming the leads it serves.', expect: (s) => (s.phase === 'requests' && s.leads === 2 && s.requests > 0 && s.requestList.every((r: { leads: string[] }) => r.leads.length > 0) ? null : `${s.phase}, ${s.requests} requests for ${s.leads} leads`) },
+    { id: 'readiness-plan', tool: 'readiness', theorem: 'textbook_readiness_judged', arguments: {}, shows: 'Phase one of readiness without measurements: every lead judged (served by its tool, refuted by declaration, or in trial), the sources for the unit, an empty border plan because nothing was discovered, and the unit plan.', expect: (s) => (s.phase === 'plan' && s.served + s.refuted + s.trial === s.leads && s.borderCalls === 0 && s.unitCalls >= 3 ? null : `${s.phase}: ${s.served}+${s.refuted}+${s.trial} of ${s.leads}, ${s.borderCalls} border calls`) },
     { id: 'shard-share', tool: 'shard', theorem: 'textbook_shards_cover', arguments: { list: ['a', 'b', 'c', 'd', 'e', 'f', 'g'], index: 1, count: 4 }, shows: 'The share of seven items for shard 1 of 4: the items at positions 1 and 5; the shares of all four shards cover the seven exactly once, proven by the kernel.', expect: (s) => (s.share === 2 && s.shareList.join() === 'b,f' && s.items === 7 && s.theorems.length === 2 ? null : `${s.share} ${s.shareList}`) },
     { id: 'discover-lead-registry', tool: 'discover', theorem: 'textbook_mcp_directories', arguments: { lead: 'payload-skills-used' }, shows: 'Leads first: a lead\'s distinctive words asked of the public MCP registry (registry.modelcontextprotocol.io) and the directories beside it (Smithery\'s open search, mcpservers.org\'s open sitemaps) before any guess about which MCP serves it; keyed directories named, never asked without their key; the client fetches, and the answers name the related servers and the request that extends each through qpu.', expect: (s) => (s.phase === 'registry' && s.requests >= 1 && ['official', 'smithery', 'mcpservers.org'].every((d) => s.requestList.some((r: { directory: string }) => r.directory === d)) ? null : `${s.phase} ${s.requests}`) },
     { id: 'discover-requests', tool: 'discover', arguments: { mcpHosts: [UNIT_MCP] }, shows: 'Phase one of discovery: the requests a client makes for every contract — the unit\'s tools/list, its catalogue door, its well-known file, and the verifiers\' contract documents.', expect: (s) => (s.phase === 'requests' && s.requests >= 3 + VERIFIERS.filter((v) => v.contract).length ? null : `${s.phase}, ${s.requests} requests`) },
