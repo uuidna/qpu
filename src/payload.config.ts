@@ -1,7 +1,4 @@
 import { revalidateRedirects } from '@hooks/revalidateRedirects'
-import { qpuPlugin } from './plugins/qpu' // the QPU as one plugin: its collections, global, block, hooks and the plugins it composes (generated)
-import { qpuDb, qpuEmail } from './payload.qpu.adapters'
-import { qpuFormFields, qpuLexicalBlocks } from './payload.qpu.lexical' // forms, qpu and Drive blocks in Lexical; the form builder's fields from Google Forms (generated)
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
@@ -21,6 +18,7 @@ import { LabelFeature } from '@root/fields/richText/features/label/server'
 import { LargeBodyFeature } from '@root/fields/richText/features/largeBody/server'
 import { googleAnalytics } from '@zubricks/plugin-google-analytics'
 import { revalidateTag } from 'next/cache'
+import nodemailerSendgrid from 'nodemailer-sendgrid'
 import path from 'path'
 import { buildConfig, type TextField } from 'payload'
 import { fileURLToPath } from 'url'
@@ -89,24 +87,29 @@ import { MainMenu } from './globals/MainMenu'
 import { PartnerProgram } from './globals/PartnerProgram'
 import { TopBar } from './globals/TopBar'
 import { opsCounterPlugin } from './plugins/opsCounter'
+import { qpuPlugin } from './plugins/qpu'
 import createReleasePost from './scripts/createReleasePost'
 import createReleasePostFromAdmin from './scripts/createReleasePostFromAdmin'
 import redeployWebsite from './scripts/redeployWebsite'
 import { refreshMdxToLexical, syncDocs } from './scripts/syncDocs'
-import { askJob } from './utilities/qpuGoogle'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 const sendGridAPIKey = process.env.SENDGRID_API_KEY
 
-// SendGrid over SMTP: no package beyond nodemailer, no old request dependency in the config's import graph
 const sendgridConfig = {
-  transportOptions: { host: 'smtp.sendgrid.net', port: 587, auth: { user: 'apikey', pass: sendGridAPIKey } },
+  transportOptions: nodemailerSendgrid({
+    apiKey: sendGridAPIKey,
+  }),
 }
 
 export default buildConfig({
   admin: {
+    autoLogin: {
+      email: 'dev2@payloadcms.com',
+      password: 'test',
+    },
     components: {
       afterNavLinks: ['@root/components/AfterNavActions'],
       beforeDashboard: ['@root/components/BeforeDashboard'],
@@ -314,7 +317,9 @@ export default buildConfig({
     'https://payloadcms.com',
     'https://discord.com/api',
   ].filter(Boolean),
-  db: qpuDb(), // the adapter the environment names: D1 under a Cloudflare binding, the site's MongoDB otherwise (generated: payload.qpu.adapters.ts)
+  db: mongooseAdapter({
+    url: process.env.DATABASE_URI || '',
+  }),
   defaultDepth: 1,
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
@@ -362,15 +367,25 @@ export default buildConfig({
       LabelFeature(),
       LargeBodyFeature(),
       BlocksFeature({
-        // Consolidated onto the QPU/ecommerce model: the legacy layout blocks are dropped from the inline editor.
-        // 'form' is also excluded here — the form-builder's own 'message' richText inherits this editor, so embedding
-        // the form block re-entered it and overflowed generateImportMap (an infinite field cycle). The qpu block and
-        // the Drive-file block carry no richText, so the editor is acyclic.
-        blocks: qpuLexicalBlocks.filter((b) => b !== 'form'),
+        blocks: [
+          'spotlight',
+          'video',
+          'br',
+          'Banner',
+          'VideoDrawer',
+          'templateCards',
+          'Code',
+          'downloadBlock',
+          'commandLine',
+        ],
       }),
     ],
   }),
-  email: qpuEmail(), // Resend over HTTP when its key is named (it runs in a Worker), nodemailer with SendGrid otherwise (generated)
+  email: nodemailerAdapter({
+    defaultFromAddress: 'info@payloadcms.com',
+    defaultFromName: 'Payload',
+    ...sendgridConfig,
+  }),
   endpoints: [
     {
       handler: syncDocs,
@@ -412,7 +427,6 @@ export default buildConfig({
       enabledWidgets: ['analytics-overview', 'top-pages', 'active-users', 'channel-groups'],
     }),
     formBuilderPlugin({
-      fields: qpuFormFields,
       formOverrides: {
         fields: ({ defaultFields }) => [
           ...defaultFields,
@@ -470,9 +484,14 @@ export default buildConfig({
                 return 'Please complete the reCAPTCHA'
               }
 
-              // siteverify through the qpu-google-call job, run within this request; the secret is the one the tenant's bindings name
-              const answer = await askJob(req.payload, { endpoint: 'recaptcha.siteverify', params: { response: String(value) } }, req)
-              if (!JSON.parse(answer?.answer || '{}').success) {
+              const res = await fetch(
+                `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.NEXT_PRIVATE_RECAPTCHA_SECRET_KEY}&response=${value}`,
+                {
+                  method: 'POST',
+                },
+              )
+              const data = await res.json()
+              if (!data.success) {
                 return 'Invalid captcha'
               } else {
                 return true
@@ -585,7 +604,17 @@ export default buildConfig({
         },
       },
     }),
-    qpuPlugin({ adapters: 'auto' }), // last: the QPU as one plugin with multidimensional capabilities, hooking the collections the plugins above created (form-submissions among them); generated
+    vercelBlobStorage({
+      cacheControlMaxAge: 60 * 60 * 24 * 365, // 1 year
+      collections: {
+        media: {
+          generateFileURL: ({ filename }) => `https://${process.env.BLOB_STORE_ID}/${filename}`,
+        },
+      },
+      enabled: Boolean(process.env.BLOB_STORAGE_ENABLED) || false,
+      token: process.env.BLOB_READ_WRITE_TOKEN || '',
+    }),
+    qpuPlugin(),
   ],
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

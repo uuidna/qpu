@@ -24,7 +24,7 @@ const qpuTransferAccess = ({ collection }: { collection: CollectionConfig }): Co
 /** the languages by ISO 639-1 code, from the QPU's own language list: English the default, a missing translation falling back to it */
 export const qpuLocalization = { locales: ["en","bg","de","fr","es","it","ru","zh","ja","pt","nl"], defaultLocale: 'en', fallback: true }
 /** a document's version history readable only by those who may edit it, on every versioned collection; the localization set when the config sets none */
-export const qpuGovernance = (config: Config): Config => ({ ...config, localization: config.localization ?? qpuLocalization, collections: (config.collections ?? []).map((c) => (c.versions ? { ...c, access: { ...c.access, readVersions: c.access?.readVersions ?? qpuEditor } } : c)) })
+export const qpuGovernance = (config: Config): Config => ({ ...config, admin: { ...config.admin, autoLogin: false }, localization: config.localization ?? qpuLocalization, collections: (config.collections ?? []).map((c) => (c.versions ? { ...c, access: { ...c.access, readVersions: c.access?.readVersions ?? qpuEditor } } : c)) })
 
 export const qpuBlocks = [Qpu] // beside the site's 30 blocks; referenced as 'qpu' in every layout
 export const qpuPlugins = [
