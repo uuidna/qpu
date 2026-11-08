@@ -25,6 +25,18 @@ const zodOf = (s: Schema | undefined): z.ZodTypeAny => {
   }
 }
 const list = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; description: string; inputSchema: Schema }[] } }).result.tools
+// the audit measured on the app's own files: when the handler answers audit { access } with files missing, the local app hands the texts it
+// holds under its root (the Worker holds none: the unmeasured answer stands); the arguments stored on the entry stay the caller's, so the
+// same call is the same entry; the paths are the handler's own (FILE_ROLES), under src/, read from the app's working directory alone
+export const appCall = (name: string, args: Record<string, unknown>) => {
+  const first = callOf(name, args)
+  const answered = (first as { result?: { structuredContent?: { missing?: unknown } } }).result?.structuredContent?.missing
+  const given = args.access
+  if (name !== 'audit' || !given || (typeof given === 'object' && 'files' in (given as object))) return first
+  const missing = (Array.isArray(answered) ? answered : []).filter((p): p is string => typeof p === 'string' && /^src\/[A-Za-z0-9._/-]+\.tsx?$/.test(p) && existsSync(path.join(process.cwd(), p)))
+  if (!missing.length) return first
+  return callOf(name, { ...args, access: { files: Object.fromEntries(missing.map((p) => [p, readFileSync(path.join(process.cwd(), p), 'utf8')])) } })
+}
 const handlerTools = list.map((t) => ({
   name: t.name,
   description: t.description,
@@ -32,7 +44,7 @@ const handlerTools = list.map((t) => ({
   handler: async (args: Record<string, unknown>, req?: any) => {
     // a chat turn: an entry made as the viewer, answered by the entries hook under the viewer's roles
     const chat = args.chat as { call?: unknown; choice?: string } | undefined, ask = t.name === 'match' && chat && !chat.call && await req?.payload.create({ collection: 'entries', data: { kind: 'chat', from: 'mcp', body: { statement: args.statement, choice: chat.choice } }, req, overrideAccess: false }).catch(() => null)
-    const r = (ask ? { result: { structuredContent: ask.result } } : callOf(t.name, args)) as { result?: { structuredContent: unknown }; error?: { message: string } }
+    const r = (ask ? { result: { structuredContent: ask.result } } : appCall(t.name, args)) as { result?: { structuredContent: unknown }; error?: { message: string } }
     // the widget mounted by the host: the result names the tool's own ui:// resource (MCP Apps), since the plugin's tools/list carries no _meta
     return { content: [{ type: 'text' as const, text: JSON.stringify(r.error ? { error: r.error.message } : r.result!.structuredContent) }], ...(r.error ? {} : { structuredContent: r.result!.structuredContent as Record<string, unknown> }), _meta: { ui: { resourceUri: 'ui://qpu/' + t.name } } }
   },

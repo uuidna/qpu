@@ -6,6 +6,7 @@ import { createHmac, hkdfSync } from 'node:crypto'
 import type { CollectionConfig, Where } from 'payload'
 import { entryTextOf, uuidOf } from '@uuidna/qpu/blocks'
 import { callOf, toolCallerOf } from '@uuidna/qpu/mcp'
+import { appCall } from '../payload.qpu.mcp'
 import { signedRoleOf } from '@uuidna/qpu/roles'
 
 type TenantUser = { roles?: string[]; tenants?: { tenant?: { id?: string } | string; roles?: string[] }[] } | null | undefined
@@ -75,7 +76,7 @@ export const Entries: CollectionConfig = {
       // the API built from the config: an entry of kind call carries a tool and its arguments, and the hook answers it from the handler; the address folds the call, not the reply, so the same call is the same entry (read free, computed once)
       const body = data.body as { tool?: string; arguments?: Record<string, unknown> } | undefined
       // the reply's result stands as the entry's result (content, structuredContent, _meta with the widget); a refusal stands as { error }
-      const reply = data.kind === 'call' && body?.tool ? callOf(body.tool, body.arguments ?? {}) : undefined
+      const reply = data.kind === 'call' && body?.tool ? appCall(body.tool, body.arguments ?? {}) : undefined
       const result = chat ? chat : reply ? { ...((reply.result ?? { error: reply.error }) as object), ...(corrected.length ? { corrected } : {}) } : undefined
       return { ...data, id: uuidOf(text), sha256: [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join(''), ...(result ? { result } : {}) }
     }],

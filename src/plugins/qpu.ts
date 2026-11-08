@@ -22,7 +22,7 @@ import { firstUserBootstrap } from '../collections/users.qpu.hooks'
 import { appRequest } from '../collections/form-submissions.qpu.hooks'
 import { deployAfterSeed } from '../collections/orders.qpu.hooks'
 import { qpuDb, qpuEmail, qpuAdapterPlugins } from '../payload.qpu.adapters'
-import { qpuMachineTool } from '../payload.qpu.mcp'
+import { appCall, qpuMachineTool } from '../payload.qpu.mcp'
 
 // the block added wherever a layout takes blocks: by object, or by reference where the field references the config's blocks
 const withBlock = (fields: Field[], block: Block): Field[] => fields.map((f): Field => {
@@ -242,12 +242,12 @@ const mirror = ({ doc, collection }: { doc: Record<string, unknown>; collection:
   try { write(mongo({ op: 'mirror', collection: collection.slug, docs: [doc] }).files) } catch { /* binding 0 unwritable: the other bindings stand */ }
   return doc
 }
-// a call heals at each read by address (payloadcms.com/docs/hooks/collections#afterread), before binding 0 copies it: recomputed, compared without _meta (its clock);
+// a call heals at each read by address (payloadcms.com/docs/hooks/collections#afterread), before binding 0 copies it: recomputed as the app answers it (appCall), compared without _meta (its clock);
 // a difference a second recompute repeats is a drift (served fresh, a correction with the syndrome, the tool's lead filed), else a reading (served fresh)
 const heal: CollectionAfterReadHook = async ({ doc, req, collection, findMany }) => {
   const { tool, arguments: args = {} } = doc.body ?? {}, stored = doc.result
   if (collection.slug !== 'entries' || findMany || doc.kind !== 'call' || !tool || !stored) return doc
-  const run = () => { const r = call(tool, args); return { ...(r.result ?? { error: r.error }), ...(stored.corrected ? { corrected: stored.corrected } : {}) } }
+  const run = () => { const r = appCall(tool, args); return { ...(r.result ?? { error: r.error }), ...(stored.corrected ? { corrected: stored.corrected } : {}) } }
   const of = (r: object) => uuid(canonicalText({ ...r, _meta: undefined })), result = run(), syndrome = { stale: of(stored), fresh: of(result) }
   if (syndrome.stale === syndrome.fresh) return doc
   if (of(run()) === syndrome.fresh) {
