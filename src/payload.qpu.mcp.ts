@@ -1,21 +1,18 @@
 // Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)
 // Added to the MIT fork of payloadcms/website (Copyright (c) 2023 Payload); this file is QPU's: see NOTICE.qpu.md.
-// The app's answer to a tool call (appCall: its own files handed to the access audit, a mint's seed drawn from its crypto randomness) and the
-// developer machine as the Payload MCP plugin's machine tool and job. The plugin's tools and resources are src/plugins/qpuMcp.ts, the one list.
+// The app's answer to a tool call (appCall) and the developer machine as a Payload MCP tool and job; the tools list is src/plugins/qpuMcp.ts.
 import { caller, call } from '@uuidna/qpu/mcp'
 import { runMachine } from '@uuidna/qpu/machine-run'
 import { LONG_ACTIONS, MACHINE_ACTIONS, MACHINE_RUNNER } from '@uuidna/qpu/machine'
-import type { TaskConfig } from 'payload'
+import type { PayloadRequest, TaskConfig } from 'payload'
 import { existsSync, readFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import path from 'node:path'
 
-// the audit measured on the app's own files: when the handler answers audit { access } with files missing, the local app hands the texts it
-// holds under its root (the Worker holds none: the unmeasured answer stands); the arguments stored on the entry stay the caller's, so the
-// same call is the same entry; the paths are the handler's own (FILE_ROLES), under src/, read from the app's working directory alone
+// audit { access } measured on the files the handler names, read under src/ here (the Worker has none); an entry keeps the caller's arguments
 export const appCall = (name: string, args: Record<string, unknown>, o: { draw?: boolean } = {}) => {
   const first = call(name, args)
-  // a mint without a seed continues with one drawn here, on the MCP door alone (o.draw): an entry keeps the core's reproducible answer
+  // a mint without a seed gets one drawn here, on the MCP door alone (o.draw), so an entry stays reproducible
   const asked = (first as { result?: { structuredContent?: { mode?: unknown; continue?: { run?: { arguments?: Record<string, unknown> } } } } }).result?.structuredContent
   if (o.draw && name === 'algorithm' && asked?.mode === 'seed') {
     const bytes = crypto.getRandomValues(new Uint8Array(32)), seed = BigInt('0x' + [...bytes].map((b) => b.toString(16).padStart(2, '0')).join('')).toString()
@@ -47,9 +44,10 @@ const factsOf = async (req: MachineReq) => {
   return { facts: { receipt }, times }
 }
 export const qpuMachineTool = {
+  // the machine runs Payload jobs, so Payload's jobs run access reaches it; the handler keeps the super admin
+  access: async ({ req }: { req: PayloadRequest }) => { const run = req.payload.config.jobs?.access?.run; return Boolean(run ? await run({ req }) : req.user) },
   description: `The developer machine managed through the Payload MCP, securely: one action of the allow-list (repository { machine: { actions: true } } names them) run on this local app for a super admin, with no shell, by ${MACHINE_RUNNER}; an action longer than a request (${LONG_ACTIONS.join(', ')}) is queued as the qpu-machine job and answered by its id at once, its record a machine entry when it ends; commit and push decided by the workflow rules, a push only with confirm; every run an entry of the Entries collection, its paths relative and its leaks redacted`,
   input: { type: 'object', properties: { action: { type: 'string', description: `an action of the allow-list: ${MACHINE_ACTIONS.map((a) => a.id).join(', ')}` }, message: { type: 'string', description: 'commit: the message' }, confirm: { type: 'boolean', description: 'push: the user confirms it' }, branch: { type: 'string', description: 'merge, branch-delete: the branch' }, path: { type: 'string', description: 'worktree-remove: the worktree under .claude/worktrees' }, tag: { type: 'string', description: 'tag: an archive/ tag' }, commit: { type: 'string', description: 'tag: the full commit' }, from: { type: 'string', description: 'port: the worktree file' }, file: { type: 'string', description: 'port, and the actions that take a file' }, worktree: { type: 'string', description: 'the worktree the action runs in' }, archived: { type: 'boolean', description: 'branch-delete: the branch is archived (forced)' } }, required: ['action'] },
-  access: () => true,
   handler: async ({ input, req }: { input: Record<string, unknown>; req: MachineReq }) => {
     const h = String(req.headers?.get?.('host') ?? ''), host = h.startsWith('[') ? h.slice(0, h.indexOf(']') + 1) : h.split(':')[0]!
     const refuse = (refused: string, evidence: unknown) => answer({ refused, court: callTool('legal', { court: { gate: 'machine', status: 403, rule: 'role', evidence } }) })

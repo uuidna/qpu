@@ -1,5 +1,5 @@
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
-import type { Endpoint } from 'payload'
+import type { CollectionSlug, Endpoint, PayloadRequest } from 'payload'
 import { handle } from '../quantum/processing/mcp.ts'
 import { appCall } from '../payload.qpu.mcp'
 import { VERSION } from '../quantum/processing/unit/version.ts'
@@ -11,6 +11,8 @@ import { WEBSITE_MCP_COLLECTIONS, WEBSITE_MCP_GLOBALS } from './websiteCatalogue
 export { WEBSITE_MCP_COLLECTIONS, WEBSITE_MCP_GLOBALS }
 
 const described = (description: string) => ({ description })
+/** A tool reaches a request as Payload's RBAC reaches the collection it answers from: its read access (a where counts), else a signed-in user. */
+const reads = (slug: CollectionSlug) => async ({ req }: { req: PayloadRequest }) => { const read = req.payload.collections[slug]?.config.access?.read; return Boolean(read ? await read({ req, slug }) : req.user) }
 
 /** GET /api/mcp: the door described, as the unit's own hosted MCP (uuidna.com/mcp) answers it. Streamable HTTP lets a server answer GET with 405
  *  when it offers no server→client stream, which plugin-mcp does; a connector check reads that 405 as a sign-in demand, so the description stands
@@ -34,11 +36,9 @@ const handlerTools = Object.fromEntries(
     {
       description: t.description,
       input: t.inputSchema,
-      // the catalogue is public: every handler tool is a pure function of its arguments and answers without a credential (the plugin's default
-      // access would hide it from a client without a key); the collection tools keep the key's roles
-      access: () => true,
+      access: reads('entries'), // a catalogue answer is an entries call row, which everyone reads
       handler: async ({ input }: { input: Record<string, unknown> }) => {
-        // answered as the app answers a tool (appCall): its own files handed to the access audit, a mint without a seed drawn from its crypto randomness
+        // answered as the app answers a tool (appCall)
         const r = appCall(t.name, input, { draw: true }) as { result?: { structuredContent: unknown }; error?: { message: string } }
         if (r.error) return { content: [{ type: 'text' as const, text: JSON.stringify({ error: r.error.message }) }], isError: true }
         return {
@@ -70,7 +70,7 @@ const handlerResources = Object.fromEntries(
 
 export const qpuMcpPlugin = mcpPlugin({
   collections: Object.fromEntries(Object.entries(WEBSITE_MCP_COLLECTIONS).map(([slug, description]) => [slug, slug === 'pages'
-    ? { description, tools: { find: { access: () => true } } }
+    ? { description, tools: { find: { access: reads('pages') } } }
     : described(description)])),
   disabled: false,
   globals: Object.fromEntries(Object.entries(WEBSITE_MCP_GLOBALS).map(([slug, description]) => [slug, described(description)])),
