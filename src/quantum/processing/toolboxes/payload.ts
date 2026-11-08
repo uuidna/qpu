@@ -1507,7 +1507,7 @@ const payload = defineTool('payload', {
     if (args.plugins === true || args.locale === true) return localePlugins()
     if (args.challenges === true) return challengeSection()
     if (isObj(args.challenges)) { const c = args.challenges as { doc?: LexicalDoc }; if (c.doc?.root) return challengeLexical(c.doc); return challengeSection() }
-    if (isObj(args.scripts)) return scripts(args.scripts as ScriptsArgs)
+    if (isObj(args.scripts)) return scripts(args.scripts as ScriptsArgs, ctx)
     if (args.cryptoConfig === true) return cryptoConfig(typeof (args as { via?: string }).via === 'string' && (args as { via: string }).via === 'tenant.settings' ? 'tenant.settings' : 'qpuMcpPlugin') as never
     // two edits of one document merged by block address: a collision in the involution is a merge, never a refusal
     if (isObj(args.merge)) { const m = args.merge as { base?: LexicalDoc; a?: LexicalDoc; b?: LexicalDoc }; if (!m.base?.root || !m.a?.root || !m.b?.root) throw new Error('merge takes { base, a, b }: three lexical documents (root.children)'); return { phase: 'merge' as const, ...merge(m.base, m.a, m.b) } }

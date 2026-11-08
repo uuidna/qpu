@@ -1404,6 +1404,14 @@ theorem textbook_long_action_queued_reflected (budget request ms : Nat) (h : req
 theorem textbook_long_action_queued_contrapositive (budget request ms : Nat) : ¬ (request < budget ∧ request ≤ ms ∧ 0 < budget - request) → ¬ ((request < budget) ∧ (request ≤ ms)) := fun hc hh => hc (textbook_long_action_queued budget request ms hh.1 hh.2)
 /-- the converse of textbook_long_action_queued, proved (examples: repository-machine-next-long) -/
 theorem textbook_long_action_queued_converse (budget request ms : Nat) : (request < budget ∧ request ≤ ms ∧ 0 < budget - request) → (request < budget) ∧ (request ≤ ms) := fun hc => ⟨by omega, by omega⟩
+/-- the QPU's skills are complete when every toolbox has its skill (skilled = boxes) and the index makes one more; the ISO/IEC 4879:2024 vocabulary they name and the terms no skill names together are the whole vocabulary (named + unnamed = terms), so a gap is counted, never hidden; each skill is one sealed UUID register of 122 qubits computed from its own text (examples: payload-scripts-skills) -/
+theorem textbook_skills_complete (boxes skilled terms named : Nat) (hs : skilled = boxes) (hn : named ≤ terms) : skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms := ⟨by omega, by omega⟩
+/-- textbook_skills_complete reflected by its shape, conjunction (examples: payload-scripts-skills) -/
+theorem textbook_skills_complete_reflected (boxes skilled terms named : Nat) (hs : skilled = boxes) (hn : named ≤ terms) (σ : Nat) : (σ - (boxes + 1) = σ - (skilled + 1)) ∧ (σ - (terms) = σ - (named + (terms - named))) := ⟨congrArg (σ - ·) (Eq.symm (textbook_skills_complete boxes skilled terms named hs hn).1), congrArg (σ - ·) (Eq.symm (textbook_skills_complete boxes skilled terms named hs hn).2)⟩
+/-- the contrapositive of textbook_skills_complete (examples: payload-scripts-skills) -/
+theorem textbook_skills_complete_contrapositive (boxes skilled terms named : Nat) : ¬ (skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms) → ¬ ((skilled = boxes) ∧ (named ≤ terms)) := fun hc hh => hc (textbook_skills_complete boxes skilled terms named hh.1 hh.2)
+/-- the converse of textbook_skills_complete, proved (examples: payload-scripts-skills) -/
+theorem textbook_skills_complete_converse (boxes skilled terms named : Nat) : (skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms) → (skilled = boxes) ∧ (named ≤ terms) := fun hc => ⟨by omega, by omega⟩
 /-- neighbours: one step in program space moves g1 by one modulo 2^16 or g2, g3 by one modulo 2^12 (their stamp nibble decided, never walked), and the step back returns the program, at every edge of the torus (examples: fold-neighbours) -/
 theorem textbook_neighbour_step (x y : Nat) (hx : x < 65536) (hy : y < 4096) : ((x + 1) % 65536 + 65535) % 65536 = x ∧ ((y + 1) % 4096 + 4095) % 4096 = y := by omega
 /-- textbook_neighbour_step reflected by its shape, conjunction (examples: fold-neighbours) -/

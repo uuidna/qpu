@@ -119,6 +119,7 @@ export type NextStep = { name: string; wave: number; budgetMs: number; via: 'doo
 export const NEXT_STEPS: readonly NextStep[] = [
   { name: 'clay:gen', wave: 1, budgetMs: 120_000, via: 'generator', tool: 'payload', arguments: { scripts: { clay: { lean: { $file: 'src/quantum/processing/unit/lean/Qpu/Clay.lean' } } } } },
   { name: 'docs:gen', wave: 1, budgetMs: 120_000, via: 'generator', tool: 'payload', arguments: { scripts: { textbookLean: true } } },
+  { name: 'skills:gen', wave: 1, budgetMs: 120_000, via: 'generator', tool: 'payload', arguments: { scripts: { skills: true } } },
   { name: 'lean', wave: 1.5, budgetMs: 1_800_000, via: 'process', cmd: 'lake', args: ['build'] },
   { name: 'theorems:index', wave: 1.75, budgetMs: 600_000, via: 'generator', tool: 'payload', arguments: { scripts: { theoremsIndex: { output: { $exec: { cmd: 'lake', args: ['env', 'lean'], script: { tool: 'payload', arguments: { scripts: { theoremsIndex: {} } }, key: 'lean' } } } } } } },
   { name: 'typecheck', wave: 2, budgetMs: 900_000, via: 'process', cmd: 'npx', args: ['tsc', '--noEmit', '-p', 'tsconfig.json'] },

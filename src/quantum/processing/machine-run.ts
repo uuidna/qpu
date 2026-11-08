@@ -6,7 +6,7 @@
 // door answers, each process step the command the table names; a step past its budget is killed with its process group and recorded red; the
 // red steps are retried once after the generators ran; the receipt is the last line, `RECEIPT {json}`, the body of the machine's entry.
 import { spawn } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readlinkSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { availableParallelism, homedir, tmpdir, totalmem } from 'node:os'
 import { fileURLToPath } from 'node:url'
@@ -64,8 +64,12 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   if (r.error) { console.log(JSON.stringify({ error: r.error.message })); process.exitCode = 1; return }
   const s = r.result?.structuredContent ?? null
   const wrote: string[] = []
-  if (write && s && typeof s.path === 'string' && typeof s.text === 'string') { const f = join(cwd, s.path); mkdirSync(dirname(f), { recursive: true }); if (!existsSync(f) || readFileSync(f, 'utf8') !== s.text) { writeFileSync(f, s.text); wrote.push(s.path) } }
+  // a generator writes the path and text it answers, or every file of its files list, and makes every link of its links list (a relative symlink)
+  const outputs = [...(s && typeof s.path === 'string' && typeof s.text === 'string' ? [{ path: s.path, text: s.text }] : []), ...(Array.isArray(s?.files) ? s.files : [])] as { path: string; text: string }[]
+  if (write) for (const o of outputs) if (typeof o.path === 'string' && typeof o.text === 'string') { const f = join(cwd, o.path); mkdirSync(dirname(f), { recursive: true }); if (!existsSync(f) || readFileSync(f, 'utf8') !== o.text) { writeFileSync(f, o.text); wrote.push(o.path) } }
+  if (write) for (const l of (Array.isArray(s?.links) ? s.links : []) as { path: string; target: string }[]) { const p = join(cwd, l.path); mkdirSync(dirname(p), { recursive: true }); let current: string | null = null; try { current = readlinkSync(p) } catch { current = null }; if (current !== l.target) { if (current !== null) unlinkSync(p); if (!existsSync(p)) { symlinkSync(l.target, p); wrote.push(l.path) } } }
   const brief = s && typeof s === 'object' ? Object.fromEntries(Object.entries(s).filter(([k, v]) => k !== 'text' && (typeof v !== 'object' || v === null)).slice(0, 24)) : s
+  if (write && outputs.length > 1) (brief as Record<string, unknown>).files = outputs.length
   console.log(`${write ? (wrote.length ? `wrote ${wrote.join(', ')}` : 'unchanged') : 'answered'} ${JSON.stringify(brief)}`)
   if (s && s.passed === false) process.exitCode = 1
   if (s && s.holds === false) process.exitCode = 1
