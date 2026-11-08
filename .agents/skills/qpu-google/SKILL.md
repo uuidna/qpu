@@ -1,6 +1,6 @@
 ---
 name: qpu-google
-description: Use when the task needs the QPU's google toolbox: the Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes, the roadmap, the software, the statements and the repositories. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run processor { selftest: true } first.
+description: Use when the task needs the QPU's google toolbox: the Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes, the roadmap, the software, the statements and the repositories. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run clone { toolbox: 'google' } first.
 license: CC-BY-NC-ND-4.0
 ---
 
@@ -100,7 +100,7 @@ Call any tool with the arguments its schema names; every result is a block (widg
 
 - server only: every example replays as documented (the audit)
 
-Run `processor { selftest: true }`; the answer is `{ passed, checks }`, and the audit replays it.
+Run `clone { toolbox: 'google' }`; the answer is `{ selftestPassed, tools, examples }`, and the audit replays it.
 
 ## Vocabulary (ISO/IEC 4879:2024)
 

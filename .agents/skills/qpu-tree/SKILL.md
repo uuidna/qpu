@@ -1,6 +1,6 @@
 ---
 name: qpu-tree
-description: Use when the task needs the QPU's tree toolbox: the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply, its metrics in real time. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run leads { selftest: true } first.
+description: Use when the task needs the QPU's tree toolbox: the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply, its metrics in real time. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run clone { toolbox: 'tree' } first.
 license: CC-BY-NC-ND-4.0
 ---
 
@@ -208,7 +208,7 @@ audit replays every example and every toolbox selftest; match decides any statem
 - server only: the audit audits the audit
 - toolbox → toolbox: match is the judge of readiness and the engine of imagine
 
-Run `leads { selftest: true }`; the answer is `{ passed, checks }`, and the audit replays it.
+Run `clone { toolbox: 'tree' }`; the answer is `{ selftestPassed, tools, examples }`, and the audit replays it.
 
 ## Vocabulary (ISO/IEC 4879:2024)
 
