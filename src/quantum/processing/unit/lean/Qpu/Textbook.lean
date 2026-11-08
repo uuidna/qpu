@@ -1412,6 +1412,14 @@ theorem textbook_skills_complete_reflected (boxes skilled terms named : Nat) (hs
 theorem textbook_skills_complete_contrapositive (boxes skilled terms named : Nat) : ¬ (skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms) → ¬ ((skilled = boxes) ∧ (named ≤ terms)) := fun hc hh => hc (textbook_skills_complete boxes skilled terms named hh.1 hh.2)
 /-- the converse of textbook_skills_complete, proved (examples: payload-scripts-skills) -/
 theorem textbook_skills_complete_converse (boxes skilled terms named : Nat) : (skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms) → (skilled = boxes) ∧ (named ≤ terms) := fun hc => ⟨by omega, by omega⟩
+/-- every cap of a read or a walk the entropy audit counts is either removed by the uncap door or kept with its citation as a standard's or an API's own bound: removed + kept = caps, nothing silently left; the tree holds no cap of its own (examples: audit-uncap) -/
+theorem textbook_caps_removed (caps removed kept : Nat) (h : removed + kept = caps) (hk : kept ≤ caps) : caps - removed = kept ∧ removed ≤ caps := ⟨by omega, by omega⟩
+/-- textbook_caps_removed reflected by its shape, conjunction (examples: audit-uncap) -/
+theorem textbook_caps_removed_reflected (caps removed kept : Nat) (h : removed + kept = caps) (hk : kept ≤ caps) (σ : Nat) : (σ - (kept) = σ - (caps - removed)) ∧ (σ - (caps) ≤ σ - (removed)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_caps_removed caps removed kept h hk).1), Nat.sub_le_sub_left (textbook_caps_removed caps removed kept h hk).2 σ⟩
+/-- the contrapositive of textbook_caps_removed (examples: audit-uncap) -/
+theorem textbook_caps_removed_contrapositive (caps removed kept : Nat) : ¬ (caps - removed = kept ∧ removed ≤ caps) → ¬ ((removed + kept = caps) ∧ (kept ≤ caps)) := fun hc hh => hc (textbook_caps_removed caps removed kept hh.1 hh.2)
+/-- the converse of textbook_caps_removed, proved (examples: audit-uncap) -/
+theorem textbook_caps_removed_converse (caps removed kept : Nat) : (caps - removed = kept ∧ removed ≤ caps) → (removed + kept = caps) ∧ (kept ≤ caps) := fun hc => ⟨by omega, by omega⟩
 /-- neighbours: one step in program space moves g1 by one modulo 2^16 or g2, g3 by one modulo 2^12 (their stamp nibble decided, never walked), and the step back returns the program, at every edge of the torus (examples: fold-neighbours) -/
 theorem textbook_neighbour_step (x y : Nat) (hx : x < 65536) (hy : y < 4096) : ((x + 1) % 65536 + 65535) % 65536 = x ∧ ((y + 1) % 4096 + 4095) % 4096 = y := by omega
 /-- textbook_neighbour_step reflected by its shape, conjunction (examples: fold-neighbours) -/
