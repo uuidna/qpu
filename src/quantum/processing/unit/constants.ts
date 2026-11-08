@@ -1,5 +1,5 @@
-// The physical constants as coins: CODATA's table (NIST, open, no key) read into integers — every value a mantissa and a power of ten, so
-// nothing is rounded — each constant sealed by its content address and SHA-256 with its stated uncertainty kept beside it. A defined constant
+// The physical constants as coins: CODATA's table (NIST, open, no key) read into integers — every value a mantissa and a power of ten as
+// written — each constant sealed by its content address and SHA-256 with its stated uncertainty kept beside it. A defined constant
 // (the Planck constant since 2019) is exact and carries none; a measured one (the Newtonian constant of gravitation) carries the uncertainty
 // its experiments give, which no seal and no factoring removes: the seal proves the value is the one published, never that it is truer. Pure.
 import { uuid } from '../../uuid/index.ts'
@@ -10,7 +10,7 @@ import { TABLES } from '../tables-index.ts'
 export const CODATA_URL = String((TABLES.ATTEST_APIS as readonly { id: string; url: string }[]).find((a) => a.id === 'nist-codata')?.url ?? '')
 /** A decimal as written in the table ("6.674 30 e-11") as exact integers: mantissa × 10^exponent. */
 const getDecimal = (s: string): { mantissa: string; exponent: number } | null => {
-  const m = /^(-?)(\d+)(?:\.(\d+))?(?:e([+-]?\d+))?$/.exec(s.replace(/\s+/g, '').replace(/\.\.\.$/, ''))
+  const m = /^(-?)(\d+)(?:\.(\d+))?(?:e([+-]?\d+))?$/.exec(s.replace(/\s+/g, '').replace('...', ''))
   if (!m) return null
   const frac = m[3] ?? ''
   return { mantissa: `${m[1]}${(m[2]! + frac).replace(/^0+(?=\d)/, '')}`, exponent: Number(m[4] ?? 0) - frac.length }
