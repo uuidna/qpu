@@ -51,7 +51,7 @@ const ATTEST_APIS = cryptoConfig().attestApis
 
 import { CATALOGUE, combinationVariants, convertAmounts, PLUGIN_SPACE, PLUGIN_TRINITIES, RATE_SOURCES, CURRENCY_MCPS, TENANT_CURRENCY, DOMAIN_CURRENCY, plasma, variationCoin } from './billing.ts'
 import { inodeSuperpositions, LEADS } from '../leads.ts'
-import { ADAPTED_CONNECTORS, MCP_API_KEY, QPU_CONNECTOR, crumb, payloadMcpNext, payloadMcpRequest, readPayloadMcp, seoMeta, seoPath } from '../../../plugins/websiteClient.ts'
+import { ADAPTED_CONNECTORS, MCP_API_KEY, QPU_CONNECTOR, crumb, payloadMcpNext, payloadMcpRequest, readPayloadMcp } from '../../../plugins/websiteClient.ts'
 import { generate } from '../../generators/index.ts'
 import { checkWitnesses } from '../witnesses.ts'
 import { COIN_STANDARDS } from '../unit/coil.ts'

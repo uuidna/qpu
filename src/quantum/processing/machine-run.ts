@@ -37,7 +37,7 @@ export const spawnRun = (cmd: string, args: readonly string[], o: { cwd: string;
     const timer = o.budgetMs ? setTimeout(() => { timedOut = true; try { process.kill(-child.pid!, 'SIGKILL') } catch { child.kill('SIGKILL') } }, o.budgetMs) : null
     child.on('error', (e) => { if (timer) clearTimeout(timer); stderr += String(e); resolve({ status: null, stdout, stderr, ms: clock() - t0, timedOut }) })
     child.on('close', (code) => { if (timer) clearTimeout(timer); resolve({ status: code, stdout, stderr, ms: clock() - t0, timedOut }) })
-    child.stdin.end(o.input ?? '')
+    child.stdin.on('error', () => {}).end(o.input ?? '')
   })
 
 // A door step's arguments resolved in the child: { $file } is that file's text, { $module } an export of that module, { $texts: [paths] } those files as { path: text }, { $exec } the output of the command over the script text a door answers.
