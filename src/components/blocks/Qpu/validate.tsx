@@ -6,7 +6,7 @@
 export type Verdicts = { ok: boolean; fields: Record<string, { ok: boolean; says: string }>; online: { tokenFree: boolean; requests: { id: string; url: string; method: string; verifier: string }[]; answered?: Record<string, boolean> } }
 export const validateStream = (origin: string, values: Record<string, unknown>, onVerdict: (v: Verdicts) => void, wait = 800): (() => void) => {
   const timer = setTimeout(async () => {
-    const r = await fetch(origin + '/mcp', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { app: { validate: values } } } }) })
+    const r = await fetch(origin + '/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { app: { validate: values } } } }) })
     const v = ((await r.json()) as { result?: { structuredContent: Verdicts } }).result?.structuredContent
     if (!v) return
     const answered: Record<string, boolean> = {}

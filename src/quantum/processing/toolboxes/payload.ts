@@ -4832,7 +4832,7 @@ export const qpuCore = definePlugin<QpuPluginOptions>({ slug: 'qpu', plugin: ({ 
   db: incoming.db ?? qpuDb(),
   email: incoming.email ?? qpuEmail(),
   endpoints: [...(incoming.endpoints ?? []).filter((e) => !(e.path === '/qpu/feeds' && e.method === 'get')), ...(feeds === false ? [] : [qpuFeedsEndpoint])],
-  admin: branding === false ? incoming.admin : { ...incoming.admin, meta: { ...incoming.admin?.meta, titleSuffix: incoming.admin?.meta?.titleSuffix ?? ' · QPU' }, components: { ...incoming.admin?.components, beforeDashboard: [...(incoming.admin?.components?.beforeDashboard ?? []), ...[{ tool: 'clay', args: { technique: 'reflection' } }, { tool: 'dashboard', args: {} }, { tool: 'leads', args: {} }, { tool: 'metrics', args: {} }, { tool: 'apis', args: {} }, { tool: 'match', args: {} }, { tool: 'repository', args: { machine: { actions: true } } }].map((p) => ({ path: '@root/components/blocks/Qpu/App#QpuApp', clientProps: p }))], graphics: { Logo: '@root/components/blocks/Qpu/Branding#QpuLogo', Icon: '@root/components/blocks/Qpu/Branding#QpuIcon', ...incoming.admin?.components?.graphics } } },
+  admin: branding === false ? incoming.admin : { ...incoming.admin, meta: { ...incoming.admin?.meta, titleSuffix: incoming.admin?.meta?.titleSuffix ?? ' · QPU' }, components: { ...incoming.admin?.components, beforeDashboard: [...(incoming.admin?.components?.beforeDashboard ?? []), ...[{ tool: 'clay', args: { technique: 'reflection' } }, { tool: 'dashboard', args: {} }, { tool: 'leads', args: {} }, { tool: 'metrics', args: {} }, { tool: 'apis', args: {} }, { tool: 'imagine', args: { open: 4 } }, { tool: 'match', args: {} }, { tool: 'repository', args: { machine: { actions: true } } }].map((p) => ({ path: '@root/components/blocks/Qpu/App#QpuApp', clientProps: p }))], graphics: { Logo: '@root/components/blocks/Qpu/Branding#QpuLogo', Icon: '@root/components/blocks/Qpu/Branding#QpuIcon', ...incoming.admin?.components?.graphics } } },
   collections: [...(incoming.collections ?? []).filter((c) => c.slug !== Tenants.slug && c.slug !== Entries.slug), Tenants, Entries],
   globals: [...(incoming.globals ?? []).filter((g) => g.slug !== QpuGlobal.slug), QpuGlobal],
   blocks: [...(incoming.blocks ?? []).filter((b) => b.slug !== Qpu.slug), Qpu],
@@ -4893,7 +4893,7 @@ const googleCallTask: TaskConfig<{ input: Record<string, any>; output: { entry: 
 }
 // a call asked of a job (qpu-google-call, qpu-raid-verify) is queued and run at once, so its answer entry stands when createEntries answers
 const queueGoogleCall: CollectionAfterChangeHook = async ({ doc, req, operation, context }) => {
-  if (operation !== 'create' || context.qpuGoogle || doc.kind !== 'call' || !['qpu-google-call', 'qpu-raid-verify', 'qpu-lead-run', 'qpu-cloudflare-call', 'qpu-cloudflare-observe'].includes(doc.from) || !doc.body || 'allowed' in doc.body) return doc
+  if (operation !== 'create' || context.qpuGoogle || doc.kind !== 'call' || !['qpu-google-call', 'qpu-raid-verify', 'qpu-lead-run', 'qpu-cloudflare-call', 'qpu-cloudflare-observe', 'qpu-imagine'].includes(doc.from) || !doc.body || 'allowed' in doc.body) return doc
   const job = (await req.payload.jobs.queue({ task: doc.from as never, input: { ...doc.body, request: doc.id, tenant: typeof doc.tenant === 'object' ? doc.tenant?.id : doc.tenant } as never, req })) as { id: string }
   await req.payload.jobs.runByID({ id: job.id, req })
   return doc
@@ -5130,10 +5130,61 @@ export const qpuApis = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-apis', o
   jobs: withTask({ ...config, jobs: withTask(config, cloudflareCallTask) as never }, cloudflareObserveTask),
   globals: (config.globals ?? []).map((g) => (g.slug !== 'qpu' || g.fields.some((f) => 'name' in f && f.name === 'apis') ? g : { ...g, fields: [...g.fields, { name: 'apis', type: 'json', admin: { readOnly: true, description: 'Payload, Cloudflare, Google and shadcn admin APIs as one UUID program: the doors, the merged operation index, the coverage of Payload\\'s own surface with the next gap, the Cloudflare meters and their bill' } } as Field] })),
 }) })
+// imagination through Payload, qpu-imagine: one job imagines a slice of the open leads (the first n, or the ids named, or statements as
+// strings), every imagined lead lands as an entry of kind lead from qpu-imagine (one per address, never twice), the run as an entry of kind
+// call, and the qpu global keeps the latest imagination; a lead-run entry queues the imagination of the lead it ran, so the loop
+// imagine → leads → qpu-lead-run → imagine closes through the docket, each step an entry a hook answers
+const imagineTask: TaskConfig<{ input: Record<string, any>; output: { entry: string } }> = {
+  slug: 'qpu-imagine', retries: 0,
+  inputSchema: [{ name: 'open', type: 'number' }, { name: 'request', type: 'text' }, { name: 'tenant', type: 'text' }, { name: 'leads', type: 'json' }, { name: 'statements', type: 'json' }],
+  outputSchema: [{ name: 'entry', type: 'text' }],
+  handler: async ({ input, req }) => {
+    const ask: Record<string, unknown> = { ...(Array.isArray(input.leads) && input.leads.length ? { leads: input.leads } : {}), ...(Array.isArray(input.statements) && input.statements.length ? { statements: input.statements } : {}), ...(typeof input.open === 'number' ? { open: input.open } : Array.isArray(input.leads) || Array.isArray(input.statements) ? {} : { open: 4 }) }
+    const im = caller('imagine')(ask) as { leads: number; served: number; impossible: number; unknown: number; verifyRequests: number; imaginedLeads: number; ms: number; imagination: { rows: unknown[]; imagined: { id: string; statement: string; source: string; status: string }[] } }
+    const written: string[] = []
+    for (const lead of im.imagination.imagined) {
+      const address = uuid('lead\\n' + lead.id + '\\n' + lead.statement)
+      const held = (await req.payload.find({ collection: 'entries' as never, where: { and: [{ kind: { equals: 'lead' } }, { 'body.address': { equals: address } }] }, limit: 1, depth: 0, overrideAccess: true })) as { totalDocs: number }
+      if (held.totalDocs > 0) continue
+      written.push(await entry(req, { kind: 'lead', from: 'qpu-imagine', ...(input.tenant ? { tenant: input.tenant } : {}), body: { ...lead, address, tool: 'imagine' } }, { qpuImagine: true }))
+    }
+    const imagination = { at: new Date().toISOString(), asked: ask, leads: im.leads, verdicts: { served: im.served, impossible: im.impossible, unknown: im.unknown }, verifyRequests: im.verifyRequests, imaginedLeads: im.imaginedLeads, written: written.length, ms: im.ms, rows: im.imagination.rows }
+    const current = (await req.payload.findGlobal({ slug: 'qpu' as never, depth: 0, overrideAccess: true }).catch(() => ({}))) as { imagination?: unknown }
+    await req.payload.updateGlobal({ slug: 'qpu' as never, data: { imagination } as never, context: { qpuImagine: true }, overrideAccess: true }).catch(() => current)
+    return { output: { entry: await entry(req, { kind: 'call', from: 'qpu-imagine', ...(input.tenant ? { tenant: input.tenant } : {}), body: { request: input.request ?? null, imagination, entries: written } }, { qpuImagine: true }) } }
+  },
+}
+const imagineAfterRun: CollectionAfterChangeHook = async ({ doc, req, operation, context }) => {
+  if (operation !== 'create' || context.qpuImagine || doc.kind !== 'lead-run' || !doc.body?.lead) return doc
+  const job = (await req.payload.jobs.queue({ task: 'qpu-imagine' as never, input: { leads: [String(doc.body.lead)], request: doc.id } as never, req })) as { id: string }
+  await req.payload.jobs.runByID({ id: job.id, req })
+  return doc
+}
+const qpuImagineEndpoints: Endpoint[] = [
+  {
+    path: '/qpu/imagine',
+    method: 'post',
+    handler: async (req) => {
+      if (!req.user) return Response.json({ error: 'a signed-in user or an MCP key asks the imagination' }, { status: 401 })
+      const body = (typeof req.json === 'function' ? await req.json().catch(() => ({})) : (req.data ?? {})) as { open?: number; leads?: string[]; statements?: (string | { id: string; statement: string })[]; tenant?: string }
+      const job = (await req.payload.jobs.queue({ task: 'qpu-imagine' as never, input: { ...(typeof body.open === 'number' ? { open: body.open } : {}), ...(body.leads ? { leads: body.leads } : {}), ...(body.statements ? { statements: body.statements } : {}), ...(body.tenant ? { tenant: body.tenant } : {}) } as never, req })) as { id: string }
+      await req.payload.jobs.runByID({ id: job.id, req })
+      const current = (await req.payload.findGlobal({ slug: 'qpu' as never, depth: 0, overrideAccess: true }).catch(() => ({}))) as { imagination?: unknown }
+      return Response.json({ job: job.id, imagination: current.imagination ?? null }, { headers: { 'x-qpu-imagine': 'leads' } })
+    },
+  },
+]
+/** qpu-imagine: the imagination through Payload — the job, the lead-run hook that queues it, the endpoint, the global's latest imagination; order 22 */
+export const qpuImagine = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-imagine', order: 22, plugin: ({ config, enabled }) => (enabled === false ? config : {
+  ...hooked(config, { entries: (c: CollectionConfig) => first(c, 'afterChange', imagineAfterRun as never) }),
+  endpoints: [...(config.endpoints ?? []).filter((e) => e.path !== '/qpu/imagine'), ...qpuImagineEndpoints],
+  jobs: withTask(config, imagineTask),
+  globals: (config.globals ?? []).map((g) => (g.slug !== 'qpu' || g.fields.some((f) => 'name' in f && f.name === 'imagination') ? g : { ...g, fields: [...g.fields, { name: 'imagination', type: 'json', admin: { readOnly: true, description: 'the latest imagination: the open leads imagined, their verdicts, the verify requests and the leads it opened, each written once as an entry of kind lead from qpu-imagine' } } as Field] })),
+}) })
 export const qpuHooks = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-hooks', order: Number.MAX_SAFE_INTEGER, plugin: ({ config, enabled }) => (enabled === false ? config : qpuHooksOf(config).config) })
 /** The umbrella: the capabilities, the storage, the plugins the configs order and the tenant's own, each seeing the others in the plugins map */
 export const qpuPlugin = (options: QpuPluginOptions = {}): Plugin => async (incoming: Config): Promise<Config> => {
-  const inner = [qpuCore(options), qpuAgents({}), qpuMachine({}), ...(options.adapters === 'none' ? [] : qpuAdapterPlugins()), ...qpuPlugins, qpuGoogle({}), qpuApis({}), ...(options.plugins ?? []), qpuRaid({}), qpuHooks({})]
+  const inner = [qpuCore(options), qpuAgents({}), qpuMachine({}), ...(options.adapters === 'none' ? [] : qpuAdapterPlugins()), ...qpuPlugins, qpuGoogle({}), qpuApis({}), qpuImagine({}), ...(options.plugins ?? []), qpuRaid({}), qpuHooks({})]
   let config: Config = { ...incoming, plugins: [...(incoming.plugins ?? []), ...inner] }
   for (const plugin of inner) config = await plugin(config)
   return { ...config, plugins: incoming.plugins }
