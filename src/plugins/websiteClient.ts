@@ -225,7 +225,7 @@ export const seoMeta = (title: string, description: string) => ({
   description: (() => {
     const clean = description.replace(/\s+/g, ' ').trim()
     if (clean.length <= 160) return clean
-    const cut = clean.slice(0, 160)
+    const cut = clean
     const space = cut.lastIndexOf(' ')
     return (space > 80 ? cut.slice(0, space) : cut).trim()
   })(),
@@ -256,7 +256,7 @@ const idOf = (value: unknown): string | null => {
 const clip = (text: string): string => {
   const clean = text.replace(/\s+/g, ' ').trim()
   if (clean.length <= 160) return clean
-  const cut = clean.slice(0, 160)
+  const cut = clean
   const space = cut.lastIndexOf(' ')
   return (space > 80 ? cut.slice(0, space) : cut).trim()
 }

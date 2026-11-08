@@ -592,7 +592,7 @@ const SMALL_PRIMES = (() => { const s: number[] = []; for (let n = 2; n < 1 << 1
 /** Miller–Rabin over the first `rounds` primes as bases: certain below 3.3·10^24 (the first thirteen bases decide it), probable above it. */
 export const testPrimality = (n: bigint, rounds = 24): { prime: boolean; certain: boolean } => {
   if (n < 2n) return { prime: false, certain: true }
-  for (const p of SMALL_PRIMES.slice(0, 64)) { const q = BigInt(p); if (n === q) return { prime: true, certain: true }; if (n % q === 0n) return { prime: false, certain: true } }
+  for (const p of SMALL_PRIMES) { const q = BigInt(p); if (n === q) return { prime: true, certain: true }; if (n % q === 0n) return { prime: false, certain: true } }
   let d = n - 1n, s = 0; while (!(d & 1n)) { d >>= 1n; s++ }
   for (const p of SMALL_PRIMES.slice(0, rounds)) { let x = powMod(BigInt(p), d, n), i = 1; if (x === 1n || x === n - 1n) continue; for (; i < s; i++) { x = (x * x) % n; if (x === n - 1n) break } if (i === s) return { prime: false, certain: true } }
   return { prime: true, certain: n < 3317044064679887385961981n }

@@ -243,7 +243,7 @@ export const newsSolveTask: TaskConfig<{ input: { tenant?: string; news?: unknow
     const r = call('match', { tenant: tenantSlug, news: items }) as { result?: { structuredContent?: { drafts?: { title: string; content?: unknown[] }[]; apps?: unknown[] } }; error?: { message: string } }
     const ed = r.result?.structuredContent, drafts = ed?.drafts ?? [], apps = ed?.apps ?? []
     // the tenant relationship: the tenant doc by its slug, so each post belongs to its tenant's blog (newsSolveTask writes the solution as the content body)
-    const tenantDoc = (await req.payload.find({ collection: 'tenants' as never, where: { slug: { equals: tenantSlug } }, depth: 0, limit: 1, overrideAccess: true }).then((x) => x, () => ({ docs: [] }))).docs?.[0] as { id?: string } | undefined
+    const tenantDoc = (await req.payload.find({ collection: 'tenants' as never, where: { slug: { equals: tenantSlug } }, depth: 0, pagination: false, overrideAccess: true }).then((x) => x, () => ({ docs: [] }))).docs?.[0] as { id?: string } | undefined
     let posts = 0
     for (const d of drafts) { try { await req.payload.create({ collection: 'posts' as never, data: { title: d.title, content: d.content, ...(tenantDoc?.id ? { tenant: tenantDoc.id } : {}), _status: 'draft' } as never, draft: true, overrideAccess: true }); posts++ } catch { /* a post the editor's backlog keeps until its fields are complete */ } }
     return { output: { entry: await entry(req, { kind: 'editorial', from: 'qpu-news-solve', body: { tenant: tenantSlug, items: items.length, posts, apps: apps.length } }), posts } }
@@ -306,7 +306,7 @@ type HeldOperation = { method: string; server: string; path: string; id: string;
 const heldCloudflareOperations = async (req: PayloadRequest): Promise<HeldOperation[]> => {
   const ops: HeldOperation[] = []
   for (let page = 1; ; page++) {
-    const found = (await req.payload.find({ collection: 'entries' as never, where: { kind: { equals: 'openapi-operation' } }, depth: 0, page, limit: 100, overrideAccess: true })) as { docs: { body?: { server?: string; path?: string; method?: string; operationId?: string; tags?: string[] } }[]; hasNextPage: boolean }
+    const found = (await req.payload.find({ collection: 'entries' as never, where: { kind: { equals: 'openapi-operation' } }, depth: 0, page, pagination: false, overrideAccess: true })) as { docs: { body?: { server?: string; path?: string; method?: string; operationId?: string; tags?: string[] } }[]; hasNextPage: boolean }
     for (const d of found.docs) if (d.body?.path && /api\.cloudflare\.com/.test(d.body.server ?? '')) ops.push({ method: (d.body.method ?? 'GET').toUpperCase(), server: d.body.server!, path: d.body.path, id: d.body.operationId ?? d.body.path, tags: d.body.tags ?? [] })
     if (!found.hasNextPage) break
   }
@@ -416,7 +416,7 @@ const imagineTask: TaskConfig<{ input: Record<string, any>; output: { entry: str
     const written: string[] = []
     for (const lead of im.imagination.imagined) {
       const address = uuid('lead\n' + lead.id + '\n' + lead.statement)
-      const held = (await req.payload.find({ collection: 'entries' as never, where: { and: [{ kind: { equals: 'lead' } }, { 'body.address': { equals: address } }] }, limit: 1, depth: 0, overrideAccess: true })) as { totalDocs: number }
+      const held = (await req.payload.find({ collection: 'entries' as never, where: { and: [{ kind: { equals: 'lead' } }, { 'body.address': { equals: address } }] }, pagination: false, depth: 0, overrideAccess: true })) as { totalDocs: number }
       if (held.totalDocs > 0) continue
       written.push(await entry(req, { kind: 'lead', from: 'qpu-imagine', ...(input.tenant ? { tenant: input.tenant } : {}), body: { ...lead, address, tool: 'imagine' } }, { qpuImagine: true }))
     }
@@ -469,7 +469,7 @@ const mcpRows = async (req: PayloadRequest, tenant: unknown): Promise<McpRow[]> 
 // the same call is the same entry (its id the content address): asked again, the held entry answers instead of a second create
 const entryOnce = async (req: PayloadRequest, data: { kind: string; from: string; tenant?: string; body: Record<string, unknown>; links?: string[] }, where: Record<string, unknown>) => {
   try { return await entry(req, data, { qpuMcps: true }) } catch (e) {
-    const held = (await req.payload.find({ collection: 'entries' as never, where: { and: [{ kind: { equals: data.kind } }, { from: { equals: data.from } }, where] }, sort: '-createdAt', limit: 1, depth: 0, overrideAccess: true })) as { docs: { id: string }[] }
+    const held = (await req.payload.find({ collection: 'entries' as never, where: { and: [{ kind: { equals: data.kind } }, { from: { equals: data.from } }, where] }, sort: '-createdAt', pagination: false, depth: 0, overrideAccess: true })) as { docs: { id: string }[] }
     if (held.docs[0]) return String(held.docs[0].id)
     throw e
   }
@@ -488,7 +488,7 @@ const mcpCallTask: TaskConfig<{ input: Record<string, any>; output: { entry: str
     const url = String(input.url ?? ''), method = String(input.method ?? 'tools/list')
     const row = (await mcpRows(req, input.tenant)).find((m) => m.url === url)
     const res = url.startsWith('https://') ? await mcpFetch(url, method, input.params, row) : { status: 0, text: 'an https url is fetched, nothing else' }
-    return { output: { entry: await entryOnce(req, { kind: 'call', from: 'qpu-mcp-call', ...(input.tenant ? { tenant: input.tenant } : {}), body: { request: input.request ?? null, url, method, allowed: url.startsWith('https://'), by: row?.token ?? null, status: res.status, answer: res.text.slice(0, 200000) } }, { 'body.url': { equals: url }, 'body.method': { equals: method } }) } }
+    return { output: { entry: await entryOnce(req, { kind: 'call', from: 'qpu-mcp-call', ...(input.tenant ? { tenant: input.tenant } : {}), body: { request: input.request ?? null, url, method, allowed: url.startsWith('https://'), by: row?.token ?? null, status: res.status, answer: res.text } }, { 'body.url': { equals: url }, 'body.method': { equals: method } }) } }
   },
 }
 // the body as Payload's own REST reads it (addDataAndFileToRequest: JSON, or multipart with the _payload field a form carries), nothing parsed here
@@ -496,8 +496,8 @@ const mcpBody = async (req: PayloadRequest): Promise<Record<string, string>> => 
 const mcpTenant = async (req: PayloadRequest, asked: string): Promise<string | null> => {
   if (asked) return asked
   const host = (req.headers.get('host') ?? '').split(':')[0] || 'localhost'
-  const byHost = (await req.payload.find({ collection: 'tenants' as never, where: { 'domains.domain': { equals: host } }, limit: 1, depth: 0, overrideAccess: true })) as { docs: { id: string }[] }
-  const one = byHost.docs[0] ?? ((await req.payload.find({ collection: 'tenants' as never, limit: 1, depth: 0, overrideAccess: true })) as { docs: { id: string }[] }).docs[0]
+  const byHost = (await req.payload.find({ collection: 'tenants' as never, where: { 'domains.domain': { equals: host } }, pagination: false, depth: 0, overrideAccess: true })) as { docs: { id: string }[] }
+  const one = byHost.docs[0] ?? ((await req.payload.find({ collection: 'tenants' as never, pagination: false, depth: 0, overrideAccess: true })) as { docs: { id: string }[] }).docs[0]
   return one ? String(one.id) : null
 }
 // a form post from the page goes back to the page of the entry that answers it; a JSON client reads the entry and the result
@@ -505,7 +505,7 @@ const mcpAnswer = (req: PayloadRequest, id: string, result: unknown) => ((req.he
 const mcpRun = async (req: PayloadRequest, input: Record<string, unknown>) => {
   const job = (await req.payload.jobs.queue({ task: 'qpu-mcp-call' as never, input: input as never, req })) as { id: string }
   await req.payload.jobs.runByID({ id: job.id, req })
-  const found = (await req.payload.find({ collection: 'entries' as never, where: { and: [{ kind: { equals: 'call' } }, { from: { equals: 'qpu-mcp-call' } }, { 'body.url': { equals: input.url } }] }, sort: '-createdAt', limit: 1, depth: 0, overrideAccess: true })) as { docs: { id: string; body: { status: number; answer: string } }[] }
+  const found = (await req.payload.find({ collection: 'entries' as never, where: { and: [{ kind: { equals: 'call' } }, { from: { equals: 'qpu-mcp-call' } }, { 'body.url': { equals: input.url } }] }, sort: '-createdAt', pagination: false, depth: 0, overrideAccess: true })) as { docs: { id: string; body: { status: number; answer: string } }[] }
   return found.docs[0] ?? null
 }
 // the search as a GET (a plain form, req.query) or a POST (JSON, or a form's _payload); the install a POST alone

@@ -31,7 +31,7 @@ export const routeStatement = (statement: string, examples: readonly Example[], 
     const df = new Map<string, number>(); for (const t of routeIndex) for (const w of t.stems) df.set(w, (df.get(w) ?? 0) + 1)
     routeIdf = new Map([...df].map(([w, n]) => [w, Math.log(routeIndex!.length / n)]))
   }
-  // a word of the theorem's key weighs twice; a route needs two shared words or one key word, above the threshold
+  // a word of the theorem's key weighs twice; a route needs two shared words or one key word, above the threshold. a prompt that is a theorem's own sentence routes to that theorem first
   const s = routeStems(statement)
   const ranked = routeIndex.map((t) => { const shared = [...t.stems].filter((w) => s.has(w)); const subject = shared.filter((w) => t.keyStems.has(w)); return { t, shared, subject, weight: shared.reduce((n, w) => n + (routeIdf!.get(w) ?? 0) * (t.keyStems.has(w) ? 2 : 1), 0) } }).filter((r) => (r.shared.length >= 2 || r.subject.length >= 1) && r.weight >= ROUTE_THRESHOLD).sort((a, b) => b.weight - a.weight || a.t.key.localeCompare(b.t.key)).slice(0, top ?? Infinity) // top undefined: every theorem past the threshold, used at once (no cap — both sides, however many)
   const byId = new Map(examples.map((e) => [e.id, e]))
@@ -357,7 +357,7 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
     const rq = tokens(r)
     for (const [i, t] of tools.entries()) {
       const score = overlap(rq, toolTok[i]!)
-      if (score >= 2 && !candidates.some((c) => c.kind === 'tool' && c.id === t.name)) found.push({ kind: 'tool', id: t.name, score, hits: score, text: `via "${r}": ${t.description.slice(0, 80)}` })
+      if (score >= 2 && !candidates.some((c) => c.kind === 'tool' && c.id === t.name)) found.push({ kind: 'tool', id: t.name, score, hits: score, text: `via "${r}": ${t.description}` })
     }
     for (const [i, e] of examples.entries()) {
       const score = overlap(rq, exTok[i]!)

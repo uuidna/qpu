@@ -1,7 +1,7 @@
 // Every database, storage and mail adapter of the Payload app ported onto Cloudflare, as Cloudflare's own documentation states the port
 // (read through the Cloudflare Developer Platform MCP on 2026-10-26): each adapter's binding, its migration steps, the Cloudflare MCP calls
 // that create or check its resources, the plan it needs, and its missing links — a step no MCP API or migration tool covers. Every one of
-// the combinations is composed from its mixed-radix index (compositionOf, textbook_mixed_radix) into one workflow; the whole space
+// the combinations is composed from its mixed-radix index (composition, textbook_mixed_radix) into one workflow; the whole space
 // is counted: the combinations that port completely and the missing links that block the rest, each a lead (textbook_ports_cover). Pure.
 import { compositionOf, compositionsOf } from './unit/blocks.ts'
 import type { Lead } from './leads.ts'

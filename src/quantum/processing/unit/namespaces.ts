@@ -5,10 +5,12 @@
 // plugin's own read filter and write check keep every other tenant's records out of reach. Pure: the decision here, the app applies it.
 import { uuidOf } from './blocks.ts'
 
+/** A DNS label is 63 octets at most (RFC 1035 §2.3.4): the standard's bound, not a cap of ours. */
+const DNS_LABEL = 63
 const NAMESPACE_HEADER = 'x-qpu-namespace'
 const NAMESPACE_RE = /^[a-z][a-z0-9-]{1,62}$/
 /** A namespace from a name or an app's address: lower-case letters, digits and dashes, starting with a letter. */
-const toNamespace = (name: string) => { const s = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); const ns = /^[a-z]/.test(s) ? s : `ns-${s}`; return ns.slice(0, 63).replace(/-+$/, '') }
+const toNamespace = (name: string) => { const s = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); const ns = /^[a-z]/.test(s) ? s : `ns-${s}`; return ns.slice(0, DNS_LABEL).replace(/-+$/, '') }
 
 export type NarrowRequest = { requested?: string | null; tenants?: readonly { id: string; namespace?: string | null }[]; user?: { roles?: readonly string[]; tenants?: readonly { tenant: string; roles?: readonly string[] }[] } }
 /** The credential narrowed to the namespace a request names: allowed with the one tenant row (and the roles without the all-tenants

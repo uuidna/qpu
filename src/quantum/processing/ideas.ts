@@ -276,7 +276,7 @@ export const openQuantum = (leads: readonly GapLead[]) => leads.filter(quantumGa
 const quantumGapFiles = (leads: readonly GapLead[]): IdeaFile[] => leads.filter(quantumGapLead).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)).map((lead) => {
   const formula = lead.statement.replace(/@/g, ' ').replace(/\s+/g, ' ').trim()
   const path = `${IDEA_INBOX}/quantum/gaps/${clean(lead.id)}.txt`
-  const title = formula.slice(0, 120)
+  const title = formula
   const next = QUANTUM_GAP_NEXT[lead.id]
   const body = next ? `${formula}\nidea: ${next}` : formula
   return { path, text: `source: ${lead.source}\ntitle: ${title}\n\n${body}\n`, from: lead.id }
@@ -295,7 +295,7 @@ const quantumIdeaFiles = (): IdeaFile[] => quantumVocabulary().map((term) => {
 
 type IdeaFile = { path: string; text: string; from: string }
 
-const clean = (value: string) => value.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-+|-+$/g, '').replace(/\.+/g, '.').slice(0, 64) || 'idea'
+const clean = (value: string) => value.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-+|-+$/g, '').replace(/\.+/g, '.') || 'idea'
 
 const underIdea = (path: string) => {
   const p = path.replace(/^\.\//, '').replace(/\\/g, '/')
@@ -325,14 +325,14 @@ export const placeInIdea = (raw: unknown, leads: readonly GapLead[] = []): IdeaF
   if (raw === 'quantum') return quantumIdeaFiles()
   if (raw === 'quantum-leads') return quantumGapFiles(leads)
   if (raw === 'crypto bio' || raw === 'crypto-bio') return DRAFTS.filter(cryptoBio).map(draftFile)
-  if (typeof raw === 'string') { const path = inboxPath(raw.slice(0, 48)); return [{ path, text: raw, from: raw }] }
+  if (typeof raw === 'string') { const path = inboxPath(raw); return [{ path, text: raw, from: raw }] }
   if (Array.isArray(raw)) return raw.flatMap((item) => placeInIdea(item, leads))
   if (raw && typeof raw === 'object') {
     const given = raw as { files?: unknown; path?: unknown; text?: unknown }
     if (Array.isArray(given.files)) return given.files.flatMap((item) => placeInIdea(item, leads))
     const text = typeof given.text === 'string' ? given.text : ''
     const asked = typeof given.path === 'string' ? given.path.replace(/^\.\//, '').replace(/\\/g, '/') : ''
-    const path = underIdea(asked) ? asked : inboxPath(asked || text.slice(0, 48))
+    const path = underIdea(asked) ? asked : inboxPath(asked || text)
     return [{ path, text, from: asked || text }]
   }
   return []
@@ -391,7 +391,7 @@ const ideasFrom = (statement: string): string[] => { const out: string[] = []; w
 /** The ideas a set of leads states, each as a file under .idea/leads so next and develop can read it. */
 export const ideaFilesFromLeads = (leads: readonly { id: string; source: string; statement: string }[]): IdeaFile[] => leads.flatMap((lead) => ideasFrom(lead.statement).map((statement, index) => {
   const path = `${IDEA_INBOX}/from-leads/${clean(lead.id)}-${index}-${clean(statement)}.txt`
-  return { path, text: `source: ${lead.source}\ntitle: ${statement.slice(0, 120)}\n\n${statement}\n`, from: lead.id }
+  return { path, text: `source: ${lead.source}\ntitle: ${statement}\n\n${statement}\n`, from: lead.id }
 }))
 
 const childPath = (parent: string, title: string) => {

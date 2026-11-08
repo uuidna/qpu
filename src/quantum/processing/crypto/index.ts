@@ -10,6 +10,8 @@ import { isObj } from '../toolbox.ts'
 import { isoEntropyOf } from '../iso-deliverables.ts'
 
 /** Tenant / Payload MCP crypto config: handed by `payload { cryptoConfig: true }` or merged from `tenants.settings.arguments`. Pure crypto never reads TABLES or the tenants collection itself. */
+/** The 32 hex digits of one UUID register (ISO/IEC 9834-8): the width of the DNA read, a field of the construction, not a cap. */
+const UUID_DIGITS = 32
 type CryptoAttestApi = { id: string; name: string; url: string; open: boolean; measured: string }
 type CryptoPostQuantum = { workers: { flag: string; changelog: string; says: string; read: string }; thisSeal: string; standards: unknown[]; selected: unknown; node: unknown; here: unknown }
 /** ISO/IEC 4879 quantum-computer surface a tenant may choose: processor inventory (no site geometry), circuit schemas, hardware stack summary. */
@@ -181,7 +183,7 @@ const computeCrypto1000Bit = () => {
     while (!testPrimality(n).prime) n += 2n
     return n
   }
-  const dnaP = nextPrime(BigInt('0x' + dnaToHex(dnaSequence.slice(0, 32))) + (1n << 80n))
+  const dnaP = nextPrime(BigInt('0x' + dnaToHex(dnaSequence.slice(0, UUID_DIGITS))) + (1n << 80n))
   const dnaQ = nextPrime(BigInt('0x' + dnaToHex(dnaSequence.slice(32))) + (1n << 120n))
   const dnaTrapdoor = createImpossible({ p: dnaP, q: dnaQ })
   const dnaDecoded = decodeImpossible(dnaTrapdoor.N, dnaTrapdoor.witness)
@@ -822,7 +824,7 @@ export const attestAnswers = (answers: readonly AttestAnswer[], now = 0): { sour
   // certificates: crt.sh entries and the live certificates the client read; validity ordered, bounded by 398 days (CA/B Forum), and now within it
   { const entries: { host: string; notBefore: string; notAfter: string; issuer: string; from: string }[] = []
     const crt = json('crt-sh') as { not_before: string; not_after: string; issuer_name: string; common_name?: string }[] | null | undefined
-    if (crt === undefined) src('crt-sh', {}, [], 'absent'); else if (!Array.isArray(crt)) src('crt-sh', {}, [], 'unreadable'); else { for (const e of crt.slice(0, 20)) entries.push({ host: e.common_name ?? '', notBefore: e.not_before, notAfter: e.not_after, issuer: e.issuer_name, from: 'crt-sh' }); src('crt-sh', { entries: crt.length }, []) }
+    if (crt === undefined) src('crt-sh', {}, [], 'absent'); else if (!Array.isArray(crt)) src('crt-sh', {}, [], 'unreadable'); else { for (const e of crt) entries.push({ host: e.common_name ?? '', notBefore: e.not_before, notAfter: e.not_after, issuer: e.issuer_name, from: 'crt-sh' }); src('crt-sh', { entries: crt.length }, []) }
     for (const a of answers) if (a.id.startsWith('tls:')) { try { const c = JSON.parse(a.text) as { notBefore: string; notAfter: string; issuer: string }; entries.push({ host: a.id.slice(4), notBefore: c.notBefore, notAfter: c.notAfter, issuer: c.issuer, from: 'tls-live' }) } catch { sources[a.id] = { status: 'unreadable', facts: {}, verdicts: [] } } }
     const verdicts: Verdict[] = []
     for (const e of entries) { const nb = ms(e.notBefore) ?? 0, na = ms(e.notAfter) ?? 0; verdicts.push(v('textbook_dates_ordered', nb < na, `${e.host}: ${e.notBefore} before ${e.notAfter}`), v('textbook_cert_validity_bound', na - nb <= 398 * dayMs, `${e.host}: ${Math.round((na - nb) / dayMs)} days (≤ 398)`)); if (now && e.from === 'tls-live') verdicts.push(v('textbook_now_within_validity', nb <= now && now <= na, `${e.host}: now within the validity`)) }

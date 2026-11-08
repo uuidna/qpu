@@ -95,11 +95,11 @@ export const savePage = async (payload: PagesApi, title: string, text: string): 
 }
 
 /** Payload's local API, and nothing beside it. `find` is one page (the answer names the next). `create`, `update` and `delete` are the same API on any collection. */
-export const manageApi = (spec: { collection: string; action?: 'find' | 'create' | 'update' | 'delete'; where?: Record<string, unknown>; page?: number; limit?: number; id?: string | number; data?: Record<string, unknown>; depth?: number; sort?: string; draft?: boolean; override?: boolean }) => {
+export const manageApi = (spec: { collection: string; action?: 'find' | 'create' | 'update' | 'delete'; where?: Record<string, unknown>; page?: number; limit?: number; /** false: one read, every document (Payload's uncapped find) */ pagination?: boolean; id?: string | number; data?: Record<string, unknown>; depth?: number; sort?: string; draft?: boolean; override?: boolean }) => {
   const action = spec.action ?? 'find'
   const collection = spec.collection
   const base = { collection, overrideAccess: spec.override === false ? false as const : true as const }
-  if (action === 'find') return { api: 'find' as const, args: { ...base, ...(spec.where ? { where: spec.where } : {}), page: spec.page ?? 1, ...(spec.limit ? { limit: spec.limit } : {}), depth: spec.depth ?? 0, draft: spec.draft ?? true, ...(spec.sort ? { sort: spec.sort } : {}) } }
+  if (action === 'find') return { api: 'find' as const, args: { ...base, ...(spec.where ? { where: spec.where } : {}), page: spec.page ?? 1, ...(spec.limit ? { limit: spec.limit } : {}), ...(spec.pagination === false ? { pagination: false as const } : {}), depth: spec.depth ?? 0, draft: spec.draft ?? true, ...(spec.sort ? { sort: spec.sort } : {}) } }
   if (action === 'create') return { api: 'create' as const, args: { ...base, data: spec.data ?? {}, draft: true as const, context } }
   if (action === 'update') return { api: 'update' as const, args: { ...base, ...(spec.id != null ? { id: spec.id } : {}), ...(spec.where ? { where: spec.where } : {}), data: spec.data ?? {}, draft: true as const } }
   return { api: 'delete' as const, args: { ...base, ...(spec.id != null ? { id: spec.id } : {}), ...(spec.where ? { where: spec.where } : {}) } }

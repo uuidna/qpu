@@ -15,7 +15,7 @@ const readOne = async (url: string): Promise<OnlinePage> => {
         'user-agent': 'Mozilla/5.0 (compatible; QPUResearch/1.0; +https://qpu.uuidna.com)',
       },
     })
-    return { url, status: res.status, text: (await res.text()).slice(0, 4000000) }
+    return { url, status: res.status, text: (await res.text()) }
   } catch {
     return { url, status: 0, text: '' }
   }

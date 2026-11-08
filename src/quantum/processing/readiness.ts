@@ -85,7 +85,7 @@ export const planBorder = (discovery: Pick<Discovery, 'doors' | 'capabilities'> 
 
 /** The border read: every answer or refusal, and whether any door sealed or verified the theorem. */
 export const getBorder = (answers: readonly BorderAnswer[]): Border[] => answers.map((x) => {
-  if (x.refusal !== undefined) return { door: x.door, host: x.host, args: Object.keys(x.arguments ?? {}), verdict: null, receipt: null, sealed: false, note: null, refusal: x.refusal.slice(0, 300) }
+  if (x.refusal !== undefined) return { door: x.door, host: x.host, args: Object.keys(x.arguments ?? {}), verdict: null, receipt: null, sealed: false, note: null, refusal: x.refusal }
   const a = (x.answer ?? {}) as Record<string, unknown>
   const verdict = typeof a.verdict === 'string' ? a.verdict : typeof (a.verdict as { verdict?: string } | undefined)?.verdict === 'string' ? (a.verdict as { verdict: string }).verdict : null
   const sealed = a.deposited === true || a.sealed === true || a.verified === true || /^(VERIFIED|PROVEN)$/.test(verdict ?? '')
@@ -120,7 +120,7 @@ export const getReadinessPage = (p: { unit: string; date: string; measured: stri
     '| Block | Example | Hue | HSL | CMYK |', '|---|---|---:|---|---|', ...Object.entries(a.auras).map(([id, x]) => `| ${cell(id)} | ${cell(x.example)} | ${cell(x.hue ?? '—')} | ${cell(x.hsl ?? x.error ?? '')} | ${cell(x.cmyk ? x.cmyk.join(', ') : '')} |`), '',
     '## Address agreement', '', `Probe \`${a.address.probe}\`: here ${a.address.here}, unit ${a.address.unit ?? 'no answer'} — ${a.address.agree ? 'agree' : 'disagree'}. ${a.address.note}`, '',
     '## The border', '', `\`${p.probe.key}\` (${p.probe.statement ?? 'statement not in the ledger yet'}) offered to every door discovery found that takes a statement and answers a verdict (${p.border.length} door(s), discovered ${p.discovered?.slice(0, 10) ?? 'never'}). ${p.sealedBy.length ? `Sealed or verified by: ${p.sealedBy.join(', ')}.` : "No door sealed or verified it: qpu's proofs are not citable at the border; lead gap-theorems-unsealed stays blocked on the unit's doors."}`, '',
-    '| Door | Asked with | Verdict | Receipt | Note or refusal |', '|---|---|---|---|---|', ...p.border.map((b) => `| ${cell(b.door)} | ${cell(b.args.join(', ') || '—')} | ${cell(b.verdict ?? '—')} | ${cell(b.receipt ?? '—')} | ${cell((b.note ?? b.refusal ?? '').replace(/\|/g, '\\|').slice(0, 200))} |`), '',
+    '| Door | Asked with | Verdict | Receipt | Note or refusal |', '|---|---|---|---|---|', ...p.border.map((b) => `| ${cell(b.door)} | ${cell(b.args.join(', ') || '—')} | ${cell(b.verdict ?? '—')} | ${cell(b.receipt ?? '—')} | ${cell((b.note ?? b.refusal ?? '').replace(/\|/g, '\\|'))} |`), '',
     '## The vortex, cross-checked with the unit', '', (() => { const v = getVortex((a.vortex ?? {}) as Parameters<typeof getVortex>[0]); return `${v.why}. ${v.triadOneSided ? 'The unit\'s triad door answers 3, 6, 9 alone; this tree carries 7, 4, 1 beside it (triad_reflect).' : ''} ${v.doubleTorusRoot ? `The tree\'s ${v.dims} block addresses folded on the unit\'s double torus: root \`${v.doubleTorusRoot}\`.` : 'The double torus was not reached.'}` })(), '',
     '## Rights', '', a.rights.drift.length ? `Drift between the unit's rights and this tree's licence module: ${a.rights.drift.join('; ')}` : `This tree's licence module matches the unit's rights (address ${a.rights.licenseAddress}, imprint ${a.rights.imprint}, receipt ${a.rights.receipt}).`, ''].join('\n')
 }

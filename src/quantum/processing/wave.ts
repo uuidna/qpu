@@ -21,15 +21,15 @@ export const createWaveRequests = (leads: readonly Lead[], treeFacts: readonly F
 
 /** What came back, in one line, by verifier. */
 const noteVerifier = (verifier: string, text: string): string => {
-  const title = () => { const m = /<title>([^<]*)<\/title>/i.exec(text); return m ? `title="${m[1]!.trim().slice(0, 100)}"` : `${text.length} chars` }
+  const title = () => { const m = /<title>([^<]*)<\/title>/i.exec(text); return m ? `title="${m[1]!.trim()}"` : `${text.length} chars` }
   try {
     if (verifier === 'oeis') { const j = JSON.parse(text); return `${Array.isArray(j) ? j.length : j.results?.length ?? j.count ?? 0} sequence results` }
-    if (verifier === 'github') { const j = JSON.parse(text); return `description="${(j.description ?? '').slice(0, 80)}" language=${j.language}` }
+    if (verifier === 'github') { const j = JSON.parse(text); return `description="${(j.description ?? '')}" language=${j.language}` }
     if (/^(zenodo|datacite|crossref)$/.test(verifier)) { const j = JSON.parse(text); return JSON.stringify(j.metadata?.creators ?? j.data?.attributes?.creators ?? j.message?.author ?? []) }
-    if (verifier === 'wikipedia') { const j = JSON.parse(text); return `extract="${(j.extract ?? '').slice(0, 100)}"` }
-    if (verifier === 'cloudflare-docs') { const j = JSON.parse(getEventData(text)); const body: string = j.result?.content?.[0]?.text ?? JSON.stringify(j.error ?? j.result ?? '').slice(0, 100); return `${(body.match(/<url>|"url"|https:\/\/developers\.cloudflare\.com/g) ?? []).length} result(s): ${body.replace(/\s+/g, ' ').slice(0, 100)}` }
+    if (verifier === 'wikipedia') { const j = JSON.parse(text); return `extract="${(j.extract ?? '')}"` }
+    if (verifier === 'cloudflare-docs') { const j = JSON.parse(getEventData(text)); const body: string = j.result?.content?.[0]?.text ?? JSON.stringify(j.error ?? j.result ?? ''); return `${(body.match(/<url>|"url"|https:\/\/developers\.cloudflare\.com/g) ?? []).length} result(s): ${body.replace(/\s+/g, ' ')}` }
   } catch { /* fall through to the title */ }
-  if (verifier === 'arxiv') { const t = /<title>([^<]+)<\/title>/g; t.exec(text); const m = t.exec(text); return m ? `entry="${m[1]!.trim().slice(0, 100)}"` : 'no entry' }
+  if (verifier === 'arxiv') { const t = /<title>([^<]+)<\/title>/g; t.exec(text); const m = t.exec(text); return m ? `entry="${m[1]!.trim()}"` : 'no entry' }
   return title()
 }
 

@@ -63,7 +63,7 @@ type MachineReq = { headers?: { get?: (k: string) => string | null }; user?: { i
 const answer = (x: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(x) }], structuredContent: x as Record<string, unknown>, _meta: { ui: { resourceUri: 'ui://qpu/repository' } } })
 /** The facts the workflow rules read and the times the ETA reads, from the docket: the machine entries, the last receipt of next among them. */
 const factsOf = async (req: MachineReq) => {
-  const r = (await req.payload.find({ collection: 'entries', where: { kind: { equals: 'machine' } }, sort: '-createdAt', limit: 24, depth: 0, overrideAccess: true }).catch(() => ({ docs: [] }))) as { docs: { body?: { receipt?: unknown; ms?: number; action?: string } }[] }
+  const r = (await req.payload.find({ collection: 'entries', where: { kind: { equals: 'machine' } }, sort: '-createdAt', pagination: false, depth: 0, overrideAccess: true }).catch(() => ({ docs: [] }))) as { docs: { body?: { receipt?: unknown; ms?: number; action?: string } }[] }
   const receipt = r.docs.find((d) => d.body?.action === 'next' && d.body?.receipt)?.body?.receipt ?? null
   const times: Record<string, number[]> = {}
   for (const d of r.docs) if (typeof d.body?.ms === 'number' && d.body.action) (times[d.body.action] ??= []).push(d.body.ms)

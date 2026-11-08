@@ -332,11 +332,11 @@ export const quantumStandards = () => {
 /** The clause and the English name of every quantum term. No simulator run. */
 export const quantumTermNames = (): readonly { clause: string; name: string }[] => TERMS.map(([clause, name]) => ({ clause, name }))
 
-const pageSlug = (title: string) => (title.replace(/ /g, '-').replace(/[^\w-]+/g, '').toLowerCase().slice(0, 80) || 'idea')
+const pageSlug = (title: string) => (title.replace(/ /g, '-').replace(/[^\w-]+/g, '').toLowerCase() || 'idea')
 
 /** Each quantum standard as a lead the MCP `leads` tool lists and the e2e door writes as a website page. */
 export const quantumStandardLeads = () => quantumVocabulary().map((v) => {
-  const title = `${v.clause} ${v.name}`.slice(0, 120)
+  const title = `${v.clause} ${v.name}`
   const slug = pageSlug(title)
   const id = `iso-4879-${v.clause.replace(/\./g, '-')}`
   const served = v.holds

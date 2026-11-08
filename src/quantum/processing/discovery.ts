@@ -166,7 +166,7 @@ const getResult = (a: Answer): { result?: any; error?: string } => {
     if (j.result?.structuredContent !== undefined) return { result: j.result.structuredContent }
     if (j.result?.content?.[0]) { try { return { result: JSON.parse(j.result.content[0].text) } } catch { return { result: j.result.content[0].text } } }
     return { result: j.result }
-  } catch { return { error: `not JSON: ${a.text.slice(0, 80)}` } }
+  } catch { return { error: `not JSON: ${a.text}` } }
 }
 
 /** A door's capability from its contract: the properties it takes (of the ones a client can fill) and the keys it answers. */
@@ -226,7 +226,7 @@ export const detect = (r: { status: number; type: string; text: string }): { det
   } catch { /* not json */ }
   if (/^openapi:\s*\d/m.test(t) || /^swagger:/m.test(t)) { const paths = (t.match(/^\s{2}(\/[^:\s]+):/gm) ?? []).map((l) => l.trim().replace(/:$/, '')); return { detected: 'openapi (yaml)', note: `${paths.length} paths, ${t.length.toLocaleString('en-US')} chars`, paths } }
   if (/<OAI-PMH|<Identify>/.test(t)) return { detected: 'oai-pmh identify', note: /<repositoryName>([^<]*)/.exec(t)?.[1] ?? 'identify' }
-  if (/<html/i.test(t)) return { detected: 'html page', note: /<title>([^<]*)/i.exec(t)?.[1]?.trim().slice(0, 80) ?? 'a page: documentation for humans, no machine contract' }
+  if (/<html/i.test(t)) return { detected: 'html page', note: /<title>([^<]*)/i.exec(t)?.[1]?.trim() ?? 'a page: documentation for humans, no machine contract' }
   return { detected: r.type.split(';')[0] || 'unknown', note: `${t.length.toLocaleString('en-US')} chars` }
 }
 
@@ -313,7 +313,7 @@ export const createRegistryRequests = (lead: { id: string; statement: string; so
   const words = listRegistryWords(lead, at)
   return [...words.flatMap((word) => MCP_DIRECTORIES.filter((d) => d.read === 'search').map((d) => ({ id: d.id === 'official' ? `registry:${lead.id}:${word}` : `registry:${lead.id}:${word}:${d.id}`, lead: lead.id, word, directory: d.id, method: 'GET' as const, url: d.url + encodeURIComponent(word), accept: 'application/json' }))),
     // a directory that is an MCP server is asked by POST: its search tool called with the word (JSON-RPC tools/call)
-    ...words.flatMap((word) => MCP_DIRECTORIES.filter((d) => d.read === 'mcp' && d.tool).map((d) => ({ id: `registry:${lead.id}:${word}:${d.id}`, lead: lead.id, word, directory: d.id, method: 'POST' as const, url: d.url, accept: 'application/json, text/event-stream', body: rpcBody('tools/call', { name: d.tool, arguments: { q: word, return: 'apis', limit: 10 } }) }))),
+    ...words.flatMap((word) => MCP_DIRECTORIES.filter((d) => d.read === 'mcp' && d.tool).map((d) => ({ id: `registry:${lead.id}:${word}:${d.id}`, lead: lead.id, word, directory: d.id, method: 'POST' as const, url: d.url, accept: 'application/json, text/event-stream', body: rpcBody('tools/call', { name: d.tool, arguments: { q: word, return: 'apis' } }) }))),
     ...MCP_DIRECTORIES.filter((d) => d.read === 'sitemap').flatMap((d) => d.url.split(' ').map((url, i) => ({ id: `registry:${lead.id}:${d.id}:${i}`, lead: lead.id, word: words.join(' '), directory: d.id, method: 'GET' as const, url, accept: 'application/xml' })))]
 }
 type RelatedServer = { name: string; description: string; remotes: string[]; word: string; directory?: string; page?: string }
@@ -333,9 +333,9 @@ export const listRelatedServers = (lead: string, answers: readonly { id: string;
       const raw = a.text.trimStart().startsWith('{') ? a.text : (a.text.split('data: ').pop() ?? ''), rpc = JSON.parse(raw) as { jsonrpc?: string; result?: { content?: { text?: string }[] } }
       const j = (rpc.jsonrpc ? JSON.parse(rpc.result?.content?.[0]?.text ?? '{}') : rpc) as { servers?: { server?: { name?: string; description?: string; remotes?: { url?: string }[] }; name?: string; qualifiedName?: string; description?: string; remotes?: { url?: string }[] }[]; data?: { aid?: string; description?: string; humanURL?: string }[]; apis?: { top?: { aid?: string; description?: string; humanURL?: string }[] } }
       // apis.io answers APIs, not servers: each by its id, its provider's page beside it
-      for (const x of j.data ?? j.apis?.top ?? []) if (x.aid && !servers.has(x.aid)) servers.set(x.aid, { name: x.aid, description: (x.description ?? '').slice(0, 200), remotes: [], word: a.word ?? '', directory: 'apis.io', ...(x.humanURL ? { page: x.humanURL } : {}) })
+      for (const x of j.data ?? j.apis?.top ?? []) if (x.aid && !servers.has(x.aid)) servers.set(x.aid, { name: x.aid, description: (x.description ?? ''), remotes: [], word: a.word ?? '', directory: 'apis.io', ...(x.humanURL ? { page: x.humanURL } : {}) })
       answered += 1
-      for (const x of j.servers ?? []) { const srv = x.server ?? x; const name = srv.name ?? (x as { qualifiedName?: string }).qualifiedName ?? ''; if (!name || servers.has(name)) continue; servers.set(name, { name, description: (srv.description ?? '').slice(0, 200), remotes: (srv.remotes ?? []).map((r) => r.url).filter((u): u is string => typeof u === 'string' && /^https?:\/\//.test(u)), word: a.word ?? '' }) }
+      for (const x of j.servers ?? []) { const srv = x.server ?? x; const name = srv.name ?? (x as { qualifiedName?: string }).qualifiedName ?? ''; if (!name || servers.has(name)) continue; servers.set(name, { name, description: (srv.description ?? ''), remotes: (srv.remotes ?? []).map((r) => r.url).filter((u): u is string => typeof u === 'string' && /^https?:\/\//.test(u)), word: a.word ?? '' }) }
     } catch { /* not the registry's shape: nothing related read from it */ }
   }
   const extend = [...servers.values()].flatMap((s) => s.remotes.map((url) => ({ id: `extend:${lead}:${s.name}:${new URL(url).host}`, server: s.name, method: 'POST' as const, url, accept: 'application/json, text/event-stream', body: rpcBody('tools/list') })))
@@ -388,7 +388,7 @@ export const listRegistryServers = (answers: readonly { status: number; text: st
         const remotes = (s.remotes ?? []).filter((r) => typeof r.url === 'string' && r.url.startsWith('https://')).map((r) => ({ type: String(r.type ?? 'streamable-http'), url: r.url! }))
         const packages = (s.packages ?? []).filter((p) => p.identifier).map((p) => ({ registryType: String(p.registryType ?? 'npm'), identifier: String(p.identifier) }))
         const first = remotes[0]
-        servers.set(name, { name, description: String(s.description ?? '').slice(0, 200), version: typeof s.version === 'string' ? s.version : null, remotes, packages, installable: !!first, install: first ? { tool: 'extend', arguments: { install: { name, url: first.url } } } : null })
+        servers.set(name, { name, description: String(s.description ?? ''), version: typeof s.version === 'string' ? s.version : null, remotes, packages, installable: !!first, install: first ? { tool: 'extend', arguments: { install: { name, url: first.url } } } : null })
       }
     } catch { /* not the registry's shape: nothing read from it */ }
   }

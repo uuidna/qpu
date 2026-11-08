@@ -88,7 +88,7 @@ export const LANGUAGE: Toolbox = {
       const cov = getLocaleCoverage().find((c) => c.locale === 'bg')!
       check('language:coverage-measured', cov.terms > 0 && Array.isArray(cov.missing), `bg: ${cov.terms} terms, ${cov.missing.length} surface terms missing${cov.missing.length ? ` (${cov.missing.slice(0, 6).join(', ')})` : ''}`)
       const p = writeProse({ name: 'tree', idea: 'the tree knows itself', instructions: 'call match' }, 'clay', { total: 54, holding: 54, maxBits: 33 }, 'bg')
-      check('language:prose-bg', p.sentences.length === 3 && p.text.includes('54') && /инструмент/.test(p.text), p.text.slice(0, 160))
+      check('language:prose-bg', p.sentences.length === 3 && p.text.includes('54') && /инструмент/.test(p.text), p.text)
       const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement: 'Разложи Ⰺⰴ с Shor', locale: 'bg' } } })
       check('language:match-in-bg', 'result' in r && r.result.structuredContent.read?.verdictIn === 'обслужена', 'result' in r ? `${r.result.structuredContent.verdict} → ${r.result.structuredContent.read?.verdictIn}` : r.error.message)
       return done()

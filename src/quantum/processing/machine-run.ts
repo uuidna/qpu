@@ -11,6 +11,7 @@ import { dirname, join } from 'node:path'
 import { availableParallelism, homedir, tmpdir, totalmem } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { MACHINE_ACTIONS, MACHINE_RUNNER, NEXT_STEPS, forecastTimes, redact, type NextStep } from './machine.ts'
+import { clock, stamp } from './unit/clock.ts'
 
 export type MachineProgress = { progress: number; total?: number; message: string }
 type Run = { status: number | null; stdout: string; stderr: string; ms: number; timedOut: boolean }
@@ -23,7 +24,7 @@ const cmdOf = (cmd: string) => (cmd === 'lake' ? lakeOf() : cmd)
 /** One command with no shell: its lines streamed, the whole kept, the process group killed at the budget (a grandchild outlived its npx parent). */
 export const spawnRun = (cmd: string, args: readonly string[], o: { cwd: string; input?: string | null; budgetMs?: number; env?: Record<string, string>; onLine?: (line: string) => void } ): Promise<Run> =>
   new Promise((resolve) => {
-    const t0 = Date.now()
+    const t0 = clock()
     const child = spawn(cmdOf(cmd), [...args], { cwd: o.cwd, shell: false, detached: process.platform !== 'win32', env: { ...process.env, FORCE_COLOR: '0', ...(o.env ?? {}) } })
     let stdout = '', stderr = '', timedOut = false
     const lineOf = (stream: 'stdout' | 'stderr') => { let rest = ''; return (chunk: Buffer) => {
@@ -34,18 +35,19 @@ export const spawnRun = (cmd: string, args: readonly string[], o: { cwd: string;
     child.stdout.on('data', lineOf('stdout'))
     child.stderr.on('data', lineOf('stderr'))
     const timer = o.budgetMs ? setTimeout(() => { timedOut = true; try { process.kill(-child.pid!, 'SIGKILL') } catch { child.kill('SIGKILL') } }, o.budgetMs) : null
-    child.on('error', (e) => { if (timer) clearTimeout(timer); stderr += String(e); resolve({ status: null, stdout, stderr, ms: Date.now() - t0, timedOut }) })
-    child.on('close', (code) => { if (timer) clearTimeout(timer); resolve({ status: code, stdout, stderr, ms: Date.now() - t0, timedOut }) })
+    child.on('error', (e) => { if (timer) clearTimeout(timer); stderr += String(e); resolve({ status: null, stdout, stderr, ms: clock() - t0, timedOut }) })
+    child.on('close', (code) => { if (timer) clearTimeout(timer); resolve({ status: code, stdout, stderr, ms: clock() - t0, timedOut }) })
     child.stdin.end(o.input ?? '')
   })
 
-// A door step's arguments resolved in the child: { $file } is that file's text, { $module } an export of that module, { $exec } the output of the command over the script text a door answers.
+// A door step's arguments resolved in the child: { $file } is that file's text, { $module } an export of that module, { $texts: [paths] } those files as { path: text }, { $exec } the output of the command over the script text a door answers.
 type Call = (name: string, args: unknown) => { result?: { structuredContent?: any }; error?: { message: string } }
 const resolveArgs = async (x: unknown, cwd: string, call: Call): Promise<unknown> => {
   if (Array.isArray(x)) return Promise.all(x.map((v) => resolveArgs(v, cwd, call)))
   if (!x || typeof x !== 'object') return x
   const o = x as Record<string, unknown>
   if (typeof o.$file === 'string' && Object.keys(o).length === 1) return readFileSync(join(cwd, o.$file), 'utf8')
+  if (Array.isArray(o.$texts) && Object.keys(o).length === 1) return Object.fromEntries((o.$texts as string[]).map((p) => [p, readFileSync(join(cwd, p), 'utf8')]))
   if (o.$module && typeof o.$module === 'object' && Object.keys(o).length === 1) { const m = o.$module as { path: string; export: string }; return (await import(join(cwd, m.path)))[m.export] }
   if (o.$exec && typeof o.$exec === 'object' && Object.keys(o).length === 1) {
     const e = o.$exec as { cmd: string; args: string[]; script: { tool: string; arguments: Record<string, unknown>; key: string } }
@@ -68,7 +70,7 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   const outputs = [...(s && typeof s.path === 'string' && typeof s.text === 'string' ? [{ path: s.path, text: s.text }] : []), ...(Array.isArray(s?.files) ? s.files : [])] as { path: string; text: string }[]
   if (write) for (const o of outputs) if (typeof o.path === 'string' && typeof o.text === 'string') { const f = join(cwd, o.path); mkdirSync(dirname(f), { recursive: true }); if (!existsSync(f) || readFileSync(f, 'utf8') !== o.text) { writeFileSync(f, o.text); wrote.push(o.path) } }
   if (write) for (const l of (Array.isArray(s?.links) ? s.links : []) as { path: string; target: string }[]) { const p = join(cwd, l.path); mkdirSync(dirname(p), { recursive: true }); let current: string | null = null; try { current = readlinkSync(p) } catch { current = null }; if (current !== l.target) { if (current !== null) unlinkSync(p); if (!existsSync(p)) { symlinkSync(l.target, p); wrote.push(l.path) } } }
-  const brief = s && typeof s === 'object' ? Object.fromEntries(Object.entries(s).filter(([k, v]) => k !== 'text' && (typeof v !== 'object' || v === null)).slice(0, 24)) : s
+  const brief = s && typeof s === 'object' ? Object.fromEntries(Object.entries(s).filter(([k, v]) => k !== 'text' && (typeof v !== 'object' || v === null))) : s
   if (write && outputs.length > 1) (brief as Record<string, unknown>).files = outputs.length
   console.log(`${write ? (wrote.length ? `wrote ${wrote.join(', ')}` : 'unchanged') : 'answered'} ${JSON.stringify(brief)}`)
   if (s && s.passed === false) process.exitCode = 1
@@ -79,7 +81,7 @@ export type Receipt = { date: string; head: string; runner: string; offline: boo
 /** next: the waves of NEXT_STEPS run at the root, each step a child, the receipt returned and printed as the last line. */
 export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolean; generators?: boolean; onLine?: (line: string) => void }): Promise<Receipt> => {
   const say = (l: string) => { console.log(l); o.onLine?.(l) }
-  const wall0 = Date.now()
+  const wall0 = clock()
   const heapMb = Number(/--max-old-space-size[= ](\d+)/.exec(process.env.NODE_OPTIONS ?? '')?.[1]) || 4096
   const lanes = Math.max(1, Math.min(availableParallelism(), Math.floor(((totalmem() / 1048576) * 0.7) / heapMb)))
   const head = (await spawnRun('git', ['rev-parse', '--short', 'HEAD'], { cwd: o.cwd })).stdout.trim()
@@ -95,17 +97,17 @@ export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolea
     return out
   }
   const steps = (await expand()).filter((s) => !o.generators || s.via === 'generator' || s.name === 'lean')
-  const receipt: Receipt = { date: new Date().toISOString(), head, runner: MACHINE_RUNNER, offline: o.offline === true, fast: o.fast === true, lanes, steps: [], green: 0, red: 0, skipped: 0, wallMs: 0, sumMs: 0, speedup: null }
+  const receipt: Receipt = { date: stamp(), head, runner: MACHINE_RUNNER, offline: o.offline === true, fast: o.fast === true, lanes, steps: [], green: 0, red: 0, skipped: 0, wallMs: 0, sumMs: 0, speedup: null }
   const run = async (s: NextStep, attempt: number): Promise<boolean> => {
     const skip = s.needs === 'online' && o.offline ? 'offline' : s.long && o.fast ? 'fast' : null
     if (skip) { receipt.steps.push({ name: s.name, status: 'skipped', ms: 0, via: s.via, tail: skip, attempt }); say(`· ${s.name}: ${skip}`); return true }
-    const t0 = Date.now()
+    const t0 = clock()
     const r = s.via === 'process' ? await spawnRun(s.cmd!, s.args!, { cwd: o.cwd, budgetMs: s.budgetMs }) : await spawnRun(process.execPath, [SELF, 'step', s.tool!, JSON.stringify(s.arguments ?? {}), ...(s.via === 'generator' ? ['--write'] : [])], { cwd: o.cwd, budgetMs: s.budgetMs })
     const out = `${r.stdout}${r.stderr ? `\n${r.stderr}` : ''}`, ok = r.status === 0 && !r.timedOut
     const failing = [...new Set(out.split('\n').filter((l) => /^(✖|✗|not ok) |error TS\d+|^\s*AssertionError|^error:/.test(l)))]
     const tail = redact((failing.length ? failing.join('\n') + '\n' : '') + (r.timedOut ? `⏱ killed at its budget of ${s.budgetMs / 1000} s\n` : '') + out.trim().split('\n').slice(-8).join('\n'), o.cwd, homedir())
-    receipt.steps.push({ name: s.name, status: ok ? 'green' : 'red', ms: Date.now() - t0, via: s.via, tail, attempt })
-    say(`${ok ? '✓' : r.timedOut ? '⏱' : '✗'} ${s.name} (${((Date.now() - t0) / 1000).toFixed(1)} s)`)
+    receipt.steps.push({ name: s.name, status: ok ? 'green' : 'red', ms: clock() - t0, via: s.via, tail, attempt })
+    say(`${ok ? '✓' : r.timedOut ? '⏱' : '✗'} ${s.name} (${((clock() - t0) / 1000).toFixed(1)} s)`)
     if (!ok) for (const l of tail.split('\n').slice(0, 6)) say(`  ${l}`)
     return ok
   }
@@ -119,7 +121,7 @@ export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolea
   // the last attempt of each step decides
   const last = Object.values(Object.fromEntries(receipt.steps.map((s) => [s.name, s])))
   receipt.green = last.filter((s) => s.status === 'green').length; receipt.red = last.filter((s) => s.status === 'red').length; receipt.skipped = last.filter((s) => s.status === 'skipped').length
-  receipt.wallMs = Date.now() - wall0; receipt.sumMs = receipt.steps.reduce((n, s) => n + s.ms, 0); receipt.speedup = receipt.wallMs ? Number((receipt.sumMs / receipt.wallMs).toFixed(2)) : null
+  receipt.wallMs = clock() - wall0; receipt.sumMs = receipt.steps.reduce((n, s) => n + s.ms, 0); receipt.speedup = receipt.wallMs ? Number((receipt.sumMs / receipt.wallMs).toFixed(2)) : null
   say(`next: ${receipt.green} green, ${receipt.red} red, ${receipt.skipped} skipped in ${(receipt.wallMs / 1000).toFixed(1)} s (${receipt.lanes} lanes, speedup ${receipt.speedup})`)
   console.log(`RECEIPT ${JSON.stringify(receipt)}`)
   return receipt
@@ -136,13 +138,13 @@ export const runMachine = async (args: Record<string, unknown>, cwd: string, onP
   const at = plan.worktree ? join(cwd, plan.worktree) : cwd
   const eta = forecastTimes(o.times?.[plan.action] ?? [])
   let progress = 0
-  const t0 = Date.now()
+  const t0 = clock()
   let receipt: Receipt | null = null, run: Run
   if (plan.action === 'next' || plan.action === 'regenerate') {
     const flags = plan.command.args
     const lines: string[] = []
     receipt = await runNext({ cwd: at, offline: flags.includes('--offline'), fast: flags.includes('--fast'), generators: plan.action === 'regenerate', onLine: (l) => { lines.push(l); if (STEP_LINE.test(l)) onProgress({ progress: ++progress, message: l }) } })
-    run = { status: receipt.red ? 1 : 0, stdout: lines.join('\n'), stderr: '', ms: Date.now() - t0, timedOut: false }
+    run = { status: receipt.red ? 1 : 0, stdout: lines.join('\n'), stderr: '', ms: clock() - t0, timedOut: false }
   } else run = await spawnRun(plan.command.cmd, plan.command.args, { cwd: at, input: plan.input ?? null, onLine: (l) => onProgress({ progress: ++progress, message: l }) })
   const record = repository({ machine: { record: { action: plan.action, command: plan.command, status: run.status, stdout: run.stdout, stderr: run.stderr, ms: run.ms, root: at, home: homedir() } } }) as { says: string; ok: boolean; redacted: number; entry: { id: string; kind: string; from: string; body: Record<string, unknown>; sha256: string } }
   if (receipt) record.entry.body = { ...record.entry.body, receipt }
@@ -152,7 +154,8 @@ export const runMachine = async (args: Record<string, unknown>, cwd: string, onP
 // the runner from the command line: `step <tool> <json> [--write]` (the child of a door step), `next [--offline] [--fast]`, or any allowed action
 if (process.argv[1] && SELF === fileURLToPath(new URL(process.argv[1], 'file://')) ) {
   const [, , action, ...rest] = process.argv
-  if (action === 'step') await runStepChild(rest[0]!, rest[1] ?? '{}', rest.includes('--write'), process.cwd())
+  // the arguments as JSON, or @<file> holding the JSON (a list of texts outgrows an argument)
+  if (action === 'step') await runStepChild(rest[0]!, rest[1]?.startsWith('@') ? readFileSync(rest[1].slice(1), 'utf8') : rest[1] ?? '{}', rest.includes('--write'), process.cwd())
   else if (action === 'next') { const r = await runNext({ cwd: process.cwd(), offline: rest.includes('--offline'), fast: rest.includes('--fast'), generators: rest.includes('--generators') }); process.exitCode = r.red ? 1 : 0 }
   else if (action) { const r = await runMachine({ action, confirm: rest.includes('--confirm'), message: rest.includes('-m') ? rest[rest.indexOf('-m') + 1] : undefined, branch: rest.includes('--branch') ? rest[rest.indexOf('--branch') + 1] : undefined }, process.cwd()); console.log(JSON.stringify(r.answer)); process.exitCode = (r as { record?: { ok: boolean } }).record?.ok === false ? 1 : 0 }
   else console.log(`${MACHINE_RUNNER}: step <tool> <json> [--write] | next [--offline] [--fast] [--generators] | ${MACHINE_ACTIONS.map((a) => a.id).join(' | ')}`)

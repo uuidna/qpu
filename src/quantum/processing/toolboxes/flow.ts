@@ -17,6 +17,7 @@ import { flowWidget } from '../widgets.ts'
 import { createE2eRequests, decodeE2e, getE2ePage, tree, type E2eAnswer } from '../e2e.ts'
 import { standardsSeeds } from '../standards-e2e.ts'
 import { TENANTS } from '../unit/tenants.ts'
+import { clock, stamp } from '../unit/clock.ts'
 
 const BLOCK_IDS = new WeakMap<readonly unknown[], { example: string; id: string | undefined }[]>()
 /** The content address of every example's block, computed once per examples registry (a readiness call must not replay the examples). */
@@ -50,7 +51,7 @@ const discover = defineTool('flow', {
     const followUps = listFollowUps(answers)
     if (followUps.length) return { phase: 'follow-ups' as const, requests: followUps.length, requestList: followUps }
     const discovery = getDiscovery(answers, VERIFIERS)
-    return { phase: 'discovery' as const, hosts: discovery.hosts.length, doors: discovery.doors.length, statementVerdict: discovery.capabilities.statementVerdict.length, leads: discovery.leads.length, discovery, page: getDiscoveryPage(discovery, new Date().toISOString()) }
+    return { phase: 'discovery' as const, hosts: discovery.hosts.length, doors: discovery.doors.length, statementVerdict: discovery.capabilities.statementVerdict.length, leads: discovery.leads.length, discovery, page: getDiscoveryPage(discovery, stamp()) }
   },
   widget: flowWidget,
 })
@@ -64,7 +65,7 @@ const e2e = defineTool('flow', {
     const hosts = Array.isArray(args.hosts) ? args.hosts.map(String) : [...Object.keys(TENANTS).map((h) => `https://${h}/api/mcp`), 'https://qpu.ceci.workers.dev/api/mcp']
     if (!Array.isArray(args.answers)) { const requests = createE2eRequests(ctx, hosts, Array.isArray(args.tools) ? args.tools.map(String) : undefined); return { phase: 'requests' as const, hosts, combos: new Set(requests.map((r) => r.combo)).size, requests: requests.length, requestList: requests } }
     const r = decodeE2e(args.answers as E2eAnswer[], tree(ctx))
-    return { phase: 'decoded' as const, hosts, ...r, page: getE2ePage(r, new Date().toISOString(), hosts, { remaining: 0 }) }
+    return { phase: 'decoded' as const, hosts, ...r, page: getE2ePage(r, stamp(), hosts, { remaining: 0 }) }
   },
   widget: flowWidget,
 })
@@ -96,7 +97,7 @@ const wave = defineTool('flow', {
     const waveAccount = processPhysics(followWave(chosen.map((lead) => ({ id: lead.id, statement: lead.statement }))))
     if (!Array.isArray(args.results)) { const requests = createWaveRequests(chosen); return { phase: 'requests' as const, leads: chosen.length, requests: requests.length, requestList: requests, hz: waveAccount.hz, follow: waveAccount } }
     const w = getWave(args.results as WaveResult[], (args.contracts ?? {}) as Record<string, string[]>)
-    return { phase: 'results' as const, leads: chosen.length, hz: waveAccount.hz, follow: waveAccount, requests: w.results.length, reachable: w.reachable, summary: w.summary, results: w.results, page: getWavePage(w, chosen.length, new Date().toISOString(), Object.keys((args.contracts ?? {}) as object).length > 0) }
+    return { phase: 'results' as const, leads: chosen.length, hz: waveAccount.hz, follow: waveAccount, requests: w.results.length, reachable: w.reachable, summary: w.summary, results: w.results, page: getWavePage(w, chosen.length, stamp(), Object.keys((args.contracts ?? {}) as object).length > 0) }
   },
   widget: flowWidget,
 })
@@ -125,7 +126,7 @@ const readiness = defineTool('flow', {
     const border = [...getBorder(args.border as BorderAnswer[]), ...plan.unfillable]
     const sealedBy = border.filter((b) => b.sealed).map((b) => b.door)
     const answers = args.unit as UnitAnswers
-    const date = new Date().toISOString()
+    const date = stamp()
     return { phase: 'judged' as const, served: classes.served, refuted: classes.refuted, trial: classes.trial, ready: answers.readiness.ready, sealedBy: sealedBy.length, ...base, border, sealedByDoors: sealedBy, page: getReadinessPage({ unit: typeof args.unitUrl === 'string' ? args.unitUrl : UNIT_MCP, date, measured: verification?.date ?? null, discovered: discovery?.date ?? null, probe, judged, classes, sources, border, sealedBy, answers }) }
   },
   widget: flowWidget,
@@ -157,9 +158,9 @@ const imagine = defineTool('flow', {
     if (args.all === true) return allAsUuid(ctx.leads)
     if (args.frameworks !== undefined) { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'payload', arguments: { frameworks: args.frameworks } } }); if (r.error) throw new Error(r.error.message); return r.result.structuredContent as never }
     if (args.clay === true || isObj(args.clay)) return claySession(ctx.leads, args.clay === true ? true : args.clay as { session?: unknown; microdata?: unknown }) as never
-    const started = Date.now()
+    const started = clock()
     const im = imagineLeads(ctx.handle, ctx.examples, ctx.leads, openOf(args.open, ctx.leads, Array.isArray(args.leads) ? args.leads.map(String) : undefined), statementsOf(args.statements))
-    return { leads: im.leads, served: im.verdicts.served ?? 0, impossible: im.verdicts.impossible ?? 0, unknown: im.verdicts.unknown ?? 0, verifyRequests: im.verifyRequests, imaginedLeads: im.imaginedLeads, ms: Date.now() - started, imagination: im, page: getImaginePage(im, new Date().toISOString(), Date.now() - started) }
+    return { leads: im.leads, served: im.verdicts.served ?? 0, impossible: im.verdicts.impossible ?? 0, unknown: im.verdicts.unknown ?? 0, verifyRequests: im.verifyRequests, imaginedLeads: im.imaginedLeads, ms: clock() - started, imagination: im, page: getImaginePage(im, stamp(), clock() - started) }
   },
   widget: flowWidget,
 })
@@ -175,8 +176,8 @@ export const FLOW: Toolbox = {
     { id: 'discover-thousand-bit', tool: 'discover', theorem: 'textbook_impossible_trapdoor', arguments: { mcpHosts: [UNIT_MCP] }, shows: 'The seeded 1000-bit trapdoor leads discovery. One witness reflection decodes it, and the blind climb is not walked. The requests ask ISO Open Data, CERN Open Data, the NIST CODATA table and the FIPS pages. A textbook those answers have not stated stays uncovered. The primes are not published.', expect: (s) => (s.phase === 'requests' && s.lead.bits === 1000 && s.lead.seed === 432 && s.lead.decoded === true && s.lead.verified === true && s.lead.route === 'witness' && s.lead.searched === '1' && s.lead.advantage === true && BigInt(s.lead.blind) > 1n && s.upgrade.advantage === true && s.upgrade.awaiting + s.upgrade.uncovered === s.upgrade.kernel && s.upgrade.cited + s.upgrade.novelties === s.upgrade.kernel && s.upgrade.opendata.fetched === false && s.upgrade.nist.fetched === false && s.requestList.some((r: { url: string }) => r.url === 'https://www.iso.org/open-data.html') && s.requestList.some((r: { url: string }) => r.url === 'https://physics.nist.gov/cuu/Constants/Table/allascii.txt') && s.requestList.some((r: { url: string }) => r.url.startsWith('https://opendata.cern.ch/api/records/')) && !('N' in s.lead) && !('p' in s.lead) && !('q' in s.lead) ? null : JSON.stringify({ bits: s.lead?.bits, advantage: s.lead?.advantage, upgrade: s.upgrade })) },
     { id: 'e2e-requests', tool: 'e2e', arguments: { hosts: [QPU_MCP], tools: ['clay', 'processor', 'algorithm'] }, shows: 'Phase one of the end-to-end gate for three tools: every combination and every example of theirs as a tools/call request to one host, each carrying the hash of the tree\'s own answer; without tools, every tool\'s.', expect: (s) => (s.phase === 'requests' && s.combos >= 10 && s.requests === s.combos && s.requestList.every((r: { local: string; method: string }) => r.method === 'POST' && /^[0-9a-f-]{36}$/.test(r.local)) ? null : `${s.phase} ${s.combos} ${s.requests}`) },
     { id: 'imagine-two', tool: 'imagine', arguments: { leads: ['willow-spec', 'learn'] }, shows: 'Two leads imagined: one served by the processor tool, one blocked (a 404), plus the leads every schema and application family open.', expect: (s) => (s.leads === 2 && s.served + s.impossible + s.unknown === 2 && s.imaginedLeads > 0 ? null : `${s.leads} leads, ${s.served}/${s.impossible}/${s.unknown}, ${s.imaginedLeads} imagined`) },
-    { id: 'imagine-statement', tool: 'imagine', theorem: 'textbook_uuid_is_36', arguments: { statements: ['the UUID programs program each other through the Payload MCP plugin'] }, shows: 'A statement imagined as a string: it is addressed by the UUID of its text (the same sentence is always the same lead), matched with the reflection on, and every reflection that finds something opens a lead.', expect: (s) => ((s.leads === 1 && s.imagination.rows.length === 1 && String(s.imagination.rows[0].lead).startsWith('statement-') && s.imagination.rows[0].lead.length === 'statement-'.length + 8) ? null : 'the answer of imagine-statement does not hold: ' + JSON.stringify({ leads: s.leads, rows: s.imagination?.rows?.map((r) => r.lead) }).slice(0, 200)) },
-    { id: 'imagine-open', tool: 'imagine', theorem: 'textbook_uuid_is_36', arguments: { open: 1 }, shows: 'open: 1 imagines the first open lead of the tree, the slice the Payload job qpu-imagine and the admin cell take in one run, so the imagination of 1237 leads runs as 1237 short runs, each an entry.', expect: (s) => ((s.leads === 1 && s.imagination.rows.length === 1 && s.imagination.rows[0].status === 'open') ? null : 'the answer of imagine-open does not hold: ' + JSON.stringify({ leads: s.leads, rows: s.imagination?.rows }).slice(0, 200)) },
+    { id: 'imagine-statement', tool: 'imagine', theorem: 'textbook_uuid_is_36', arguments: { statements: ['the UUID programs program each other through the Payload MCP plugin'] }, shows: 'A statement imagined as a string: it is addressed by the UUID of its text (the same sentence is always the same lead), matched with the reflection on, and every reflection that finds something opens a lead.', expect: (s) => ((s.leads === 1 && s.imagination.rows.length === 1 && String(s.imagination.rows[0].lead).startsWith('statement-') && s.imagination.rows[0].lead.length === 'statement-'.length + 8) ? null : 'the answer of imagine-statement does not hold: ' + JSON.stringify({ leads: s.leads, rows: s.imagination?.rows?.map((r) => r.lead) })) },
+    { id: 'imagine-open', tool: 'imagine', theorem: 'textbook_uuid_is_36', arguments: { open: 1 }, shows: 'open: 1 imagines the first open lead of the tree, the slice the Payload job qpu-imagine and the admin cell take in one run, so the imagination of 1237 leads runs as 1237 short runs, each an entry.', expect: (s) => ((s.leads === 1 && s.imagination.rows.length === 1 && s.imagination.rows[0].status === 'open') ? null : 'the answer of imagine-open does not hold: ' + JSON.stringify({ leads: s.leads, rows: s.imagination?.rows })) },
     { id: 'imagine-clay-session', tool: 'imagine', theorem: 'textbook_search_proven', arguments: { clay: { session: 's1', microdata: [{ '@type': 'DefinedTerm', name: 'relation_15', identifier: 'clay-relation_15' }] } }, shows: 'Clay searched online through a client session, token free: the session has already fetched and passes the microdata it collected; every lead is verified against that collection, and only the item that names clay-relation_15 verifies it. The rest stay open. Nothing here fetches and no model token is spent.', expect: (s) => (s.phase === 'verified' && s.via === 'client-session' && s.tokenFree === true && s.session === 's1' && s.possible === s.leads && s.collected === 1 && s.verified === 1 && s.open === s.leads - 1 && s.rows.length === s.leads && s.rows.find((r: { id: string }) => r.id === 'clay-relation_15')?.verified === true && s.rows.filter((r: { verified: boolean }) => r.verified).length === 1 ? null : JSON.stringify({ phase: s.phase, verified: s.verified, possible: s.possible, leads: s.leads })) },
     { id: 'imagine-frameworks', tool: 'imagine', theorem: 'textbook_harmonic_default', arguments: { frameworks: [{ name: 'another', slots: ['view', 'form'] }] }, shows: 'The other frameworks are imagined through payload and nowhere else: twenty-five slots of the website times two of the other framework is fifty, and the qpu block that occupies them names payload as its referrer.', expect: (s) => (s.phase === 'frameworks' && s.via === 'payload' && s.referrer === 'payload' && s.prev === undefined && s.fit.combinations === 50 && s.fit.referrer === 'payload' && s.block.tool === 'qpu' && s.block.referrer === 'payload' && s.block.prev === 'payload' ? null : JSON.stringify({ phase: s.phase, via: s.via, referrer: s.referrer, prev: s.block?.prev })) },
     { id: 'imagine-integer-llm', tool: 'imagine', theorem: 'textbook_chat_call_or_question', arguments: { llm: 'The hue is 72. A half is 1.5, and the key is 432.' }, shows: 'An integer-only LLM: the whole integers already written, 72 and 432, are spoken, and the prose is dropped. The decimal 1.5 is imagined as the factors 1 and 5 written on either side of the point. Nothing multiplies them.', expect: (s) => (s.phase === 'llm' && s.kind === 'integer-only' && s.prose === false && s.computed === false && s.integers.join() === '72,432' && s.count === 2 && s.decimals[0].written === '1.5' && s.decimals[0].factors.join() === '1,5' && s.factors.join() === '1,5' && !/\d/.test(s.dropped) ? null : JSON.stringify({ integers: s.integers, decimals: s.decimals, dropped: s.dropped })) },

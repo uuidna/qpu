@@ -13,6 +13,7 @@ import { imagineLeads, getImaginePage } from './imagine.ts'
 import { createMatcher } from './match.ts'
 import { decodeE2e, judgeRules, decodeValue, type E2eAnswer } from './e2e.ts'
 import { createRegistryRequests, listRelatedServers, rankBestDoors } from './discovery.ts'
+import { clock } from './unit/clock.ts'
 
 const UNIT = 'https://unit.test/mcp'
 const rpcOk = (result: unknown) => JSON.stringify({ jsonrpc: '2.0', id: 1, result })
@@ -40,9 +41,9 @@ const answerRequest = (r: Request): Answer => {
 /** The whole suite: every direction, every toolbox feeding the next. */
 export const runFlowSelftest = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[]): { passed: boolean; checks: Check[] } => {
   const checks: Check[] = []
-  let clock = Date.now()
-  const check = (id: string, passed: boolean, evidence: string) => { const now = Date.now(); checks.push({ id, passed, evidence, ms: now - clock }); clock = now }
-  const safe = (id: string, f: () => void) => { try { f() } catch (e) { check(id, false, `threw: ${(e as Error).message.slice(0, 160)}`) } }
+  let tick = clock()
+  const check = (id: string, passed: boolean, evidence: string) => { const now = clock(); checks.push({ id, passed, evidence, ms: now - tick }); tick = now }
+  const safe = (id: string, f: () => void) => { try { f() } catch (e) { check(id, false, `threw: ${(e as Error).message}`) } }
 
   // discover: server → client → server
   const requests = createDiscoveryRequests([UNIT], VERIFIERS)
@@ -107,7 +108,7 @@ export const runFlowSelftest = (handle: (m: Rpc) => any, examples: readonly Exam
   const plan = planBorder(discovery, { key: 'clay_sigma', statement: '1 + 1 = 2' })
   check('readiness:border-plan', plan.calls.length === 1 && plan.calls[0]!.door === 'verify_claim' && plan.calls[0]!.arguments.statement === 'clay_sigma: 1 + 1 = 2' && plan.unfillable.length === 0, JSON.stringify(plan.calls))
   const border = getBorder([{ door: 'verify_claim', host: 'unit.test', arguments: plan.calls[0]!.arguments, answer: { verdict: 'VERIFIED', receipt: 'r-1', note: 'decided' } }, { door: 'deposit_trial', host: 'unit.test', arguments: {}, refusal: 'the edge does not hold the whole ledger' }, { door: 'prove_verdict', host: 'unit.test', arguments: {}, answer: { verdict: 'UNVERIFIED', receipt: 'r-2' } }])
-  check('readiness:border-read', border[0]!.sealed && border[0]!.receipt === 'r-1' && !border[1]!.sealed && (border[1]!.refusal ?? '').startsWith('the edge') && !border[2]!.sealed && border[2]!.verdict === 'UNVERIFIED', border.map((b) => `${b.door}:${b.verdict ?? b.refusal?.slice(0, 20)}:${b.sealed}`).join(' '))
+  check('readiness:border-read', border[0]!.sealed && border[0]!.receipt === 'r-1' && !border[1]!.sealed && (border[1]!.refusal ?? '').startsWith('the edge') && !border[2]!.sealed && border[2]!.verdict === 'UNVERIFIED', border.map((b) => `${b.door}:${b.verdict ?? b.refusal}:${b.sealed}`).join(' '))
   safe('readiness:page', () => check('readiness:page', getReadinessPage({ unit: UNIT, date: '2026-01-01', measured: '2026-01-01', discovered: '2026-01-01', probe: { key: 'clay_sigma', statement: '1 + 1 = 2' }, judged, classes: { served: judged.filter((j) => j.class === 'served').length, refuted: judged.filter((j) => j.class === 'refuted').length, trial: judged.filter((j) => j.class === 'trial').length }, sources, border, sealedBy: ['verify_claim'], answers: { readiness: { ready: false, why: 'fixture', settled: 7, asked: 3, answered: 3, receipt: 'fixture' }, auras: {}, rights: { drift: [] }, address: { probe: 'qpu', here: 'a', unit: 'a', agree: true, note: 'fixture' } } }).includes('Sealed or verified by: verify_claim.'), 'the page renders the border verdict'))
 
   // imagine: the matcher feeds the imagination (toolbox → toolbox), on a subset

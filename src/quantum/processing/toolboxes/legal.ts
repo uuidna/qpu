@@ -196,7 +196,7 @@ const legal = defineTool('legal', {
     const plan = planLegal(claims, (args.discovery as Discovery | undefined) ?? null, Array.isArray(args.agents) ? args.agents.map(String) : null, Array.isArray(args.theoremKeys) ? args.theoremKeys.map(String) : [])
     if (!Array.isArray(args.answers)) return { phase: 'plan' as const, claims: claims.length, calls: plan.calls.length, agents: plan.agents.length, by: plan.by, securityPassed: security.filter((c) => c.passed).length, securityTotal: security.length, claimList: claims, plan, security }
     const audit = auditClaims(claims, args.answers as Answer[], security)
-    const date = new Date(typeof args.now === 'number' ? args.now : Date.now()).toISOString() // the clock the client names (now), so the audit is a function of its arguments
+    const date = stamp(typeof args.now === 'number' ? args.now : undefined) // the clock the client names (now), so the audit is a function of its arguments
     // Tampering impossible by computation: every input is named by its SHA-256, the audit by its content address; change a source
     // or an answer and the address changes; recompute and compare (the verify tool) and the difference is the tampering.
     const inputs = { texts: Object.fromEntries(Object.entries(texts).filter(([, t]) => typeof t === 'string').map(([k, t]) => [k, hex(sha256(utf8(t as string)))])), discovery: args.discovery ? hex(sha256(utf8(JSON.stringify(args.discovery)))) : null, theoremKeys: hex(sha256(utf8(JSON.stringify(args.theoremKeys ?? [])))), answers: hex(sha256(utf8(JSON.stringify(args.answers)))) }
@@ -248,7 +248,7 @@ export const prizeOf = (prose: string): { value: number; currency: string; basis
 const judgeCompetitions = (evidence: { theorems: number; kernel: number; hosts: number; licence: string; published: boolean; pushed: boolean; conduct?: boolean; acceptance?: ReturnType<typeof countMentions> | null }, pages: Record<string, string> = {}, now = 0) => {
   const judged = COMPETITIONS.map((c0) => {
     // the window measured from the page when a page was read: the fixture's entry stands only until then
-    const w = pages[c0.id] ? getEntryWindow(pages[c0.id]!, now || Date.now()) : null
+    const w = pages[c0.id] ? getEntryWindow(pages[c0.id]!, clock(now || undefined)) : null
     const c = w && w.entry !== 'unknown' ? { ...c0, entry: w.entry === 'upcoming' ? 'closed' as const : w.entry, window: w } : { ...c0, window: w }
     const rules: Rule[] = c.requires.map((r) => {
       // a rule the page states that the tree fails as it stands (its licence, its age, its author alone): closed until the author's act changes it;

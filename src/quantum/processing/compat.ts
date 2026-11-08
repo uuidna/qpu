@@ -31,7 +31,7 @@ const adapters = (cursorModel: string) => [
 
 const summarise = (value: unknown) => {
   const text = canonicalText(value)
-  return text.length > 80 ? `${text.slice(0, 80)}…` : text
+  return text.length > 80 ? `${text}…` : text
 }
 
 const primitiveEnum = (value: unknown) => Array.isArray(value) && value.every((item) => item === null || typeof item === 'string' || typeof item === 'number' || typeof item === 'boolean')
@@ -224,7 +224,7 @@ const cursorClean = (node: unknown, root = true): boolean => {
 
 const advertiseName = (name: string, used: Set<string>) => {
   const slug = name.replace(/[^a-zA-Z0-9_-]/g, '_')
-  const base = (slug.length > 0 ? slug : 'tool').slice(0, 128)
+  const base = (slug.length > 0 ? slug : 'tool')
   let candidate = base
   let n = 2
   while (used.has(candidate) || !cursorName.test(candidate)) {

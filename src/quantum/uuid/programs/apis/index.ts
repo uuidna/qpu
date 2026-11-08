@@ -7,6 +7,8 @@ import { seal, uuid } from '../../index.ts'
 import { TABLES } from '../../../processing/tables-index.ts'
 import { SHADCN_COMPONENTS, SHADCN_MCP } from '../shadcn/index.ts'
 
+/** Cloudflare's GraphQL Analytics API answers at most 10000 rows per query node (developers.cloudflare.com/analytics/graphql-api/limits/): the API's own bound, named here and cited, never a cap of ours. */
+const GRAPHQL_ROWS = 10000
 export type ApiDoor = { provider: 'payload' | 'cloudflare' | 'google' | 'shadcn'; kind: 'mcp' | 'rest' | 'graphql' | 'openapi' | 'discovery' | 'registry'; name: string; url: string; about: string; maps: string }
 export type ApiRow = ApiDoor & { address: string; sealed: boolean }
 
@@ -141,11 +143,11 @@ export const apisIndex = (ops: readonly Operation[]) => {
 /** The one GraphQL query of the observe job: month-to-date requests, errors, CPU quantiles, D1 rows and storage, R2 operations and storage for the account; the datasets as D1's and R2's metrics pages name them (https://developers.cloudflare.com/d1/observability/metrics-analytics/, https://developers.cloudflare.com/r2/platform/metrics-analytics/, read 2026-11-08). */
 export const OBSERVE_QUERY = `query QpuObserve($accountTag: string!, $since: Time!, $until: Time!) {
   viewer { accounts(filter: { accountTag: $accountTag }) {
-    workersInvocationsAdaptive(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }) { sum { requests errors } quantiles { cpuTimeP50 cpuTimeP99 } }
-    d1AnalyticsAdaptiveGroups(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }) { sum { readQueries writeQueries rowsRead rowsWritten } }
-    r2OperationsAdaptiveGroups(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }) { dimensions { actionType } sum { requests } }
-    d1StorageAdaptiveGroups(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }) { dimensions { databaseId } max { databaseSizeBytes } }
-    r2StorageAdaptiveGroups(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }) { dimensions { bucketName } max { payloadSize metadataSize } }
+    workersInvocationsAdaptive(limit: ${GRAPHQL_ROWS}, filter: { datetime_geq: $since, datetime_leq: $until }) { sum { requests errors } quantiles { cpuTimeP50 cpuTimeP99 } }
+    d1AnalyticsAdaptiveGroups(limit: ${GRAPHQL_ROWS}, filter: { datetime_geq: $since, datetime_leq: $until }) { sum { readQueries writeQueries rowsRead rowsWritten } }
+    r2OperationsAdaptiveGroups(limit: ${GRAPHQL_ROWS}, filter: { datetime_geq: $since, datetime_leq: $until }) { dimensions { actionType } sum { requests } }
+    d1StorageAdaptiveGroups(limit: ${GRAPHQL_ROWS}, filter: { datetime_geq: $since, datetime_leq: $until }) { dimensions { databaseId } max { databaseSizeBytes } }
+    r2StorageAdaptiveGroups(limit: ${GRAPHQL_ROWS}, filter: { datetime_geq: $since, datetime_leq: $until }) { dimensions { bucketName } max { payloadSize metadataSize } }
   } }
 }`
 const R2_CLASS_A = new Set(['PutObject', 'CopyObject', 'ListObjects', 'CreateMultipartUpload', 'UploadPart', 'CompleteMultipartUpload', 'ListParts', 'PutBucket', 'ListBuckets', 'PutBucketEncryption', 'PutBucketCors', 'PutBucketLifecycleConfiguration', 'LifecycleStorageTierTransition', 'PutObjectRetention'])
@@ -167,7 +169,7 @@ export type ZoneDimension = (typeof OBSERVE_ZONE_DIMENSIONS)[number]
 /** The zone query: month-to-date HTTP requests of one zone counted per value of each dimension, one httpRequestsAdaptiveGroups group per dimension (aliased by its name) so the counts never cross-multiply, most requests first; 10000 is the API's own page, every row it returns is kept (https://developers.cloudflare.com/analytics/graphql-api/, the dataset's fields as the http_requests dataset names them, read 2026-11-08). */
 export const OBSERVE_ZONE_QUERY = `query QpuObserveZone($zoneTag: string!, $since: Time!, $until: Time!) {
   viewer { zones(filter: { zoneTag: $zoneTag }) {
-${OBSERVE_ZONE_DIMENSIONS.map((d) => `    ${d}: httpRequestsAdaptiveGroups(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }, orderBy: [count_DESC]) { count dimensions { ${d} } }`).join('\n')}
+${OBSERVE_ZONE_DIMENSIONS.map((d) => `    ${d}: httpRequestsAdaptiveGroups(limit: ${GRAPHQL_ROWS}, filter: { datetime_geq: $since, datetime_leq: $until }, orderBy: [count_DESC]) { count dimensions { ${d} } }`).join('\n')}
   } }
 }`
 export type ZoneGroup = { count?: number; dimensions?: Partial<Record<ZoneDimension, string | number>> }

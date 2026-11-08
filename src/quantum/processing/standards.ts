@@ -67,6 +67,7 @@ import { CATALOGUE, accountCoins, balance, combinationVariants, createLedger, fu
 import { THEOREMS } from './theorems-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { canonicalCoilUuid, coinAsToken, fuseCoinsToCoilInfinityInOneUuid, mintTokenCoil, type TokenCoil } from './unit/coil.ts'
+import { stamp } from './unit/clock.ts'
 
 export const STANDARDS = TABLES.STANDARDS as readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[]
 
@@ -76,11 +77,11 @@ const APPLICATION = { '@type': 'SoftwareApplication', name: '@uuidna/qpu', appli
 
 /** The JSON-LD of a block: one tool's result as a CreativeWork of the application, identified by its content address. */
 export const blockJsonLd = (p: { tool: string; id: string; description: string; url?: string; locale?: string; date?: string; toolbox?: string }): JsonLd => ({
-  '@context': 'https://schema.org', '@type': 'CreativeWork', '@id': p.url ?? `urn:uuid:${p.id}`, identifier: p.id, name: `${p.tool} · @uuidna/qpu`, description: p.description, isPartOf: APPLICATION, author: AUTHOR, license: LICENSE.url, inLanguage: p.locale ?? 'en', dateModified: p.date ?? new Date().toISOString(), keywords: [p.tool, p.toolbox ?? 'qpu', 'MCP', 'quantum'].join(', '), isAccessibleForFree: true,
+  '@context': 'https://schema.org', '@type': 'CreativeWork', '@id': p.url ?? `urn:uuid:${p.id}`, identifier: p.id, name: `${p.tool} · @uuidna/qpu`, description: p.description, isPartOf: APPLICATION, author: AUTHOR, license: LICENSE.url, inLanguage: p.locale ?? 'en', dateModified: p.date ?? stamp(), keywords: [p.tool, p.toolbox ?? 'qpu', 'MCP', 'quantum'].join(', '), isAccessibleForFree: true,
 })
 /** The JSON-LD of a page of the documentation: a WebPage of the application; a UUID page carries its identifier. */
 export const pageJsonLd = (p: { url: string; title: string; description: string; uuid?: string; locale?: string; date?: string }): JsonLd => ({
-  '@context': 'https://schema.org', '@type': 'WebPage', '@id': p.url, url: p.url, name: p.title, description: p.description, ...(p.uuid ? { identifier: p.uuid } : {}), isPartOf: { '@type': 'WebSite', name: '@uuidna/qpu', url: 'https://qpu.uuidna.com', license: LICENSE.url }, about: APPLICATION, author: AUTHOR, license: LICENSE.url, inLanguage: p.locale ?? 'en', dateModified: p.date ?? new Date().toISOString(),
+  '@context': 'https://schema.org', '@type': 'WebPage', '@id': p.url, url: p.url, name: p.title, description: p.description, ...(p.uuid ? { identifier: p.uuid } : {}), isPartOf: { '@type': 'WebSite', name: '@uuidna/qpu', url: 'https://qpu.uuidna.com', license: LICENSE.url }, about: APPLICATION, author: AUTHOR, license: LICENSE.url, inLanguage: p.locale ?? 'en', dateModified: p.date ?? stamp(),
 })
 /** The JSON-LD of a product variant of the catalogue: an Offer in an ISO 4217 currency. */
 export const offerJsonLd = (v: { product: string; variant: string; unit: string; interval: string; currency: string; amount: number; description: string }): JsonLd => ({
