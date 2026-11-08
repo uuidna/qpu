@@ -72,7 +72,7 @@ export const apisDoors = (origin = 'https://qpu.uuidna.com') => {
   return { phase: 'doors' as const, rows, byProvider, total: rows.length, holds: rows.every((r) => r.sealed && r.address.length === 36), theorem: 'textbook_uuid_is_36' as const }
 }
 
-/** Cloudflare's meters on the Workers Paid plan, from its pricing pages (read 2026-11-08): the included allowance a month, the rate past it in micro-dollars per unit, the remedy that lowers the meter. Workers Logs moves to Observability pricing on 2026-12-01 (50 GB ingested and 10 GB-month included). */
+/** Cloudflare's meters on the Workers Paid plan, from its pricing pages (read 2026-11-08): the included allowance a month, the rate past it in micro-dollars per unit (the same number as USD per million units), the remedy that lowers the meter. Workers Logs moves to Observability pricing on 2026-12-01 (50 GB ingested and 10 GB-month included). */
 export type Meter = { meter: string; unit: string; included: number; perMillionUsd: number; source: string; remedy: string }
 export const CLOUDFLARE_PRICING: readonly Meter[] = [
   { meter: 'workers.requests', unit: 'requests', included: 10_000_000, perMillionUsd: 0.30, source: 'https://developers.cloudflare.com/workers/platform/pricing/', remedy: 'cache-control on the public reads (the feeds, the discovery document, the registry); static assets served by the ASSETS binding, never by the Worker' },
@@ -82,14 +82,30 @@ export const CLOUDFLARE_PRICING: readonly Meter[] = [
   { meter: 'r2.classA', unit: 'class A operations', included: 1_000_000, perMillionUsd: 4.50, source: 'https://developers.cloudflare.com/r2/pricing/', remedy: 'write media once by content address; list with prefixes, never whole buckets' },
   { meter: 'r2.classB', unit: 'class B operations', included: 10_000_000, perMillionUsd: 0.36, source: 'https://developers.cloudflare.com/r2/pricing/', remedy: 'cache media at the edge (cache-control, immutable by address)' },
   { meter: 'logs.events', unit: 'log events', included: 20_000_000, perMillionUsd: 0.60, source: 'https://developers.cloudflare.com/workers/observability/logs/workers-logs/#pricing', remedy: 'observability.logs.head_sampling_rate below 1 in wrangler.jsonc; one structured line per event, no per-request chatter' },
+  // storage is billed per GB-month, so its dollar price per unit stands in the per-million column times a million: D1 "First 5 GB included + $0.75 / GB-mo" (the sum of all databases in the account), R2 Standard "10 GB-month / month" free then "$0.015 / GB-month", usage rounded up to the next billing unit (both pages read 2026-11-08)
+  { meter: 'd1.storage', unit: 'GB-month', included: 5, perMillionUsd: 750_000, source: 'https://developers.cloudflare.com/d1/platform/pricing/', remedy: 'bodies by content address in R2, one row per entry in D1; wrangler d1 info names the database size; drop the versions no document names' },
+  { meter: 'r2.storage', unit: 'GB-month', included: 10, perMillionUsd: 15_000, source: 'https://developers.cloudflare.com/r2/pricing/', remedy: 'one object per content address (a repeated upload stores nothing new); a lifecycle rule expiring the uploads no entry names' },
 ]
 export type Readings = Partial<Record<string, number>>
-/** The bill of the readings against the meters, in integer micro-dollars: zero inside every allowance, Σ max(0, used − included) × rate past them. */
-export const apisCost = (readings: Readings, pricing: readonly Meter[] = CLOUDFLARE_PRICING) => {
-  const rows = pricing.map((m) => { const used = Math.max(0, Math.floor(readings[m.meter] ?? 0)); const over = Math.max(0, used - m.included); const microUsd = Math.ceil((over * m.perMillionUsd * 1_000_000) / 1_000_000); const share = m.included ? Math.floor((used * 100) / m.included) : 0; return { ...m, used, over, share, microUsd, lead: share >= 80 } })
+/** The Workers Logs sampling an operator sets (observability.logs.head_sampling_rate in wrangler.jsonc, 0 to 1, default 1), given as that fraction or in permille; nothing given is 1000‰, the full stream. */
+export type CostOptions = { headSamplingRate?: number; headSamplingPermille?: number }
+export const samplingPermilleOf = (o: CostOptions = {}): number => {
+  const given = typeof o.headSamplingPermille === 'number' && Number.isFinite(o.headSamplingPermille) ? o.headSamplingPermille : typeof o.headSamplingRate === 'number' && Number.isFinite(o.headSamplingRate) ? (o.headSamplingRate <= 1 ? o.headSamplingRate * 1000 : o.headSamplingRate) : 1000
+  return Math.min(1000, Math.max(0, Math.round(given)))
+}
+/** Every meter priced: used floored to a unit, the overage past the allowance, the rate as integer micro-dollars per million units so the product is exact, the share of the allowance in whole percent, a lead at 80%. */
+const priceRows = (readings: Readings, pricing: readonly Meter[]) => pricing.map((m) => { const used = Math.max(0, Math.floor(readings[m.meter] ?? 0)); const over = Math.max(0, used - m.included); const microUsd = Math.ceil((over * Math.round(m.perMillionUsd * 1_000_000)) / 1_000_000); const share = m.included ? Math.floor((used * 100) / m.included) : 0; return { ...m, used, over, share, microUsd, lead: share >= 80 } })
+/** The bill of the readings against the meters, in integer micro-dollars: zero inside every allowance, Σ max(0, used − included) × rate past them.
+ *  At a head sampling rate the log events priced are the readings' events × rate (floored, in permille), and `sampling` answers the logs meter at that
+ *  rate and at the full stream, so an operator sees what the sample saves; with no rate given the two are equal and nothing else changes. */
+export const apisCost = (readings: Readings, pricing: readonly Meter[] = CLOUDFLARE_PRICING, options: CostOptions = {}) => {
+  const permille = samplingPermilleOf(options), events = Math.max(0, Math.floor(readings['logs.events'] ?? 0)), sampled = Math.floor((events * permille) / 1000)
+  const rows = priceRows(permille === 1000 ? readings : { ...readings, 'logs.events': sampled }, pricing)
+  const atRate = rows.find((r) => r.meter === 'logs.events')?.microUsd ?? 0, atFull = permille === 1000 ? atRate : priceRows(readings, pricing).find((r) => r.meter === 'logs.events')?.microUsd ?? 0
   const microUsd = rows.reduce((n, r) => n + r.microUsd, 0)
   const leads = rows.filter((r) => r.lead).map((r) => ({ id: `cloudflare-${r.meter.replace('.', '-')}-${r.share}`, statement: `${r.meter} at ${r.share}% of the included ${r.included.toLocaleString('en')} ${r.unit} this month (${r.used.toLocaleString('en')}): ${r.remedy}`, status: 'open' as const, tool: 'apis' as const, source: r.source }))
-  return { phase: 'cost' as const, rows, microUsd, usd: microUsd / 1_000_000, covered: microUsd === 0, leads, theorem: 'textbook_bill_covered' as const }
+  const sampling = { permille, rate: permille / 1000, events, sampled, microUsd: atRate, microUsdFull: atFull, savedMicroUsd: atFull - atRate }
+  return { phase: 'cost' as const, rows, microUsd, usd: microUsd / 1_000_000, covered: microUsd === 0, leads, sampling, theorem: 'textbook_bill_covered' as const }
 }
 
 export type Operation = { provider: 'payload' | 'cloudflare' | 'google' | 'shadcn'; method: string; server: string; path: string; id: string; tags: readonly string[] }
@@ -122,22 +138,54 @@ export const apisIndex = (ops: readonly Operation[]) => {
   const distinct = new Set(rows.map((r) => r.address)).size
   return { phase: 'index' as const, rows, byProvider, byTag, total: rows.length, distinct, holds: distinct === rows.length && rows.every((r) => r.sealed && r.address.length === 36), theorem: 'textbook_uuid_is_36' as const }
 }
-/** The one GraphQL query of the observe job: month-to-date requests, errors, CPU quantiles, D1 rows, R2 operations for the account. */
+/** The one GraphQL query of the observe job: month-to-date requests, errors, CPU quantiles, D1 rows and storage, R2 operations and storage for the account; the datasets as D1's and R2's metrics pages name them (https://developers.cloudflare.com/d1/observability/metrics-analytics/, https://developers.cloudflare.com/r2/platform/metrics-analytics/, read 2026-11-08). */
 export const OBSERVE_QUERY = `query QpuObserve($accountTag: string!, $since: Time!, $until: Time!) {
   viewer { accounts(filter: { accountTag: $accountTag }) {
     workersInvocationsAdaptive(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }) { sum { requests errors } quantiles { cpuTimeP50 cpuTimeP99 } }
     d1AnalyticsAdaptiveGroups(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }) { sum { readQueries writeQueries rowsRead rowsWritten } }
     r2OperationsAdaptiveGroups(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }) { dimensions { actionType } sum { requests } }
+    d1StorageAdaptiveGroups(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }) { dimensions { databaseId } max { databaseSizeBytes } }
+    r2StorageAdaptiveGroups(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }) { dimensions { bucketName } max { payloadSize metadataSize } }
   } }
 }`
 const R2_CLASS_A = new Set(['PutObject', 'CopyObject', 'ListObjects', 'CreateMultipartUpload', 'UploadPart', 'CompleteMultipartUpload', 'ListParts', 'PutBucket', 'ListBuckets', 'PutBucketEncryption', 'PutBucketCors', 'PutBucketLifecycleConfiguration', 'LifecycleStorageTierTransition', 'PutObjectRetention'])
-/** The GraphQL answer read into meter readings (requests and CPU ms summed over the invocations, D1 rows summed, R2 operations split by class). */
-export const readingsOf = (answer: { data?: { viewer?: { accounts?: { workersInvocationsAdaptive?: { sum: { requests: number; errors: number }; quantiles?: { cpuTimeP50?: number; cpuTimeP99?: number } }[]; d1AnalyticsAdaptiveGroups?: { sum: { readQueries: number; writeQueries: number; rowsRead: number; rowsWritten: number } }[]; r2OperationsAdaptiveGroups?: { dimensions: { actionType: string }; sum: { requests: number } }[] }[] } } }): Readings & { errors: number; cpuTimeP50Us: number; cpuTimeP99Us: number } => {
+/** Bytes stored as billing units: GB-month, the usage rounded up to the next unit as R2's pricing page says it bills (read 2026-11-08), a GB taken as 10⁹ bytes. */
+const GB = 1_000_000_000
+const gbOf = (bytes: number) => Math.ceil(Math.max(0, bytes) / GB)
+/** The GraphQL answer read into meter readings (requests and CPU ms summed over the invocations, D1 rows summed, R2 operations split by class, the storage meters as the month's peak bytes per database and per bucket summed and rounded up to GB-month). */
+export const readingsOf = (answer: { data?: { viewer?: { accounts?: { workersInvocationsAdaptive?: { sum: { requests: number; errors: number }; quantiles?: { cpuTimeP50?: number; cpuTimeP99?: number } }[]; d1AnalyticsAdaptiveGroups?: { sum: { readQueries: number; writeQueries: number; rowsRead: number; rowsWritten: number } }[]; r2OperationsAdaptiveGroups?: { dimensions: { actionType: string }; sum: { requests: number } }[]; d1StorageAdaptiveGroups?: { dimensions?: { databaseId?: string }; max?: { databaseSizeBytes?: number } }[]; r2StorageAdaptiveGroups?: { dimensions?: { bucketName?: string }; max?: { payloadSize?: number; metadataSize?: number } }[] }[] } } }): Readings & { errors: number; cpuTimeP50Us: number; cpuTimeP99Us: number; d1StorageBytes: number; r2StorageBytes: number } => {
   const a = answer.data?.viewer?.accounts?.[0] ?? {}
-  const inv = a.workersInvocationsAdaptive ?? [], d1 = a.d1AnalyticsAdaptiveGroups ?? [], r2 = a.r2OperationsAdaptiveGroups ?? []
+  const inv = a.workersInvocationsAdaptive ?? [], d1 = a.d1AnalyticsAdaptiveGroups ?? [], r2 = a.r2OperationsAdaptiveGroups ?? [], d1s = a.d1StorageAdaptiveGroups ?? [], r2s = a.r2StorageAdaptiveGroups ?? []
   const requests = inv.reduce((n, x) => n + (x.sum?.requests ?? 0), 0), errors = inv.reduce((n, x) => n + (x.sum?.errors ?? 0), 0)
   const p50 = inv.length ? Math.round(inv.reduce((n, x) => n + (x.quantiles?.cpuTimeP50 ?? 0), 0) / inv.length) : 0, p99 = inv.reduce((n, x) => Math.max(n, x.quantiles?.cpuTimeP99 ?? 0), 0)
-  return { 'workers.requests': requests, 'workers.cpuMs': Math.ceil((requests * p50) / 1000), 'd1.rowsRead': d1.reduce((n, x) => n + (x.sum?.rowsRead ?? 0), 0), 'd1.rowsWritten': d1.reduce((n, x) => n + (x.sum?.rowsWritten ?? 0), 0), 'r2.classA': r2.filter((x) => R2_CLASS_A.has(x.dimensions?.actionType)).reduce((n, x) => n + (x.sum?.requests ?? 0), 0), 'r2.classB': r2.filter((x) => !R2_CLASS_A.has(x.dimensions?.actionType)).reduce((n, x) => n + (x.sum?.requests ?? 0), 0), errors, cpuTimeP50Us: p50, cpuTimeP99Us: p99 }
+  const d1StorageBytes = d1s.reduce((n, x) => n + (x.max?.databaseSizeBytes ?? 0), 0), r2StorageBytes = r2s.reduce((n, x) => n + (x.max?.payloadSize ?? 0) + (x.max?.metadataSize ?? 0), 0)
+  return { 'workers.requests': requests, 'workers.cpuMs': Math.ceil((requests * p50) / 1000), 'd1.rowsRead': d1.reduce((n, x) => n + (x.sum?.rowsRead ?? 0), 0), 'd1.rowsWritten': d1.reduce((n, x) => n + (x.sum?.rowsWritten ?? 0), 0), 'r2.classA': r2.filter((x) => R2_CLASS_A.has(x.dimensions?.actionType)).reduce((n, x) => n + (x.sum?.requests ?? 0), 0), 'r2.classB': r2.filter((x) => !R2_CLASS_A.has(x.dimensions?.actionType)).reduce((n, x) => n + (x.sum?.requests ?? 0), 0), 'd1.storage': gbOf(d1StorageBytes), 'r2.storage': gbOf(r2StorageBytes), d1StorageBytes, r2StorageBytes, errors, cpuTimeP50Us: p50, cpuTimeP99Us: p99 }
+}
+/** The zone's request dimensions the observe job reads when a zoneTag is named: what was cached, what status the edge answered, which paths, which agents, which addresses. */
+export const OBSERVE_ZONE_DIMENSIONS = ['cacheStatus', 'edgeResponseStatus', 'clientRequestPath', 'userAgent', 'clientIP'] as const
+export type ZoneDimension = (typeof OBSERVE_ZONE_DIMENSIONS)[number]
+/** The zone query: month-to-date HTTP requests of one zone counted per value of each dimension, one httpRequestsAdaptiveGroups group per dimension (aliased by its name) so the counts never cross-multiply, most requests first; 10000 is the API's own page, every row it returns is kept (https://developers.cloudflare.com/analytics/graphql-api/, the dataset's fields as the http_requests dataset names them, read 2026-11-08). */
+export const OBSERVE_ZONE_QUERY = `query QpuObserveZone($zoneTag: string!, $since: Time!, $until: Time!) {
+  viewer { zones(filter: { zoneTag: $zoneTag }) {
+${OBSERVE_ZONE_DIMENSIONS.map((d) => `    ${d}: httpRequestsAdaptiveGroups(limit: 10000, filter: { datetime_geq: $since, datetime_leq: $until }, orderBy: [count_DESC]) { count dimensions { ${d} } }`).join('\n')}
+  } }
+}`
+export type ZoneGroup = { count?: number; dimensions?: Partial<Record<ZoneDimension, string | number>> }
+export type ZoneAnswer = { data?: { viewer?: { zones?: Partial<Record<ZoneDimension, ZoneGroup[]>>[] } }; errors?: { message: string }[] }
+/** The zone answer read into request counts per dimension value: for each dimension every value with its count, most requests first (ties by value), none dropped;
+ *  the totals per dimension, the requests (the largest total: each dimension partitions the same requests, and the adaptive sample may make them differ, `agree` says whether they do not), the top value of each. */
+export const zoneReadingsOf = (answer: ZoneAnswer) => {
+  const z = answer.data?.viewer?.zones?.[0] ?? {}
+  const byDimension = Object.fromEntries(OBSERVE_ZONE_DIMENSIONS.map((d) => {
+    const counts = new Map<string, number>()
+    for (const g of z[d] ?? []) { const v = String(g.dimensions?.[d] ?? ''); counts.set(v, (counts.get(v) ?? 0) + Math.max(0, Math.floor(g.count ?? 0))) }
+    return [d, [...counts].map(([value, count]) => ({ value, count })).sort((a, b) => b.count - a.count || (a.value < b.value ? -1 : 1))]
+  })) as Record<ZoneDimension, { value: string; count: number }[]>
+  const totals = Object.fromEntries(OBSERVE_ZONE_DIMENSIONS.map((d) => [d, byDimension[d].reduce((n, v) => n + v.count, 0)])) as Record<ZoneDimension, number>
+  const requests = Math.max(0, ...OBSERVE_ZONE_DIMENSIONS.map((d) => totals[d]))
+  const top = Object.fromEntries(OBSERVE_ZONE_DIMENSIONS.map((d) => [d, byDimension[d][0] ?? null])) as Record<ZoneDimension, { value: string; count: number } | null>
+  const errors = answer.errors ?? []
+  return { phase: 'zone' as const, requests, byDimension, totals, top, values: OBSERVE_ZONE_DIMENSIONS.reduce((n, d) => n + byDimension[d].length, 0), agree: OBSERVE_ZONE_DIMENSIONS.every((d) => totals[d] === requests || totals[d] === 0), errors, holds: errors.length === 0, theorem: 'textbook_cloudflare_cost_gate' as const }
 }
 
 import { hexbit, next as turnNext, uuidQubits } from '../../index.ts'
