@@ -167,29 +167,25 @@ export const payloadMcpNext = (doors: readonly { name: string }[] = [], origin =
     auth: MCP_API_KEY,
     law: MCP_API_KEY.law,
   }
-  if (!headers) {
-    return {
-      ...base,
-      keyed: false as const,
-      refused: true as const,
-      calls: [] as { name: string; plugin: 'qpuMcpPlugin'; api: string; method: 'POST'; headers: Record<string, string>; src: false; fetched: false; body: unknown; route: { method: 'GET'; url: string; src: false; fetched: false } | null; next: ReturnType<typeof payloadPagesNext> | null }[],
-      says: 'Next is refused without a payload-mcp-api-keys Bearer. Mount qpuMcpPlugin; open POST /api/mcp with Authorization: Bearer <key>. src is not a door. Nothing is fetched.',
-    }
-  }
+  // a refusal is an involution, never a stop: without a key the plan still names every call, its header the binding the key comes from
+  // (QPU_MCP_API_KEY, never a value), and stays refused and unkeyed until the binding holds one
+  const keyed = headers !== null
+  const sent: Record<string, string> = headers ?? { [MCP_API_KEY.header]: `${MCP_API_KEY.scheme} <${MCP_API_KEY.named}>` }
+  const state = keyed ? { keyed: true as const, refused: false as const } : { keyed: false as const, refused: true as const }
+  const bearer = keyed ? 'with a payload-mcp-api-keys Bearer' : `refused until ${MCP_API_KEY.named} names a payload-mcp-api-keys Bearer, then run as named`
   if (doors.length === 0) {
     const list = payloadMcpRequest(origin)
     return {
       ...base,
-      keyed: true as const,
-      refused: false as const,
-      calls: [{ name: 'tools/list' as const, method: list.method, url: list.api, headers, body: list.body, route: null, next: null, src: false as const, fetched: false as const, plugin: MCP_API_KEY.plugin, api }],
-      says: 'Next is tools/list on the Payload API with a payload-mcp-api-keys Bearer. src is not a door. Nothing is fetched.',
+      ...state,
+      calls: [{ name: 'tools/list' as const, method: list.method, url: list.api, headers: sent, body: list.body, route: null, next: null, src: false as const, fetched: false as const, plugin: MCP_API_KEY.plugin, api }],
+      says: `Next is tools/list on the Payload API, ${bearer}. src is not a door. Nothing is fetched.`,
     }
   }
   const calls = doors.map((door) => {
     const find = door.name === 'findDocuments'
     return {
-      name: door.name, plugin: MCP_API_KEY.plugin, api, method: 'POST' as const, headers, src: false as const, fetched: false as const,
+      name: door.name, plugin: MCP_API_KEY.plugin, api, method: 'POST' as const, headers: sent, src: false as const, fetched: false as const,
       body: { jsonrpc: '2.0' as const, id: 1, method: 'tools/call' as const, params: { name: door.name, arguments: find ? { slug: 'pages' } : {} } },
       route: find ? { method: 'GET' as const, url: `${root}/api/pages`, src: false as const, fetched: false as const } : null,
       next: find ? payloadPagesNext(pages, origin) : null,
@@ -197,10 +193,9 @@ export const payloadMcpNext = (doors: readonly { name: string }[] = [], origin =
   })
   return {
     ...base,
-    keyed: true as const,
-    refused: false as const,
+    ...state,
     calls,
-    says: `${calls.length} tools/call requests on the Payload API with a payload-mcp-api-keys Bearer. findDocuments continues as GET /api/pages, and each document is that route again. SEO is read from that instance. Media continues as the file the upload names. src is not a door. Nothing is fetched.`,
+    says: `${calls.length} tools/call requests on the Payload API, ${bearer}. findDocuments continues as GET /api/pages, and each document is that route again. SEO is read from that instance. Media continues as the file the upload names. src is not a door. Nothing is fetched.`,
   }
 }
 
