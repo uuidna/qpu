@@ -51,7 +51,7 @@ export const CLAUDE_API = TABLES.CLAUDE_API
 /** Every MCP this tree knows how to integrate, with what it does with each once the tenant's token opens it. */
 export const KNOWN_MCP = TABLES.KNOWN_MCP as readonly { host: string; url: string; about: string; auth: 'none' | 'token'; maps: string }[]
 /** The hosts discovered when a tenant names none: the unit, this tree, Cloudflare's eight servers and GitHub's. */
-export const UNIT_MCP = 'https://uuidna.com/mcp', QPU_MCP = 'https://qpu.uuidna.com/mcp', DEFAULT_MCP_HOSTS: readonly string[] = [UNIT_MCP, QPU_MCP, ...CLOUDFLARE_MCP.map((c) => c.url), ...GITHUB_MCP.map((g) => g.url), ...GOOGLE_MCP.map((g) => g.url)]
+export const UNIT_MCP = 'https://uuidna.com/mcp', QPU_MCP = 'https://qpu.uuidna.com/api/mcp', DEFAULT_MCP_HOSTS: readonly string[] = [UNIT_MCP, QPU_MCP, ...CLOUDFLARE_MCP.map((c) => c.url), ...GITHUB_MCP.map((g) => g.url), ...GOOGLE_MCP.map((g) => g.url)]
 /** Every MCP host this tree names, one row per URL. They are doors of the one Payload RBAC MCP, not separate servers. */
 let hostList: { name: string; url: string }[] | undefined
 export const mcpHostList = (): { name: string; url: string }[] => hostList ??= (() => {
@@ -362,6 +362,39 @@ const getToolsListCost = (bytes: number, tools: number) => ({ bytes, tokens: Mat
 /** The official MCP registry, latest version of each server, a page at a time (measured 2026-10-26: no total in the answer, a nextCursor while
  *  more remain), so its count is the client's walk of every page. */
 const MCP_REGISTRY_SERVERS = 'https://registry.modelcontextprotocol.io/v0/servers?limit=100&version=latest'
+/** The registry searched online by the words a user types: one public GET, the limit bounded to the registry's own page of one hundred (textbook_mcp_search_limit). */
+export const createSearchRequest = (query: string, limit = 10) => {
+  const q = query.trim().replace(/\s+/g, ' ')
+  if (!q) throw new Error('search takes a query: the words asked of the official MCP registry')
+  const n = Math.min(Math.max(1, Math.floor(Number.isFinite(limit) ? limit : 10)), 100)
+  return { id: `registry:search:${q}`, method: 'GET' as const, url: `${MCP_REGISTRY}?search=${encodeURIComponent(q)}&limit=${n}&version=latest`, accept: 'application/json', query: q, limit: n }
+}
+type RegistryServer = { name: string; description: string; version: string | null; remotes: { type: string; url: string }[]; packages: { registryType: string; identifier: string }[]; installable: boolean; install: { tool: 'extend'; arguments: { install: { name: string; url: string } } } | null }
+/** The registry's answer read into servers: one with a remote (streamable HTTP or SSE) is installable as a tenant's connector and names its install door,
+ *  extend { install }; one with packages alone needs a runtime the edge does not run, so it is listed and not installable. */
+export const listRegistryServers = (answers: readonly { status: number; text: string }[]): { answered: number; servers: RegistryServer[]; installable: number; nextCursor: string | null } => {
+  const servers = new Map<string, RegistryServer>()
+  let answered = 0, nextCursor: string | null = null
+  for (const a of answers) {
+    if (a.status !== 200) continue
+    try {
+      const j = JSON.parse(a.text) as { servers?: { server?: Record<string, unknown>; name?: string }[]; metadata?: { nextCursor?: string | null } }
+      answered += 1
+      nextCursor = j.metadata?.nextCursor ?? nextCursor
+      for (const x of j.servers ?? []) {
+        const s = (x.server ?? x) as { name?: string; description?: string; version?: string; remotes?: { type?: string; url?: string }[]; packages?: { registryType?: string; identifier?: string }[] }
+        const name = String(s.name ?? '').trim()
+        if (!name || servers.has(name)) continue
+        const remotes = (s.remotes ?? []).filter((r) => typeof r.url === 'string' && r.url.startsWith('https://')).map((r) => ({ type: String(r.type ?? 'streamable-http'), url: r.url! }))
+        const packages = (s.packages ?? []).filter((p) => p.identifier).map((p) => ({ registryType: String(p.registryType ?? 'npm'), identifier: String(p.identifier) }))
+        const first = remotes[0]
+        servers.set(name, { name, description: String(s.description ?? '').slice(0, 200), version: typeof s.version === 'string' ? s.version : null, remotes, packages, installable: !!first, install: first ? { tool: 'extend', arguments: { install: { name, url: first.url } } } : null })
+      }
+    } catch { /* not the registry's shape: nothing read from it */ }
+  }
+  const list = [...servers.values()]
+  return { answered, servers: list, installable: list.filter((s) => s.installable).length, nextCursor }
+}
 export const createCoverageRequest = (cursor?: string | null) => ({ url: cursor ? `${MCP_REGISTRY_SERVERS}&cursor=${encodeURIComponent(cursor)}` : MCP_REGISTRY_SERVERS, accept: 'application/json', next: 'metadata.nextCursor, until none', counts: 'servers.length on every page' })
 /** How much of the registered MCP world the QPU reaches: its gates' MCP doors over the servers the registry lists, as measured, and the
  *  sets that follow — each covered door with each QPU tool at its harmonic default. A ratio over a measured total, never a claim about the internet. */

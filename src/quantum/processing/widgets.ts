@@ -304,10 +304,20 @@ export const verifyWidget = (d: { uuid: string; valid: boolean; decided: number;
   ])
 
 /** A flow tool's result: its scalar fields as cards (phase, counts, verdicts), its check table when it is a selftest. */
+// a cell already rendered (a form), beside the escaped text cells: the user's act in the UI is a plain form post, no script
+const tableRaw = (head: string[], rows: string[][]): string =>
+  `<div style="background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 12px; padding: var(--pad-sm) var(--pad-md); overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; font-size: var(--font-size-footnote);"><thead><tr>${head.map((h) => `<th style="text-align: left; color: var(--text-secondary); font-weight: 500; ${CELL}">${escape(h)}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((cell) => `<td style="color: var(--text-primary); ${CELL}">${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`
+const BUTTON = 'cursor: pointer; border: 0.5px solid var(--border); border-radius: var(--radius); background: var(--surface-1); color: var(--text-primary); padding: var(--gap-xs) var(--gap-sm); font: inherit;'
+// a form posts as Payload's REST reads form data: multipart, the fields as the one _payload JSON field
+const form = (action: string, fields: [name: string, value: string][], label: string): string => `<form method="post" action="${escape(action)}" enctype="multipart/form-data" style="margin: 0; display: inline;"><input type="hidden" name="_payload" value="${escape(JSON.stringify(Object.fromEntries(fields)))}"><button type="submit" style="${BUTTON}">${escape(label)}</button></form>`
+/** The flow tools' widget; a registry search carries its search form, the servers found carry one install form each (MCPs at will, from the page). */
 export const flowWidget = (d: Record<string, unknown>): string => {
   const scalars = Object.entries(d).filter(([, v]) => typeof v === 'number' || typeof v === 'string' || typeof v === 'boolean').map(([k, v]) => [k, String(v)] as [string, string])
   const checks = Array.isArray(d.checks) ? (d.checks as { id: string; passed: boolean; evidence: string }[]) : null
-  return stack([cards(scalars), ...(checks ? [table(['Check', 'Passed', 'Evidence'], checks.map((c) => [c.id, mark(c.passed), c.evidence]))] : [])])
+  const search = d.phase === 'search' || d.phase === 'servers' ? [`<form method="get" action="/api/qpu/mcp/search" style="display: flex; gap: var(--gap-sm);"><input name="query" value="${escape(String(d.query ?? ''))}" placeholder="search the MCP registry" style="flex: 1; border: 0.5px solid var(--border); border-radius: var(--radius); background: var(--surface-1); color: var(--text-primary); padding: var(--gap-xs) var(--gap-sm); font: inherit;"><button type="submit" style="${BUTTON}">search</button></form>`] : []
+  const servers = d.phase === 'servers' && Array.isArray(d.serverList) ? (d.serverList as { name: string; description: string; version: string | null; remotes: { url: string }[]; packages: { identifier: string }[]; install: { arguments: { install: { name: string; url: string } } } | null }[]) : null
+  const installs = servers ? [tableRaw(['Server', 'Description', 'Remote', 'Install'], servers.map((s) => [escape(s.name), escape(s.description), escape(s.remotes[0]?.url ?? s.packages.map((p) => p.identifier).join(', ')), s.install ? form('/api/qpu/mcp/install', [['name', s.install.arguments.install.name], ['url', s.install.arguments.install.url]], 'install') : 'a package: needs a runtime']))] : []
+  return stack([cards(scalars), ...search, ...installs, ...(checks ? [table(['Check', 'Passed', 'Evidence'], checks.map((c) => [c.id, mark(c.passed), c.evidence]))] : [])])
 }
 
 /** The three admin APIs as one surface: the doors by provider, the Cloudflare meters and their bill, the merged operation index by provider and tag, the coverage of Payload's own packages, templates, examples and plugins with the next gap named. */
