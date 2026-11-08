@@ -409,6 +409,9 @@ const written = (read: { source: string; title: string; statement: string }, dev
   return `source: ${read.source}\ntitle: ${read.title}\nstandard: ${standard}\ndocumented: ${documented}\n\n${read.statement}${more}\n`
 }
 
+/** A lead developed in .idea: the call that develops it again, and what it developed. */
+type IdeaLead = { id: string; path: string; source: string; statement: string; status: 'open'; tool: 'payload'; reason: string; run: { tool: 'payload'; arguments: { develop: { formula: string; product: string; variant: string; title: string } } }; developed: Developed }
+
 /** Develop each file in .idea, then handle the leads by reading those files. A path outside .idea is not handled. */
 export const developIdeas = (raw: unknown, develop: Develop) => {
   const placed = placeInIdea(raw)
@@ -420,7 +423,7 @@ export const developIdeas = (raw: unknown, develop: Develop) => {
     const documented = developed.iso?.documented === true ? 'true' : 'false'
     return { path, text: `source: ${read.source}\ntitle: ${read.title}\nstandard: ${standard}\ndocumented: ${documented}\n\n${read.statement}\n` }
   })
-  const leads = []
+  const leads: IdeaLead[] = []
   const left: string[] = []
   for (const file of files) {
     if (!underIdea(file.path)) continue
@@ -441,7 +444,7 @@ export const nextIdeas = (raw: unknown, develop: Develop) => {
   const inbox: { path: string; text: string; at: number }[] = []
   for (const file of placed) if (underIdea(file.path)) inbox.push({ path: file.path, text: file.text, at: 0 })
   const drained: { path: string; text: string }[] = []
-  const leads: { id: string; path: string; source: string; statement: string; status: 'open'; tool: 'payload'; reason: string; depth: number; run: { tool: 'payload'; arguments: { develop: { formula: string; product: string; variant: string; title: string } } }; developed: Developed }[] = []
+  const leads: (IdeaLead & { depth: number })[] = []
   const dropped: string[] = []
   const seen = new Set<string>()
   let depth = 0

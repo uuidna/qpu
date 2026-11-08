@@ -89,14 +89,14 @@ export const Archive: React.FC<{ category: Category['slug'] }> = async ({ catego
               </p>
             </div>
           </div>
-          {latestPost && typeof latestPost !== 'string' && (
+          {latestPost && typeof latestPost === 'object' && (
             <FeaturedBlogPost {...latestPost} category={category} />
           )}
           {posts && Array.isArray(posts) && posts.length > 0 ? (
             <div className={[classes.cardGrid, 'grid'].filter(Boolean).join(' ')}>
               {(posts || [])
                 .slice(1)
-                .filter((post) => typeof post !== 'string')
+                .filter((post) => typeof post === 'object')
                 .map((post) => {
                   const thumbnailAsset =
                     post.featuredMedia === 'upload'
@@ -106,7 +106,7 @@ export const Archive: React.FC<{ category: Category['slug'] }> = async ({ catego
                         : post.thumbnail
 
                   return (
-                    typeof post !== 'string' && (
+                    typeof post === 'object' && (
                       <div className={['cols-8 cols-m-8'].filter(Boolean).join(' ')} key={post.id}>
                         <ContentMediaCard
                           authors={post.authors}

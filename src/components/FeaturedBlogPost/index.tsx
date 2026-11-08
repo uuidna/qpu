@@ -8,7 +8,9 @@ import * as React from 'react'
 
 import classes from './index.module.scss'
 
-export const FeaturedBlogPost: React.FC<{ category: string } & Partial<Post>> = (props) => {
+export const FeaturedBlogPost: React.FC<{ category: string } & Omit<Partial<Post>, 'category'>> = (
+  props,
+) => {
   const {
     slug,
     authors,
@@ -25,7 +27,7 @@ export const FeaturedBlogPost: React.FC<{ category: string } & Partial<Post>> = 
   const href = `/posts/${category}/${slug}`
 
   const author =
-    authors && authors[0] && typeof authors[0] !== 'string'
+    authors && authors[0] && typeof authors[0] === 'object'
       ? authors[0].firstName + ' ' + authors[0].lastName
       : ''
   const date = publishedOn && formatDate({ date: publishedOn })
@@ -35,7 +37,7 @@ export const FeaturedBlogPost: React.FC<{ category: string } & Partial<Post>> = 
       <BackgroundScanline className={[classes.scanline].filter(Boolean).join(' ')} />
       <div className={classes.contentWrapper}>
         {featuredMedia === 'upload' ? (
-          image && typeof image !== 'string' && <Media className={classes.media} resource={image} />
+          image && typeof image === 'object' && <Media className={classes.media} resource={image} />
         ) : dynamicThumbnail ? (
           <Media
             className={classes.media}
@@ -45,7 +47,7 @@ export const FeaturedBlogPost: React.FC<{ category: string } & Partial<Post>> = 
           />
         ) : (
           thumbnail &&
-          typeof thumbnail !== 'string' && <Media className={classes.media} resource={thumbnail} />
+          typeof thumbnail === 'object' && <Media className={classes.media} resource={thumbnail} />
         )}
         <div className={classes.content}>
           <h2 className={classes.title}>{title}</h2>

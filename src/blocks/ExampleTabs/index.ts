@@ -56,8 +56,7 @@ export const ExampleTabs: Block = {
         {
           name: 'examples',
           type: 'blocks',
-          blockReferences: ['CodeExampleBlock', 'MediaExampleBlock'],
-          blocks: [],
+          blocks: ['CodeExampleBlock', 'MediaExampleBlock'],
           maxRows: 2,
           minRows: 1,
           required: true,

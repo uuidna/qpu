@@ -60,10 +60,6 @@ export const Categories: CollectionConfig = {
       on: 'category',
     },
   ],
-  forceSelect: {
-    name: true,
-    slug: true,
-  },
   hooks: {
     afterChange: [
       async ({ doc, previousDoc }) => {

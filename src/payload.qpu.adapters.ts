@@ -23,7 +23,7 @@ const cloudflareRealpath = (value: string) => { try { return fs.existsSync(value
 const cloudflareCLI = process.argv.some((value) => cloudflareRealpath(value)?.endsWith(path.join('payload', 'bin.js')))
 const cloudflareProduction = process.env.NODE_ENV === 'production'
 const cloudflareContextFromWrangler = (): Promise<CloudflareContext> => import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`).then(({ getPlatformProxy }) => getPlatformProxy({ environment: process.env.CLOUDFLARE_ENV, remoteBindings: cloudflareProduction }))
-const assignCloudflare = (env: { D1?: unknown; R2?: unknown } | undefined) => { if (!env?.D1) return; (globalThis as { __qpuBindings?: Bindings }).__qpuBindings = { ...qpuBindings(), D1: env.D1, R2: env.R2 } }
+const assignCloudflare = (env: ({ D1?: unknown; R2?: unknown } & CloudflareEnv) | undefined) => { if (!env?.D1) return; (globalThis as { __qpuBindings?: Bindings }).__qpuBindings = { ...qpuBindings(), D1: env.D1, R2: env.R2 } }
 assignCloudflare((globalThis as Record<symbol, { env?: { D1?: unknown; R2?: unknown } }>)[Symbol.for('__cloudflare-context__')]?.env)
 if (!qpuBindings().D1 && (process.env.QPU_ADAPTERS === 'cloudflare' || cloudflareCLI)) {
   try {
@@ -70,4 +70,4 @@ const chosen = (part: keyof typeof ADAPTERS): Adapter => ADAPTERS[part].find((a)
 // Production: QPU_ADAPTERS=raid → qpuRaidDb (composite over every store); else the profile-chosen adapter. qpuRaid still mirrors/verifies.
 export const qpuDb = () => (process.env.QPU_ADAPTERS === 'raid' ? qpuRaidDb() : chosen('db').make()) as Config['db']
 export const qpuEmail = () => chosen('email').make() as EmailAdapter
-export const qpuAdapterPlugins = (): Plugin[] => (Object.keys(ADAPTERS) as (keyof typeof ADAPTERS)[]).flatMap((part) => ADAPTERS[part].map((a) => definePlugin<{ enabled?: boolean }>({ slug: 'qpu-' + a.pkg, plugin: ({ config, enabled }) => (enabled === false || chosen(part) !== a || (part === 'db' && process.env.QPU_ADAPTERS === 'raid') ? config : part === 'storage' ? { ...config, storage: [...(config.storage ?? []), a.make() as never] } : { ...config, [part]: a.make() }) })({})))
+export const qpuAdapterPlugins = (): Plugin[] => (Object.keys(ADAPTERS) as (keyof typeof ADAPTERS)[]).flatMap((part) => ADAPTERS[part].map((a) => definePlugin<{ enabled?: boolean }>({ slug: 'qpu-' + a.pkg, plugin: ({ config, options }) => (options?.enabled === false || chosen(part) !== a || (part === 'db' && process.env.QPU_ADAPTERS === 'raid') ? config : part === 'storage' ? { ...config, storage: [...(config.storage ?? []), a.make() as never] } : { ...config, [part]: a.make() }) })({})))

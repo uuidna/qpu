@@ -1,7 +1,6 @@
 import type { CMSLinkType } from '@components/CMSLink/index'
 import type { SerializedUploadNode } from '@payloadcms/richtext-lexical'
 import type { Media as MediaType } from '@types'
-import type { TypedUploadCollection, UploadCollectionSlug } from 'payload'
 
 import { CMSLink } from '@components/CMSLink/index'
 import { Media } from '@components/Media/index'
@@ -36,7 +35,7 @@ export const RichTextUpload: React.FC<Props> = (props) => {
   if (fields?.enableLink) {
     Wrap = CMSLink
     wrapProps = {
-      ...fields?.link,
+      ...(fields.link as CMSLinkType),
     }
   }
 
@@ -45,7 +44,7 @@ export const RichTextUpload: React.FC<Props> = (props) => {
     typeof value !== 'number' && (
       <div className={className} style={styles}>
         <Wrap {...wrapProps}>
-          <Media resource={value as TypedUploadCollection[UploadCollectionSlug]} />
+          <Media resource={value as MediaType} />
         </Wrap>
       </div>
     )

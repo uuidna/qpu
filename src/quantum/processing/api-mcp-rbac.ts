@@ -33,8 +33,8 @@ export const rbac = (subject: 'apis' | 'mcps', method: string, claimed?: string)
   return { subject, action, role, access: decideApiMcp(subject, action, role), managedBy: 'payload-mcp' as const }
 }
 
-const GRANTS: { apis?: ReturnType<typeof grant>; mcps?: ReturnType<typeof grant> } = {}
 const fillGrant = (subject: 'apis' | 'mcps') => Object.fromEntries(ROLES.map((role) => [role, { ...Object.fromEntries(OPERATIONS.map((op) => [op, decideApiMcp(subject, op, role)])), batch: Object.fromEntries(BATCH_ACTIONS.map((b) => [b.action, decideApiMcp(subject, b.action, role)])) }]))
+const GRANTS: { apis?: ReturnType<typeof fillGrant>; mcps?: ReturnType<typeof fillGrant> } = {}
 export const grant = (subject: 'apis' | 'mcps') => GRANTS[subject] ??= fillGrant(subject)
 
 /** The Worker asks this host first. The tool on it is payload. */

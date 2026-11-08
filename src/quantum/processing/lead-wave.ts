@@ -48,7 +48,7 @@ export const followWave = (leads: readonly { id: string; statement?: string }[] 
     ...drifted.map((key) => ({ id: key, solved: true as const, by: 'textbook_tuning_ratio' as const })),
   ]
   const payload = leads.map((lead) => ({ id: lead.id, statement: lead.statement ?? '' }))
-  const line = { debit: 'pitch:440' as const, credit: 'wave:432' as const, amount: 0 as const, count: difference }
+  const line: { debit: string; credit: string; amount: 0; count: number } = { debit: 'pitch:440', credit: 'wave:432', amount: 0, count: difference }
   const address = uuid(`wave\n${computes}\n${payload.map((row) => row.id).join('\n')}`)
   const proof = teleportProof()
   const signal = {

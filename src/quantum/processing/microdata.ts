@@ -81,7 +81,7 @@ const splitIso = (text: string): MicroNode | null => {
   const part = m[4]
   const year = m[5]
   const children: (MicroNode | MicroLeaf)[] = [
-    node('organization', orgs.join('/'), orgs.flatMap((o, i) => (o.length === 1 ? [leaf(`org[${i}]`, o)] : [node(`org[${i}]`, o, charLeaves(`org[${i}]`, o))]))),
+    node('organization', orgs.join('/'), orgs.flatMap<MicroNode | MicroLeaf>((o, i) => (o.length === 1 ? [leaf(`org[${i}]`, o)] : [node(`org[${i}]`, o, charLeaves(`org[${i}]`, o))]))),
     node('number', number, charLeaves('number', number)),
   ]
   if (part) children.push(node('part', part, charLeaves('part', part)))

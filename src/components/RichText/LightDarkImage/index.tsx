@@ -1,5 +1,6 @@
 'use client'
 import type { Media } from '@types'
+import type { DefaultDocumentIDType } from 'payload'
 
 import { usePopulateDocument } from '@root/hooks/usePopulateDocument'
 import { useThemePreference } from '@root/providers/Theme/index'
@@ -11,9 +12,9 @@ type Props = {
   alt: string
   caption?: string
   srcDark?: string
-  srcDarkId?: string
+  srcDarkId?: DefaultDocumentIDType
   srcLight?: string
-  srcLightId?: string
+  srcLightId?: DefaultDocumentIDType
 }
 
 export const LightDarkImage: (props: Props) => null | React.JSX.Element = ({

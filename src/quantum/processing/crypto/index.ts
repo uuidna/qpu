@@ -13,7 +13,7 @@ import { isoEntropyOf } from '../iso-deliverables.ts'
 /** The 32 hex digits of one UUID register (ISO/IEC 9834-8): the width of the DNA read, a field of the construction, not a cap. */
 const UUID_DIGITS = 32
 type CryptoAttestApi = { id: string; name: string; url: string; open: boolean; measured: string }
-type CryptoPostQuantum = { workers: { flag: string; changelog: string; says: string; read: string }; thisSeal: string; standards: unknown[]; selected: unknown; node: unknown; here: unknown }
+type CryptoPostQuantum = { workers: { flag: string; changelog: string; says: string; read: string }; thisSeal: string; standards: readonly unknown[]; selected: unknown; node: unknown; here: unknown }
 /** ISO/IEC 4879 quantum-computer surface a tenant may choose: processor inventory (no site geometry), circuit schemas, hardware stack summary. */
 export type CryptoProcessorName = 'Willow' | 'Sycamore' | 'Sycamore23' | 'Bristlecone' | 'Foxtail'
 export type CryptoProcessorRow = {
@@ -899,9 +899,10 @@ const NIST_OPEN_DATA = 'https://data.nist.gov/rmm/records?page=0&size=5'
 /** NIST Open Data, read as the client hands the body. Each record is one coil. The live plasma of that coil is two realities, the digits 1 and 6, and each reality has six neighbours. Nothing is fetched. */
 export const nistOpenData = (raw: unknown = true) => {
   if (raw === true) return { phase: 'requests' as const, source: 'nist-opendata' as const, fetched: false as const, written: false as const, request: { id: 'nist-opendata' as const, method: 'GET' as const, url: NIST_OPEN_DATA, accept: 'application/json' as const }, tools: ['kem', 'slh', 'ed25519', 'ecdsa', 'shake'] as const, says: 'NIST Open Data is asked at data.nist.gov. Nothing is fetched. Hand the body back as nist.' }
-  let body: { ResultCount?: number; ResultData?: { title?: unknown; doi?: unknown }[] } | null = null
-  if (typeof raw === 'string') { try { body = JSON.parse(raw) as typeof body } catch { body = null } }
-  else if (isObj(raw)) body = raw as NonNullable<typeof body>
+  type Body = { ResultCount?: number; ResultData?: { title?: unknown; doi?: unknown }[] }
+  let body: Body | null = null
+  if (typeof raw === 'string') { try { body = JSON.parse(raw) as Body } catch { body = null } }
+  else if (isObj(raw)) body = raw as Body
   const rows = Array.isArray(body?.ResultData) ? body.ResultData : []
   const records = rows.map((row) => {
     const title = typeof row.title === 'string' ? row.title : ''
@@ -925,9 +926,10 @@ export const cernOpenData = (raw: unknown = true, config?: CryptoConfig) => {
     if (!config) throw new Error('cernOpenData requests need crypto config from payload { cryptoConfig } or tenants.settings.arguments')
     return { phase: 'requests' as const, source: 'cern-opendata' as const, fetched: false as const, written: false as const, request: { id: 'cern-opendata' as const, method: 'GET' as const, url: cfgAttest(config, 'cern-opendata').url, accept: 'application/json' as const }, tools: ['kem', 'slh', 'ed25519', 'ecdsa', 'shake'] as const, says: 'CERN Open Data is asked at opendata.cern.ch. Nothing is fetched. Hand the body back as cern.' }
   }
-  let body: { hits?: { total?: number; hits?: { id?: unknown; metadata?: { title?: unknown; relations?: { doi?: unknown }[] } }[] } } | null = null
-  if (typeof raw === 'string') { try { body = JSON.parse(raw) as typeof body } catch { body = null } }
-  else if (isObj(raw)) body = raw as NonNullable<typeof body>
+  type Body = { hits?: { total?: number; hits?: { id?: unknown; metadata?: { title?: unknown; relations?: { doi?: unknown }[] } }[] } }
+  let body: Body | null = null
+  if (typeof raw === 'string') { try { body = JSON.parse(raw) as Body } catch { body = null } }
+  else if (isObj(raw)) body = raw as Body
   const rows = Array.isArray(body?.hits?.hits) ? body.hits.hits : []
   const records = rows.map((row) => {
     const title = typeof row.metadata?.title === 'string' ? row.metadata.title : ''

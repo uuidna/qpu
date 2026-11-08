@@ -39,8 +39,6 @@ import { useThemePreference } from '@root/providers/Theme/index'
 import { toKebabCase } from '@utilities/to-kebab-case'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 
-type ReusableContentBlockType = Extract<Page['layout'][0], { blockType: 'reusableContentBlock' }>
-
 const blockComponents = {
   banner: BannerBlock,
   blogContent: BlogContent,
@@ -73,7 +71,7 @@ const blockComponents = {
   stickyHighlights: StickyHighlights,
 }
 
-export type BlocksProp = RelatedPostsBlock | ReusableContent['layout'][0] | ReusableContentBlockType
+export type BlocksProp = Page['layout'][0] | RelatedPostsBlock | ReusableContent['layout'][0]
 
 type Props = {
   blocks: BlocksProp[]

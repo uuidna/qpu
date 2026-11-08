@@ -80,7 +80,7 @@ export default async function PartnerPage({ params }: { params: Promise<{ slug: 
         </aside>
         <main className={[classes.main, 'cols-10 start-4 cols-m-8 start-m-1'].join(' ')}>
           <h1 className={classes.name}>{partner.name}</h1>
-          {bannerImage && typeof bannerImage !== 'string' && (
+          {bannerImage && typeof bannerImage === 'object' && (
             <Media className={classes.banner} resource={bannerImage} />
           )}
           <div className={classes.detailsMobile}>
@@ -98,7 +98,7 @@ export default async function PartnerPage({ params }: { params: Promise<{ slug: 
             <h3>Ideal Project</h3>
             <RichText content={idealProject} />
           </div>
-          {caseStudy && typeof caseStudy !== 'string' && (
+          {caseStudy && typeof caseStudy === 'object' && (
             <Link className={classes.caseStudy} href={`/case-studies/${caseStudy.slug}`}>
               <div className={classes.caseStudyText}>
                 <h6>
@@ -108,7 +108,7 @@ export default async function PartnerPage({ params }: { params: Promise<{ slug: 
                 <small>{caseStudy.meta?.description}</small>
               </div>
               <div className={classes.caseStudyImage}>
-                {typeof caseStudy.featuredImage !== 'string' && (
+                {typeof caseStudy.featuredImage === 'object' && (
                   <Media resource={caseStudy.featuredImage} />
                 )}
               </div>
@@ -144,7 +144,7 @@ export default async function PartnerPage({ params }: { params: Promise<{ slug: 
               </div>
             </div>
           )}
-          {contactForm && typeof contactForm !== 'string' && (
+          {contactForm && typeof contactForm === 'object' && (
             <div className={classes.contactForm} id="contact">
               <h3>Contact {partner.name}</h3>
               <div className={classes.form}>
@@ -172,7 +172,7 @@ export default async function PartnerPage({ params }: { params: Promise<{ slug: 
                       {
                         name: 'partnerId',
                         blockType: 'text',
-                        defaultValue: partner.id,
+                        defaultValue: String(partner.id),
                         label: 'Partner ID',
                         required: false,
                       },
@@ -214,7 +214,7 @@ const PartnerDetails = (partner) => {
         <h6>Region{regions.length === 1 ? '' : 's'}</h6>
         <ul>
           {regions?.map(
-            (region) => typeof region !== 'string' && <li key={region.id}>{region.name}</li>,
+            (region) => typeof region === 'object' && <li key={region.id}>{region.name}</li>,
           )}
         </ul>
       </div>
@@ -223,7 +223,7 @@ const PartnerDetails = (partner) => {
         <ul>
           {industries?.map(
             (industry) =>
-              typeof industry !== 'string' && <li key={industry.id}>{industry.name}</li>,
+              typeof industry === 'object' && <li key={industry.id}>{industry.name}</li>,
           )}
         </ul>
       </div>
@@ -232,7 +232,7 @@ const PartnerDetails = (partner) => {
         <ul>
           {specialties?.map(
             (specialty) =>
-              typeof specialty !== 'string' && <li key={specialty.id}>{specialty.name}</li>,
+              typeof specialty === 'object' && <li key={specialty.id}>{specialty.name}</li>,
           )}
         </ul>
       </div>
@@ -248,7 +248,7 @@ const PartnerDetails = (partner) => {
           <ul className={classes.socialIcons}>
             {social?.map(
               (social) =>
-                typeof social !== 'string' && (
+                typeof social === 'object' && (
                   <SocialIcon href={social.url} key={social.id} platform={social.platform} />
                 ),
             )}

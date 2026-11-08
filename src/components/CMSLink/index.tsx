@@ -1,4 +1,5 @@
 import type { CaseStudy, Page, Post } from '@root/payload-types'
+import type { DefaultDocumentIDType } from 'payload'
 
 import Link from 'next/link'
 import React from 'react'
@@ -13,17 +14,17 @@ const relationSlugs = {
 
 type PageReference = {
   relationTo: 'pages'
-  value: Page | string
+  value: DefaultDocumentIDType | Page
 }
 
 type PostsReference = {
   relationTo: 'posts'
-  value: Post | string
+  value: DefaultDocumentIDType | Post
 }
 
 type CaseStudyReference = {
   relationTo: (typeof relationSlugs)['case_studies']
-  value: CaseStudy | string
+  value: CaseStudy | DefaultDocumentIDType
 }
 
 export type LinkType = 'custom' | 'reference' | null
@@ -59,7 +60,7 @@ const generateHref = (args: GenerateSlugType): string => {
     return url
   }
 
-  if (type === 'reference' && reference?.value && typeof reference.value !== 'string') {
+  if (type === 'reference' && reference?.value && typeof reference.value === 'object') {
     if (reference.relationTo === 'pages') {
       const value = reference.value as Page
       const breadcrumbs = value?.breadcrumbs

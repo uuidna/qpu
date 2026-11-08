@@ -107,7 +107,7 @@ export const PartnerProgram: GlobalConfig = {
         {
           name: 'beforeDirectory',
           type: 'blocks',
-          blockReferences: [
+          blocks: [
             'callout',
             'cta',
             'cardGrid',
@@ -133,7 +133,6 @@ export const PartnerProgram: GlobalConfig = {
             'stickyHighlights',
             'exampleTabs',
           ],
-          blocks: [],
           label: 'Before Directory Blocks',
           labels: {
             plural: 'Blocks',
@@ -143,7 +142,7 @@ export const PartnerProgram: GlobalConfig = {
         {
           name: 'afterDirectory',
           type: 'blocks',
-          blockReferences: [
+          blocks: [
             'callout',
             'cta',
             'cardGrid',
@@ -169,7 +168,6 @@ export const PartnerProgram: GlobalConfig = {
             'stickyHighlights',
             'exampleTabs',
           ],
-          blocks: [],
           label: 'After Directory Blocks',
           labels: {
             plural: 'Blocks',

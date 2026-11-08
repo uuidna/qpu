@@ -16,7 +16,7 @@ export const ContentMediaCard: React.FC<ContentMediaCardProps> = (props) => {
     typeof authors === 'string'
       ? authors
       : authors?.[0]
-        ? typeof authors?.[0] === 'string'
+        ? typeof authors?.[0] !== 'object'
           ? authors[0]
           : authors[0].firstName + ' ' + authors[0].lastName
         : null

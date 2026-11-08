@@ -1,4 +1,5 @@
 import type { Media as MediaType } from '@root/payload-types'
+import type { DefaultDocumentIDType } from 'payload'
 
 import { Media } from '@components/Media/index'
 import { CrosshairIcon } from '@root/icons/CrosshairIcon/index'
@@ -8,7 +9,7 @@ import classes from './index.module.scss'
 
 type LogoItem = {
   id?: null | string
-  logoMedia: MediaType | string
+  logoMedia: DefaultDocumentIDType | MediaType
 }
 
 type PositionedLogo = {

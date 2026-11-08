@@ -25,14 +25,14 @@ export const call = async (tool: string, args: Record<string, unknown>): Promise
   // the config loaded when the module runs, never imported statically: the block renderer is reached by the Pages Router too, and the config's hooks name App Router caches (measured at build)
   const { default: config } = await import('@payload-config')
   const payload = await getPayload({ config })
-  const tenant = await tenant(payload)
+  const owner = await tenant(payload)
   // the tenant's settings (its tenants document, in this UI or through the Payload MCP plugin) configure every call under its hosts
-  const from = 'page:' + tenant.slug // the same call at two tenants is two entries: the address folds the tenant through from
-  const body = { tool, arguments: { ...args, ...(tenant.settings?.arguments ?? {}) } }
+  const from = 'page:' + owner.slug // the same call at two tenants is two entries: the address folds the tenant through from
+  const body = { tool, arguments: { ...args, ...(owner.settings?.arguments ?? {}) } }
   const id = uuid(entryText({ kind: 'call', from, body }))
   // the collection is QPU's own (the generated types of the fork name the site's); the id is the content address of the call
   try { return await payload.findByID({ collection: 'entries' as never, id }) as unknown as Call } catch { /* not yet called: created once below */ }
-  return await payload.create({ collection: 'entries' as never, data: { id, kind: 'call', from, body, tenant: tenant.id } as never }) as unknown as Call
+  return await payload.create({ collection: 'entries' as never, data: { id, kind: 'call', from, body, tenant: owner.id } as never }) as unknown as Call
 }
 
 export const QpuPage = async ({ uuid }: { uuid: string }) => {

@@ -81,8 +81,6 @@ export const isoEntropyOf = (W: number) => {
   const S = microstates === 1 ? 0 : Math.log(microstates)
   const verified = microstates >= 1 && (microstates === 1 ? S === 0 : S === Math.log(microstates))
   return {
-    law: ENTROPY_LAW,
-    dictionary: ISO_ENTROPY.dictionary,
     ...ISO_ENTROPY,
     k: 1 as const,
     unit: ISO_ENTROPY.unitNatural,
@@ -358,6 +356,7 @@ export const unlockHiddenPerspectives = (raw: unknown = true) => {
   })
   const activeBits = PRODUCER_TRINITY_NAMES.reduce((n, name, index) => n | (bitOf(name, index) ? (1 << index) : 0), 0)
   const active = combinations[activeBits]!
+  const { bits: activeBitString, ...activeRest } = active
   const most = combinations.find((row) => row.most)!
   const space = 1 << PRODUCER_TRINITY_NAMES.length
   const holds = combinations.length === space
@@ -386,7 +385,7 @@ export const unlockHiddenPerspectives = (raw: unknown = true) => {
     })),
     perspectives: [...HIDDEN_PERSPECTIVES],
     combinations,
-    active: { bits: activeBits, ...active },
+    active: { bits: activeBitString, ...activeRest },
     most,
     unlocked: active.unlocked,
     hidden: active.hidden,

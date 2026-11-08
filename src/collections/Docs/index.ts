@@ -75,8 +75,8 @@ export const Docs: CollectionConfig = {
     create: isAdmin,
     delete: isAdmin,
     read: () => true,
-    update: ({ id, data, isReadingStaticFile, req }) => {
-      return isAdmin({ id, data, isReadingStaticFile, req })
+    update: (args) => {
+      return isAdmin(args)
     },
   },
   admin: {

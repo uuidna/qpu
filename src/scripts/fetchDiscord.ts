@@ -2,7 +2,7 @@
 import * as discordMDX from 'discord-markdown'
 const { toHTML } = discordMDX
 import cliProgress from 'cli-progress'
-import { getPayload } from 'payload'
+import { type DefaultDocumentIDType, getPayload } from 'payload'
 import config from '@payload-config'
 
 import sanitizeSlug from '../utilities/sanitizeSlug'
@@ -42,7 +42,7 @@ type Message = {
 
 type ExistingThread = {
   discordID: string
-  docId: string
+  docId: DefaultDocumentIDType
   messageCount: number
 }
 

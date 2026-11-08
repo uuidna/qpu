@@ -25,7 +25,8 @@ const readTls = (host: string): Promise<{ notBefore: string; notAfter: string; i
   const socket = tls.connect(443, host, { servername: host }, () => {
     const c = socket.getPeerCertificate()
     socket.end()
-    const issuer = c.issuer?.O ?? c.issuer?.CN ?? Object.values(c.issuer ?? {}).join(' ')
+    const one = (field: string | string[] | undefined) => (Array.isArray(field) ? field.join(' ') : field)
+    const issuer = one(c.issuer?.O) ?? one(c.issuer?.CN) ?? Object.values(c.issuer ?? {}).join(' ')
     resolve({ notBefore: new Date(c.valid_from).toISOString(), notAfter: new Date(c.valid_to).toISOString(), issuer })
   })
   socket.on('error', reject)
@@ -384,7 +385,7 @@ test('every NIST scenario reverses via CERN and e2e against opendata.cern.ch', a
   assert.equal(plan.requests[0]?.id, 'cern-opendata')
   assert.ok(plan.liveCertificates.some((c: { host: string }) => c.host === CERN_HOST))
 
-  for (const row of plan.scenarios.filter((s: { tool?: string; arguments?: unknown; request?: unknown; live?: unknown }) => s.tool && s.arguments && !s.request && !s.live && s.id !== 'attest-plan')) {
+  for (const row of plan.scenarios.filter((s: { id?: string; tool?: string; arguments?: unknown; request?: unknown; live?: unknown }) => s.tool && s.arguments && !s.request && !s.live && s.id !== 'attest-plan')) {
     const answer = invoke(row.tool, row.arguments)
     if (row.id === 'sp-800-38d-aes-gcm') assert.equal(answer.verified === true && answer.text === 'functional', true)
     else if (row.id === 'rfc-6962-merkle') assert.equal(answer.verified, true)

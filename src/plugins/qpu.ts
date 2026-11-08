@@ -3,7 +3,7 @@
 // The QPU as Payload plugins, one per capability, each by Payload's plugin guide (definePlugin: a slug, typed options, enabled, arrays spread),
 // composed by the umbrella qpuPlugin: qpu (the core), qpu-agents, qpu-machine, qpu-google, qpu-apis, qpu-imagine, qpu-mcps, qpu-raid and qpu-hooks. The one implementation: this file is the source, no generator holds a copy.
 import { APIError, addDataAndFileToRequest, definePlugin } from 'payload'
-import type { Block, CollectionAfterChangeHook, CollectionAfterReadHook, CollectionConfig, Config, Endpoint, Field, Plugin, PayloadRequest, TaskConfig } from 'payload'
+import type { Block, CollectionAfterChangeHook, CollectionAfterReadHook, CollectionConfig, Config, Endpoint, Field, Plugin, PayloadRequest, RequestContext, TaskConfig, Where } from 'payload'
 import { existsSync, readFileSync, readdirSync, renameSync, mkdirSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import path from 'node:path'
@@ -26,12 +26,10 @@ import { deployAfterSeed } from '../collections/orders.qpu.hooks'
 import { qpuDb, qpuEmail, qpuAdapterPlugins } from '../payload.qpu.adapters'
 import { appCall, qpuMachineTask, qpuMachineTool } from '../payload.qpu.mcp'
 
-// the block added wherever a layout takes blocks: by object, or by reference where the field references the config's blocks
+// the block added wherever a layout takes blocks, unless the layout names it already by object or by slug
 const withBlock = (fields: Field[], block: Block): Field[] => fields.map((f): Field => {
   if (f.type === 'blocks' && f.name === 'layout') {
-    const refs = (f as { blockReferences?: (Block | string)[] }).blockReferences
-    if (refs) return { ...f, blockReferences: refs.some((b) => (typeof b === 'string' ? b : b.slug) === block.slug) ? refs : [...refs, block.slug] } as Field
-    return { ...f, blocks: f.blocks.some((b) => b.slug === block.slug) ? f.blocks : [...f.blocks, block] }
+    return { ...f, blocks: f.blocks.some((b) => (typeof b === 'string' ? b : b.slug) === block.slug) ? f.blocks : [...f.blocks, block] }
   }
   if (f.type === 'tabs') return { ...f, tabs: f.tabs.map((t) => ({ ...t, fields: withBlock(t.fields, block) })) }
   if ('fields' in f && Array.isArray(f.fields)) return { ...f, fields: withBlock(f.fields, block) } as Field
@@ -81,37 +79,35 @@ const readGltfUpload = (async ({ data, req }: { data: Record<string, unknown>; r
   return { ...data, gltf: answer }
 }) as never
 const gltfMedia = (c: CollectionConfig): CollectionConfig => first({ ...c, fields: [...c.fields.filter((f) => !('name' in f) || f.name !== 'gltf'), { name: 'gltf', type: 'json', admin: { readOnly: true, description: 'a glTF 2.0 asset as Unreal Engine reads it: what the scene holds and its extensions by prefix (seal { gltf })' } }] }, 'beforeChange', readGltfUpload)
-// a blocks field that names its blocks by reference (blockReferences) resolved to the block configs themselves: the Mongo adapter of Payload
-// 4.0.0-beta.7 builds its schemas from field.blocks alone and drops every referenced row on read (91 pages read back empty), while the D1 adapter
-// stores blocks as JSON; resolved once here, both adapters hold the same rows (payloadcms.com/docs/fields/blocks)
+// a blocks field that names its blocks by slug (the config's blocks) resolved to the block configs themselves: the Mongo adapter of Payload
+// 4.0.0-beta.7 builds its schemas from block configs alone and drops every row named by slug on read (91 pages read back empty), while the D1
+// adapter stores blocks as JSON; resolved once here, both adapters hold the same rows (payloadcms.com/docs/fields/blocks)
 const resolveBlockReferences = (fields: Field[], blocks: readonly Block[]): Field[] => fields.map((f): Field => {
   if (f.type === 'blocks') {
     const named = (r: Block | string): Block | undefined => (typeof r === 'string' ? blocks.find((b) => b.slug === r) : r)
-    const refs = ((f as { blockReferences?: (Block | string)[] }).blockReferences ?? []).map(named).filter((b): b is Block => !!b)
-    const { blockReferences: _refs, ...rest } = f as typeof f & { blockReferences?: unknown }
     const seen = new Set<string>()
-    return { ...rest, blocks: [...((f.blocks ?? []) as (Block | string)[]).map(named).filter((b): b is Block => !!b), ...refs].filter((b) => (seen.has(b.slug) ? false : (seen.add(b.slug), true))).map((b) => ({ ...b, fields: resolveBlockReferences(b.fields, blocks) })) } as Field
+    return { ...f, blocks: f.blocks.map(named).filter((b): b is Block => !!b).filter((b) => (seen.has(b.slug) ? false : (seen.add(b.slug), true))).map((b) => ({ ...b, fields: resolveBlockReferences(b.fields, blocks) })) }
   }
   if (f.type === 'tabs') return { ...f, tabs: f.tabs.map((t) => ({ ...t, fields: resolveBlockReferences(t.fields, blocks) })) }
   if ('fields' in f && Array.isArray(f.fields)) return { ...f, fields: resolveBlockReferences(f.fields, blocks) } as Field
   return { ...f } as Field // a copy per field object: a leaf shared with the config's own block would be sanitized twice (its editor wrapped twice: editor.validate is not a function)
 })
-export const qpuCore = definePlugin<QpuPluginOptions>({ slug: 'qpu', plugin: ({ config: incoming, enabled, branding, feeds }) => (enabled === false ? incoming : withResolvedBlocks(hooked({
+export const qpuCore = definePlugin<QpuPluginOptions>({ slug: 'qpu', plugin: ({ config: incoming, options }) => (options?.enabled === false ? incoming : withResolvedBlocks(hooked({
   ...incoming,
   db: incoming.db ?? qpuDb(),
   email: incoming.email ?? qpuEmail(),
   // the MCP door described first (GET /api/mcp answers 200, not the plugin's 405 that a connector check reads as a sign-in demand), then the rest
-  endpoints: [qpuMcpDescribeEndpoint, ...(incoming.endpoints ?? []).filter((e) => !(e.path === '/qpu/feeds' && e.method === 'get') && !(e.path === '/mcp' && e.method === 'get')), ...(feeds === false ? [] : [qpuFeedsEndpoint])],
-  admin: branding === false ? incoming.admin : { ...incoming.admin, meta: { ...incoming.admin?.meta, titleSuffix: incoming.admin?.meta?.titleSuffix ?? ' · QPU' }, components: { ...incoming.admin?.components, beforeDashboard: [...(incoming.admin?.components?.beforeDashboard ?? []), ...[{ tool: 'clay', args: { technique: 'reflection' } }, { tool: 'dashboard', args: {} }, { tool: 'leads', args: {} }, { tool: 'metrics', args: {} }, { tool: 'apis', args: {} }, { tool: 'imagine', args: { open: 4 } }, { tool: 'match', args: {} }, { tool: 'repository', args: { machine: { actions: true } } }].map((p) => ({ path: '@root/components/blocks/Qpu/App#QpuApp', clientProps: p }))], graphics: { Logo: '@root/components/blocks/Qpu/Branding#QpuLogo', Icon: '@root/components/blocks/Qpu/Branding#QpuIcon', ...incoming.admin?.components?.graphics } } },
+  endpoints: [qpuMcpDescribeEndpoint, ...(incoming.endpoints ?? []).filter((e) => !(e.path === '/qpu/feeds' && e.method === 'get') && !(e.path === '/mcp' && e.method === 'get')), ...(options?.feeds === false ? [] : [qpuFeedsEndpoint])],
+  admin: options?.branding === false ? incoming.admin : { ...incoming.admin, meta: { ...incoming.admin?.meta, titleSuffix: incoming.admin?.meta?.titleSuffix ?? ' · QPU' }, components: { ...incoming.admin?.components, beforeDashboard: [...(incoming.admin?.components?.beforeDashboard ?? []), ...[{ tool: 'clay', args: { technique: 'reflection' } }, { tool: 'dashboard', args: {} }, { tool: 'leads', args: {} }, { tool: 'metrics', args: {} }, { tool: 'apis', args: {} }, { tool: 'imagine', args: { open: 4 } }, { tool: 'match', args: {} }, { tool: 'repository', args: { machine: { actions: true } } }].map((p) => ({ path: '@root/components/blocks/Qpu/App#QpuApp', clientProps: p }))], graphics: { Logo: '@root/components/blocks/Qpu/Branding#QpuLogo', Icon: '@root/components/blocks/Qpu/Branding#QpuIcon', ...incoming.admin?.components?.graphics } } },
   collections: [...(incoming.collections ?? []).filter((c) => c.slug !== Tenants.slug && c.slug !== Entries.slug), Tenants, Entries],
   globals: [...(incoming.globals ?? []).filter((g) => g.slug !== QpuGlobal.slug), QpuGlobal],
   blocks: [...(incoming.blocks ?? []).filter((b) => b.slug !== Qpu.slug), Qpu],
 }, { pages, 'form-submissions': submissions, media: gltfMedia, orders: ordersHook }))) })
-// every collection's block references resolved against the blocks the config holds once the qpu block is among them
-const withResolvedBlocks = (config: Config): Config => ({ ...config, collections: (config.collections ?? []).map((c) => ({ ...c, fields: resolveBlockReferences(c.fields, config.blocks ?? []) })) })
+// every collection's and global's blocks named by slug resolved against the blocks the config holds once the qpu block is among them
+const withResolvedBlocks = (config: Config): Config => ({ ...config, collections: (config.collections ?? []).map((c) => ({ ...c, fields: resolveBlockReferences(c.fields, config.blocks ?? []) })), globals: (config.globals ?? []).map((g) => ({ ...g, fields: resolveBlockReferences(g.fields, config.blocks ?? []) })) })
 /** qpu-agents: an API key per user (an agent's key to the MCP), the first user from the deploy */
-export const qpuAgents = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-agents', plugin: ({ config, enabled }) => (enabled === false ? config : hooked(config, { users })) })
-const entry = async (req: PayloadRequest, data: object, context?: object) => String(((await req.payload.create({ collection: 'entries' as never, data: data as never, overrideAccess: true, context })) as { id: string }).id)
+export const qpuAgents = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-agents', plugin: ({ config, options }) => (options?.enabled === false ? config : hooked(config, { users })) })
+const entry = async (req: PayloadRequest, data: object, context?: RequestContext) => String(((await req.payload.create({ collection: 'entries' as never, data: data as never, overrideAccess: true, context })) as { id: string }).id)
 const readPages = async (req: PayloadRequest, spec: { collection: string; where?: Record<string, unknown> }) => {
   const docs: unknown[] = []
   let page = 1
@@ -209,7 +205,7 @@ const qpuGoogleEndpoints: Endpoint[] = [
   },
 ]
 /** qpu-google: the Google integration measured on the qpu global and every Google call the qpu-google-call job; order 20, after the MCP plugin made its keys */
-export const qpuGoogle = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-google', order: 20, plugin: ({ config, enabled }) => (enabled === false ? config : {
+export const qpuGoogle = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-google', order: 20, plugin: ({ config, options }) => (options?.enabled === false ? config : {
   ...hooked(config, Object.fromEntries(['pages', 'tenants', 'entries', 'payload-mcp-api-keys'].map((s) => [s, (c: CollectionConfig) => first(s === 'entries' ? first(c, 'afterChange', queueGoogleCall as never) : c, 'afterChange', measureGoogle as never)]))),
   endpoints: [...(config.endpoints ?? []).filter((e) => e.path !== '/qpu/google'), ...qpuGoogleEndpoints],
   jobs: withTask(config, googleCallTask),
@@ -252,10 +248,10 @@ export const newsSolveTask: TaskConfig<{ input: { tenant?: string; news?: unknow
     return { output: { entry: await entry(req, { kind: 'editorial', from: 'qpu-news-solve', body: { tenant: tenantSlug, items: items.length, posts, apps: apps.length } }), posts } }
   },
 }
-export const qpuMachine = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-machine', order: 5, plugin: ({ config, plugins, enabled }) => {
+export const qpuMachine = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-machine', order: 5, plugin: ({ config, options, plugins }) => {
   const o = plugins['@payloadcms/plugin-mcp']?.options
-  if (o && enabled !== false) o.tools = { ...(o.tools ?? {}), machine: qpuMachineTool as never }
-  return enabled === false ? config : { ...config, jobs: withTask({ ...config, jobs: withTask({ ...config, jobs: withTask(config, leadRunTask) }, newsSolveTask) }, qpuMachineTask) }
+  if (o && options?.enabled !== false) o.tools = { ...(o.tools ?? {}), machine: qpuMachineTool as never }
+  return options?.enabled === false ? config : { ...config, jobs: withTask({ ...config, jobs: withTask({ ...config, jobs: withTask(config, leadRunTask) }, newsSolveTask) }, qpuMachineTask) }
 } })
 // binding 0 (payloadcms.com/docs/hooks/collections): every document a collection changes or reads, at its content address in hex folders by the UUID's
 // middle beside the repository (its R2 key, its GCS object) with a pointer to its latest version, the copy the RAID reads back verified when no other binding answers
@@ -294,7 +290,7 @@ const verifyTask: TaskConfig<{ input: { collection?: string }; output: { entry: 
   },
 }
 /** qpu-raid: binding 0 under every collection, by its afterChange and afterRead hooks, and its verification against bit 0 as a batch */
-export const qpuRaid = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-raid', plugin: ({ config, enabled }) => (enabled === false ? config : { ...config, collections: (config.collections ?? []).map((c) => first(first(first(c, 'afterChange', mirror as never), 'afterRead', mirror as never), 'afterRead', heal as never)), jobs: withTask(config, verifyTask) }) })
+export const qpuRaid = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-raid', plugin: ({ config, options }) => (options?.enabled === false ? config : { ...config, collections: (config.collections ?? []).map((c) => first(first(first(c, 'afterChange', mirror as never), 'afterRead', mirror as never), 'afterRead', heal as never)), jobs: withTask(config, verifyTask) }) })
 /** qpu-hooks: the witnesses on the final config, every rich text field and Lexical block node; ordered last, any config mounts it with one line */
 // every Cloudflare call one job on the server, qpu-cloudflare-call: a method and path are allowed only when an entry of kind openapi-operation held
 // in Payload names them (Cloudflare's OpenAPI read into entries) or they are the GraphQL Analytics endpoint; the token is the variable the tenant's
@@ -405,7 +401,7 @@ const qpuApisEndpoints: Endpoint[] = [
   },
 ]
 /** qpu-apis: Payload's, Cloudflare's and Google's admin APIs as one UUID program on the qpu global, the Cloudflare call and observe jobs, the merged index kept in sync; order 21, after qpu-google */
-export const qpuApis = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-apis', order: 21, plugin: ({ config, enabled }) => (enabled === false ? config : {
+export const qpuApis = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-apis', order: 21, plugin: ({ config, options }) => (options?.enabled === false ? config : {
   ...hooked(config, Object.fromEntries(['pages', 'tenants', 'entries', 'payload-mcp-api-keys'].map((s) => [s, (c: CollectionConfig) => first(c, 'afterChange', measureApis as never)]))),
   endpoints: [...(config.endpoints ?? []).filter((e) => e.path !== '/qpu/apis'), ...qpuApisEndpoints],
   jobs: withTask({ ...config, jobs: withTask(config, cloudflareCallTask) as never }, cloudflareObserveTask),
@@ -456,7 +452,7 @@ const qpuImagineEndpoints: Endpoint[] = [
   },
 ]
 /** qpu-imagine: the imagination through Payload — the job, the lead-run hook that queues it, the endpoint, the global's latest imagination; order 22 */
-export const qpuImagine = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-imagine', order: 22, plugin: ({ config, enabled }) => (enabled === false ? config : {
+export const qpuImagine = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-imagine', order: 22, plugin: ({ config, options }) => (options?.enabled === false ? config : {
   ...hooked(config, { entries: (c: CollectionConfig) => first(c, 'afterChange', imagineAfterRun as never) }),
   endpoints: [...(config.endpoints ?? []).filter((e) => e.path !== '/qpu/imagine'), ...qpuImagineEndpoints],
   jobs: withTask(config, imagineTask),
@@ -476,7 +472,7 @@ const mcpsField: Field = { name: 'mcps', type: 'array', admin: { description: 't
 ] }
 const mcpRows = async (req: PayloadRequest, tenant: unknown): Promise<McpRow[]> => { const t = tenant ? await req.payload.findByID({ collection: 'tenants' as never, id: String(tenant), depth: 0, overrideAccess: true }).catch(() => null) : null; return ((t as { mcps?: McpRow[] } | null)?.mcps ?? []) }
 // the same call is the same entry (its id the content address): asked again, the held entry answers instead of a second create
-const entryOnce = async (req: PayloadRequest, data: { kind: string; from: string; tenant?: string; body: Record<string, unknown>; links?: string[] }, where: Record<string, unknown>) => {
+const entryOnce = async (req: PayloadRequest, data: { kind: string; from: string; tenant?: string; body: Record<string, unknown>; links?: string[] }, where: Where) => {
   try { return await entry(req, data, { qpuMcps: true }) } catch (e) {
     const held = (await req.payload.find({ collection: 'entries' as never, where: { and: [{ kind: { equals: data.kind } }, { from: { equals: data.from } }, where] }, sort: '-createdAt', pagination: false, depth: 0, overrideAccess: true })) as { docs: { id: string }[] }
     if (held.docs[0]) return String(held.docs[0].id)
@@ -560,7 +556,7 @@ export const qpuMcps = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-mcps', o
   endpoints: [...(config.endpoints ?? []).filter((e) => e.path !== '/qpu/mcp/search' && e.path !== '/qpu/mcp/install'), ...qpuMcpsEndpoints],
   jobs: withTask(config, mcpCallTask),
 }) })
-export const qpuHooks = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-hooks', order: Number.MAX_SAFE_INTEGER, plugin: ({ config, enabled }) => (enabled === false ? config : qpuHooksOf(config).config) })
+export const qpuHooks = definePlugin<{ enabled?: boolean }>({ slug: 'qpu-hooks', order: Number.MAX_SAFE_INTEGER, plugin: ({ config, options }) => (options?.enabled === false ? config : qpuHooksOf(config).config) })
 /** The umbrella: the capabilities, the storage, the plugins the configs order and the tenant's own, each seeing the others in the plugins map */
 export const qpuPlugin = (options: QpuPluginOptions = {}): Plugin => async (incoming: Config): Promise<Config> => {
   const inner = [qpuCore(options), qpuAgents({}), qpuMachine({}), ...(options.adapters === 'none' ? [] : qpuAdapterPlugins()), ...qpuPlugins, qpuGoogle({}), qpuApis({}), qpuImagine({}), qpuMcps({}), ...(options.plugins ?? []), qpuRaid({}), qpuHooks({})]

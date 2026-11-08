@@ -30,7 +30,7 @@ export const standardsSeeds = () => {
   const eq = verifyIsoQuantumEquivalence()
   const listed = rows(eq)
   const slugs = new Set<string>()
-  const docs = []
+  const docs: ReturnType<typeof pageSeed>[] = []
   let agree = 0
   for (let i = 0; i < listed.length; i++) {
     for (let j = i + 1; j < listed.length; j++) {

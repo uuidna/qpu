@@ -4,14 +4,15 @@ import { entryText, uuid } from '../uuid/index.ts'
 import { pageSeed } from '../processing/page-seed.ts'
 
 type Seed = ReturnType<typeof pageSeed>
-type PageData = Omit<Seed, 'id' | 'breadcrumbs'>
+// the sku is the seed's identity (its channel's handle), not a pages field: no collection declares it, so it is never written nor queried
+type PageData = Omit<Seed, 'id' | 'breadcrumbs' | 'sku'>
 type PageDoc = PageData & { id: string | number; breadcrumbs?: { url?: string | null; label?: string | null; doc?: unknown }[] | null }
 
 const context = { disableRevalidate: true as const }
 
 export const pageData = (title: string, text: string): { page: Seed; data: PageData } => {
   const page = pageSeed(title, text)
-  const data: PageData = { sku: page.sku, title: page.title, slug: page.slug, _status: page._status, hero: page.hero, layout: page.layout, meta: page.meta }
+  const data: PageData = { title: page.title, slug: page.slug, _status: page._status, hero: page.hero, layout: page.layout, meta: page.meta }
   return { page, data }
 }
 
@@ -28,7 +29,7 @@ export const findArgs = (slug: string) => ({
 
 /** The arguments of payload.create. The id and the breadcrumbs stay off the write. The parent is set by the nested-docs field. */
 export const writeArgs = (page: Seed & { parentSlug?: string | null; parentId?: string | null; product?: string; variant?: string; depth?: number; kind?: string; url?: string; addressed?: boolean }) => {
-  const { id: _id, breadcrumbs: _breadcrumbs, parentSlug: _parent, parentId: _parentId, product: _product, variant: _variant, depth: _depth, kind: _kind, url: _url, addressed: _addressed, ...data } = page
+  const { id: _id, sku: _sku, breadcrumbs: _breadcrumbs, parentSlug: _parent, parentId: _parentId, product: _product, variant: _variant, depth: _depth, kind: _kind, url: _url, addressed: _addressed, ...data } = page
   return { collection: 'pages' as const, data, draft: page._status !== 'published', overrideAccess: true as const, context }
 }
 
@@ -40,7 +41,7 @@ const findIdArgs = (id: string) => ({
   draft: true as const,
 })
 
-type FindArgs = ReturnType<typeof findArgs> | ReturnType<typeof findIdArgs>
+type FindArgs = ReturnType<typeof findArgs> | ReturnType<typeof findIdArgs> | ReturnType<typeof publishedFind>
 type WriteArgs = ReturnType<typeof writeArgs>
 type WriteCall = WriteArgs & { disableTransaction?: boolean }
 type Addressed = Seed & { parentId?: string | null; addressed?: boolean }
@@ -51,9 +52,8 @@ type PagesApi = {
   update: (args: WriteCall & { id: string | number }) => Promise<PageDoc>
 }
 
-const publishedFind = (page: Addressed) => page.addressed === true
-  ? { collection: 'pages' as const, where: { sku: { equals: page.sku } }, limit: 1 as const, overrideAccess: true as const, draft: page._status !== 'published' }
-  : { ...findArgs(page.slug), draft: page._status !== 'published' }
+// every seed is found by its slug, the field the pages collection holds; the seeds' slugs are unique as their skus are
+const publishedFind = (page: Addressed) => ({ ...findArgs(page.slug), draft: page._status !== 'published' })
 
 /** Nested docs re-reads draft children through version.parent, which this versions table cannot query. The page is already stored. */
 const withoutVersionParent = async (payload: PagesApi, page: Addressed, write: () => Promise<PageDoc>): Promise<PageDoc> => {
@@ -142,14 +142,14 @@ export const recordAgrees = (record: PageDoc | null | undefined, page: Seed): bo
   textOf(data.layout, seeded)
   const block = record.layout?.[0]
   const seededBlock = data.layout[0]
-  return record.slug === data.slug && record.title === data.title && record.sku === data.sku && record._status === data._status && record.hero?.type === data.hero.type && block?.blockType === seededBlock?.blockType && stored.join('\n') === seeded.join('\n') && record.meta?.title === data.meta.title && record.meta?.description === data.meta.description
+  return record.slug === data.slug && record.title === data.title && record._status === data._status && record.hero?.type === data.hero.type && block?.blockType === seededBlock?.blockType && stored.join('\n') === seeded.join('\n') && record.meta?.title === data.meta.title && record.meta?.description === data.meta.description
 }
 
 /** Find every seed. Deploy is allowed only when each current record already agrees. Nothing is written. */
-const locate = async (payload: PagesApi, page: Addressed) => (await payload.find(publishedFind(page) as FindArgs)).docs[0] ?? null
+const locate = async (payload: PagesApi, page: Addressed) => (await payload.find(publishedFind(page))).docs[0] ?? null
 
 export const seedsSynced = async (payload: PagesApi, pages: readonly Addressed[]) => {
-  const rows = []
+  const rows: { slug: string; synced: boolean }[] = []
   for (const page of pages) {
     const current = await locate(payload, page)
     rows.push({ slug: page.slug, synced: recordAgrees(current, page) })
@@ -182,7 +182,7 @@ const nestedReady = (page: Addressed, doc: PageDoc | null | undefined, parentDb?
 
 /** Find each seed, then create or update it through the local API when the current record differs. */
 export const syncSeeds = async (payload: PagesApi, pages: readonly Addressed[]) => {
-  const rows = []
+  const rows: { slug: string; written: boolean; synced: boolean }[] = []
   const ids = new Map<string, string | number>()
   let parents = 0
   for (const page of pages) {

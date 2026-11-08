@@ -1,5 +1,10 @@
 import type { TopicGroup } from '@root/collections/Docs/types'
-import type { PayloadHandler, PayloadRequest, RequiredDataFromCollectionSlug } from 'payload'
+import type {
+  DefaultDocumentIDType,
+  PayloadHandler,
+  PayloadRequest,
+  RequiredDataFromCollectionSlug,
+} from 'payload'
 
 import { sanitizeServerEditorConfig } from '@payloadcms/richtext-lexical'
 import { contentLexicalEditorFeatures } from '@root/collections/Docs'
@@ -63,9 +68,9 @@ const importTopicGroups: (args: {
   topicGroups: TopicGroup[]
   version: string
 }) => Promise<{
-  createdOrUpdatedDocs: string[]
+  createdOrUpdatedDocs: DefaultDocumentIDType[]
 }> = async ({ req, topicGroups, version }) => {
-  const createdOrUpdatedDocs: string[] = []
+  const createdOrUpdatedDocs: DefaultDocumentIDType[] = []
 
   const { docsData } = await topicGroupsToDocsData({ req, topicGroups, version })
 
@@ -168,7 +173,7 @@ export const syncDocs: PayloadHandler = async (req) => {
       validateTopicGroups({ topicGroups: allV3Docs, version: 'v3' })
       validateTopicGroups({ topicGroups: allV2Docs, version: 'v2' })
 
-      const createdOrUpdatedDocs: string[] = []
+      const createdOrUpdatedDocs: DefaultDocumentIDType[] = []
       createdOrUpdatedDocs.push(
         ...(await importTopicGroups({ req, topicGroups: allV4Docs, version: 'v4' }))
           .createdOrUpdatedDocs,

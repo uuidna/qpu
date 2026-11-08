@@ -158,7 +158,8 @@ test('an idea is the same pages document the local API writes', () => {
   assert.equal(s.create.data.layout[0].contentFields.columnOne.root.children[0].children[0].text, text)
   assert.equal(built.page.sku, channel(built.page.id).sku)
   assert.equal(s.page.sku, built.page.sku)
-  assert.equal(s.create.data.sku, built.page.sku)
+  // the sku stays the seed's identity; the pages collection declares no sku field, so the write carries none
+  assert.equal('sku' in s.create.data, false)
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: mcp variants managed by the hooks cover every tool. */

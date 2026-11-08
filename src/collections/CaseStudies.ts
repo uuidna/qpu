@@ -67,7 +67,7 @@ export const CaseStudies: CollectionConfig = {
     {
       name: 'layout',
       type: 'blocks',
-      blockReferences: [
+      blocks: [
         'callout',
         'cta',
         'cardGrid',
@@ -93,7 +93,6 @@ export const CaseStudies: CollectionConfig = {
         'stickyHighlights',
         'exampleTabs',
       ],
-      blocks: [],
     },
     slugField(),
     {

@@ -1,4 +1,4 @@
-import { getPayload } from 'payload'
+import { type DefaultDocumentIDType, getPayload } from 'payload'
 import config from '@payload-config'
 
 import sanitizeSlug from '../utilities/sanitizeSlug'
@@ -10,7 +10,7 @@ const headers = {
 }
 
 type ExistingDiscussion = {
-  docId: string
+  docId: DefaultDocumentIDType
   githubID: string
 }
 

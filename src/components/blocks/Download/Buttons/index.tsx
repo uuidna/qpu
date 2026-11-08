@@ -20,7 +20,7 @@ export const DownloadButton: React.FC<{
     setTimeout(() => setClicked(false), 1000)
   }
 
-  if (typeof file !== 'string' && file.url) {
+  if (typeof file === 'object' && file.url) {
     return (
       <Tooltip
         className={classes.button}

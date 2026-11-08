@@ -1,5 +1,6 @@
+import type { Media } from '@root/payload-types'
 import type { StaticImageData } from 'next/image'
-import type { TypedUploadCollection, UploadCollectionSlug } from 'payload'
+import type { DefaultDocumentIDType } from 'payload'
 import type { ElementType, Ref } from 'react'
 
 export interface Props {
@@ -13,7 +14,7 @@ export interface Props {
   onLoad?: () => void
   priority?: boolean // for NextImage only
   ref?: Ref<HTMLImageElement | HTMLVideoElement | null>
-  resource?: TypedUploadCollection[UploadCollectionSlug] // for Payload media
+  resource?: DefaultDocumentIDType | Media // for Payload media
   sizes?: string // for NextImage only
   src?: null | StaticImageData | string // for static media
   videoClassName?: string

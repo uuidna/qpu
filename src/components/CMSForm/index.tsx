@@ -1,6 +1,7 @@
 'use client'
 
 import type { Form as FormType } from '@root/payload-types'
+import type { DefaultDocumentIDType } from 'payload'
 
 import { RichText } from '@components/RichText/index'
 import Form from '@forms/Form/index'
@@ -153,7 +154,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
       {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
       {!hasSubmitted && (
         <React.Fragment>
-          <Form formId={formID} initialState={initialState} onSubmit={onSubmit}>
+          <Form formId={String(formID)} initialState={initialState} onSubmit={onSubmit}>
             <div className={classes.formFieldsWrap}>
               {form.fields?.map((field, index) => {
                 const Field: React.FC<any> = fields?.[field.blockType]
@@ -199,7 +200,7 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
               icon={isLoading ? 'loading' : 'arrow'}
               iconRotation={45}
               iconSize={isLoading ? 'large' : 'medium'}
-              id={customID ?? formID}
+              id={customID ?? String(formID)}
               label={isLoading ? 'Submitting...' : submitButtonLabel}
             />
           </Form>
@@ -210,12 +211,12 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
 }
 
 export const CMSForm: React.FC<{
-  form?: FormType | null | string
+  form?: DefaultDocumentIDType | FormType | null
   hiddenFields?: string[]
 }> = (props) => {
   const { form, hiddenFields } = props
 
-  if (!form || typeof form === 'string') {
+  if (!form || typeof form !== 'object') {
     return null
   }
 

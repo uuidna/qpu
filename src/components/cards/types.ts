@@ -1,5 +1,6 @@
 import type { CMSLinkType } from '@components/CMSLink/index'
 import type { Media, Post } from '@root/payload-types'
+import type { DefaultDocumentIDType } from 'payload'
 
 export interface SharedProps {
   className?: string
@@ -18,7 +19,7 @@ export interface SquareCardProps extends SharedProps {
 export interface ContentMediaCardProps extends SharedProps {
   authors: Post['authors'] | Post['guestAuthor']
   href: string
-  media: Media | string
+  media: DefaultDocumentIDType | Media | string // a string is an image URL
   orientation?: 'horizontal' | 'vertical'
   publishedOn?: string
   style?: 'default' | 'minimal'
@@ -33,7 +34,7 @@ export interface PricingCardProps extends SharedProps {
 export interface DefaultCardProps extends SharedProps {
   href?: string
   leader?: string
-  media?: Media | null | string
+  media?: DefaultDocumentIDType | Media | null
   onClick?: () => void
   pill?: string
 }

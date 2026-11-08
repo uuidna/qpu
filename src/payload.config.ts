@@ -604,6 +604,10 @@ export default buildConfig({
         },
       },
     }),
+    qpuPlugin(),
+  ],
+  secret: process.env.PAYLOAD_SECRET || '',
+  storage: [
     vercelBlobStorage({
       cacheControlMaxAge: 60 * 60 * 24 * 365, // 1 year
       collections: {
@@ -614,9 +618,7 @@ export default buildConfig({
       enabled: Boolean(process.env.BLOB_STORAGE_ENABLED) || false,
       token: process.env.BLOB_READ_WRITE_TOKEN || '',
     }),
-    qpuPlugin(),
   ],
-  secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },

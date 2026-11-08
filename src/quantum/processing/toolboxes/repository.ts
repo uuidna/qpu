@@ -64,7 +64,7 @@ const gateNpmRelease = (pkg: NpmPackageFacts) => {
   const listed = pkg.packed != null
   const missingExport = PACKAGE_EXPORTS.filter((key) => typeof exportsMap[key] !== 'string' || exportsMap[key]!.length === 0)
   const missingFile = PACKAGE_EXPORTS.filter((key) => typeof exportsMap[key] === 'string' && exportsMap[key]!.length > 0 && !packed.has(exportsMap[key]!))
-  const of = PACKAGE_EXPORTS.length
+  const of: number = PACKAGE_EXPORTS.length
   const present = of - missingExport.length - missingFile.length
   const percent = of === 0 ? 0 : Math.floor((present * 100) / of)
   const complete = listed && missingExport.length === 0 && missingFile.length === 0 && present === of

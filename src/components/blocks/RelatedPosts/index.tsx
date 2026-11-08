@@ -1,4 +1,5 @@
 import type { Post } from '@root/payload-types'
+import type { DefaultDocumentIDType } from 'payload'
 
 import { ContentMediaCard } from '@components/cards/ContentMediaCard/index'
 import { Gutter } from '@components/Gutter/index'
@@ -10,7 +11,7 @@ export type RelatedPostsBlock = {
   blockType: 'relatedPosts'
   disableGutter?: boolean
   id?: string
-  relatedPosts: (Post | string)[] | null
+  relatedPosts: (DefaultDocumentIDType | Post)[] | null
   style?: 'default' | 'minimal'
 }
 
@@ -30,10 +31,10 @@ export const RelatedPosts: React.FC<RelatedPostsBlock> = (props) => {
         <h4 className={classes.title}>Related Posts</h4>
         <div className={classes.grid}>
           {relatedPosts
-            .filter((post) => typeof post !== 'string')
+            .filter((post) => typeof post === 'object')
             .map((post) => {
               const postCategory =
-                post.category && typeof post.category !== 'string' ? post.category.slug : 'blog'
+                post.category && typeof post.category === 'object' ? post.category.slug : 'blog'
 
               const thumbnailAsset =
                 post.featuredMedia === 'upload'
@@ -43,7 +44,7 @@ export const RelatedPosts: React.FC<RelatedPostsBlock> = (props) => {
                     : post.thumbnail
 
               return (
-                typeof post !== 'string' && (
+                typeof post === 'object' && (
                   <div className={['cols-8 cols-m-8'].filter(Boolean).join(' ')} key={post.id}>
                     <ContentMediaCard
                       authors={post.authorType === 'team' ? post.authors : post.guestAuthor}

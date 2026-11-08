@@ -673,7 +673,7 @@ const primesTo = (limit: number) => {
   return widePrimes
 }
 const residue = (a: bigint, n: bigint) => { const r = a % n; return r < 0n ? r + n : r }
-const extended = (a: bigint, n: bigint) => {
+const extended = (a: bigint, n: bigint): { inv: bigint } | { factor: bigint } => {
   let r = residue(a, n), old = n, s = 1n, os = 0n
   while (r) { const q = old / r; [old, r] = [r, old - q * r]; [os, s] = [s, os - q * s] }
   return old === 1n ? { inv: residue(os, n) } : { factor: old < 0n ? -old : old }

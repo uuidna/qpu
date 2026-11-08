@@ -25,7 +25,7 @@ export const ReusableContent: CollectionConfig = {
     {
       name: 'layout',
       type: 'blocks',
-      blockReferences: [
+      blocks: [
         Banner,
         'blogContent',
         'blogMarkdown',
@@ -55,7 +55,6 @@ export const ReusableContent: CollectionConfig = {
         'steps',
         'stickyHighlights',
       ],
-      blocks: [],
       required: true,
     },
   ],

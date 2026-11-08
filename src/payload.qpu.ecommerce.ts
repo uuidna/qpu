@@ -18,7 +18,7 @@ export const qpuEcommerce = ecommercePlugin({
     adminOnlyFieldAccess: isAdminField,
     adminOrPublishedStatus: ({ req }) => (roles(req).includes('admin') ? true : { _status: { equals: 'published' } }),
     isCustomer: isCustomerField,
-    isDocumentOwner: ({ req }) => (req.user ? { customer: { equals: (req.user as { id: string }).id } } : false),
+    isDocumentOwner: ({ req }) => (req.user ? { customer: { equals: req.user.id } } : false),
   },
   customers: { slug: 'users' },
   currencies: { defaultCurrency: 'EUR', supportedCurrencies: [...QPU_CURRENCIES] },

@@ -1,4 +1,5 @@
-import type { Partner } from '@root/payload-types'
+import type { PartnerCardProps } from '@components/cards/PartnerCard'
+import type { DefaultDocumentIDType } from 'payload'
 
 import { PartnerCard } from '@components/cards/PartnerCard'
 
@@ -6,7 +7,7 @@ import classes from './index.module.scss'
 
 type PartnerGridProps = {
   featured?: boolean
-  partners: (Partner | string)[]
+  partners: (DefaultDocumentIDType | PartnerCardProps)[]
 }
 
 export const PartnerGrid = (props: PartnerGridProps) => {
@@ -15,8 +16,8 @@ export const PartnerGrid = (props: PartnerGridProps) => {
     <div className={classes.PartnerGridWrap}>
       {partners?.map((partner) => {
         return (
-          typeof partner !== 'string' && (
-            <PartnerCard {...partner} key={partner.id + featured ? '_featured' : ''} />
+          typeof partner === 'object' && (
+            <PartnerCard {...partner} key={`${partner.id}${featured ? '_featured' : ''}`} />
           )
         )
       })}

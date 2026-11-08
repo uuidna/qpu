@@ -7,14 +7,17 @@ import zfs from './zfs/index.ts'
 
 type Adapter<T> = { pkg: string; named: () => boolean; make: () => T }
 
-export const ADAPTERS = {
-  programs: [{ pkg: 'zfs', named: () => true, make: () => zfs }] as Adapter<typeof zfs>[],
-  documents: [{ pkg: 'hex', named: () => true, make: () => hex }] as Adapter<typeof hex>[],
-  io: [{ pkg: 'node', named: () => true, make: () => node }] as Adapter<typeof node>[],
+type Parts = { programs: typeof zfs; documents: typeof hex; io: typeof node }
+
+export const ADAPTERS: { [Part in keyof Parts]: Adapter<Parts[Part]>[] } = {
+  programs: [{ pkg: 'zfs', named: () => true, make: () => zfs }],
+  documents: [{ pkg: 'hex', named: () => true, make: () => hex }],
+  io: [{ pkg: 'node', named: () => true, make: () => node }],
 }
 
-export const chosen = <Part extends keyof typeof ADAPTERS>(part: Part) => {
-  const hit = ADAPTERS[part].find((adapter) => adapter.named())
+export const chosen = <Part extends keyof Parts>(part: Part): Parts[Part] => {
+  const adapters: Adapter<Parts[Part]>[] = ADAPTERS[part]
+  const hit = adapters.find((adapter) => adapter.named())
   if (!hit) throw new Error(`${part} has no filesystem adapter`)
   return hit.make()
 }

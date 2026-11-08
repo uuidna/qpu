@@ -66,7 +66,7 @@ export const CaseStudy: React.FC<CaseStudyT> = (props) => {
                       <p className={[classes.metaValue].filter(Boolean).join(' ')}>{useCase}</p>
                     </div>
                   )}
-                  {partner && typeof partner !== 'string' && (
+                  {partner && typeof partner === 'object' && (
                     <Link
                       className={[classes.metaItem].filter(Boolean).join(' ')}
                       href={'/partners/' + partner.slug}
@@ -81,7 +81,7 @@ export const CaseStudy: React.FC<CaseStudyT> = (props) => {
                 </div>
               )}
             </div>
-            {typeof featuredImage !== 'string' && (
+            {typeof featuredImage === 'object' && (
               <div className="cols-8 start-8 start-m-1">
                 <Media className={classes.featuredImage} priority resource={featuredImage} />
               </div>

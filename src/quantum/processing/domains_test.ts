@@ -56,6 +56,7 @@ test('every Payload config UUID carries the domain product, and a named domain i
   assert.equal(open.improved, false)
   assert.equal(open.product, null)
   assert.equal(open.configs, configKinds.length)
+  assert.ok(open.domains.ran === false, 'no page was handed, so the cover is the one request')
   assert.equal(open.domains.request.url.includes('/domains/3'), false)
   assert.equal(open.rows.every((row) => row.sealed), true)
   const covered = call('payload', { improve: { domains: { id: '3', page } } })

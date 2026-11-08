@@ -28,7 +28,7 @@ const citesUrl = (doi: string) => `https://api.openalex.org/works?filter=cites:$
 
 type Work = { doi: string; relation: string; title: string; year: number | null; creators: string[] }
 
-const pushWork = (works: Work[], doi: string, relation: string, title: string, year: unknown, creators: string[]) => {
+const pushWork = (works: Work[], doi: unknown, relation: string, title: string, year: unknown, creators: string[]) => {
   const clean = cleanDoi(doi)
   if (!clean) return
   works.push({ doi: clean, relation: relation || 'related', title: title.trim(), year: typeof year === 'number' ? year : null, creators: creators.filter((name) => name.length > 0) })

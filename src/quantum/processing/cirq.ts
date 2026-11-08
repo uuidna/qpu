@@ -677,12 +677,12 @@ type Amplitude = [number, number]
 type SparseState = Map<bigint, Amplitude>
 const createIndexer = (order: Qubit[]) => { const pos = new Map(order.map((q, i) => [qubitKey(q), i])); return (q: Qubit) => pos.get(qubitKey(q))! }
 
-const gateRows = (gate: Gate) => {
+const gateRows = (gate: GateBody) => {
   const dim = 1 << gate.arity
   return Array.from({ length: dim }, (_, r) => gate.matrix.slice(r * dim, r * dim + dim).flatMap(([mr, mi], s) => (mr || mi ? [[s, mr, mi] as const] : [])))
 }
 
-const applySparse = (state: SparseState, gate: Gate, indices: number[]): void => {
+const applySparse = (state: SparseState, gate: GateBody, indices: number[]): void => {
   const dim = 1 << gate.arity
   const offsets = indices.map(bit)
   const mask = offsets.reduce((m, b) => m | b, 0n)
@@ -730,7 +730,7 @@ const measureSparse = (state: SparseState, index: number, random: () => number):
 const copySparse = (state: SparseState): SparseState => new Map([...state].map(([k, a]) => [k, [a[0], a[1]] as Amplitude]))
 
 /** Applies a gate in place (index bit k is the k-th qubit). O(2^n · nonzero entries): a permutation gate costs one term a row. */
-const applyGate = (state: State, gate: Gate, indices: number[]): void => {
+const applyGate = (state: State, gate: GateBody, indices: number[]): void => {
   const dim = 1 << gate.arity
   const offsets = Array.from({ length: dim }, (_, s) => indices.reduce((k, q, b) => (s & (1 << (gate.arity - 1 - b)) ? k | (1 << q) : k), 0))
   const mask = offsets[dim - 1]!, re = new Float64Array(dim), im = new Float64Array(dim)
@@ -830,7 +830,7 @@ export class Simulator {
 type Matrix = State
 
 /** The unitary a gate acts as on n qubits: column c is the state the gate makes of basis state |c>. */
-const expandUnitary = (gate: Gate, indices: number[], n: number): Matrix => {
+const expandUnitary = (gate: GateBody, indices: number[], n: number): Matrix => {
   const dim = 1 << n
   const u = toComplexState(dim * dim)
   for (let c = 0; c < dim; c++) {
@@ -881,9 +881,10 @@ export type Channel =
   | { name: 'reset' }
 
 const ONE: Gate = defineGate({ name: 'I', arity: 1, matrix: [c(1), c(0), c(0), c(1)] })
-const operator = (matrix: [number, number][]): Gate => ({ name: 'K', arity: 1, matrix })
+// a Kraus operator is not unitary, so it carries no gate address
+const operator = (matrix: [number, number][]): GateBody => ({ name: 'K', arity: 1, matrix })
 /** A Pauli (or identity) scaled by the square root of a weight, so that its square carries the weight. */
-const weighted = (gate: Gate, weight: number): Gate => ({
+const weighted = (gate: Gate, weight: number): GateBody => ({
   name: gate.name,
   arity: 1,
   matrix: gate.matrix.map(([r, i]): [number, number] => [r * Math.sqrt(weight), i * Math.sqrt(weight)]),
@@ -894,7 +895,7 @@ const probability = (p: number, name: string): void => {
 }
 
 /** Cirq's channels as Kraus operators: E(ρ) = Σ K ρ K†. The definitions are Cirq's own. */
-const krausOperators = (channel: Channel): Gate[] => {
+const krausOperators = (channel: Channel): GateBody[] => {
   switch (channel.name) {
     case 'bit_flip':
       probability(channel.p, 'bit-flip')

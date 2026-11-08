@@ -35,12 +35,13 @@ export const Image: React.FC<Props> = (props) => {
   let src: null | StaticImageData | string | undefined = srcFromProps
 
   const hasDarkModeFallback =
-    resource?.darkModeFallback &&
+    typeof resource === 'object' &&
+    resource.darkModeFallback &&
     typeof resource.darkModeFallback === 'object' &&
     resource.darkModeFallback !== null &&
     typeof resource.darkModeFallback.filename === 'string'
 
-  if (!src && resource && typeof resource !== 'string') {
+  if (!src && resource && typeof resource === 'object') {
     width = resource.width
     height = resource.height
     alt = resource.alt

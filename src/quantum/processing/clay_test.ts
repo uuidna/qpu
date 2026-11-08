@@ -41,7 +41,7 @@ test('the clay tool serves the register over MCP and one relation by name', () =
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: every clay case surfaces all its kernel-accepted proofs and docs over MCP under a strict textbook-sourced name (textbook = product, case = variant). */
 test('every clay case surfaces all its kernel-accepted proofs and docs over MCP under a strict textbook-sourced name (textbook = product, case = variant)', () => {
-  const rels = (handle({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'clay', arguments: {} } }) as { result: { structuredContent: { relations: { name: string; case: string; theorems: { theorem: string; case: string; proof: string; docs: string; kernelAccepted: boolean }[] }[] } } }).result.structuredContent.relations
+  const rels = (handle({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'clay', arguments: {} } }) as { result: { structuredContent: { relations: { name: string; case: string; product: string | null; variant: string | null; variants: { product: string; variant: string }[]; theorems: { theorem: string; case: string; proof: string; docs: string; kernelAccepted: boolean }[] }[] } } }).result.structuredContent.relations
   assert.equal(rels.length, CLAY_RELATIONS.length)
   for (const rel of rels) {
     assert.ok(rel.theorems.length >= 1, rel.name)

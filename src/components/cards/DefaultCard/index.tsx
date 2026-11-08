@@ -35,7 +35,7 @@ export const DefaultCard: React.FC<DefaultCardProps> = (props) => {
         </div>
         <p className={classes.description}>{description}</p>
       </div>
-      {media && typeof media !== 'string' && (
+      {media && typeof media === 'object' && (
         <Media
           alt={media.alt}
           className={classes.media}

@@ -2,6 +2,7 @@
 
 import type { PaddingProps } from '@components/BlockWrapper/index'
 import type { Media as MediaType, Page } from '@root/payload-types'
+import type { DefaultDocumentIDType } from 'payload'
 
 import { BackgroundGrid } from '@components/BackgroundGrid/index'
 import { BlockWrapper } from '@components/BlockWrapper/index'
@@ -16,7 +17,7 @@ import classes from './index.module.scss'
 
 type LogoItem = {
   id?: null | string
-  logoMedia: MediaType | string
+  logoMedia: DefaultDocumentIDType | MediaType
 }
 
 type PositionedLogo = {

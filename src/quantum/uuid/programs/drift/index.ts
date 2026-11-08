@@ -106,7 +106,7 @@ const placeProgram = (file: string) => {
 /** Every place of one program. The first place is the address. Each place rotates one step. The last place returns the program. The handle and the tail stay. */
 const walkOf = (address: string) => {
   const origin = channel(address)
-  const steps = []
+  const steps: { place: number; uuid: string; next: string; program: string; params: { family: number; hz: number; next: number }; sealed: boolean; kept: boolean; back: boolean; around: boolean; aspects: number; witnessed: boolean }[] = []
   let current = address
   for (let place = 0; place < origin.program.length; place++) {
     const moved = rotate(current)

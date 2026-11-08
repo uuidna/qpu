@@ -9,7 +9,7 @@ import path from 'node:path'
 import { createRequire } from 'node:module'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'
-import type { BaseDatabaseAdapter, DatabaseAdapterResult, Payload } from 'payload'
+import type { BaseDatabaseAdapter, DatabaseAdapterObj, Payload } from 'payload'
 import { getBinding0 } from './quantum/processing/toolboxes/raid.ts'
 
 const require = createRequire(import.meta.url)
@@ -45,37 +45,37 @@ const readBinding0Files = (): Record<string, string> => {
 }
 
 const mirrorDoc = (collection: string, doc: Record<string, unknown>) => {
-  writeBinding0(getBinding0(collection, [doc]).files)
+  writeBinding0(getBinding0(collection, [doc]).files ?? [])
 }
 
 type AnyAdapter = BaseDatabaseAdapter & Record<string, unknown>
 
 const withRaid = (inner: AnyAdapter): AnyAdapter => {
-  const wrapWrite = <A extends unknown[], R>(
-    fn: ((...a: A) => R) | undefined,
-    collectionOf: (...a: A) => string,
-    docOf: (r: Awaited<R>, ...a: A) => unknown,
-  ) => {
+  const wrapWrite = <F extends (...a: never[]) => Promise<unknown>>(
+    fn: F,
+    collectionOf: (...a: Parameters<F>) => string,
+    docOf: (r: Awaited<ReturnType<F>>, ...a: Parameters<F>) => unknown,
+  ): F => {
     if (typeof fn !== 'function') return fn
-    return (async (...args: A) => {
-      const result = await fn(...args)
+    return (async (...args: Parameters<F>) => {
+      const result = (await fn(...args)) as Awaited<ReturnType<F>>
       try {
-        const doc = docOf(result as Awaited<R>, ...args)
+        const doc = docOf(result, ...args)
         if (doc && typeof doc === 'object' && !('_deleted' in (doc as object))) mirrorDoc(collectionOf(...args), doc as Record<string, unknown>)
       } catch { /* binding 0 unwritable: system store still holds */ }
       return result
-    }) as typeof fn
+    }) as F
   }
   return {
     ...inner,
     name: 'qpu-raid',
     packageName: '@uuidna/qpu/raid-db',
-    create: wrapWrite(inner.create as never, (a: { collection: { slug: string } }) => a.collection.slug, (r) => r),
-    updateOne: wrapWrite(inner.updateOne as never, (a: { collection: { slug: string } }) => a.collection.slug, (r) => r),
-    updateMany: wrapWrite(inner.updateMany as never, (a: { collection: { slug: string } }) => a.collection.slug, (r: unknown) => (Array.isArray(r) ? r[0] : r)),
-    upsert: wrapWrite(inner.upsert as never, (a: { collection: { slug: string } }) => a.collection.slug, (r) => r),
-    createGlobal: wrapWrite(inner.createGlobal as never, () => 'globals', (r) => r),
-    updateGlobal: wrapWrite(inner.updateGlobal as never, () => 'globals', (r) => r),
+    create: wrapWrite(inner.create, (a) => a.collection, (r) => r),
+    updateOne: wrapWrite(inner.updateOne, (a) => a.collection, (r) => r),
+    updateMany: wrapWrite(inner.updateMany, (a) => a.collection, (r) => (Array.isArray(r) ? r[0] : r)),
+    upsert: wrapWrite(inner.upsert, (a) => a.collection, (r) => r),
+    createGlobal: wrapWrite(inner.createGlobal, () => 'globals', (r) => r),
+    updateGlobal: wrapWrite(inner.updateGlobal, () => 'globals', (r) => r),
     raid: {
       profile: profile(),
       stores: ['filesystem', 'r2', 'kv', 'd1', 'postgres'] as const,
@@ -89,27 +89,27 @@ const withRaid = (inner: AnyAdapter): AnyAdapter => {
 }
 
 /** System store under the RAID composite — never calls qpuRaidDb (no recursion). */
-const systemAdapter = (): DatabaseAdapterResult => {
+const systemAdapter = (): DatabaseAdapterObj => {
   if (profile() === 'cloudflare' && bindings().D1) {
-    return sqliteD1Adapter({ binding: bindings().D1 as never, blocksAsJSON: true }) as unknown as DatabaseAdapterResult
+    return sqliteD1Adapter({ binding: bindings().D1 as never, blocksAsJSON: true }) as unknown as DatabaseAdapterObj
   }
   if (profile() === 'google' || google()) {
     try {
       const { postgresAdapter } = require('@payloadcms/db-postgres') as typeof import('@payloadcms/db-postgres')
-      return postgresAdapter({ pool: { connectionString: process.env.DATABASE_URI || '' } }) as unknown as DatabaseAdapterResult
+      return postgresAdapter({ pool: { connectionString: process.env.DATABASE_URI || '' } }) as unknown as DatabaseAdapterObj
     } catch { /* package not installed: fall through to mongodb */ }
   }
   return mongooseAdapter({
     url: process.env.DATABASE_URI || '',
     migrationDir: path.resolve(process.cwd(), 'src/migrations/qpu'),
-  }) as unknown as DatabaseAdapterResult
+  }) as unknown as DatabaseAdapterObj
 }
 
 /**
  * Production RAID db: composite over every store.
  * Payload CRUD on the profile system db; every write mirrored to binding 0 (hexPath).
  */
-export const qpuRaidDb = (): DatabaseAdapterResult => {
+export const qpuRaidDb = (): DatabaseAdapterObj => {
   const system = systemAdapter()
   return {
     name: 'qpu-raid',

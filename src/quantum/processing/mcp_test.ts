@@ -1,8 +1,14 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { handle, call } from './mcp.ts'
+import { handle, type Reply } from './mcp.ts'
 import { LEADS, listCleanupSubjects } from './leads.ts'
+
+const call = (name: string, args: unknown): Reply => {
+  const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
+  assert.ok(!(reply instanceof Promise), `${name} answers at once`)
+  return reply
+}
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: tools/list serves the forty-seven tools in twelve toolboxes with input schemas, and initialize names the server. */
 test('tools/list serves the forty-seven tools in twelve toolboxes with input schemas, and initialize names the server', () => {

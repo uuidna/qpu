@@ -156,7 +156,7 @@ export const bindingFor = (key: string): Record<string, string> | null => {
   const fit = (values: Record<string, string>) => {
     try {
       const ev = evaluateTheorem(key, values)
-      return ev.evaluable && !ev.needs?.length && ev.premises !== false && ev.holds === true ? (ev.values ?? {}) : null
+      return 'holds' in ev && ev.evaluable && !ev.needs?.length && ev.premises !== false && ev.holds === true ? (ev.values ?? {}) : null
     } catch { return null }
   }
   const closed = fit({})

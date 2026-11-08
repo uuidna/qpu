@@ -34,8 +34,8 @@ export const MAX_DEPTH = 7
 export const NIL_UUID = '00000000-0000-0000-0000-000000000000'
 export const NIL_BITS = [0, 0, 0, 0, 0, 0, 0, 0] as const
 export const nil = { uuid: NIL_UUID, form: 'nil' as const, priority: 0 as const, bits: NIL_BITS, depth: NIL_BITS.length - 1 as 7, max: MAX_DEPTH, folder: `src/quantum/uuid/programs/${NIL_BITS.join('/')}`, zeros: true as const }
-export const ROOT_UID = 0
-export const ROOT_GID = 0
+export const ROOT_UID = 0 as const
+export const ROOT_GID = 0 as const
 /** rwxr-xr-x, the mode of /. */
 export const ROOT_MODE = 0o755
 
@@ -389,7 +389,7 @@ export const program = (handle: string) => {
   const path = object.path
   const on = plugins.every((row) => row.installed && row.configured && row.used)
   const indexed = bits.every((row) => row.hex === handle[row.digit] && row.place === row.index % 4 && row.digit <= MAX_DEPTH && row.bit === Number((BigInt(`0x${handle}`) >> BigInt(row.index)) & 1n)) && object.folders.every((hex, digit) => hex === handle[digit]) && object.fanout === 16 && object.span === '4294967296'
-  const rbac = { root: ROOT_UID as const, uid: ROOT_UID as const, gid: ROOT_GID as const, mode: ROOT_MODE, depth, max: MAX_DEPTH, from: root.path, own: object.own, rootAccess: access(rootCaller), other: access(otherCaller) }
+  const rbac = { root: ROOT_UID, uid: ROOT_UID, gid: ROOT_GID, mode: ROOT_MODE, depth, max: MAX_DEPTH, from: root.path, own: object.own, rootAccess: access(rootCaller), other: access(otherCaller) }
   const asPlugin = upstream.holds
     && plugin.standard === 'definePlugin'
     && plugin.slug === `qpu-program-${handle}`

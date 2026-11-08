@@ -189,7 +189,7 @@ const extend = defineTool('extension', {
           const open = openQuantum(LEADS)
           const counts = { open: open.filter((row) => row.status === 'open').length, partial: open.filter((row) => row.status === 'partial').length, blocked: open.filter((row) => row.status === 'blocked').length }
           const leads = open.flatMap((row) => [rotate(row.id, row.statement), ...(row.idea ? [rotate(row.id, row.idea)] : [])])
-          const held = (row: { kept: boolean; back: boolean; around: boolean; sealed: boolean; all: boolean; places: number; rotated: string; program: string }) => row.kept && row.back && row.around && row.sealed && row.all && row.places === 10 && row.rotated === row.program.slice(1) + row.program[0] && row.aspects === 4
+          const held = (row: { kept: boolean; back: boolean; around: boolean; sealed: boolean; all: boolean; places: number; rotated: string; program: string; aspects: number }) => row.kept && row.back && row.around && row.sealed && row.all && row.places === 10 && row.rotated === row.program.slice(1) + row.program[0] && row.aspects === 4
           const walked = ctx.call('leads', { ideas: { next: 'quantum-leads' } }) as { leads: { id: string; depth: number }[]; saves: { page: { saved?: boolean; next?: { decision?: string; clause?: string; holds?: boolean } } }[] }
           const rows = walked.leads.map((lead, index) => { const page = walked.saves[index]?.page; return { id: lead.id, depth: lead.depth, decision: page?.next?.decision ?? null, clause: page?.next?.clause ?? null, holds: page?.next?.holds === true, saved: page?.saved === true } })
           const accepted = rows.filter((row) => row.decision === 'accept' && row.holds && row.saved).length

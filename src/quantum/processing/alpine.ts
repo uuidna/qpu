@@ -58,7 +58,9 @@ const WHY: Record<string, string> = {
 
 const slug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 
-const leadFor = (name: string, why: string, source: string, status: 'open' | 'partial' = 'open'): Lead => {
+/** A lead this port opens always names the door that develops it. */
+type PortLead = Lead & { run: NonNullable<Lead['run']> }
+const leadFor = (name: string, why: string, source: string, status: 'open' | 'partial' = 'open'): PortLead => {
   const formula = `${name} is still to port: ${why}`
   return {
     id: `alpine-${slug(name)}`,
@@ -181,7 +183,7 @@ const evaluate = (source: string, frame: Frame): { value: Val; scope: Scope } =>
   const s = source.trim()
   let i = 0
   const skip = () => { while (s[i] === ' ') i++ }
-  const gap = (why: string): never => { throw new Gap(why) }
+  const gap: (why: string) => never = (why) => { throw new Gap(why) }
   const lint = lintExpression(s, Object.keys(frame.scope))
   frame.os.eslint.checked += 1
   if (!lint.clean) { frame.os.eslint.findings.push(...lint.findings); gap(lint.findings.map((finding) => finding.message).join(' ')) }
@@ -281,7 +283,7 @@ const runAlpine = (raw: Run, depth = 0) => {
   const node = browser.nodes[0]!
   let scope: Scope = {}
   const ran: string[] = []
-  const leads: Lead[] = []
+  const leads: PortLead[] = []
   const out: Record<string, Val> = {}
   const note = (name: string, why: string, status: 'open' | 'partial' = 'open') => { if (!leads.some((l) => (l.run?.arguments as { develop?: { variant?: string } } | undefined)?.develop?.variant === name)) leads.push(leadFor(name, why, os.upstream, status)) }
   const runExpr = (name: string, expr: string) => {

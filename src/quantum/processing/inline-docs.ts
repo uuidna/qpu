@@ -38,7 +38,7 @@ export const testCaseDocs = (root: string): TestCaseDoc[] => files(root).flatMap
     while (i >= 0 && lines[i]!.trim() === '') i--
     const prev = i >= 0 ? lines[i]! : ''
     const closed = prev.trimEnd().endsWith('*/')
-    const open = closed ? lines.slice(0, i + 1).findLastIndex((l) => l.includes('/**')) : -1
+    const open = closed ? lines.slice(0, i + 1).map((l) => l.includes('/**')).lastIndexOf(true) : -1
     const doc = closed && open >= 0 ? lines.slice(open, i + 1).join('\n') : null
     rows.push({ file, line: n + 1, title: heading, doc })
   }

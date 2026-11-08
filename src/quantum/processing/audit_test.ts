@@ -28,7 +28,7 @@ test('every example replays as documented: the registry is the documentation', (
   for (const e of EXAMPLES) {
     if (e.id === 'audit-self') continue
     const r = call(e.tool, e.arguments)
-    assert.ok('result' in r, `${e.id}: ${'error' in r ? r.error.message : ''}`)
+    assert.ok('result' in r, `${e.id}: ${r.error ? r.error.message : ''}`)
     assert.equal(e.expect((r.result as { structuredContent: unknown }).structuredContent), null, e.id)
   }
 })

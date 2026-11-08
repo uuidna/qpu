@@ -54,7 +54,7 @@ export const createReferenceGraph = (docs: readonly RefDoc[]) => {
 export type ScopedRefDoc = RefDoc & { scope?: string; title?: string; description?: string; ai?: string }
 export const referenceIndex = (docs: readonly ScopedRefDoc[], seo = true) => {
   const graph = createReferenceGraph(docs), scope = new Map(docs.map((d) => [d.id, d.scope ?? 'default']))
-  type Entry = { lane: string; from: string; to: string; source: 'link' | 'seo' | 'ai'; queryHash: string }
+  type Entry = { scope: string; from: string; to: string; source: 'link' | 'seo' | 'ai'; queryHash: string }
   const links: Entry[] = graph.edges.map((e) => { const lane = scope.get(e.from) ?? 'default'; return { scope: lane, from: e.from, to: e.to, source: 'link' as const, queryHash: uuid(`ref\n${lane}\n${e.from}\n${e.to}`) } })
   const seoRefs: Entry[] = seo ? docs.filter((d) => d.title || d.description).map((d) => { const lane = scope.get(d.id) ?? 'default'; return { scope: lane, from: d.id, to: d.id, source: 'seo' as const, queryHash: uuid(`seo\n${lane}\n${d.id}\n${d.title ?? ''}`) } }) : []
   // an AI binding call (Workers AI, a prompt) is a reference too, cached by the content hash of (scope, prompt): the same prompt in a tenant's scope is

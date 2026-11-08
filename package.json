@@ -22,8 +22,7 @@
     "caddy": "caddy run --config Caddyfile",
     "start": "next start",
     "lint": "eslint .",
-    "prettier:fix": "prettier --write .",
-    "migrate-lexical-script": "payload run ./src/migrate.ts"
+    "prettier:fix": "prettier --write ."
   },
   "dependencies": {
     "@docsearch/react": "^3.9.0",

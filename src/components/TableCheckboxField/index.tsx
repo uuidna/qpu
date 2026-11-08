@@ -1,12 +1,13 @@
 'use client'
-import type { TextFieldClientComponent } from 'payload'
+import type { CheckboxFieldClientProps } from 'payload'
+import type React from 'react'
 
 import { TableIcon } from '@blocks/ComparisonTable/Icons'
 import { useField } from '@payloadcms/ui'
 
 import classes from './index.module.scss'
 
-const TableCheckboxField: TextFieldClientComponent = ({ path }) => {
+const TableCheckboxField: React.FC<CheckboxFieldClientProps> = ({ path }) => {
   const { setValue, value } = useField({ path })
 
   return (

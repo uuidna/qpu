@@ -210,7 +210,7 @@ const linksIn = (text: string) => [...text.matchAll(/https?:\/\/[^\s<>"')\]]+/g)
 /** The file names a deposit carries. A name is a key, never the bytes. */
 const fileNames = (raw: unknown) => Array.isArray(raw) ? [...new Set(raw.flatMap((item) => { const name = item && typeof item === 'object' && typeof (item as { name?: unknown }).name === 'string' ? (item as { name: string }).name.trim() : ''; return name.length > 0 && !/[\\/]/.test(name) && !name.includes('..') ? [name] : [] }))] : []
 
-const whole = (value: unknown) => typeof value === 'number' && Number.isInteger(value) && value >= 0
+const whole = (value: unknown): value is number => typeof value === 'number' && Number.isInteger(value) && value >= 0
 
 /** idutils.normalize_orcid: the URL prefix comes off, the four groups stay. */
 const normalizeOrcid = (value: unknown) => {
@@ -300,12 +300,12 @@ const loadAccess = (given: Post) => {
   const custom = given.custom && typeof given.custom === 'object' && !Array.isArray(given.custom) ? group(Object.entries(given.custom as Record<string, unknown>).map(([key, value]) => [key, typeof value === 'string' ? textAt({ [key]: value } as Post, key) : ''])) : null
   const fields = { ...(journal ? { 'journal:journal': journal } : {}), ...(meeting ? { 'meeting:meeting': meeting } : {}), ...(imprint ? { 'imprint:imprint': imprint } : {}), ...(university ? { 'thesis:thesis': { university } } : {}), ...(custom ?? {}), ...(subjects.length ? { 'legacy:subjects': subjects } : {}) }
   const extras = loadExtras(given)
-  if ('error' in extras) return extras
+  if (extras.error) return { error: extras.error }
   return { access, communities, pids, upload, license, fields, ...extras }
 }
 
 /** MetadataSchema in site/zenodo_rdm/legacy/deserializers/metadata.py. One comma splits family and given. cc-by-nc-nd-4.0 maps to itself. */
-const loadMetadata = (metadata: LegacyMetadata, extra: { access: { record: 'public'; files: 'public' | 'restricted'; embargo?: { active: true; until: string } }; communities: { identifier: string; owner: boolean }[]; pids: { doi: { identifier: string; provider: 'datacite' | 'external'; client?: 'datacite' } } | null; fields: Record<string, unknown>; funding?: unknown[]; contributors?: unknown[]; descriptions?: unknown[]; locations?: { place: string }[]; dates?: unknown[]; references?: unknown[]; languages?: { id: string }[]; related?: unknown[] }) => {
+const loadMetadata = (metadata: LegacyMetadata, extra: { access: { record: 'public'; files: 'public' | 'restricted'; embargo?: { active: true; until: string } }; communities: { identifier: string; owner: boolean }[]; pids: { doi: { identifier: string; provider: 'datacite' | 'external'; client?: 'datacite' } } | null; fields: Record<string, unknown>; funding?: { funder: { id: string }; award: { id: string; number: string } }[]; contributors?: unknown[]; descriptions?: { description: string; type: { id: 'notes' | 'methods' } }[]; locations?: { place: string }[]; dates?: unknown[]; references?: { reference: string }[]; languages?: { id: string }[]; related?: unknown[] }) => {
   const creators = metadata.creators.map((creator) => {
     const person: { type: 'personal'; family_name: string; given_name?: string; identifiers?: { scheme: 'orcid'; identifier: string }[] } = { type: 'personal', family_name: creator.name }
     if (creator.name.split(',').length === 2) {

@@ -36,7 +36,7 @@ export const SaveButtonClient: React.FC<SaveButtonClientProps> = (props) => {
 
   const forceDisable = operation === 'update' && !modified
 
-  const { code: locale } = useLocale()
+  const locale = useLocale()?.code
 
   const {
     config: {

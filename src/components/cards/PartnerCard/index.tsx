@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 import classes from './index.module.scss'
 
-type PartnerCardProps = Partner
+export type PartnerCardProps = Pick<Partner, 'city' | 'content' | 'id' | 'name' | 'slug'>
 
 export const PartnerCard = (partner: PartnerCardProps) => {
   return (

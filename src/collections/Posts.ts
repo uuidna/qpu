@@ -202,7 +202,7 @@ export const Posts: CollectionConfig = {
     {
       name: 'content',
       type: 'blocks',
-      blockReferences: [
+      blocks: [
         Banner,
         'blogContent',
         'code',
@@ -210,7 +210,6 @@ export const Posts: CollectionConfig = {
         'mediaBlock',
         'reusableContentBlock',
       ],
-      blocks: [],
       required: true,
     },
     {
@@ -346,9 +345,6 @@ export const Posts: CollectionConfig = {
     },
     addToDocs,
   ],
-  forceSelect: {
-    relatedPosts: true,
-  },
   hooks: {
     afterChange: [
       async ({ doc, previousDoc, req }) => {

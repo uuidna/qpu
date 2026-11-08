@@ -1,4 +1,5 @@
 import type { CommunityHelp, Post } from '@root/payload-types'
+import type { DefaultDocumentIDType } from 'payload'
 
 import { ChevronIcon } from '@icons/ChevronIcon'
 import * as Accordion from '@radix-ui/react-accordion'
@@ -8,8 +9,8 @@ import Link from 'next/link'
 import classes from './index.module.scss'
 
 type RelatedResourcesProps = {
-  guides?: (Partial<Post> | string)[]
-  relatedThreads?: (Partial<CommunityHelp> | string)[]
+  guides?: (DefaultDocumentIDType | Partial<Post>)[]
+  relatedThreads?: (DefaultDocumentIDType | Partial<CommunityHelp>)[]
 }
 
 export const RelatedResources: React.FC<RelatedResourcesProps> = ({ guides, relatedThreads }) => {
@@ -31,7 +32,7 @@ export const RelatedResources: React.FC<RelatedResourcesProps> = ({ guides, rela
               <ul className={classes.list}>
                 {guides.map((guide) => {
                   return (
-                    typeof guide !== 'string' && (
+                    typeof guide === 'object' && (
                       <li className={classes.item} key={guide.slug}>
                         <Link href={`/posts/guides/${guide.slug}`} prefetch={false}>
                           {guide.title} <ArrowIcon className={classes.relatedPostsArrow} />
@@ -53,7 +54,7 @@ export const RelatedResources: React.FC<RelatedResourcesProps> = ({ guides, rela
               <ul className={classes.list}>
                 {relatedThreads.map(
                   (thread) =>
-                    typeof thread !== 'string' && (
+                    typeof thread === 'object' && (
                       <li className={classes.item} key={thread.slug}>
                         <Link href={`/community-help/${thread.communityHelpType}/${thread.slug}`}>
                           {thread.title} <ArrowIcon className={classes.relatedPostsArrow} />

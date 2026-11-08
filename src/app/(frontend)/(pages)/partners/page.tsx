@@ -39,16 +39,16 @@ export default async function Partners() {
     return {
       ...partner,
       budgets: partner.budgets
-        ?.map((budget) => typeof budget !== 'string' && budget.value)
+        ?.map((budget) => typeof budget === 'object' && budget.value)
         ?.filter((value): value is string => !!value),
       industries: partner.industries
-        ?.map((industry) => typeof industry !== 'string' && industry.value)
+        ?.map((industry) => typeof industry === 'object' && industry.value)
         ?.filter((value): value is string => !!value),
       regions: partner.regions
-        ?.map((region) => typeof region !== 'string' && region.value)
+        ?.map((region) => typeof region === 'object' && region.value)
         ?.filter((value): value is string => !!value),
       specialties: partner.specialties
-        ?.map((specialty) => typeof specialty !== 'string' && specialty.value)
+        ?.map((specialty) => typeof specialty === 'object' && specialty.value)
         ?.filter((value): value is string => !!value),
     }
   })

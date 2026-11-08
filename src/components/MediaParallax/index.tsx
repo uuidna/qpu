@@ -1,5 +1,6 @@
 import type { Props as MediaProps } from '@components/Media/types'
 import type { Media as MediaType } from '@root/payload-types'
+import type { DefaultDocumentIDType } from 'payload'
 
 import { Media } from '@components/Media/index'
 import { motion, transform, useScroll } from 'framer-motion'
@@ -9,7 +10,7 @@ import classes from './index.module.scss'
 
 type ParallaxProps = {
   className?: string
-  media: { image: MediaType | string }[]
+  media: { image: DefaultDocumentIDType | MediaType }[]
 } & {
   priority?: MediaProps['priority']
 }
@@ -56,7 +57,7 @@ const MediaParallax: React.FC<ParallaxProps> = ({ className, media, ...mediaProp
                   }),
             }}
           >
-            {typeof image.image !== 'string' && (
+            {typeof image.image === 'object' && (
               <>
                 <Media resource={image.image} {...mediaProps} />
               </>

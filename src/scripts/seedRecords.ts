@@ -26,7 +26,7 @@ if (only && chosen.length === 0) {
 }
 const check = process.env.SEED_CHECK === '1' || process.argv.includes('--check')
 const payload = await openPages()
-const results = []
+const results: Record<string, unknown>[] = []
 for (const wave of chosen) {
   const result = check ? await seedsSynced(payload, wave.pages) : await syncSeeds(payload, wave.pages)
   const parents = !check && wave.nest.length > 0 ? await linkSeedParents(payload, wave.nest) : { linked: 'parents' in result ? result.parents : 0 }

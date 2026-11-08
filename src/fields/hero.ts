@@ -204,8 +204,7 @@ export const hero: Field = {
       admin: {
         condition: (_, { type, threeCTA }) => type === 'three' && threeCTA === 'buttons',
       },
-      blockReferences: ['link', 'command'],
-      blocks: [],
+      blocks: ['link', 'command'],
       labels: {
         plural: 'Buttons',
         singular: 'Button',

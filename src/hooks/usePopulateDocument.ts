@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 'use client'
 
-import type { CollectionSlug } from 'payload'
+import type { CollectionSlug, DefaultDocumentIDType } from 'payload'
 
 import { useEffect, useState } from 'react'
 
@@ -15,7 +15,7 @@ type UsePopulateDocumentOptions<T> = {
   /** Fallback value if fetch fails or is disabled */
   fallback?: T
   /** Document ID to fetch */
-  id?: string
+  id?: DefaultDocumentIDType
 }
 
 /**

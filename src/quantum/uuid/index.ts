@@ -347,7 +347,7 @@ const deliverCapacity = (coin: string, effective: number) => {
   const cell = grid.to(0n)
   const tone = resonance()
   const coil = coilColour()
-  const string = HARMONICS.map((hz, i) => ({ hz, hue: hz % 360, forth: HARMONICS[i + 1] ?? 0, back: i === 0 ? 0 : HARMONICS[i - 1]! }))
+  const string = HARMONICS.map((hz, i) => ({ hz, hue: hz % 360, forth: HARMONICS.at(i + 1) ?? 0, back: i === 0 ? 0 : HARMONICS[i - 1]! }))
   const width = effective < 1 ? 0 : effective.toString(2).length
   const torus = Array.from({ length: width }, (_, at) => ({ at, bit: Number((BigInt(effective) >> BigInt(at)) & 1n), forth: at + 1, back: at }))
   const through = torus.filter((row) => row.bit === 0)
@@ -610,7 +610,7 @@ export const rodinCoil = (address: string) => {
   const ch = channel(address)
   const doubling = [1, 2, 4, 8, 7, 5] as const
   const halving = [1, 5, 7, 8, 4, 2] as const
-  const family = (seed: number) => seed === 0 || seed % 3 === 0 ? [3, 6, 9] as const : ([7, 4, 1] as readonly number[]).includes(seed) ? [7, 4, 1] as const : [2, 5, 8] as const
+  const family = (seed: number): readonly number[] => seed === 0 || seed % 3 === 0 ? [3, 6, 9] as const : ([7, 4, 1] as readonly number[]).includes(seed) ? [7, 4, 1] as const : [2, 5, 8] as const
   const turn = (ring: readonly number[], start: number) => { const at = ring.indexOf(start); const k = at < 0 ? 0 : at; return [...ring.slice(k), ...ring.slice(0, k)] }
   const wind = (seed: number, ring: readonly number[]) => { const copper = turn(ring, seed); const flux = turn(family(seed), family(seed).includes(seed) ? seed : family(seed)[0]!); const wound = [...copper, ...flux]; return [...wound, wound[0]!] }
   const axis = ch.message.vortex.trinity

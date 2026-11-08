@@ -4,7 +4,7 @@
 // Payload's local API; a page already there (by slug) is left as it is. Run with: pnpm payload run src/scripts/seedQpu.ts
 import { execSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
-import { getPayload } from 'payload'
+import { type DefaultDocumentIDType, getPayload } from 'payload'
 import config from '@payload-config'
 import { caller } from '@uuidna/qpu/mcp'
 
@@ -41,10 +41,10 @@ const main = async () => {
     const slug = d.slug.replace(/^\//, '')
     const found = await payload.find({ collection: 'pages', where: { slug: { equals: slug } }, limit: 1, overrideAccess: true, draft: true })
     // nested: the parent is the page of the parent slug, created before its children (the documents come parents first); the plugin computes the breadcrumbs
-    const parent = d.parent ? ((await payload.find({ collection: 'pages', where: { slug: { equals: d.parent.replace(/^\//, '') } }, limit: 1, overrideAccess: true, draft: true })).docs[0] as { id: string } | undefined)?.id ?? null : null
+    const parent = d.parent ? ((await payload.find({ collection: 'pages', where: { slug: { equals: d.parent.replace(/^\//, '') } }, limit: 1, overrideAccess: true, draft: true })).docs[0] as { id: DefaultDocumentIDType } | undefined)?.id ?? null : null
     // the layout compared as Payload stores it: block ids, nulls and empty objects are not content, so a page is relaid only when its blocks changed
     const canon = (layout: unknown) => JSON.stringify(layout, (k, v) => (k === 'id' || v === null || (v?.constructor === Object && Object.keys(v).length === 0) ? undefined : v?.constructor === Object ? Object.fromEntries(Object.keys(v as object).sort().map((key) => [key, (v as Record<string, unknown>)[key]])) : v))
-    if (found.totalDocs) { const page = found.docs[0] as { id: string; _status?: string; layout?: unknown[]; parent?: string | { id: string } | null }; const stale = canon(page.layout ?? []) !== canon(d.layout) || ((typeof page.parent === 'object' && page.parent ? page.parent.id : page.parent) ?? null) !== parent || (d.hero ? canon((page as { hero?: { richText?: unknown } }).hero?.richText ?? null) !== canon(d.hero.richText ?? null) : false); if (page._status !== 'published' || stale) await payload.update({ collection: 'pages', id: page.id, overrideAccess: true, context: { disableRevalidate: true }, data: { _status: 'published', ...(stale ? { layout: d.layout, parent, ...(d.hero ? { hero: d.hero } : {}) } : {}) } as never }); kept += 1; if (stale) updated += 1; continue }
+    if (found.totalDocs) { const page = found.docs[0] as { id: DefaultDocumentIDType; _status?: string; layout?: unknown[]; parent?: { id: DefaultDocumentIDType } | DefaultDocumentIDType | null }; const stale = canon(page.layout ?? []) !== canon(d.layout) || ((typeof page.parent === 'object' && page.parent ? page.parent.id : page.parent) ?? null) !== parent || (d.hero ? canon((page as { hero?: { richText?: unknown } }).hero?.richText ?? null) !== canon(d.hero.richText ?? null) : false); if (page._status !== 'published' || stale) await payload.update({ collection: 'pages', id: page.id, overrideAccess: true, context: { disableRevalidate: true }, data: { _status: 'published', ...(stale ? { layout: d.layout, parent, ...(d.hero ? { hero: d.hero } : {}) } : {}) } as never }); kept += 1; if (stale) updated += 1; continue }
     // published: the site is what the QPU computes, public at once; a draft would answer no reader
     await payload.create({ collection: 'pages', overrideAccess: true, context: { disableRevalidate: true }, data: { title: d.title, slug, hero: d.hero ?? { type: 'default' }, layout: d.layout, meta: d.meta, tenant: tenant.id, parent, _status: 'published' } as never })
     created += 1
@@ -69,7 +69,7 @@ const main = async () => {
   for (const row of plan.seed.creates) {
     const found = await payload.find({ collection: row.collection as never, where: row.where as never, limit: 1, overrideAccess: true, draft: true })
     if (found.totalDocs) continue
-    const parent = row.parentSlug ? ((await payload.find({ collection: 'pages', where: { slug: { equals: row.parentSlug } }, limit: 1, overrideAccess: true, draft: true })).docs[0] as { id: string } | undefined)?.id ?? null : null
+    const parent = row.parentSlug ? ((await payload.find({ collection: 'pages', where: { slug: { equals: row.parentSlug } }, limit: 1, overrideAccess: true, draft: true })).docs[0] as { id: DefaultDocumentIDType } | undefined)?.id ?? null : null
     const product = row.productTitle ? ((await payload.find({ collection: 'products' as never, where: { title: { equals: row.productTitle } }, limit: 1, overrideAccess: true })).docs[0] as { id: string } | undefined)?.id ?? null : null
     await payload.create({ collection: row.collection as never, overrideAccess: true, context: { disableRevalidate: true }, data: { ...row.data, tenant: tenant.id, ...(row.parentSlug ? { parent } : {}), ...(row.productTitle && product ? { product } : {}) } as never })
     added += 1

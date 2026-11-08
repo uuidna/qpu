@@ -100,8 +100,9 @@ export const decodeValue = (a: { status: number; text: string; local?: string; e
   } catch { return { value: 'not JSON', kind: 'erasure' } }
 }
 
+type TreeCopy = ReturnType<typeof tree>
 /** The answers decoded, combination by combination: majority over the tree's copy and the hosts' copies. */
-export const decodeE2e = (answers: readonly E2eAnswer[], tree?: ReturnType<typeof tree>) => {
+export const decodeE2e = (answers: readonly E2eAnswer[], tree?: TreeCopy) => {
   const groups = new Map<string, E2eAnswer[]>()
   for (const a of answers) (groups.get(a.combo) ?? groups.set(a.combo, []).get(a.combo)!).push(a)
   const decoded: Decoded[] = []
