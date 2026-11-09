@@ -84,6 +84,8 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   const memory = memoryOf(cwd)
   balancerLoad(memory.read())
   const args = await resolveArgs(JSON.parse(argsJson), cwd, call)
+  // e2e asks each host once before it replays a single example: a host that does not answer tools/list as JSON-RPC is named
+  if (tool === 'e2e') for (const url of new Set((args as { hosts?: string[] }).hosts ?? [])) { const ok = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream' }, body: '{"jsonrpc":"2.0","id":0,"method":"tools/list"}', signal: AbortSignal.timeout(20000) }).then((r) => /json|event-stream/.test(r.headers.get('content-type') ?? ''), () => false); if (!ok) { console.log(JSON.stringify({ error: `${url} does not answer tools/list as JSON-RPC; no example was replayed` })); process.exitCode = 1; return } }
   const r = call(tool, args)
   if (r.error) { console.log(JSON.stringify({ error: r.error.message })); process.exitCode = 1; return }
   let s = r.result?.structuredContent ?? null
@@ -133,8 +135,8 @@ export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolea
     }
     return out
   }
-  // a step is a UUID program: its address is its definition over the content addresses of the files it reads (lake reads the Lean
-  // tree, every other step the whole tree, read as its wave starts), and a green answer that does not ask the world is kept under that address
+  // a step is a UUID program addressed by itself over what it reads (lake the Lean tree, others the whole tree, read as each wave starts);
+  // a green answer that asks nothing of the world is kept under that address
   const lines = async (...a: string[]) => (await spawnRun('git', a, { cwd: o.cwd })).stdout.split('\n').filter(Boolean)
   let blobs = new Map<string, string>()
   const read = async () => {
