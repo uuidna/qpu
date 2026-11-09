@@ -984,8 +984,8 @@ const morphFrameworks = (raw: unknown) => {
 }
 /** Each ISO dimension is the deliverable that defines it: its reference, its English title and its scope. ISO 9001 also requires the formula to be documented. ISO 8601 requires a date in the formula, when one is named, to be a calendar date. */
 const isoRows = (formula: string, documented: boolean, read: boolean, hz?: number | null) => {
-  const dates = formula.match(/\b\d{4}-\d{2}-\d{2}\b/g) ?? []
-  const datesHold = dates.every((token) => { const [year, month, day] = token.split('-').map(Number); return year !== undefined && month !== undefined && day !== undefined && month >= 1 && month <= 12 && day >= 1 && day <= 31 })
+  const dates: string[] = formula.match(/\b\d{4}-\d\d-\d\d\b/g) ?? []
+  const datesHold = dates.every((token) => { const [, month = 0, day = 0] = token.split('-').map(Number); return month >= 1 && month <= 12 && day >= 1 && day <= 31 })
   return ISO_DIMENSIONS.map((dimension) => {
     const key = dimension.replace(/\s*\(.*$/, '').trim()
     const defined = ISO_OPEN_DEFINITIONS.find((row) => row.reference === key || row.reference.startsWith(`${key}:`) || row.reference.startsWith(`${key}-`))
