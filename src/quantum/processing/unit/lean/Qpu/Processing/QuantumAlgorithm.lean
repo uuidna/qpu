@@ -1,5 +1,4 @@
 import Qpu.Processing.QuantumGate
-import Qpu.Textbook
 
 /-! # Qpu.Processing.QuantumAlgorithm
 ---

@@ -2,33 +2,6 @@
 
 # Blueprint of the qpu quantum computer design
 
-## quantum computer design (ISO/IEC 4879:2024 3.4.10)
-
-`Qpu.Processing.QuantumComputer`. The design of qpu as a quantum computer, each part at the path of its ISO/IEC 4879:2024 term: the Hilbert space (3.2.1) and its operators (3.2.2), entanglement (3.2.10), quantum information (3.3.1), the qubit (3.3.3), the gate (3.4.2), the circuit (3.4.5), error correction (3.4.6), the processor (3.4.8) and its parallel layers, the algorithms (3.4.9), circuit-based computing (3.4.13) and communication (3.6.1), and the apparatus to its components: the transmon (3.3.5), its Josephson junction and flux-bias coil, the readout resonator, the tunable coupler, the dilution refrigerator and the attenuated drive wiring, exact from the SI-defined constants. Every part is a kernel-checked theorem whose statement says what its name claims, in exact integers or exact Gaussian integers, never floats.  Boundary: these theorems prove the DESIGN and its ALGORITHMS. Whether a device is a quantum computer depends on its qubits being physical registers that show quantum-mechanical behaviour, which is measured, not proved: the processor verdict of ISO/IEC 4879:2024 3.4.8 (`get_qc`) stays false until an apparatus exists whose measured outcomes realise this design.
-
-
-## quantum communication, superdense coding and teleportation (ISO/IEC 4879:2024 3.6.1)
-
-`Qpu.Communication.QuantumCommunication`. Teleportation on three qubits, exact over the Gaussian integers with the measurements deferred (the corrections applied as the controlled gates they condition): qubits 1 and 2 are made a Bell pair, qubit 0 is entangled with qubit 1 by CNOT and turned by Hadamard, then qubit 1 corrects qubit 2 by X and qubit 0 corrects it by Z. For each basis input `b` on qubit 0, every outcome of qubits 0 and 1 leaves qubit 2 holding `b` with the same weight; the circuit is linear, so every input state is carried across. No signalling: before the corrections arrive, qubit 2 alone is in the same state for every input, its reduced density diagonal with equal weights, so nothing of the input crosses until the two classical bits do; this holds on the six Pauli eigenstates, a set whose states determine any input. Superdense coding runs the exchange the other way: Alice writes two classical bits on her half of a Bell pair with I, X, Z or ZX, and Bob's CNOT then Hadamard returns exactly those two bits. Together they are two coins making a coil, named precisely: over one shared Bell pair, one qubit carries two classical bits and two carry one qubit.
-
-| Theorem | Module | Statement |
-|---|---|---|
-| `QuantumCommunication.superdense_exact` | Qpu.Communication.QuantumCommunication | `∀ (m : Nat), m < 4 → ∀ (r : Nat), r < 4 → (QuantumCommunication.superdense m r ≠ 0 ↔ r = m)` |
-| `QuantumCommunication.teleport_exact` | Qpu.Communication.QuantumCommunication | `∀ (b : Nat), b < 2 → ∀ (r : Nat), r < 8 → QuantumCommunication.teleport b r = if r % 2 = b then 1 else 0` |
-| `QuantumCommunication.teleport_no_signalling` | Qpu.Communication.QuantumCommunication | `∀ (s : Nat), s < 6 → QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 1 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 0 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 0 = QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 1` |
-| `QuantumCommunication.two_coins_one_qubit` | Qpu.Communication.QuantumCommunication | `QuantumCommunication.TwoCoins` |
-
-## quantum entanglement (ISO/IEC 4879:2024 3.2.10)
-
-`Qpu.Physics.QuantumEntanglement`. Entangled states in exact amplitudes, and the test that separates them from definite values. The Bell state is supported on exactly 00 and 11 and the GHZ state on exactly 000 and 111, each with equal weight. Every assignment of definite ±1 values to a CHSH test gives |S| = 2, while the Bell state gives S² = 8, beyond the bound. A register shows quantum-mechanical behaviour (ISO/IEC 4879:2024, introduction) when its measured outcomes violate this bound; registers whose contents are definite bits compute these numbers without showing them.
-
-| Theorem | Module | Statement |
-|---|---|---|
-| `QuantumEntanglement.bell_state` | Qpu.Physics.QuantumEntanglement | `(∀ (r : Nat), r < 4 → (QuantumEntanglement.bell r ≠ 0 ↔ r = 0 ∨ r = 3)) ∧ (QuantumEntanglement.bell 0).normSq = (QuantumEntanglement.bell 3).normSq` |
-| `QuantumEntanglement.chsh_classical_bound` | Qpu.Physics.QuantumEntanglement | `∀ (a0 a1 b0 b1 : Bool), QuantumEntanglement.chshClassical a0 a1 b0 b1 = 2 ∨ QuantumEntanglement.chshClassical a0 a1 b0 b1 = -2` |
-| `QuantumEntanglement.chsh_quantum_value` | Qpu.Physics.QuantumEntanglement | `QuantumEntanglement.chshBell = 8 ∧ 8 ^ 2 = 8 * (2 ^ 2 * 2) ∧ 2 ^ 2 < 8` |
-| `QuantumEntanglement.ghz_state` | Qpu.Physics.QuantumEntanglement | `(∀ (r : Nat), r < 8 → (QuantumEntanglement.ghz r ≠ 0 ↔ r = 0 ∨ r = 7)) ∧ (QuantumEntanglement.ghz 0).normSq = (QuantumEntanglement.ghz 7).normSq` |
-
 ## quantum gate (ISO/IEC 4879:2024 3.4.2, 3.4.3 unitary gate)
 
 `Qpu.Processing.QuantumGate`. The processor's gates as exact unitary matrices, never floats. Hadamard is kept unscaled, so its unitarity reads `H · H† = 2 · I`; X, Z, S, CNOT, SWAP and Toffoli are exact unitaries, `U · U† = I`. The T gate lives over ℤ[ω], ω the eighth root of unity: it is unitary, has order 8 and does not commute with Hadamard, so H, S, CNOT and T are a universal set. Clifford closure on every Pauli string is `CircuitBasedQuantumComputing.stabilizer_hadamard`, `stabilizer_phase` and `stabilizer_cnot`.
@@ -63,6 +36,51 @@
 | `HilbertSpace.GI.one_re` | Qpu.Physics.HilbertSpace | `HilbertSpace.GI.re 1 = 1` |
 | `HilbertSpace.GI.zero_im` | Qpu.Physics.HilbertSpace | `HilbertSpace.GI.im 0 = 0` |
 | `HilbertSpace.GI.zero_re` | Qpu.Physics.HilbertSpace | `HilbertSpace.GI.re 0 = 0` |
+
+## quantum algorithm (ISO/IEC 4879:2024 3.4.9)
+
+`Qpu.Processing.QuantumAlgorithm`. The processor's algorithms on exact amplitudes: a circuit applies the gates of `Qpu.Processing.QuantumGate` and a measurement weight is the squared modulus. Deutsch–Jozsa decides every two-bit function in one oracle query, Grover finds the marked item of four in one iteration (a search algorithm, 3.5.6), and Shor's reduction is `textbook_shor_sigma_root`.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `QuantumAlgorithm.deutsch_jozsa` | Qpu.Processing.QuantumAlgorithm | `∀ (f : Nat), f < 16 → (QuantumAlgorithm.constant f = true → (QuantumAlgorithm.dj f 0).normSq = 16) ∧ (QuantumAlgorithm.balanced f = true → QuantumAlgorithm.dj f 0 = 0)` |
+| `QuantumAlgorithm.grover_search` | Qpu.Processing.QuantumAlgorithm | `∀ (m : Nat), m < 4 → ∀ (r : Nat), r < 4 → (QuantumAlgorithm.grover m r ≠ 0 ↔ r = m)` |
+| `textbook_shor_sigma_root` | Qpu.Textbook | `64 ^ 2 % 91 = 1 ∧ 64 ≠ 1 ∧ 64 ≠ 90 ∧ (64 - 1) * (64 + 1) % 91 = 0 ∧ (64 - 1).gcd 91 = 7 ∧ (64 + 1).gcd 91 = 13 ∧ 7 * 13 = 91` |
+
+## quantum information (ISO/IEC 4879:2024 3.3.1)
+
+`Qpu.Information.QuantumInformation`. Quantum information cannot be copied: no linear map sends both |0⟩ and |+⟩ to two copies of themselves. A register whose contents copy exactly therefore holds a description of a state, not the state.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `QuantumInformation.no_cloning` | Qpu.Information.QuantumInformation | `∀ (u : Operator.Mat), (∀ (r : Nat), r < 4 → Operator.ap 4 u (HilbertSpace.basis 0) r = HilbertSpace.basis 0 r) → (∀ (r : Nat), r < 4 → Operator.ap 4 u (HilbertSpace.basis 2) r = HilbertSpace.basis 3 r) → Operator.ap 4 u (fun r => HilbertSpace.basis 0 r + HilbertSpace.basis 2 r) 1 ≠ 1` |
+
+## quantum communication, superdense coding and teleportation (ISO/IEC 4879:2024 3.6.1)
+
+`Qpu.Communication.QuantumCommunication`. Teleportation on three qubits, exact over the Gaussian integers with the measurements deferred (the corrections applied as the controlled gates they condition): qubits 1 and 2 are made a Bell pair, qubit 0 is entangled with qubit 1 by CNOT and turned by Hadamard, then qubit 1 corrects qubit 2 by X and qubit 0 corrects it by Z. For each basis input `b` on qubit 0, every outcome of qubits 0 and 1 leaves qubit 2 holding `b` with the same weight; the circuit is linear, so every input state is carried across. No signalling: before the corrections arrive, qubit 2 alone is in the same state for every input, its reduced density diagonal with equal weights, so nothing of the input crosses until the two classical bits do; this holds on the six Pauli eigenstates, a set whose states determine any input. Superdense coding runs the exchange the other way: Alice writes two classical bits on her half of a Bell pair with I, X, Z or ZX, and Bob's CNOT then Hadamard returns exactly those two bits. Together they are two coins making a coil, named precisely: over one shared Bell pair, one qubit carries two classical bits and two carry one qubit.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `QuantumCommunication.superdense_exact` | Qpu.Communication.QuantumCommunication | `∀ (m : Nat), m < 4 → ∀ (r : Nat), r < 4 → (QuantumCommunication.superdense m r ≠ 0 ↔ r = m)` |
+| `QuantumCommunication.teleport_exact` | Qpu.Communication.QuantumCommunication | `∀ (b : Nat), b < 2 → ∀ (r : Nat), r < 8 → QuantumCommunication.teleport b r = if r % 2 = b then 1 else 0` |
+| `QuantumCommunication.teleport_no_signalling` | Qpu.Communication.QuantumCommunication | `∀ (s : Nat), s < 6 → QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 1 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 0 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 0 = QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 1` |
+| `QuantumCommunication.two_coins_one_qubit` | Qpu.Communication.QuantumCommunication | `QuantumCommunication.TwoCoins` |
+
+## quantum entanglement (ISO/IEC 4879:2024 3.2.10)
+
+`Qpu.Physics.QuantumEntanglement`. Entangled states in exact amplitudes, and the test that separates them from definite values. The Bell state is supported on exactly 00 and 11 and the GHZ state on exactly 000 and 111, each with equal weight. Every assignment of definite ±1 values to a CHSH test gives |S| = 2, while the Bell state gives S² = 8, beyond the bound. A register shows quantum-mechanical behaviour (ISO/IEC 4879:2024, introduction) when its measured outcomes violate this bound; registers whose contents are definite bits compute these numbers without showing them.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `QuantumEntanglement.bell_state` | Qpu.Physics.QuantumEntanglement | `(∀ (r : Nat), r < 4 → (QuantumEntanglement.bell r ≠ 0 ↔ r = 0 ∨ r = 3)) ∧ (QuantumEntanglement.bell 0).normSq = (QuantumEntanglement.bell 3).normSq` |
+| `QuantumEntanglement.chsh_classical_bound` | Qpu.Physics.QuantumEntanglement | `∀ (a0 a1 b0 b1 : Bool), QuantumEntanglement.chshClassical a0 a1 b0 b1 = 2 ∨ QuantumEntanglement.chshClassical a0 a1 b0 b1 = -2` |
+| `QuantumEntanglement.chsh_quantum_value` | Qpu.Physics.QuantumEntanglement | `QuantumEntanglement.chshBell = 8 ∧ 8 ^ 2 = 8 * (2 ^ 2 * 2) ∧ 2 ^ 2 < 8` |
+| `QuantumEntanglement.ghz_state` | Qpu.Physics.QuantumEntanglement | `(∀ (r : Nat), r < 8 → (QuantumEntanglement.ghz r ≠ 0 ↔ r = 0 ∨ r = 7)) ∧ (QuantumEntanglement.ghz 0).normSq = (QuantumEntanglement.ghz 7).normSq` |
+
+## quantum computer design (ISO/IEC 4879:2024 3.4.10)
+
+`Qpu.Processing.QuantumComputer`. The design of qpu as a quantum computer, each part at the path of its ISO/IEC 4879:2024 term: the Hilbert space (3.2.1) and its operators (3.2.2), entanglement (3.2.10), quantum information (3.3.1), the qubit (3.3.3), the gate (3.4.2), the circuit (3.4.5), error correction (3.4.6), the processor (3.4.8) and its parallel layers, the algorithms (3.4.9), circuit-based computing (3.4.13) and communication (3.6.1), and the apparatus to its components: the transmon (3.3.5), its Josephson junction and flux-bias coil, the readout resonator, the tunable coupler, the dilution refrigerator and the attenuated drive wiring, exact from the SI-defined constants. Every part is a kernel-checked theorem whose statement says what its name claims, in exact integers or exact Gaussian integers, never floats.  Boundary: these theorems prove the DESIGN and its ALGORITHMS. Whether a device is a quantum computer depends on its qubits being physical registers that show quantum-mechanical behaviour, which is measured, not proved: the processor verdict of ISO/IEC 4879:2024 3.4.8 (`get_qc`) stays false until an apparatus exists whose measured outcomes realise this design.
+
 
 ## quantum processor, parallel layers (ISO/IEC 4879:2024 3.4.8)
 
@@ -198,21 +216,3 @@
 | Theorem | Module | Statement |
 |---|---|---|
 | `QuantumErrorCorrection.repetition_corrects` | Qpu.Processing.QuantumErrorCorrection | `∀ (b : Bool) (e : Nat), e < 4 → QuantumErrorCorrection.decode (QuantumErrorCorrection.flip e (QuantumErrorCorrection.encode b)) = b` |
-
-## quantum algorithm (ISO/IEC 4879:2024 3.4.9)
-
-`Qpu.Processing.QuantumAlgorithm`. The processor's algorithms on exact amplitudes: a circuit applies the gates of `Qpu.Processing.QuantumGate` and a measurement weight is the squared modulus. Deutsch–Jozsa decides every two-bit function in one oracle query, Grover finds the marked item of four in one iteration (a search algorithm, 3.5.6), and Shor's reduction is `textbook_shor_sigma_root`.
-
-| Theorem | Module | Statement |
-|---|---|---|
-| `QuantumAlgorithm.deutsch_jozsa` | Qpu.Processing.QuantumAlgorithm | `∀ (f : Nat), f < 16 → (QuantumAlgorithm.constant f = true → (QuantumAlgorithm.dj f 0).normSq = 16) ∧ (QuantumAlgorithm.balanced f = true → QuantumAlgorithm.dj f 0 = 0)` |
-| `QuantumAlgorithm.grover_search` | Qpu.Processing.QuantumAlgorithm | `∀ (m : Nat), m < 4 → ∀ (r : Nat), r < 4 → (QuantumAlgorithm.grover m r ≠ 0 ↔ r = m)` |
-| `textbook_shor_sigma_root` | Qpu.Textbook | `64 ^ 2 % 91 = 1 ∧ 64 ≠ 1 ∧ 64 ≠ 90 ∧ (64 - 1) * (64 + 1) % 91 = 0 ∧ (64 - 1).gcd 91 = 7 ∧ (64 + 1).gcd 91 = 13 ∧ 7 * 13 = 91` |
-
-## quantum information (ISO/IEC 4879:2024 3.3.1)
-
-`Qpu.Information.QuantumInformation`. Quantum information cannot be copied: no linear map sends both |0⟩ and |+⟩ to two copies of themselves. A register whose contents copy exactly therefore holds a description of a state, not the state.
-
-| Theorem | Module | Statement |
-|---|---|---|
-| `QuantumInformation.no_cloning` | Qpu.Information.QuantumInformation | `∀ (u : Operator.Mat), (∀ (r : Nat), r < 4 → Operator.ap 4 u (HilbertSpace.basis 0) r = HilbertSpace.basis 0 r) → (∀ (r : Nat), r < 4 → Operator.ap 4 u (HilbertSpace.basis 2) r = HilbertSpace.basis 3 r) → Operator.ap 4 u (fun r => HilbertSpace.basis 0 r + HilbertSpace.basis 2 r) 1 ≠ 1` |

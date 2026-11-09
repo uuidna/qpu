@@ -122,7 +122,7 @@ export const NEXT_STEPS: readonly NextStep[] = [
   { name: 'skills:gen', wave: 1, budgetMs: 120_000, via: 'generator', tool: 'payload', arguments: { scripts: { skills: true } } },
   { name: 'lean', wave: 1.5, budgetMs: 1_800_000, via: 'process', cmd: 'lake', args: ['build'] },
   { name: 'theorems:index', wave: 1.75, budgetMs: 600_000, via: 'generator', tool: 'payload', arguments: { scripts: { theoremsIndex: { output: { $exec: { cmd: 'lake', args: ['env', 'lean'], script: { tool: 'payload', arguments: { scripts: { theoremsIndex: {} } }, key: 'lean' } } } } } } },
-  { name: 'blueprint:gen', wave: 1.8, budgetMs: 120_000, via: 'generator', tool: 'payload', arguments: { scripts: { blueprint: { lean: { $imports: 'src/quantum/processing/unit/lean/Qpu/Processing/QuantumComputer.lean' } } } } },
+  { name: 'blueprint:gen', wave: 1.8, budgetMs: 120_000, via: 'generator', tool: 'payload', arguments: { scripts: { blueprint: { lean: { $lean: true } } } } },
   { name: 'dead', wave: 2, budgetMs: 300_000, via: 'door', tool: 'audit', arguments: { dead: { output: { $run: { cmd: 'npx', args: ['tsc', '--noEmit', '-p', 'tsconfig.json', '--noUnusedLocals', '--pretty', 'false'] } } } } },
   { name: 'typecheck', wave: 2, budgetMs: 900_000, via: 'process', cmd: 'npx', args: ['tsc', '--noEmit', '-p', 'tsconfig.json'] },
   { name: 'test', wave: 2, budgetMs: 600_000, via: 'process', cmd: 'node', args: ['--test', 'src/quantum/**/*.test.ts'] },

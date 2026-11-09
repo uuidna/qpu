@@ -42,22 +42,16 @@ export const spawnRun = (cmd: string, args: readonly string[], o: { cwd: string;
     child.stdin.on('error', () => {}).end(o.input ?? '')
   })
 
-// A door step's arguments resolved in the child: { $file } is that file's text, { $module } an export of that module, { $texts: [paths] } those files as { path: text }, { $exec } the output of the command over the script text a door answers.
+// A door step's arguments resolved in the child: { $file } is that file's text, { $exec } the output of the command over the script text a door answers.
 type Call = (name: string, args: unknown) => { result?: { structuredContent?: any }; error?: { message: string } }
 const resolveArgs = async (x: unknown, cwd: string, call: Call): Promise<unknown> => {
   if (Array.isArray(x)) return Promise.all(x.map((v) => resolveArgs(v, cwd, call)))
   if (!x || typeof x !== 'object') return x
   const o = x as Record<string, unknown>
   if (typeof o.$file === 'string' && Object.keys(o).length === 1) return readFileSync(join(cwd, o.$file), 'utf8')
-  if (Array.isArray(o.$texts) && Object.keys(o).length === 1) return Object.fromEntries((o.$texts as string[]).map((p) => [p, readFileSync(join(cwd, p), 'utf8')]))
   if (o.$run && typeof o.$run === 'object' && Object.keys(o).length === 1) { const e = o.$run as { cmd: string; args: string[] }; const r = await spawnRun(e.cmd, e.args, { cwd }); return r.stdout + r.stderr }
-  // { $imports: <a Lean file> }: it and every Qpu module it imports, as { path: text }
-  if (typeof o.$imports === 'string' && Object.keys(o).length === 1) {
-    const root = o.$imports, src = root.slice(0, root.indexOf('/Qpu/') + 1), texts: Record<string, string> = {}, todo = [root]
-    for (let p = todo.pop(); p; p = todo.pop()) { if (texts[p] !== undefined || !existsSync(join(cwd, p))) continue; texts[p] = readFileSync(join(cwd, p), 'utf8'); for (const m of texts[p].matchAll(/^import (Qpu(?:\.\w+)*)$/gm)) todo.push(`${src}${m[1]!.replace(/\./g, '/')}.lean`) }
-    return texts
-  }
-  if (o.$module && typeof o.$module === 'object' && Object.keys(o).length === 1) { const m = o.$module as { path: string; export: string }; return (await import(join(cwd, m.path)))[m.export] }
+  // { $lean: true }: every module the Lean UUID programs reach from the root, as { path: text }
+  if (o.$lean === true && Object.keys(o).length === 1) return Object.fromEntries((await import('../uuid/programs/lean/index.ts')).leanPrograms().rows.map((row) => [row.source, readFileSync(join(cwd, row.source), 'utf8')]))
   if (o.$exec && typeof o.$exec === 'object' && Object.keys(o).length === 1) {
     const e = o.$exec as { cmd: string; args: string[]; script: { tool: string; arguments: Record<string, unknown>; key: string } }
     const asked = call(e.script.tool, e.script.arguments); if (asked.error) throw new Error(asked.error.message)

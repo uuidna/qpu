@@ -8,13 +8,21 @@ const ROOT = 'src/quantum/processing/unit/lean/Qpu.lean'
 
 const sourceOf = (module: string) => module === 'Qpu' ? ROOT : `src/quantum/processing/unit/lean/${module.replaceAll('.', '/')}.lean`
 
-const modulesOf = (text: string) => ['Qpu', ...[...text.matchAll(/^import (Qpu(?:\.[A-Za-z0-9]+)+)$/gm)].map((row) => row[1]!)]
+const importsOf = (text: string) => [...text.matchAll(/^import (Qpu(?:\.[A-Za-z0-9]+)+)$/gm)].map((row) => row[1]!)
+
+/** Every module the root reaches, each with the modules it imports: the links walked from the root, once each */
+const modulesOf = (text: string) => {
+  const seen = new Map<string, string[]>([['Qpu', importsOf(text)]])
+  for (const todo = [...seen.get('Qpu')!]; todo.length;) { const module = todo.pop()!; if (seen.has(module)) continue; const links = importsOf(read(sourceOf(module)) ?? ''); seen.set(module, links); todo.push(...links) }
+  return seen
+}
 
 /** All quantum UUID Lean programs, and the next step of each. */
 export const leanPrograms = () => {
   const text = read(ROOT)
   if (text === null) throw new Error('the lean root names the programs')
-  const rows = modulesOf(text).map((module) => {
+  const graph = modulesOf(text)
+  const rows = [...graph.keys()].map((module) => {
     const source = sourceOf(module)
     const address = uuid(`lean\n${module}`)
     const handle = address.slice(0, 8)
@@ -33,6 +41,7 @@ export const leanPrograms = () => {
       handle,
       path: object.path,
       depth: object.depth,
+      links: graph.get(module)!.map((linked) => uuid(`lean\n${linked}`)),
       program: stepped.program,
       rotated: stepped.rotated,
       next: stepped.next,
@@ -47,7 +56,8 @@ export const leanPrograms = () => {
     }
   })
   const names = new Set(rows.map((row) => row.module))
-  const holds = text.includes('import Qpu.Shor') && rows.length > 1 && names.size === rows.length && rows.every((row) => row.holds)
+  const addresses = new Set(rows.map((row) => row.address))
+  const holds = text.includes('import Qpu.Shor') && rows.length > 1 && names.size === rows.length && rows.every((row) => row.holds && row.links.every((link) => addresses.has(link)))
   return {
     phase: 'programs' as const,
     via: 'lean' as const,
