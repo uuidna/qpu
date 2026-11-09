@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@faceless-ui/modal": "3.0.0",
-    "@payloadcms/ui": "3.92.1",
-    "payload": "3.92.1"
+    "@payloadcms/ui": "3.93.0",
+    "payload": "3.93.0"
   },
   "peerDependencies": {
     "react": "^19.3.1",
