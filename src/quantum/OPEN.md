@@ -10,7 +10,7 @@ The registry records `/api/qpu/repos`, `/api/qpu/feeds`, `/api/qpu/accounting`, 
 
 ## Bristlecone and Foxtail
 
-`ALL_PROCESSORS` has five layouts. `DEVICES`, the `circuit` tool, and the engine client have three: Willow, Sycamore, and Sycamore23. An engine processor outside those three is rejected with the devices named in the message.
+`ALL_PROCESSORS` holds six processors: Google Quantum AI's five layouts and qpu's register (`Qpu.Register`). `DEVICES` is the same map, so the `circuit` tool and the engine client check a circuit against every one of them.
 
 | Layout | Qubits | Couplers | Fields the object holds |
 |---|---:|---:|---|

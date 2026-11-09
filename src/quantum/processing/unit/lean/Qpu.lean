@@ -1,5 +1,6 @@
 import Qpu.Mint
 import Qpu.Lattice
+import Qpu.Register
 import Qpu.Annealing
 import Qpu.Anyon
 import Qpu.Cern

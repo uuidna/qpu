@@ -69,7 +69,8 @@ export const cryptoConfig = (via: CryptoConfig['via'] = 'qpuMcpPlugin'): CryptoC
       default: 'Willow',
       allowed,
       inventory: processorInventory(),
-      roles: { Willow: 'reader', Sycamore: 'reader', Sycamore23: 'reader', Bristlecone: 'writer', Foxtail: 'writer' },
+      // a processor a circuit can be checked against is readable; one that is not, only a writer chooses
+      roles: Object.fromEntries(allowed.map((name) => [name, name in DEVICES ? 'reader' : 'writer'])) as Record<CryptoProcessorName, 'reader' | 'writer'>,
     },
     devices: Object.keys(DEVICES) as CryptoProcessorName[],
     schemas: { qubit: TABLES.QUBIT_SCHEMA, channel: TABLES.CHANNEL_SCHEMA },

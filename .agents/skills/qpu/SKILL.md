@@ -12,7 +12,7 @@ The quantum processing unit as skills: one per toolbox, generated from the toolb
 
 | Skill | Idea | Tools | Examples | ISO/IEC 4879 terms | UUID |
 | --- | --- | --- | --- | --- | --- |
-| `qpu-google` | the Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes, the roadmap, the software, the statements and the repositories. | 13 | 63 | 86 | `0ab3da4a-453a-77fe-b97f-9a161f01ba21` |
+| `qpu-google` | the Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes, the roadmap, the software, the statements and the repositories. | 13 | 64 | 86 | `0ab3da4a-453a-77fe-b97f-9a161f01ba21` |
 | `qpu-tree` | the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply, its metrics in real time. | 11 | 175 | 10 | `f341aa25-2c3a-6eb8-b83f-7b8b0159473c` |
 | `qpu-flow` | the run of the tree as tools: discover the hosts, verify the leads, let the unit judge, imagine the next leads; the client only fetches and writes. | 6 | 16 | 6 | `c5f961f7-be55-3b7e-a4f7-8c80971a92af` |
 | `qpu-language` | any language and dialect, offline and token-free: translation by vocabulary both ways, the vocabulary measured against every term the surface emits, and prose programmed from a tool's result and its toolbox's skill. | 2 | 2 | 0 | `49c73d75-4b4e-25cd-bfff-bdcf7e939669` |

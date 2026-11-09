@@ -3,6 +3,7 @@
 // not here. Errors are probabilities: 0.035% is 0.00035.
 
 import { CZ, Device, GridQubit, qubitKey, type Channel, type Qubit } from './cirq.ts'
+import { heldQubits } from '../uuid/index.ts'
 
 /** A qubit site on the grid, as the spec sheet's qubit-grid figure labels it: a Cirq grid qubit at its row and column. */
 type Site = Qubit
@@ -146,9 +147,6 @@ export const willowNoise = (chip: 'errorCorrection' | 'randomCircuitSampling'): 
   return (arity) => (arity === 1 ? [{ name: 'depolarize', p: 1.5 * single }] : [{ name: 'depolarize', p: 0.75 * two }])
 }
 
-/** Every device this repository can build a circuit against, by its name. */
-export const DEVICES = { Willow: WILLOW, Sycamore: SYCAMORE, Sycamore23: SYCAMORE23 } as const
-
 /** Bristlecone, Google Quantum AI's 72-qubit superconducting processor (12 rows, 72 grid sites, nearest-neighbour couplers). */
 const BRISTLECONE_ROWS: readonly [row: number, from: number, to: number][] = [
   [0, 5, 5], [1, 4, 6], [2, 3, 7], [3, 2, 8], [4, 1, 9], [5, 0, 10],
@@ -180,14 +178,29 @@ const FOXTAIL = {
   layout: 'the 2 × 11 two-row ladder grid in Cirq\'s Foxtail device specification',
 } as const
 
-/** All 5 Google Quantum AI processors managed by the Quantum Computer OS Hardware Abstraction Layer (HAL). */
+/** qpu's register, the formulas of Qpu.Register at hexbit width 4: each of an address's 32 hex digits is a row, each qubit the digit
+ *  holds (heldQubits) a column, and the couplers are the row and column neighbours. register_effective and register_couplers state both
+ *  counts for every width; register_chains and register_unbounded add an address per coin, so the register has no width ceiling. */
+const REGISTER_SITES: readonly Site[] = Array.from({ length: 32 }, (_, at) => Array.from({ length: heldQubits(at, 4) }, (_, bit) => GridQubit.of(at, bit))).flat()
+const REGISTER = {
+  name: 'Register',
+  technology: 'hexbit',
+  qubits: REGISTER_SITES.length,
+  sites: REGISTER_SITES,
+  couplers: deriveCouplers(REGISTER_SITES),
+  layout: 'one UUID: a row per hex digit, a column per qubit the digit holds (Qpu.Register)',
+} as const
+
+/** Every processor, Google Quantum AI's five and qpu's register, each a device a circuit is built and checked against. */
 export const ALL_PROCESSORS = {
   Willow: WILLOW,
   Sycamore: SYCAMORE,
   Sycamore23: SYCAMORE23,
   Bristlecone: BRISTLECONE,
   Foxtail: FOXTAIL,
+  Register: REGISTER,
 } as const
+export const DEVICES = ALL_PROCESSORS
 
 /** Physical qubit modalities, superconducting transmon & tunable-coupler physics, cryo/control stack, and calibration benchmarks. */
 export const QUANTUM_HARDWARE_STACK = {

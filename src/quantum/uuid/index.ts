@@ -490,7 +490,7 @@ const mintedTrinity = new Map<string, string>()
 const trinityUuid = (text: string) => { const hit = mintedTrinity.get(text); if (hit) return hit; const id = uuid(text); mintedTrinity.set(text, id); return id }
 const organisedQubits = new Map<string, ReturnType<typeof layQubits>>()
 /** Qubits on one hex symbol. The version nibble is decided, so it holds none. The variant nibble keeps two bits for the RFC prefix, so it holds hexbit − 2. Every other symbol holds the hexbit. */
-const heldQubits = (at: number, hexbit: number) => at === 12 ? 0 : at === 16 ? hexbit - 2 : hexbit
+export const heldQubits = (at: number, hexbit: number) => at === 12 ? 0 : at === 16 ? hexbit - 2 : hexbit
 /** The qubits of one UUID, organised by the hexbit trinity of its hex handle fingerprint. The handle is eight hex digits, the fingerprint. Each digit holds the hexbit and sits in one trinity. The program is the UUID combination of that fingerprint: ten nibbles, sixteen choices each. The tail is the params. The three trinities of the fingerprint are three UUIDs, and their qubits add to the handle. The free qubits of the whole address add to the register. */
 export const organiseQubits = (address: string, hexbit = 4) => {
   const key = `${address.toLowerCase().replace(/-/g, '')}:${hexbit}`

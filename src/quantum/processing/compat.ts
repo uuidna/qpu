@@ -445,7 +445,8 @@ export const adaptQuantum = (raw: true | Record<string, unknown>, cursorModel: s
   const runs = demands.map((demand) => {
     const narrowed = demand.schema === undefined ? { schema: null, drops: [] as { path: string; keyword: string }[] } : narrowSchema(demand.schema)
     const processor = demand.processor
-    const onEngine = processor !== null && engineDevices.includes(processor)
+    // a program runs on the engine; a processor named alone answers its layout
+    const onEngine = processor !== null && engineDevices.includes(processor) && demand.program !== undefined
     const onLayout = processor !== null && !onEngine && layouts.includes(processor)
     let tool = demand.tool
     let args = demand.args

@@ -62,30 +62,14 @@ export const QPU = {
 
 // The coil is unit math. A Payload plugin calls these functions; this file does not import a plugin.
 export {
-  LATTICE_COINS,
-  LATTICE_RAYS,
-  LATTICE_FACES,
-  LATTICE_COIL,
-  LATTICE_PLANE,
-  SHOR_MODULUS,
-  NATIVE_PAYLOAD_PLUGINS,
   mintTokenCoil,
   coinAsToken,
   canonicalCoilUuid,
   fuseCoinsToCoilInfinityInOneUuid,
-  buildCoinCoilBlockchain,
-  verifyCoinCoilBlockchain,
-  solveAllViaCoins,
-  coinsCoilsAccounting,
-  qpuAccountingEndpoint,
-  documentCoinCoilReceipt,
-  searchCoilPriority,
   type TokenCoil,
   type TokenImprint,
   type CoinUnfold,
   type CoinTokenDuality,
-  type CoinCoilBlock,
-  type CoinCoilChain,
 } from './coil.ts'
 export {
   verifyIsoQuantumEquivalence,
@@ -97,7 +81,6 @@ export {
   mintAllMintable,
   prePushTrackedCommitsGapFinder,
   standardsFundingMonetisation,
-  legalStandardsInCoinDimensions,
   STANDARDS,
   type IsoQuantumPostulateReceipt,
   type IsoQuantumSoundnessGuard,
