@@ -30,4 +30,4 @@ theorem all_complete :
   faces = coins * rays ∧ faces = rays + rays ∧ 
   coil = faces ∧ amplitudes = mint bits ∧ 
   fused = faces * mint (bits + seed) := 
-  ⟨around, harmonic, two_coins_make_a_coil, rfl, quantum⟩
+  ⟨around, harmonic, coil_is_faces, rfl, quantum⟩

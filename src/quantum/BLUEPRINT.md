@@ -4,17 +4,19 @@
 
 ## quantum computer design (ISO/IEC 4879:2024 3.4.10)
 
-`Qpu.Processing.QuantumComputer`. The design of qpu as a quantum computer, each part at the path of its ISO/IEC 4879:2024 term: the Hilbert space (3.2.1) and its operators (3.2.2), entanglement (3.2.10), quantum information (3.3.1), the qubit (3.3.3), the gate (3.4.2), the circuit (3.4.5), error correction (3.4.6), the processor (3.4.8) and its parallel layers, the algorithms (3.4.9), circuit-based computing (3.4.13) and communication (3.6.1), and the apparatus: the physical qubit's Josephson junction (3.3.5) and the dilution refrigerator, exact from the SI-defined constants. Every part is a kernel-checked theorem whose statement says what its name claims, in exact integers or exact Gaussian integers, never floats.  Boundary: these theorems prove the DESIGN and its ALGORITHMS. Whether a device is a quantum computer depends on its qubits being physical registers that show quantum-mechanical behaviour, which is measured, not proved: the processor verdict of ISO/IEC 4879:2024 3.4.8 (`get_qc`) stays false until an apparatus exists whose measured outcomes realise this design.
+`Qpu.Processing.QuantumComputer`. The design of qpu as a quantum computer, each part at the path of its ISO/IEC 4879:2024 term: the Hilbert space (3.2.1) and its operators (3.2.2), entanglement (3.2.10), quantum information (3.3.1), the qubit (3.3.3), the gate (3.4.2), the circuit (3.4.5), error correction (3.4.6), the processor (3.4.8) and its parallel layers, the algorithms (3.4.9), circuit-based computing (3.4.13) and communication (3.6.1), and the apparatus to its components: the transmon (3.3.5), its Josephson junction and flux-bias coil, the readout resonator, the tunable coupler, the dilution refrigerator and the attenuated drive wiring, exact from the SI-defined constants. Every part is a kernel-checked theorem whose statement says what its name claims, in exact integers or exact Gaussian integers, never floats.  Boundary: these theorems prove the DESIGN and its ALGORITHMS. Whether a device is a quantum computer depends on its qubits being physical registers that show quantum-mechanical behaviour, which is measured, not proved: the processor verdict of ISO/IEC 4879:2024 3.4.8 (`get_qc`) stays false until an apparatus exists whose measured outcomes realise this design.
 
 
-## quantum communication, teleportation (ISO/IEC 4879:2024 3.6.1)
+## quantum communication, superdense coding and teleportation (ISO/IEC 4879:2024 3.6.1)
 
-`Qpu.Communication.QuantumCommunication`. Teleportation on three qubits, exact over the Gaussian integers with the measurements deferred (the corrections applied as the controlled gates they condition): qubits 1 and 2 are made a Bell pair, qubit 0 is entangled with qubit 1 by CNOT and turned by Hadamard, then qubit 1 corrects qubit 2 by X and qubit 0 corrects it by Z. For each basis input `b` on qubit 0, every outcome of qubits 0 and 1 leaves qubit 2 holding `b` with the same weight; the circuit is linear, so every input state is carried across. No signalling: before the corrections arrive, qubit 2 alone is in the same state for every input, its reduced density diagonal with equal weights, so nothing of the input crosses until the two classical bits do; this holds on the six Pauli eigenstates, a set whose states determine any input.
+`Qpu.Communication.QuantumCommunication`. Teleportation on three qubits, exact over the Gaussian integers with the measurements deferred (the corrections applied as the controlled gates they condition): qubits 1 and 2 are made a Bell pair, qubit 0 is entangled with qubit 1 by CNOT and turned by Hadamard, then qubit 1 corrects qubit 2 by X and qubit 0 corrects it by Z. For each basis input `b` on qubit 0, every outcome of qubits 0 and 1 leaves qubit 2 holding `b` with the same weight; the circuit is linear, so every input state is carried across. No signalling: before the corrections arrive, qubit 2 alone is in the same state for every input, its reduced density diagonal with equal weights, so nothing of the input crosses until the two classical bits do; this holds on the six Pauli eigenstates, a set whose states determine any input. Superdense coding runs the exchange the other way: Alice writes two classical bits on her half of a Bell pair with I, X, Z or ZX, and Bob's CNOT then Hadamard returns exactly those two bits. Together they are two coins making a coil, named precisely: over one shared Bell pair, one qubit carries two classical bits and two carry one qubit.
 
 | Theorem | Module | Statement |
 |---|---|---|
+| `QuantumCommunication.superdense_exact` | Qpu.Communication.QuantumCommunication | `∀ (m : Nat), m < 4 → ∀ (r : Nat), r < 4 → (QuantumCommunication.superdense m r ≠ 0 ↔ r = m)` |
 | `QuantumCommunication.teleport_exact` | Qpu.Communication.QuantumCommunication | `∀ (b : Nat), b < 2 → ∀ (r : Nat), r < 8 → QuantumCommunication.teleport b r = if r % 2 = b then 1 else 0` |
 | `QuantumCommunication.teleport_no_signalling` | Qpu.Communication.QuantumCommunication | `∀ (s : Nat), s < 6 → QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 1 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 0 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 0 = QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 1` |
+| `QuantumCommunication.two_coins_one_qubit` | Qpu.Communication.QuantumCommunication | `QuantumCommunication.TwoCoins` |
 
 ## quantum entanglement (ISO/IEC 4879:2024 3.2.10)
 
@@ -111,26 +113,73 @@
 | `CircuitBasedQuantumComputing.stabilizer_hadamard` | Qpu.Processing.CircuitBasedQuantumComputing | `CircuitBasedQuantumComputing.Exact (Operator.kron 2 QuantumGate.H Operator.idm) CircuitBasedQuantumComputing.ruleH0 2 ∧ CircuitBasedQuantumComputing.Exact (Operator.kron 2 Operator.idm QuantumGate.H) CircuitBasedQuantumComputing.ruleH1 2` |
 | `CircuitBasedQuantumComputing.stabilizer_phase` | Qpu.Processing.CircuitBasedQuantumComputing | `CircuitBasedQuantumComputing.Exact (Operator.kron 2 QuantumGate.S Operator.idm) CircuitBasedQuantumComputing.ruleS0 1 ∧ CircuitBasedQuantumComputing.Exact (Operator.kron 2 Operator.idm QuantumGate.S) CircuitBasedQuantumComputing.ruleS1 1` |
 
-## quantum computer: dilution refrigerator (ISO/IEC 4879:2024 3.4.10; SI 2019 kelvin)
+## tunable coupler (ISO/IEC 4879:2024 3.4.8; Yan et al. 2018, doi:10.1103/PhysRevApplied.10.054062)
 
-`Qpu.Processing.QuantumComputer.Cryostat`. Why the qubits sit at millikelvin: a qubit stays in its ground state when its transition energy h·f is many times the thermal energy k_B·T. The SI (2019) fixes h = 6.626 070 15 × 10⁻³⁴ J s and k_B = 1.380 649 × 10⁻²³ J/K exactly, so the comparison is exact integer arithmetic. Frequencies are in hertz and temperatures in microkelvin.
+`Qpu.Processing.QuantumProcessor.Coupler`. A transmon between two qubits, tuned by its own coil. The qubits couple directly by g₁₂ and through the coupler by g₁g₂/Δ, of opposite sign, so the coupling is off where g₁₂·Δ = g₁g₂. Sycamore tunes it from 55 MHz to −40 MHz, through zero (arXiv:1910.11333, SI I). Willow performs its CZ in 42 ns on the 105-qubit processor and 37 ns on the 72-qubit one (arXiv:2408.13687, SI I); a CZ made of one |11⟩ ↔ |02⟩ cycle takes t = 1/(2√2 g), so those times put g at 8.4 MHz and 9.5 MHz. Couplings in tenths of a MHz, times in ns.
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `Cryostat.qubit_cold_at_ten_millikelvin` | Qpu.Processing.QuantumComputer.Cryostat | `Cryostat.coldEnough 4000000000 10000 19` |
-| `Cryostat.qubit_cold_below` | Qpu.Processing.QuantumComputer.Cryostat | `∀ (f T : Nat), 4000000000 ≤ f → T ≤ 10000 → Cryostat.coldEnough f T 19` |
-| `Cryostat.qubit_hot_at_room_temperature` | Qpu.Processing.QuantumComputer.Cryostat | `¬Cryostat.coldEnough 4000000000 300000000 1` |
+| `Coupler.off` | Qpu.Processing.QuantumProcessor.Coupler | `∀ (g₁ g₂ g₁₂ Δ : Nat), g₁₂ * Δ = g₁ * g₂ → g₁ * g₂ - g₁₂ * Δ = 0` |
+| `Coupler.willow` | Qpu.Processing.QuantumProcessor.Coupler | `Coupler.cz 42 84 ∧ Coupler.cz 37 95` |
+
+## readout resonator (ISO/IEC 4879:2024 3.3.15 measurement; Koch et al. 2007, doi:10.1103/PhysRevA.76.042319)
+
+`Qpu.Processing.QuantumProcessor.ReadoutResonator`. Each qubit is read through its own resonator: detuned by Δ, the qubit shifts the resonator by χ = g²α / (Δ(Δ + α)), and the shift is what measurement reads. Sycamore's measured medians (arXiv:1910.11333, SI Table 2) are g = 72.3 MHz, a qubit at 5 750 MHz during readout, a readout drive at 4 618 MHz and an anharmonicity of −208 MHz; it states no χ, and these put |χ| at 1.03 MHz, against its measured linewidth κ of 0.64 MHz. Couplings are in tenths of a MHz, detunings in MHz.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `ReadoutResonator.sycamore` | Qpu.Processing.QuantumProcessor.ReadoutResonator | `ReadoutResonator.shift 723 208 (5750 - 4618) 103` |
+
+## flux-bias coil (IEC 60050-151 coil; Krantz et al. 2019, doi:10.1063/1.5089550)
+
+`Qpu.Information.PhysicalQubit.Coil`. The winding that tunes a qubit: a current I through the flux-bias line threads Φ = M·I through the qubit SQUID by the mutual inductance M, and the SQUID reads that flux modulo the flux quantum Φ₀ = h/2e. Sycamore drives its 54 qubit and 88 coupler bias lines from 14-bit, 1 GS/s DACs (arXiv:1910.11333, SI III.1); it states no M, so none is assumed here. Currents are in nanoamperes and inductances in femtohenries, so Φ/Φ₀ = M·I·2·eNum / (hNum·10¹⁰).
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `Coil.periodic` | Qpu.Information.PhysicalQubit.Coil | `∀ (M I k : Nat), (Coil.flux M I + k * (PhysicalConstant.hNum * 10 ^ 10)) % (PhysicalConstant.hNum * 10 ^ 10) = Coil.flux M I % (PhysicalConstant.hNum * 10 ^ 10)` |
+
+## physical constant (SI 2019, ISO 80000-1)
+
+`Qpu.Physics.PhysicalConstant`. The defining constants the hardware reads, exact since the 2019 SI, each an integer mantissa: h = hNum × 10⁻⁴² J s, e = eNum × 10⁻²⁸ C, k_B = kNum × 10⁻²⁹ J/K, and c in m/s. Every module states its identities cross-multiplied in integers.
+
+
+## physical qubit, transmon (ISO/IEC 4879:2024 3.3.5; Koch et al. 2007, doi:10.1103/PhysRevA.76.042319)
+
+`Qpu.Information.PhysicalQubit.Transmon`. A Josephson junction shunted by a capacitance C. Its charging energy is E_C/h = e²/2Ch, its frequency f₀₁ = √(8 E_J E_C) − E_C, its anharmonicity −E_C to first order, and the transmon regime E_J/E_C ≥ 50 suppresses charge noise. Sycamore's measured medians (Arute et al. 2019, arXiv:1910.11333, SI Table 2) are a maximum frequency of 6 924 MHz and an anharmonicity of −208 MHz: they put E_C/h at 208 MHz, so C is 93.1 fF and E_J/h is 30 569 MHz, 147 times E_C, deep in the regime. Frequencies are in MHz.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `Transmon.frequency_at_fifty` | Qpu.Information.PhysicalQubit.Transmon | `∀ (EC : Nat), (19 * EC + EC) * (19 * EC + EC) = 8 * (50 * EC) * EC` |
+| `Transmon.sycamore` | Qpu.Information.PhysicalQubit.Transmon | `Transmon.charging 93100 208 ∧ Transmon.frequency 30569 208 6924 ∧ 50 * 208 < 30569` |
+
+## control wiring (IEC 60050-131 attenuator; Krinner et al. 2019, doi:10.1140/epjqt/s40507-019-0072-0)
+
+`Qpu.Processing.QuantumComputer.Wiring`. The drive line from the room-temperature electronics to the qubit. An attenuator of power ratio A at a stage of temperature T_s passes T_in/A of the noise reaching it and adds T_s(1 − 1/A), so each stage brings the line toward its own temperature and never below it. Google states no attenuation per stage for its processors, so no chain is assumed here. Temperatures in microkelvin.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `Wiring.stage_floor` | Qpu.Processing.QuantumComputer.Wiring | `∀ (Tin Ts A : Nat), 0 < A → Ts ≤ Tin → Ts ≤ Wiring.through Tin Ts A` |
+
+## quantum computer: dilution refrigerator (ISO/IEC 4879:2024 3.4.10; SI 2019 kelvin)
+
+`Qpu.Processing.QuantumComputer.Cryostat`. Why the qubits sit at millikelvin: a qubit stays in its ground state when its transition energy h·f is many times the thermal energy k_B·T. With h and k_B exact (`PhysicalConstant`), the comparison is exact integer arithmetic. Frequencies are in hertz and temperatures in microkelvin.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `Cryostat.qubit_cold_at_ten_millikelvin` | Qpu.Processing.QuantumComputer.Cryostat | `Cryostat.coldEnough 5000000000 10000 19` |
+| `Cryostat.qubit_cold_below` | Qpu.Processing.QuantumComputer.Cryostat | `∀ (f T : Nat), 5000000000 ≤ f → T ≤ 10000 → Cryostat.coldEnough f T 19` |
+| `Cryostat.qubit_hot_at_room_temperature` | Qpu.Processing.QuantumComputer.Cryostat | `¬Cryostat.coldEnough 5000000000 300000000 1` |
 
 ## physical qubit: Josephson junction (ISO/IEC 4879:2024 3.3.5; IEC 60050-815)
 
-`Qpu.Information.PhysicalQubit.JosephsonJunction`. The nonlinear element of every superconducting qubit, in exact SI arithmetic. The SI (2019) fixes the Planck constant h = 6.626 070 15 × 10⁻³⁴ J s and the elementary charge e = 1.602 176 634 × 10⁻¹⁹ C exactly, so the flux quantum Φ₀ = h / 2e and the Josephson constant K_J = 2e / h are exact rationals. A quantity is a rational `num / 10^exp` and every identity is stated cross- multiplied in integers.
+`Qpu.Information.PhysicalQubit.JosephsonJunction`. The nonlinear element of every superconducting qubit. With h and e exact (`PhysicalConstant`), the flux quantum Φ₀ = h / 2e and the Josephson constant K_J = 2e / h are exact rationals, every identity stated cross-multiplied in integers.
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `JosephsonJunction.flux_quantum_definition` | Qpu.Information.PhysicalQubit.JosephsonJunction | `JosephsonJunction.phi0Num * (2 * JosephsonJunction.eNum) * 10 ^ JosephsonJunction.hExp = JosephsonJunction.hNum * JosephsonJunction.phi0Den * 10 ^ JosephsonJunction.eExp` |
-| `JosephsonJunction.flux_quantum_josephson_reciprocal` | Qpu.Information.PhysicalQubit.JosephsonJunction | `JosephsonJunction.phi0Num * (2 * JosephsonJunction.eNum * 10 ^ JosephsonJunction.hExp) = JosephsonJunction.phi0Den * (JosephsonJunction.hNum * 10 ^ JosephsonJunction.eExp)` |
+| `JosephsonJunction.flux_quantum_definition` | Qpu.Information.PhysicalQubit.JosephsonJunction | `JosephsonJunction.phi0Num * (2 * PhysicalConstant.eNum) * 10 ^ JosephsonJunction.hExp = PhysicalConstant.hNum * JosephsonJunction.phi0Den * 10 ^ JosephsonJunction.eExp` |
+| `JosephsonJunction.flux_quantum_josephson_reciprocal` | Qpu.Information.PhysicalQubit.JosephsonJunction | `JosephsonJunction.phi0Num * (2 * PhysicalConstant.eNum * 10 ^ JosephsonJunction.hExp) = JosephsonJunction.phi0Den * (PhysicalConstant.hNum * 10 ^ JosephsonJunction.eExp)` |
 | `JosephsonJunction.flux_quantum_value` | Qpu.Information.PhysicalQubit.JosephsonJunction | `2067833848 * JosephsonJunction.phi0Den ≤ JosephsonJunction.phi0Num * 10 ^ 24 ∧ JosephsonJunction.phi0Num * 10 ^ 24 < 2067833849 * JosephsonJunction.phi0Den` |
-| `JosephsonJunction.josephson_constant_value` | Qpu.Information.PhysicalQubit.JosephsonJunction | `4835978484 * (JosephsonJunction.hNum * 10 ^ JosephsonJunction.eExp) * 10 ^ 9 ≤ 2 * JosephsonJunction.eNum * 10 ^ JosephsonJunction.hExp * 10 ^ 4 ∧ 2 * JosephsonJunction.eNum * 10 ^ JosephsonJunction.hExp * 10 ^ 4 < 4835978485 * (JosephsonJunction.hNum * 10 ^ JosephsonJunction.eExp) * 10 ^ 9` |
+| `JosephsonJunction.josephson_constant_value` | Qpu.Information.PhysicalQubit.JosephsonJunction | `4835978484 * (PhysicalConstant.hNum * 10 ^ JosephsonJunction.eExp) * 10 ^ 9 ≤ 2 * PhysicalConstant.eNum * 10 ^ JosephsonJunction.hExp * 10 ^ 4 ∧ 2 * PhysicalConstant.eNum * 10 ^ JosephsonJunction.hExp * 10 ^ 4 < 4835978485 * (PhysicalConstant.hNum * 10 ^ JosephsonJunction.eExp) * 10 ^ 9` |
 
 ## quantum circuit (ISO/IEC 4879:2024 3.4.5)
 

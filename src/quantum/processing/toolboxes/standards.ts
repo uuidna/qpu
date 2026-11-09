@@ -4,6 +4,7 @@ import { TABLES } from '../tables-index.ts'
 import { defineTool, createChecks, isObj, type Toolbox } from '../toolbox.ts'
 import { blockJsonLd, pageJsonLd, offerJsonLd, listCodes, validateCodes, validateStandards, verifyIsoOnline, verifyIsoQuantumEquivalence, STANDARDS, detectStandard, ISO_DIMENSIONS } from '../standards.ts'
 import { LOCALES } from '../i18n.ts'
+import { isoClassify } from '../iso-deliverables.ts'
 import { CATALOGUE } from './billing.ts'
 import { flowWidget } from '../widgets.ts'
 
@@ -36,11 +37,22 @@ const codes = defineTool('standards', {
   widget: flowWidget,
 })
 
+/** Every file against ISO_DIMENSIONS by what it cites: the paths first, as a readList, then each file read back as path → dimensions */
+const classifyFiles = (paths: unknown, files?: Readonly<Record<string, string>>) => {
+  const asked = (Array.isArray(paths) ? paths.map(String) : String(paths).split('\n')).filter(Boolean)
+  if (!files) return { phase: 'classify' as const, readList: asked, says: `${asked.length} file(s) to read` }
+  const classified = Object.fromEntries(asked.filter((p) => typeof files[p] === 'string').map((p) => [p, isoClassify(files[p]!)]))
+  const unclassified = Object.keys(classified).filter((p) => classified[p]!.length === 0)
+  const byDimension = Object.fromEntries(ISO_DIMENSIONS.map((d) => [d, Object.values(classified).filter((ds) => ds.includes(d)).length]))
+  return { phase: 'classify' as const, files: Object.keys(classified).length, classified, byDimension, unclassified, theorem: 'textbook_iso_classify', says: `${Object.keys(classified).length - unclassified.length} of ${Object.keys(classified).length} file(s) cite an ISO dimension; ${unclassified.length} unclassified, named` }
+}
+
 const validate = defineTool('standards', {
   name: 'validate',
   description: 'Validate against all standards via Payload\'s standard implementation, in the cheapest possible slices: every standard (the vocabularies, the ISO code lists, the references) with the Payload mechanism that validates it, split into content-addressed slices so validation, reindexing and cleanup run per slice (a page, a job) — the cheapest unit, an unchanged slice skipped by its address (the 304 involution), never the whole at once. online: true asks the ISO Open Data page. A page answer yields the JSONLines link that page publishes. A file answer verifies each ISO dimension by a reference in that file and defines it by the English title and the scope. The catalogue number is the row id.',
-  inputSchema: { type: 'object', properties: { bound: { type: 'integer', minimum: 1, description: 'standards per slice (default 6)' }, online: { description: 'true: the ISO Open Data page. { status, text }: that page, or the JSONLines file the page linked' }, selftest: { type: 'boolean' } } },
+  inputSchema: { type: 'object', properties: { bound: { type: 'integer', minimum: 1, description: 'standards per slice (default 6)' }, online: { description: 'true: the ISO Open Data page. { status, text }: that page, or the JSONLines file the page linked' }, selftest: { type: 'boolean' }, classify: { description: 'the paths to classify (an array, or one per line), the files read by the client as files: each path → the ISO dimensions it cites, the unclassified named' }, files: { type: 'object' } } },
   run: (args, ctx) => {
+    if (args.classify !== undefined) return classifyFiles(args.classify, isObj(args.files) ? args.files as Record<string, string> : undefined) as never
     if (args.online === true) return verifyIsoOnline() as never
     if (isObj(args.online)) { const o = args.online as { status?: unknown; text?: unknown }; return verifyIsoOnline({ status: typeof o.status === 'number' ? o.status : 0, text: typeof o.text === 'string' ? o.text : '' }) as never }
     if (args.iso === true || args.quantum === true) return verifyIsoQuantumEquivalence() as never

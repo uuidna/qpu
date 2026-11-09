@@ -203,24 +203,18 @@ export const ALL_PROCESSORS = {
 } as const
 export const DEVICES = ALL_PROCESSORS
 
-/** Physical qubit modalities, superconducting transmon & tunable-coupler physics, cryo/control stack, and calibration benchmarks. */
+/** The stack beside the figures the processor answer serves from WILLOW (chips, errorCorrectionPreprint, magicStateCultivation). */
 export const QUANTUM_HARDWARE_STACK = {
   modality: 'superconducting transmon qubits with frequency-tunable couplers',
   physics: {
-    t1RelaxationMicroseconds: { willowQec: WILLOW.chips.errorCorrection.t1Microseconds, willowRcs: WILLOW.chips.randomCircuitSampling.t1Microseconds },
-    t2DephasingMicroseconds: { mean: 85, echoHahn: true, floquetProtected: true },
-    singleQubitGateError: { willowQec: WILLOW.chips.errorCorrection.singleQubitGateError, willowRcs: WILLOW.chips.randomCircuitSampling.singleQubitGateError },
+    /** the 105-qubit processor mean, arXiv 2408.13687 section II; its median physical lifetime of 85 µs is a different metric */
+    t2CpmgMicroseconds: { mean: 89 },
     twoQubitGates: ['CZ', 'iSWAP-like', 'fSim', 'CNOT', 'SWAP'],
-    twoQubitGateError: { cz: WILLOW.chips.errorCorrection.twoQubitGateError, iswap: WILLOW.chips.randomCircuitSampling.twoQubitGateError },
-    readoutError: { repetitiveMeasureQubits: WILLOW.chips.errorCorrection.measurementError, terminalAllQubits: WILLOW.chips.randomCircuitSampling.measurementError },
     leakageAndReset: RESET,
     crosstalkMitigation: 'tunable coupler zero-coupling parking + dynamic decoupling',
   },
-  cryoAndControl: {
-    dilutionRefrigeratorStagesKelvin: [300, 50, 4, 0.8, 0.1, 0.01],
-    mixingChamberMillikelvin: 10,
-    controlElectronics: 'custom microwave AWG (4–8 GHz XY drive), fast flux Z bias DACs, and multiplexed dispersive readout resonators',
-  },
+  /** Sycamore, arXiv 1910.11333 SI III; Google states no stage temperatures or attenuation, and the components are proved in BLUEPRINT.md */
+  control: { dacBits: 14, dacSamplesPerSecond: 1e9, adcBits: 8, readoutGroups: 9, qubitsPerReadoutGroup: 6 },
   calibrationAndBenchmarking: {
     protocols: ['Cross-Entropy Benchmarking (XEB)', 'Randomized Benchmarking (RB)', 'Floquet Periodic Calibration', 'Speckle Purity Drift Tracking', 'Out-of-Time-Order Correlator (OTOC Quantum Echoes)'],
     noiseModels: ['willow_error_correction', 'willow_random_circuit_sampling'],
@@ -228,10 +222,6 @@ export const QUANTUM_HARDWARE_STACK = {
   },
   faultTolerantArchitecture: {
     surfaceCodeDistances: [3, 5, 7],
-    lambdaSuppression: WILLOW.chips.errorCorrection.errorSuppression,
-    cycleMicroseconds: WILLOW.chips.errorCorrection.surfaceCodeCycleMicroseconds,
-    decoderLatencyMicroseconds: WILLOW.errorCorrectionPreprint.decoderLatencyMicroseconds,
-    magicStateCultivation: WILLOW.magicStateCultivation,
     roadmapScaling: '10^2 → 10^6 physical qubits across 6 milestones',
   },
 } as const

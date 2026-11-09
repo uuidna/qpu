@@ -1,6 +1,8 @@
 // The ISO deliverables the website MCP can import. No UUID graph: the addresses stay in the caller.
 // Each dimension is one row of iso_deliverables_metadata. The catalogue number is a field of that row. The English scope is that row's full scope.
 
+import { TABLES } from './tables-index.ts'
+
 /** The ISO dimensions this tree already names. Quantum purity is gated on each of them. */
 export const ISO_DIMENSIONS = [
   'ISO/IEC 4879:2024',
@@ -18,11 +20,16 @@ export const ISO_DIMENSIONS = [
   'ISO/IEC 19770',
   'ISO 16',
   'ISO 9001',
+  'ISO/IEC/IEEE 12207:2026',
+  'ISO/IEC/IEEE 42010:2022',
+  'ISO/IEC 25010:2023',
+  'ISO/IEC 25051:2014',
+  'ISO/IEC 27001:2022',
 ] as const
 
 /**
  * Entropy: dictionary first, then the meaning is verified (ISO 80000-5).
- * Not a sixteenth purpose dimension; audit measures S = k ln W beside ISO 80000-10.
+ * Not a purpose dimension of its own; audit measures S = k ln W beside ISO 80000-10.
  */
 export const ISO_ENTROPY = {
   law: 'first the dictionary meaning; then the meaning is verified' as const,
@@ -95,29 +102,10 @@ export const isoEntropyOf = (W: number) => {
   }
 }
 
-export const ISO_OPEN_DEFINITIONS = [
-  { reference: "ISO/IEC 4879:2024", id: 80432, currentStage: 6060, publicationDate: "2024-05-17", title: { en: "Information technology — Quantum computing — Vocabulary" }, scope: { en: "This document defines terms commonly used in the field of quantum computing. This document is applicable to all types of organizations (e.g. commercial enterprises, government agencies, not-for-profit organizations) to exchange quantum computing concepts." } },
-  { reference: "ISO 80000-5:2019", id: 64976, currentStage: 9093, publicationDate: "2019-08", title: { en: "Quantities and units — Part 5: Thermodynamics" }, scope: { en: "This document gives names, symbols, definitions and units for quantities of thermodynamics. Entropy S is the state function S = k ln W, where k is the Boltzmann constant and W is the number of microscopic configurations compatible with the macroscopic state; the SI unit is joule per kelvin (J/K). Specific entropy is s = S/m." } },
-  { reference: "ISO 80000-10:2019", id: 64980, currentStage: 9093, publicationDate: "2019-08-26", title: { en: "Quantities and units — Part 10: Atomic and nuclear physics" }, scope: { en: "This document gives names, symbols, definitions and units for quantities used in atomic and nuclear physics. Where appropriate, conversion factors are also given." } },
-  { reference: "ISO/IEC 9834-8:2014", id: 62795, currentStage: 9093, publicationDate: "2014-08-13", title: { en: "Information technology — Procedures for the operation of object identifier registration authorities — Part 8: Generation of universally unique identifiers (UUIDs) and their use in object identifiers" }, scope: { en: "ISO/IEC 9834-8:2014 specifies procedures for the generation of universally unique identifiers (UUIDs) and for their use in the international object identifier tree under the joint UUID arc." } },
-  { reference: "ISO 22739:2024", id: 82208, currentStage: 9092, publicationDate: "2024-01-04", title: { en: "Blockchain and distributed ledger technologies — Vocabulary" }, scope: { en: "This document defines fundamental terminology for blockchain and distributed ledger technologies." } },
-  { reference: "ISO 23257:2022", id: 75093, currentStage: 9092, publicationDate: "2022-02-08", title: { en: "Blockchain and distributed ledger technologies — Reference architecture" }, scope: { en: "This document specifies a reference architecture for Distributed Ledger Technology (DLT) systems including blockchain systems. The reference architecture addresses concepts, cross-cutting aspects, architectural considerations, and architecture views, including functional components, roles, activities, and their relationships for blockchain and DLT." } },
-  { reference: "ISO/TR 23455:2019", id: 75624, currentStage: 6060, publicationDate: "2019-09-30", title: { en: "Blockchain and distributed ledger technologies — Overview of and interactions between smart contracts in blockchain and distributed ledger technology systems" }, scope: { en: "This document provides an overview of smart contracts in BC/DLT systems; describing what smart contracts are and how they work. It also discusses methods of interaction between multiple smart contracts. This document focuses on technical aspects of smart contracts. Smart contracts for legally binding use and applications will only be briefly mentioned in this document." } },
-  { reference: "ISO 24165-1:2025", id: 85546, currentStage: 6060, publicationDate: "2025-05-05", title: { en: "Digital token identifier (DTI) — Registration, assignment and structure — Part 1: Method for registration and assignment" }, scope: { en: "This document defines the assignment and generation of a random, unique, fixed-length identifier for digital tokens in response to a request for registration that conforms to specified application guidelines (see also ISO 24165-2)." } },
-  { reference: "ISO 20022-1:2026", id: 84854, currentStage: 6060, publicationDate: "2026-04-13", title: { en: "Financial services — Universal financial industry message scheme — Part 1: Metamodel" }, scope: { en: "This document specifies: the overall description of the modelling approach; the overall description of the ISO 20022 Repository (hereby referred to as Repository) contents; a high-level description of the input to be accepted by the Registration Authority to feed/modify the Repository’s DataDictionary and BusinessProcessCatalogue; a high-level description of the Repository output to be made publicly available by the Registration Authority. BusinessTransactions and MessageSets Conforming with ISO 20022 series can be used for electronic data interchange amongst any industry participants (financial and others), independently of any specific communication network. Network-dependent rules, such as message acknowledgement and message protection, are beyond the scope of the ISO 20022 series." } },
-  { reference: "ISO 4217:2015", id: 64758, currentStage: 9060, publicationDate: "2015-08-05", title: { en: "Codes for the representation of currencies" }, scope: { en: "ISO 4217:2015 specifies the structure for a three-letter alphabetic code and an equivalent three-digit numeric code for the representation of currencies. For those currencies having minor units, it also shows the decimal relationship between such units and the currency itself. The scope of this International Standard also includes funds and precious metals. ISO 4217:2015 also includes basic guidelines for its maintenance. ISO 4217:2015 is intended for use in any application of trade, commerce and banking, where currencies and, where appropriate, funds are required to be described. It is designed to be equally suitable for manual users and for those employing automated systems." } },
-  { reference: "ISO 8601-1:2019", id: 70907, currentStage: 9092, publicationDate: "2019-02-25", title: { en: "Date and time — Representations for information interchange — Part 1: Basic rules" }, scope: { en: "This document specifies representations of dates of the Gregorian calendar and times based on the 24-hour clock, as well as composite elements of them, as character strings for use in information interchange. It is also applicable for representing times and time shifts based on Coordinated Universal Time (UTC). This document excludes the representation of date elements from non-Gregorian calendars or times not from the 24-hour clock. This document does not address character encoding of representations specified in this document." } },
-  { reference: "ISO 639-1:2002", id: 22109, currentStage: 9599, publicationDate: "2002-07-18", title: { en: "Codes for the representation of names of languages — Part 1: Alpha-2 code" }, scope: { en: "This part of ISO 639 provides a code consisting of language code elements comprising two-letter language identifiers for the representation of names of languages. The language identifiers according to this part of ISO 639 were devised originally for use in terminology, lexicography and linguistics, but may be adopted for any application requiring the expression of language in two-letter coded form, especially in computerized systems. The alpha-2 code was devised for practical use for most of the major languages of the world that are not only most frequently represented in the total body of the world's literature, but which also comprise a considerable volume of specialized languages and terminologies. Additional language identifiers are created when it becomes apparent that a significant body of documentation written in specialized languages and terminologies exists. Languages designed exclusively for machine use, such as computer-programming languages, are not included in this code." } },
-  { reference: "ISO 3166-1:2020", id: 72482, currentStage: 9093, publicationDate: "2020-08-25", title: { en: "Codes for the representation of names of countries and their subdivisions — Part 1: Country code" }, scope: { en: "This document specifies basic guidelines for the implementation and maintenance of country codes. This code is intended for use in any application requiring the expression of current country names in coded form." } },
-  { reference: "ISO/IEC 19770-6:2024", id: 77642, currentStage: 6060, publicationDate: "2024-01-26", title: { en: "Information technology — IT asset management — Part 6: Hardware identification tag" }, scope: { en: "This document provides specifications for a transport format which enables the digital encapsulation of this data. This document refers to an encapsulation of hardware identification (HWID) data as a HWID tag, just as ISO/IEC 19770-2 refers to software identification (SWID) tags for software identification. This document applies to the following. — Tag producers: organizations that create HWID tags for use by others in the market. A tag producer can be part of the organization creating the hardware or a third-party organization. These organizations can be broken down into two major categories. — Device or component providers: entities responsible for the manufacturing or creation of the hardware device and/or associated operating system, virtual environment, or application platform. Platform providers which support this document can additionally provide tag management capabilities at the level of the platform or operating system. — Tag tool providers: entities that provide tools to create hardware identification tags. For example, tools within development environments that generate hardware identification tags, or installation tools that can create tags on behalf of the installation process, and/or desktop management tools that can create tags for underlying hardware, virtual machines, or platforms that did not originally have a hardware identification tag. — Tag consumers: tools and/or organizations who utilize information from HWID tags are broken down into the following two major categories. — Device or component consumers: entities that purchase, install, integrate, and/or otherwise deploy physical or virtual hardware or components. — IT discovery and processing tool providers: entities that provide tools to collect, store, and process hardware identification tags. These tools may be targeted at a variety of different market segments, including security, asset management, and logistics. This document deals only with hardware device or component identification. This document does not detail information technology asset management (ITAM) processes required for discovery and management of hardware (which is provided in ISO/IEC 19770-1) software identification tags (as defined by ISO/IEC 19770-2), entitlement tags (as defined by ISO/IEC 19770-3), or resource utilization measurements (as defined by ISO/IEC 19770-4)." } },
-  { reference: "ISO 16:1975", id: 3601, currentStage: 9093, publicationDate: "1975-01-01", title: { en: "Acoustics — Standard tuning frequency (Standard musical pitch)" }, scope: { en: "Specifies the frequency for the note A in the treble stave and shall be 440 Hz. Tuning and retuning shall be effected by instruments producing it within an accuracy of 0,5 Hz." } },
-  { reference: "ISO 9001:2026", id: 88464, currentStage: 6060, publicationDate: "2026-09-16", title: { en: "Quality management systems — Requirements" }, scope: { en: "This document specifies requirements for a quality management system when an organization: needs to demonstrate its ability to consistently provide products and services that meet customer and applicable statutory and regulatory requirements; aims to enhance customer satisfaction through the effective application of the system, including processes for improvement of the system and the assurance of conformity to customer and applicable statutory and regulatory requirements. All the requirements of this document are generic. This document is applicable to any organization, regardless of its type or size, or the products and services it provides. NOTE 1 In this document, the terms “product” or “service” only apply to products and services intended for, or required by, a customer. NOTE 2 Statutory and regulatory requirements can be expressed as legal requirements." } },
-]
+export const ISO_OPEN_DEFINITIONS = TABLES.ISO_OPEN_DEFINITIONS
 
 /** A withdrawn dimension's current successor in the same dataset. The dimension itself stays the row that names it. */
-export const ISO_OPEN_SUCCESSORS = [
-  { of: 'ISO 639-1', reference: 'ISO 639:2023', id: 74575, currentStage: 6060, publicationDate: '2023-11-08', title: { en: 'Code for individual languages and language groups' }, scope: { en: 'This document specifies the ISO 639 language code and establishes the harmonized terminology and general principles of language coding. It provides rules for the selection, formation, presentation and use of language identifiers as well as language reference names. It also gives provisions (i.e. principles, rules and guidelines) for the selection, formation and presentation of language names in English and French. Furthermore, it introduces provisions for the adoption of standardized language code elements using language names other than English or French. NOTE English, French and Russian are the official ISO languages. In addition, this document gives guidance on the use of language identifiers and describes their possible combination with identifiers of other codes. Specifically excluded from the ISO 639 language code are reconstructed languages or formal languages, such as computer programming languages and markup languages. The ISO 639 language code is maintained by the ISO 639 Maintenance Agency (ISO 639/MA) (see Annex B).' } },
-]
+export const ISO_OPEN_SUCCESSORS = TABLES.ISO_OPEN_SUCCESSORS
 
 export const ISO_OPEN_DATA = 'https://www.iso.org/open-data.html'
 
@@ -264,7 +252,7 @@ export const verifyIsoOnline = (answer?: { status?: number; text?: string }) => 
   return { phase: 'verified' as const, source, dataset: 'iso_deliverables_metadata' as const, licence: 'ODC-By-1.0' as const, request, research, asked: asked.length, verified, defined, current, holds: verified === asked.length && defined === asked.length, rows }
 }
 
-const ISO_REF_RE = /ISO(?:\/(?:IEC|TR|TS))?\s+\d+(?:-\d+)*(?::\d{4})?/g
+const ISO_REF_RE = /ISO(?:\/(?:IEC|IEEE|TR|TS))*\s+\d+(?:-\d+)*(?::\d{4})?/g
 
 /** Pull ISO references out of producer text (NIST / CERN open answers). Deduped, order kept. */
 export const extractIsoRefs = (text: string) => {
@@ -277,6 +265,12 @@ export const extractIsoRefs = (text: string) => {
     found.push(ref)
   }
   return found
+}
+
+/** The dimensions a text cites, each by its number in any edition or part (ISO 16 is not ISO 16000): what classifies a file */
+export const isoClassify = (text: string) => {
+  const refs = extractIsoRefs(text)
+  return ISO_DIMENSIONS.filter((dimension) => { const key = dimension.replace(/:\d{4}$/, ''); return refs.some((ref) => ref === key || ref.startsWith(`${key}:`) || ref.startsWith(`${key}-`)) })
 }
 
 const dimensionHit = (ref: string, dimension: string) => {

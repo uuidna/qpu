@@ -79,7 +79,7 @@ The folders, the twelve plugins, and `payload { generate }` are [`LAYOUT.md`](./
 | [`echo.ts`](./processing/echo.ts) | Quantum echoes. The circuit, the return probability, and the stated Willow figures are [`ECHO.md`](./ECHO.md). |
 | [`clay-register.ts`](./processing/clay-register.ts) | 55 Clay relations in integer arithmetic. The axioms, the recompute, and the UUID check are [`CLAY.md`](./CLAY.md). |
 | [`witnesses.ts`](./processing/witnesses.ts) | Fourteen faces around a UUID, and the shared-witness merge. The squares, the triangles, and the coins are [`WITNESSES.md`](./WITNESSES.md). |
-| [`standards.ts`](./processing/standards.ts) | Fifteen ISO dimensions, the purity gate, and the equivalence check. The defining rows are [`STANDARDS.md`](./STANDARDS.md). |
+| [`standards.ts`](./processing/standards.ts) | The ISO dimensions, the purity gate, and the equivalence check. The defining rows are [`STANDARDS.md`](./STANDARDS.md). |
 | [`crypto/index.ts`](./processing/crypto/index.ts) | \(2^{999}+1\) and the 1000-bit trapdoor. The pieces, the product check, and the reflection integer are [`CRYPTO.md`](./CRYPTO.md). |
 | [`repositories.ts`](./processing/repositories.ts) | Fifteen quantumlib repositories, and three payloadcms repositories with 21 mounted packages. The matrix is [`REPOSITORIES.md`](./REPOSITORIES.md). |
 | [`toolboxes/`](./processing/toolboxes) | Twelve toolboxes, their tools counted by `textbook_mcp_tools_by_toolbox`. The names are [`TOOLBOXES.md`](./TOOLBOXES.md). |

@@ -544,7 +544,7 @@ export const verifyIsoQuantumEquivalence = () => {
     {
       id: 'no_go_theorems_and_simulator_bounds',
       isoClause: 'ISO/IEC 4879:2024, 3.2.8 superposition; 3.3.3 qubit; 3.4.22 quantum simulator',
-      guard: 'Enforces optimal universal cloning fidelity 5/6 < 1 (all_noclone: coins != mint coins), Holevo chi <= 1 bit, finite single-qubit Clifford order 24, polynomial stabilizer simulation (T-count = 0), and a register of any width (a 21-qubit state and a 9-qubit density matrix both run). Physics no-go names stay in evidence, not as ISO clauses.',
+      guard: 'Enforces optimal universal cloning fidelity 5/6 < 1 (QuantumInformation.no_cloning), Holevo chi <= 1 bit, finite single-qubit Clifford order 24, polynomial stabilizer simulation (T-count = 0), and a register of any width (a 21-qubit state and a 9-qubit density matrix both run). Physics no-go names stay in evidence, not as ISO clauses.',
       module: 'algorithms.ts, counting.ts, cirq.ts',
       holds: g2Holds,
       evidence: {
@@ -752,7 +752,7 @@ export const verifyIsoQuantumEquivalence = () => {
       'textbook_double_entry',
       'textbook_free_or_coil',
       'textbook_rsa_beyond_bound',
-      'all_noclone',
+      'QuantumInformation.no_cloning',
     ] as const,
     says: `src/quantum is the QPU, a quantum processor (ISO/IEC 4879:2024, 3.4.8) computing via UUID qubits, its circuit gate the witness. ${vocabulary.filter((v) => v.holds).length}/${vocabulary.length} vocabulary terms hold, ${noLessPostulates.filter((p) => p.holds).length}/${noLessPostulates.length} vocabulary groups hold, ${noMoreGuards.filter((g) => g.holds).length}/${noMoreGuards.length} soundness guards hold, and ${isoBlockchainLayers.filter((l) => l.holds).length}/${isoBlockchainLayers.length} identifier and ledger layers hold, sealed at ${address}`,
   }

@@ -1,19 +1,16 @@
+import Qpu.Physics.PhysicalConstant
+
 /-! # Qpu.Information.PhysicalQubit.JosephsonJunction
 ---
 component: physical qubit: Josephson junction (ISO/IEC 4879:2024 3.3.5; IEC 60050-815)
 ---
-The nonlinear element of every superconducting qubit, in exact SI arithmetic. The SI (2019) fixes the Planck constant
-h = 6.626 070 15 × 10⁻³⁴ J s and the elementary charge e = 1.602 176 634 × 10⁻¹⁹ C exactly, so the flux quantum Φ₀ = h / 2e and the
-Josephson constant K_J = 2e / h are exact rationals. A quantity is a rational `num / 10^exp` and every identity is stated cross-
-multiplied in integers. -/
+The nonlinear element of every superconducting qubit. With h and e exact (`PhysicalConstant`), the flux quantum Φ₀ = h / 2e
+and the Josephson constant K_J = 2e / h are exact rationals, every identity stated cross-multiplied in integers. -/
 
 namespace JosephsonJunction
+open PhysicalConstant
 
-/-- the Planck constant h = 662 607 015 × 10⁻⁴² J s (SI 2019, exact) -/
-def hNum : Nat := 662607015
 def hExp : Nat := 42
-/-- the elementary charge e = 1 602 176 634 × 10⁻²⁸ C (SI 2019, exact) -/
-def eNum : Nat := 1602176634
 def eExp : Nat := 28
 
 /-- the flux quantum Φ₀ = h / 2e, as a fraction: numerator h·10^eExp, denominator 2e·10^hExp (in webers) -/

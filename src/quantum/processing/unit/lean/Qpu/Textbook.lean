@@ -1078,6 +1078,14 @@ theorem textbook_dead_removed_reflected (fixed found : Nat) (h : fixed ≤ found
 theorem textbook_dead_removed_contrapositive (fixed found : Nat) : ¬ (fixed + (found - fixed) = found) → ¬ ((fixed ≤ found)) := fun hc hh => hc (textbook_dead_removed fixed found hh)
 /-- the converse of textbook_dead_removed, proved (examples: audit-dead) -/
 theorem textbook_dead_removed_converse (fixed found : Nat) : (fixed + (found - fixed) = found) → (fixed ≤ found) := fun hc => by omega
+/-- every file read is either classified under the ISO dimensions it cites or named unclassified: isoClassify reads the ISO references of a text and keeps each dimension whose number they cite, in any edition or part (examples: validate-iso-classify) -/
+theorem textbook_iso_classify (cited files : Nat) (h : cited ≤ files) : cited + (files - cited) = files := by omega
+/-- textbook_iso_classify reflected by its shape, equality (examples: validate-iso-classify) -/
+theorem textbook_iso_classify_reflected (cited files : Nat) (h : cited ≤ files) (σ : Nat) : σ - (files) = σ - (cited + (files - cited)) := congrArg (σ - ·) (Eq.symm (textbook_iso_classify cited files h))
+/-- the contrapositive of textbook_iso_classify (examples: validate-iso-classify) -/
+theorem textbook_iso_classify_contrapositive (cited files : Nat) : ¬ (cited + (files - cited) = files) → ¬ ((cited ≤ files)) := fun hc hh => hc (textbook_iso_classify cited files hh)
+/-- the converse of textbook_iso_classify, proved (examples: validate-iso-classify) -/
+theorem textbook_iso_classify_converse (cited files : Nat) : (cited + (files - cited) = files) → (cited ≤ files) := fun hc => by omega
 /-- the catalogue extended inward is the tree's own tools and the one door the docs add, whatever the number of tools (examples: extend-in-docs) -/
 theorem textbook_extend_inward (mine : Nat) : mine + 1 - mine = 1 := by omega
 /-- textbook_extend_inward reflected by its shape, equality (examples: extend-in-docs) -/

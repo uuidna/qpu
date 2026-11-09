@@ -4,7 +4,6 @@ import Qpu.Processing.QuantumComputer
 import Qpu.Annealing
 import Qpu.Anyon
 import Qpu.Cern
-import Qpu.Circuit
 import Qpu.Clifford
 import Qpu.Coil
 import Qpu.Combinatorics

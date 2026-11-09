@@ -671,13 +671,13 @@ const blockTests = (tool: string, args: Record<string, unknown> = {}, idArg?: st
 }
 
 export const block = (tool: string, args: Record<string, unknown>, structured: unknown, html: string, description: string): Block => {
-  const query = Object.keys(args).length ? '?' + new URLSearchParams(Object.entries(args).map(([k, v]) => [k, typeof v === 'string' ? v : JSON.stringify(v)])).toString() : ''
   const id = uuid(`${tool}${JSON.stringify(args)}`)
   const tests = blockTests(tool, args, id)
   const ch = channel(id)
   const span = ch.combination.radix - 1
   const hero = `<header class="qpu-hero" style="--qpu-amps:${ch.program.length}">${ch.program.map((digit, at) => `<span class="qpu-amp" style="--qpu-amp:${digit / span};--qpu-amp-to:${(span - digit) / span};--qpu-amp-at:${at}"></span>`).join('')}</header>`
-  const page = `qpu://tools/${tool}${query}`
+  // the page of a call is its address, which its arguments already decide: carrying them in the URL repeated them in every link
+  const page = `qpu://tools/${tool}/${id}`
   const laid = presentation(id)
   const type = `<nav class="qpu-type">${laid.parts.map((part) => `<a class="qpu-type" href="${page}#${part.at}" data-item="${part.item}" data-variant="${part.variant}">${escape(part.item)}</a>`).join('')}</nav>`
   // A heading to land on: what a screen reader announces first, and what the audit's accessibility check measures.

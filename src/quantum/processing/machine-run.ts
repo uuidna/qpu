@@ -13,6 +13,7 @@ import { availableParallelism, homedir, tmpdir, totalmem } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { MACHINE_ACTIONS, MACHINE_RUNNER, NEXT_STEPS, forecastTimes, redact, type NextStep } from './machine.ts'
 import { clock, stamp } from './unit/clock.ts'
+import { uuid } from '../uuid/index.ts'
 
 export type MachineProgress = { progress: number; total?: number; message: string }
 type Run = { status: number | null; stdout: string; stderr: string; ms: number; timedOut: boolean }
@@ -138,17 +139,30 @@ export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolea
     }
     return out
   }
+  // a step is a UUID program: its address is its definition over the content addresses of the files it reads (lake reads the Lean
+  // tree, every other step the whole tree, read as its wave starts), and a green answer that does not ask the world is kept under that address
+  const lines = async (...a: string[]) => (await spawnRun('git', a, { cwd: o.cwd })).stdout.split('\n').filter(Boolean)
+  let blobs = new Map<string, string>()
+  const read = async () => {
+    blobs = new Map((await lines('ls-files', '-s')).map((l) => [l.slice(l.indexOf('\t') + 1), l.split(' ')[1]!]))
+    const loose = [...await lines('diff', '--name-only'), ...await lines('ls-files', '-o', '--exclude-standard')], present = loose.filter((p) => existsSync(join(o.cwd, p)) || !blobs.delete(p))
+    const hashed = present.length ? (await spawnRun('git', ['hash-object', '--stdin-paths'], { cwd: o.cwd, input: present.join('\n') })).stdout.split('\n') : []
+    present.forEach((p, i) => blobs.set(p, hashed[i]!))
+  }
+  const kept = (s: NextStep) => join(o.cwd, '.qpu', 'receipts', uuid(JSON.stringify(s) + [...blobs].filter(([p]) => s.cmd !== 'lake' || /\.lean$|^lake/.test(p)).sort().join('\n')) + '.json')
   const steps = (await expand()).filter((s) => !o.generators || s.via === 'generator' || s.name === 'lean')
   const receipt: Receipt = { date: stamp(), head, runner: MACHINE_RUNNER, offline: o.offline === true, fast: o.fast === true, lanes, steps: [], green: 0, red: 0, skipped: 0, wallMs: 0, sumMs: 0, speedup: null }
   const run = async (s: NextStep, attempt: number): Promise<boolean> => {
     const skip = s.needs === 'online' && o.offline ? 'offline' : s.long && o.fast ? 'fast' : null
     if (skip) { receipt.steps.push({ name: s.name, status: 'skipped', ms: 0, via: s.via, tail: skip, attempt }); say(`· ${s.name}: ${skip}`); return true }
-    const t0 = clock()
+    const t0 = clock(), at = kept(s)
+    if (existsSync(at)) { receipt.steps.push({ ...JSON.parse(readFileSync(at, 'utf8')), attempt }); say(`✓ ${s.name} (receipt ${at.slice(-41, -5)})`); return true }
     const r = s.via === 'process' ? await spawnRun(s.cmd!, s.args!, { cwd: o.cwd, budgetMs: s.budgetMs }) : await spawnRun(process.execPath, [SELF, 'step', s.tool!, JSON.stringify(s.arguments ?? {}), ...(s.via === 'generator' ? ['--write'] : [])], { cwd: o.cwd, budgetMs: s.budgetMs })
     const out = `${r.stdout}${r.stderr ? `\n${r.stderr}` : ''}`, ok = r.status === 0 && !r.timedOut
     const failing = [...new Set(out.split('\n').filter((l) => /^(✖|✗|not ok) |error TS\d+|^\s*AssertionError|^error:/.test(l)))]
     const tail = redact((failing.length ? failing.join('\n') + '\n' : '') + (r.timedOut ? `⏱ killed at its budget of ${s.budgetMs / 1000} s\n` : '') + out.trim().split('\n').slice(-8).join('\n'), o.cwd, homedir())
     receipt.steps.push({ name: s.name, status: ok ? 'green' : 'red', ms: clock() - t0, via: s.via, tail, attempt })
+    if (ok && s.needs !== 'online') { mkdirSync(dirname(at), { recursive: true }); writeFileSync(at, JSON.stringify({ name: s.name, status: 'green', ms: clock() - t0, via: s.via, tail: `${tail}\nkept ${stamp()}` })) }
     say(`${ok ? '✓' : r.timedOut ? '⏱' : '✗'} ${s.name} (${((clock() - t0) / 1000).toFixed(1)} s)`)
     if (!ok) for (const l of tail.split('\n').slice(0, 6)) say(`  ${l}`)
     return ok
@@ -156,6 +170,7 @@ export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolea
   const pool = async <T,>(items: readonly T[], fn: (x: T) => Promise<boolean>, n: number) => { const out: boolean[] = new Array(items.length); let i = 0; await Promise.all(Array.from({ length: Math.min(n, items.length) }, async () => { while (i < items.length) { const k = i++; out[k] = await fn(items[k]!) } })); return out }
   const failed: NextStep[] = []
   for (const wave of [...new Set(steps.map((s) => s.wave))].sort((a, b) => a - b)) {
+    await read()
     const inWave = steps.filter((s) => s.wave === wave), results = await pool(inWave, (s) => run(s, 1), lanes)
     for (const [i, ok] of results.entries()) if (!ok) failed.push(inWave[i]!)
   }
