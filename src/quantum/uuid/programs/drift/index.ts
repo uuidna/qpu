@@ -2,8 +2,6 @@
 // The tail is the params. The ten program nibbles are the expected schema.
 // The reflection both ways, the six neighbour steps and the nine schemas are the cross-encryption.
 // The SHA-256 of the bound record is the receipt: a collision is 2^128 and a second preimage is 2^256.
-import { readdirSync, statSync } from 'node:fs'
-import path from 'node:path'
 import { exists, read as readFile, write } from '../../../fs/index.ts'
 import { driftWaves } from '../../../processing/lead-wave.ts'
 import { checkWitnesses } from '../../../processing/witnesses.ts'
@@ -50,51 +48,7 @@ const crossLean = (address: string, integers: readonly number[], expect: { famil
 const WAVE = 432
 const CLOSED = 0
 const FOLDERS = ['app', 'apps', 'config', 'db', 'engine', 'fs', 'generators', 'net', 'os', 'password', 'payload', 'processing', 'uuid', 'qpu-migrations'] as const
-const FIX = 'quantum.drift'
-const ROOTS = ['src/quantum', 'src/plugins'] as const
-const SKIP = new Set(['node_modules', '.git', '.next', '.open-next', 'dist', '.qpu', '.wrangler'])
 const PROGRAM = '// The UUID program is the address. This file stores no params.\nexport const placed = true\n'
-
-const textOf = (pad: number) => {
-  if (pad === 0) return ''
-  const note = pad >= 7 ? 'coin 8\n' : '8'
-  const head = Buffer.byteLength(note) <= pad ? note : '8'.slice(0, pad)
-  return head + ' '.repeat(pad - Buffer.byteLength(head))
-}
-
-type Fixed = { path: string; folder: string; bytes: number; remainder: number; pad: number; written: boolean; children: Fixed[] }
-
-/** Align one folder, then its children, so the recursive byte count is a multiple of 432. The pad is the file quantum.drift. */
-const fixDir = (dir: string): Fixed => {
-  const children = readdirSync(dir, { withFileTypes: true }).filter((entry) => entry.isDirectory() && !SKIP.has(entry.name) && !entry.name.startsWith('.')).map((entry) => entry.name).sort().map((name) => fixDir(path.join(dir, name)))
-  const fixPath = path.join(dir, FIX)
-  let bare = 0
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    if (SKIP.has(entry.name) || entry.name.startsWith('.')) continue
-    const next = path.join(dir, entry.name)
-    if (next === fixPath) continue
-    if (entry.isDirectory()) bare += children.find((child) => child.path === next)?.bytes ?? 0
-    else if (entry.isFile()) bare += statSync(next).size
-  }
-  const pad = (WAVE - (bare % WAVE)) % WAVE
-  const text = textOf(pad)
-  if (Buffer.byteLength(text) !== pad) throw new Error('the drift pad is not the remainder')
-  if (readFile(fixPath) !== text) write(fixPath, text)
-  const size = statSync(fixPath).size
-  const bytes = bare + size
-  return { path: dir, folder: path.basename(dir), bytes, remainder: bytes % WAVE, pad, written: size === pad && bytes % WAVE === 0, children }
-}
-
-/** Write the quantum drift fix into every folder of the quantum codebase and the plugins. */
-export const fixCodebase = () => {
-  const roots = ROOTS.filter((root) => exists(root)).map((root) => fixDir(root))
-  const folders = roots.flatMap((root) => root.children.map((child) => ({ folder: child.folder, path: child.path, bytes: child.bytes, remainder: child.remainder, pad: child.pad })))
-  const count = (row: Fixed): number => 1 + row.children.reduce((sum, child) => sum + count(child), 0)
-  const fixed = roots.reduce((sum, root) => sum + count(root), 0)
-  const bytes = folders.reduce((sum, folder) => sum + folder.bytes, 0)
-  const written = roots.length === ROOTS.length && roots.every((root) => root.written && root.remainder === 0) && folders.every((folder) => folder.remainder === 0 && folder.bytes > 0)
-  return { roots: roots.map((root) => ({ folder: root.folder, path: root.path, bytes: root.bytes, remainder: root.remainder, pad: root.pad })), folders, bytes, fixed, written }
-}
 
 const placeProgram = (file: string) => {
   if (readFile(file) === PROGRAM) return true
@@ -130,7 +84,7 @@ const walkOf = (address: string) => {
   return { places: origin.program.length, steps, returned: current === address && back.program.join(',') === origin.program.join(','), handle: back.handle, tail: back.tail }
 }
 
-/** Every Clay family wave as one UUID program. Params and the expected schema are read back from the address. The program file is written, and every codebase folder is aligned to 432 bytes. */
+/** Every Clay family wave as one UUID program. Params and the expected schema are read back from the address. The program file is written. */
 export const driftPrograms = (waves: ReturnType<typeof driftWaves> = driftWaves()) => {
   const schema = CODES.map((code, index) => ({ field: FIELDS[index]!, type: TYPES[code]! }))
   const rows = waves.rows.map((row, index) => {
@@ -213,9 +167,7 @@ export const driftPrograms = (waves: ReturnType<typeof driftWaves> = driftWaves(
     return { integers, handle, tail, address, path: installed.path }
   })
   const placed = drafted.every((row) => placeProgram(row.path) && !handles.has(row.handle))
-  const codebase = fixCodebase()
   const closed = drafted.map((draft, index) => {
-    const folder = codebase.folders[index]
     const read = channel(draft.address)
     const witnessed = checkWitnesses(draft.address)
     const minted = coins([draft.address])
@@ -223,18 +175,16 @@ export const driftPrograms = (waves: ReturnType<typeof driftWaves> = driftWaves(
     const walk = walkOf(draft.address)
     const turned = walk.places === 10 && walk.returned && walk.handle === draft.handle && walk.tail === draft.tail && walk.steps.length === 10 && walk.steps.every((place) => place.sealed && place.kept && place.back && place.around && place.aspects === 4 && place.witnessed && place.params.family === index && place.params.hz === WAVE && place.params.next === CLOSED) && walk.steps[0]?.program === read.program.join(',') && walk.steps[9]?.next === draft.address
     const cross = crossLean(draft.address, draft.integers, { family: index, hz: WAVE, next: CLOSED })
-    const holds = placed && turned && cross.lean && folder?.folder === FOLDERS[index] && folder.remainder === 0 && folder.bytes % WAVE === 0 && read.validation.holds && read.params[0] === index && read.params[1] === WAVE && read.params[2] === CLOSED && file && witnessed.exact === true && witnessed.faces === FACES && minted.count === 1 && minted.coins[0] === draft.address && minted.sealed === true && seal(draft.address).valid && !handles.has(draft.handle)
-    return { folder: FOLDERS[index], bytes: folder?.bytes ?? 0, remainder: folder?.remainder ?? null, coin: 8 as const, open: false as const, closed: true as const, solved: false as const, address: draft.address, handle: draft.handle, path: draft.path, file, witnesses: witnessed.faces, walk, cross, holds }
+    const holds = placed && turned && cross.lean && read.validation.holds && read.params[0] === index && read.params[1] === WAVE && read.params[2] === CLOSED && file && witnessed.exact === true && witnessed.faces === FACES && minted.count === 1 && minted.coins[0] === draft.address && minted.sealed === true && seal(draft.address).valid && !handles.has(draft.handle)
+    return { folder: FOLDERS[index], coin: 8 as const, open: false as const, closed: true as const, solved: false as const, address: draft.address, handle: draft.handle, path: draft.path, file, witnesses: witnessed.faces, walk, cross, holds }
   })
   const closeHandles = new Set(closed.map((row) => row.handle))
-  const quantum = { from: 'quantum' as const, coin: 8 as const, bytes: codebase.bytes, folders: codebase.folders, roots: codebase.roots, fixed: codebase.fixed }
   const close = { phase: 'close' as const, via: 'uuid' as const, open: false as const, closed: true as const, solved: false as const, programs: closed.length, rows: closed, holds: closed.length === FOLDERS.length && closeHandles.size === closed.length && closed.every((row) => row.holds) }
-  const measured = codebase.written && codebase.folders.length === FOLDERS.length && quantum.bytes === codebase.bytes && codebase.folders.every((folder) => folder.remainder === 0)
-  const written = measured && rows.every((row) => row.file) && close.holds
+  const written = rows.every((row) => row.file) && close.holds
   const lean = rows.every((row) => row.cross.lean && row.cross.uuid === row.address && row.cross.verified === FACES) && close.rows.every((row) => row.cross.lean && row.cross.uuid === row.address && row.cross.verified === FACES) ? 'Qpu.Program' as const : null
   const holds = waves.holds && rows.length === waves.families && handles.size === rows.length && rows.every((row) => row.holds && row.open === false && row.closed === true && row.coin.drift === 8 && row.witnesses.exact) && written && lean === 'Qpu.Program'
   const says = holds
-    ? `${rows.length} family programs and ${closed.length} folder programs are closed. Lean is Qpu.Program because all ${FACES} witnessing superpositions cross-verify each program in its own UUID. The next place of a closed program rotates it one step. The handle, 432 Hz and the closed mark stay, and ten places return the program. The coin drift is 8. ${codebase.fixed} folders are aligned, ${codebase.bytes} bytes across ${codebase.folders.length} folders, and each remainder against 432 Hz is 0. A family is not marked solved.`
+    ? `${rows.length} family programs and ${closed.length} folder programs are closed. Lean is Qpu.Program because all ${FACES} witnessing superpositions cross-verify each program in its own UUID. The next place of a closed program rotates it one step. The handle, 432 Hz and the closed mark stay, and ten places return the program. The coin drift is 8. A family is not marked solved.`
     : 'a program was not cross-verified as Lean in its own UUID'
-  return { phase: 'programs' as const, via: 'uuid' as const, lean, theorems: ['step_keeps', 'program_rotates', 'program_returns', 'uuid_families', 'uuid_programs', 'uuid_drift', 'uuid_cross', 'families_closed', 'close_returns', 'cross_lean', 'uuid_program_all', 'witnesses_partition', 'program_handles'] as const, families: rows.length, relationCount: waves.relationCount, hz: waves.hz, rows, close, quantum, holds, fetched: false as const, written, executed: false as const, says }
+  return { phase: 'programs' as const, via: 'uuid' as const, lean, theorems: ['step_keeps', 'program_rotates', 'program_returns', 'uuid_families', 'uuid_programs', 'uuid_drift', 'uuid_cross', 'families_closed', 'close_returns', 'cross_lean', 'uuid_program_all', 'witnesses_partition', 'program_handles'] as const, families: rows.length, relationCount: waves.relationCount, hz: waves.hz, rows, close, holds, fetched: false as const, written, executed: false as const, says }
 }

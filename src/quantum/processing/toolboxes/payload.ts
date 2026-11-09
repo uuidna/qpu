@@ -60,7 +60,7 @@ import { pageSeed } from '../page-seed.ts'
 import { findArgs, manageApi, pageData, writeArgs } from '../../payload/index.ts'
 import { researchLinks } from '../../../plugins/linkResearch.ts'
 import { driftWaves, followWave, harmonicCover } from '../lead-wave.ts'
-import { driftPrograms, fixCodebase } from '../../uuid/programs/drift/index.ts'
+import { driftPrograms } from '../../uuid/programs/drift/index.ts'
 import {
   PAYLOADCMS_REPOSITORIES,
   PAYLOADCMS_MONOREPO_PACKAGES,
@@ -3101,7 +3101,6 @@ const improveViaAll = (raw: unknown, leads: readonly { id: string; source: strin
   const asked = quantumAsked ? 'quantum' : lifeAsked ? 'life' : isObj(raw) && 'ideas' in raw ? (raw as { ideas: unknown }).ideas : true
   const source = asked === true || (isObj(asked) && (asked as { next?: unknown }).next === true) ? true : isObj(asked) && 'next' in asked ? (asked as { next: unknown }).next : asked
   const askedAll = source === true
-  const codebase = askedAll ? fixCodebase() : null
   const found = askedAll ? ideaFilesFromLeads(leads) : []
   const input = source === 'quantum-leads' ? { files: placeInIdea(source, leads) } : found.length === 0 ? source : { files: [...placeInIdea(source), ...found] }
   const pool = improveFilesystem()
@@ -3141,8 +3140,7 @@ const improveViaAll = (raw: unknown, leads: readonly { id: string; source: strin
     products: rows.filter((row) => row.productCall.saved === true && row.productCall.api === 'create' && row.productCall.args?.collection === 'products' && row.documented).length,
     theorem: 'textbook_standards_sliced' as const,
     rows,
-    codebase,
-    says: improved ? `${life ? `The process that computes next lives as an idea, and the other ${life.who.length} processes exit as ideas. ` : ''}The management review accepts all ${next.accepted} audited saves of ${rows.length} ideas, and clause 6.3 plans those ${change.planned} changes, on ${ISO_DIMENSIONS.length} dimensions and ${cover.cases} cases. ${cover.entries} entries cover ${cover.exits} exits. zfs places each idea: the object is the handle and the birth is the address.${codebase?.written ? ` The quantum drift is written across ${codebase.fixed} folders.` : ''}` : 'an idea was not audited, so it is not saved',
+    says: improved ? `${life ? `The process that computes next lives as an idea, and the other ${life.who.length} processes exit as ideas. ` : ''}The management review accepts all ${next.accepted} audited saves of ${rows.length} ideas, and clause 6.3 plans those ${change.planned} changes, on ${ISO_DIMENSIONS.length} dimensions and ${cover.cases} cases. ${cover.entries} entries cover ${cover.exits} exits. zfs places each idea: the object is the handle and the birth is the address.` : 'an idea was not audited, so it is not saved',
   }
 }
 const kernelTheorem = (key: string | undefined) => {
