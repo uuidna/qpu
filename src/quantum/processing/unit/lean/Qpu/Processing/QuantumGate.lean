@@ -6,8 +6,8 @@ component: quantum gate (ISO/IEC 4879:2024 3.4.2, 3.4.3 unitary gate)
 ---
 The processor's gates as exact unitary matrices, never floats. Hadamard is kept unscaled, so its unitarity reads `H · H† = 2 · I`;
 X, Z, S, CNOT, SWAP and Toffoli are exact unitaries, `U · U† = I`. The T gate lives over ℤ[ω], ω the eighth root of unity: it is
-unitary, has order 8 and does not commute with Hadamard, so H, S, CNOT and T are a universal set. Clifford closure is stated on
-the generators: conjugating a Pauli by H, S or CNOT lands on a Pauli, up to the factor H carries and a sign. -/
+unitary, has order 8 and does not commute with Hadamard, so H, S, CNOT and T are a universal set. Clifford closure on every Pauli string is
+`CircuitBasedQuantumComputing.stabilizer_hadamard`, `stabilizer_phase` and `stabilizer_cnot`. -/
 
 namespace QuantumGate
 open HilbertSpace Operator
@@ -43,18 +43,6 @@ theorem cnot : Same 4 (mm 4 CNOT (dag CNOT)) idm ∧ Same 4 (mm 4 CNOT CNOT) idm
 theorem swap : Same 4 (mm 4 SWAP (dag SWAP)) idm ∧ Same 4 (mm 4 SWAP SWAP) idm := by decide
 /-- Toffoli is unitary and its own inverse -/
 theorem toffoli : Same 8 (mm 8 TOFFOLI (dag TOFFOLI)) idm ∧ Same 8 (mm 8 TOFFOLI TOFFOLI) idm := by decide +kernel
-
-/-- one-qubit Clifford closure: H sends X ↔ Z and Y to −Y (times its scale 2), S sends X to Y, Y to −X and keeps Z -/
-theorem clifford_1q :
-    Same 2 (mm 2 (mm 2 H X) (dag H)) (smul 2 Z) ∧ Same 2 (mm 2 (mm 2 H Z) (dag H)) (smul 2 X) ∧
-    Same 2 (mm 2 (mm 2 H Y) (dag H)) (smul (-2) Y) ∧ Same 2 (mm 2 (mm 2 S X) (dag S)) Y ∧
-    Same 2 (mm 2 (mm 2 S Y) (dag S)) (smul (-1) X) ∧ Same 2 (mm 2 (mm 2 S Z) (dag S)) Z := by decide
-
-/-- two-qubit Clifford closure: CNOT copies X from control to target and Z from target to control, and keeps the others -/
-theorem clifford_2q :
-    Same 4 (mm 4 (mm 4 CNOT (kron 2 X idm)) CNOT) (kron 2 X X) ∧ Same 4 (mm 4 (mm 4 CNOT (kron 2 idm X)) CNOT) (kron 2 idm X) ∧
-    Same 4 (mm 4 (mm 4 CNOT (kron 2 Z idm)) CNOT) (kron 2 Z idm) ∧ Same 4 (mm 4 (mm 4 CNOT (kron 2 idm Z)) CNOT) (kron 2 Z Z) := by
-  decide +kernel
 
 /-- an element `a₀ + a₁ω + a₂ω² + a₃ω³` of ℤ[ω], ω⁴ = −1 -/
 structure ZW where
