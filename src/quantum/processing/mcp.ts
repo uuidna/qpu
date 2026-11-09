@@ -1978,9 +1978,9 @@ export const balancerSnapshot = (p: { onlyNew?: boolean; used?: boolean } = {}):
 /** Blocks computed elsewhere, teleported into this balancer: a block already here is kept (first computed wins); returns how many arrived. Pure. */
 export const balancerLoad = (blocks: readonly { address: string; structured: unknown; widget: string }[]): number => { let n = 0; for (const b of blocks) { if (typeof b.address !== 'string' || BALANCER.has(b.address)) continue; BALANCER.set(b.address, { structured: b.structured, widget: b.widget }); TELEPORTED.add(b.address); n += 1 } return n }
 /** Observability: per tool, how often it was asked, how often it computed (a miss), how long the misses took, how many bytes they produced. */
-const OBSERVED = new Map<string, { calls: number; misses: number; ms: number; bytes: number }>()
+const OBSERVED = new Map<string, { calls: number; misses: number; ms: number; bytes: number; servedMs: number }>()
 const NESTED: number[] = []
-const observed = (k: 'calls' | 'misses' | 'ms' | 'bytes') => [...OBSERVED.values()].reduce((n, o) => n + o[k], 0)
+const observed = (k: 'calls' | 'misses' | 'ms' | 'bytes' | 'servedMs') => [...OBSERVED.values()].reduce((n, o) => n + o[k], 0)
 
 /** The computable metrics of the tree, in real time: what the registries, the kernel's index and one audit say right now. */
 type RunArtefacts = { advantageByUnit?: unknown; audit?: { total?: number; passed?: number; failed?: number }; e2e?: { combos?: number; copies?: number; involutions?: number; outcomes?: Record<string, number>; competition?: { saved?: number; msMajority?: number; winners?: Record<string, number> } }; coins?: { calls: number; coins: number; byDoor: Record<string, number>; gated: number; unclean: number }; receipt?: { steps?: { name: string; status: string; ms: number }[] }; sizes?: Record<string, number>; discovery?: { hosts?: { kind: string; detected: string }[]; doors?: unknown[]; capabilities?: Record<string, string[]> }; verification?: { summary?: Record<string, { requests: number; ok: number; contracted: number; uncontracted: number }> }; readiness?: { classes?: { served: number; refuted: number; trial: number }; readiness?: { ready: boolean }; border?: { doors?: unknown[]; sealedBy?: string[] } }; repository?: { branches?: { agree: string[]; local: number }; tags?: { agree: string[]; local: number; mismatch: string[] }; leads?: unknown[] }; legal?: { claims?: number; verdicts?: Record<string, number>; violations?: number; refusals?: number; securityPassed?: number; securityTotal?: number; id?: string }; docket?: { entries?: number; root?: string | null; mirrors?: number }; receipts?: { count?: number; last?: string | null } }
@@ -2034,6 +2034,8 @@ const treeMetrics = (artefacts: RunArtefacts = {}): Record<string, unknown> => {
     balancerTeleported: TELEPORTED.size, balancerTeleportHits: TELEPORT_HITS, toolCalls: observed('calls'), toolMisses: observed('misses'), toolMs: observed('ms'),
     slowestTools: [...OBSERVED.entries()].sort((x, y) => y[1].ms - x[1].ms).slice(0, 6).map(([name, o]) => `${name} ${o.ms} ms / ${o.misses} computed / ${o.calls} asked / ${o.bytes} bytes`),
     msPerComputedCall: (() => { const m = observed('misses'); return m ? Number((observed('ms') / m).toFixed(1)) : null })(),
+    // an answer served by its UUID address against one computed: the time, and with it the energy, the address saves
+    msPerServedCall: (() => { const n = observed('calls') - observed('misses'); return n ? Number((observed('servedMs') / n).toPrecision(3)) : null })(),
     ...coverage(artefacts),
     advantageByUnit: artefacts.advantageByUnit ?? null, gateCombos: artefacts.e2e?.combos ?? null, gateCopies: artefacts.e2e?.copies ?? null, gateInvolutions: artefacts.e2e?.involutions ?? null, gateOutcomes: artefacts.e2e?.outcomes ?? null, gateMsSaved: artefacts.e2e?.competition?.saved ?? null, gateWinners: artefacts.e2e?.competition?.winners ?? null,
     // the gate's own advantage as a magnitude, uncapped: the copies proven by hash (304, nothing computed) against the copies recomputed; when every copy is an involution the ratio has no bound and says so
@@ -2677,8 +2679,8 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       if (!cached) BALANCER.set(address, { structured, widget }); else if (TELEPORTED.has(address)) { TELEPORT_HITS += 1; TELEPORT_USED.add(address) }
       const children = NESTED.pop() ?? 0; const elapsed = clock() - started
       if (NESTED.length) NESTED[NESTED.length - 1]! += elapsed
-      const o = OBSERVED.get(found.name) ?? { calls: 0, misses: 0, ms: 0, bytes: 0 }
-      o.calls += 1; if (!cached) { o.misses += 1; o.ms += elapsed - children; o.bytes += accountBytes([widget, JSON.stringify(structured)]).bytes }
+      const o = OBSERVED.get(found.name) ?? { calls: 0, misses: 0, ms: 0, bytes: 0, servedMs: 0 }
+      o.calls += 1; if (!cached) { o.misses += 1; o.ms += elapsed - children; o.bytes += accountBytes([widget, JSON.stringify(structured)]).bytes } else o.servedMs += elapsed
       OBSERVED.set(found.name, o)
       const rendered = block(found.name, args, structured, widget, found.description)
       // the referer of a call: who sent it, carried as _meta.prev, echoed so a chain of calls knows its previous step across domains
