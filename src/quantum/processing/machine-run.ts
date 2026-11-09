@@ -59,20 +59,21 @@ const resolveArgs = async (x: unknown, cwd: string, call: Call): Promise<unknown
   return Object.fromEntries(await Promise.all(Object.entries(o).map(async ([k, v]) => [k, await resolveArgs(v, cwd, call)])))
 }
 /** The child of a door or generator step: the handler called as a library, the answer printed as one JSON line, a generator's path and text written. */
-const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd: string) => {
+const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd: string, json = false) => {
   const { call } = await import('./mcp.ts') as { call: Call }
   const args = await resolveArgs(JSON.parse(argsJson), cwd, call)
   const r = call(tool, args)
   if (r.error) { console.log(JSON.stringify({ error: r.error.message })); process.exitCode = 1; return }
   let s = r.result?.structuredContent ?? null
-  // the e2e gate's plan followed: each request fetched, eight at a time, then decoded
-  if (tool === 'e2e' && s?.phase === 'requests' && Array.isArray(s.requestList)) {
-    const list = s.requestList as { url: string; method: string; accept: string; headers: Record<string, string>; body: unknown }[], answers: unknown[] = []
-    await Promise.all(Array.from({ length: 8 }, async () => { for (let q = list.shift(); q; q = list.shift()) { const t0 = performance.now(); try { const res = await fetch(q.url, { method: q.method, headers: { 'content-type': 'application/json', accept: q.accept, ...q.headers }, body: JSON.stringify(q.body) }); answers.push({ ...q, status: res.status, ms: performance.now() - t0, text: await res.text(), etag: res.headers.get('etag') }) } catch (e) { answers.push({ ...q, status: 0, ms: performance.now() - t0, text: String(e) }) } } }))
-    // in this process: the door's wrapper re-serialises the bodies past a string's length
-    const d = (await import('./e2e.ts')).decodeE2e(answers as never)
-    s = { phase: 'decoded', ...d.outcomes, combos: d.combos, copies: d.copies, uncorrectableLeads: d.leads.filter((l) => l.id.startsWith('e2e-uncorrectable')).map((l) => l.id).join(' ') }
+  // a door that answers with requests has them fetched, eight at a time, then answers again with them: e2e decodes here, every other door is asked with answers
+  if (Array.isArray(s?.requestList) && !(args as { answers?: unknown }).answers) {
+    const list = [...s.requestList] as { url: string; method: string; accept: string; headers?: Record<string, string>; body?: unknown }[], answers: unknown[] = []
+    await Promise.all(Array.from({ length: 8 }, async () => { for (let q = list.shift(); q; q = list.shift()) { const t0 = performance.now(); try { const res = await fetch(q.url, { method: q.method, headers: { 'content-type': 'application/json', accept: q.accept, ...q.headers }, body: q.body === undefined ? undefined : JSON.stringify(q.body), signal: AbortSignal.timeout(20000) }); answers.push({ ...q, status: res.status, ms: performance.now() - t0, text: await res.text(), etag: res.headers.get('etag') }) } catch (e) { answers.push({ ...q, status: 0, ms: performance.now() - t0, text: String(e) }) } } }))
+    // in this process: the door's wrapper re-serialises e2e's bodies past a string's length
+    if (tool === 'e2e') { const d = (await import('./e2e.ts')).decodeE2e(answers as never); s = { phase: 'decoded', ...d.outcomes, combos: d.combos, copies: d.copies, uncorrectableLeads: d.leads.filter((l) => l.id.startsWith('e2e-uncorrectable')).map((l) => l.id).join(' ') } }
+    else { const again = call(tool, { ...(args as object), answers }); if (again.error) { console.log(JSON.stringify({ error: again.error.message })); process.exitCode = 1; return } s = again.result?.structuredContent ?? null }
   }
+
   const wrote: string[] = []
   // a generator writes the path and text it answers, or every file of its files list, and makes every link of its links list (a relative symlink)
   const outputs = [...(s && typeof s.path === 'string' && typeof s.text === 'string' ? [{ path: s.path, text: s.text }] : []), ...(Array.isArray(s?.files) ? s.files : [])] as { path: string; text: string }[]
@@ -80,7 +81,7 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   if (write) for (const l of (Array.isArray(s?.links) ? s.links : []) as { path: string; target: string }[]) { const p = join(cwd, l.path); mkdirSync(dirname(p), { recursive: true }); let current: string | null = null; try { current = readlinkSync(p) } catch { current = null }; if (current !== l.target) { if (current !== null) unlinkSync(p); if (!existsSync(p)) { symlinkSync(l.target, p); wrote.push(l.path) } } }
   const brief = s && typeof s === 'object' ? Object.fromEntries(Object.entries(s).filter(([k, v]) => k !== 'text' && (typeof v !== 'object' || v === null))) : s
   if (write && outputs.length > 1) (brief as Record<string, unknown>).files = outputs.length
-  console.log(`${write ? (wrote.length ? `wrote ${wrote.join(', ')}` : 'unchanged') : 'answered'} ${JSON.stringify(brief)}`)
+  console.log(`${write ? (wrote.length ? `wrote ${wrote.join(', ')}` : 'unchanged') : 'answered'} ${JSON.stringify(json ? s : brief)}`)
   if (s && s.passed === false) process.exitCode = 1
   if (s && s.holds === false) process.exitCode = 1
 }
@@ -204,7 +205,7 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
 if (process.argv[1] && SELF === fileURLToPath(new URL(process.argv[1], 'file://')) ) {
   const [, , action, ...rest] = process.argv
   // the arguments as JSON, or @<file> holding the JSON (a list of texts outgrows an argument)
-  if (action === 'step') await runStepChild(rest[0]!, rest[1]?.startsWith('@') ? readFileSync(rest[1].slice(1), 'utf8') : rest[1] ?? '{}', rest.includes('--write'), process.cwd())
+  if (action === 'step') await runStepChild(rest[0]!, rest[1]?.startsWith('@') ? readFileSync(rest[1].slice(1), 'utf8') : rest[1] ?? '{}', rest.includes('--write'), process.cwd(), rest.includes('--json'))
   else if (action === 'hook') process.exitCode = await runHook(rest[0] ?? '', rest.slice(1), process.cwd())
   else if (action === 'next') { const r = await runNext({ cwd: process.cwd(), offline: rest.includes('--offline'), fast: rest.includes('--fast'), generators: rest.includes('--generators') }); process.exitCode = r.red ? 1 : 0 }
   else if (action) { const r = await runMachine({ action, confirm: rest.includes('--confirm'), message: rest.includes('-m') ? rest[rest.indexOf('-m') + 1] : undefined, branch: rest.includes('--branch') ? rest[rest.indexOf('--branch') + 1] : undefined }, process.cwd()); console.log(JSON.stringify(r.answer)); process.exitCode = (r as { record?: { ok: boolean } }).record?.ok === false ? 1 : 0 }
