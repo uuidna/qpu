@@ -3,46 +3,13 @@
 // reads it in both directions. Every problem is routed to the theorems; the ones no theorem reaches collide, all pairs at once, through the
 // subjects they share: a subject several unreached problems share is one missing theorem that would serve them all (each problem solves many
 // others, textbook_collision_solves_many). A collision is a lead to prove, never a statement the tree asserts.
-import { uuid, channel, reflection, coins, seal } from '../uuid/index.ts'
+import { uuid, channel, reflection } from '../uuid/index.ts'
 import { routeStatement, routeStems } from './match.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 
 /** Ideas are processed from this folder. A full pass drains the ones it verified or collided. What remains is a coverage gap. */
 export const IDEA_HOME = '.idea' as const
-type IdeaDoor = { holds: boolean; theorems: readonly { theorem: string; says: string }[] }
-type IdeaRecord = {
-  home?: string
-  before?: number
-  drained?: number
-  left?: readonly string[]
-  saved?: readonly { verified?: boolean }[]
-  collided?: readonly { verified?: boolean; cern?: boolean; nist?: boolean; games?: boolean }[]
-  outside?: readonly string[]
-  covered?: boolean
-}
-const ideaPath = (p: string) => p.replace(/^\.\//, '').replace(/\\/g, '/')
-const inIdea = (p: string) => p === IDEA_HOME || p.startsWith(`${IDEA_HOME}/`)
-/** The measurement next and CI read. A save that was not verified, a collision that skipped CERN, NIST or the game seeds, or a covered stamp while a gap remains, does not hold. */
-const ideaFlow = (g: IdeaRecord) => {
-  if (g.home !== IDEA_HOME) return { holds: false as const, evidence: 'ideas are processed from .idea' }
-  const left = g.left ?? [], saved = g.saved ?? [], collided = g.collided ?? [], outside = g.outside ?? []
-  const before = g.before ?? 0, drained = g.drained ?? 0
-  const badSave = saved.some((s) => s.verified !== true)
-  const badHit = collided.some((c) => c.verified === true || c.cern !== true || c.nist !== true || c.games !== true)
-  const partition = left.length + drained === before && drained <= before && drained === saved.length + collided.length
-  const covered = before > 0 && left.length === 0 && outside.length === 0
-  const stamped = g.covered === true && !covered
-  const holds = !badSave && !badHit && partition && outside.length === 0 && !stamped
-  const evidence = holds ? `${drained} of ${before} idea(s) drained from .idea; ${left.length} coverage gap(s) remain` : [badSave ? 'an idea was saved before it verified' : '', badHit ? 'a collision skipped CERN, NIST or the game seeds' : '', !partition ? 'the drain does not partition .idea' : '', outside.length ? `outside .idea: ${outside.join(', ')}` : '', stamped ? 'covered was stamped while a gap remains' : ''].filter(Boolean).join('; ')
-  return { holds, evidence }
-}
-/**
- * Each idea is verified before it is saved. An unverified idea collides onto a variation only when the CERN door,
- * the NIST door and the games door all hold. The games door is seeds the caller hands, not this framework.
- * Processing in full drains the saved and the collided. What `.idea` still holds is the coverage gap.
- */
-const coinOf = (text: string) => { const booked = coins([text]); const address = booked.coins[0] ?? null; return { address, sealed: !!address && seal(address).valid && booked.sealed } }
 
 export const listCollisions = (leads: readonly Lead[], examples: readonly Example[]) => {
   const problems = leads.filter((l) => l.status === 'open' || l.status === 'partial')
