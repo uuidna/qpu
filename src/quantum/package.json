@@ -1,5 +1,6 @@
 {
-  "name": "@qpu/password",
+  "name": "@uuidna/qpu",
+  "description": "An exact quantum processing unit served over MCP",
   "version": "1.0.1",
   "license": "CC-BY-NC-ND-4.0",
   "private": true,

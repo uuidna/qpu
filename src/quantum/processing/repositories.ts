@@ -415,11 +415,10 @@ export const PAYLOADCMS_REPOSITORIES: readonly PayloadcmsRepoMapping[] = [
 export const PAYLOADCMS_WORKSPACE_ALIGNMENT = {
   qpu: {
     name: '@uuidna/qpu',
-    path: '.',
+    path: 'src/quantum',
     payloadVersion: '4.0.0-beta.7',
     upstreamRepos: ['payloadcms/website', 'payloadcms/payload', 'payloadcms/skills'] as const,
-    exports: ['.', './plugin', './payload.config', './payload', './feeds', './mcp', './blocks', './roles', './version', './discovery-document', './machine'] as const,
-    role: 'This full-stack package: Payload website in src/, quantum unit, and qpuMcpPlugin over upstream @payloadcms/*',
+    exports: ['.', './payload', './feeds', './mcp', './blocks', './roles', './version', './discovery-document', './machine'] as const,
   },
   website: {
     name: 'qpu',

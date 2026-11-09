@@ -3,7 +3,7 @@
 @@ -1,10 +1,23 @@
  // @ts-strict-ignore
  import crypto from 'crypto';
-+import { isQpuPasswordHash, qpuPasswordDigest } from '@qpu/password';
++import { isQpuPasswordHash, qpuPasswordDigest } from '@uuidna/qpu';
  import { InvalidConfiguration } from '../../../errors/index.js';
  import { getPasswordHashParameters, isCurrentPasswordHash, isUnsupportedIterationsError, pbkdf2Promisified } from './generatePasswordSaltHash.js';
  export const authenticateLocalStrategy = async ({ doc, password, passwordHashIterations })=>{
@@ -28,7 +28,7 @@
 +++ b/dist/auth/strategies/local/generatePasswordSaltHash.js
 @@ -1,4 +1,5 @@
  import crypto from 'crypto';
-+import { isQpuPasswordHash, qpuPasswordDigest } from '@qpu/password';
++import { isQpuPasswordHash, qpuPasswordDigest } from '@uuidna/qpu';
  import { InvalidConfiguration, ValidationError } from '../../../errors/index.js';
  import { password } from '../../../fields/validations.js';
  // Each supported iteration count has its own fixed prefix, so a stored hash
