@@ -37,14 +37,28 @@
 | `HilbertSpace.GI.zero_im` | Qpu.Physics.HilbertSpace | `HilbertSpace.GI.im 0 = 0` |
 | `HilbertSpace.GI.zero_re` | Qpu.Physics.HilbertSpace | `HilbertSpace.GI.re 0 = 0` |
 
+## quantum error correction (ISO/IEC 4879:2024 3.4.6)
+
+`Qpu.Processing.QuantumErrorCorrection`. The three-bit repetition code corrects every single bit flip by majority decoding. In Steane's seven-qubit code each single error trips its own nonzero Hamming syndrome and the checks overlap evenly (CSS). Shor's nine-qubit code gives each bit flip its own syndrome and names each phase flip's block. At distance d ≥ 2t + 1, any t errors are corrected.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `QuantumErrorCorrection.distance_corrects` | Qpu.Processing.QuantumErrorCorrection | `∀ (d t e₁ e₂ : Nat), 2 * t + 1 ≤ d → e₁ ≤ t → e₂ ≤ t → e₁ + e₂ < d` |
+| `QuantumErrorCorrection.repetition_corrects` | Qpu.Processing.QuantumErrorCorrection | `∀ (b : Bool) (e : Nat), e < 4 → QuantumErrorCorrection.decode (QuantumErrorCorrection.flip e (QuantumErrorCorrection.encode b)) = b` |
+| `QuantumErrorCorrection.shor_nine` | Qpu.Processing.QuantumErrorCorrection | `(∀ (a : Nat), a < 9 → QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks a ≠ QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks 9 ∧ ∀ (b : Nat), b < 9 → QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks a = QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks b → a = b) ∧ ∀ (a : Nat), a < 9 → QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks a ≠ QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks 9 ∧ ∀ (b : Nat), b < 9 → (QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks a = QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks b ↔ a / 3 = b / 3)` |
+| `QuantumErrorCorrection.steane_corrects` | Qpu.Processing.QuantumErrorCorrection | `∀ (i : Nat), i < 7 → QuantumErrorCorrection.syndrome i = i + 1` |
+| `QuantumErrorCorrection.steane_css` | Qpu.Processing.QuantumErrorCorrection | `∀ (a : Nat), a < 3 → ∀ (b : Nat), b < 3 → (List.filter (fun i => QuantumErrorCorrection.hamming a i && QuantumErrorCorrection.hamming b i) (List.range 7)).length % 2 = 0` |
+
 ## quantum algorithm (ISO/IEC 4879:2024 3.4.9)
 
-`Qpu.Processing.QuantumAlgorithm`. The processor's algorithms on exact amplitudes: a circuit applies the gates of `Qpu.Processing.QuantumGate` and a measurement weight is the squared modulus. Deutsch–Jozsa decides every two-bit function in one oracle query, Grover finds the marked item of four in one iteration (a search algorithm, 3.5.6), and Shor's reduction is `textbook_shor_sigma_root`.
+`Qpu.Processing.QuantumAlgorithm`. The processor's algorithms on exact amplitudes: a circuit applies the gates of `Qpu.Processing.QuantumGate` and a measurement weight is the squared modulus. Deutsch–Jozsa decides every two-bit function in one oracle query, Grover finds the marked item of four in one iteration (a search algorithm, 3.5.6), and Shor's reduction is `textbook_shor_sigma_root`. The quantum Fourier transform on three qubits, over ℤ[ω] with ω the eighth root of unity, is unitary, and phase estimation on an eigenphase k/8 returns exactly |k⟩ once the inverse transform is applied.
 
 | Theorem | Module | Statement |
 |---|---|---|
 | `QuantumAlgorithm.deutsch_jozsa` | Qpu.Processing.QuantumAlgorithm | `∀ (f : Nat), f < 16 → (QuantumAlgorithm.constant f = true → (QuantumAlgorithm.dj f 0).normSq = 16) ∧ (QuantumAlgorithm.balanced f = true → QuantumAlgorithm.dj f 0 = 0)` |
 | `QuantumAlgorithm.grover_search` | Qpu.Processing.QuantumAlgorithm | `∀ (m : Nat), m < 4 → ∀ (r : Nat), r < 4 → (QuantumAlgorithm.grover m r ≠ 0 ↔ r = m)` |
+| `QuantumAlgorithm.phase_estimation_exact` | Qpu.Processing.QuantumAlgorithm | `∀ (k : Nat), k < 8 → ∀ (r : Nat), r < 8 → (QuantumAlgorithm.sum8 fun j => QuantumAlgorithm.iqft r j * QuantumAlgorithm.wPow (j * k)) = if r = k then 8 else 0` |
+| `QuantumAlgorithm.qft_unitary` | Qpu.Processing.QuantumAlgorithm | `∀ (j : Nat), j < 8 → ∀ (k : Nat), k < 8 → (QuantumAlgorithm.sum8 fun i => QuantumAlgorithm.qft j i * QuantumAlgorithm.iqft i k) = if j = k then 8 else 0` |
 | `textbook_shor_sigma_root` | Qpu.Textbook | `64 ^ 2 % 91 = 1 ∧ 64 ≠ 1 ∧ 64 ≠ 90 ∧ (64 - 1) * (64 + 1) % 91 = 0 ∧ (64 - 1).gcd 91 = 7 ∧ (64 + 1).gcd 91 = 13 ∧ 7 * 13 = 91` |
 
 ## quantum information (ISO/IEC 4879:2024 3.3.1)
@@ -208,11 +222,3 @@
 | `QuantumCircuit.needs_routing` | Qpu.Processing.QuantumCircuit | `(0, 0) ∈ QuantumProcessor.sites hexbit ∧ (0, 2) ∈ QuantumProcessor.sites hexbit ∧ QuantumProcessor.coupled (0, 0) (0, 1) = true ∧ QuantumProcessor.coupled (0, 1) (0, 2) = true ∧ QuantumProcessor.coupled (0, 0) (0, 2) = false` |
 | `QuantumCircuit.routed_depth` | Qpu.Processing.QuantumCircuit | `∀ (d : Nat), 1 ≤ d → QuantumCircuit.routedGates d = 2 * d - 1 ∧ QuantumCircuit.routedGates 2 = 3` |
 | `QuantumCircuit.swap_routing` | Qpu.Processing.QuantumCircuit | `Operator.Same 8 (Operator.mm 8 (Operator.mm 8 QuantumCircuit.swap01 QuantumCircuit.cnot12) QuantumCircuit.swap01) QuantumCircuit.cnot02` |
-
-## quantum error correction (ISO/IEC 4879:2024 3.4.6)
-
-`Qpu.Processing.QuantumErrorCorrection`. The three-bit repetition code corrects every single bit flip by majority decoding.
-
-| Theorem | Module | Statement |
-|---|---|---|
-| `QuantumErrorCorrection.repetition_corrects` | Qpu.Processing.QuantumErrorCorrection | `∀ (b : Bool) (e : Nat), e < 4 → QuantumErrorCorrection.decode (QuantumErrorCorrection.flip e (QuantumErrorCorrection.encode b)) = b` |

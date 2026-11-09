@@ -110,47 +110,7 @@ export const ISO_OPEN_SUCCESSORS = TABLES.ISO_OPEN_SUCCESSORS
 export const ISO_OPEN_DATA = 'https://www.iso.org/open-data.html'
 
 /** NIST and CERN as producers (ISO/IEC 19770-6 tag-producer role): each open source yields the ISO standards it produces. */
-export const ISO_PRODUCERS = [
-  {
-    id: 'nist' as const,
-    name: 'National Institute of Standards and Technology' as const,
-    role: 'producer' as const,
-    guide: 'ISO/IEC 19770-6:2024 tag producers' as const,
-    host: 'nist.gov' as const,
-    sources: [
-      { id: 'nist-opendata' as const, method: 'GET' as const, url: 'https://data.nist.gov/rmm/records?page=0&size=5', accept: 'application/json' as const, produces: 'open records with DOIs' as const },
-      { id: 'nist-codata' as const, method: 'GET' as const, url: 'https://physics.nist.gov/cuu/Constants/Table/allascii.txt', accept: 'text/plain' as const, produces: 'CODATA fundamental constants' as const },
-      { id: 'nist-beacon' as const, method: 'GET' as const, url: 'https://beacon.nist.gov/beacon/2.0/pulse/last', accept: 'application/json' as const, produces: 'signed randomness pulse' as const },
-      { id: 'csrc-pqc' as const, method: 'GET' as const, url: 'https://csrc.nist.gov/projects/post-quantum-cryptography', accept: 'text/html' as const, produces: 'post-quantum cryptography standards' as const },
-    ],
-    standards: [
-      { dimension: 'ISO/IEC 9834-8' as const, via: 'FIPS 180-4 SHA-256 / UUID folding' as const },
-      { dimension: 'ISO 22739:2024' as const, via: 'NISTIR 8202 blockchain + FIPS 180-4 / 204' as const },
-      { dimension: 'ISO 80000-10' as const, via: 'CODATA atomic and nuclear constants' as const },
-      { dimension: 'ISO 16' as const, via: 'national metrology / standard frequency' as const },
-      { dimension: 'ISO 8601' as const, via: 'timestamped pulses and publication dates' as const },
-      { dimension: 'ISO 3166-1' as const, via: 'US national metrology institute locale' as const },
-    ],
-    research: ['ISO 690', 'ISO 26324'] as const,
-  },
-  {
-    id: 'cern' as const,
-    name: 'European Organization for Nuclear Research' as const,
-    role: 'producer' as const,
-    guide: 'ISO/IEC 19770-6:2024 tag producers' as const,
-    host: 'cern.ch' as const,
-    sources: [
-      { id: 'cern-opendata' as const, method: 'GET' as const, url: 'https://opendata.cern.ch/api/records/?q=higgs&size=5', accept: 'application/json' as const, produces: 'LHC open records with DOIs' as const },
-    ],
-    standards: [
-      { dimension: 'ISO 80000-10' as const, via: 'LHC atomic and nuclear physics data' as const },
-      { dimension: 'ISO 8601' as const, via: 'embargo and publication dates' as const },
-      { dimension: 'ISO 3166-1' as const, via: 'CERN host locale' as const },
-      { dimension: 'ISO/IEC 19770' as const, via: 'hardware / software asset tags on openlab stacks' as const },
-    ],
-    research: ['ISO 690', 'ISO 26324'] as const,
-  },
-] as const
+export const ISO_PRODUCERS = TABLES.ISO_PRODUCERS
 
 /** Every ISO source this tree can name: the Open Data page, each catalogue page, each successor, the DOI ecosystem, and NIST/CERN producers. */
 export const isoOnlineSources = () => [
@@ -284,32 +244,7 @@ const dimensionHit = (ref: string, dimension: string) => {
  */
 export const HIDDEN_PERSPECTIVES = ['public', 'tenant', 'operator', 'client', 'developer', 'legal'] as const
 
-export const PRODUCER_TRINITIES = {
-  nist: {
-    id: 'nist' as const,
-    seed: 3 as const,
-    trinity: [3, 6, 9] as const,
-    role: 'producer' as const,
-    unlocks: ['public', 'legal'] as const,
-    via: 'NIST Open Data + CODATA + FIPS' as const,
-  },
-  cern: {
-    id: 'cern' as const,
-    seed: 7 as const,
-    trinity: [7, 4, 1] as const,
-    role: 'producer' as const,
-    unlocks: ['tenant', 'client'] as const,
-    via: 'CERN Open Data + DOI citation' as const,
-  },
-  clay: {
-    id: 'clay' as const,
-    seed: 2 as const,
-    trinity: [2, 5, 8] as const,
-    role: 'register' as const,
-    unlocks: ['operator', 'developer'] as const,
-    via: 'Clay register 55 relations / σ-involution' as const,
-  },
-} as const
+export const PRODUCER_TRINITIES = TABLES.PRODUCER_TRINITIES
 
 const PRODUCER_TRINITY_NAMES = Object.keys(PRODUCER_TRINITIES) as (keyof typeof PRODUCER_TRINITIES)[]
 

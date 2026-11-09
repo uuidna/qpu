@@ -1,6 +1,7 @@
 import Qpu.Communication.QuantumCommunication
 import Qpu.Information.QuantumInformation
 import Qpu.Processing.QuantumAlgorithm
+import Qpu.Processing.QuantumErrorCorrection
 import Qpu.Processing.QuantumGate
 import Qpu.Sigma
 
@@ -1161,17 +1162,13 @@ theorem textbook_shor_fifteen_order : 7 ^ 1 % 15 = 7 ∧ 7 ^ 2 % 15 = 4 ∧ 7 ^ 
 /-- textbook_shor_fifteen_order reflected by its shape, conjunction (examples: algorithm-shor-15) -/
 theorem textbook_shor_fifteen_order_reflected (σ : Nat) : (σ - (7) = σ - (7 ^ 1 % 15)) ∧ (σ - (4) = σ - (7 ^ 2 % 15)) ∧ (σ - (13) = σ - (7 ^ 3 % 15)) ∧ (σ - (1) = σ - (7 ^ 4 % 15)) ∧ (σ - (3) = σ - (Nat.gcd (4 - 1) 15)) ∧ (σ - (5) = σ - (Nat.gcd (4 + 1) 15)) ∧ (σ - (15) = σ - (3 * 5)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).1), congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).2.2.2.2.2.2)⟩
 /-- the QFT on three qubits has 2³ = 8 amplitudes, each of probability 12.50%: eight times 1250 basis points make the whole (examples: algorithm-qft-3) -/
-theorem textbook_qft_three_amplitudes : 2 ^ 3 = 8 ∧ 8 * 1250 = 10000 := by decide
-/-- textbook_qft_three_amplitudes reflected by its shape, conjunction (examples: algorithm-qft-3) -/
-theorem textbook_qft_three_amplitudes_reflected (σ : Nat) : (σ - (8) = σ - (2 ^ 3)) ∧ (σ - (10000) = σ - (8 * 1250)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_qft_three_amplitudes).1), congrArg (σ - ·) (Eq.symm (textbook_qft_three_amplitudes).2)⟩
+theorem textbook_qft_three_amplitudes : type_of% @QuantumAlgorithm.qft_unitary := @QuantumAlgorithm.qft_unitary
 /-- two qubits hold 2² = 4 items, the start sits 30° from the unmarked plane, and one iteration turns it by (2·1 + 1)·30° = 90°: the marked |00⟩ with certainty (examples: algorithm-grover) -/
 theorem textbook_grover_one_iteration : type_of% @QuantumAlgorithm.grover_search := @QuantumAlgorithm.grover_search
 /-- one message qubit and a Bell pair of two are the three qubits; the two measured bits choose one of 2² = 4 corrections, and the three Pauli expectations X, Y, Z agree (examples: algorithm-teleportation) -/
 theorem textbook_teleport_three_qubits : type_of% @QuantumCommunication.teleport_exact := @QuantumCommunication.teleport_exact
 /-- quantum phase estimation reads an eigenphase θ to n bits: three bits give 2³ = 8 outcomes, and θ = 1/4 is read exactly as the integer 2, since 2 · 4 = 8 means 2/2³ = 1/4 (examples: algorithm-phase-estimation) -/
-theorem textbook_phase_estimation : 2 ^ 3 = 8 ∧ 2 * 4 = 8 := by decide
-/-- textbook_phase_estimation reflected by its shape, conjunction (examples: algorithm-phase-estimation) -/
-theorem textbook_phase_estimation_reflected (σ : Nat) : (σ - (8) = σ - (2 ^ 3)) ∧ (σ - (8) = σ - (2 * 4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_phase_estimation).1), congrArg (σ - ·) (Eq.symm (textbook_phase_estimation).2)⟩
+theorem textbook_phase_estimation : type_of% @QuantumAlgorithm.phase_estimation_exact := @QuantumAlgorithm.phase_estimation_exact
 /-- Deutsch–Jozsa decides constant vs balanced in one quantum query; a classical algorithm may need 2^(n−1)+1 queries — for n = 3 that is 5, and the single quantum query beats it, 1 < 5; proven by deutschJozsaCircuit (examples: algorithm-deutsch-jozsa) -/
 theorem textbook_deutsch_jozsa : type_of% @QuantumAlgorithm.deutsch_jozsa := @QuantumAlgorithm.deutsch_jozsa
 /-- Bernstein–Vazirani for the hidden string s = 101: of the 8 three-bit strings, s is the only one whose parity x ↦ s·x mod 2 matches the oracle on every input, so the parity function determines s, which one query and the Hadamard transform read, against 3 classical queries (1 < 3). The kernel decides the uniqueness by enumeration; the one-query circuit is run by bernsteinVaziraniCircuit (examples: algorithm-bernstein-vazirani) -/
@@ -1217,9 +1214,7 @@ theorem textbook_solovay_kitaev : 2 ^ 3 = 8 ∧ 2 ^ 2 < 2 ^ 3 := by decide
 /-- textbook_solovay_kitaev reflected by its shape, conjunction (examples: algorithm-solovay-kitaev) -/
 theorem textbook_solovay_kitaev_reflected (σ : Nat) (hσ0 : (2 ^ 3) ≤ σ) : (σ - (8) = σ - (2 ^ 3)) ∧ (σ - (2 ^ 3) < σ - (2 ^ 2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_solovay_kitaev).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_solovay_kitaev).2 hσ0) (textbook_solovay_kitaev).2⟩
 /-- the Steane [[7,1,3]] CSS code on the [7,4,3] Hamming code: distance 3 (7 − 4 = 3 checks) corrects any single-qubit error, and all 2·7 = 14 single X and Z errors are located by their Hamming syndrome and corrected; proven by steaneCorrection (examples: algorithm-steane) -/
-theorem textbook_steane : 7 - 4 = 3 ∧ 2 * 7 = 14 := by decide
-/-- textbook_steane reflected by its shape, conjunction (examples: algorithm-steane) -/
-theorem textbook_steane_reflected (σ : Nat) : (σ - (3) = σ - (7 - 4)) ∧ (σ - (14) = σ - (2 * 7)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_steane).1), congrArg (σ - ·) (Eq.symm (textbook_steane).2)⟩
+theorem textbook_steane : type_of% @QuantumErrorCorrection.steane_corrects := @QuantumErrorCorrection.steane_corrects
 /-- θ = 1/4 is 2/2³: two of the eight values three bits can hold, so phase estimation reads it exactly (examples: algorithm-phase-estimation) -/
 theorem textbook_phase_three_bits : 2 * 4 = 2 ^ 3 ∧ 2 < 2 ^ 3 := by decide
 /-- textbook_phase_three_bits reflected by its shape, conjunction (examples: algorithm-phase-estimation) -/
@@ -1597,9 +1592,7 @@ theorem textbook_bch_code : 2 ^ 4 - 1 = 15 ∧ 15 - 7 = 8 ∧ (5 - 1) / 2 = 2 :=
 /-- textbook_bch_code reflected by its shape, conjunction (examples: ftqc-all) -/
 theorem textbook_bch_code_reflected (σ : Nat) : (σ - (15) = σ - (2 ^ 4 - 1)) ∧ (σ - (8) = σ - (15 - 7)) ∧ (σ - (2) = σ - ((5 - 1) / 2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_bch_code).1), congrArg (σ - ·) (Eq.symm (textbook_bch_code).2.1), congrArg (σ - ·) (Eq.symm (textbook_bch_code).2.2)⟩
 /-- the Steane code [[7, 1, 3]]: a CSS stabilizer code built from two copies of Hamming(7, 4) (textbook_hamming_code), with 7 physical qubits encoding 1 logical qubit (7 − 2·3, the two classical parity sets), distance 3, correcting ⌊(3−1)/2⌋ = 1 error — the smallest colour code and the CSS / stabilizer family representative; threshold bound at the proven distance (examples: ftqc-all) -/
-theorem textbook_steane_css : 7 - 2 * 3 = 1 ∧ (3 - 1) / 2 = 1 ∧ 7 - 4 = 3 := by decide
-/-- textbook_steane_css reflected by its shape, conjunction (examples: ftqc-all) -/
-theorem textbook_steane_css_reflected (σ : Nat) : (σ - (1) = σ - (7 - 2 * 3)) ∧ (σ - (1) = σ - ((3 - 1) / 2)) ∧ (σ - (3) = σ - (7 - 4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_steane_css).1), congrArg (σ - ·) (Eq.symm (textbook_steane_css).2.1), congrArg (σ - ·) (Eq.symm (textbook_steane_css).2.2)⟩
+theorem textbook_steane_css : type_of% @QuantumErrorCorrection.steane_css := @QuantumErrorCorrection.steane_css
 /-- the convert-slow-to-fast law: the σ-involution decoder recovers by one reflection (σ₁₂(σ₁₂(5)) = 5, σ² = id — content-addressed reflect-and-restore, not an O(n·copies) rescan), which is why it is the fastest of the five e2e codes while the odd-repetition consensus (2·1 + 1 = 3 copies correcting ⌊(3−1)/2⌋ = 1) is kept as the soundness bar — fastest-correct-wins drops no code. The σ-code family; the speedup itself stays a measured e2e claim, the recovery a proven involution (examples: ftqc-all) -/
 theorem textbook_involution_decoder : 12 - (12 - 5) = 5 ∧ 2 * 1 + 1 = 3 ∧ (3 - 1) / 2 = 1 := by decide
 /-- textbook_involution_decoder reflected by its shape, conjunction (examples: ftqc-all) -/
@@ -1617,17 +1610,13 @@ theorem textbook_color_code_d5 : (5 - 1) / 2 = 2 ∧ 2 * 2 + 1 = 5 ∧ 5 - 2 = 3
 /-- textbook_color_code_d5 reflected by its shape, conjunction (examples: ftqc-all) -/
 theorem textbook_color_code_d5_reflected (σ : Nat) : (σ - (2) = σ - ((5 - 1) / 2)) ∧ (σ - (5) = σ - (2 * 2 + 1)) ∧ (σ - (3) = σ - (5 - 2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_color_code_d5).1), congrArg (σ - ·) (Eq.symm (textbook_color_code_d5).2.1), congrArg (σ - ·) (Eq.symm (textbook_color_code_d5).2.2)⟩
 /-- the surface/toric code's correction scales with its distance: a distance-d code corrects ⌊(d−1)/2⌋ errors, so d = 3 corrects 1, d = 5 corrects 2, d = 7 corrects 3 — the distance ladder along which the surface code approaches the fault-tolerant threshold as the lattice grows; companion to surfacecode_all and textbook_toric_torus_code, thresholds each at the proven distance (examples: ftqc-all) -/
-theorem textbook_surface_distance_ladder : (3 - 1) / 2 = 1 ∧ (5 - 1) / 2 = 2 ∧ (7 - 1) / 2 = 3 ∧ 2 * 3 + 1 = 7 := by decide
-/-- textbook_surface_distance_ladder reflected by its shape, conjunction (examples: ftqc-all) -/
-theorem textbook_surface_distance_ladder_reflected (σ : Nat) : (σ - (1) = σ - ((3 - 1) / 2)) ∧ (σ - (2) = σ - ((5 - 1) / 2)) ∧ (σ - (3) = σ - ((7 - 1) / 2)) ∧ (σ - (7) = σ - (2 * 3 + 1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_surface_distance_ladder).1), congrArg (σ - ·) (Eq.symm (textbook_surface_distance_ladder).2.1), congrArg (σ - ·) (Eq.symm (textbook_surface_distance_ladder).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_surface_distance_ladder).2.2.2)⟩
+theorem textbook_surface_distance_ladder : type_of% @QuantumErrorCorrection.distance_corrects := @QuantumErrorCorrection.distance_corrects
 /-- concatenating the Steane code with itself gives [[49, 1, 9]]: length 7·7 = 49, one logical qubit (1·1), distance 3·3 = 9 correcting ⌊(9−1)/2⌋ = 4 errors — the concatenated-code family, whose distance multiplies at each level and whose error rate is squared, the construction behind the quantum threshold theorem; the correction bound at its proven distance (examples: ftqc-all) -/
 theorem textbook_concatenated_code : 7 * 7 = 49 ∧ 3 * 3 = 9 ∧ (9 - 1) / 2 = 4 ∧ 1 * 1 = 1 := by decide
 /-- textbook_concatenated_code reflected by its shape, conjunction (examples: ftqc-all) -/
 theorem textbook_concatenated_code_reflected (σ : Nat) : (σ - (49) = σ - (7 * 7)) ∧ (σ - (9) = σ - (3 * 3)) ∧ (σ - (4) = σ - ((9 - 1) / 2)) ∧ (σ - (1) = σ - (1 * 1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_concatenated_code).1), congrArg (σ - ·) (Eq.symm (textbook_concatenated_code).2.1), congrArg (σ - ·) (Eq.symm (textbook_concatenated_code).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_concatenated_code).2.2.2)⟩
 /-- Shor's nine-qubit code [[9, 1, 3]], the first quantum error-correcting code: a 3×3 concatenation of the bit-flip and phase-flip repetition codes (3·3 = 9 physical qubits, 1 logical, distance 3) correcting any single-qubit error, ⌊(3−1)/2⌋ = 1 — the quantum companion to Shor's factoring reduction (textbook_shor_sigma_root), the σ-involution appearing in both; threshold at its proven distance (examples: ftqc-all) -/
-theorem textbook_shor_nine_code : 3 * 3 = 9 ∧ (3 - 1) / 2 = 1 ∧ 9 - 1 = 8 := by decide
-/-- textbook_shor_nine_code reflected by its shape, conjunction (examples: ftqc-all) -/
-theorem textbook_shor_nine_code_reflected (σ : Nat) : (σ - (9) = σ - (3 * 3)) ∧ (σ - (1) = σ - ((3 - 1) / 2)) ∧ (σ - (8) = σ - (9 - 1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_shor_nine_code).1), congrArg (σ - ·) (Eq.symm (textbook_shor_nine_code).2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_nine_code).2.2)⟩
+theorem textbook_shor_nine_code : type_of% @QuantumErrorCorrection.shor_nine := @QuantumErrorCorrection.shor_nine
 /-- the perfect binary Golay code [23, 12, 7]: 11 parity bits on 12 data bits, minimum distance 7 correcting ⌊(7−1)/2⌋ = 3 errors, and PERFECT — its 2^11 = 2048 syndromes exactly cover every error pattern of weight ≤ 3 (the sphere-packing bound met with equality), the Voyager-mission and Mathieu-group code; the perfect-code family, threshold at its proven distance (examples: ftqc-all) -/
 theorem textbook_golay_code : 23 - 12 = 11 ∧ (7 - 1) / 2 = 3 ∧ 2 ^ 11 = 2048 := by decide
 /-- textbook_golay_code reflected by its shape, conjunction (examples: ftqc-all) -/
