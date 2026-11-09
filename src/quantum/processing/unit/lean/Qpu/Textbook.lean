@@ -1158,22 +1158,22 @@ theorem textbook_phase_estimation_reflected (σ : Nat) : (σ - (8) = σ - (2 ^ 3
 theorem textbook_deutsch_jozsa : 2 ^ 2 + 1 = 5 ∧ 1 < 5 := by decide
 /-- textbook_deutsch_jozsa reflected by its shape, conjunction (examples: algorithm-deutsch-jozsa) -/
 theorem textbook_deutsch_jozsa_reflected (σ : Nat) (hσ0 : (5) ≤ σ) : (σ - (5) = σ - (2 ^ 2 + 1)) ∧ (σ - (5) < σ - (1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_deutsch_jozsa).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_deutsch_jozsa).2 hσ0) (textbook_deutsch_jozsa).2⟩
-/-- Bernstein–Vazirani recovers an n-bit hidden string in one quantum query where a classical algorithm needs n queries; for n = 3, 1 < 3; proven by bernsteinVaziraniCircuit (examples: algorithm-bernstein-vazirani) -/
-theorem textbook_bernstein_vazirani : 1 < 3 ∧ 1 + 1 = 2 := by decide
+/-- Bernstein–Vazirani for the hidden string s = 101: of the 8 three-bit strings, s is the only one whose parity x ↦ s·x mod 2 matches the oracle on every input, so the parity function determines s, which one query and the Hadamard transform read, against 3 classical queries (1 < 3). The kernel decides the uniqueness by enumeration; the one-query circuit is run by bernsteinVaziraniCircuit (examples: algorithm-bernstein-vazirani) -/
+theorem textbook_bernstein_vazirani : (List.range 8).filter (fun t => (List.range 8).all (fun x => (t / 4 * (x / 4) + t / 2 % 2 * (x / 2 % 2) + t % 2 * (x % 2)) % 2 == (5 / 4 * (x / 4) + 5 / 2 % 2 * (x / 2 % 2) + 5 % 2 * (x % 2)) % 2)) = [5] ∧ 1 < 3 := by decide
 /-- textbook_bernstein_vazirani reflected by its shape, conjunction (examples: algorithm-bernstein-vazirani) -/
-theorem textbook_bernstein_vazirani_reflected (σ : Nat) (hσ0 : (3) ≤ σ) : (σ - (3) < σ - (1)) ∧ (σ - (2) = σ - (1 + 1)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_bernstein_vazirani).1 hσ0) (textbook_bernstein_vazirani).1, congrArg (σ - ·) (Eq.symm (textbook_bernstein_vazirani).2)⟩
-/-- Simon with period s = 11 on two qubits: the measured y span the solutions of y·s = 0 over GF(2), a subspace of 2^(n−1) = 2 of the 2² = 4 strings (y ∈ {00, 11}), from which s is solved by linear algebra; proven by simonCircuit (examples: algorithm-simon) -/
-theorem textbook_simon : 2 ^ 1 = 2 ∧ 2 * 2 = 4 := by decide
-/-- textbook_simon reflected by its shape, conjunction (examples: algorithm-simon) -/
-theorem textbook_simon_reflected (σ : Nat) : (σ - (2) = σ - (2 ^ 1)) ∧ (σ - (4) = σ - (2 * 2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_simon).1), congrArg (σ - ·) (Eq.symm (textbook_simon).2)⟩
+theorem textbook_bernstein_vazirani_reflected (σ : Nat) (hσ0 : (3) ≤ σ) : (([5]) = ((List.range 8).filter (fun t => (List.range 8).all (fun x => (t / 4 * (x / 4) + t / 2 % 2 * (x / 2 % 2) + t % 2 * (x % 2)) % 2 == (5 / 4 * (x / 4) + 5 / 2 % 2 * (x / 2 % 2) + 5 % 2 * (x % 2)) % 2)))) ∧ (σ - (3) < σ - (1)) := ⟨Eq.symm (textbook_bernstein_vazirani).1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_bernstein_vazirani).2 hσ0) (textbook_bernstein_vazirani).2⟩
+/-- Simon with period s = 11 on two qubits: the strings y with y·s = 0 over GF(2) are exactly 00 and 11, a subspace of 2 of the 4 strings, from which s is solved by linear algebra. The kernel decides that subspace by enumeration; the query advantage of Simon’s algorithm is cited, not decided here, and simonCircuit runs the circuit (examples: algorithm-simon) -/
+theorem textbook_simon : (List.range 4).filter (fun y => (y / 2 + y % 2) % 2 == 0) = [0, 3] := by decide
+/-- textbook_simon reflected by its shape, equality (examples: algorithm-simon) -/
+theorem textbook_simon_reflected  : ([0, 3]) = ((List.range 4).filter (fun y => (y / 2 + y % 2) % 2 == 0)) := Eq.symm (textbook_simon)
 /-- the variational quantum eigensolver for H = Z reaches the ground energy ⟨Z⟩ = p₀ − p₁ = 0 − 1 = −1 at θ = 1, where Y|0> = i|1> puts all weight on p₁ = 1 — the least eigenvalue of Z; proven by vqeGroundEnergy (examples: algorithm-vqe, circuit-phased-xz) -/
 theorem textbook_vqe : 0 + 1 = 1 ∧ 1 ≤ 1 := by decide
 /-- textbook_vqe reflected by its shape, conjunction (examples: algorithm-vqe, circuit-phased-xz) -/
 theorem textbook_vqe_reflected (σ : Nat) : (σ - (1) = σ - (0 + 1)) ∧ (σ - (1) ≤ σ - (1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_vqe).1), Nat.sub_le_sub_left (textbook_vqe).2 σ⟩
-/-- Tsirelson’s bound: the quantum CHSH value reaches 2√2, whose square is 8, strictly above the classical bound 2 whose square is 4 (4 < 8) — entanglement beats every local hidden-variable model, the Bell/CHSH inequality violated; proven by chshValue (examples: algorithm-chsh) -/
-theorem textbook_tsirelson : 2 * 4 = 8 ∧ 4 < 8 := by decide
+/-- the quantum CHSH value 2√2, written 0 + 2√2 in ℤ[√2] with (a + b√2)(c + d√2) = (ac + 2bd) + (ad + bc)√2, squares to exactly 8, above the classical bound 2 squared (4 < 8): the gap Tsirelson’s bound caps. The kernel decides this arithmetic; Tsirelson’s bound itself (no quantum strategy exceeds 2√2) is cited, not decided here, and chshValue computes the value in floating point (examples: algorithm-chsh) -/
+theorem textbook_tsirelson : (fun (p q : Nat × Nat) => (p.1 * q.1 + 2 * p.2 * q.2, p.1 * q.2 + p.2 * q.1)) (0, 2) (0, 2) = (8, 0) ∧ 2 * 2 < 8 := by decide
 /-- textbook_tsirelson reflected by its shape, conjunction (examples: algorithm-chsh) -/
-theorem textbook_tsirelson_reflected (σ : Nat) (hσ0 : (8) ≤ σ) : (σ - (8) = σ - (2 * 4)) ∧ (σ - (8) < σ - (4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_tsirelson).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_tsirelson).2 hσ0) (textbook_tsirelson).2⟩
+theorem textbook_tsirelson_reflected (σ : Nat) (hσ0 : (8) ≤ σ) : (((8, 0)) = ((fun (p q : Nat × Nat) => (p.1 * q.1 + 2 * p.2 * q.2, p.1 * q.2 + p.2 * q.1)) (0, 2) (0, 2))) ∧ (σ - (8) < σ - (2 * 2)) := ⟨Eq.symm (textbook_tsirelson).1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_tsirelson).2 hσ0) (textbook_tsirelson).2⟩
 /-- the first-order Trotter–Suzuki product (e^(−iX t/n) e^(−iZ t/n))^n approximates e^(−i(X+Z)t) with error O(t²/n), so the fidelity rises to 1 as the step count n grows (here from 1 to 32 steps); the fidelity is bounded by 1; proven by trotterFidelity (examples: algorithm-trotter) -/
 theorem textbook_trotter : 32 > 1 ∧ 1 ≤ 1 := by decide
 /-- textbook_trotter reflected by its shape, conjunction (examples: algorithm-trotter) -/
@@ -1182,26 +1182,26 @@ theorem textbook_trotter_reflected (σ : Nat) (hσ0 : (32) ≤ σ) : (σ - (32) 
 theorem textbook_xeb : 2 * 16 > 16 + 1 ∧ 16 + 1 > 16 := by decide
 /-- textbook_xeb reflected by its shape, conjunction (examples: algorithm-xeb) -/
 theorem textbook_xeb_reflected (σ : Nat) (hσ0 : (2 * 16) ≤ σ) (hσ1 : (16 + 1) ≤ σ) : (σ - (2 * 16) < σ - (16 + 1)) ∧ (σ - (16 + 1) < σ - (16)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_xeb).1 hσ0) (textbook_xeb).1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_xeb).2 hσ1) (textbook_xeb).2⟩
-/-- the no-cloning theorem: the optimal universal cloning fidelity is 5/6 < 1 (5 < 6), so no unitary copies an unknown quantum state perfectly; proven by cloningFidelity (examples: algorithm-no-cloning) -/
-theorem textbook_no_cloning : 5 < 6 ∧ 5 * 1 < 6 * 1 := by decide
+/-- the optimal universal 1 → 2 cloning fidelity from Werner’s formula F = (MN + M + N) / (M(N + 2)) at N = 1, M = 2 is 5 / 6, below 1 (5 < 6). The kernel decides the formula’s numbers; the no-cloning theorem itself (no unitary copies an unknown state) and the formula’s optimality are cited, not decided here, and cloningFidelity computes the fidelity (examples: algorithm-no-cloning) -/
+theorem textbook_no_cloning : 2 * 1 + 2 + 1 = 5 ∧ 2 * (1 + 2) = 6 ∧ 5 < 6 := by decide
 /-- textbook_no_cloning reflected by its shape, conjunction (examples: algorithm-no-cloning) -/
-theorem textbook_no_cloning_reflected (σ : Nat) (hσ0 : (6) ≤ σ) (hσ1 : (6 * 1) ≤ σ) : (σ - (6) < σ - (5)) ∧ (σ - (6 * 1) < σ - (5 * 1)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_no_cloning).1 hσ0) (textbook_no_cloning).1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_no_cloning).2 hσ1) (textbook_no_cloning).2⟩
-/-- the Holevo bound: the accessible classical information in a qubit ensemble is at most χ = S(ρ) ≤ log₂ d = 1 bit (0 < χ ≤ 1); proven by holevoChi (examples: algorithm-holevo) -/
-theorem textbook_holevo : 1 ≤ 1 ∧ 0 < 1 := by decide
+theorem textbook_no_cloning_reflected (σ : Nat) (hσ0 : (6) ≤ σ) : (σ - (5) = σ - (2 * 1 + 2 + 1)) ∧ (σ - (6) = σ - (2 * (1 + 2))) ∧ (σ - (6) < σ - (5)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_no_cloning).1), congrArg (σ - ·) (Eq.symm (textbook_no_cloning).2.1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_no_cloning).2.2 hσ0) (textbook_no_cloning).2.2⟩
+/-- a qubit has dimension d = 2 = 2¹, so the cap log₂ d of the Holevo bound is exactly 1 bit, and a second bit would need d ≥ 2² > 2. The kernel decides the dimension count; the Holevo bound itself (χ ≤ S(ρ) ≤ log₂ d) is cited, not decided here, and holevoChi computes χ in floating point (examples: algorithm-holevo) -/
+theorem textbook_holevo : 2 ^ 1 = 2 ∧ 2 ^ 2 > 2 := by decide
 /-- textbook_holevo reflected by its shape, conjunction (examples: algorithm-holevo) -/
-theorem textbook_holevo_reflected (σ : Nat) (hσ0 : (1) ≤ σ) : (σ - (1) ≤ σ - (1)) ∧ (σ - (1) < σ - (0)) := ⟨Nat.sub_le_sub_left (textbook_holevo).1 σ, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_holevo).2 hσ0) (textbook_holevo).2⟩
+theorem textbook_holevo_reflected (σ : Nat) (hσ0 : (2 ^ 2) ≤ σ) : (σ - (2) = σ - (2 ^ 1)) ∧ (σ - (2 ^ 2) < σ - (2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_holevo).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_holevo).2 hσ0) (textbook_holevo).2⟩
 /-- Gottesman–Knill: a 10-qubit stabilizer state needs 2n²+n = 210 bits versus 2¹⁰ = 1024 amplitudes, so stabilizer circuits are simulated classically in polynomial space (210 < 1024); proven by stabilizerCompression (examples: algorithm-gottesman-knill) -/
 theorem textbook_gottesman_knill : 2 * 10 * 10 + 10 = 210 ∧ 210 < 2 ^ 10 := by decide
 /-- textbook_gottesman_knill reflected by its shape, conjunction (examples: algorithm-gottesman-knill) -/
 theorem textbook_gottesman_knill_reflected (σ : Nat) (hσ0 : (2 ^ 10) ≤ σ) : (σ - (210) = σ - (2 * 10 * 10 + 10)) ∧ (σ - (2 ^ 10) < σ - (210)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_gottesman_knill).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_gottesman_knill).2 hσ0) (textbook_gottesman_knill).2⟩
-/-- Eastin–Knill: the single-qubit Clifford group ⟨H,S⟩ has order 24, a finite group, so the transversal logical gates of a code cannot be universal — the T gate comes from magic-state distillation; proven by cliffordOrder (examples: algorithm-eastin-knill) -/
-theorem textbook_eastin_knill : 24 = 24 ∧ 1 < 24 := by decide
+/-- the single-qubit Clifford group modulo phase counts 6 · 4 = 24 elements (six signed Pauli axes for the image of X, four for Z), a finite group: the premise the Eastin–Knill theorem uses. The kernel decides the count; Eastin–Knill itself (no code has a universal set of transversal gates) is cited, not decided here, and cliffordOrder enumerates the group (examples: algorithm-eastin-knill) -/
+theorem textbook_eastin_knill : 6 * 4 = 24 ∧ 1 < 24 := by decide
 /-- textbook_eastin_knill reflected by its shape, conjunction (examples: algorithm-eastin-knill) -/
-theorem textbook_eastin_knill_reflected (σ : Nat) (hσ0 : (24) ≤ σ) : (σ - (24) = σ - (24)) ∧ (σ - (24) < σ - (1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_eastin_knill).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_eastin_knill).2 hσ0) (textbook_eastin_knill).2⟩
-/-- Solovay–Kitaev: T has order 8 (T⁸ = I, 2³ = 8) and does not commute with H, so ⟨H,T⟩ is dense in SU(2) and approximates any unitary to precision ε in O(log^c(1/ε)) gates; proven by htUniversality (examples: algorithm-solovay-kitaev) -/
-theorem textbook_solovay_kitaev : 2 ^ 3 = 8 ∧ 1 < 8 := by decide
+theorem textbook_eastin_knill_reflected (σ : Nat) (hσ0 : (24) ≤ σ) : (σ - (24) = σ - (6 * 4)) ∧ (σ - (24) < σ - (1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_eastin_knill).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_eastin_knill).2 hσ0) (textbook_eastin_knill).2⟩
+/-- T multiplies by ω = e^{iπ/4}, whose order is 8 = 2³, above the order 4 = 2² of S, the largest diagonal Clifford phase, so T lies outside the Clifford group. The kernel decides the orders; the Solovay–Kitaev theorem itself (⟨H, T⟩ approximates any unitary to precision ε in O(log^c(1/ε)) gates) is cited, not decided here, and htUniversality computes the circuit (examples: algorithm-solovay-kitaev) -/
+theorem textbook_solovay_kitaev : 2 ^ 3 = 8 ∧ 2 ^ 2 < 2 ^ 3 := by decide
 /-- textbook_solovay_kitaev reflected by its shape, conjunction (examples: algorithm-solovay-kitaev) -/
-theorem textbook_solovay_kitaev_reflected (σ : Nat) (hσ0 : (8) ≤ σ) : (σ - (8) = σ - (2 ^ 3)) ∧ (σ - (8) < σ - (1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_solovay_kitaev).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_solovay_kitaev).2 hσ0) (textbook_solovay_kitaev).2⟩
+theorem textbook_solovay_kitaev_reflected (σ : Nat) (hσ0 : (2 ^ 3) ≤ σ) : (σ - (8) = σ - (2 ^ 3)) ∧ (σ - (2 ^ 3) < σ - (2 ^ 2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_solovay_kitaev).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_solovay_kitaev).2 hσ0) (textbook_solovay_kitaev).2⟩
 /-- the Steane [[7,1,3]] CSS code on the [7,4,3] Hamming code: distance 3 (7 − 4 = 3 checks) corrects any single-qubit error, and all 2·7 = 14 single X and Z errors are located by their Hamming syndrome and corrected; proven by steaneCorrection (examples: algorithm-steane) -/
 theorem textbook_steane : 7 - 4 = 3 ∧ 2 * 7 = 14 := by decide
 /-- textbook_steane reflected by its shape, conjunction (examples: algorithm-steane) -/
