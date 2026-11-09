@@ -757,13 +757,13 @@ const factorMemo = new Map<string, FactorList>()
 
 /** The prime factors of n, any part still under the reflection search, the centre reached, the count searched, and the product check (textbook_factors_divide).
  *  A general integer: trial below 2^16, Miller–Rabin, then the σ-reflection. 2^k ± 1, including the 1000-bit integer 2^999 + 1: the cyclotomic pieces, then the same trial, then Lenstra's curves on a composite piece. A cofactor that remains is named. The product is checked.
- *  The same integer and budget return the stored list, so the Google door and the Shor door share one factoring. */
+ *  The same integer and budget return the stored list, and a complete list returns for any budget, so every door shares one factoring. */
 export const listFactors = (n: bigint, reflections: bigint, from?: bigint): FactorList => {
   const key = `${n}:${reflections}:${from ?? ''}`
-  const hit = factorMemo.get(key)
+  const hit = factorMemo.get(key) ?? factorMemo.get(`${n}`)
   if (hit) return { factors: [...hit.factors], left: [...hit.left], reached: hit.reached, searched: hit.searched, verified: hit.verified }
   const found = listFactorsOnce(n, reflections, from)
-  factorMemo.set(key, found)
+  factorMemo.set(found.left.length ? key : `${n}`, found) // a complete list answers every budget
   return { factors: [...found.factors], left: [...found.left], reached: found.reached, searched: found.searched, verified: found.verified }
 }
 
