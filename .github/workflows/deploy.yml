@@ -7,7 +7,7 @@
 # Secrets, by name only (set their values in the repository's Settings → Secrets and variables → Actions, scoped to `production`):
 #   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID  required: the app deploys through OpenNext on Cloudflare
 #   QPU_ROLE_SECRET                              required: signs role claims between the Worker and the app
-#   PAYLOAD_SECRET                               optional: the Payload secret; QPU_ROLE_SECRET when absent
+#   PAYLOAD_SECRET                               optional: replaces the Worker's own only when set
 #   (the two are set as encrypted Worker secrets after the deploy, never compiled into the bundle)
 # Variables (Settings, Environments, production, variables): D1_DATABASE_ID, KV_NAMESPACE_ID, R2_BUCKET_NAME, the app's bindings.
 #   NPM_TOKEN                                    required on a release: publishes the package with provenance
@@ -129,7 +129,7 @@ jobs:
         run: |
           if grep -q "<the tenant" wrangler.jsonc; then echo "::error::wrangler.jsonc still has placeholder bindings: set D1_DATABASE_ID, KV_NAMESPACE_ID and R2_BUCKET_NAME as production variables"; exit 1; fi
           pnpm exec opennextjs-cloudflare deploy
-          printf '%s' "${PAYLOAD_SECRET:-$QPU_ROLE_SECRET}" | pnpm exec wrangler secret put PAYLOAD_SECRET
+          [ -z "$PAYLOAD_SECRET" ] || printf '%s' "$PAYLOAD_SECRET" | pnpm exec wrangler secret put PAYLOAD_SECRET
           printf '%s' "$QPU_ROLE_SECRET" | pnpm exec wrangler secret put QPU_ROLE_SECRET
         working-directory: .qpu-app
         env:
