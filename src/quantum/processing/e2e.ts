@@ -60,8 +60,8 @@ export const judgeRules = (decoded: readonly { combo: string; logical: string; o
 
 /** The tools never called through the gate: the flow (they fetch), the audit and the metrics (they replay everything). */
 const E2E_SKIP = new Set(['discover', 'wave', 'readiness', 'imagine', 'e2e', 'audit', 'metrics'])
-/** A combination the Worker executes at the edge with the tenant's secret (a Stripe checkout plan) answers per tenant, not as a copy of a pure value: the gate does not decode it, and says so. */
-const executedAtEdge = (tool: string, args: Record<string, unknown>): boolean => (tool === 'stripe' && args.op === 'plan') || (tool === 'seal' && !!args.sign)
+/** A combination the Worker executes at the edge with the tenant's secret (a Stripe checkout plan) or with the door's randomness (an unseeded mint) answers per call, not as a copy of a pure value: the gate does not decode it, and says so. */
+const executedAtEdge = (tool: string, args: Record<string, unknown>): boolean => (tool === 'stripe' && args.op === 'plan') || (tool === 'seal' && !!args.sign) || (tool === 'algorithm' && typeof args.create === 'object' && !('seed' in args.create!) && !('p' in args.create!))
 /** The hash of a result with the clock masked: ISO 8601 instants and epoch-shaped integers (seconds or milliseconds since 2020) become one token, so copies computed at different moments agree and only what the arguments determine is compared. Read as it travels (JSON), by its canonical text: one value, one hash, whatever its keys' order. */
 export const hash = (v: unknown) => uuid(canonicalText(JSON.parse(JSON.stringify(v) ?? 'null')).replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})/g, '<instant>').replace(/(?<![\d.])1[6-9]\d{8}(\d{3})?(?![\d.])/g, '<epoch>'))
 

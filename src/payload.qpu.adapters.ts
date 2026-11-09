@@ -32,7 +32,6 @@ if (!qpuBindings().D1 && (process.env.QPU_ADAPTERS === 'cloudflare' || cloudflar
   } catch { /* outside the Worker, without wrangler: the named profile's own database stands */ }
 }
 export const qpuGoogle = (): boolean => !qpuBindings().D1 && (process.env.QPU_ADAPTERS === 'google' || Boolean(process.env.GCS_BUCKET) || Boolean(process.env.GOOGLE_CLOUD_PROJECT))
-export const qpuProfile = (): 'cloudflare' | 'google' | 'vercel' | 'local' => (qpuBindings().D1 || process.env.QPU_ADAPTERS === 'cloudflare' ? 'cloudflare' : qpuGoogle() ? 'google' : process.env.BLOB_READ_WRITE_TOKEN ? 'vercel' : 'local')
 // email over the contract Payload holds: Cloudflare's email sending builder, an entry of kind openapi-operation read from Cloudflare's own OpenAPI
 // (node scripts/mcp.ts openapi-import), its server and path read from the entry when a mail is sent; the account and the token are the tenant's
 // bindings, named never valued; the Workers-safe HTTP form of the send_email binding the port was owed

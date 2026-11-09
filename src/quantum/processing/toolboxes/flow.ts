@@ -65,7 +65,7 @@ const e2e = defineTool('flow', {
     const hosts = Array.isArray(args.hosts) ? args.hosts.map(String) : [...Object.keys(TENANTS).map((h) => `https://${h}/api/mcp`), 'https://qpu.ceci.workers.dev/api/mcp']
     if (!Array.isArray(args.answers)) { const requests = createE2eRequests(ctx, hosts, Array.isArray(args.tools) ? args.tools.map(String) : undefined); return { phase: 'requests' as const, hosts, combos: new Set(requests.map((r) => r.combo)).size, requests: requests.length, requestList: requests } }
     const r = decodeE2e(args.answers as E2eAnswer[], tree(ctx))
-    return { phase: 'decoded' as const, hosts, ...r, page: getE2ePage(r, stamp(), hosts, { remaining: 0 }) }
+    return { phase: 'decoded' as const, hosts, ...r, ...r.outcomes, page: getE2ePage(r, stamp(), hosts, { remaining: 0 }) }
   },
   widget: flowWidget,
 })

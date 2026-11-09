@@ -64,7 +64,15 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   const args = await resolveArgs(JSON.parse(argsJson), cwd, call)
   const r = call(tool, args)
   if (r.error) { console.log(JSON.stringify({ error: r.error.message })); process.exitCode = 1; return }
-  const s = r.result?.structuredContent ?? null
+  let s = r.result?.structuredContent ?? null
+  // the e2e gate's plan followed: each request fetched, eight at a time, then decoded
+  if (tool === 'e2e' && s?.phase === 'requests' && Array.isArray(s.requestList)) {
+    const list = s.requestList as { url: string; method: string; accept: string; headers: Record<string, string>; body: unknown }[], answers: unknown[] = []
+    await Promise.all(Array.from({ length: 8 }, async () => { for (let q = list.shift(); q; q = list.shift()) { const t0 = performance.now(); try { const res = await fetch(q.url, { method: q.method, headers: { 'content-type': 'application/json', accept: q.accept, ...q.headers }, body: JSON.stringify(q.body) }); answers.push({ ...q, status: res.status, ms: performance.now() - t0, text: await res.text(), etag: res.headers.get('etag') }) } catch (e) { answers.push({ ...q, status: 0, ms: performance.now() - t0, text: String(e) }) } } }))
+    // in this process: the door's wrapper re-serialises the bodies past a string's length
+    const d = (await import('./e2e.ts')).decodeE2e(answers as never)
+    s = { phase: 'decoded', ...d.outcomes, combos: d.combos, copies: d.copies, uncorrectableLeads: d.leads.filter((l) => l.id.startsWith('e2e-uncorrectable')).map((l) => l.id).join(' ') }
+  }
   const wrote: string[] = []
   // a generator writes the path and text it answers, or every file of its files list, and makes every link of its links list (a relative symlink)
   const outputs = [...(s && typeof s.path === 'string' && typeof s.text === 'string' ? [{ path: s.path, text: s.text }] : []), ...(Array.isArray(s?.files) ? s.files : [])] as { path: string; text: string }[]

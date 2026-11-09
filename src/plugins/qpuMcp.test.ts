@@ -15,7 +15,7 @@ type PluginFn = ((config: {
         input: unknown
         response: { content: { type: 'text'; text: string }[]; doc?: unknown; structuredContent?: unknown }
         toolName: string
-      }) => { content: { type: 'text'; text: string }[]; structuredContent?: { href?: string | null; route?: Route; calls?: { name: string; arguments: Record<string, unknown> }[]; iso?: Iso; entropy?: 0 | 1; law?: string } })[]
+      }) => { content: { type: 'text'; text: string }[]; structuredContent?: { href?: string | null; calls?: { name: string; arguments: Record<string, unknown> }[]; phase?: string; entropy?: number }; _meta?: { qpu?: { route?: Route; iso?: Iso; entropy?: 0 | 1; law?: string; space?: Space } } })[]
     }
     items: {
       type: string
@@ -200,16 +200,16 @@ void test('findDocuments returns the page href, UUID program route, and its qpu 
       },
     },
   })
-  const body = answered.structuredContent
+  const body = answered.structuredContent, fused = answered._meta?.qpu
   assert.equal(body?.href, '/api/pages')
   assert.deepEqual(body?.calls, [
     { name: 'clay', arguments: { catalog: true } },
     { name: 'find_pages', arguments: { where: { id: { equals: 'p1' } } } },
   ])
-  assert.equal(body?.entropy, 0)
-  assert.equal(body?.law, 'first the dictionary meaning; then the meaning is verified')
-  routeHolds(body?.route, 'findDocuments')
-  isoHolds(body?.iso, 'findDocuments')
+  assert.equal(fused?.entropy, 0)
+  assert.equal(fused?.law, 'first the dictionary meaning; then the meaning is verified')
+  routeHolds(fused?.route, 'findDocuments')
+  isoHolds(fused?.iso, 'findDocuments')
 })
 
 /** Every link is one UUID space. The scopes are the sources those links name. */
@@ -223,7 +223,7 @@ void test('every tool call handles its links in one UUID space', () => {
     input: { referrer, paste: 'see https://example.com/note' },
     response: { content: [{ type: 'text', text: 'research' }], structuredContent: { phase: 'research' } },
   })
-  const body = answered.structuredContent as { space?: Space; route?: Route; entropy?: 0 | 1; law?: string; iso?: { says?: string; online?: { rows?: { title?: string; definition?: string; reference?: string }[] } } }
+  const body = answered._meta?.qpu as { space?: Space; route?: Route; entropy?: 0 | 1; law?: string; iso?: { says?: string; online?: { rows?: { title?: string; definition?: string; reference?: string }[] } } }
   const space = body.space
   assert.equal(body.entropy, 0)
   assert.equal(body.law, 'first the dictionary meaning; then the meaning is verified')
@@ -264,7 +264,7 @@ void test('every tool call handles its links in one UUID space', () => {
     input: { referrer: 'https://qpu.uuidna.com/else', paste: 'see https://example.com/note' },
     response: { content: [{ type: 'text', text: 'research' }], structuredContent: { phase: 'research' } },
   })
-  const again = (other.structuredContent as { space?: Space }).space
+  const again = other._meta?.qpu?.space
   assert.equal(again?.holds, true)
   assert.notEqual(again?.infinity.next, space?.infinity.next)
   assert.equal(again?.space, space?.space)
@@ -281,7 +281,7 @@ void test('every tool call carries the ISO solution and a UUID program route', (
     response: { content: [{ type: 'text', text: 'cover' }], structuredContent: { phase: 'improve' } },
   })
   assert.equal(answered.content[0]?.text, 'cover')
-  const body = answered.structuredContent as { phase?: string; iso?: Iso; route?: Route; entropy?: 0 | 1; law?: string }
+  const body = { ...answered._meta?.qpu, phase: answered.structuredContent?.phase }
   assert.equal(body.phase, 'improve')
   assert.equal(body.entropy, 0)
   assert.equal(body.law, 'first the dictionary meaning; then the meaning is verified')
@@ -289,8 +289,8 @@ void test('every tool call carries the ISO solution and a UUID program route', (
   isoHolds(body.iso, 'coverDomains')
 })
 
-/** Bare entropy without a UUID program is cleared; the fused route is the program. */
-void test('first the dictionary meaning; then the meaning is verified — fuse clears bare entropy', () => {
+/** A tool's own entropy stays in its answer; the fused route, entropy and law ride in _meta.qpu. */
+void test('first the dictionary meaning; then the meaning is verified — the answer keeps its own entropy', () => {
   mount()
   const hook = plugin.sanitizedOptions?.hooks?.afterToolCall?.[0]
   assert.ok(hook)
@@ -299,7 +299,8 @@ void test('first the dictionary meaning; then the meaning is verified — fuse c
     input: { catalog: true },
     response: { content: [{ type: 'text', text: 'bare' }], structuredContent: { phase: 'catalog', entropy: 7 } },
   })
-  const body = answered.structuredContent as { entropy?: 0 | 1; route?: Route; law?: string }
+  const body = answered._meta?.qpu ?? {}
+  assert.equal(answered.structuredContent?.entropy, 7)
   assert.equal(body.entropy, 0)
   assert.equal(body.law, 'first the dictionary meaning; then the meaning is verified')
   routeHolds(body.route, 'clay')

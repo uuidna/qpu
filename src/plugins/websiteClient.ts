@@ -215,24 +215,6 @@ export const crumb = (url: string, label: string, doc?: string): Crumb => {
   const id = doc ?? url.split('/').filter(Boolean).pop() ?? 'page'
   return { doc: id, page: id, url, label }
 }
-export const seoMeta = (title: string, description: string) => ({
-  title,
-  description: (() => {
-    const clean = description.replace(/\s+/g, ' ').trim()
-    if (clean.length <= 160) return clean
-    const cut = clean
-    const space = cut.lastIndexOf(' ')
-    return (space > 80 ? cut.slice(0, space) : cut).trim()
-  })(),
-})
-/** Nested path of one-word segments — the shape Search Console and plugin-seo index. */
-export const seoPath = (...segments: string[]) => {
-  const words = segments
-    .flatMap((segment) => segment.split('/'))
-    .map((part) => part.trim().toLowerCase().replace(/[^a-z0-9]+/g, ''))
-    .filter(Boolean)
-  return `/${words.join('/')}`
-}
 
 const RELATION_TO = ['pages', 'posts', 'case-studies'] as const
 const IMAGE_KEYS = new Set(['image', 'media', 'featuredImage', 'thumbnail'])

@@ -122,6 +122,7 @@ type ToolResponse = {
   doc?: Record<string, unknown>
   isError?: boolean
   structuredContent?: unknown
+  _meta?: Record<string, unknown>
 }
 
 /** The standard solution, plus the programs that handle every configuration and every deploy stage. The scopes are the links. */
@@ -132,37 +133,10 @@ const mcpIso = (toolName: string) => {
 }
 
 /**
- * afterToolCall: the handler's answer stays; ISO, link space, and the UUID program route are on it.
- * Entropy on MCP is dictionary first, then verified — wrong meaning misleads the user (security).
- * Do not strip a tool's own entropy findings; nest prior numeric disorder under findings if present.
+ * afterToolCall: the handler's answer stays as it is; ISO, the link space and the UUID program route ride in _meta.qpu, MCP's place for what a
+ * result carries beside it, so structuredContent is the copy the e2e gate decodes against the tree. Entropy is dictionary first, then verified.
  */
 export const fuseToolResponse = <T extends ToolResponse>(response: T, toolName: string, input?: unknown): T => {
-  const iso = mcpIso(toolName)
-  const space = mcpLinks(input)
   const route = mcpProgramRoute(toolName, input)
-  const structured = response.structuredContent
-  const prior = structured && typeof structured === 'object' && !Array.isArray(structured)
-    ? structured as Record<string, unknown>
-    : {}
-  const cleaned = { ...prior }
-  // a string route was a website path claimed as program route — keep it as href
-  if (typeof cleaned.route === 'string') {
-    if (cleaned.href === undefined) cleaned.href = cleaned.route
-    delete cleaned.route
-  }
-  // Never delete disorder evidence to fake S = 0. Preserve prior entropy measure under findings.
-  if (cleaned.entropy !== undefined && (typeof cleaned.entropy === 'number' || (cleaned.entropy && typeof cleaned.entropy === 'object' && !('dictionary' in (cleaned.entropy as object))))) {
-    cleaned.findings = cleaned.entropy
-    delete cleaned.entropy
-  }
-  const body = {
-    ...cleaned,
-    iso,
-    space,
-    route,
-    entropy: route.entropy,
-    law: route.entropy.law,
-    dictionary: route.entropy.dictionary,
-  }
-  return { ...response, structuredContent: body }
+  return { ...response, _meta: { ...response._meta, qpu: { iso: mcpIso(toolName), space: mcpLinks(input), route, entropy: route.entropy, law: route.entropy.law, dictionary: route.entropy.dictionary } } }
 }
