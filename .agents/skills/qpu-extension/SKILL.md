@@ -1,6 +1,6 @@
 ---
 name: qpu-extension
-description: Use when the task needs the QPU's extension toolbox: QPU the natural extension of every MCP and every MCP of QPU: a host's tools read into doors of this catalogue by the same reading discovery uses, a foreign door served by one request the client fetches, and this catalogue expressed as the registration any MCP client mounts; tenant configurable through the hosts and tokens a tenant names. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run extend { selftest: true } first.
+description: "Use when the task needs the QPU's extension toolbox: QPU the natural extension of every MCP and every MCP of QPU: a host's tools read into doors of this catalogue by the same reading discovery uses, a foreign door served by one request the client fetches, and this catalogue expressed as the registration any MCP client mounts; tenant configurable through the hosts and tokens a tenant names. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run extend { selftest: true } first."
 license: CC-BY-NC-ND-4.0
 ---
 

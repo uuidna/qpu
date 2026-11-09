@@ -1,6 +1,6 @@
 ---
 name: qpu-standards
-description: Use when the task needs the QPU's standards toolbox: the standards fused: schema.org on every block, page and offer; ISO 8601, 639-1, 4217 and 3166-1 in every date, language, price and country, validated against the CLDR lists discovery reads as contracts. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run validate { selftest: true } first.
+description: "Use when the task needs the QPU's standards toolbox: the standards fused: schema.org on every block, page and offer; ISO 8601, 639-1, 4217 and 3166-1 in every date, language, price and country, validated against the CLDR lists discovery reads as contracts. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run validate { selftest: true } first."
 license: CC-BY-NC-ND-4.0
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: qpu-tree
-description: Use when the task needs the QPU's tree toolbox: the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply, its metrics in real time. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run clone { toolbox: 'tree' } first.
+description: "Use when the task needs the QPU's tree toolbox: the tree knows itself: its leads, its self-audit, any statement matched or proved impossible, the Clay register recomputed, any UUID verified cheaply, its metrics in real time. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run clone { toolbox: 'tree' } first."
 license: CC-BY-NC-ND-4.0
 ---
 

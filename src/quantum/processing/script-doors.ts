@@ -75,7 +75,7 @@ const SKILL_ROOT = '.agents/skills', SKILL_LINK_ROOT = '.claude/skills', SKILL_L
 const termRe = (name: string) => new RegExp(`\\b${name.replace(/, (adjective|noun)$/, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i')
 const sentence = (s: string) => { const m = /^(.+?[.!?])(\s|$)/.exec(s.trim()); const one = (m ? m[1]! : s.trim()).replace(/\s+/g, ' '); return /[.!?]$/.test(one) ? one : one + '.' }
 const cell = (s: string) => s.replace(/\|/g, '\\|').replace(/\n+/g, ' ')
-const frontmatter = (name: string, description: string) => ['---', `name: ${name}`, `description: ${description.replace(/\n+/g, ' ')}`, `license: ${SKILL_LICENSE}`, '---', '']
+const frontmatter = (name: string, description: string) => ['---', `name: ${name}`, `description: ${JSON.stringify(description.replace(/\n+/g, ' '))}`, `license: ${SKILL_LICENSE}`, '---', '']
 export const qpuSkills = (boxesIn: readonly SkillBox[], terms: readonly { clause: string; name: string }[] = QUANTUM_TERMS, allExamples: readonly { id: string; shows?: string; tool?: string }[] = [], checked: readonly CheckedTerm[] = quantumVocabulary()) => {
   const register = uuidQubits(4), qubits = register.effective, qubitsFormula = `32 × 4 − 4 − 2 = ${qubits}`
   // a toolbox that lists no examples of its own has the examples of the registry that call its tools; the toolbox holding the circuit gate is the one through which the QPU computed every term

@@ -1,6 +1,6 @@
 ---
 name: qpu-language
-description: Use when the task needs the QPU's language toolbox: any language and dialect, offline and token-free: translation by vocabulary both ways, the vocabulary measured against every term the surface emits, and prose programmed from a tool's result and its toolbox's skill. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run translate { selftest: true } first.
+description: "Use when the task needs the QPU's language toolbox: any language and dialect, offline and token-free: translation by vocabulary both ways, the vocabulary measured against every term the surface emits, and prose programmed from a tool's result and its toolbox's skill. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run translate { selftest: true } first."
 license: CC-BY-NC-ND-4.0
 ---
 

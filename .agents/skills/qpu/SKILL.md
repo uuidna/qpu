@@ -1,6 +1,6 @@
 ---
 name: qpu
-description: Use when the task touches the QPU (uuidna/qpu): its 12 toolboxes, their doors over the QPU MCP, the ISO/IEC 4879:2024 vocabulary they compute and the UUID registers that address them. Start here, then open the toolbox skill named (qpu-<toolbox>).
+description: "Use when the task touches the QPU (uuidna/qpu): its 12 toolboxes, their doors over the QPU MCP, the ISO/IEC 4879:2024 vocabulary they compute and the UUID registers that address them. Start here, then open the toolbox skill named (qpu-<toolbox>)."
 license: CC-BY-NC-ND-4.0
 ---
 

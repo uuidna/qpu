@@ -1,6 +1,6 @@
 ---
 name: qpu-google
-description: Use when the task needs the QPU's google toolbox: the Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes, the roadmap, the software, the statements and the repositories. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run clone { toolbox: 'google' } first.
+description: "Use when the task needs the QPU's google toolbox: the Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes, the roadmap, the software, the statements and the repositories. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run clone { toolbox: 'google' } first."
 license: CC-BY-NC-ND-4.0
 ---
 

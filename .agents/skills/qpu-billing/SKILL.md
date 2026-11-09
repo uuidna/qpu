@@ -1,6 +1,6 @@
 ---
 name: qpu-billing
-description: Use when the task needs the QPU's billing toolbox: Stripe per tenant: a licence bought at one tenant is an entry valid on the domains it names, every event idempotent and linked, every signature verified with the tenant's own secret, every refusal a lead. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run stripe { selftest: true } first.
+description: "Use when the task needs the QPU's billing toolbox: Stripe per tenant: a licence bought at one tenant is an entry valid on the domains it names, every event idempotent and linked, every signature verified with the tenant's own secret, every refusal a lead. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run stripe { selftest: true } first."
 license: CC-BY-NC-ND-4.0
 ---
 

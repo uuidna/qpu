@@ -1,6 +1,6 @@
 ---
 name: qpu-payload
-description: Use when the task needs the QPU's payload toolbox: Payload's plugin schema as the one shape of every result: nested docs of lexical documents whose blocks are programmable UUID logic, SEO from the block, no custom collection, a few kilobytes computed once. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run payload { selftest: true } first.
+description: "Use when the task needs the QPU's payload toolbox: Payload's plugin schema as the one shape of every result: nested docs of lexical documents whose blocks are programmable UUID logic, SEO from the block, no custom collection, a few kilobytes computed once. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run payload { selftest: true } first."
 license: CC-BY-NC-ND-4.0
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: qpu-flow
-description: Use when the task needs the QPU's flow toolbox: the run of the tree as tools: discover the hosts, verify the leads, let the unit judge, imagine the next leads; the client only fetches and writes. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run discover { selftest: true } first.
+description: "Use when the task needs the QPU's flow toolbox: the run of the tree as tools: discover the hosts, verify the leads, let the unit judge, imagine the next leads; the client only fetches and writes. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run discover { selftest: true } first."
 license: CC-BY-NC-ND-4.0
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: qpu-legal
-description: Use when the task needs the QPU's legal toolbox: the legal and security audit of this MCP through MCP: the author's claims judged by the unit's forensic, legal and security doors, free agents by default, the operator alone overriding, beside the tree's own checks of its sources. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run legal { selftest: true } first.
+description: "Use when the task needs the QPU's legal toolbox: the legal and security audit of this MCP through MCP: the author's claims judged by the unit's forensic, legal and security doors, free agents by default, the operator alone overriding, beside the tree's own checks of its sources. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run legal { selftest: true } first."
 license: CC-BY-NC-ND-4.0
 ---
 

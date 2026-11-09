@@ -1,6 +1,6 @@
 ---
 name: qpu-crypto
-description: Use when the task needs the QPU's crypto toolbox: the split folds: what a place cannot hold is folded into pieces it can, each addressed by content and the whole by its pieces; a key names its piece; the bound is a reflective boundary that decides by comparison before computing. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run fold { selftest: true } first.
+description: "Use when the task needs the QPU's crypto toolbox: the split folds: what a place cannot hold is folded into pieces it can, each addressed by content and the whole by its pieces; a key names its piece; the bound is a reflective boundary that decides by comparison before computing. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run fold { selftest: true } first."
 license: CC-BY-NC-ND-4.0
 ---
 

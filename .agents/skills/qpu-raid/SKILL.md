@@ -1,6 +1,6 @@
 ---
 name: qpu-raid
-description: Use when the task needs the QPU's raid toolbox: the docket as a database: MongoDB's query and update language ported as pure functions over content-addressed entries, so any document framework (Payload first) stores on the RAID through its mongodb adapter. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run mongo { selftest: true } first.
+description: "Use when the task needs the QPU's raid toolbox: the docket as a database: MongoDB's query and update language ported as pure functions over content-addressed entries, so any document framework (Payload first) stores on the RAID through its mongodb adapter. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run mongo { selftest: true } first."
 license: CC-BY-NC-ND-4.0
 ---
 

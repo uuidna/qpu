@@ -1,6 +1,6 @@
 ---
 name: qpu-repository
-description: Use when the task needs the QPU's repository toolbox: the repository watched: every workspace, branch, tag and release here compared with the remote and the archive online, every disagreement a lead. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run repository { selftest: true } first.
+description: "Use when the task needs the QPU's repository toolbox: the repository watched: every workspace, branch, tag and release here compared with the remote and the archive online, every disagreement a lead. Every capability is a tool called over the QPU MCP (tools/call on /api/mcp), never a shell; run repository { selftest: true } first."
 license: CC-BY-NC-ND-4.0
 ---
 
