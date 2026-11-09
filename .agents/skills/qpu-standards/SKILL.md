@@ -20,7 +20,7 @@ jsonld needs no fetch. codes: the client fetches the three CLDR documents the pl
 | --- | --- | --- |
 | `jsonld` | schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, title, description, uuid?) or an offer of the catalogue (product, variant, currency). | `kind`, `tool`, `id`, `description`, `url`, `title`, `uuid`, `locale`, `product`, `variant`, `currency`, `selftest` |
 | `codes` | The tree's ISO codes validated against the CLDR lists a client fetched (languages ISO 639, currencies ISO 4217, territories ISO 3166-1): every locale of the language toolbox, every currency of the catalogue, the tenants' countries. | `cldr`, `territories`, `selftest` |
-| `validate` | Validate against all standards via Payload's standard implementation, in the cheapest possible slices: every standard (the vocabularies, the ISO code lists, the references) with the Payload mechanism that validates it, split into content-addressed slices so validation, reindexing and cleanup run per slice (a page, a job) — the cheapest unit, an unchanged slice skipped by its address (the 304 involution), never the whole at once. | `bound`, `online`, `selftest`, `classify`, `files` |
+| `validate` | Validate against all standards via Payload's standard implementation, in the cheapest possible slices: every standard (the vocabularies, the ISO code lists, the references) with the Payload mechanism that validates it, split into content-addressed slices so validation, reindexing and cleanup run per slice (a page, a job) — the cheapest unit, an unchanged slice skipped by its address (the 304 involution), never the whole at once. | `bound`, `online`, `selftest`, `classify`, `files`, `physical` |
 
 ## Examples
 

@@ -49,6 +49,7 @@ const resolveArgs = async (x: unknown, cwd: string, call: Call): Promise<unknown
   if (!x || typeof x !== 'object') return x
   const o = x as Record<string, unknown>
   if (typeof o.$file === 'string' && Object.keys(o).length === 1) return readFileSync(join(cwd, o.$file), 'utf8')
+  if (o.$device === true && Object.keys(o).length === 1) return readDevice(cwd)
   if (o.$run && typeof o.$run === 'object' && Object.keys(o).length === 1) { const e = o.$run as { cmd: string; args: string[] }; const r = await spawnRun(e.cmd, e.args, { cwd }); return r.stdout + r.stderr }
   // { $lean: true }: every module the Lean UUID programs reach from the root, as { path: text }
   if (o.$lean === true && Object.keys(o).length === 1) return Object.fromEntries((await import('../uuid/programs/lean/index.ts')).leanPrograms().rows.map((row) => [row.source, readFileSync(join(cwd, row.source), 'utf8')]))
@@ -77,6 +78,14 @@ const memoryOf = (cwd: string) => {
     mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, `${process.pid}.ndjson`), lines.join('\n'))
   }
   return { read, write }
+}
+
+/** The device this runner runs on, read as a step finishes: its identifier kept only as a content address, and what its own sensors report */
+const readDevice = async (cwd: string) => {
+  const os = await import('node:os'), read = async (cmd: string, args: string[]) => (await spawnRun(cmd, args, { cwd })).stdout
+  const raw = existsSync('/etc/machine-id') ? readFileSync('/etc/machine-id', 'utf8').trim() : /IOPlatformUUID" = "([^"]+)"/.exec(await read('ioreg', ['-rd1', '-c', 'IOPlatformExpertDevice']))?.[1] ?? os.hostname()
+  const battery = await read('ioreg', ['-rn', 'AppleSmartBattery']), gauge = (k: string) => Number(new RegExp(`"${k}" = (\\d+)`).exec(battery)?.[1]) || undefined
+  return { id: uuid(`device\n${raw}`), platform: os.platform(), arch: os.arch(), cpu: os.cpus()[0]?.model ?? '', cores: os.cpus().length, memoryBytes: os.totalmem(), sensors: { load1: os.loadavg()[0], freeMemoryBytes: os.freemem(), uptimeS: os.uptime(), cpuMHz: os.cpus()[0]?.speed, batteryMillivolts: gauge('Voltage'), batteryCycles: gauge('CycleCount') }, at: stamp() }
 }
 
 const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd: string, json = false) => {
@@ -158,7 +167,7 @@ export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolea
     const failing = [...new Set(out.split('\n').filter((l) => /^(✖|✗|not ok) |error TS\d+|^\s*AssertionError|^error:/.test(l)))]
     const tail = redact((failing.length ? failing.join('\n') + '\n' : '') + (r.timedOut ? `⏱ killed at its budget of ${s.budgetMs / 1000} s\n` : '') + out.trim().split('\n').slice(-8).join('\n'), o.cwd, homedir())
     receipt.steps.push({ name: s.name, status: ok ? 'green' : 'red', ms: clock() - t0, via: s.via, tail, attempt })
-    if (ok && s.needs !== 'online') { mkdirSync(dirname(at), { recursive: true }); writeFileSync(at, JSON.stringify({ name: s.name, status: 'green', ms: clock() - t0, via: s.via, tail: `${tail}\nkept ${stamp()}` })) }
+    if (ok && s.needs !== 'online') { mkdirSync(dirname(at), { recursive: true }); writeFileSync(at, JSON.stringify({ name: s.name, status: 'green', ms: clock() - t0, via: s.via, tail: `${tail}\nkept ${stamp()}`, device: await readDevice(o.cwd) })) }
     say(`${ok ? '✓' : r.timedOut ? '⏱' : '✗'} ${s.name} (${((clock() - t0) / 1000).toFixed(1)} s)`)
     if (!ok) for (const l of tail.split('\n').slice(0, 6)) say(`  ${l}`)
     return ok

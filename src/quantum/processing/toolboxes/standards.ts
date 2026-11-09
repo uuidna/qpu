@@ -5,6 +5,7 @@ import { defineTool, createChecks, isObj, type Toolbox } from '../toolbox.ts'
 import { blockJsonLd, pageJsonLd, offerJsonLd, listCodes, validateCodes, validateStandards, verifyIsoOnline, verifyIsoQuantumEquivalence, STANDARDS, detectStandard, ISO_DIMENSIONS } from '../standards.ts'
 import { LOCALES } from '../i18n.ts'
 import { isoClassify } from '../iso-deliverables.ts'
+import { physicalEvidence, type DeviceReadings } from '../quantum-vocabulary.ts'
 import { CATALOGUE } from './billing.ts'
 import { flowWidget } from '../widgets.ts'
 
@@ -50,8 +51,9 @@ const classifyFiles = (paths: unknown, files?: Readonly<Record<string, string>>)
 const validate = defineTool('standards', {
   name: 'validate',
   description: 'Validate against all standards via Payload\'s standard implementation, in the cheapest possible slices: every standard (the vocabularies, the ISO code lists, the references) with the Payload mechanism that validates it, split into content-addressed slices so validation, reindexing and cleanup run per slice (a page, a job) — the cheapest unit, an unchanged slice skipped by its address (the 304 involution), never the whole at once. online: true asks the ISO Open Data page. A page answer yields the JSONLines link that page publishes. A file answer verifies each ISO dimension by a reference in that file and defines it by the English title and the scope. The catalogue number is the row id.',
-  inputSchema: { type: 'object', properties: { bound: { type: 'integer', minimum: 1, description: 'standards per slice (default 6)' }, online: { description: 'true: the ISO Open Data page. { status, text }: that page, or the JSONLines file the page linked' }, selftest: { type: 'boolean' }, classify: { description: 'the paths to classify (an array, or one per line), the files read by the client as files: each path → the ISO dimensions it cites, the unclassified named' }, files: { type: 'object' } } },
+  inputSchema: { type: 'object', properties: { bound: { type: 'integer', minimum: 1, description: 'standards per slice (default 6)' }, online: { description: 'true: the ISO Open Data page. { status, text }: that page, or the JSONLines file the page linked' }, selftest: { type: 'boolean' }, classify: { description: 'the paths to classify (an array, or one per line), the files read by the client as files: each path → the ISO dimensions it cites, the unclassified named' }, files: { type: 'object' }, physical: { description: '{ device }: the hardware ISO terms with the readings of the device the client runs on' } } },
   run: (args, ctx) => {
+    if (isObj(args.physical)) return physicalEvidence((args.physical as { device?: DeviceReadings }).device) as never
     if (args.classify !== undefined) return classifyFiles(args.classify, isObj(args.files) ? args.files as Record<string, string> : undefined) as never
     if (args.online === true) return verifyIsoOnline() as never
     if (isObj(args.online)) { const o = args.online as { status?: unknown; text?: unknown }; return verifyIsoOnline({ status: typeof o.status === 'number' ? o.status : 0, text: typeof o.text === 'string' ? o.text : '' }) as never }

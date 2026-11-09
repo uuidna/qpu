@@ -308,6 +308,18 @@ const computeQuantumVocabulary = (): QuantumTerm[] => {
   })
 }
 
+/** The device a call ran on: its identifier as a content address, and what its own sensors read as it finished */
+export type DeviceReadings = { id: string; platform: string; arch: string; cpu: string; cores: number; memoryBytes: number; sensors: Record<string, number | undefined>; at: string }
+
+/** The terms whose ISO name claims hardware, with the device the answer was computed on: its identifier and sensor readings show which
+ *  physical machine ran it and in what state; they do not show quantum-mechanical behaviour, which stays UNVERIFIED until measured */
+export const physicalEvidence = (device?: DeviceReadings) => {
+  const terms = TERMS.filter(([, name]) => /physical|processor|computer/.test(name)).map(([clause, name]) => ({ clause, name }))
+  const measured = !!device && seal(device.id).valid && Object.values(device.sensors).some((v) => typeof v === 'number' && Number.isFinite(v))
+  return { phase: 'physical' as const, standard: STANDARD, terms, device: device ?? null, measured, quantumBehaviour: 'UNVERIFIED' as const, theorem: 'textbook_physical_evidence',
+    says: measured ? `${terms.length} hardware term(s) computed on device ${device!.id.slice(0, 8)} (${device!.cpu}, ${device!.cores} cores), its sensors read at ${device!.at}; a classical machine, so quantum-mechanical behaviour stays UNVERIFIED` : `${terms.length} hardware term(s) and no device readings, so nothing is measured; quantum-mechanical behaviour stays UNVERIFIED` }
+}
+
 export const quantumVocabulary = (): QuantumTerm[] => vocabularyCache ?? (vocabularyCache = computeQuantumVocabulary())
 
 /** The vocabulary as one dry receipt. Each term is a sealed UUID. The receipt address is the UUID of those addresses. */

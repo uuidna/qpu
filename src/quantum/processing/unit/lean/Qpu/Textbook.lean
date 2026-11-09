@@ -1087,6 +1087,10 @@ theorem textbook_iso_classify_reflected (cited files : Nat) (h : cited ≤ files
 theorem textbook_iso_classify_contrapositive (cited files : Nat) : ¬ (cited + (files - cited) = files) → ¬ ((cited ≤ files)) := fun hc hh => hc (textbook_iso_classify cited files hh)
 /-- the converse of textbook_iso_classify, proved (examples: validate-iso-classify) -/
 theorem textbook_iso_classify_converse (cited files : Nat) : (cited + (files - cited) = files) → (cited ≤ files) := fun hc => by omega
+/-- physicalEvidence counts a device as measured only when it is identified by a sealed address and one of its sensors reads a number; quantum-mechanical behaviour stays UNVERIFIED either way (examples: validate-physical-measured, validate-physical-unmeasured) -/
+theorem textbook_physical_evidence (identified read : Bool) (h : (identified && read) = true) : identified = true ∧ read = true := by cases identified <;> cases read <;> simp_all
+/-- textbook_physical_evidence reflected by its shape, conjunction (examples: validate-physical-measured, validate-physical-unmeasured) -/
+theorem textbook_physical_evidence_reflected (identified read : Bool) (h : (identified && read) = true) : ((true) = (identified)) ∧ ((true) = (read)) := ⟨Eq.symm (textbook_physical_evidence identified read h).1, Eq.symm (textbook_physical_evidence identified read h).2⟩
 /-- the catalogue extended inward is the tree's own tools and the one door the docs add, whatever the number of tools (examples: extend-in-docs) -/
 theorem textbook_extend_inward (mine : Nat) : mine + 1 - mine = 1 := by omega
 /-- textbook_extend_inward reflected by its shape, equality (examples: extend-in-docs) -/
