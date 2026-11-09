@@ -58,7 +58,7 @@ import { REPOSITORIES, PAYLOADCMS_REPOSITORIES, PAYLOADCMS_MONOREPO_PACKAGES, pa
 import { getBreakEven, codePoint, repetitionCycle, channel as qecChannel, textbookLogicalError, type ErrorChannel, type LogicalState, type RepetitionCode } from './qec.ts'
 import { BOHR_ANGSTROM, STO3G_H, TUTORIAL_ENERGIES, ansatzCircuit, energyAt, hydrogen, hydrogenHamiltonian, jordanWigner, tutorialChecks, vqeSweep, type Ladder } from './chemistry.ts'
 import { CLIFFORD_CHECK_ARITY, countResources } from './counting.ts'
-import { clock, stamp } from './unit/clock.ts'
+import { clock, stamp, tick } from './unit/clock.ts'
 
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
 export type Reply =
@@ -2034,7 +2034,7 @@ const treeMetrics = (artefacts: RunArtefacts = {}): Record<string, unknown> => {
     balancerTeleported: TELEPORTED.size, balancerTeleportHits: TELEPORT_HITS, toolCalls: observed('calls'), toolMisses: observed('misses'), toolMs: observed('ms'),
     slowestTools: [...OBSERVED.entries()].sort((x, y) => y[1].ms - x[1].ms).slice(0, 6).map(([name, o]) => `${name} ${o.ms} ms / ${o.misses} computed / ${o.calls} asked / ${o.bytes} bytes`),
     msPerComputedCall: (() => { const m = observed('misses'); return m ? Number((observed('ms') / m).toFixed(1)) : null })(),
-    // an answer served by its UUID address against one computed: the time, and with it the energy, the address saves
+    // served by UUID address against computed, on the monotonic clock: a host reading, as the Workers edge freezes it between I/O
     msPerServedCall: (() => { const n = observed('calls') - observed('misses'); return n ? Number((observed('servedMs') / n).toPrecision(3)) : null })(),
     ...coverage(artefacts),
     advantageByUnit: artefacts.advantageByUnit ?? null, gateCombos: artefacts.e2e?.combos ?? null, gateCopies: artefacts.e2e?.copies ?? null, gateInvolutions: artefacts.e2e?.involutions ?? null, gateOutcomes: artefacts.e2e?.outcomes ?? null, gateMsSaved: artefacts.e2e?.competition?.saved ?? null, gateWinners: artefacts.e2e?.competition?.winners ?? null,
@@ -2668,7 +2668,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       const address = uuid(`${found.name}${canonicalText(args)}`)
       const cached = found.name === 'metrics' ? undefined : BALANCER.get(address)
       // exclusive time: a tool that calls tools (audit, metrics, match) is charged only for its own milliseconds; the nested ones are theirs
-      const started = clock(); NESTED.push(0)
+      const started = tick(); NESTED.push(0)
       const finish = (ran: { structured: unknown; widget: string }) => {
       // a token in the tool's own answer is replaced by its kind before the answer is cached or published (found − redacted = 0)
       const sealedBody = cached ? null : sealJson(ran.structured)
@@ -2677,7 +2677,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       const widget = sealedWidget ? sealedWidget.text : ran.widget
       const carried = { found: (sealedBody?.found ?? 0) + (sealedWidget?.found ?? 0), redacted: (sealedBody?.redacted ?? 0) + (sealedWidget?.redacted ?? 0) }
       if (!cached) BALANCER.set(address, { structured, widget }); else if (TELEPORTED.has(address)) { TELEPORT_HITS += 1; TELEPORT_USED.add(address) }
-      const children = NESTED.pop() ?? 0; const elapsed = clock() - started
+      const children = NESTED.pop() ?? 0; const elapsed = tick() - started
       if (NESTED.length) NESTED[NESTED.length - 1]! += elapsed
       const o = OBSERVED.get(found.name) ?? { calls: 0, misses: 0, ms: 0, bytes: 0, servedMs: 0 }
       o.calls += 1; if (!cached) { o.misses += 1; o.ms += elapsed - children; o.bytes += accountBytes([widget, JSON.stringify(structured)]).bytes } else o.servedMs += elapsed

@@ -4,7 +4,7 @@ component: physical constant (SI 2019, ISO 80000-1)
 ---
 The defining constants the hardware reads, exact since the 2019 SI, each an integer mantissa: h = hNum × 10⁻⁴² J s,
 e = eNum × 10⁻²⁸ C, k_B = kNum × 10⁻²⁹ J/K, c in m/s, and ΔνCs in Hz, the caesium-133 hyperfine transition whose periods define the
-second: the quantum clock every device clock traces to through UTC. Every module states its identities cross-multiplied in integers. -/
+SI second. Every module states its identities cross-multiplied in integers. -/
 
 namespace PhysicalConstant
 def hNum : Nat := 662607015

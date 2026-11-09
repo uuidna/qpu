@@ -1099,6 +1099,14 @@ theorem textbook_programs_partition_reflected (programs files : Nat) (h : progra
 theorem textbook_programs_partition_contrapositive (programs files : Nat) : ¬ (programs + (files - programs) = files) → ¬ ((programs ≤ files)) := fun hc hh => hc (textbook_programs_partition programs files hh)
 /-- the converse of textbook_programs_partition, proved (examples: audit-programs) -/
 theorem textbook_programs_partition_converse (programs files : Nat) : (programs + (files - programs) = files) → (programs ≤ files) := fun hc => by omega
+/-- tick reads the monotonic clock, so a call's duration is the later reading less the earlier and never negative; metrics times computed and served calls with it, on the host (examples: metrics-served-calls) -/
+theorem textbook_monotonic_tick (started ended : Nat) (h : started ≤ ended) : ended - started + started = ended := by omega
+/-- textbook_monotonic_tick reflected by its shape, equality (examples: metrics-served-calls) -/
+theorem textbook_monotonic_tick_reflected (started ended : Nat) (h : started ≤ ended) (σ : Nat) : σ - (ended) = σ - (ended - started + started) := congrArg (σ - ·) (Eq.symm (textbook_monotonic_tick started ended h))
+/-- the contrapositive of textbook_monotonic_tick (examples: metrics-served-calls) -/
+theorem textbook_monotonic_tick_contrapositive (started ended : Nat) : ¬ (ended - started + started = ended) → ¬ ((started ≤ ended)) := fun hc hh => hc (textbook_monotonic_tick started ended hh)
+/-- the converse of textbook_monotonic_tick, proved (examples: metrics-served-calls) -/
+theorem textbook_monotonic_tick_converse (started ended : Nat) : (ended - started + started = ended) → (started ≤ ended) := fun hc => by omega
 /-- the catalogue extended inward is the tree's own tools and the one door the docs add, whatever the number of tools (examples: extend-in-docs) -/
 theorem textbook_extend_inward (mine : Nat) : mine + 1 - mine = 1 := by omega
 /-- textbook_extend_inward reflected by its shape, equality (examples: extend-in-docs) -/
