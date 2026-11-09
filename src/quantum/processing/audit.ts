@@ -12,7 +12,7 @@ import { uuid, seal } from '../uuid/index.ts'
 import { manageApi } from '../payload/index.ts'
 import { TABLES } from './tables-index.ts'
 import { ISO_ENTROPY, isoEntropyOf } from './iso-deliverables.ts'
-import { clock } from './unit/clock.ts'
+import { clock } from '../uuid/programs/clock/index.ts'
 import { quantumTermNames } from './quantum-vocabulary.ts'
 
 export type Check = { id: string; passed: boolean; evidence: string; /** milliseconds since the previous check: where the audit's time goes */ ms?: number }

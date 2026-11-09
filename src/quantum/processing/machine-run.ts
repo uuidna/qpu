@@ -12,7 +12,7 @@ import { dirname, join } from 'node:path'
 import { availableParallelism, homedir, tmpdir, totalmem } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { MACHINE_ACTIONS, MACHINE_RUNNER, NEXT_STEPS, forecastTimes, redact, type NextStep } from './machine.ts'
-import { clock, stamp } from './unit/clock.ts'
+import { clock, stamp } from '../uuid/programs/clock/index.ts'
 import { uuid } from '../uuid/index.ts'
 
 export type MachineProgress = { progress: number; total?: number; message: string }

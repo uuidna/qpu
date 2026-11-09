@@ -13,7 +13,7 @@ import { imagineLeads, getImaginePage, claySession, allAsUuid } from './imagine.
 import { createMatcher } from './match.ts'
 import { decodeE2e, judgeRules, decodeValue, type E2eAnswer } from './e2e.ts'
 import { createRegistryRequests, listRelatedServers, rankBestDoors } from './discovery.ts'
-import { clock } from './unit/clock.ts'
+import { clock } from '../uuid/programs/clock/index.ts'
 
 const UNIT = 'https://unit.test/mcp'
 const rpcOk = (result: unknown) => JSON.stringify({ jsonrpc: '2.0', id: 1, result })

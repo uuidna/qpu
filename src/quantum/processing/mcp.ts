@@ -58,7 +58,7 @@ import { REPOSITORIES, PAYLOADCMS_REPOSITORIES, PAYLOADCMS_MONOREPO_PACKAGES, pa
 import { getBreakEven, codePoint, repetitionCycle, channel as qecChannel, textbookLogicalError, type ErrorChannel, type LogicalState, type RepetitionCode } from './qec.ts'
 import { BOHR_ANGSTROM, STO3G_H, TUTORIAL_ENERGIES, ansatzCircuit, energyAt, hydrogen, hydrogenHamiltonian, jordanWigner, tutorialChecks, vqeSweep, type Ladder } from './chemistry.ts'
 import { CLIFFORD_CHECK_ARITY, countResources } from './counting.ts'
-import { clock, stamp, tick } from './unit/clock.ts'
+import { clock, stamp, tick } from '../uuid/programs/clock/index.ts'
 
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
 export type Reply =

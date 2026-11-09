@@ -10,7 +10,7 @@ import { createVerifyRequests } from '../verifiers.ts'
 import { flowWidget } from '../widgets.ts'
 import { diffMembers, listRemedies, GENERATOR_REMEDIES } from '../audit.ts'
 import { TABLES } from '../tables-index.ts'
-import { seconds } from '../unit/clock.ts'
+import { seconds } from '../../uuid/programs/clock/index.ts'
 
 type Checkout = { tenant: string; host: string; subject: string; domains: string[]; mode: 'payment' | 'subscription'; price?: string; amount?: number; currency: string; successUrl: string; cancelUrl: string; customerEmail?: string }
 type StripeEvent = { id: string; type: string; created?: number; data?: { object?: Record<string, unknown> } }

@@ -66,7 +66,7 @@ import { CATALOGUE, accountCoins, balance, combinationVariants, createLedger, fu
 import { THEOREMS } from './theorems-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { canonicalCoilUuid, fuseCoinsToCoilInfinityInOneUuid, mintTokenCoil, type TokenCoil } from './unit/coil.ts'
-import { stamp } from './unit/clock.ts'
+import { stamp } from '../uuid/programs/clock/index.ts'
 
 export const STANDARDS = TABLES.STANDARDS as readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[]
 

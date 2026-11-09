@@ -14,7 +14,7 @@ import { createLedger, convertAmounts, RATE_SOURCES } from './billing.ts'
 import { TABLES } from '../tables-index.ts'
 import { claimNovelty } from '../claims.ts'
 import { competeProgramNeighbours } from '../../uuid/programs/index.ts'
-import { clock, stamp } from '../unit/clock.ts'
+import { clock, stamp } from '../../uuid/programs/clock/index.ts'
 
 type Claim = { id: string; source: string; text: string }
 type Call = { door: string; host: string; arguments: Record<string, unknown>; purpose: 'forensics' | 'verify' | 'legal' | 'security' | 'due-process' | 'prior-art' | 'licence' }

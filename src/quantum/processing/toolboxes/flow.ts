@@ -17,7 +17,7 @@ import { flowWidget } from '../widgets.ts'
 import { createE2eRequests, decodeE2e, getE2ePage, tree, type E2eAnswer } from '../e2e.ts'
 import { standardsSeeds } from '../standards-e2e.ts'
 import { TENANTS } from '../unit/tenants.ts'
-import { clock, stamp } from '../unit/clock.ts'
+import { clock, stamp } from '../../uuid/programs/clock/index.ts'
 
 const BLOCK_IDS = new WeakMap<readonly unknown[], { example: string; id: string | undefined }[]>()
 /** Every example's block address, once per examples registry: the core's pure function of tool and arguments, no replay. */

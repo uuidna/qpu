@@ -1,6 +1,5 @@
-// The one clock of the tree. A pure module answers as a function of its arguments, so the time it needs comes in as `now` (milliseconds since
-// the epoch) and only this module reads the process clock when no `now` was given; every other file calls clock(now) or stamp(now), never
-// Date.now() or new Date() itself. The entropy audit names this file as the clock's registry and counts a clock anywhere else.
+// The one clock of the tree, a UUID program: a pure module takes its time as `now` (ms since the epoch) and only this program reads the
+// process clock; no other file calls Date.now() or new Date(), and the entropy audit counts a clock anywhere else.
 // clock(), stamp() and seconds() read the host's NTP-synchronised wall clock, a quartz counter, for UTC instants; JavaScript time has no
 // leap second, so stamp() never writes 23:59:60. tick() reads the monotonic clock (W3C High Resolution Time) for durations only: never
 // adjusted, but frozen between I/O on Cloudflare Workers.

@@ -19,7 +19,7 @@ import { checkAccess, type Ability, type ScopedRole } from './payload.ts'
 import { PAYLOADCMS_WORKSPACE_ALIGNMENT } from '../repositories.ts'
 import { LICENSE } from '../unit/license.ts'
 import { TABLES } from '../tables-index.ts'
-import { stamp } from '../unit/clock.ts'
+import { stamp } from '../../uuid/programs/clock/index.ts'
 import { findStaleReceipts } from '../crypto/index.ts'
 
 /** The theorems the one passable way rests on, and what the literature and the hosts say of them: each one's claim as the sealed OpenAlex search
