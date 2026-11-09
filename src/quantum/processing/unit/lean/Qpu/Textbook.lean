@@ -618,7 +618,7 @@ theorem textbook_gate_adapters_reflected (parts : List Nat) (a b total : Nat) (h
 theorem textbook_rest_rbac : 2 * 3 = 6 := by decide
 /-- textbook_rest_rbac reflected by its shape, equality (examples: configure-gates) -/
 theorem textbook_rest_rbac_reflected (σ : Nat) : σ - (6) = σ - (2 * 3) := congrArg (σ - ·) (Eq.symm (textbook_rest_rbac))
-/-- Google's own MCP servers measured in the registry: the ones at <service>.googleapis.com/mcp Payload holds and the toolboxes, every one an adapter dimension or a door, none called from the tree (examples: configure-gates) -/
+/-- Google's own MCP servers measured in the registry: the 15 at <service>.googleapis.com/mcp Payload holds and the 3 toolboxes, 18 in all, every one an adapter dimension or a door, none called from the tree (examples: configure-gates) -/
 theorem textbook_google_mcps : 15 + 3 = 18 := by decide
 /-- textbook_google_mcps reflected by its shape, equality (examples: configure-gates) -/
 theorem textbook_google_mcps_reflected (σ : Nat) : σ - (18) = σ - (15 + 3) := congrArg (σ - ·) (Eq.symm (textbook_google_mcps))
@@ -626,7 +626,7 @@ theorem textbook_google_mcps_reflected (σ : Nat) : σ - (18) = σ - (15 + 3) :=
 theorem textbook_gates_by_kind (parts : List Nat) (a b total : Nat) (h : a + b = parts.sum) (ht : total = parts.sum) : total - b = a := by omega
 /-- textbook_gates_by_kind reflected by its shape, equality (examples: configure-gates) -/
 theorem textbook_gates_by_kind_reflected (parts : List Nat) (a b total : Nat) (h : a + b = parts.sum) (ht : total = parts.sum) (σ : Nat) : σ - (a) = σ - (total - b) := congrArg (σ - ·) (Eq.symm (textbook_gates_by_kind parts a b total h ht))
-/-- the database, storage and email adapters Payload holds multiply into the adapter combinations (combinationsFromAdapters, from the records not a literal); each adapter is a Payload plugin (qpuAdapterPlugins), so the plugins add up to the radices (examples: configure-adapters) -/
+/-- the 5 database, 5 storage and 3 email adapters Payload holds multiply into 75 adapter combinations (combinationsFromAdapters, from the records not a literal); each adapter is a Payload plugin (qpuAdapterPlugins), so the plugins add up to the radices (examples: configure-adapters) -/
 theorem textbook_adapter_combinations : 5 * 5 * 3 = 75 := by decide
 /-- textbook_adapter_combinations reflected by its shape, equality (examples: configure-adapters) -/
 theorem textbook_adapter_combinations_reflected (σ : Nat) : σ - (75) = σ - (5 * 5 * 3) := congrArg (σ - ·) (Eq.symm (textbook_adapter_combinations))
@@ -682,7 +682,7 @@ theorem textbook_poles_pyramid_reflected (σ : Nat) : (σ - (2) = σ - (6 + 8 - 
 theorem textbook_hologram_rotations : 10 * 11 = 110 := by decide
 /-- textbook_hologram_rotations reflected by its shape, equality (examples: none yet) -/
 theorem textbook_hologram_rotations_reflected (σ : Nat) : σ - (110) = σ - (10 * 11) := congrArg (σ - ·) (Eq.symm (textbook_hologram_rotations))
-/-- the sitemap protocol presents fifty thousand URLs a sitemap and fifty thousand sitemaps an index: two and a half billion addresses, every one computed from its UUID (examples: none yet) -/
+/-- the sitemap protocol presents 50,000 URLs a sitemap and 50,000 sitemaps an index: 2,500,000,000 addresses, every one computed from its UUID (examples: none yet) -/
 theorem textbook_sitemap_capacity : 50000 * 50000 = 2500000000 := by decide
 /-- textbook_sitemap_capacity reflected by its shape, equality (examples: none yet) -/
 theorem textbook_sitemap_capacity_reflected (σ : Nat) : σ - (2500000000) = σ - (50000 * 50000) := congrArg (σ - ·) (Eq.symm (textbook_sitemap_capacity))
@@ -710,7 +710,7 @@ theorem textbook_context_balanced_converse (full kept : Nat) : (full - kept + ke
 theorem textbook_billing_complete : 1 + 1 + 1 + 1 = 4 := by decide
 /-- textbook_billing_complete reflected by its shape, equality (examples: metrics-bill) -/
 theorem textbook_billing_complete_reflected (σ : Nat) : σ - (4) = σ - (1 + 1 + 1 + 1) := congrArg (σ - ·) (Eq.symm (textbook_billing_complete))
-/-- a kilowatt-hour is three million six hundred thousand joules: the bill's joules priced by the tariff the tenant names link it to the energy sector (examples: metrics-bill) -/
+/-- a kilowatt-hour is 3600 seconds of 1000 watts, 3,600,000 joules: the bill's joules priced by the tariff the tenant names link it to the energy sector (examples: metrics-bill) -/
 theorem textbook_kwh_joules : 3600 * 1000 = 3600000 := by decide
 /-- textbook_kwh_joules reflected by its shape, equality (examples: metrics-bill) -/
 theorem textbook_kwh_joules_reflected (σ : Nat) : σ - (3600000) = σ - (3600 * 1000) := congrArg (σ - ·) (Eq.symm (textbook_kwh_joules))
@@ -798,7 +798,7 @@ theorem textbook_scan_stream_reflected (σ : Nat) : σ - (432 * 9) = σ - (36 * 
 theorem textbook_referer_binds_not_entropy : 32 * 8 + 0 = 256 := by decide
 /-- textbook_referer_binds_not_entropy reflected by its shape, equality (examples: seal-referer) -/
 theorem textbook_referer_binds_not_entropy_reflected (σ : Nat) : σ - (256) = σ - (32 * 8 + 0) := congrArg (σ - ·) (Eq.symm (textbook_referer_binds_not_entropy))
-/-- the directories Payload holds, read by how a machine may read each: open searches, MCP servers asked by POST, open sitemaps, keyed APIs named with their keys, and those with no machine contract; buildRegistryRequests asks the ones a machine may read (examples: discover-lead-registry, discover-directories-keyed) -/
+/-- the 7 directories Payload holds, read by how a machine may read each: open searches, MCP servers asked by POST, open sitemaps, keyed APIs named with their keys, and those with no machine contract; buildRegistryRequests asks the ones a machine may read (examples: discover-lead-registry, discover-directories-keyed) -/
 theorem textbook_mcp_directories : 2 + 1 + 1 + 2 + 1 = 7 := by decide
 /-- textbook_mcp_directories reflected by its shape, equality (examples: discover-lead-registry, discover-directories-keyed) -/
 theorem textbook_mcp_directories_reflected (σ : Nat) : σ - (7) = σ - (2 + 1 + 1 + 2 + 1) := congrArg (σ - ·) (Eq.symm (textbook_mcp_directories))
@@ -1756,7 +1756,7 @@ theorem textbook_free_or_coil_reflected (calls free : Nat) (h : free ≤ calls) 
 theorem textbook_free_or_coil_contrapositive (calls free : Nat) : ¬ (calls - free + free = calls) → ¬ ((free ≤ calls)) := fun hc hh => hc (textbook_free_or_coil calls free hh)
 /-- the converse of textbook_free_or_coil, proved (examples: metrics-bill, repository-penalty-way) -/
 theorem textbook_free_or_coil_converse (calls free : Nat) : (calls - free + free = calls) → (free ≤ calls) := fun hc => by omega
-/-- the author's records, counted from the tree's PRECEDENCE table, hold the QPU's DOI once and Gneezy and Rustichini's not at all (examples: match-doi-own, match-doi-external) -/
+/-- the author's records, counted from the tree's PRECEDENCE table, hold the QPU's DOI 1 time and Gneezy and Rustichini's 0 times (examples: match-doi-own, match-doi-external) -/
 theorem textbook_authorship_tracked : 1 = 1 ∧ 0 = 0 := by decide
 /-- textbook_authorship_tracked reflected by its shape, conjunction (examples: match-doi-own, match-doi-external) -/
 theorem textbook_authorship_tracked_reflected (σ : Nat) : (σ - (1) = σ - (1)) ∧ (σ - (0) = σ - (0)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_authorship_tracked).1), congrArg (σ - ·) (Eq.symm (textbook_authorship_tracked).2)⟩
@@ -1832,11 +1832,11 @@ theorem textbook_set_address_canonical_converse_refuted : ¬ ∀ (n r a b i u : 
 theorem textbook_entry_canonical : 3 - 1 = 2 ∧ 2 * 1 = 2 := by decide
 /-- textbook_entry_canonical reflected by its shape, conjunction (examples: mongo-insert-canonical) -/
 theorem textbook_entry_canonical_reflected (σ : Nat) : (σ - (2) = σ - (3 - 1)) ∧ (σ - (2) = σ - (2 * 1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_entry_canonical).1), congrArg (σ - ·) (Eq.symm (textbook_entry_canonical).2)⟩
-/-- foldLedger cuts a text into slices of itself under the bound, each piece keeping its rows' newlines: the pieces' bytes sum to the whole's, and the pieces unfolded are the whole, nothing inserted between them (examples: fold-slices-exact, fold-unfold-exact) -/
+/-- foldLedger cuts a text into slices of itself under the bound, each piece keeping its rows' newlines: the 5 pieces' bytes sum to the whole's 11, and the pieces unfolded are the whole, nothing inserted between them (examples: fold-slices-exact, fold-unfold-exact) -/
 theorem textbook_fold_slices : 2 + 3 + 2 + 2 + 2 = 11 ∧ 5 * 3 ≥ 11 ∧ 2 + 3 + 3 = 8 := by decide
 /-- textbook_fold_slices reflected by its shape, conjunction (examples: fold-slices-exact, fold-unfold-exact) -/
 theorem textbook_fold_slices_reflected (σ : Nat) : (σ - (11) = σ - (2 + 3 + 2 + 2 + 2)) ∧ (σ - (5 * 3) ≤ σ - (11)) ∧ (σ - (8) = σ - (2 + 3 + 3)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_fold_slices).1), Nat.sub_le_sub_left (textbook_fold_slices).2.1 σ, congrArg (σ - ·) (Eq.symm (textbook_fold_slices).2.2)⟩
-/-- the reflective cut answers its nibble count beside its faces: each face is the quotient wide, the first remainder faces one wider, so the widths follow from the two numbers and a decoder holding the witnesses rebuilds the integer exactly, leading zeros included (examples: fold-reflect-widths) -/
+/-- the reflective cut answers its 20 nibbles beside its 14 faces: each face is the quotient wide, the first remainder faces one wider, so the widths follow from the two numbers and a decoder holding the witnesses rebuilds the integer exactly, leading zeros included (examples: fold-reflect-widths) -/
 theorem textbook_reflect_widths : 20 / 14 * 14 + 20 % 14 = 20 ∧ 20 % 14 < 14 := by decide
 /-- textbook_reflect_widths reflected by its shape, conjunction (examples: fold-reflect-widths) -/
 theorem textbook_reflect_widths_reflected (σ : Nat) (hσ0 : (14) ≤ σ) : (σ - (20) = σ - (20 / 14 * 14 + 20 % 14)) ∧ (σ - (14) < σ - (20 % 14)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_reflect_widths).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_reflect_widths).2 hσ0) (textbook_reflect_widths).2⟩
