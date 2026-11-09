@@ -6,7 +6,6 @@ import type { User } from '@root/payload-cloud-types'
 
 import { CircleIconButton } from '@components/CircleIconButton/index'
 import { Heading } from '@components/Heading/index'
-import { Pill } from '@components/Pill/index'
 import { checkTeamRoles } from '@root/utilities/check-team-roles'
 import { formatDate } from '@root/utilities/format-date-time'
 import { priceFromJSON } from '@root/utilities/price-from-json'

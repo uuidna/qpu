@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react'
 import ReactSelect from 'react-select'
 
 import type { FieldProps } from '../types'

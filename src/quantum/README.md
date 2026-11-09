@@ -82,7 +82,7 @@ The folders, the twelve plugins, and `payload { generate }` are [`LAYOUT.md`](./
 | [`standards.ts`](./processing/standards.ts) | Fifteen ISO dimensions, the purity gate, and the equivalence check. The defining rows are [`STANDARDS.md`](./STANDARDS.md). |
 | [`crypto/index.ts`](./processing/crypto/index.ts) | \(2^{999}+1\) and the 1000-bit trapdoor. The pieces, the product check, and the reflection integer are [`CRYPTO.md`](./CRYPTO.md). |
 | [`repositories.ts`](./processing/repositories.ts) | Fifteen quantumlib repositories, and three payloadcms repositories with 21 mounted packages. The matrix is [`REPOSITORIES.md`](./REPOSITORIES.md). |
-| [`toolboxes/`](./processing/toolboxes) | Twelve toolboxes and 47 tools. The names are [`TOOLBOXES.md`](./TOOLBOXES.md). |
+| [`toolboxes/`](./processing/toolboxes) | Twelve toolboxes, their tools counted by `textbook_mcp_tools_by_toolbox`. The names are [`TOOLBOXES.md`](./TOOLBOXES.md). |
 
 Tests sit next to the modules (`coin-uuid_test.ts`, `google-challenges_test.ts`, `cirq_test.ts`, `qec_test.ts`, `processor_test.ts`, `thousand-bit_test.ts`, and others). A test file is `*_test.ts`: lowercase, and the only punctuation is the extension. Run one with `node --experimental-strip-types --test <file>`. The website `package.json` has no script for that. The deploy workflow does not run these tests.
 

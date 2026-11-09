@@ -6,7 +6,6 @@ import { Tooltip } from '@components/Tooltip'
 import { DownloadIcon } from '@graphics/DownloadIcon'
 import { CheckIcon } from '@icons/CheckIcon'
 import { CopyIcon } from '@icons/CopyIcon'
-import { Media } from '@types'
 import { useState } from 'react'
 
 import classes from '../index.module.scss'

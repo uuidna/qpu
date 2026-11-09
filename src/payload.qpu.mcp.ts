@@ -6,7 +6,6 @@ import { runMachine } from '@uuidna/qpu/machine-run'
 import { LONG_ACTIONS, MACHINE_ACTIONS, MACHINE_RUNNER } from '@uuidna/qpu/machine'
 import type { PayloadRequest, TaskConfig } from 'payload'
 import { existsSync, readFileSync } from 'node:fs'
-import { homedir } from 'node:os'
 import path from 'node:path'
 
 // audit { access } measured on the files the handler names, read under src/ here (the Worker has none); an entry keeps the caller's arguments

@@ -4,7 +4,7 @@
 // and the blocks chain by the content address of the previous block (ISO 22739 hash link). Pure.
 
 import { tokenCoilAddresses } from '../../password/address.js'
-import { channel, reflection, seal, uuidFromParts, uuid } from '../../uuid/index.ts'
+import { channel, reflection, seal, uuidFromParts } from '../../uuid/index.ts'
 import { coins, rays } from '../clay-register.ts'
 import { mergeWitnesses } from '../witnesses.ts'
 import { mintWitnessCoins } from '../toolboxes/billing.ts'

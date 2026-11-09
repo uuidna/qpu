@@ -6,7 +6,6 @@ import { fetchCaseStudies, fetchCaseStudy } from '@data'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
-import { notFound } from 'next/navigation'
 import React from 'react'
 
 import { CaseStudy } from './client_page'

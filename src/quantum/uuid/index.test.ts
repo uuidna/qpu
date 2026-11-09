@@ -4,7 +4,7 @@
 // throwing or colliding — so a change that breaks the address space fails here, not in a client.
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { block, uuid, uuidFromParts, stamp, fold, seal, channel, reflection, neighbours, style, presentation, stream, canonicalText, memo, compositions, composition, compositionIndex, rosetta, harmonicDefaults, tailReadings, uuidSchemas, sequenceUuid, uuidQubits, hexbit, merkaba, coins, quantumSku, organiseQubits } from './index.ts'
+import { block, uuid, uuidFromParts, fold, seal, channel, reflection, neighbours, style, presentation, stream, canonicalText, memo, compositions, composition, compositionIndex, rosetta, harmonicDefaults, tailReadings, uuidSchemas, sequenceUuid, uuidQubits, hexbit, merkaba, quantumSku, organiseQubits } from './index.ts'
 import { numerology } from '../processing/clay-register.ts'
 import { call } from '../processing/mcp.ts'
 

@@ -4,11 +4,9 @@ import type { PaddingProps } from '@components/BlockWrapper/index'
 import type { Page } from '@root/payload-types'
 
 import { BackgroundGrid } from '@components/BackgroundGrid/index'
-import { BlockSpacing } from '@components/BlockSpacing/index'
 import { BlockWrapper } from '@components/BlockWrapper/index'
 import { CMSLink } from '@components/CMSLink/index'
 import { Gutter } from '@components/Gutter/index'
-import { LineDraw } from '@components/LineDraw/index'
 import { ArrowIcon } from '@root/icons/ArrowIcon/index'
 import React, { useState } from 'react'
 

@@ -1,4 +1,3 @@
-import type { CaseStudy, Page, Post } from '@types'
 import type React from 'react'
 
 import { getCachedDocument } from '@utilities/getDocument'

@@ -1,6 +1,4 @@
 import { EdgeScroll } from '@components/EdgeScroll/index'
-import { Gutter } from '@components/Gutter/index'
-import { Heading } from '@components/Heading/index'
 import { ErrorIcon } from '@root/icons/ErrorIcon/index'
 import Link from 'next/link'
 import * as React from 'react'

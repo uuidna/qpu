@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import { fetchMe } from '@cloud/_api/fetchMe'
 import { fetchPaymentMethods } from '@cloud/_api/fetchPaymentMethods'
-import { fetchProjectAndRedirect, ProjectWithSubscription } from '@cloud/_api/fetchProject'
+import { fetchProjectAndRedirect } from '@cloud/_api/fetchProject'
 import { ProjectPaymentMethodSelector } from '@cloud/_components/CreditCardSelector/ProjectPaymentMethodSelector'
 import { cloudSlug } from '@cloud/slug'
 import { Heading } from '@components/Heading/index'

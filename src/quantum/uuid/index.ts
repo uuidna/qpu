@@ -1069,28 +1069,6 @@ const shadcnCreatePreset = (params: ShadcnCreatePresetParams = {}) => {
 }
 
 
-/**
- * Pure formula-derived `qpu.svg` generator (`qpuSvg`) styled by `qpu.css`:
- * Links `/api/qpu/qpu.css` via `<?xml-stylesheet type="text/css" href="/api/qpu/qpu.css"?>` and uses
- * CSS custom properties (`var(--qpu-primary)`, `var(--qpu-accent)`, `var(--qpu-coin-0)`, `var(--qpu-coin-1)`,
- * `var(--qpu-face-0)`..`var(--qpu-face-13)`) with zero hardcoded hex colour literals.
- */
-const FACE_OFFSETS_14: readonly [number, number][] = [
-  [120, 32],
-  [158, 41],
-  [189, 65],
-  [206, 100],
-  [206, 140],
-  [189, 175],
-  [158, 199],
-  [120, 208],
-  [82, 199],
-  [51, 175],
-  [34, 140],
-  [34, 100],
-  [51, 65],
-  [82, 41],
-] as const
 
 
 export { uuidPlugin as plugin } from '../plugin.ts'

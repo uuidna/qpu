@@ -21,8 +21,8 @@ import {
   derivePbkdf2,
   merkleTree,
   findStaleReceipts,
-  deriveHkdf,
-  fromHex,
+  
+  
   planSignature,
   planEncapsulation,
   planEd25519,

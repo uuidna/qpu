@@ -9,9 +9,8 @@ import { CMSLink } from '@components/CMSLink/index'
 import { Gutter } from '@components/Gutter/index'
 import { RichText } from '@components/RichText/index'
 import { ArrowIcon } from '@root/icons/ArrowIcon/index'
-import { CrosshairIcon } from '@root/icons/CrosshairIcon/index'
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import classes from './index.module.scss'
 

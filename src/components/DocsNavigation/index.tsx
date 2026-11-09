@@ -8,7 +8,7 @@ import { VersionSelector } from '@root/components/VersionSelector/index'
 import { ChevronIcon } from '@root/icons/ChevronIcon/index'
 import { CloseIcon } from '@root/icons/CloseIcon/index'
 import Link from 'next/link'
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 
 import type { TopicGroupForNav } from '../../collections/Docs/types'
 

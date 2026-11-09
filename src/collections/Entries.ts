@@ -5,7 +5,7 @@
 import { createHmac, hkdfSync } from 'node:crypto'
 import type { CollectionConfig, Where } from 'payload'
 import { entryText, uuid } from '@uuidna/qpu/blocks'
-import { call, caller } from '@uuidna/qpu/mcp'
+import { caller } from '@uuidna/qpu/mcp'
 import { appCall } from '../payload.qpu.mcp'
 import { signedRole } from '@uuidna/qpu/roles'
 

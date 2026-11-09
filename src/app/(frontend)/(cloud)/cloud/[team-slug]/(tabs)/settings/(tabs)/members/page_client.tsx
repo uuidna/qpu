@@ -7,8 +7,6 @@ import type { Team } from '@root/payload-cloud-types'
 
 import { SectionHeader } from '@cloud/[team-slug]/[project-slug]/(tabs)/settings/_layoutComponents/SectionHeader/index'
 import { revalidateCache } from '@cloud/_actions/revalidateCache'
-import { InviteTeammates } from '@cloud/_components/InviteTeammates/index'
-import { TeamInvitations } from '@cloud/_components/TeamInvitations/index'
 import { TeamMembers } from '@cloud/_components/TeamMembers/index'
 import { Banner } from '@components/Banner'
 import { HR } from '@components/HR/index'

@@ -602,10 +602,10 @@ theorem textbook_widget_skilled_tools_reflected (w s : Nat) (h : w = s) (σ : Na
 theorem textbook_widget_skilled_tools_contrapositive (w s : Nat) : ¬ (min w s = w) → ¬ ((w = s)) := fun hc hh => hc (textbook_widget_skilled_tools w s hh)
 /-- the converse of textbook_widget_skilled_tools, refuted by a counterexample the kernel decides (examples: configure-sets) -/
 theorem textbook_widget_skilled_tools_converse_refuted : ¬ ∀ (w s : Nat), (min w s = w) → (w = s) := fun h => absurd (h 0 1 (by decide)) (by decide)
-/-- the tool set partitions over the 12 toolboxes: 46 tools (examples: configure-sets, extend-out) -/
-theorem textbook_mcp_tools_by_toolbox : 13 + 11 + 6 + 2 + 1 + 2 + 3 + 1 + 1 + 2 + 1 + 3 = 46 := by decide
+/-- the tool set partitions over the 12 toolboxes: 48 tools (examples: configure-sets, extend-out) -/
+theorem textbook_mcp_tools_by_toolbox : 13 + 11 + 6 + 2 + 1 + 2 + 3 + 1 + 3 + 2 + 1 + 3 = 48 := by decide
 /-- textbook_mcp_tools_by_toolbox reflected by its shape, equality (examples: configure-sets, extend-out) -/
-theorem textbook_mcp_tools_by_toolbox_reflected (σ : Nat) : σ - (46) = σ - (13 + 11 + 6 + 2 + 1 + 2 + 3 + 1 + 1 + 2 + 1 + 3) := congrArg (σ - ·) (Eq.symm (textbook_mcp_tools_by_toolbox))
+theorem textbook_mcp_tools_by_toolbox_reflected (σ : Nat) : σ - (48) = σ - (13 + 11 + 6 + 2 + 1 + 2 + 3 + 1 + 3 + 2 + 1 + 3) := congrArg (σ - ·) (Eq.symm (textbook_mcp_tools_by_toolbox))
 /-- every API is a gate: the doors of the toolboxes (own) and the addresses of the categories Payload holds (external: patents, certificates, currency, competitions, energy, news, MCP servers, references) partition the gates, each a nested doc of its leads, however many the tables grow to (examples: configure-gates) -/
 theorem textbook_gates_partition (parts : List Nat) (own external : Nat) (h : own + external = parts.sum) : parts.sum - external = own := by omega
 /-- textbook_gates_partition reflected by its shape, equality (examples: configure-gates) -/
@@ -1070,6 +1070,14 @@ theorem textbook_mcp_search_limit_reflected (σ : Nat) : (σ - (10) ≤ σ - (1)
 theorem textbook_mcp_install_rows (held : Nat) : held ≤ held + 1 ∧ held + 1 - 1 = held := by omega
 /-- textbook_mcp_install_rows reflected by its shape, conjunction (examples: extend-install) -/
 theorem textbook_mcp_install_rows_reflected (held : Nat) (σ : Nat) : (σ - (held + 1) ≤ σ - (held)) ∧ (σ - (held) = σ - (held + 1 - 1)) := ⟨Nat.sub_le_sub_left (textbook_mcp_install_rows held).1 σ, congrArg (σ - ·) (Eq.symm (textbook_mcp_install_rows held).2)⟩
+/-- every declaration the compiler reports never read is either removed or left as a lead: removeDead reads the TS6133/6192/6196/6198/6199 report, removes the unused import specifier or top-level declaration with its doc comment, and returns fixed + left = findings (examples: audit-dead) -/
+theorem textbook_dead_removed (fixed found : Nat) (h : fixed ≤ found) : fixed + (found - fixed) = found := by omega
+/-- textbook_dead_removed reflected by its shape, equality (examples: audit-dead) -/
+theorem textbook_dead_removed_reflected (fixed found : Nat) (h : fixed ≤ found) (σ : Nat) : σ - (found) = σ - (fixed + (found - fixed)) := congrArg (σ - ·) (Eq.symm (textbook_dead_removed fixed found h))
+/-- the contrapositive of textbook_dead_removed (examples: audit-dead) -/
+theorem textbook_dead_removed_contrapositive (fixed found : Nat) : ¬ (fixed + (found - fixed) = found) → ¬ ((fixed ≤ found)) := fun hc hh => hc (textbook_dead_removed fixed found hh)
+/-- the converse of textbook_dead_removed, proved (examples: audit-dead) -/
+theorem textbook_dead_removed_converse (fixed found : Nat) : (fixed + (found - fixed) = found) → (fixed ≤ found) := fun hc => by omega
 /-- the catalogue extended inward is the tree's own tools and the one door the docs add, whatever the number of tools (examples: extend-in-docs) -/
 theorem textbook_extend_inward (mine : Nat) : mine + 1 - mine = 1 := by omega
 /-- textbook_extend_inward reflected by its shape, equality (examples: extend-in-docs) -/

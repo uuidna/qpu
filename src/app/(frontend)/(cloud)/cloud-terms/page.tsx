@@ -1,6 +1,5 @@
 'use client'
 
-import { CreditCardList } from '@cloud/_components/CreditCardList'
 import { Gutter } from '@components/Gutter/index'
 import { Heading } from '@components/Heading/index'
 import React from 'react'

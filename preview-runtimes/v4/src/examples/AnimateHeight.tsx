@@ -2,7 +2,7 @@
 
 import { AnimateHeight } from '@payloadcms/ui/elements/AnimateHeight'
 import { Button } from '@payloadcms/ui/elements/Button'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import type { PreviewExamples } from './types.js'
 

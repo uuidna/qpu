@@ -361,6 +361,59 @@ export const listDeclarations = (files: Readonly<Record<string, string>>) => {
   const customs = Object.values(custom).reduce((n, l) => n + l.length, 0)
   return { declarations, standard, renames, custom, kept, theorem: 'textbook_shared_verbs', says: `${declarations} function declarations: ${standard} named by a standard verb, ${renames.length} readers and builders mapped onto one, ${kept.length} kept (the name is taken), ${customs} under ${Object.keys(custom).length} other leading words, each to convert or to tie to the rosetta` }
 }
+/** The line where the statement opened on line `i` closes its brackets, strings and comments and the next line does not continue it */
+const statementEnd = (lines: readonly string[], i: number) => {
+  const stack: string[] = []; let block = false
+  for (let k = i; k < lines.length; k++) {
+    const l = lines[k]!
+    for (let c = 0; c < l.length; c++) {
+      const ch = l[c]!, top = stack[stack.length - 1]
+      if (block) { if (ch === '*' && l[c + 1] === '/') { block = false; c++ } continue }
+      if (top === "'" || top === '"') { if (ch === '\\') c++; else if (ch === top) stack.pop(); continue }
+      if (top === '`') { if (ch === '\\') c++; else if (ch === '`') stack.pop(); else if (ch === '$' && l[c + 1] === '{') { stack.push('{'); c++ } continue }
+      if (ch === '/' && l[c + 1] === '/') break
+      if (ch === '/' && l[c + 1] === '*') { block = true; c++; continue }
+      if (ch === "'" || ch === '"' || ch === '`' || ch === '(' || ch === '[' || ch === '{') stack.push(ch)
+      else if (ch === ')' || ch === ']' || ch === '}') stack.pop()
+    }
+    if (!stack.length && !block && !/^\s*(\.|\?|:|\+|-|\*|&&|\|\||=>)/.test(lines[k + 1] ?? '')) return k
+  }
+  return lines.length - 1
+}
+/** tsc --noUnusedLocals read as leads; with the files it names, those files without their unused imports and top-level declarations */
+export const removeDead = (output: string, files?: Readonly<Record<string, string>>) => {
+  const found = [...output.matchAll(/^(\S+?)\((\d+),(\d+)\): error TS(6133|6192|6196|6198|6199): (?:'([^']+)')?/gm)].map((m) => ({ file: m[1]!, line: Number(m[2]), col: Number(m[3]), code: m[4]!, name: m[5] ?? null }))
+  const leads = found.map((f) => ({ id: `dead:${f.file}:${f.line}:${f.col}`, statement: `${f.name ?? 'an import declaration'} is declared and never read`, status: 'open' as const, tool: 'audit' as const }))
+  const paths = [...new Set(found.map((f) => f.file))]
+  if (!files) return { phase: 'dead' as const, findings: found.length, fixed: 0, left: found.length, leads, readList: paths, theorem: 'textbook_dead_removed', says: `${found.length} never read in ${paths.length} file(s)` }
+  const out: { path: string; text: string }[] = []; let fixed = 0
+  for (const path of paths) {
+    const text = files[path]; if (typeof text !== 'string') continue
+    const lines: (string | null)[] = text.split('\n')
+    const importAt = (i: number) => { for (let k = i; k >= 0; k--) { const l = lines[k] ?? ''; if (/^import\b/.test(l)) return k; if (k < i && /\bfrom\s+['"]|;\s*$|^\S/.test(l)) return -1 } return -1 }
+    for (const f of found.filter((x) => x.file === path).sort((a, b) => b.line - a.line || b.col - a.col)) {
+      const i = f.line - 1, l = lines[i]
+      if (l == null) continue
+      const at = importAt(i)
+      if (f.code === '6192' && at === i) { const end = statementEnd(lines.map((x) => x ?? ''), i); for (let k = i; k <= end; k++) lines[k] = null; fixed++; continue }
+      if (f.name && at >= 0) {
+        const n = f.name.replace(/[$]/g, '\\$'), next = l.replace(new RegExp(`\\b(?:type\\s+)?${n}(?:\\s+as\\s+[\\w$]+)?\\s*,\\s*`), '').replace(new RegExp(`\\s*,\\s*(?:type\\s+)?${n}(?:\\s+as\\s+[\\w$]+)?\\b`), '')
+        const only = new RegExp(`^import\\s*(?:type\\s+)?\\{\\s*(?:type\\s+)?${n}(?:\\s+as\\s+[\\w$]+)?\\s*\\}\\s*from`).test(l)
+        if (only) { lines[i] = null; fixed++ } else if (next !== l) { lines[i] = /^import\s*\{\s*\}\s*from/.test(next) ? null : next; fixed++ }
+        continue
+      }
+      if (f.name && /^(?:export )?(?:const|let|function|type|interface) /.test(l) && l.slice(f.col - 1).startsWith(f.name)) {
+        const end = statementEnd(lines.map((x) => x ?? ''), i); let start = i
+        while (start > 0 && /^\s*(\/\*\*|\*|\/\/)/.test(lines[start - 1] ?? '')) start--
+        for (let k = start; k <= end; k++) lines[k] = null
+        fixed++
+      }
+    }
+    const next = lines.filter((x): x is string => x !== null).join('\n')
+    if (next !== text) out.push({ path, text: next })
+  }
+  return { phase: 'dead' as const, findings: found.length, fixed, left: found.length - fixed, leads, files: out, theorem: 'textbook_dead_removed', says: `${fixed} of ${found.length} never read removed; ${found.length - fixed} left as leads` }
+}
 /** The one table's hits in a text, the notations set aside marked: every scanner reads the table through this */
 const leakHits = (text: string) => LEAK_PATTERNS.flatMap((p) => [...text.matchAll(p.re)].map((m) => ({ kind: p.kind, aside: NOT_A_LEAK(p.kind, m[0]) })))
 const pyFile = (where: string) => /\.pyw?$/i.test(where)

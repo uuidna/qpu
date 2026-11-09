@@ -1,6 +1,6 @@
 # Toolboxes
 
-Twelve toolboxes, 47 tools. The list is `TOOLBOXES` in [`mcp.ts`](processing/mcp.ts). One module in [`toolboxes/`](processing/toolboxes) holds each toolbox after `google` and `tree`. The detailed specification is [`README.md`](README.md). The repositories are [`REPOSITORIES.md`](REPOSITORIES.md).
+Twelve toolboxes; `textbook_mcp_tools_by_toolbox` counts their tools. The list is `TOOLBOXES` in [`mcp.ts`](processing/mcp.ts). One module in [`toolboxes/`](processing/toolboxes) holds each toolbox after `google` and `tree`. The detailed specification is [`README.md`](README.md). The repositories are [`REPOSITORIES.md`](REPOSITORIES.md).
 
 `clone` with no toolbox returns the twelve names, the tool count of each, and a clone address. `clone` with a toolbox name returns that toolbox's toolset, skillset, and selftest. The quantum state of a computation is not copied. The document is the classical description. The theorem is `all_noclone`.
 

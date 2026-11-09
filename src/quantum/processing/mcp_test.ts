@@ -10,8 +10,8 @@ const call = (name: string, args: unknown): Reply => {
   return reply
 }
 
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: tools/list serves the forty-seven tools in twelve toolboxes with input schemas, and initialize names the server. */
-test('tools/list serves the forty-seven tools in twelve toolboxes with input schemas, and initialize names the server', () => {
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: tools/list serves the forty-eight tools in twelve toolboxes with input schemas, and initialize names the server. */
+test('tools/list serves the forty-eight tools in twelve toolboxes with input schemas, and initialize names the server', () => {
   const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })
   assert.ok('result' in init && (init.result as { serverInfo: { name: string } }).serverInfo.name === 'qpu')
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
@@ -21,7 +21,7 @@ test('tools/list serves the forty-seven tools in twelve toolboxes with input sch
   for (const t of tools as { name: string; _meta?: { toolbox?: string } }[]) (byToolbox[t._meta?.toolbox ?? 'none'] ??= []).push(t.name)
   assert.deepEqual(byToolbox, {
     google: ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap', 'algorithm', 'software', 'statements', 'repositories', 'quantumlib', 'quantum-error-correction', 'chemistry-simulation', 'fault-tolerant-design'],
-    tree: ['clay', 'match', 'verify', 'leads', 'audit', 'metrics', 'textbook', 'css', 'dashboard', 'clone'], // the Clay set first
+    tree: ['clay', 'match', 'verify', 'leads', 'audit', 'metrics', 'textbook', 'css', 'dashboard', 'clone', 'apis'], // the Clay set first
     flow: ['discover', 'wave', 'readiness', 'imagine', 'e2e', 'shard'],
     language: ['translate', 'prose'],
     raid: ['mongo'],
@@ -32,7 +32,7 @@ test('tools/list serves the forty-seven tools in twelve toolboxes with input sch
     payload: ['payload', 'configure'],
     extension: ['extend'],
     crypto: ['fold', 'seal', 'attest'],
-  }, 'every tool names its toolbox in _meta, and the twelve toolboxes hold the forty-seven tools')
+  }, 'every tool names its toolbox in _meta, and the twelve toolboxes hold the forty-eight tools')
   for (const t of tools) assert.equal(typeof t.inputSchema, 'object')
 })
 

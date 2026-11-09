@@ -5,11 +5,10 @@
 import { LICENSE } from './unit/license.ts'
 import { VERSION } from './unit/version.ts'
 import { TABLES } from './tables-index.ts'
-import { canonicalText, channel, dnaToHex, hexToDna, neighbours, seal, uuid, uuidSchemas } from '../uuid/index.ts'
+import { canonicalText, seal, uuid, uuidSchemas } from '../uuid/index.ts'
 import { ISO_DIMENSIONS, ISO_OPEN_DATA, ISO_PRODUCERS, PRODUCER_TRINITIES, HIDDEN_PERSPECTIVES, extractIsoFromProducers, extractIsoRefs, unlockHiddenPerspectives, isoResearch, verifyIsoOnline } from './iso-deliverables.ts'
 import { parseIsoDimensionsMicrodata, parseToMicrodata } from './microdata.ts'
 export { ISO_DIMENSIONS, ISO_OPEN_DATA, ISO_PRODUCERS, PRODUCER_TRINITIES, HIDDEN_PERSPECTIVES, extractIsoFromProducers, extractIsoRefs, unlockHiddenPerspectives, isoResearch, verifyIsoOnline, parseToMicrodata, parseIsoDimensionsMicrodata }
-import { HARMONICS, KEY, accentOfUuid, cmykOfUuid, hue } from './unit/theme.ts'
 import { hex, sha256, utf8 } from './unit/hmac.ts'
 import {
   CNOT,
@@ -32,7 +31,7 @@ import {
   ZZ,
   applied,
   getExpectation,
-  measure,
+  
   noisy,
   exponentiateGate,
   raiseGate,
@@ -66,7 +65,7 @@ import { checkWitnesses, mergeWitnesses } from './witnesses.ts'
 import { CATALOGUE, accountCoins, balance, combinationVariants, createLedger, fuseCall, mintWitnessCoins } from './toolboxes/billing.ts'
 import { THEOREMS } from './theorems-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
-import { canonicalCoilUuid, coinAsToken, fuseCoinsToCoilInfinityInOneUuid, mintTokenCoil, type TokenCoil } from './unit/coil.ts'
+import { canonicalCoilUuid, fuseCoinsToCoilInfinityInOneUuid, mintTokenCoil, type TokenCoil } from './unit/coil.ts'
 import { stamp } from './unit/clock.ts'
 
 export const STANDARDS = TABLES.STANDARDS as readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[]

@@ -1,7 +1,7 @@
 import type { Plan } from '@root/payload-cloud-types'
 
 import { LargeRadio } from '@components/LargeRadio/index'
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment } from 'react'
 
 import classes from './index.module.scss'
 

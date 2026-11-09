@@ -5,7 +5,6 @@ import type { TeamWithCustomer } from '@cloud/_api/fetchTeam'
 
 import { cloudSlug } from '@cloud/slug'
 import { Message } from '@components/Message/index'
-import { Project } from '@root/payload-cloud-types'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'

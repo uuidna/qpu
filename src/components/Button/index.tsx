@@ -10,7 +10,7 @@ import { LoaderIcon } from '@root/icons/LoaderIcon/index'
 import { PlusIcon } from '@root/icons/PlusIcon/index'
 import { SearchIcon } from '@root/icons/SearchIcon/index'
 import Link from 'next/link'
-import React, { forwardRef, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 // eslint-disable-next-line import/no-cycle
 import type { LinkType, Reference } from '../CMSLink/index'
 

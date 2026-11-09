@@ -3,7 +3,7 @@ import type { Page } from '@root/payload-types'
 
 import { ChangeHeaderTheme } from '@components/ChangeHeaderTheme/index'
 import { useThemePreference } from '@root/providers/Theme/index'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import classes from './index.module.scss'
 

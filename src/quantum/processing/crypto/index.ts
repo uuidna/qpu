@@ -5,7 +5,7 @@ import { dnaToHex, hexToDna, dnaStream, uuid, seal, seal as uuidSeal, canonicalT
 import { coins as clayCoins, rays, faces, plane, recomputeClay, AXIOMS } from '../clay-register.ts'
 import { CLAY_RELATIONS } from '../clay-statements.ts'
 import { speakThousand } from '../i18n.ts'
-import { sha256, hmacSha256, sha512, sha1, sha3_256, sha3_512, shake128, shake256, utf8, hex, hkdfExtract, hkdfExpand, pbkdf2Sha256, aes256gcmEncrypt, aes256gcmDecrypt, x25519, chacha20poly1305Encrypt, chacha20poly1305Decrypt, merkleLeafHash, merkleRoot, merkleProof, merkleVerify } from '../unit/hmac.ts'
+import { sha256, sha512, sha1, sha3_256, sha3_512, shake128, shake256, utf8, hex, hkdfExtract, hkdfExpand, pbkdf2Sha256, aes256gcmEncrypt, aes256gcmDecrypt, x25519, chacha20poly1305Encrypt, chacha20poly1305Decrypt, merkleLeafHash, merkleRoot, merkleProof, merkleVerify } from '../unit/hmac.ts'
 import { isObj } from '../toolbox.ts'
 import { isoEntropyOf } from '../iso-deliverables.ts'
 

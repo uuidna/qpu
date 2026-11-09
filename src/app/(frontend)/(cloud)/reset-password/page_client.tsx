@@ -1,7 +1,6 @@
 'use client'
 
 import { Gutter } from '@components/Gutter/index'
-import { Heading } from '@components/Heading/index'
 import { Text } from '@forms/fields/Text/index'
 import Form from '@forms/Form/index'
 import FormProcessing from '@forms/FormProcessing/index'

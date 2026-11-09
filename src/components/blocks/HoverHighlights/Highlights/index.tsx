@@ -2,7 +2,6 @@
 
 import type { CMSLinkType } from '@components/CMSLink/index'
 
-import { Button } from '@components/Button/index'
 import { CMSLink } from '@components/CMSLink/index'
 import { useState } from 'react'
 

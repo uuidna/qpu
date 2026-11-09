@@ -2,7 +2,6 @@
 
 import { Gutter } from '@components/Gutter/index'
 import { Heading } from '@components/Heading/index'
-import { getImplicitPreference } from '@root/providers/Theme/shared'
 import Link from 'next/link'
 import React, { useEffect } from 'react'
 

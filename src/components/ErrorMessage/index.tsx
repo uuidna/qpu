@@ -2,7 +2,6 @@
 
 import { CallToAction } from '@blocks/CallToAction/index'
 import BreadcrumbsBar from '@components/Hero/BreadcrumbsBar/index'
-import { DefaultHero } from '@components/Hero/Default/index'
 import React from 'react'
 
 export const ErrorMessage: React.FC<{ error?: string }> = ({ error }) => {

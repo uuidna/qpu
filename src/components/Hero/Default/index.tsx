@@ -5,9 +5,7 @@ import type { Page } from '@root/payload-types'
 
 import { BackgroundGrid } from '@components/BackgroundGrid/index'
 import { BlockWrapper } from '@components/BlockWrapper/index'
-import { Breadcrumbs } from '@components/Breadcrumbs/index'
 import { Gutter } from '@components/Gutter/index'
-import { useGetHeroPadding } from '@components/Hero/useGetHeroPadding'
 import { RichText } from '@components/RichText/index'
 import React from 'react'
 

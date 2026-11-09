@@ -6,7 +6,7 @@ import { fetchPlans } from '@cloud/_api/fetchPlans'
 import { fetchSubscriptions } from '@cloud/_api/fetchSubscriptions'
 import { fetchTeamWithCustomer } from '@cloud/_api/fetchTeam'
 import { Message } from '@components/Message/index'
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 
 import { TeamSubscriptionsPage } from './page_client'
 

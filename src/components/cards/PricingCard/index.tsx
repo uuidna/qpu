@@ -1,5 +1,3 @@
-import { CMSLink } from '@components/CMSLink/index'
-import { ArrowIcon } from '@icons/ArrowIcon/index'
 import React from 'react'
 
 import type { PricingCardProps } from '../types'

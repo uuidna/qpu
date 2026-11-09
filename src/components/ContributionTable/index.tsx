@@ -1,6 +1,5 @@
 import type { Partner } from '@root/payload-types'
 
-import { ArrowIcon } from '@root/icons/ArrowIcon'
 import Link from 'next/link'
 
 import { getContribution } from './api'

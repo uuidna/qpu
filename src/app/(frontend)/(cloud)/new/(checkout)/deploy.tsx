@@ -1,5 +1,5 @@
 import type { ProjectDeployResponse } from '@root/app/(frontend)/types'
-import type { Project, Team, User } from '@root/payload-cloud-types'
+import type { Project, User } from '@root/payload-cloud-types'
 import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 
 import { updateCustomer } from '@cloud/_api/updateCustomer'

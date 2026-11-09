@@ -7,6 +7,47 @@
 `Qpu.Processing.QuantumComputer`. The design of qpu as a quantum computer, each part at the path of its ISO/IEC 4879:2024 term: the Hilbert space (3.2.1) and its operators (3.2.2), entanglement (3.2.10), quantum information (3.3.1), the qubit (3.3.3), the gate (3.4.2), the circuit (3.4.5), error correction (3.4.6), the processor (3.4.8) and its parallel layers, the algorithms (3.4.9), circuit-based computing (3.4.13) and communication (3.6.1), and the apparatus: the physical qubit's Josephson junction (3.3.5) and the dilution refrigerator, exact from the SI-defined constants. Every part is a kernel-checked theorem whose statement says what its name claims, in exact integers or exact Gaussian integers, never floats.  Boundary: these theorems prove the DESIGN and its ALGORITHMS. Whether a device is a quantum computer depends on its qubits being physical registers that show quantum-mechanical behaviour, which is measured, not proved: the processor verdict of ISO/IEC 4879:2024 3.4.8 (`get_qc`) stays false until an apparatus exists whose measured outcomes realise this design.
 
 
+## quantum communication, teleportation (ISO/IEC 4879:2024 3.6.1)
+
+`Qpu.Communication.QuantumCommunication`. Teleportation on three qubits, exact over the Gaussian integers with the measurements deferred (the corrections applied as the controlled gates they condition): qubits 1 and 2 are made a Bell pair, qubit 0 is entangled with qubit 1 by CNOT and turned by Hadamard, then qubit 1 corrects qubit 2 by X and qubit 0 corrects it by Z. For each basis input `b` on qubit 0, every outcome of qubits 0 and 1 leaves qubit 2 holding `b` with the same weight; the circuit is linear, so every input state is carried across. No signalling: before the corrections arrive, qubit 2 alone is in the same state for every input, its reduced density diagonal with equal weights, so nothing of the input crosses until the two classical bits do; this holds on the six Pauli eigenstates, a set whose states determine any input.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `QuantumCommunication.teleport_exact` | Qpu.Communication.QuantumCommunication | `∀ (b : Nat), b < 2 → ∀ (r : Nat), r < 8 → QuantumCommunication.teleport b r = if r % 2 = b then 1 else 0` |
+| `QuantumCommunication.teleport_no_signalling` | Qpu.Communication.QuantumCommunication | `∀ (s : Nat), s < 6 → QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 1 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 0 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 0 = QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 1` |
+
+## quantum entanglement (ISO/IEC 4879:2024 3.2.10)
+
+`Qpu.Physics.QuantumEntanglement`. Entangled states in exact amplitudes, and the test that separates them from definite values. The Bell state is supported on exactly 00 and 11 and the GHZ state on exactly 000 and 111, each with equal weight. Every assignment of definite ±1 values to a CHSH test gives |S| = 2, while the Bell state gives S² = 8, beyond the bound. A register shows quantum-mechanical behaviour (ISO/IEC 4879:2024, introduction) when its measured outcomes violate this bound; registers whose contents are definite bits compute these numbers without showing them.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `QuantumEntanglement.bell_state` | Qpu.Physics.QuantumEntanglement | `(∀ (r : Nat), r < 4 → (QuantumEntanglement.bell r ≠ 0 ↔ r = 0 ∨ r = 3)) ∧ (QuantumEntanglement.bell 0).normSq = (QuantumEntanglement.bell 3).normSq` |
+| `QuantumEntanglement.chsh_classical_bound` | Qpu.Physics.QuantumEntanglement | `∀ (a0 a1 b0 b1 : Bool), QuantumEntanglement.chshClassical a0 a1 b0 b1 = 2 ∨ QuantumEntanglement.chshClassical a0 a1 b0 b1 = -2` |
+| `QuantumEntanglement.chsh_quantum_value` | Qpu.Physics.QuantumEntanglement | `QuantumEntanglement.chshBell = 8 ∧ 8 ^ 2 = 8 * (2 ^ 2 * 2) ∧ 2 ^ 2 < 8` |
+| `QuantumEntanglement.ghz_state` | Qpu.Physics.QuantumEntanglement | `(∀ (r : Nat), r < 8 → (QuantumEntanglement.ghz r ≠ 0 ↔ r = 0 ∨ r = 7)) ∧ (QuantumEntanglement.ghz 0).normSq = (QuantumEntanglement.ghz 7).normSq` |
+
+## quantum gate (ISO/IEC 4879:2024 3.4.2, 3.4.3 unitary gate)
+
+`Qpu.Processing.QuantumGate`. The processor's gates as exact unitary matrices, never floats. Hadamard is kept unscaled, so its unitarity reads `H · H† = 2 · I`; X, Z, S, CNOT, SWAP and Toffoli are exact unitaries, `U · U† = I`. The T gate lives over ℤ[ω], ω the eighth root of unity: it is unitary, has order 8 and does not commute with Hadamard, so H, S, CNOT and T are a universal set. Clifford closure on every Pauli string is `CircuitBasedQuantumComputing.stabilizer_hadamard`, `stabilizer_phase` and `stabilizer_cnot`.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `CircuitBasedQuantumComputing.stabilizer_hadamard` | Qpu.Processing.CircuitBasedQuantumComputing | `CircuitBasedQuantumComputing.Exact (Operator.kron 2 QuantumGate.H Operator.idm) CircuitBasedQuantumComputing.ruleH0 2 ∧ CircuitBasedQuantumComputing.Exact (Operator.kron 2 Operator.idm QuantumGate.H) CircuitBasedQuantumComputing.ruleH1 2` |
+| `QuantumGate.cnot` | Qpu.Processing.QuantumGate | `Operator.Same 4 (Operator.mm 4 QuantumGate.CNOT (Operator.dag QuantumGate.CNOT)) Operator.idm ∧ Operator.Same 4 (Operator.mm 4 QuantumGate.CNOT QuantumGate.CNOT) Operator.idm` |
+| `QuantumGate.h_squared` | Qpu.Processing.QuantumGate | `Operator.Same 2 (Operator.mm 2 QuantumGate.H QuantumGate.H) (Operator.smul 2 Operator.idm)` |
+| `QuantumGate.h_unitary` | Qpu.Processing.QuantumGate | `Operator.Same 2 (Operator.mm 2 QuantumGate.H (Operator.dag QuantumGate.H)) (Operator.smul 2 Operator.idm)` |
+| `QuantumGate.paulis_unitary` | Qpu.Processing.QuantumGate | `Operator.Same 2 (Operator.mm 2 QuantumGate.X (Operator.dag QuantumGate.X)) Operator.idm ∧ Operator.Same 2 (Operator.mm 2 QuantumGate.Z (Operator.dag QuantumGate.Z)) Operator.idm ∧ Operator.Same 2 (Operator.mm 2 QuantumGate.S (Operator.dag QuantumGate.S)) Operator.idm` |
+| `QuantumGate.s_squared` | Qpu.Processing.QuantumGate | `Operator.Same 2 (Operator.mm 2 QuantumGate.S QuantumGate.S) QuantumGate.Z` |
+| `QuantumGate.swap` | Qpu.Processing.QuantumGate | `Operator.Same 4 (Operator.mm 4 QuantumGate.SWAP (Operator.dag QuantumGate.SWAP)) Operator.idm ∧ Operator.Same 4 (Operator.mm 4 QuantumGate.SWAP QuantumGate.SWAP) Operator.idm` |
+| `QuantumGate.t_gate` | Qpu.Processing.QuantumGate | `QuantumGate.SameW (QuantumGate.mmW QuantumGate.TW (QuantumGate.dagW QuantumGate.TW)) QuantumGate.idW ∧ QuantumGate.SameW (QuantumGate.powW QuantumGate.TW 8) QuantumGate.idW ∧ ¬QuantumGate.SameW (QuantumGate.powW QuantumGate.TW 4) QuantumGate.idW ∧ ¬QuantumGate.SameW (QuantumGate.mmW QuantumGate.HW QuantumGate.TW) (QuantumGate.mmW QuantumGate.TW QuantumGate.HW)` |
+| `QuantumGate.toffoli` | Qpu.Processing.QuantumGate | `Operator.Same 8 (Operator.mm 8 QuantumGate.TOFFOLI (Operator.dag QuantumGate.TOFFOLI)) Operator.idm ∧ Operator.Same 8 (Operator.mm 8 QuantumGate.TOFFOLI QuantumGate.TOFFOLI) Operator.idm` |
+
+## operator (ISO/IEC 4879:2024 3.2.2)
+
+`Qpu.Physics.Operator`. Linear operators on the Hilbert space as exact matrices over the Gaussian integers, read on the indices below their dimension: products, the conjugate transpose, the identity, scalar multiples, Kronecker products, permutations, and an operator applied to a state. Two operators are the same when every entry below the dimension agrees.
+
+
 ## Hilbert space (ISO/IEC 4879:2024 3.2.1)
 
 `Qpu.Physics.HilbertSpace`. The state space of the processor in exact arithmetic: amplitudes are Gaussian integers `re + im·i`, never floats, a state is a vector of them indexed by basis states, and a measurement weight is the squared modulus. Hadamard is kept unscaled elsewhere, so states carry its factor and weights are compared, never normalised.
@@ -21,29 +62,27 @@
 | `HilbertSpace.GI.zero_im` | Qpu.Physics.HilbertSpace | `HilbertSpace.GI.im 0 = 0` |
 | `HilbertSpace.GI.zero_re` | Qpu.Physics.HilbertSpace | `HilbertSpace.GI.re 0 = 0` |
 
-## operator (ISO/IEC 4879:2024 3.2.2)
+## quantum processor, parallel layers (ISO/IEC 4879:2024 3.4.8)
 
-`Qpu.Physics.Operator`. Linear operators on the Hilbert space as exact matrices over the Gaussian integers, read on the indices below their dimension: products, the conjugate transpose, the identity, scalar multiples, Kronecker products, permutations, and an operator applied to a state. Two operators are the same when every entry below the dimension agrees.
-
-
-## quantum entanglement (ISO/IEC 4879:2024 3.2.10)
-
-`Qpu.Physics.QuantumEntanglement`. Entangled states in exact amplitudes, and the test that separates them from definite values. The Bell state is supported on exactly 00 and 11 and the GHZ state on exactly 000 and 111, each with equal weight. Every assignment of definite ±1 values to a CHSH test gives |S| = 2, while the Bell state gives S² = 8, beyond the bound. A register shows quantum-mechanical behaviour (ISO/IEC 4879:2024, introduction) when its measured outcomes violate this bound; registers whose contents are definite bits compute these numbers without showing them.
+`Qpu.Processing.QuantumProcessor.Layers`. The coupling graph drives its couplers in parallel. Coloured by the parity of row plus bit, every coupler joins the two colours: the graph is bipartite. Each coupler belongs to one of four layers (along a row from an even or an odd bit, between rows from an even or an odd row), and within a layer no two couplers share a qubit, so every coupler of the register runs in four rounds. The couplers so counted are `Qubit.couplers_formula` at hexbit width.
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `QuantumEntanglement.bell_state` | Qpu.Physics.QuantumEntanglement | `(∀ (r : Nat), r < 4 → (QuantumEntanglement.bell r ≠ 0 ↔ r = 0 ∨ r = 3)) ∧ (QuantumEntanglement.bell 0).normSq = (QuantumEntanglement.bell 3).normSq` |
-| `QuantumEntanglement.chsh_classical_bound` | Qpu.Physics.QuantumEntanglement | `∀ (a0 a1 b0 b1 : Bool), QuantumEntanglement.chshClassical a0 a1 b0 b1 = 2 ∨ QuantumEntanglement.chshClassical a0 a1 b0 b1 = -2` |
-| `QuantumEntanglement.chsh_quantum_value` | Qpu.Physics.QuantumEntanglement | `QuantumEntanglement.chshBell = 8 ∧ 8 ^ 2 = 8 * (2 ^ 2 * 2) ∧ 2 ^ 2 < 8` |
-| `QuantumEntanglement.ghz_state` | Qpu.Physics.QuantumEntanglement | `(∀ (r : Nat), r < 8 → (QuantumEntanglement.ghz r ≠ 0 ↔ r = 0 ∨ r = 7)) ∧ (QuantumEntanglement.ghz 0).normSq = (QuantumEntanglement.ghz 7).normSq` |
+| `QuantumProcessor.Layers.layers_bipartite` | Qpu.Processing.QuantumProcessor.Layers | `∀ (e : (Nat × Nat) × Nat × Nat), e ∈ QuantumProcessor.Layers.edges hexbit → QuantumProcessor.Layers.colour e.fst ≠ QuantumProcessor.Layers.colour e.snd` |
+| `QuantumProcessor.Layers.layers_count` | Qpu.Processing.QuantumProcessor.Layers | `(QuantumProcessor.Layers.edges hexbit).length = Qubit.couplers hexbit` |
+| `QuantumProcessor.Layers.layers_four` | Qpu.Processing.QuantumProcessor.Layers | `(∀ (e : (Nat × Nat) × Nat × Nat), e ∈ QuantumProcessor.Layers.edges hexbit → QuantumProcessor.Layers.layer e < 4) ∧ ∀ (x : Nat × Nat), x ∈ QuantumProcessor.sites hexbit → ∀ (l : Nat), l < 4 → QuantumProcessor.Layers.touching hexbit l x ≤ 1` |
+| `Qubit.couplers_formula` | Qpu.Information.Qubit | `∀ (w : Nat), Qubit.gateway + 1 ≤ w → Qubit.couplers w = (Qubit.digits - coins) * (w - 1) + (w - Qubit.gateway - 1) + (Qubit.digits - coins - coins) * w + coins * (w - Qubit.gateway)` |
 
-## quantum information (ISO/IEC 4879:2024 3.3.1)
+## quantum processor (ISO/IEC 4879:2024 3.4.8)
 
-`Qpu.Information.QuantumInformation`. Quantum information cannot be copied: no linear map sends both |0⟩ and |+⟩ to two copies of themselves. A register whose contents copy exactly therefore holds a description of a state, not the state.
+`Qpu.Processing.QuantumProcessor`. The processor's coupling graph at hexbit width: its sites are the qubits of `Qubit.rows hexbit`, a row per digit that holds qubits and a column per qubit, and two sites are coupled when they are neighbours along a row or on the same bit of consecutive rows. The graph is connected and every site has two to four couplers; its coupler count is `Qubit.couplers_formula` at that width.
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `QuantumInformation.no_cloning` | Qpu.Information.QuantumInformation | `∀ (u : Operator.Mat), (∀ (r : Nat), r < 4 → Operator.ap 4 u (HilbertSpace.basis 0) r = HilbertSpace.basis 0 r) → (∀ (r : Nat), r < 4 → Operator.ap 4 u (HilbertSpace.basis 2) r = HilbertSpace.basis 3 r) → Operator.ap 4 u (fun r => HilbertSpace.basis 0 r + HilbertSpace.basis 2 r) 1 ≠ 1` |
+| `QuantumProcessor.connected` | Qpu.Processing.QuantumProcessor | `∀ (x : Nat × Nat), x ∈ QuantumProcessor.sites hexbit → x ∈ QuantumProcessor.reach hexbit ((Qubit.rows hexbit).length + 4)` |
+| `QuantumProcessor.degree_bounds` | Qpu.Processing.QuantumProcessor | `∀ (x : Nat × Nat), x ∈ QuantumProcessor.sites hexbit → 2 ≤ QuantumProcessor.degree hexbit x ∧ QuantumProcessor.degree hexbit x ≤ 4` |
+| `QuantumProcessor.sites_count` | Qpu.Processing.QuantumProcessor | `(QuantumProcessor.sites hexbit).length = Qubit.effective hexbit` |
+| `Qubit.couplers_formula` | Qpu.Information.Qubit | `∀ (w : Nat), Qubit.gateway + 1 ≤ w → Qubit.couplers w = (Qubit.digits - coins) * (w - 1) + (w - Qubit.gateway - 1) + (Qubit.digits - coins - coins) * w + coins * (w - Qubit.gateway)` |
 
 ## qubit (ISO/IEC 4879:2024 3.3.3)
 
@@ -62,21 +101,36 @@
 | `Qubit.holding_formula` | Qpu.Information.Qubit | `∀ (w : Nat), Qubit.gateway + 1 ≤ w → Qubit.holding w = List.filter (fun x => decide (x ≠ Qubit.versionAt)) (List.range Qubit.digits)` |
 | `Qubit.unbounded` | Qpu.Information.Qubit | `∀ (N : Nat), ∃ k, N < k * Qubit.effective hexbit` |
 
-## quantum gate (ISO/IEC 4879:2024 3.4.2, 3.4.3 unitary gate)
+## circuit-based quantum computing (ISO/IEC 4879:2024 3.4.13)
 
-`Qpu.Processing.QuantumGate`. The processor's gates as exact unitary matrices, never floats. Hadamard is kept unscaled, so its unitarity reads `H · H† = 2 · I`; X, Z, S, CNOT, SWAP and Toffoli are exact unitaries, `U · U† = I`. The T gate lives over ℤ[ω], ω the eighth root of unity: it is unitary, has order 8 and does not commute with Hadamard, so H, S, CNOT and T are a universal set. Clifford closure on every Pauli string is `CircuitBasedQuantumComputing.stabilizer_hadamard`, `stabilizer_phase` and `stabilizer_cnot`.
+`Qpu.Processing.CircuitBasedQuantumComputing`. The exact computation of Clifford circuits (Gottesman–Knill): a circuit of H, S and CNOT is computed on Pauli strings, never on the 2^n amplitudes. A two-qubit Pauli string is a phase `i^k` and an (x, z) bit pair per qubit, its matrix `i^k · P(x₀, z₀) ⊗ P(x₁, z₁)` with `P(x, z) = i^(x·z) · X^x · Z^z`, so `P(1, 1)` is the gate set's `Y`. The tableau rules a stabilizer computation applies (Aaronson–Gottesman) are proved equal to the exact conjugation of that matrix by the gate, for all 64 strings: H swaps x and z and flips the sign of Y, S adds x to z and flips the sign of Y, CNOT copies x from control to target and z from target to control with the sign `x_c · z_t · (x_t = z_c)`. Hadamard is unscaled, so its conjugation carries the factor 2.
 
 | Theorem | Module | Statement |
 |---|---|---|
+| `CircuitBasedQuantumComputing.stabilizer_cnot` | Qpu.Processing.CircuitBasedQuantumComputing | `CircuitBasedQuantumComputing.Exact QuantumGate.CNOT CircuitBasedQuantumComputing.ruleCNOT 1` |
 | `CircuitBasedQuantumComputing.stabilizer_hadamard` | Qpu.Processing.CircuitBasedQuantumComputing | `CircuitBasedQuantumComputing.Exact (Operator.kron 2 QuantumGate.H Operator.idm) CircuitBasedQuantumComputing.ruleH0 2 ∧ CircuitBasedQuantumComputing.Exact (Operator.kron 2 Operator.idm QuantumGate.H) CircuitBasedQuantumComputing.ruleH1 2` |
-| `QuantumGate.cnot` | Qpu.Processing.QuantumGate | `Operator.Same 4 (Operator.mm 4 QuantumGate.CNOT (Operator.dag QuantumGate.CNOT)) Operator.idm ∧ Operator.Same 4 (Operator.mm 4 QuantumGate.CNOT QuantumGate.CNOT) Operator.idm` |
-| `QuantumGate.h_squared` | Qpu.Processing.QuantumGate | `Operator.Same 2 (Operator.mm 2 QuantumGate.H QuantumGate.H) (Operator.smul 2 Operator.idm)` |
-| `QuantumGate.h_unitary` | Qpu.Processing.QuantumGate | `Operator.Same 2 (Operator.mm 2 QuantumGate.H (Operator.dag QuantumGate.H)) (Operator.smul 2 Operator.idm)` |
-| `QuantumGate.paulis_unitary` | Qpu.Processing.QuantumGate | `Operator.Same 2 (Operator.mm 2 QuantumGate.X (Operator.dag QuantumGate.X)) Operator.idm ∧ Operator.Same 2 (Operator.mm 2 QuantumGate.Z (Operator.dag QuantumGate.Z)) Operator.idm ∧ Operator.Same 2 (Operator.mm 2 QuantumGate.S (Operator.dag QuantumGate.S)) Operator.idm` |
-| `QuantumGate.s_squared` | Qpu.Processing.QuantumGate | `Operator.Same 2 (Operator.mm 2 QuantumGate.S QuantumGate.S) QuantumGate.Z` |
-| `QuantumGate.swap` | Qpu.Processing.QuantumGate | `Operator.Same 4 (Operator.mm 4 QuantumGate.SWAP (Operator.dag QuantumGate.SWAP)) Operator.idm ∧ Operator.Same 4 (Operator.mm 4 QuantumGate.SWAP QuantumGate.SWAP) Operator.idm` |
-| `QuantumGate.t_gate` | Qpu.Processing.QuantumGate | `QuantumGate.SameW (QuantumGate.mmW QuantumGate.TW (QuantumGate.dagW QuantumGate.TW)) QuantumGate.idW ∧ QuantumGate.SameW (QuantumGate.powW QuantumGate.TW 8) QuantumGate.idW ∧ ¬QuantumGate.SameW (QuantumGate.powW QuantumGate.TW 4) QuantumGate.idW ∧ ¬QuantumGate.SameW (QuantumGate.mmW QuantumGate.HW QuantumGate.TW) (QuantumGate.mmW QuantumGate.TW QuantumGate.HW)` |
-| `QuantumGate.toffoli` | Qpu.Processing.QuantumGate | `Operator.Same 8 (Operator.mm 8 QuantumGate.TOFFOLI (Operator.dag QuantumGate.TOFFOLI)) Operator.idm ∧ Operator.Same 8 (Operator.mm 8 QuantumGate.TOFFOLI QuantumGate.TOFFOLI) Operator.idm` |
+| `CircuitBasedQuantumComputing.stabilizer_phase` | Qpu.Processing.CircuitBasedQuantumComputing | `CircuitBasedQuantumComputing.Exact (Operator.kron 2 QuantumGate.S Operator.idm) CircuitBasedQuantumComputing.ruleS0 1 ∧ CircuitBasedQuantumComputing.Exact (Operator.kron 2 Operator.idm QuantumGate.S) CircuitBasedQuantumComputing.ruleS1 1` |
+
+## quantum computer: dilution refrigerator (ISO/IEC 4879:2024 3.4.10; SI 2019 kelvin)
+
+`Qpu.Processing.QuantumComputer.Cryostat`. Why the qubits sit at millikelvin: a qubit stays in its ground state when its transition energy h·f is many times the thermal energy k_B·T. The SI (2019) fixes h = 6.626 070 15 × 10⁻³⁴ J s and k_B = 1.380 649 × 10⁻²³ J/K exactly, so the comparison is exact integer arithmetic. Frequencies are in hertz and temperatures in microkelvin.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `Cryostat.qubit_cold_at_ten_millikelvin` | Qpu.Processing.QuantumComputer.Cryostat | `Cryostat.coldEnough 4000000000 10000 19` |
+| `Cryostat.qubit_cold_below` | Qpu.Processing.QuantumComputer.Cryostat | `∀ (f T : Nat), 4000000000 ≤ f → T ≤ 10000 → Cryostat.coldEnough f T 19` |
+| `Cryostat.qubit_hot_at_room_temperature` | Qpu.Processing.QuantumComputer.Cryostat | `¬Cryostat.coldEnough 4000000000 300000000 1` |
+
+## physical qubit: Josephson junction (ISO/IEC 4879:2024 3.3.5; IEC 60050-815)
+
+`Qpu.Information.PhysicalQubit.JosephsonJunction`. The nonlinear element of every superconducting qubit, in exact SI arithmetic. The SI (2019) fixes the Planck constant h = 6.626 070 15 × 10⁻³⁴ J s and the elementary charge e = 1.602 176 634 × 10⁻¹⁹ C exactly, so the flux quantum Φ₀ = h / 2e and the Josephson constant K_J = 2e / h are exact rationals. A quantity is a rational `num / 10^exp` and every identity is stated cross- multiplied in integers.
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `JosephsonJunction.flux_quantum_definition` | Qpu.Information.PhysicalQubit.JosephsonJunction | `JosephsonJunction.phi0Num * (2 * JosephsonJunction.eNum) * 10 ^ JosephsonJunction.hExp = JosephsonJunction.hNum * JosephsonJunction.phi0Den * 10 ^ JosephsonJunction.eExp` |
+| `JosephsonJunction.flux_quantum_josephson_reciprocal` | Qpu.Information.PhysicalQubit.JosephsonJunction | `JosephsonJunction.phi0Num * (2 * JosephsonJunction.eNum * 10 ^ JosephsonJunction.hExp) = JosephsonJunction.phi0Den * (JosephsonJunction.hNum * 10 ^ JosephsonJunction.eExp)` |
+| `JosephsonJunction.flux_quantum_value` | Qpu.Information.PhysicalQubit.JosephsonJunction | `2067833848 * JosephsonJunction.phi0Den ≤ JosephsonJunction.phi0Num * 10 ^ 24 ∧ JosephsonJunction.phi0Num * 10 ^ 24 < 2067833849 * JosephsonJunction.phi0Den` |
+| `JosephsonJunction.josephson_constant_value` | Qpu.Information.PhysicalQubit.JosephsonJunction | `4835978484 * (JosephsonJunction.hNum * 10 ^ JosephsonJunction.eExp) * 10 ^ 9 ≤ 2 * JosephsonJunction.eNum * 10 ^ JosephsonJunction.hExp * 10 ^ 4 ∧ 2 * JosephsonJunction.eNum * 10 ^ JosephsonJunction.hExp * 10 ^ 4 < 4835978485 * (JosephsonJunction.hNum * 10 ^ JosephsonJunction.eExp) * 10 ^ 9` |
 
 ## quantum circuit (ISO/IEC 4879:2024 3.4.5)
 
@@ -96,17 +150,6 @@
 |---|---|---|
 | `QuantumErrorCorrection.repetition_corrects` | Qpu.Processing.QuantumErrorCorrection | `∀ (b : Bool) (e : Nat), e < 4 → QuantumErrorCorrection.decode (QuantumErrorCorrection.flip e (QuantumErrorCorrection.encode b)) = b` |
 
-## quantum processor (ISO/IEC 4879:2024 3.4.8)
-
-`Qpu.Processing.QuantumProcessor`. The processor's coupling graph at hexbit width: its sites are the qubits of `Qubit.rows hexbit`, a row per digit that holds qubits and a column per qubit, and two sites are coupled when they are neighbours along a row or on the same bit of consecutive rows. The graph is connected and every site has two to four couplers; its coupler count is `Qubit.couplers_formula` at that width.
-
-| Theorem | Module | Statement |
-|---|---|---|
-| `QuantumProcessor.connected` | Qpu.Processing.QuantumProcessor | `∀ (x : Nat × Nat), x ∈ QuantumProcessor.sites hexbit → x ∈ QuantumProcessor.reach hexbit ((Qubit.rows hexbit).length + 4)` |
-| `QuantumProcessor.degree_bounds` | Qpu.Processing.QuantumProcessor | `∀ (x : Nat × Nat), x ∈ QuantumProcessor.sites hexbit → 2 ≤ QuantumProcessor.degree hexbit x ∧ QuantumProcessor.degree hexbit x ≤ 4` |
-| `QuantumProcessor.sites_count` | Qpu.Processing.QuantumProcessor | `(QuantumProcessor.sites hexbit).length = Qubit.effective hexbit` |
-| `Qubit.couplers_formula` | Qpu.Information.Qubit | `∀ (w : Nat), Qubit.gateway + 1 ≤ w → Qubit.couplers w = (Qubit.digits - coins) * (w - 1) + (w - Qubit.gateway - 1) + (Qubit.digits - coins - coins) * w + coins * (w - Qubit.gateway)` |
-
 ## quantum algorithm (ISO/IEC 4879:2024 3.4.9)
 
 `Qpu.Processing.QuantumAlgorithm`. The processor's algorithms on exact amplitudes: a circuit applies the gates of `Qpu.Processing.QuantumGate` and a measurement weight is the squared modulus. Deutsch–Jozsa decides every two-bit function in one oracle query, Grover finds the marked item of four in one iteration (a search algorithm, 3.5.6), and Shor's reduction is `textbook_shor_sigma_root`.
@@ -117,53 +160,10 @@
 | `QuantumAlgorithm.grover_search` | Qpu.Processing.QuantumAlgorithm | `∀ (m : Nat), m < 4 → ∀ (r : Nat), r < 4 → (QuantumAlgorithm.grover m r ≠ 0 ↔ r = m)` |
 | `textbook_shor_sigma_root` | Qpu.Textbook | `64 ^ 2 % 91 = 1 ∧ 64 ≠ 1 ∧ 64 ≠ 90 ∧ (64 - 1) * (64 + 1) % 91 = 0 ∧ (64 - 1).gcd 91 = 7 ∧ (64 + 1).gcd 91 = 13 ∧ 7 * 13 = 91` |
 
-## physical qubit: Josephson junction (ISO/IEC 4879:2024 3.3.5; IEC 60050-815)
+## quantum information (ISO/IEC 4879:2024 3.3.1)
 
-`Qpu.Information.PhysicalQubit.JosephsonJunction`. The nonlinear element of every superconducting qubit, in exact SI arithmetic. The SI (2019) fixes the Planck constant h = 6.626 070 15 × 10⁻³⁴ J s and the elementary charge e = 1.602 176 634 × 10⁻¹⁹ C exactly, so the flux quantum Φ₀ = h / 2e and the Josephson constant K_J = 2e / h are exact rationals. A quantity is a rational `num / 10^exp` and every identity is stated cross- multiplied in integers.
-
-| Theorem | Module | Statement |
-|---|---|---|
-| `JosephsonJunction.flux_quantum_definition` | Qpu.Information.PhysicalQubit.JosephsonJunction | `JosephsonJunction.phi0Num * (2 * JosephsonJunction.eNum) * 10 ^ JosephsonJunction.hExp = JosephsonJunction.hNum * JosephsonJunction.phi0Den * 10 ^ JosephsonJunction.eExp` |
-| `JosephsonJunction.flux_quantum_josephson_reciprocal` | Qpu.Information.PhysicalQubit.JosephsonJunction | `JosephsonJunction.phi0Num * (2 * JosephsonJunction.eNum * 10 ^ JosephsonJunction.hExp) = JosephsonJunction.phi0Den * (JosephsonJunction.hNum * 10 ^ JosephsonJunction.eExp)` |
-| `JosephsonJunction.flux_quantum_value` | Qpu.Information.PhysicalQubit.JosephsonJunction | `2067833848 * JosephsonJunction.phi0Den ≤ JosephsonJunction.phi0Num * 10 ^ 24 ∧ JosephsonJunction.phi0Num * 10 ^ 24 < 2067833849 * JosephsonJunction.phi0Den` |
-| `JosephsonJunction.josephson_constant_value` | Qpu.Information.PhysicalQubit.JosephsonJunction | `4835978484 * (JosephsonJunction.hNum * 10 ^ JosephsonJunction.eExp) * 10 ^ 9 ≤ 2 * JosephsonJunction.eNum * 10 ^ JosephsonJunction.hExp * 10 ^ 4 ∧ 2 * JosephsonJunction.eNum * 10 ^ JosephsonJunction.hExp * 10 ^ 4 < 4835978485 * (JosephsonJunction.hNum * 10 ^ JosephsonJunction.eExp) * 10 ^ 9` |
-
-## quantum computer: dilution refrigerator (ISO/IEC 4879:2024 3.4.10; SI 2019 kelvin)
-
-`Qpu.Processing.QuantumComputer.Cryostat`. Why the qubits sit at millikelvin: a qubit stays in its ground state when its transition energy h·f is many times the thermal energy k_B·T. The SI (2019) fixes h = 6.626 070 15 × 10⁻³⁴ J s and k_B = 1.380 649 × 10⁻²³ J/K exactly, so the comparison is exact integer arithmetic. Frequencies are in hertz and temperatures in microkelvin.
+`Qpu.Information.QuantumInformation`. Quantum information cannot be copied: no linear map sends both |0⟩ and |+⟩ to two copies of themselves. A register whose contents copy exactly therefore holds a description of a state, not the state.
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `Cryostat.qubit_cold_at_ten_millikelvin` | Qpu.Processing.QuantumComputer.Cryostat | `Cryostat.coldEnough 4000000000 10000 19` |
-| `Cryostat.qubit_cold_below` | Qpu.Processing.QuantumComputer.Cryostat | `∀ (f T : Nat), 4000000000 ≤ f → T ≤ 10000 → Cryostat.coldEnough f T 19` |
-| `Cryostat.qubit_hot_at_room_temperature` | Qpu.Processing.QuantumComputer.Cryostat | `¬Cryostat.coldEnough 4000000000 300000000 1` |
-
-## circuit-based quantum computing (ISO/IEC 4879:2024 3.4.13)
-
-`Qpu.Processing.CircuitBasedQuantumComputing`. The exact computation of Clifford circuits (Gottesman–Knill): a circuit of H, S and CNOT is computed on Pauli strings, never on the 2^n amplitudes. A two-qubit Pauli string is a phase `i^k` and an (x, z) bit pair per qubit, its matrix `i^k · P(x₀, z₀) ⊗ P(x₁, z₁)` with `P(x, z) = i^(x·z) · X^x · Z^z`, so `P(1, 1)` is the gate set's `Y`. The tableau rules a stabilizer computation applies (Aaronson–Gottesman) are proved equal to the exact conjugation of that matrix by the gate, for all 64 strings: H swaps x and z and flips the sign of Y, S adds x to z and flips the sign of Y, CNOT copies x from control to target and z from target to control with the sign `x_c · z_t · (x_t = z_c)`. Hadamard is unscaled, so its conjugation carries the factor 2.
-
-| Theorem | Module | Statement |
-|---|---|---|
-| `CircuitBasedQuantumComputing.stabilizer_cnot` | Qpu.Processing.CircuitBasedQuantumComputing | `CircuitBasedQuantumComputing.Exact QuantumGate.CNOT CircuitBasedQuantumComputing.ruleCNOT 1` |
-| `CircuitBasedQuantumComputing.stabilizer_hadamard` | Qpu.Processing.CircuitBasedQuantumComputing | `CircuitBasedQuantumComputing.Exact (Operator.kron 2 QuantumGate.H Operator.idm) CircuitBasedQuantumComputing.ruleH0 2 ∧ CircuitBasedQuantumComputing.Exact (Operator.kron 2 Operator.idm QuantumGate.H) CircuitBasedQuantumComputing.ruleH1 2` |
-| `CircuitBasedQuantumComputing.stabilizer_phase` | Qpu.Processing.CircuitBasedQuantumComputing | `CircuitBasedQuantumComputing.Exact (Operator.kron 2 QuantumGate.S Operator.idm) CircuitBasedQuantumComputing.ruleS0 1 ∧ CircuitBasedQuantumComputing.Exact (Operator.kron 2 Operator.idm QuantumGate.S) CircuitBasedQuantumComputing.ruleS1 1` |
-
-## quantum processor, parallel layers (ISO/IEC 4879:2024 3.4.8)
-
-`Qpu.Processing.QuantumProcessor.Layers`. The coupling graph drives its couplers in parallel. Coloured by the parity of row plus bit, every coupler joins the two colours: the graph is bipartite. Each coupler belongs to one of four layers (along a row from an even or an odd bit, between rows from an even or an odd row), and within a layer no two couplers share a qubit, so every coupler of the register runs in four rounds. The couplers so counted are `Qubit.couplers_formula` at hexbit width.
-
-| Theorem | Module | Statement |
-|---|---|---|
-| `QuantumProcessor.Layers.layers_bipartite` | Qpu.Processing.QuantumProcessor.Layers | `∀ (e : (Nat × Nat) × Nat × Nat), e ∈ QuantumProcessor.Layers.edges hexbit → QuantumProcessor.Layers.colour e.fst ≠ QuantumProcessor.Layers.colour e.snd` |
-| `QuantumProcessor.Layers.layers_count` | Qpu.Processing.QuantumProcessor.Layers | `(QuantumProcessor.Layers.edges hexbit).length = Qubit.couplers hexbit` |
-| `QuantumProcessor.Layers.layers_four` | Qpu.Processing.QuantumProcessor.Layers | `(∀ (e : (Nat × Nat) × Nat × Nat), e ∈ QuantumProcessor.Layers.edges hexbit → QuantumProcessor.Layers.layer e < 4) ∧ ∀ (x : Nat × Nat), x ∈ QuantumProcessor.sites hexbit → ∀ (l : Nat), l < 4 → QuantumProcessor.Layers.touching hexbit l x ≤ 1` |
-| `Qubit.couplers_formula` | Qpu.Information.Qubit | `∀ (w : Nat), Qubit.gateway + 1 ≤ w → Qubit.couplers w = (Qubit.digits - coins) * (w - 1) + (w - Qubit.gateway - 1) + (Qubit.digits - coins - coins) * w + coins * (w - Qubit.gateway)` |
-
-## quantum communication, teleportation (ISO/IEC 4879:2024 3.6.1)
-
-`Qpu.Communication.QuantumCommunication`. Teleportation on three qubits, exact over the Gaussian integers with the measurements deferred (the corrections applied as the controlled gates they condition): qubits 1 and 2 are made a Bell pair, qubit 0 is entangled with qubit 1 by CNOT and turned by Hadamard, then qubit 1 corrects qubit 2 by X and qubit 0 corrects it by Z. For each basis input `b` on qubit 0, every outcome of qubits 0 and 1 leaves qubit 2 holding `b` with the same weight; the circuit is linear, so every input state is carried across. No signalling: before the corrections arrive, qubit 2 alone is in the same state for every input, its reduced density diagonal with equal weights, so nothing of the input crosses until the two classical bits do; this holds on the six Pauli eigenstates, a set whose states determine any input.
-
-| Theorem | Module | Statement |
-|---|---|---|
-| `QuantumCommunication.teleport_exact` | Qpu.Communication.QuantumCommunication | `∀ (b : Nat), b < 2 → ∀ (r : Nat), r < 8 → QuantumCommunication.teleport b r = if r % 2 = b then 1 else 0` |
-| `QuantumCommunication.teleport_no_signalling` | Qpu.Communication.QuantumCommunication | `∀ (s : Nat), s < 6 → QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 1 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 0 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 0 = QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 1` |
+| `QuantumInformation.no_cloning` | Qpu.Information.QuantumInformation | `∀ (u : Operator.Mat), (∀ (r : Nat), r < 4 → Operator.ap 4 u (HilbertSpace.basis 0) r = HilbertSpace.basis 0 r) → (∀ (r : Nat), r < 4 → Operator.ap 4 u (HilbertSpace.basis 2) r = HilbertSpace.basis 3 r) → Operator.ap 4 u (fun r => HilbertSpace.basis 0 r + HilbertSpace.basis 2 r) 1 ≠ 1` |

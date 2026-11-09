@@ -10,7 +10,7 @@ import { ChevronUpDownIcon } from '@root/icons/ChevronUpDownIcon/index'
 import { useAuth } from '@root/providers/Auth/index'
 import { useHeaderObserver } from '@root/providers/HeaderIntersectionObserver/index'
 import { useThemePreference } from '@root/providers/Theme/index'
-import { getImplicitPreference, themeLocalStorageKey } from '@root/providers/Theme/shared'
+import { getImplicitPreference } from '@root/providers/Theme/shared'
 import Link from 'next/link'
 import React, { useId } from 'react'
 

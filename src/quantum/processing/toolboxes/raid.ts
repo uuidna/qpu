@@ -5,7 +5,7 @@
 // I/O: the client reads the docket's rows and writes the entries this toolbox returns. Payload's mongodb adapter interface is
 // the shape this ports to, not Cloudflare's D1.
 import { TABLES } from '../tables-index.ts'
-import { defineTool, isObj, createChecks, type Toolbox, type Context } from '../toolbox.ts'
+import { defineTool, isObj, createChecks, type Toolbox } from '../toolbox.ts'
 import { documentPath } from '../../fs/index.ts'
 import { uuid, canonicalText } from '../../uuid/index.ts'
 import { flowWidget } from '../widgets.ts'

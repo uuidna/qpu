@@ -13,7 +13,6 @@ type ResetPassword = (args: {
 
 type ForgotPassword = (args: { email: string }) => Promise<void>
 
-type Create = (args: { email: string; password: string; passwordConfirm: string }) => Promise<void>
 
 type Login = (args: { email: string; password: string }) => Promise<User>
 

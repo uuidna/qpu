@@ -5,7 +5,7 @@ import { Gutter } from '@components/Gutter/index'
 import { NewProjectBlock } from '@components/NewProject/index'
 import { RenderParams } from '@components/RenderParams/index'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 
 export const dynamic = 'force-dynamic'
 
