@@ -5,7 +5,7 @@
 import { LICENSE } from './unit/license.ts'
 import { VERSION } from './unit/version.ts'
 import { TABLES } from './tables-index.ts'
-import { canonicalText, seal, uuid, uuidSchemas } from '../uuid/index.ts'
+import { canonicalText, seal, uuid } from '../uuid/index.ts'
 import { ISO_DIMENSIONS, ISO_OPEN_DATA, ISO_PRODUCERS, PRODUCER_TRINITIES, HIDDEN_PERSPECTIVES, extractIsoFromProducers, extractIsoRefs, unlockHiddenPerspectives, isoResearch, verifyIsoOnline } from './iso-deliverables.ts'
 import { parseIsoDimensionsMicrodata, parseToMicrodata } from './microdata.ts'
 export { ISO_DIMENSIONS, ISO_OPEN_DATA, ISO_PRODUCERS, PRODUCER_TRINITIES, HIDDEN_PERSPECTIVES, extractIsoFromProducers, extractIsoRefs, unlockHiddenPerspectives, isoResearch, verifyIsoOnline, parseToMicrodata, parseIsoDimensionsMicrodata }
@@ -579,7 +579,6 @@ export const verifyIsoQuantumEquivalence = () => {
 
   // --- 3. ISO BLOCKCHAIN PROGRAMMABILITY (ISO/IEC 9834-8, ISO 22739, ISO 23257, ISO/TR 23455, ISO 24165, ISO 20022) ---
   const genesisUuid = uuid('iso-genesis-block')
-  const schemas = uuidSchemas(genesisUuid)
   const witnesses = checkWitnesses(genesisUuid)
   const coinA = witnesses.witnesses.find((w) => w.face === 'triangle' && w.index === 0)!.uuid
   const coinB = witnesses.witnesses.find((w) => w.face === 'triangle' && w.index === 1)!.uuid
@@ -608,7 +607,6 @@ export const verifyIsoQuantumEquivalence = () => {
       programmability: 'Every block, coin, and token-coil is a 128-bit sealed UUID carrying 8 handle nibbles, 10 compiled program nibbles, 2 stamp nibbles (version decided by 1 + (rest^7 mod 91) mod 8), 12 tail nibbles, 9 simultaneous UUID schemas, and 14 cuboctahedron witnesses (6 square rotations + 8 triangular sigma-reflections)',
       holds:
         seal(genesisUuid).valid &&
-        schemas.schemasRead === 9 &&
         witnesses.faces === faces &&
         witnesses.exact &&
         coins === 2 &&
@@ -618,7 +616,6 @@ export const verifyIsoQuantumEquivalence = () => {
       evidence: {
         uuid: genesisUuid,
         sealed: seal(genesisUuid).valid,
-        schemasRead: schemas.schemasRead,
         cuboctahedronFaces: witnesses.faces,
         witnessesRoundTripExact: witnesses.exact,
         lattice: { coins, rays, faces, plane },

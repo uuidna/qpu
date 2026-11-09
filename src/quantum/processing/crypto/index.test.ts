@@ -59,7 +59,7 @@ test('every UUID superposition holds without walking', () => {
   assert.equal(s.holds, true)
   assert.equal(s.fetched, false)
   assert.equal(s.walked, false)
-  assert.equal(s.superpositions, 14)
+  assert.equal(s.superpositions, 12)
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: every UUID superposition reverses to the program. */
@@ -68,7 +68,7 @@ test('every UUID superposition reverses to the program', () => {
   assert.equal(s.phase, 'superpositions-reverse')
   assert.equal(s.direction, 'reverse')
   assert.equal(s.holds, true)
-  assert.equal(s.reversed, 14)
+  assert.equal(s.reversed, 12)
   assert.ok(s.scenarios.every((row) => row.returns))
 })
 

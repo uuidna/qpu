@@ -3,10 +3,11 @@
 
 import os from '../os/alpine/index.ts'
 import { portPackages, type PackageAsk } from '../os/alpine/packages.ts'
-import { lintExpression, type EslintFinding } from '../os/eslint.ts'
+import type { EslintFinding } from '../os/eslint.ts'
 import { entriesCover } from '../payload/index.ts'
 import { uuid } from '../uuid/index.ts'
 import type { Lead } from './leads.ts'
+
 
 type Val = string | number | boolean | null | Val[] | { [k: string]: Val }
 type Scope = Record<string, Val>
@@ -184,7 +185,8 @@ const evaluate = (source: string, frame: Frame): { value: Val; scope: Scope } =>
   let i = 0
   const skip = () => { while (s[i] === ' ') i++ }
   const gap: (why: string) => never = (why) => { throw new Gap(why) }
-  const lint = lintExpression(s, Object.keys(frame.scope))
+  if (!os.lint) gap('ESLint is not installed in this host, so no expression runs')
+  const lint = os.lint(s, Object.keys(frame.scope))
   frame.os.eslint.checked += 1
   if (!lint.clean) { frame.os.eslint.findings.push(...lint.findings); gap(lint.findings.map((finding) => finding.message).join(' ')) }
   const pathOf = (): string[] => {
@@ -363,7 +365,7 @@ const runAlpine = (raw: Run, depth = 0) => {
   const watched = browser.watches.map((w) => { const after = read(scope as unknown as Val, w.path.split('.')); return { path: w.path, before: w.before, after, changed: JSON.stringify(w.before) !== JSON.stringify(after) } })
   const document = { root: browser.root, nodes: browser.nodes, events: browser.events, focus: browser.focus, started: browser.started, plugins: browser.plugins, directives: browser.directives, magics: browser.magics, persisted: browser.persisted, watched }
   const cover = entriesCover(leads.map((l) => ({ from: l.id, body: { status: l.status, name: (l.run.arguments as { develop: { variant: string } }).develop.variant } })))
-  const eslint = { via: os.eslint.via, version: os.eslint.version, checked: browser.eslint.checked, clean: browser.eslint.findings.length === 0, findings: browser.eslint.findings }
+  const eslint = { via: os.eslint?.via ?? null, version: os.eslint?.version ?? null, checked: browser.eslint.checked, clean: browser.eslint.findings.length === 0, findings: browser.eslint.findings }
   return {
     phase: 'alpine' as const, data: scope, stores, ...out, ran, leads, next: leads.map((l) => l.run), document, eslint, os: { ...os, complete: leads.length === 0 }, cover,
     says: leads.length === 0 ? `${ran.length} Alpine directive(s) ran on the qpu browser quantum os. ESLint ${eslint.version} checked ${eslint.checked}.` : `${ran.length} Alpine directive(s) ran on the qpu browser quantum os. ${cover.entries.length} entries cover ${cover.exits} exits. ESLint ${eslint.version} checked ${eslint.checked}.`,

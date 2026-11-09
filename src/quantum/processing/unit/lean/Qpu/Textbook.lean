@@ -363,9 +363,9 @@ theorem textbook_prizes_computable_converse_refuted : ¬ ∀ (purse fund perprob
 theorem textbook_clay_conditions (a b c : Bool) : (a && b && c) = true → a = true ∧ b = true ∧ c = true := by cases a <;> cases b <;> cases c <;> simp
 /-- textbook_clay_conditions reflected by its shape, implication (examples: compete-rules) -/
 theorem textbook_clay_conditions_reflected (a b c : Bool) : ¬ (a = true ∧ b = true ∧ c = true) → ¬ (((a && b && c) = true)) := fun hc hh => hc ((textbook_clay_conditions a b c) hh)
-/-- nine schemas read one UUID at once: versions 1, 3, 4, 5, 6, 7 and 8, nil and max; the core reads none of them, so every schema presents the same (examples: fold-schemas, algorithm-factor-test-integer) -/
+/-- RFC 9562 names nine layouts, versions 1, 3, 4, 5, 6, 7 and 8 beside nil and max; the core reads none of them, so the tree no longer reads a UUID as each (examples: algorithm-factor-test-integer) -/
 theorem textbook_uuid_schemas : 7 + 2 = 9 := by decide
-/-- textbook_uuid_schemas reflected by its shape, equality (examples: fold-schemas, algorithm-factor-test-integer) -/
+/-- textbook_uuid_schemas reflected by its shape, equality (examples: algorithm-factor-test-integer) -/
 theorem textbook_uuid_schemas_reflected (σ : Nat) : σ - (9) = σ - (7 + 2) := congrArg (σ - ·) (Eq.symm (textbook_uuid_schemas))
 /-- memo is the identity on a pure function: a memo that only ever holds f y at y answers f x at every x, read or computed (examples: metrics-memo) -/
 theorem textbook_memo_identity {α β : Type} (f : α → β) (m : α → Option β) (h : ∀ y b, m y = some b → b = f y) (x : α) : (m x).getD (f x) = f x := by cases hm : m x with | none => rfl | some b => exact h x b hm

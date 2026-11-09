@@ -1,7 +1,7 @@
 // Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)
 // Pure cryptographic surfaces: the proven 1000-bit surface, UUID superpositions, NIST/CERN scenarios, AEAD/Merkle/PBKDF2/X25519, and attest theorem reads. No MCP, no fetch.
 import { createImpossible, decodeImpossible, testPrimality, listFactors, shorReduction, orderFinding, sqrtBig, pasteInteger } from '../algorithms.ts'
-import { dnaToHex, hexToDna, dnaStream, uuid, seal, seal as uuidSeal, canonicalText, stream, neighbours, next, navigate, uuidSchemas, UUID_SCHEMAS, compositions, composition, compositionIndex, rosetta, harmonicDefaults, uuidQubits, hexbit, organiseQubits, quantumSku, coins, reflection, channel } from '../../uuid/index.ts'
+import { dnaToHex, hexToDna, dnaStream, uuid, seal, seal as uuidSeal, canonicalText, stream, neighbours, next, navigate, compositions, composition, compositionIndex, rosetta, harmonicDefaults, uuidQubits, hexbit, organiseQubits, coins, channel } from '../../uuid/index.ts'
 import { coins as clayCoins, rays, faces, plane, recomputeClay, AXIOMS } from '../clay-register.ts'
 import { CLAY_RELATIONS } from '../clay-statements.ts'
 import { speakThousand } from '../i18n.ts'
@@ -330,14 +330,12 @@ const COMBINATORICS = [
 
 const SUPERPOSITION_ADDRESS = '941ef62e-d97b-2438-bfc8-22ae9e5da781'
 const SUPERPOSITION_HEXBIT = AXIOMS.find((row) => row.name === 'hexbit')!.value
-/** Every UUID superposition this toolbox answers: the six neighbour leads, the harmonic enum space, every RFC schema reading at once, the qubit register and its exchange, the SKU encryption, and the combination spaces held without storing a composition. Pure: nothing fetched, nothing walked. */
+/** Every UUID superposition this toolbox answers: the six neighbour leads, the harmonic enum space, every RFC schema reading at once, the qubit register and its exchange, and the combination spaces held without storing a composition. Pure: nothing fetched, nothing walked. */
 type UuidSuperposition = { id: string; surface: string; tool: 'fold'; arguments: Record<string, unknown>; says: string; directions?: number; combinations?: string }
 export const uuidSuperpositions = (address = SUPERPOSITION_ADDRESS, width = SUPERPOSITION_HEXBIT) => {
   const around = neighbours(address)
   const team = navigate(address)
   const rotated = next(address)
-  const schemas = uuidSchemas(address)
-  const sku = quantumSku(address)
   const counted = uuidQubits(width)
   const moved = hexbit(address, width)
   const laid = organiseQubits(address, width)
@@ -351,7 +349,6 @@ export const uuidSuperpositions = (address = SUPERPOSITION_ADDRESS, width = SUPE
     { id: 'navigate', surface: 'neighbourhood team', tool: 'fold', arguments: { navigate: address }, says: 'the team is the six neighbours and their stream', directions: team.neighbours.length },
     { id: 'next', surface: 'program rotation', tool: 'fold', arguments: { next: address }, says: 'the program rotates one place; ten rotations return it' },
     { id: 'harmonic', surface: 'enum superposition', tool: 'fold', arguments: { harmonic: { schema: { properties: { style: { enum: ['nova', 'lyra', 'maia'] }, theme: { enum: ['neutral', 'stone', 'zinc', 'gray'] }, radius: { enum: ['0', '0.3', '0.5', '0.75', '1'] } } } } }, says: 'sixty combinations held at once; the a432 key chooses one', combinations: harmonic.count.toString() },
-    { id: 'schemas', surface: 'RFC schema superposition', tool: 'fold', arguments: { hex: address }, says: 'every UUID version schema reads the same bits at once', combinations: String(schemas.schemasRead) },
     { id: 'stream', surface: 'UUID stream superposition', tool: 'fold', arguments: { uuids: [address, '016da774-e74c-2e44-8742-f8bcf5e8e8f5', '00000000-0000-1000-8000-000000000000'], query: { where: { nibble: { at: 1, is: '0' } }, sort: 'hue', execute: true } }, says: 'a UUID-only stream filtered and executed without storing the space', combinations: String(streamed.stream) },
     { id: 'rosetta', surface: 'dual-axis superposition', tool: 'fold', arguments: { rosetta: [6, 7], index: '20' }, says: '6×7 and 7×6 are one scale of forty-two read two ways', combinations: grid.scale.toString() },
     { id: 'combinatorics', surface: 'combination-space superposition', tool: 'fold', arguments: { combinatorics: true }, says: 'every named space counted; none of its compositions stored', combinations: spaces.find((s) => s.name === 'queneau')!.count },
@@ -359,7 +356,6 @@ export const uuidSuperpositions = (address = SUPERPOSITION_ADDRESS, width = SUPE
     { id: 'qubits', surface: 'UUID qubit register', tool: 'fold', arguments: { qubits: width }, says: 'hexbit qubits on each of thirty-two digits; capacity delivered as six neighbour leads', combinations: counted.handles.possible },
     { id: 'exchange', surface: 'qubit exchange', tool: 'fold', arguments: { exchange: { address, hexbit: width } }, says: 'navigation, teleport and σ₁₅ signal over the register', directions: moved.navigate.directions },
     { id: 'organise', surface: 'organised qubit trinities', tool: 'fold', arguments: { organise: { address, hexbit: width } }, says: 'fingerprint, combination and tail laid by trinity' },
-    { id: 'sku', surface: 'quantum SKU encryption', tool: 'fold', arguments: { sku: address }, says: 'reflections both ways and six neighbour steps stay this address', directions: sku.encrypted.directions },
     { id: 'coins', surface: 'coins by address', tool: 'fold', arguments: { coins: [address, 'rodin', address] }, says: 'repeated addresses merge to one sealed coin', combinations: String(booked.count) },
   ]
   const holds =
@@ -367,25 +363,22 @@ export const uuidSuperpositions = (address = SUPERPOSITION_ADDRESS, width = SUPE
     team.neighbours.length === 6 &&
     rotated.places === 10 &&
     harmonic.count === 60n &&
-    schemas.schemasRead === UUID_SCHEMAS.length + 2 &&
     streamed.filtered === 1 &&
     grid.scale === 42n &&
     counted.delivery.holds === true && counted.delivery.leads.length === 6 && counted.delivery.leads.every((lead) => lead.sealed) &&
     moved.receipt.holds === true && moved.navigate.directions === 6 &&
     laid.holds === true &&
-    sku.holds === true && sku.encrypted.neighbours.length === 6 &&
     booked.sealed === true && booked.count === 2 &&
-    rows.length === 14
+    rows.length === 12
   return {
     phase: 'superpositions' as const, address, hexbit: width, scenarios: rows, superpositions: rows.length,
-    neighbours: around.neighbours.length, schemas: schemas.schemasRead, combinations: harmonic.count.toString(),
+    neighbours: around.neighbours.length, combinations: harmonic.count.toString(),
     qubits: { effective: counted.effective, leads: counted.delivery.leads.length, holds: counted.delivery.holds },
-    sku: { holds: sku.holds, directions: sku.encrypted.directions },
     coins: { count: booked.count },
     fetched: false as const, written: false as const, walked: false as const, holds,
-    theorems: ['textbook_neighbour_step', 'textbook_harmonic_default', 'textbook_uuid_schemas', 'textbook_mixed_radix', 'textbook_queneau_compositions', 'textbook_coil_green'] as const,
+    theorems: ['textbook_neighbour_step', 'textbook_harmonic_default', 'textbook_mixed_radix', 'textbook_queneau_compositions', 'textbook_coil_green'] as const,
     says: holds
-      ? `${rows.length} UUID superposition(s) of ${address}: six neighbour leads, sixty harmonic combinations, ${schemas.schemasRead} schema readings, the ${counted.effective}-qubit register and its exchange, the SKU encryption and the combination spaces — none walked, none fetched.`
+      ? `${rows.length} UUID superposition(s) of ${address}: six neighbour leads, sixty harmonic combinations, the ${counted.effective}-qubit register and its exchange and the combination spaces — none walked, none fetched.`
       : 'a UUID superposition did not hold',
   }
 }
@@ -410,8 +403,6 @@ export const uuidSuperpositionsReverse = (address = SUPERPOSITION_ADDRESS, width
   const harmonicRadices = [3, 4, 5]
   const harmonicDigits = composition(harmonicRadices, harmonic.index)
   const harmonicBack = compositionIndex(harmonicRadices, harmonicDigits) === harmonic.index && harmonic.index === 12n
-  const schemas = uuidSchemas(address)
-  const schemasBack = schemas.core.channel.handle === here.handle && schemas.schemasRead === UUID_SCHEMAS.length + 2 && uuidSchemas(address).schemasRead === schemas.schemasRead
   const streamed = stream([address, '016da774-e74c-2e44-8742-f8bcf5e8e8f5', '00000000-0000-1000-8000-000000000000'], { where: { nibble: { at: 1, is: '0' } }, sort: 'hue', execute: true })
   const streamRow = streamed.rows[0]!
   const streamBack = streamed.filtered === 1 && next(streamRow.uuid).back === true
@@ -433,10 +424,6 @@ export const uuidSuperpositionsReverse = (address = SUPERPOSITION_ADDRESS, width
   const exchangeBack = moved.signal.holds === true && moved.signal.rows.every((row) => row.holds && row.digit + row.to === 15) && moved.navigate.directions === 6 && neighbourBack.every((row) => row.returns)
   const laid = organiseQubits(address, width)
   const organiseBack = laid.holds === true && laid.fingerprint.index === BigInt(`0x${laid.handle}`).toString() && (laid.combination.hex.length === 0 || composition(Array.from({ length: laid.combination.hex.length }, () => 16), BigInt(`0x${laid.combination.hex}`)).every((n, i) => n === parseInt(laid.combination.hex[i]!, 16)))
-  const sku = quantumSku(address)
-  const mirror = reflection(address)
-  const twice = reflection(mirror.mirror)
-  const skuBack = sku.encrypted.roundTrip === true && twice.handle === here.handle && twice.tail === here.tail && sku.holds === true
   const booked = coins([address, 'rodin', address])
   const again = coins(booked.coins)
   const coinsBack = booked.sealed === true && booked.count === 2 && again.count === booked.count && again.coins.every((id, i) => id === booked.coins[i]) 
@@ -445,7 +432,6 @@ export const uuidSuperpositionsReverse = (address = SUPERPOSITION_ADDRESS, width
     { id: 'navigate', reverse: 'each neighbour\'s opposite step returns the program', returns: navigateBack, of: team.neighbours.length },
     { id: 'next', reverse: 'one step back and ten around', returns: nextBack, of: rotated.places },
     { id: 'harmonic', reverse: 'digits make the index', returns: harmonicBack, of: Number(harmonic.count) },
-    { id: 'schemas', reverse: 'core channel unchanged', returns: schemasBack, of: schemas.schemasRead },
     { id: 'stream', reverse: 'executed next steps back', returns: streamBack, of: streamed.stream },
     { id: 'rosetta', reverse: 'transpose of the transpose', returns: rosettaBack, of: Number(grid.scale) },
     { id: 'combinatorics', reverse: 'last composition indexes itself', returns: combinatoricsBack, of: 14 },
@@ -453,15 +439,14 @@ export const uuidSuperpositionsReverse = (address = SUPERPOSITION_ADDRESS, width
     { id: 'qubits', reverse: 'σ both ways on the delivery coin', returns: qubitsBack, of: counted.delivery.leads.length },
     { id: 'exchange', reverse: 'σ₁₅ signal and neighbour program steps', returns: exchangeBack, of: moved.signal.digits },
     { id: 'organise', reverse: 'combination digits read as index', returns: organiseBack, of: laid.combination.digits },
-    { id: 'sku', reverse: 'reflection twice is the handle and tail', returns: skuBack, of: sku.encrypted.directions },
     { id: 'coins', reverse: 'merge is idempotent', returns: coinsBack, of: booked.count },
   ] as const
-  const holds = rows.length === 14 && rows.every((row) => row.returns)
+  const holds = rows.length === 12 && rows.every((row) => row.returns)
   return {
     phase: 'superpositions-reverse' as const, address, hexbit: width, direction: 'reverse' as const,
     scenarios: rows, superpositions: rows.length, reversed: rows.filter((row) => row.returns).length,
     neighbours: neighbourBack, fetched: false as const, written: false as const, walked: false as const, holds,
-    theorems: ['textbook_neighbour_step', 'textbook_harmonic_default', 'textbook_uuid_schemas', 'textbook_mixed_radix', 'textbook_queneau_compositions', 'textbook_coil_green'] as const,
+    theorems: ['textbook_neighbour_step', 'textbook_harmonic_default', 'textbook_mixed_radix', 'textbook_queneau_compositions', 'textbook_coil_green'] as const,
     says: holds
       ? `${rows.length} UUID superposition(s) reversed for ${address}: every neighbour steps back to the program, next undoes, the harmonic index rebuilds its digits, the rosetta transpose undoes, σ twice returns the parts, and coins merge once — none walked, none fetched.`
       : `a UUID superposition did not reverse: ${rows.filter((row) => !row.returns).map((row) => row.id).join(', ') || 'none'}`,

@@ -776,55 +776,7 @@ export const dnaStream = (seq: string, q: StreamQuery = {}) => {
   return { bases: clean.length, basesPerUuid: 64, hex, uuids, readBack: hexToDna(hex).slice(0, clean.length), roundTrips: hexToDna(hex).slice(0, clean.length) === clean, address: uuid(clean), stream: stream(uuids, q), theorem: 'textbook_dna_base4', says: `${clean.length} base(s) as ${uuids.length} UUID(s) — two bases a nibble, read back one for one — the DNA stream navigable like any UUID stream (uuid dna uuidna)` }
 }
 
-/** All UUID version schemas at once in one UUID: the same 128 bits read as every RFC 9562 layout — version 1 (Gregorian time, clock
- *  sequence, node), 3 and 5 (a name hashed), 4 (random), 6 (the Gregorian time reordered), 7 (Unix milliseconds and random), 8 (custom),
- *  nil and max (textbook_uuid_schemas: seven versions and two constants) — beside the version and variant the stamp nibbles declare; the
- *  core's channel, style, presentation and stream read none of them, so every schema presents the same. */
-export const UUID_SCHEMAS = [1, 3, 4, 5, 6, 7, 8] as const
-export const uuidSchemas = (uuid: string) => {
-  const hex = uuid.toLowerCase().replace(/[^0-9a-f]/g, '')
-  if (hex.length !== 32) throw new Error('a UUID is 32 hex digits')
-  const stamped = { version: parseInt(hex[12]!, 16), variant: ((parseInt(hex[16]!, 16) >> 2) === 2 ? 'RFC 9562 (10xx)' : (parseInt(hex[16]!, 16) >> 1) === 6 ? 'Microsoft (110x)' : parseInt(hex[16]!, 16) < 8 ? 'NCS (0xxx)' : 'future (111x)') }
-  const gregorian = (ticks: bigint) => new Date(Number(ticks / 10_000n) - 12_219_292_800_000).toISOString()
-  const v1Ticks = (BigInt('0x' + hex.slice(13, 16)) << 48n) | (BigInt('0x' + hex.slice(8, 12)) << 32n) | BigInt('0x' + hex.slice(0, 8))
-  const v6Ticks = (BigInt('0x' + hex.slice(0, 8)) << 28n) | (BigInt('0x' + hex.slice(8, 12)) << 12n) | BigInt('0x' + hex.slice(13, 16))
-  const safeDate = (f: () => string) => { try { return f() } catch { return 'out of range' } }
-  return {
-    hex, stamped, isNil: /^0{32}$/.test(hex), isMax: /^f{32}$/.test(hex),
-    schemas: {
-      v1: { time_low: hex.slice(0, 8), time_mid: hex.slice(8, 12), time_hi: hex.slice(13, 16), clock_seq: hex.slice(16, 20), node: hex.slice(20), time: safeDate(() => gregorian(v1Ticks)) },
-      v3: { md5: hex, says: 'a name hashed with MD5: the bits are the digest' },
-      v4: { random: hex, says: 'random bits' },
-      v5: { sha1: hex, says: 'a name hashed with SHA-1: the bits are the digest' },
-      v6: { time_high: hex.slice(0, 8), time_mid: hex.slice(8, 12), time_low: hex.slice(13, 16), clock_seq: hex.slice(16, 20), node: hex.slice(20), time: safeDate(() => gregorian(v6Ticks)) },
-      v7: { unix_ts_ms: Number(BigInt('0x' + hex.slice(0, 12))), time: safeDate(() => new Date(Number(BigInt('0x' + hex.slice(0, 12)))).toISOString()), rand_a: hex.slice(13, 16), rand_b: hex.slice(16) },
-      v8: { custom_a: hex.slice(0, 12), custom_b: hex.slice(13, 16), custom_c: hex.slice(16), says: 'custom bits: here the handle, the program and the tail' },
-    },
-    core: { channel: channel(dashed(hex)), says: 'the channel reads the handle, the program and the tail: the same under every schema' },
-    schemasRead: UUID_SCHEMAS.length + 2,
-  }
-}
 
-/** One quantum SKU. The handle is the SKU. The eight versions are eight dimensions of this one address, and the seven RFC layouts with nil and max are readings of the same bits. The encryption is the reflection both ways and the six neighbour steps, and it stays this address. */
-export const quantumSku = (address: string) => {
-  const ch = channel(address)
-  const read = uuidSchemas(address)
-  const tone = resonance()
-  const fwd = reflection(address)
-  const back = reflection(fwd.mirror)
-  const nb = neighbours(address)
-  const roundTrip = back.handle === ch.handle && back.tail === ch.tail && back.program.join() === ch.program.join() && read.core.channel.handle === ch.handle && read.schemasRead === UUID_SCHEMAS.length + 2
-  const sealed = seal(address).valid && seal(fwd.mirror).valid && nb.neighbours.length === 6 && nb.neighbours.every((step) => step.sealed)
-  const occupied = read.stamped.version
-  const ink = tone.channels.find((row) => (row.versions as readonly number[]).includes(occupied))?.ink ?? null
-  return {
-    sku: ch.sku, uuid: address, door: ch.door, qubits: ch.fingerprint, versions: tone.versions, schemas: read.schemasRead, stamped: read.stamped, occupied, ink,
-    readings: read.schemas, nil: read.isNil, max: read.isMax,
-    encrypted: { reflections: 2 as const, directions: 6 as const, mirror: fwd.mirror, roundTrip, neighbours: nb.neighbours.map((step) => step.uuid) },
-    sealed, holds: ch.sku === ch.handle && ch.sku.length === 8 && roundTrip && sealed && tone.dimensions === 8 && ink !== null,
-    theorem: 'textbook_uuid_schemas' as const,
-  }
-}
 
 /** A UUID no docket holds, answered as a block anyway: the page computed from the id alone (seal, channel, reflection),
  *  nothing written, so every read of a block answers and the missing component is filled in real time; a client that

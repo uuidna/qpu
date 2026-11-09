@@ -2,7 +2,9 @@
 // Expressions are linted by ESLint's universal Linter before they run. Nothing is fetched.
 
 import { manageApi } from '../../payload/index.ts'
-import { browserEslint } from '../eslint.ts'
+
+// ESLint where it is installed; where it is not, no linter, and no expression runs
+const linter = await import('../eslint.ts').catch(() => null)
 
 const source = manageApi({ collection: 'pages', action: 'find', where: { slug: { equals: 'alpine' } } })
 
@@ -13,7 +15,8 @@ const os = {
   device: 'client' as const,
   binary: 'apk' as const,
   source,
-  eslint: browserEslint,
+  eslint: linter?.browserEslint ?? null,
+  lint: linter?.lintExpression ?? null,
 }
 
 export default os

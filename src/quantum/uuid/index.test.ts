@@ -4,7 +4,7 @@
 // throwing or colliding — so a change that breaks the address space fails here, not in a client.
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { block, uuid, uuidFromParts, fold, seal, channel, reflection, neighbours, style, presentation, stream, canonicalText, memo, compositions, composition, compositionIndex, rosetta, harmonicDefaults, tailReadings, uuidSchemas, sequenceUuid, uuidQubits, hexbit, merkaba, quantumSku, organiseQubits } from './index.ts'
+import { block, uuid, uuidFromParts, fold, seal, channel, reflection, neighbours, style, presentation, stream, canonicalText, memo, compositions, composition, compositionIndex, rosetta, harmonicDefaults, tailReadings, sequenceUuid, uuidQubits, hexbit, merkaba, organiseQubits } from './index.ts'
 import { numerology } from '../processing/clay-register.ts'
 import { call } from '../processing/mcp.ts'
 
@@ -125,8 +125,8 @@ test('presentation and stream read a hex as itself: a nibble is one of sixteen c
   assert.ok(styled.hue >= 0 && styled.hue < 360 && styled.vars['--qpu-accent'] === p.style['--qpu-accent'] && b.html.includes(`style="${style(b.id).css};`) && style(b.id).vars['--qpu-accent'] === b.theme.accent)
 })
 
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: the tail reads every way and uuidSchemas reads one UUID as every RFC layout. */
-test('the tail reads every way and uuidSchemas reads one UUID as every RFC layout', () => {
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the tail reads every way and the channel reads one UUID. */
+test('the tail reads every way and the channel reads one UUID', () => {
   const u = uuid('schemas'), ch = channel(u)
   const t = tailReadings(ch.tail)
   assert.ok(t.one48 >= 0 && t.three16.length === 3 && t.vortex.seed >= 0 && t.vortex.seed <= 9)
@@ -141,25 +141,6 @@ test('the tail reads every way and uuidSchemas reads one UUID as every RFC layou
   assert.equal(ch.params.map((n) => n.toString(16).padStart(4, '0')).join(''), ch.tail)
   assert.equal(ch.validation.tail, true)
   assert.equal(ch.validation.holds, seal(u).valid)
-  const sc = uuidSchemas(u)
-  assert.equal(sc.schemasRead, 9)
-  assert.ok(sc.schemas.v4.random.length === 32 && typeof sc.schemas.v7.unix_ts_ms === 'number')
-  assert.equal(uuidSchemas('00000000-0000-0000-0000-000000000000').isNil, true)
-  assert.throws(() => uuidSchemas('too-short'))
-  const sku = quantumSku(u)
-  assert.equal(sku.sku, ch.handle)
-  assert.equal(sku.uuid, u)
-  assert.equal(sku.versions.join(), '1,2,3,4,5,6,7,8')
-  assert.equal(sku.schemas, 9)
-  assert.equal(sku.encrypted.reflections, 2)
-  assert.equal(sku.encrypted.directions, 6)
-  assert.equal(sku.encrypted.neighbours.length, 6)
-  assert.equal(sku.holds, true)
-  assert.equal(sku.theorem, 'textbook_uuid_schemas')
-  const rfc = quantumSku('017f22e2-79b0-7cc3-98c4-dc0c0c07398f')
-  assert.equal(rfc.sku, '017f22e2')
-  assert.equal(rfc.occupied, 7)
-  assert.equal(rfc.schemas, 9)
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: 124875 bouncing in 3690 is one UUID whose reverse is the reflection, and 3690 is entangled with 7410. */

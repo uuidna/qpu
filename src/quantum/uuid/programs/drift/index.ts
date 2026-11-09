@@ -6,7 +6,7 @@ import { exists, read as readFile, write } from '../../../fs/index.ts'
 import { driftWaves } from '../../../processing/lead-wave.ts'
 import { checkWitnesses } from '../../../processing/witnesses.ts'
 import { hex, sha256, utf8 } from '../../../processing/unit/hmac.ts'
-import { canonicalText, channel, coins, next as rotate, quantumSku, seal, uuidFromParts } from '../../index.ts'
+import { canonicalText, channel, coins, next as rotate, seal, uuidFromParts } from '../../index.ts'
 import { program } from '../index.ts'
 
 const FIELDS = ['family', 'hz', 'stated', 'difference', 'relations', 'next', 'solved', 'open', 'covers', 'own'] as const
@@ -98,7 +98,6 @@ export const driftPrograms = (waves: ReturnType<typeof driftWaves> = driftWaves(
     const tail = [params.family, params.hz, params.next].map((n) => n.toString(16).padStart(4, '0')).join('')
     const address = uuidFromParts(handle, CODES, tail)
     const read = channel(address)
-    const sku = quantumSku(address)
     const readSchema = read.program.map((nibble, at) => ({ field: FIELDS[at] ?? null, type: TYPES[nibble] ?? null, nibble }))
     const readParams = { family: read.params[0]!, hz: read.params[1]!, next: read.params[2]! }
     const installed = program(handle)
@@ -119,7 +118,6 @@ export const driftPrograms = (waves: ReturnType<typeof driftWaves> = driftWaves(
     const next = readParams.next === NONE ? null : waves.rows[readParams.next]?.family ?? null
     const typed = schema.every((field, at) => kind(record[field.field]) === field.type && readSchema[at]?.nibble === CODES[at] && readSchema[at]?.type === field.type)
     const opened = read.validation.holds && readParams.family === index && readParams.hz === row.hz && named === row.family && next === row.next
-    const encrypted = sku.encrypted.roundTrip === true && sku.encrypted.reflections === 2 && sku.encrypted.directions === 6 && sku.schemas === 9 && sku.sealed === true && sku.encrypted.neighbours.length === 6
     const caught = tampered.every((id) => !intact(id)) && forged !== receipt && receipt.length === 64
     const file = placeProgram(installed.path)
     const object = installed.handle === handle && installed.depth === 7 && installed.indexed === true && installed.path === `src/quantum/uuid/programs/${[...handle].join('/')}/index.ts` && file === true && readFile(installed.path) === PROGRAM && !PROGRAM.includes(handle)
@@ -131,7 +129,7 @@ export const driftPrograms = (waves: ReturnType<typeof driftWaves> = driftWaves(
     const walk = walkOf(address)
     const turned = walk.places === 10 && walk.returned && walk.handle === handle && walk.tail === tail && walk.steps.length === 10 && walk.steps.every((place) => place.sealed && place.kept && place.back && place.around && place.aspects === 4 && place.witnessed && place.params.family === readParams.family && place.params.hz === readParams.hz && place.params.next === readParams.next) && walk.steps[0]?.program === read.program.join(',') && walk.steps[9]?.next === address
     const cross = crossLean(address, integers, { family: index, hz: params.hz, next: params.next })
-    const holds = waves.holds && typed && opened && encrypted && caught && object && turned && algebra && coin && cross.lean && handle === programHandle(integers) && row.solved === false && row.open === false && row.closed === true
+    const holds = waves.holds && typed && opened && caught && object && turned && algebra && coin && cross.lean && handle === programHandle(integers) && row.solved === false && row.open === false && row.closed === true
     return {
       family: named,
       hz: readParams.hz,
@@ -151,7 +149,6 @@ export const driftPrograms = (waves: ReturnType<typeof driftWaves> = driftWaves(
       cross,
       witnesses: { squares: witnessed.squares, triangles: witnessed.triangles, faces: witnessed.faces, exact: witnessed.exact, cluster },
       coin: { address, sealed: coin, drift: row.difference, count: minted.count },
-      encrypted: { reflections: sku.encrypted.reflections, directions: sku.encrypted.directions, schemas: sku.schemas, neighbours: sku.encrypted.neighbours.length, roundTrip: sku.encrypted.roundTrip, cluster: cluster.length },
       tamper: { caught, collision: '2^128' as const, secondPreimage: '2^256' as const },
       walk,
       holds,

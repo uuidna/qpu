@@ -135,7 +135,7 @@ test('every crypto door answers through Payload MCP, develops through the hooks,
     { tool: 'fold', id: 'decode-one-way', args: { decode: { radices: queneau, uuid: '941ef62e-d97b-2438-bfc8-22ae9e5da781' } }, says: 'a content address is refused and no candidate is tried', ok: (s) => s.phase === 'refused' && s.decodable === false && s.court.rule === 'search' },
     { tool: 'fold', id: 'harmonic', args: { harmonic: { schema: { properties: { style: { enum: ['nova', 'lyra', 'maia'] }, theme: { enum: ['neutral', 'stone', 'zinc', 'gray'] }, radius: { enum: ['0', '0.3', '0.5', '0.75', '1'] } } } } }, says: 'sixty combinations held at once as a harmonic superposition', ok: (s) => s.phase === 'harmonic' && s.combinations === '60' && s.from === 'a432' },
     { tool: 'fold', id: 'rosetta', args: { rosetta: [6, 7], index: '20' }, says: '6×7 and 7×6 are one scale of forty-two read two ways', ok: (s) => s.phase === 'rosetta' && s.scale === '42' && s.covers === true && s.to === '38' },
-    { tool: 'fold', id: 'hex', args: { hex: '941ef62e-d97b-2438-bfc8-22ae9e5da781' }, says: 'thirty-two nibbles present as a shadcn combination', ok: (s) => s.phase === 'presented' && s.nibbles === 32 && s.schemas.schemasRead === 9 },
+    { tool: 'fold', id: 'hex', args: { hex: '941ef62e-d97b-2438-bfc8-22ae9e5da781' }, says: 'thirty-two nibbles present as a shadcn combination', ok: (s) => s.phase === 'presented' && s.nibbles === 32 },
     { tool: 'fold', id: 'stream', args: { uuids: ['941ef62e-d97b-2438-bfc8-22ae9e5da781', '016da774-e74c-2e44-8742-f8bcf5e8e8f5', '00000000-0000-1000-8000-000000000000'], query: { where: { nibble: { at: 1, is: '0' } }, sort: 'hue', execute: true } }, says: 'a UUID stream filters to one address without storing the space', ok: (s) => s.phase === 'streamed' && s.filtered === 1 && s.rows[0].uuid === '00000000-0000-1000-8000-000000000000' },
     { tool: 'fold', id: 'neighbours', args: { neighbours: '941ef62e-d97b-2438-bfc8-22ae9e5da781' }, says: 'six program-space neighbours are sealed leads', ok: (s) => s.phase === 'neighbours' && s.neighbours.length === 6 && s.neighbours.every((n: { sealed: boolean }) => n.sealed) },
     { tool: 'fold', id: 'navigate', args: { navigate: '941ef62e-d97b-2438-bfc8-22ae9e5da781' }, says: 'the team is the six neighbours and their stream', ok: (s) => s.phase === 'navigate' && s.neighbours.length === 6 && s.stream.stream === 7 },
@@ -143,10 +143,9 @@ test('every crypto door answers through Payload MCP, develops through the hooks,
     { tool: 'fold', id: 'qubits', args: { qubits: 4 }, says: 'the register delivers six sealed neighbour leads', ok: (s) => s.phase === 'qubits' && s.delivery.holds === true && s.delivery.leads.length === 6 },
     { tool: 'fold', id: 'exchange', args: { exchange: { address: '941ef62e-d97b-2438-bfc8-22ae9e5da781', hexbit: 4 } }, says: 'qubit exchange navigates six directions and holds its receipt', ok: (s) => s.phase === 'hexbit' && s.navigate.directions === 6 && s.receipt.holds === true },
     { tool: 'fold', id: 'organise', args: { organise: { address: '941ef62e-d97b-2438-bfc8-22ae9e5da781', hexbit: 4 } }, says: 'qubits organised by trinity hold', ok: (s) => s.phase === 'organise' && s.holds === true },
-    { tool: 'fold', id: 'sku', args: { sku: '941ef62e-d97b-2438-bfc8-22ae9e5da781' }, says: 'the quantum SKU encrypts six neighbour steps', ok: (s) => s.phase === 'sku' && s.holds === true && s.encrypted.neighbours.length === 6 },
     { tool: 'fold', id: 'coins', args: { coins: ['941ef62e-d97b-2438-bfc8-22ae9e5da781', 'rodin', '941ef62e-d97b-2438-bfc8-22ae9e5da781'] }, says: 'repeated addresses merge to two coins', ok: (s) => s.phase === 'coins' && s.count === 2 },
-    { tool: 'fold', id: 'superpositions', args: { superpositions: true }, says: 'every UUID superposition holds at once and nothing is walked', ok: (s) => s.phase === 'superpositions' && s.holds === true && s.superpositions === 14 && s.walked === false },
-    { tool: 'fold', id: 'superpositions-reverse', args: { superpositions: { reverse: true } }, says: 'every UUID superposition reverses to the program it started from', ok: (s) => s.phase === 'superpositions-reverse' && s.holds === true && s.reversed === 14 && s.walked === false },
+    { tool: 'fold', id: 'superpositions', args: { superpositions: true }, says: 'every UUID superposition holds at once and nothing is walked', ok: (s) => s.phase === 'superpositions' && s.holds === true && s.superpositions === 12 && s.walked === false },
+    { tool: 'fold', id: 'superpositions-reverse', args: { superpositions: { reverse: true } }, says: 'every UUID superposition reverses to the program it started from', ok: (s) => s.phase === 'superpositions-reverse' && s.holds === true && s.reversed === 12 && s.walked === false },
     { tool: 'fold', id: 'folded', args: { text: ledger, bound: 600, key: 'k27' }, says: 'k27 names its piece and each piece mirrors across the fold', ok: (s) => s.phase === 'folded' && s.fits === false && !!s.located },
     { tool: 'fold', id: 'unfold', args: { pieces: (cut.pieces as { index: number; text: string }[]).map((p) => ({ index: p.index, text: p.text })), withPieces: true }, says: 'the pieces join back to the text they were cut from', ok: (s) => s.phase === 'unfolded' && s.whole === 'abcdefgh\nij' },
     { tool: 'seal', id: 'unlimited', args: {}, says: 'no params stays unlimited at 432 Hz', ok: (s) => s.phase === 'unlimited' && s.hz === 432 },
@@ -219,11 +218,9 @@ test('every UUID superposition holds through fold and develops through the hooks
   assert.equal(plan.fetched, false)
   assert.equal(plan.written, false)
   assert.equal(plan.walked, false)
-  assert.equal(plan.superpositions, 14)
+  assert.equal(plan.superpositions, 12)
   assert.equal(plan.neighbours, 6)
-  assert.equal(plan.schemas, 9)
   assert.equal(plan.qubits.leads, 6)
-  assert.equal(plan.sku.directions, 6)
 
   for (const row of plan.scenarios) {
     const answer = invoke(row.tool, row.arguments)
@@ -231,7 +228,6 @@ test('every UUID superposition holds through fold and develops through the hooks
     else if (row.id === 'navigate') assert.equal(answer.neighbours.length, 6)
     else if (row.id === 'next') assert.equal(answer.places, 10)
     else if (row.id === 'harmonic') assert.equal(answer.combinations, '60')
-    else if (row.id === 'schemas') assert.equal(answer.schemas.schemasRead, 9)
     else if (row.id === 'stream') assert.equal(answer.filtered, 1)
     else if (row.id === 'rosetta') assert.equal(answer.scale, '42')
     else if (row.id === 'combinatorics') assert.equal(answer.best, 'queneau')
@@ -239,7 +235,6 @@ test('every UUID superposition holds through fold and develops through the hooks
     else if (row.id === 'qubits') assert.equal(answer.delivery.leads.length, 6)
     else if (row.id === 'exchange') assert.equal(answer.receipt.holds, true)
     else if (row.id === 'organise') assert.equal(answer.holds, true)
-    else if (row.id === 'sku') assert.equal(answer.encrypted.neighbours.length, 6)
     else if (row.id === 'coins') assert.equal(answer.count, 2)
     else assert.fail(`uncovered superposition ${row.id}`)
   }
@@ -258,8 +253,8 @@ test('every UUID superposition reverses through fold and develops through the ho
   assert.equal(plan.fetched, false)
   assert.equal(plan.written, false)
   assert.equal(plan.walked, false)
-  assert.equal(plan.superpositions, 14)
-  assert.equal(plan.reversed, 14)
+  assert.equal(plan.superpositions, 12)
+  assert.equal(plan.reversed, 12)
   assert.ok(plan.scenarios.every((row: { returns: boolean }) => row.returns))
   assert.ok(plan.neighbours.every((row: { returns: boolean; sealed: boolean }) => row.returns && row.sealed))
 
