@@ -128,7 +128,7 @@ export const NEXT_STEPS: readonly NextStep[] = [
   { name: 'configs', wave: 2, budgetMs: 300_000, via: 'door', tool: 'configure', arguments: {} },
   { name: 'audit', wave: 2, budgetMs: 300_000, via: 'door', tool: 'audit', arguments: { access: true } },
   { name: 'imagine', wave: 3, budgetMs: 300_000, via: 'door', tool: 'imagine', arguments: { open: 8 }, long: true },
-  { name: 'leads', wave: 3, budgetMs: 300_000, via: 'door', tool: 'leads', arguments: { status: 'open' }, long: true },
+  { name: 'leads', wave: 2, budgetMs: 300_000, via: 'door', tool: 'leads', arguments: { consistent: true } },
   { name: 'e2e', wave: 3, budgetMs: 300_000, via: 'door', tool: 'e2e', arguments: { hosts: ['http://localhost:3000/api/mcp'] }, needs: 'online', long: true },
   { name: 'metrics', wave: 5, budgetMs: 300_000, via: 'door', tool: 'metrics', arguments: {}, long: true },
 ]
