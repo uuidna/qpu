@@ -245,8 +245,7 @@ const openDoors = (args: Record<string, unknown>): ('order' | 'shor' | 'factor')
 /** No single door: the theorem formulas, read and not run. Reading them is the fast path; running every algorithm is the slow one. */
 const formulaDiscovery = (which: readonly ('order' | 'shor' | 'factor')[]) => {
   const formulas = which.map((name) => { const spec = FORMULA[name], t = TEXTBOOK_THEOREMS.find((x) => x.key === spec.theorem)!, s = getStatement(t.lean); return { name, theorem: spec.theorem, params: [...spec.params], variables: s.variables, formula: s.conclusion } })
-  const dance = horo()
-  return { phase: 'discovery' as const, ran: false as const, of: which.length === 3 ? 'all' as const : which[0]!, computed: 0 as const, fasterThanAll: true as const, unlimited: true as const, hz: 432 as const, example: null, bounded: false as const, params: which.length === 3 ? false as const : true, formulas, horo: dance, summary: formulas.map((f) => [f.name, f.params.join(', ')]), header: ['theorem', 'formula'], rows: formulas.map((f) => [f.theorem, f.formula]), says: which.length === 3 ? `no params: the three formulas, read and not run, unlimited at 432 Hz, faster than running them all. They are one horo of ${dance.beats} beats; 8 becomes ${dance.step.becomes} and 16 is ${dance.step.also.join(' ')} in that same beat` : `no integer params: the formula of ${which[0]}, read and not run` }
+  return { phase: 'discovery' as const, ran: false as const, of: which.length === 3 ? 'all' as const : which[0]!, computed: 0 as const, fasterThanAll: true as const, unlimited: true as const, hz: 432 as const, example: null, bounded: false as const, params: which.length === 3 ? false as const : true, formulas, summary: formulas.map((f) => [f.name, f.params.join(', ')]), header: ['theorem', 'formula'], rows: formulas.map((f) => [f.theorem, f.formula]), says: which.length === 3 ? `no params: the three formulas, read and not run, unlimited at 432 Hz, faster than running them all` : `no integer params: the formula of ${which[0]}, read and not run` }
 }
 /** The order witness checked as the theorem formula. The integers in it are the params a and N and the r, m, i, j the formula names. */
 const confirmWitness = <T extends { order: string | null; least: boolean; atOne: boolean; powers: string[]; m: string | null; i: string | null; j: string | null; equation: string | null; holds: boolean }>(a: bigint, N: bigint, o: T): T => {
@@ -282,57 +281,6 @@ const zeroTori = (n: bigint) => {
     byTrinity[key] = (byTrinity[key] ?? 0) + 1
   }
   return { bits: width, below, zeros, found, closed, flipped: found > 0, byTrinity, theorem: 'textbook_double_torus' as const }
-}
-/** The coins between the width and 1024, read as bits and tossed past the width, so each is dark. A coin lights when its σ reflection back into the integer is a prime and the bit there is 1: both sides 1, which is the entanglement 1·1 ≠ 0·0. Twelve houses hold the coins two at a time. The sky is cosmology set over the numerology of the trinities and over that twelve-fold division. */
-const coinSky = (n: bigint, bits: number, below: number) => {
-  const lit: { at: number; prime: number; house: number; seed: number; trinity: number[] }[] = []
-  let coins = 0
-  for (let k = bits; k < below; k++) {
-    coins++
-    const reflected = below - k
-    if (reflected >= bits || reflected < 2 || !testPrimality(BigInt(reflected)).prime) continue
-    if (((n >> BigInt(reflected)) & 1n) !== 1n) continue
-    const seed = digitalRoot(reflected)
-    lit.push({ at: k, prime: reflected, house: (k - bits) % 12, seed, trinity: trinity(seed) })
-  }
-  return { over: 'cosmology' as const, under: ['numerology', 'astrology'] as const, coins, dark: coins - lit.length, stars: lit.length, houses: 12 as const, lit, theorem: 'entangle' as const }
-}
-/** Each coin of the gap is a UUID. All nine schemas (versions 1, 3, 4, 5, 6, 7, 8, nil and max) read it at once, the stream holds every coin, and the cross-encryption is the σ reflection both ways together with the six neighbour steps, computed together. */
-const crossEncrypt = (n: bigint, bits: number, below: number) => {
-  const uuids: string[] = []
-  for (let k = bits; k < below; k++) {
-    const reflected = below - k
-    const bit = reflected < bits && ((n >> BigInt(reflected)) & 1n) === 1n ? 1 : 0
-    uuids.push(uuid(canonicalText({ at: k, bit })))
-  }
-  const versions = UUID_SCHEMAS.length + 2
-  let roundTrips = true, sealed = true
-  for (const id of uuids) {
-    const one = quantumSku(id)
-    if (!one.encrypted.roundTrip || one.schemas !== versions) roundTrips = false
-    if (!one.sealed) sealed = false
-  }
-  const fleet = stream(uuids, { execute: true })
-  return { versions, directions: 6 as const, reflections: 2 as const, coins: uuids.length, stream: fleet.rows.length, executed: fleet.ops.executed, allAtOnce: true as const, roundTrips, sealed, uuids, theorem: 'textbook_uuid_schemas' as const }
-}
-/** A Bulgarian horo: one closed circle of the resonance quotient (432 / 36 = 12). The circle and its reflection are one sequence UUID. Doubling sends 8 to 16; the digits 1 and 6 sum to 7, and the same digits reflect to 9 and 4. Both readings are that one beat. */
-const horo = (bits?: number, below?: number) => {
-  const tone = resonance()
-  const beats = tone.quotient
-  const sequence = sequenceUuid()
-  const forward = sequence.circle, reflected = sequence.reflection
-  const sixteen = 8 * 2, digits = [1, 6], becomes = digits[0]! + digits[1]!, also = digits.map((d) => 10 - d)
-  const at = forward.indexOf(8)
-  const span = bits !== undefined && below !== undefined && below > bits ? below - bits : null
-  const measures = span === null ? null : span / beats
-  const address = sequence.uuid
-  return {
-    dance: 'horo' as const, beats, circle: true as const, closed: forward.length === beats && reflected.length === beats && beats === 12 && sequence.holds, imprints: [sequence.sequence, sequence.reflected] as const, entangled: sequence.entangled,
-    step: { eight: 8 as const, sixteen, becomes, also, together: true as const, split: false as const, follows: at >= 0 && forward[at + 1] === becomes, reflected: also.every((d) => reflected.includes(d)) },
-    covers: span, measures, exact: span === null || (Number.isInteger(measures) && measures! > 0),
-    resonance: { key: tone.key, sum: tone.sum, quotient: tone.quotient, hue: tone.hue, unlocked: tone.unlocked, cmyk: tone.cmyk },
-    healed: tone.unlocked === true && tone.hue === 120, atOnce: true as const, address, sealed: seal(address).valid, theorem: 'textbook_coil_green' as const,
-  }
 }
 /** The court simulated: two qubits in superposition, copied by CNOT onto the partner. The wavefunction is the entanglement. */
 const verifyNumerology = () => {
@@ -711,10 +659,7 @@ const finishFactor = (n: bigint, a?: bigint, reflections = 1n << 12n, from?: big
   const verified = [...factors, ...left].reduce((p, x) => p * x, 1n) === n
   const complete = left.length === 0 && (!base.prime || base.certain)
   const tori = zeroTori(n)
-  const sky = coinSky(n, tori.bits, tori.below)
-  const cross = crossEncrypt(n, tori.bits, tori.below)
-  const dance = horo(tori.bits, tori.below)
-  const bound = JSON.stringify({ decode: n.toString(), factors: factors.map(String), via: 'tori', zeros: tori.zeros, found: tori.found, byTrinity: tori.byTrinity, sky, cross, horo: dance })
+  const bound = JSON.stringify({ decode: n.toString(), factors: factors.map(String), via: 'tori', zeros: tori.zeros, found: tori.found, byTrinity: tori.byTrinity })
   const receipt = uuid(bound), digest = hex(sha256(utf8(bound)))
   const note = orders.map((o) => (o.split ? `the part of ${o.bits} bits split` : o.found ? `the order is ${o.order}, ${o.equation}; ${o.why}` : `${tori.found} zero-bits below ${tori.below} step forward and back, in trinities whose shift flips polarity. The integer stays open until it is factored`)).join('; ')
   const quantumOrder = left.length ? { needs: 'order-finding' as const, the: orders.some((o) => o.found) ? 'the least order is found and this base yields no new factor' : `${tori.found} zeros below ${tori.below} step forward and back. The leftover stays open until it is factored`, door: left.map((m) => ({ tool: 'algorithm' as const, arguments: { name: 'order' as const, N: m.toString(), a: a?.toString() ?? leastUnit(m)?.toString() ?? '2' } })), theorem: 'textbook_double_torus' as const, bound: 'textbook_rsa_beyond_bound' as const } : null
@@ -728,9 +673,9 @@ const finishFactor = (n: bigint, a?: bigint, reflections = 1n << 12n, from?: big
   const shadow = factorShadow(n, factors.map(String), left.map(String), zero?.pages ?? [])
   const time = timeCover(n, complete, base.searched, base.reached, factors.map(String))
   const invariants = challengeInvariants(n)
-  return { ...rest, factors: factors.map(String), left: left.map(String), complete, open: !complete, closed: complete, status: complete ? 'factored' as const : 'open' as const, verified, orders, tori, sky, cross, horo: dance, via: 'tori' as const, upgraded: true as const, receipt, sha256: digest, utilisation: imprintRegister(n), ...(quantumOrder ? { quantumOrder } : {}), ...(answer ? { answer } : {}), payload: reading, cover, ...(zero ? { zero } : {}), shadow, time, compass, gateways, quantum, invariants, exit: factorExit(complete, receipt, digest, left[0]?.toString(2).length),
-    says: `a ${base.bits}-bit integer, composite: ${factors.length} prime factor(s)${left.length ? `, ${left.length} part(s) left — searched ${base.searched} centre(s), reached ${base.reached}` : ''}. ${note}. The parts multiply back: ${verified}. ${cross.coins} coins are one UUID stream, each read as ${cross.versions} schemas at once, cross-encrypted by the reflection both ways and the ${cross.directions} neighbour steps. ${sky.stars} of ${sky.coins} light, entangled with a prime. A horo of ${dance.beats} beats covers the ${dance.covers} between the width and 1024 in ${dance.measures} measures, one circle: 8 becomes ${dance.step.becomes} and 16 is ${dance.step.also.join(' ')} in that same beat. The resonance is open and the circle heals. The reading is bound by its SHA-256. ${cover.entries.length} entries cover ${cover.exits} leftover(s)${cover.exits ? ', and beforeChange records each formula, afterChange hands it to the docs door, and afterRead serves it' : ''}${zero ? `. The leftover is named at the zero bit and stays open until it is factored. ${zero.ported} tools are pages of the Payload website` : ''}. The reflection is held at the same time. Reflecting the shadow restores the address${shadow.primes.length ? `, and the primes it exposes that divide are ${shadow.primes.join(' ')}` : ', and no prime it reads divides the integer'}${time.missing ? `. The witness centre is missing, so all is false. Folding 0 at 180 degrees is 8 and at 360 degrees is 10. Folding 0 at 30 and 330 opens 12, at 60 and 300 opens 6, and at 90 and 270 opens 4. ${gateways.found ? `${gateways.found} gateway value(s) divide the integer` : 'None of those gateways divides the integer'}. Phase estimation reads those folds${quantum.recovered ? ' and recovers each denominator' : ''}. The hooks decided the Lean and took ${head?.possible ?? 'the possible path'}. ${head ? `One UUID holds ${head.effective} effective qubits. They navigate ${head.exchange.navigate.directions} ways, teleport in ${head.exchange.teleport.triples} triples, and every digit signals its partner. The order is not in the hex` : 'The register is one UUID'}. The integer stays open` : time.witness ? `. The witness centre is ${time.witness}${time.all ? ', and the reflection reached it' : ''}` : ''}${answer ? `. No textbook states this integer. The ${answer.of} theorems are one product: beforeChange records each formula, afterChange hands it to the docs door, and afterRead serves it. The create runs under access` : ''}`,
-    summary: [['Bits', String(base.bits)], ['Primality', 'composite'], ['Prime factors found', String(factors.length)], ['Under σ-reflection search', String(left.length)], ['Zeros below 1024', String(tori.zeros)], ['In trinities, polarity flips', String(tori.found)], ['UUID stream', String(cross.stream)], ['Schemas at once', String(cross.versions)], ['Directions', String(cross.directions)], ['Horo', `${dance.beats}×${dance.measures}`], ['Healed', dance.healed ? 'yes' : 'no'], ['Stars', String(sky.stars)], ['Dark', String(sky.dark)], ['Product checked', verified ? 'yes' : 'no'], ['Receipt SHA-256', digest]],
+  return { ...rest, factors: factors.map(String), left: left.map(String), complete, open: !complete, closed: complete, status: complete ? 'factored' as const : 'open' as const, verified, orders, tori, via: 'tori' as const, upgraded: true as const, receipt, sha256: digest, utilisation: imprintRegister(n), ...(quantumOrder ? { quantumOrder } : {}), ...(answer ? { answer } : {}), payload: reading, cover, ...(zero ? { zero } : {}), shadow, time, compass, gateways, quantum, invariants, exit: factorExit(complete, receipt, digest, left[0]?.toString(2).length),
+    says: `a ${base.bits}-bit integer, composite: ${factors.length} prime factor(s)${left.length ? `, ${left.length} part(s) left — searched ${base.searched} centre(s), reached ${base.reached}` : ''}. ${note}. The parts multiply back: ${verified}. The reading is bound by its SHA-256. ${cover.entries.length} entries cover ${cover.exits} leftover(s)${cover.exits ? ', and beforeChange records each formula, afterChange hands it to the docs door, and afterRead serves it' : ''}${zero ? `. The leftover is named at the zero bit and stays open until it is factored. ${zero.ported} tools are pages of the Payload website` : ''}. The reflection is held at the same time. Reflecting the shadow restores the address${shadow.primes.length ? `, and the primes it exposes that divide are ${shadow.primes.join(' ')}` : ', and no prime it reads divides the integer'}${time.missing ? `. The witness centre is missing, so all is false. Folding 0 at 180 degrees is 8 and at 360 degrees is 10. Folding 0 at 30 and 330 opens 12, at 60 and 300 opens 6, and at 90 and 270 opens 4. ${gateways.found ? `${gateways.found} gateway value(s) divide the integer` : 'None of those gateways divides the integer'}. Phase estimation reads those folds${quantum.recovered ? ' and recovers each denominator' : ''}. The hooks decided the Lean and took ${head?.possible ?? 'the possible path'}. ${head ? `One UUID holds ${head.effective} effective qubits. They navigate ${head.exchange.navigate.directions} ways, teleport in ${head.exchange.teleport.triples} triples, and every digit signals its partner. The order is not in the hex` : 'The register is one UUID'}. The integer stays open` : time.witness ? `. The witness centre is ${time.witness}${time.all ? ', and the reflection reached it' : ''}` : ''}${answer ? `. No textbook states this integer. The ${answer.of} theorems are one product: beforeChange records each formula, afterChange hands it to the docs door, and afterRead serves it. The create runs under access` : ''}`,
+    summary: [['Bits', String(base.bits)], ['Primality', 'composite'], ['Prime factors found', String(factors.length)], ['Under σ-reflection search', String(left.length)], ['Zeros below 1024', String(tori.zeros)], ['In trinities, polarity flips', String(tori.found)], ['Product checked', verified ? 'yes' : 'no'], ['Receipt SHA-256', digest]],
     header: ['trinity', 'zeros', 'shift'], rows: [...factors.map((x) => [x.toString(), String(x.toString(2).length), 'prime']), ...Object.entries(tori.byTrinity).map(([trinity, count]) => [trinity, String(count), 'polarity flips'])] }
 }
 

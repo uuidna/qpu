@@ -6,7 +6,8 @@
 // door answers, each process step the command the table names; a step past its budget is killed with its process group and recorded red; the
 // red steps are retried once after the generators ran; the receipt is the last line, `RECEIPT {json}`, the body of the machine's entry.
 import { spawn } from 'node:child_process'
-import { existsSync, mkdirSync, readdirSync, readFileSync, readlinkSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { existsSync, mkdirSync, readdirSync, readFileSync, readlinkSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { availableParallelism, homedir, tmpdir, totalmem } from 'node:os'
 import { fileURLToPath } from 'node:url'
@@ -59,8 +60,27 @@ const resolveArgs = async (x: unknown, cwd: string, call: Call): Promise<unknown
   return Object.fromEntries(await Promise.all(Object.entries(o).map(async ([k, v]) => [k, await resolveArgs(v, cwd, call)])))
 }
 /** The child of a door or generator step: the handler called as a library, the answer printed as one JSON line, a generator's path and text written. */
+// ISO/IEC 4879:2024 3.4.29 quantum memory on the filesystem: each answer the door measured (3.2.16) is written under its content address,
+// in a folder named by the code that computed it, so a later process on the same code reads it back instead of computing it again
+type Block = { address: string; structured: unknown; widget: string }
+const memoryOf = (cwd: string) => {
+  const root = join(cwd, 'src/quantum'), code = createHash('sha256')
+  for (const f of (readdirSync(root, { recursive: true }) as string[]).filter((f) => /\.(ts|js|json)$/.test(f)).sort()) code.update(f).update(readFileSync(join(root, f)))
+  const base = join(cwd, '.qpu', 'memory'), dir = join(base, code.digest('hex').slice(0, 32))
+  const read = (): Block[] => existsSync(dir) ? readdirSync(dir).flatMap((f) => readFileSync(join(dir, f), 'utf8').split('\n').flatMap((l) => { try { return l ? [JSON.parse(l) as Block] : [] } catch { return [] } })) : []
+  const write = (blocks: readonly Block[]) => {
+    const lines = blocks.flatMap((b) => { try { return [JSON.stringify(b)] } catch { return [] } })
+    if (!lines.length) return
+    if (existsSync(base)) for (const old of readdirSync(base)) if (join(base, old) !== dir) rmSync(join(base, old), { recursive: true, force: true })
+    mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, `${process.pid}.ndjson`), lines.join('\n'))
+  }
+  return { read, write }
+}
+
 const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd: string, json = false) => {
-  const { call } = await import('./mcp.ts') as { call: Call }
+  const { call, balancerLoad, balancerSnapshot } = await import('./mcp.ts') as { call: Call; balancerLoad: (b: readonly Block[]) => number; balancerSnapshot: (p: { onlyNew?: boolean }) => Block[] }
+  const memory = memoryOf(cwd)
+  balancerLoad(memory.read())
   const args = await resolveArgs(JSON.parse(argsJson), cwd, call)
   const r = call(tool, args)
   if (r.error) { console.log(JSON.stringify({ error: r.error.message })); process.exitCode = 1; return }
@@ -79,6 +99,7 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   const outputs = [...(s && typeof s.path === 'string' && typeof s.text === 'string' ? [{ path: s.path, text: s.text }] : []), ...(Array.isArray(s?.files) ? s.files : [])] as { path: string; text: string }[]
   if (write) for (const o of outputs) if (typeof o.path === 'string' && typeof o.text === 'string') { const f = join(cwd, o.path); mkdirSync(dirname(f), { recursive: true }); if (!existsSync(f) || readFileSync(f, 'utf8') !== o.text) { writeFileSync(f, o.text); wrote.push(o.path) } }
   if (write) for (const l of (Array.isArray(s?.links) ? s.links : []) as { path: string; target: string }[]) { const p = join(cwd, l.path); mkdirSync(dirname(p), { recursive: true }); let current: string | null = null; try { current = readlinkSync(p) } catch { current = null }; if (current !== l.target) { if (current !== null) unlinkSync(p); if (!existsSync(p)) { symlinkSync(l.target, p); wrote.push(l.path) } } }
+  memory.write(balancerSnapshot({ onlyNew: true }))
   const brief = s && typeof s === 'object' ? Object.fromEntries(Object.entries(s).filter(([k, v]) => k !== 'text' && (typeof v !== 'object' || v === null))) : s
   if (write && outputs.length > 1) (brief as Record<string, unknown>).files = outputs.length
   console.log(`${write ? (wrote.length ? `wrote ${wrote.join(', ')}` : 'unchanged') : 'answered'} ${JSON.stringify(json ? s : brief)}`)
