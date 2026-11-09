@@ -1091,6 +1091,14 @@ theorem textbook_iso_classify_converse (cited files : Nat) : (cited + (files - c
 theorem textbook_physical_evidence (identified read : Bool) (h : (identified && read) = true) : identified = true ∧ read = true := by cases identified <;> cases read <;> simp_all
 /-- textbook_physical_evidence reflected by its shape, conjunction (examples: validate-physical-measured, validate-physical-unmeasured) -/
 theorem textbook_physical_evidence_reflected (identified read : Bool) (h : (identified && read) = true) : ((true) = (identified)) ∧ ((true) = (read)) := ⟨Eq.symm (textbook_physical_evidence identified read h).1, Eq.symm (textbook_physical_evidence identified read h).2⟩
+/-- auditPrograms partitions the files it reads: each is a UUID program (placed, a Lean module, installing one, or a generator output) or a lead naming the ISO/IEC 4879 terms it consolidates under (examples: audit-programs) -/
+theorem textbook_programs_partition (programs files : Nat) (h : programs ≤ files) : programs + (files - programs) = files := by omega
+/-- textbook_programs_partition reflected by its shape, equality (examples: audit-programs) -/
+theorem textbook_programs_partition_reflected (programs files : Nat) (h : programs ≤ files) (σ : Nat) : σ - (files) = σ - (programs + (files - programs)) := congrArg (σ - ·) (Eq.symm (textbook_programs_partition programs files h))
+/-- the contrapositive of textbook_programs_partition (examples: audit-programs) -/
+theorem textbook_programs_partition_contrapositive (programs files : Nat) : ¬ (programs + (files - programs) = files) → ¬ ((programs ≤ files)) := fun hc hh => hc (textbook_programs_partition programs files hh)
+/-- the converse of textbook_programs_partition, proved (examples: audit-programs) -/
+theorem textbook_programs_partition_converse (programs files : Nat) : (programs + (files - programs) = files) → (programs ≤ files) := fun hc => by omega
 /-- the catalogue extended inward is the tree's own tools and the one door the docs add, whatever the number of tools (examples: extend-in-docs) -/
 theorem textbook_extend_inward (mine : Nat) : mine + 1 - mine = 1 := by omega
 /-- textbook_extend_inward reflected by its shape, equality (examples: extend-in-docs) -/
