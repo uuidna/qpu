@@ -10,7 +10,7 @@ The registry records `/api/qpu/repos`, `/api/qpu/feeds`, `/api/qpu/accounting`, 
 
 ## Bristlecone and Foxtail
 
-`ALL_PROCESSORS` holds six processors: Google Quantum AI's five layouts and qpu's register (`Qpu.Register`). `DEVICES` is the same map, so the `circuit` tool and the engine client check a circuit against every one of them.
+`ALL_PROCESSORS` holds six processors: Google Quantum AI's five layouts and qpu's register (`Qpu.Information.Qubit`). `DEVICES` is the same map, so the `circuit` tool and the engine client check a circuit against every one of them.
 
 | Layout | Qubits | Couplers | Fields the object holds |
 |---|---:|---:|---|

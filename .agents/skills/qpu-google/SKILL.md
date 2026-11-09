@@ -57,7 +57,7 @@ Call any tool with the arguments its schema names; every result is a block (widg
 - `algorithm-factor-word`: A paste with no integer is not a refusal.
 - `processor-willow`: How many qubits Willow has, as its spec sheet states it: 105, with average connectivity 3.47, computed again from the 182 couplers of the grid (2E/N), and error correction below threshold since Λ is above 1.
 - `processor-sycamore`: Sycamore from its printed diagram: 54 qubits and 88 couplers, derived and stated.
-- `processor-register`: qpu's register as a processor: heldQubits laid out a row per hex digit that holds qubits and a column per held qubit, its qubits and couplers the evaluations of Qpu.Register at hexbit width 4.
+- `processor-register`: qpu's register as a processor: heldQubits laid out a row per hex digit that holds qubits and a column per held qubit, its qubits and couplers the evaluations of Qpu.Information.Qubit at hexbit width 4.
 - `circuit-hadamard-amplitudes`: A Hadamard gives two amplitudes of 1/√2.
 - `circuit-engine-receipt`: A cirq-google engine program runs on this register: Willow holds the job on a site its grid names, the Hadamard amplitudes stay in range, and the UUID receipt of that job stores every ISO standard.
 - `circuit-phased-xz`: PhasedXZ(x=1, z=0, axis=0.5) is Y: \|0⟩ goes to i\|1⟩.

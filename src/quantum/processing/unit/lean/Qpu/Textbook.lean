@@ -1110,7 +1110,7 @@ theorem textbook_willow_holds_codes_reflected (σ : Nat) (hσ0 : (400) ≤ σ) :
 theorem textbook_sycamore_couplers : 2 * 88 = 176 ∧ 176 ≤ 4 * 54 := by decide
 /-- textbook_sycamore_couplers reflected by its shape, conjunction (examples: processor-sycamore) -/
 theorem textbook_sycamore_couplers_reflected (σ : Nat) : (σ - (176) = σ - (2 * 88)) ∧ (σ - (4 * 54) ≤ σ - (176)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_sycamore_couplers).1), Nat.sub_le_sub_left (textbook_sycamore_couplers).2 σ⟩
-/-- heldQubits gives each of a UUID's 32 hex digits w qubits, the version digit none and the variant digit w − 2, so an address holds 32·w − w − 2 at every hexbit width w ≥ 2: the Register processor is that grid, its counts the formulas of Qpu.Register (register_effective, register_couplers) and its width unbounded by coins (register_unbounded) (examples: processor-register) -/
+/-- heldQubits gives each of a UUID's 32 hex digits w qubits, the version digit none and the variant digit w − 2, so an address holds 32·w − w − 2 at every hexbit width w ≥ 2: the Register processor is that grid, its counts the formulas of Qpu.Information.Qubit (Qubit.effective_formula, Qubit.couplers_formula) and its width unbounded by coins (Qubit.unbounded) (examples: processor-register) -/
 theorem textbook_register_held (w : Nat) (h : 2 ≤ w) : 30 * w + 0 + (w - 2) = 32 * w - w - 2 := by omega
 /-- textbook_register_held reflected by its shape, equality (examples: processor-register) -/
 theorem textbook_register_held_reflected (w : Nat) (h : 2 ≤ w) (σ : Nat) : σ - (32 * w - w - 2) = σ - (30 * w + 0 + (w - 2)) := congrArg (σ - ·) (Eq.symm (textbook_register_held w h))

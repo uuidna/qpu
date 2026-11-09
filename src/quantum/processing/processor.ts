@@ -178,10 +178,10 @@ const FOXTAIL = {
   layout: 'the 2 × 11 two-row ladder grid in Cirq\'s Foxtail device specification',
 } as const
 
-/** qpu's register, the formulas of Qpu.Register at hexbit width 4: each digit of an address that holds qubits (heldQubits) is a row, in
- *  digit order, so the decided version digit is passed over and the grid stays connected (register_connected); each qubit is a column,
- *  and the couplers are the row and column neighbours. register_effective and register_couplers state both counts for every width;
- *  register_chains and register_unbounded add an address per coin, so the register has no width ceiling. */
+/** qpu's register, the formulas of Qpu.Information.Qubit at hexbit width 4: each digit of an address that holds qubits (heldQubits) is a row, in
+ *  digit order, so the decided version digit is passed over and the grid stays connected (QuantumProcessor.connected); each qubit is a column,
+ *  and the couplers are the row and column neighbours. Qubit.effective_formula and Qubit.couplers_formula state both counts for every width;
+ *  Qubit.chains and Qubit.unbounded add an address per coin, so the register has no width ceiling. */
 const REGISTER_SITES: readonly Site[] = Array.from({ length: 32 }, (_, at) => heldQubits(at, 4)).filter((held) => held > 0).flatMap((held, row) => Array.from({ length: held }, (_, bit) => GridQubit.of(row, bit)))
 const REGISTER = {
   name: 'Register',
@@ -189,7 +189,7 @@ const REGISTER = {
   qubits: REGISTER_SITES.length,
   sites: REGISTER_SITES,
   couplers: deriveCouplers(REGISTER_SITES),
-  layout: 'one UUID: a row per hex digit that holds qubits, a column per qubit it holds (Qpu.Register)',
+  layout: 'one UUID: a row per hex digit that holds qubits, a column per qubit it holds (Qpu.Information.Qubit)',
 } as const
 
 /** Every processor, Google Quantum AI's five and qpu's register, each a device a circuit is built and checked against. */

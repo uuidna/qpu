@@ -141,13 +141,12 @@ test('every crypto door answers through Payload MCP, develops through the hooks,
     { tool: 'fold', id: 'navigate', args: { navigate: '941ef62e-d97b-2438-bfc8-22ae9e5da781' }, says: 'the team is the six neighbours and their stream', ok: (s) => s.phase === 'navigate' && s.neighbours.length === 6 && s.stream.stream === 7 },
     { tool: 'fold', id: 'next', args: { next: '941ef62e-d97b-2438-bfc8-22ae9e5da781' }, says: 'the program rotates one place and ten rotations return it', ok: (s) => s.phase === 'next' && s.places === 10 && /^[0-9a-f-]{36}$/.test(s.next) },
     { tool: 'fold', id: 'qubits', args: { qubits: 4 }, says: 'the register delivers six sealed neighbour leads', ok: (s) => s.phase === 'qubits' && s.delivery.holds === true && s.delivery.leads.length === 6 },
-    { tool: 'fold', id: 'exchange', args: { exchange: { address: '941ef62e-d97b-2438-bfc8-22ae9e5da781', hexbit: 4 } }, says: 'qubit exchange navigates six directions and holds its receipt', ok: (s) => s.phase === 'exchange' && s.navigate.directions === 6 && s.receipt.holds === true },
+    { tool: 'fold', id: 'exchange', args: { exchange: { address: '941ef62e-d97b-2438-bfc8-22ae9e5da781', hexbit: 4 } }, says: 'qubit exchange navigates six directions and holds its receipt', ok: (s) => s.phase === 'hexbit' && s.navigate.directions === 6 && s.receipt.holds === true },
     { tool: 'fold', id: 'organise', args: { organise: { address: '941ef62e-d97b-2438-bfc8-22ae9e5da781', hexbit: 4 } }, says: 'qubits organised by trinity hold', ok: (s) => s.phase === 'organise' && s.holds === true },
     { tool: 'fold', id: 'sku', args: { sku: '941ef62e-d97b-2438-bfc8-22ae9e5da781' }, says: 'the quantum SKU encrypts six neighbour steps', ok: (s) => s.phase === 'sku' && s.holds === true && s.encrypted.neighbours.length === 6 },
-    { tool: 'fold', id: 'coil', args: { coil: '941ef62e-d97b-2438-bfc8-22ae9e5da781' }, says: 'the Rodin coil lives as two realities of six neighbours', ok: (s) => s.phase === 'coil' && s.holds === true && s.plasma.live.realities.length === 2 },
-    { tool: 'fold', id: 'coins', args: { coins: ['941ef62e-d97b-2438-bfc8-22ae9e5da781', 'rodin', '941ef62e-d97b-2438-bfc8-22ae9e5da781'] }, says: 'repeated addresses merge to two fused coins', ok: (s) => s.phase === 'coins' && s.count === 2 && s.fused === true },
-    { tool: 'fold', id: 'superpositions', args: { superpositions: true }, says: 'every UUID superposition holds at once and nothing is walked', ok: (s) => s.phase === 'superpositions' && s.holds === true && s.superpositions === 15 && s.walked === false },
-    { tool: 'fold', id: 'superpositions-reverse', args: { superpositions: { reverse: true } }, says: 'every UUID superposition reverses to the program it started from', ok: (s) => s.phase === 'superpositions-reverse' && s.holds === true && s.reversed === 15 && s.walked === false },
+    { tool: 'fold', id: 'coins', args: { coins: ['941ef62e-d97b-2438-bfc8-22ae9e5da781', 'rodin', '941ef62e-d97b-2438-bfc8-22ae9e5da781'] }, says: 'repeated addresses merge to two coins', ok: (s) => s.phase === 'coins' && s.count === 2 },
+    { tool: 'fold', id: 'superpositions', args: { superpositions: true }, says: 'every UUID superposition holds at once and nothing is walked', ok: (s) => s.phase === 'superpositions' && s.holds === true && s.superpositions === 14 && s.walked === false },
+    { tool: 'fold', id: 'superpositions-reverse', args: { superpositions: { reverse: true } }, says: 'every UUID superposition reverses to the program it started from', ok: (s) => s.phase === 'superpositions-reverse' && s.holds === true && s.reversed === 14 && s.walked === false },
     { tool: 'fold', id: 'folded', args: { text: ledger, bound: 600, key: 'k27' }, says: 'k27 names its piece and each piece mirrors across the fold', ok: (s) => s.phase === 'folded' && s.fits === false && !!s.located },
     { tool: 'fold', id: 'unfold', args: { pieces: (cut.pieces as { index: number; text: string }[]).map((p) => ({ index: p.index, text: p.text })), withPieces: true }, says: 'the pieces join back to the text they were cut from', ok: (s) => s.phase === 'unfolded' && s.whole === 'abcdefgh\nij' },
     { tool: 'seal', id: 'unlimited', args: {}, says: 'no params stays unlimited at 432 Hz', ok: (s) => s.phase === 'unlimited' && s.hz === 432 },
@@ -187,7 +186,7 @@ test('every crypto door answers through Payload MCP, develops through the hooks,
     { tool: 'seal', id: 'sign-refused', args: { text: 'qpu', sign: 'RSA' }, says: 'a name outside FIPS 204 is refused', pattern: /FIPS 204/ },
     { tool: 'seal', id: 'nist', args: { nist: true }, says: 'every NIST scenario is named for qpu.uuidna.com and nothing is fetched', ok: (s) => s.phase === 'nist' && s.host === QPU_HOST && s.holds === true && s.fetched === false && s.scenarios.length >= 20 },
     { tool: 'seal', id: 'nist-reverse-cern', args: { nist: { reverse: true, via: 'cern' } }, says: 'every NIST scenario reverses via CERN and nothing is fetched', ok: (s) => s.phase === 'nist-reverse' && s.via === 'cern' && s.host === CERN_HOST && s.holds === true && s.requests[0]?.id === 'cern-opendata' && s.scenarios.every((row: { returns: boolean }) => row.returns) },
-    { tool: 'attest', id: 'experience-cern', args: { op: 'experience', cern: { hits: { total: 1, hits: [{ id: '5209', metadata: { title: 'Higgs to two photons from 2011', relations: [{ doi: '10.7483/OPENDATA.CMS.N9MJ.QEEC' }] } }] } } }, says: 'one CERN record is a coil of two realities', ok: (s) => s.phase === 'experience' && s.source === 'cern-opendata' && s.holds === true && s.rows[0].realities.map((r: { digit: number }) => r.digit).join() === '1,6' },
+    { tool: 'attest', id: 'experience-cern', args: { op: 'experience', cern: { hits: { total: 1, hits: [{ id: '5209', metadata: { title: 'Higgs to two photons from 2011', relations: [{ doi: '10.7483/OPENDATA.CMS.N9MJ.QEEC' }] } }] } } }, says: 'one CERN record is sealed and its DOI well formed', ok: (s) => s.phase === 'experience' && s.source === 'cern-opendata' && s.holds === true && s.rows[0].sealed === true },
     { tool: 'seal', id: 'referer', args: { text: 'qpu', key: 'test', referer: { address: '941ef62e-d97b-2438-bfc8-22ae9e5da781', chunks: 3 } }, says: 'three seeds bind to the referer and the referer adds no bits', ok: (s) => s.derivation.seeds.length === 3 && s.derivation.entropy.refererBits === 0 },
     { tool: 'seal', id: 'tamper-authentic', args: { text: 'qpu', tamper: { text: 'qpu', address: coined.address, sha256: coined.sha256 } }, says: 'the same text, address and digest are authentic', ok: (s) => s.verdict === 'authentic' && s.court === null },
     { tool: 'seal', id: 'tamper-forged', args: { text: 'qpu', tamper: { text: 'qpu', address: coined.address, sha256: '00'.repeat(32) } }, says: 'a matching address with a different digest is forged', ok: (s) => s.verdict === 'forged' && s.court.rule === 'integrity' },
@@ -196,7 +195,7 @@ test('every crypto door answers through Payload MCP, develops through the hooks,
     { tool: 'attest', id: 'default', args: {}, says: 'an empty call plans the seventeen theorems and four hosts', ok: (s) => s.op === 'plan' && s.theorems.length === 17 && s.liveCertificates.length === 4 },
     { tool: 'attest', id: 'read-follow', args: { op: 'read', now, answers: [{ id: 'nist-beacon', text: beaconLast }, { id: 'ct-sth', text: sth }, { id: 'nvd-cves', text: nvd }, { id: 'cern-opendata', text: cern }, { id: 'tls:qpu.uuidna.com', text: JSON.stringify({ notBefore: '2026-09-09T03:31:22Z', notAfter: '2026-12-08T04:31:19Z', issuer: 'Google Trust Services WE1' }) }] }, says: 'the beacon asks for its previous pulse', ok: (s) => s.violations.length === 0 && s.followUps[0]?.id === 'nist-beacon-previous' },
     { tool: 'attest', id: 'read-chain', args: { op: 'read', now, answers: [{ id: 'nist-beacon', text: beaconLast }, { id: 'nist-beacon-previous', text: beaconPrev(sha512Zeros) }, { id: 'ct-sth', text: sth }, { id: 'acme-directory', text: JSON.stringify({ newNonce: 'u', newAccount: 'u', newOrder: 'u', revokeCert: 'u', keyChange: 'u' }) }, { id: 'nvd-cves', text: nvd }, { id: 'cern-opendata', text: cern }, { id: 'csrc-pqc', text: 'FIPS 203 FIPS 204 FIPS 205' }, { id: 'tls:qpu.uuidna.com', text: JSON.stringify({ notBefore: '2026-09-09T03:31:22Z', notAfter: '2026-12-08T04:31:19Z', issuer: 'WE1' }) }] }, says: 'the chain holds and a source that was not handed stays absent', ok: (s) => s.violations.length === 0 && s.followUps.length === 0 && s.sources['crt-sh'].status === 'absent' },
-    { tool: 'attest', id: 'experience-record', args: { op: 'experience', nist: { ResultCount: 1, ResultData: [{ title: 'NIST Chemistry WebBook', doi: 'doi:10.18434/T4D303' }] } }, says: 'one record is a coil of two realities', ok: (s) => s.phase === 'experience' && s.holds === true && s.rows[0].realities.map((r: { digit: number }) => r.digit).join() === '1,6' },
+    { tool: 'attest', id: 'experience-record', args: { op: 'experience', nist: { ResultCount: 1, ResultData: [{ title: 'NIST Chemistry WebBook', doi: 'doi:10.18434/T4D303' }] } }, says: 'one record is sealed and its DOI well formed', ok: (s) => s.phase === 'experience' && s.holds === true && s.rows[0].sealed === true },
   ]
 
   for (const door of doors) {
@@ -220,13 +219,11 @@ test('every UUID superposition holds through fold and develops through the hooks
   assert.equal(plan.fetched, false)
   assert.equal(plan.written, false)
   assert.equal(plan.walked, false)
-  assert.equal(plan.superpositions, 15)
+  assert.equal(plan.superpositions, 14)
   assert.equal(plan.neighbours, 6)
   assert.equal(plan.schemas, 9)
   assert.equal(plan.qubits.leads, 6)
   assert.equal(plan.sku.directions, 6)
-  assert.equal(plan.coil.realities.length, 2)
-  assert.equal(plan.coins.fused, true)
 
   for (const row of plan.scenarios) {
     const answer = invoke(row.tool, row.arguments)
@@ -243,8 +240,7 @@ test('every UUID superposition holds through fold and develops through the hooks
     else if (row.id === 'exchange') assert.equal(answer.receipt.holds, true)
     else if (row.id === 'organise') assert.equal(answer.holds, true)
     else if (row.id === 'sku') assert.equal(answer.encrypted.neighbours.length, 6)
-    else if (row.id === 'coil') assert.equal(answer.plasma.live.realities.length, 2)
-    else if (row.id === 'coins') assert.equal(answer.fused, true)
+    else if (row.id === 'coins') assert.equal(answer.count, 2)
     else assert.fail(`uncovered superposition ${row.id}`)
   }
 
@@ -262,8 +258,8 @@ test('every UUID superposition reverses through fold and develops through the ho
   assert.equal(plan.fetched, false)
   assert.equal(plan.written, false)
   assert.equal(plan.walked, false)
-  assert.equal(plan.superpositions, 15)
-  assert.equal(plan.reversed, 15)
+  assert.equal(plan.superpositions, 14)
+  assert.equal(plan.reversed, 14)
   assert.ok(plan.scenarios.every((row: { returns: boolean }) => row.returns))
   assert.ok(plan.neighbours.every((row: { returns: boolean; sealed: boolean }) => row.returns && row.sealed))
 

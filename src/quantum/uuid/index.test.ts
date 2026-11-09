@@ -4,7 +4,7 @@
 // throwing or colliding — so a change that breaks the address space fails here, not in a client.
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { block, uuid, uuidFromParts, stamp, fold, seal, channel, reflection, neighbours, style, presentation, stream, canonicalText, memo, compositions, composition, compositionIndex, rosetta, harmonicDefaults, tailReadings, uuidSchemas, sequenceUuid, uuidQubits, hexbit, merkaba, coins, rodinCoil, quantumSku, organiseQubits } from './index.ts'
+import { block, uuid, uuidFromParts, stamp, fold, seal, channel, reflection, neighbours, style, presentation, stream, canonicalText, memo, compositions, composition, compositionIndex, rosetta, harmonicDefaults, tailReadings, uuidSchemas, sequenceUuid, uuidQubits, hexbit, merkaba, coins, quantumSku, organiseQubits } from './index.ts'
 import { numerology } from '../processing/clay-register.ts'
 import { call } from '../processing/mcp.ts'
 
@@ -290,34 +290,6 @@ test('hexbit qubits are a coin, and that coin is the ISO quantum receipt', () =>
   assert.equal(delivered.frames.fits, true)
   assert.equal(delivered.frames.cells.length, 42)
   assert.equal(delivered.frames.hides, false)
-  const booked = coins(['rodin'])
-  const coil = booked.coils[0]!
-  assert.equal(booked.fused, true)
-  assert.equal(coil.holds, true)
-  assert.equal(coil.cases.length, 8)
-  assert.equal(coil.field.hue, 120)
-  assert.equal(coil.field.cmyk.c, 1)
-  assert.equal(coil.field.cmyk.y, 1)
-  assert.equal(coil.cases.every((row) => row.program.length === 10 && row.back.length === 10 && row.closed && row.sealed && row.handle === coil.handle && row.program[0] === row.program[9] && row.trinity.length === 3 && row.reflected.every((d, i) => d + row.trinity[i] === 10)), true)
-  assert.equal(rodinCoil(coil.address).cases[0]!.program.join(), coil.cases[0]!.program.join())
-  assert.equal(coil.plasma.physics, false)
-  assert.equal(coil.plasma.fractal, true)
-  assert.equal(coil.plasma.scales.length, 8)
-  assert.equal(coil.plasma.scales[0]!.qubits, 4)
-  assert.equal(coil.plasma.scales[0]!.rays.blocks, 2)
-  assert.equal(coil.plasma.scales[7]!.qubits, 32)
-  assert.equal(coil.plasma.scales[7]!.handles, '4294967296')
-  assert.equal(coil.plasma.scales[7]!.capacity, '137438953472')
-  assert.equal(coil.plasma.rays.blocks, 16)
-  assert.equal(coil.plasma.clusters.reduce((n, row) => n + row.coins, 0), 8)
-  assert.equal(coil.plasma.live.from, 8)
-  assert.equal(coil.plasma.live.product, 16)
-  assert.equal(coil.plasma.live.reduced, 7)
-  assert.deepEqual(coil.plasma.live.digits, [1, 6])
-  assert.equal(coil.plasma.live.realities.length, 2)
-  assert.equal(coil.plasma.live.realities.every((row) => row.live && row.collapsed === false && row.other && row.sealed && row.closed && row.realities.length === 6 && row.realities.every((step) => step.sealed && step.handle === coil.handle)), true)
-  assert.equal(coil.plasma.live.realities[0]!.trinity.join() !== coil.plasma.live.realities[1]!.trinity.join(), true)
-  assert.equal(coil.plasma.live.rays.blocks, 16)
   const moved = hexbit(counted.receipt.coin, 4)
   assert.equal(moved.navigate.directions, 6)
   assert.equal(moved.receipt.conserved, true)

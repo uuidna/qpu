@@ -269,8 +269,7 @@ export const seal = (uuid: string): { valid: boolean; shape: boolean; variant: b
 export const coins = (texts: readonly string[]) => {
   const addressed = texts.map((text) => (seal(text).valid ? text : uuid(text)))
   const coins = [...new Set(addressed)].filter((id) => seal(id).valid)
-  const coils = coins.map(rodinCoil)
-  return { coins, count: coins.length, of: texts.length, merged: addressed.length - coins.length, by: 'uuid' as const, sealed: coins.length === new Set(addressed).size && coins.every((id) => seal(id).valid), coils, fused: coils.length === coins.length && coils.every((coil) => coil.holds) }
+  return { coins, count: coins.length, of: texts.length, merged: addressed.length - coins.length, by: 'uuid' as const, sealed: coins.length === new Set(addressed).size && coins.every((id) => seal(id).valid) }
 }
 /** Content, neighbours, seal: what one UUID can be checked against, each check independent and each cheap. A content or neighbour check is decided only by
  *  the content handed, folded back to its address (a link of caller strings alone is asserted, not witnessed): else null, naming the missing witness. */
@@ -605,58 +604,6 @@ export const sequenceUuid = () => {
   return { circuit, court, partner, circle, sequence: hex(circle), reflection, reflected: hex(reflection), reversed: hex(reversed), entangled, uuid, handle: reading.handle, sku: reading.sku, program: reading.program, tail: reading.tail, sealed: seal(uuid).valid, holds, theorem: 'textbook_reflection_sums_to_ten' as const, says: `${hex(circle)} is 124875 bouncing in 3690. The reflection is reverse-encoded in this one UUID, and 3690 is entangled with 7410` }
 }
 
-/** A coin wound as a Rodin coil. The doubling circuit 1, 2, 4, 8, 7, 5 is one wrap and its reverse is the other. The trinity of the digit is fused into the same winding, and the tenth nibble returns to the first, so each handle digit is one closed UUID program. The tail's 9-vortex is the axis the wraps turn around. The field is the green coil, hue 120. The coin then uses those coils as a fractal: scale i keeps the first i handle digits, adds four qubits, and casts both wraps as rays. Doubling 8 writes 16 and the circuit keeps 7; the digits 1 and 6 stay as their own programs, each with six neighbours, and that cast is the live plasma. The name of the cast is plasma. It is not a physics claim. */
-export const rodinCoil = (address: string) => {
-  const ch = channel(address)
-  const doubling = [1, 2, 4, 8, 7, 5] as const
-  const halving = [1, 5, 7, 8, 4, 2] as const
-  const family = (seed: number): readonly number[] => seed === 0 || seed % 3 === 0 ? [3, 6, 9] as const : ([7, 4, 1] as readonly number[]).includes(seed) ? [7, 4, 1] as const : [2, 5, 8] as const
-  const turn = (ring: readonly number[], start: number) => { const at = ring.indexOf(start); const k = at < 0 ? 0 : at; return [...ring.slice(k), ...ring.slice(0, k)] }
-  const wind = (seed: number, ring: readonly number[]) => { const copper = turn(ring, seed); const flux = turn(family(seed), family(seed).includes(seed) ? seed : family(seed)[0]!); const wound = [...copper, ...flux]; return [...wound, wound[0]!] }
-  const axis = ch.message.vortex.trinity
-  const field = coilColour()
-  const cases = [...ch.handle].map((glyph, at) => {
-    const digit = parseInt(glyph, 16)
-    const seed = digit === 0 ? 0 : digit % 9 || 9
-    const program = wind(seed, doubling)
-    const back = wind(seed, halving)
-    const wound = uuidFromParts(ch.handle, program, ch.tail)
-    const counter = uuidFromParts(ch.handle, back, ch.tail)
-    const read = channel(wound)
-    const flux = family(seed)
-    return { at, digit, seed, trinity: [...flux], reflected: flux.map((d) => 10 - d), program, back, address: wound, counter, sealed: seal(wound).valid && seal(counter).valid, handle: read.handle, closed: program[0] === program[9] && back[0] === back[9], onAxis: axis.length === 3 && flux.every((d, i) => d === axis[i]) }
-  })
-  const hexbit = 4
-  let count = 1n
-  const scales = cases.map((_, i) => {
-    count *= 16n
-    const wound = cases.slice(0, i + 1)
-    const addresses = wound.flatMap((row) => [row.address, row.counter])
-    const rays = castRays(addresses)
-    const qubits = hexbit * (i + 1)
-    return { scale: i + 1, handle: ch.handle.slice(0, i + 1), qubits, handles: count.toString(), capacity: (count * BigInt(qubits)).toString(), rays: { blocks: rays.blocks, seams: rays.seams.length, collisions: rays.collisions, fits: rays.fits } }
-  })
-  const fractal = scales.every((row, i) => i === 0 ? row.qubits === hexbit && row.handles === '16' && row.rays.blocks === 2 : row.qubits === scales[i - 1]!.qubits + hexbit && BigInt(row.handles) === BigInt(scales[i - 1]!.handles) * 16n && row.rays.blocks === (i + 1) * 2)
-  const trinities = [[3, 6, 9], [7, 4, 1], [2, 5, 8]] as const
-  const clusters = trinities.map((trinity) => ({ trinity: [...trinity], coins: cases.filter((row) => row.trinity.join() === trinity.join()).length }))
-  const cast = castRays(cases.flatMap((row) => [row.address, row.counter]))
-  const product = 8 * 2
-  const digits = [...String(product)].map((glyph) => parseInt(glyph, 10))
-  const reduced = digits.reduce((sum, digit) => sum + digit, 0)
-  const circuit = wind(reduced, doubling)
-  const realities = digits.map((digit) => {
-    const program = wind(digit, doubling)
-    const back = wind(digit, halving)
-    const wound = uuidFromParts(ch.handle, program, ch.tail)
-    const counter = uuidFromParts(ch.handle, back, ch.tail)
-    const beside = neighbours(wound).neighbours.map((step) => ({ axis: step.axis, step: step.step, uuid: step.uuid, sealed: step.sealed, handle: channel(step.uuid).handle }))
-    return { digit, live: true as const, collapsed: program.join() === circuit.join(), other: digit !== reduced, trinity: [...family(digit)], program, back, address: wound, counter, sealed: seal(wound).valid && seal(counter).valid, closed: program[0] === program[9] && back[0] === back[9], realities: beside }
-  })
-  const living = castRays(realities.flatMap((row) => [row.address, row.counter, ...row.realities.map((step) => step.uuid)]))
-  const live = product === 16 && reduced === 7 && digits.join() === '1,6' && realities.length === 2 && realities.every((row) => row.live && row.collapsed === false && row.other && row.sealed && row.closed && row.realities.length === 6 && row.realities.every((step) => step.sealed && step.handle === ch.handle)) && realities[0]!.trinity.join() !== realities[1]!.trinity.join() && living.blocks === 16
-  const holds = cases.length === 8 && cases.every((row) => row.program.length === 10 && row.back.length === 10 && row.closed && row.sealed && row.handle === ch.handle && row.trinity.length === 3 && row.reflected.every((d, i) => d + row.trinity[i]! === 10) && channel(row.counter).handle === ch.handle) && field.coil.hue === 120 && fractal && scales.length === 8 && scales[7]!.qubits === 32 && cast.blocks === 16 && clusters.reduce((n, row) => n + row.coins, 0) === cases.length && live
-  return { address, handle: ch.handle, axis, field: { hue: field.coil.hue, cmyk: field.coil.cmyk }, cases, plasma: { name: 'quantum knowledge plasma' as const, physics: false as const, fractal, scales, clusters, rays: { blocks: cast.blocks, seams: cast.seams.length, collisions: cast.collisions, fits: cast.fits }, live: { from: 8, product, reduced, digits, circuit, realities, rays: { blocks: living.blocks, seams: living.seams.length, collisions: living.collisions, fits: living.fits } } }, holds, theorem: 'textbook_coil_green' as const }
-}
 
 /** Canonical text (sorted keys), the form the unit addresses a value by: a BigInt as its digits with an `n` marker (so 10n, 10 and "10" are
  *  three addresses, never one — plain JSON.stringify throws on a BigInt); a value with a `toJSON` (a Date among them) by what it serialises to, as

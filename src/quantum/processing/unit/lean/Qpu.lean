@@ -1,7 +1,6 @@
 import Qpu.Mint
 import Qpu.Lattice
-import Qpu.Register
-import Qpu.Blueprint
+import Qpu.Processing.QuantumComputer
 import Qpu.Annealing
 import Qpu.Anyon
 import Qpu.Cern

@@ -1,7 +1,7 @@
 // Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)
 // Pure cryptographic surfaces: the proven 1000-bit surface, UUID superpositions, NIST/CERN scenarios, AEAD/Merkle/PBKDF2/X25519, and attest theorem reads. No MCP, no fetch.
 import { createImpossible, decodeImpossible, testPrimality, listFactors, shorReduction, orderFinding, sqrtBig, pasteInteger } from '../algorithms.ts'
-import { dnaToHex, hexToDna, dnaStream, uuid, seal, seal as uuidSeal, canonicalText, stream, neighbours, next, navigate, uuidSchemas, UUID_SCHEMAS, compositions, composition, compositionIndex, rosetta, harmonicDefaults, rodinCoil, uuidQubits, hexbit, organiseQubits, quantumSku, coins, reflection, channel } from '../../uuid/index.ts'
+import { dnaToHex, hexToDna, dnaStream, uuid, seal, seal as uuidSeal, canonicalText, stream, neighbours, next, navigate, uuidSchemas, UUID_SCHEMAS, compositions, composition, compositionIndex, rosetta, harmonicDefaults, uuidQubits, hexbit, organiseQubits, quantumSku, coins, reflection, channel } from '../../uuid/index.ts'
 import { coins as clayCoins, rays, faces, plane, recomputeClay, AXIOMS } from '../clay-register.ts'
 import { CLAY_RELATIONS } from '../clay-statements.ts'
 import { speakThousand } from '../i18n.ts'
@@ -330,7 +330,7 @@ const COMBINATORICS = [
 
 const SUPERPOSITION_ADDRESS = '941ef62e-d97b-2438-bfc8-22ae9e5da781'
 const SUPERPOSITION_HEXBIT = AXIOMS.find((row) => row.name === 'hexbit')!.value
-/** Every UUID superposition this toolbox answers: the six neighbour leads, the harmonic enum space, every RFC schema reading at once, the qubit register and its exchange, the SKU encryption, the Rodin coil's two realities, and the combination spaces held without storing a composition. Pure: nothing fetched, nothing walked. */
+/** Every UUID superposition this toolbox answers: the six neighbour leads, the harmonic enum space, every RFC schema reading at once, the qubit register and its exchange, the SKU encryption, and the combination spaces held without storing a composition. Pure: nothing fetched, nothing walked. */
 type UuidSuperposition = { id: string; surface: string; tool: 'fold'; arguments: Record<string, unknown>; says: string; directions?: number; combinations?: string }
 export const uuidSuperpositions = (address = SUPERPOSITION_ADDRESS, width = SUPERPOSITION_HEXBIT) => {
   const around = neighbours(address)
@@ -338,7 +338,6 @@ export const uuidSuperpositions = (address = SUPERPOSITION_ADDRESS, width = SUPE
   const rotated = next(address)
   const schemas = uuidSchemas(address)
   const sku = quantumSku(address)
-  const coil = rodinCoil(address)
   const counted = uuidQubits(width)
   const moved = hexbit(address, width)
   const laid = organiseQubits(address, width)
@@ -361,7 +360,6 @@ export const uuidSuperpositions = (address = SUPERPOSITION_ADDRESS, width = SUPE
     { id: 'exchange', surface: 'qubit exchange', tool: 'fold', arguments: { exchange: { address, hexbit: width } }, says: 'navigation, teleport and σ₁₅ signal over the register', directions: moved.navigate.directions },
     { id: 'organise', surface: 'organised qubit trinities', tool: 'fold', arguments: { organise: { address, hexbit: width } }, says: 'fingerprint, combination and tail laid by trinity' },
     { id: 'sku', surface: 'quantum SKU encryption', tool: 'fold', arguments: { sku: address }, says: 'reflections both ways and six neighbour steps stay this address', directions: sku.encrypted.directions },
-    { id: 'coil', surface: 'Rodin coil plasma', tool: 'fold', arguments: { coil: address }, says: 'digits 1 and 6 live as two realities, each with six neighbours', directions: coil.plasma.live.realities.reduce((n, r) => n + r.realities.length, 0) },
     { id: 'coins', surface: 'coins by address', tool: 'fold', arguments: { coins: [address, 'rodin', address] }, says: 'repeated addresses merge to one sealed coin', combinations: String(booked.count) },
   ]
   const holds =
@@ -376,20 +374,18 @@ export const uuidSuperpositions = (address = SUPERPOSITION_ADDRESS, width = SUPE
     moved.receipt.holds === true && moved.navigate.directions === 6 &&
     laid.holds === true &&
     sku.holds === true && sku.encrypted.neighbours.length === 6 &&
-    coil.holds === true && coil.plasma.live.realities.length === 2 && coil.plasma.live.realities.every((r) => r.realities.length === 6) &&
-    booked.sealed === true && booked.count === 2 && booked.fused === true &&
-    rows.length === 15
+    booked.sealed === true && booked.count === 2 &&
+    rows.length === 14
   return {
     phase: 'superpositions' as const, address, hexbit: width, scenarios: rows, superpositions: rows.length,
     neighbours: around.neighbours.length, schemas: schemas.schemasRead, combinations: harmonic.count.toString(),
     qubits: { effective: counted.effective, leads: counted.delivery.leads.length, holds: counted.delivery.holds },
     sku: { holds: sku.holds, directions: sku.encrypted.directions },
-    coil: { holds: coil.holds, realities: coil.plasma.live.realities.map((r) => ({ digit: r.digit, neighbours: r.realities.length })) },
-    coins: { count: booked.count, fused: booked.fused },
+    coins: { count: booked.count },
     fetched: false as const, written: false as const, walked: false as const, holds,
     theorems: ['textbook_neighbour_step', 'textbook_harmonic_default', 'textbook_uuid_schemas', 'textbook_mixed_radix', 'textbook_queneau_compositions', 'textbook_coil_green'] as const,
     says: holds
-      ? `${rows.length} UUID superposition(s) of ${address}: six neighbour leads, sixty harmonic combinations, ${schemas.schemasRead} schema readings, the ${counted.effective}-qubit register and its exchange, the SKU encryption, the coil's two realities and the combination spaces — none walked, none fetched.`
+      ? `${rows.length} UUID superposition(s) of ${address}: six neighbour leads, sixty harmonic combinations, ${schemas.schemasRead} schema readings, the ${counted.effective}-qubit register and its exchange, the SKU encryption and the combination spaces — none walked, none fetched.`
       : 'a UUID superposition did not hold',
   }
 }
@@ -441,11 +437,9 @@ export const uuidSuperpositionsReverse = (address = SUPERPOSITION_ADDRESS, width
   const mirror = reflection(address)
   const twice = reflection(mirror.mirror)
   const skuBack = sku.encrypted.roundTrip === true && twice.handle === here.handle && twice.tail === here.tail && sku.holds === true
-  const coil = rodinCoil(address)
-  const coilBack = coil.holds === true && coil.plasma.live.realities.length === 2 && coil.plasma.live.realities.every((r) => r.realities.length === 6 && r.sealed) && coil.plasma.live.digits?.join() === '1,6'
   const booked = coins([address, 'rodin', address])
   const again = coins(booked.coins)
-  const coinsBack = booked.sealed === true && booked.count === 2 && again.count === booked.count && again.coins.every((id, i) => id === booked.coins[i]) && booked.fused === true
+  const coinsBack = booked.sealed === true && booked.count === 2 && again.count === booked.count && again.coins.every((id, i) => id === booked.coins[i]) 
   const rows = [
     { id: 'neighbours', reverse: 'step back returns the program', returns: neighbourBack.every((row) => row.returns && row.sealed), of: neighbourBack.length },
     { id: 'navigate', reverse: 'each neighbour\'s opposite step returns the program', returns: navigateBack, of: team.neighbours.length },
@@ -460,10 +454,9 @@ export const uuidSuperpositionsReverse = (address = SUPERPOSITION_ADDRESS, width
     { id: 'exchange', reverse: 'σ₁₅ signal and neighbour program steps', returns: exchangeBack, of: moved.signal.digits },
     { id: 'organise', reverse: 'combination digits read as index', returns: organiseBack, of: laid.combination.digits },
     { id: 'sku', reverse: 'reflection twice is the handle and tail', returns: skuBack, of: sku.encrypted.directions },
-    { id: 'coil', reverse: 'both realities and six neighbours each', returns: coilBack, of: coil.plasma.live.realities.length },
     { id: 'coins', reverse: 'merge is idempotent', returns: coinsBack, of: booked.count },
   ] as const
-  const holds = rows.length === 15 && rows.every((row) => row.returns)
+  const holds = rows.length === 14 && rows.every((row) => row.returns)
   return {
     phase: 'superpositions-reverse' as const, address, hexbit: width, direction: 'reverse' as const,
     scenarios: rows, superpositions: rows.length, reversed: rows.filter((row) => row.returns).length,
@@ -896,7 +889,7 @@ export const NVD = JSON.stringify({ vulnerabilities: [{ cve: { id: 'CVE-2024-378
 export const CERN = JSON.stringify({ hits: { total: 5566, hits: [{ id: '5209', metadata: { title: 'Higgs to two photons from 2011', files: [{ size: 869, checksum: 'adler32:dca4af81' }], relations: [{ doi: '10.7483/OPENDATA.CMS.N9MJ.QEEC' }] } }] } })
 
 const NIST_OPEN_DATA = 'https://data.nist.gov/rmm/records?page=0&size=5'
-/** NIST Open Data, read as the client hands the body. Each record is one coil. The live plasma of that coil is two realities, the digits 1 and 6, and each reality has six neighbours. Nothing is fetched. */
+/** NIST Open Data, read as the client hands the body: each record addressed by a sealed UUID, its DOI well formed when it names one. Nothing is fetched. */
 export const nistOpenData = (raw: unknown = true) => {
   if (raw === true) return { phase: 'requests' as const, source: 'nist-opendata' as const, fetched: false as const, written: false as const, request: { id: 'nist-opendata' as const, method: 'GET' as const, url: NIST_OPEN_DATA, accept: 'application/json' as const }, tools: ['kem', 'slh', 'ed25519', 'ecdsa', 'shake'] as const, says: 'NIST Open Data is asked at data.nist.gov. Nothing is fetched. Hand the body back as nist.' }
   type Body = { ResultCount?: number; ResultData?: { title?: unknown; doi?: unknown }[] }
@@ -908,19 +901,17 @@ export const nistOpenData = (raw: unknown = true) => {
     const title = typeof row.title === 'string' ? row.title : ''
     const doi = String(row.doi ?? '').replace(/^doi:/i, '')
     const address = uuid(`nist-opendata\n${doi}\n${title}`)
-    const coil = rodinCoil(address)
-    const realities = coil.plasma.live.realities.map((reality) => ({ digit: reality.digit, address: reality.address, sealed: reality.sealed, closed: reality.closed, neighbours: reality.realities.length }))
     // a DOI is required when the record names one; a record without a DOI still coils, and the page holds when every named DOI is well formed and at least one record carries one
     const doiHolds = doi ? /^10\.\d{4,}\/\S+$/.test(doi) : null
-    return { title, doi, address, sealed: uuidSeal(address).valid, doiHolds, realities, live: coil.holds === true && realities.length === 2 && realities.every((reality) => reality.neighbours === 6 && reality.sealed && reality.closed) }
+    return { title, doi, address, sealed: uuidSeal(address).valid, doiHolds }
   })
   const total = typeof body?.ResultCount === 'number' ? body.ResultCount : rows.length
   const withDoi = records.filter((row) => row.doiHolds !== null)
-  const holds = records.length > 0 && total >= records.length && records.every((row) => row.live && row.sealed && row.doiHolds !== false) && withDoi.some((row) => row.doiHolds === true)
-  return { phase: 'experience' as const, source: 'nist-opendata' as const, fetched: false as const, written: false as const, total, records: records.length, dois: withDoi.length, rows: records, realities: records.flatMap((row) => row.realities), holds, theorems: ['textbook_doi_well_formed', 'textbook_total_at_least_page', 'textbook_coil_green'] as const, says: holds ? `${records.length} NIST Open Data record(s), ${withDoi.length} with a DOI. Each address is a coil, and its two realities are the digits 1 and 6, each with six neighbours.` : 'a NIST Open Data record did not hold its DOI and its two realities' }
+  const holds = records.length > 0 && total >= records.length && records.every((row) => row.sealed && row.doiHolds !== false) && withDoi.some((row) => row.doiHolds === true)
+  return { phase: 'experience' as const, source: 'nist-opendata' as const, fetched: false as const, written: false as const, total, records: records.length, dois: withDoi.length, rows: records, holds, theorems: ['textbook_seal_and_content_decided'] as const, says: holds ? `${records.length} NIST Open Data record(s), ${withDoi.length} with a DOI, each addressed by a sealed UUID.` : 'a NIST Open Data record did not hold its DOI or its seal' }
 }
 
-/** CERN Open Data, read as the client hands the body. Each hit is one coil. The live plasma of that coil is two realities, the digits 1 and 6, and each reality has six neighbours. Nothing is fetched. */
+/** CERN Open Data, read as the client hands the body: each hit addressed by a sealed UUID, its DOI well formed when it names one. Nothing is fetched. */
 export const cernOpenData = (raw: unknown = true, config?: CryptoConfig) => {
   if (raw === true) {
     if (!config) throw new Error('cernOpenData requests need crypto config from payload { cryptoConfig } or tenants.settings.arguments')
@@ -937,14 +928,12 @@ export const cernOpenData = (raw: unknown = true, config?: CryptoConfig) => {
     const doi = String(doiRaw ?? '').replace(/^doi:/i, '')
     const id = String(row.id ?? '')
     const address = uuid(`cern-opendata\n${doi || id}\n${title}`)
-    const coil = rodinCoil(address)
-    const realities = coil.plasma.live.realities.map((reality) => ({ digit: reality.digit, address: reality.address, sealed: reality.sealed, closed: reality.closed, neighbours: reality.realities.length }))
     const doiHolds = doi ? /^10\.\d{4,}\/\S+$/.test(doi) : null
-    return { id, title, doi, address, sealed: uuidSeal(address).valid, doiHolds, realities, live: coil.holds === true && realities.length === 2 && realities.every((reality) => reality.neighbours === 6 && reality.sealed && reality.closed) }
+    return { id, title, doi, address, sealed: uuidSeal(address).valid, doiHolds }
   })
   const total = typeof body?.hits?.total === 'number' ? body.hits.total : rows.length
   const withDoi = records.filter((row) => row.doiHolds !== null)
-  const holds = records.length > 0 && total >= records.length && records.every((row) => row.live && row.sealed && row.doiHolds !== false) && withDoi.some((row) => row.doiHolds === true)
-  return { phase: 'experience' as const, source: 'cern-opendata' as const, fetched: false as const, written: false as const, total, records: records.length, dois: withDoi.length, rows: records, realities: records.flatMap((row) => row.realities), holds, theorems: ['textbook_doi_well_formed', 'textbook_total_at_least_page', 'textbook_coil_green'] as const, says: holds ? `${records.length} CERN Open Data record(s), ${withDoi.length} with a DOI. Each address is a coil, and its two realities are the digits 1 and 6, each with six neighbours.` : 'a CERN Open Data record did not hold its DOI and its two realities' }
+  const holds = records.length > 0 && total >= records.length && records.every((row) => row.sealed && row.doiHolds !== false) && withDoi.some((row) => row.doiHolds === true)
+  return { phase: 'experience' as const, source: 'cern-opendata' as const, fetched: false as const, written: false as const, total, records: records.length, dois: withDoi.length, rows: records, holds, theorems: ['textbook_seal_and_content_decided'] as const, says: holds ? `${records.length} CERN Open Data record(s), ${withDoi.length} with a DOI, each addressed by a sealed UUID.` : 'a CERN Open Data record did not hold its DOI or its seal' }
 }
 

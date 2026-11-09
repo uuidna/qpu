@@ -59,7 +59,7 @@ test('every UUID superposition holds without walking', () => {
   assert.equal(s.holds, true)
   assert.equal(s.fetched, false)
   assert.equal(s.walked, false)
-  assert.equal(s.superpositions, 15)
+  assert.equal(s.superpositions, 14)
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: every UUID superposition reverses to the program. */
@@ -68,7 +68,7 @@ test('every UUID superposition reverses to the program', () => {
   assert.equal(s.phase, 'superpositions-reverse')
   assert.equal(s.direction, 'reverse')
   assert.equal(s.holds, true)
-  assert.equal(s.reversed, 15)
+  assert.equal(s.reversed, 14)
   assert.ok(s.scenarios.every((row) => row.returns))
 })
 
@@ -170,20 +170,20 @@ test('local NIST reverse doors open, verify and recompute', () => {
   assert.equal(planEcdsaP256(digest('nist')).fips, '186-5')
 })
 
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: NIST and CERN Open Data fixtures coil as two realities. */
-test('NIST and CERN Open Data fixtures coil as two realities', () => {
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: NIST and CERN Open Data fixtures are sealed records with well-formed DOIs. */
+test('NIST and CERN Open Data fixtures are sealed records with well-formed DOIs', () => {
   const nist = nistOpenData({ ResultCount: 1, ResultData: [{ title: 'NIST Chemistry WebBook', doi: 'doi:10.18434/T4D303' }] })
   assert.equal(nist.phase, 'experience')
   assert.equal(nist.holds, true)
   assert.equal(nist.rows[0]!.doi, '10.18434/T4D303')
-  assert.equal(nist.rows[0]!.realities.map((r) => r.digit).join(), '1,6')
+  assert.equal(nist.rows[0]!.sealed, true)
 
   const cern = cernOpenData({ hits: { total: 1, hits: [{ id: '5209', metadata: { title: 'Higgs to two photons from 2011', relations: [{ doi: '10.7483/OPENDATA.CMS.N9MJ.QEEC' }] } }] } })
   assert.equal(cern.phase, 'experience')
   assert.equal(cern.source, 'cern-opendata')
   assert.equal(cern.holds, true)
   assert.equal(cern.rows[0]!.doi, '10.7483/OPENDATA.CMS.N9MJ.QEEC')
-  assert.equal(cern.rows[0]!.realities.map((r) => r.digit).join(), '1,6')
+  assert.equal(cern.rows[0]!.sealed, true)
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: attestAnswers verifies fixtures and asks for the beacon previous pulse. */
