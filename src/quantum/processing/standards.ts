@@ -624,26 +624,9 @@ export const verifyIsoQuantumEquivalence = () => {
     {
       standard: 'ISO 22739:2024',
       title: 'Blockchain and Distributed Ledger Technology — Vocabulary',
-      programmability: 'Append-only sequential blocks linked by content-addressed UUID headers and FIPS 180-4 SHA-256 digests, tamper-evident chain verification, single-transfer conservation (double-spending refused), post-quantum FIPS 204 ML-DSA signatures, and 99 vocabulary terms tracked (45 read + 1 cut + 53 lead)',
-      holds:
-        THEOREMS.some((t) => t.key === 'textbook_iso_22739_terms_read') &&
-        THEOREMS.some((t) => t.key === 'textbook_blockchain_hash_links') &&
-        THEOREMS.some((t) => t.key === 'textbook_blockchain_tamper_evident') &&
-        THEOREMS.some((t) => t.key === 'textbook_blockchain_transfer_once'),
-      evidence: {
-        vocabularyTermsTotal: 99,
-        vocabularyTermsRead: 45,
-        vocabularyTermsCut: 1,
-        vocabularyTermsLead: 53,
-        theorems: [
-          'textbook_iso_22739_terms_read',
-          'textbook_blockchain_hash_links',
-          'textbook_blockchain_tamper_evident',
-          'textbook_blockchain_transfer_once',
-          'textbook_sha256_fips_180_4',
-          'textbook_ml_dsa_fips_204',
-        ],
-      },
+      programmability: 'Dig.watch 99+0+0 closed; wallet 3.100',
+      holds: ['textbook_iso_22739_terms_read','textbook_iso_22739_wallet','textbook_iso_22739_orphan_blocks','textbook_iso_22739_hash_function','textbook_blockchain_hash_links','textbook_blockchain_tamper_evident','textbook_blockchain_transfer_once'].every((k) => THEOREMS.some((t) => t.key === k)),
+      evidence: { source: 'https://dig.watch/resource/iso-227392020-blockchain-and-distributed-ledger-technologies-vocabulary', census: { total: 99, read: 99, cut: 0, lead: 0, wallet: 100 } },
     },
     {
       standard: 'ISO 23257:2022 & ISO/TR 23455:2019',
