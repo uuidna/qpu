@@ -12,17 +12,45 @@ export const QPU_CONNECTOR = { name: 'qpu' as const, plugin: 'qpuMcpPlugin' as c
 /** Cursor, Claude, and every other connector. Each one is QPU_CONNECTOR. */
 export const ADAPTED_CONNECTORS = ['cursor', 'claude', 'gemini', 'cirq-google', 'cloudflare', 'registry', 'oauth', 'drive', 'gmail', 'calendar'] as const
 
-/** Next opens only through qpuMcpPlugin with a payload-mcp-api-keys Bearer. Values never travel in the tree. */
+/** Next and online verification open only through qpuMcpPlugin with a payload-mcp-api-keys Bearer. Values never travel in the tree. */
 export const MCP_API_KEY = {
   collection: 'payload-mcp-api-keys' as const,
   header: 'Authorization' as const,
   scheme: 'Bearer' as const,
   named: 'QPU_MCP_API_KEY' as const,
   plugin: 'qpuMcpPlugin' as const,
-  law: 'next only via qpuMcpPlugin with payload-mcp-api-keys' as const,
+  law: 'next and online verification only via qpuMcpPlugin with payload-mcp-api-keys' as const,
 } as const
 
-/** Bearer headers for /api/mcp. Empty or missing key → null (next refused). */
+/**
+ * ISO quantum AI MCP surface: one connector, ISO/IEC 4879 vocabulary, dictionary-then-ISO entropy,
+ * online verification doors gated by client MCP API keys. MCP is the client — not a REST SDK mirror.
+ */
+export const ISO_QUANTUM_AI = {
+  experience: 'iso-quantum-ai' as const,
+  vocabulary: 'ISO/IEC 4879:2024' as const,
+  entropy: {
+    law: 'first the dictionary meaning; then the meaning is verified' as const,
+    dictionary: 'disorder; unpredictability; unavailable energy or information' as const,
+    verified: { standard: 'ISO 80000-5:2019' as const, definition: 'S = k ln W' as const },
+  },
+  connector: QPU_CONNECTOR,
+  /** Pure / formulated offline answers — no Bearer required until the client runs Next. */
+  offline: ['jsonld', 'circuit', 'processor', 'seal', 'fold', 'match', 'clay', 'textbook'] as const,
+  /**
+   * Online verification doors. Formulated plans stay pure; live Next / online verify through
+   * POST /api/mcp requires Authorization: Bearer <payload-mcp-api-keys>. Without the key, refuse.
+   */
+  online: ['validate', 'codes', 'attest', 'repository', 'discover', 'wave', 'e2e', 'verify', 'payload'] as const,
+  auth: MCP_API_KEY,
+} as const
+
+export type OnlineVerifyDoor = (typeof ISO_QUANTUM_AI.online)[number]
+
+export const isOnlineVerify = (name: string): name is OnlineVerifyDoor =>
+  (ISO_QUANTUM_AI.online as readonly string[]).includes(name)
+
+/** Bearer headers for /api/mcp. Empty or missing key → null (next / online verify refused). */
 const payloadMcpAuth = (apiKey?: string) => {
   if (typeof apiKey !== 'string' || apiKey.length === 0) return null
   return { [MCP_API_KEY.header]: `${MCP_API_KEY.scheme} ${apiKey}` } as const
@@ -166,6 +194,7 @@ export const payloadMcpNext = (doors: readonly { name: string }[] = [], origin =
     fetched: false as const,
     auth: MCP_API_KEY,
     law: MCP_API_KEY.law,
+    experience: ISO_QUANTUM_AI.experience,
   }
   // a refusal is an involution, never a stop: without a key the plan still names every call, its header the binding the key comes from
   // (QPU_MCP_API_KEY, never a value), and stays refused and unkeyed until the binding holds one
@@ -189,6 +218,7 @@ export const payloadMcpNext = (doors: readonly { name: string }[] = [], origin =
       body: { jsonrpc: '2.0' as const, id: 1, method: 'tools/call' as const, params: { name: door.name, arguments: find ? { slug: 'pages' } : {} } },
       route: find ? { method: 'GET' as const, url: `${root}/api/pages`, src: false as const, fetched: false as const } : null,
       next: find ? payloadPagesNext(pages, origin) : null,
+      online: isOnlineVerify(door.name),
     }
   })
   return {
@@ -196,6 +226,51 @@ export const payloadMcpNext = (doors: readonly { name: string }[] = [], origin =
     ...state,
     calls,
     says: `${calls.length} tools/call requests on the Payload API, ${bearer}. findDocuments continues as GET /api/pages, and each document is that route again. SEO is read from that instance. Media continues as the file the upload names. src is not a door. Nothing is fetched.`,
+  }
+}
+
+/**
+ * Online verification through the one connector. Same involution as next: without a client MCP API key
+ * the plan names every call and stays refused. ISO Open Data, NIST/CERN (via discover), repository watch,
+ * attest, validate/codes, e2e/wave/verify, and payload next/improve online.
+ */
+export const payloadMcpOnline = (doors: readonly string[] = [...ISO_QUANTUM_AI.online], origin = WEBSITE_ORIGIN, apiKey?: string) => {
+  const api = `${origin.replace(/\/$/, '')}/api/mcp`
+  const headers = payloadMcpAuth(apiKey)
+  const keyed = headers !== null
+  const sent: Record<string, string> = headers ?? { [MCP_API_KEY.header]: `${MCP_API_KEY.scheme} <${MCP_API_KEY.named}>` }
+  const state = keyed ? { keyed: true as const, refused: false as const } : { keyed: false as const, refused: true as const }
+  const wanted = doors.filter(isOnlineVerify)
+  const names = wanted.length ? wanted : [...ISO_QUANTUM_AI.online]
+  const bearer = keyed ? 'with a payload-mcp-api-keys Bearer' : `refused until ${MCP_API_KEY.named} names a payload-mcp-api-keys Bearer`
+  const calls = names.map((name) => ({
+    name,
+    plugin: MCP_API_KEY.plugin,
+    api,
+    method: 'POST' as const,
+    headers: sent,
+    src: false as const,
+    fetched: false as const,
+    online: true as const,
+    experience: ISO_QUANTUM_AI.experience,
+    body: { jsonrpc: '2.0' as const, id: 1, method: 'tools/call' as const, params: { name, arguments: name === 'validate' ? { online: true } : name === 'discover' ? {} : name === 'repository' ? {} : {} } },
+  }))
+  return {
+    phase: 'online-verify' as const,
+    via: 'payload-api' as const,
+    plugin: MCP_API_KEY.plugin,
+    api,
+    src: false as const,
+    fetched: false as const,
+    auth: MCP_API_KEY,
+    law: MCP_API_KEY.law,
+    experience: ISO_QUANTUM_AI.experience,
+    vocabulary: ISO_QUANTUM_AI.vocabulary,
+    entropy: ISO_QUANTUM_AI.entropy,
+    doors: names,
+    ...state,
+    calls,
+    says: `ISO quantum AI online verification: ${names.length} door(s) on ${MCP_API_KEY.plugin}, ${bearer}. Pure formulated plans need no key; live Next/online verify refuses without it. Nothing is fetched.`,
   }
 }
 

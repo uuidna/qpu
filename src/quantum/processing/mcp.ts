@@ -9,7 +9,8 @@ import { EXAMPLES } from './examples.ts'
 import { TABLES } from './tables-index.ts'
 import { listDeclarations, removeDead, auditPrograms, scanLexical, runAudit, getEntropy, uncap, diffMembers, auditSecurity, listRemedies, repair, getAdvantage, getAddressedByTheorem, getBill, FALLBACKS, FALLBACK_ADAPTERS, handleOrCorrect, linkAxioms, listLeaks, sealJson, sealTokenLeaks } from './audit.ts'
 import { TEXTBOOK_THEOREMS, updateTheoremSources, getReflections, searchTextbookPrograms } from './textbook-theorems.ts'
-import { sdk, accessAudit, auditedSave, build, crossVerifiedFormula, websiteGate, developFindings, developViaHooks, serveViaHooks } from './toolboxes/payload.ts'
+import { builders, accessAudit, auditedSave, build, crossVerifiedFormula, websiteGate, developFindings, developViaHooks, serveViaHooks } from './toolboxes/payload.ts'
+import { ISO_QUANTUM_AI, MCP_API_KEY, isOnlineVerify } from '../../plugins/websiteClient.ts'
 import { cryptoConfig } from './crypto/config.ts'
 import { processorsForRole, mayUseProcessor, type CryptoProcessorName } from './crypto/index.ts'
 import { askPayloadRbac } from './api-mcp-rbac.ts'
@@ -21,7 +22,7 @@ import { entriesCover, findArgs, manageApi, mcpPages, pageData, writeArgs } from
 import { INSTRUCTIONS, LICENSE } from './unit/license.ts'
 import { QPU_ORIGIN, tenantAddress } from './unit/index.ts'
 import { VERSION } from './unit/version.ts'
-import { AXIOMS, evaluate as clayEvaluate, recomputeClay, recomputeClayPravets, reflectionOfRegister, digitalRoot, trinityFor, mint, bits, amplitudes } from './clay-register.ts'
+import { AXIOMS, evaluate as clayEvaluate, recomputeClay, reflectionOfRegister, digitalRoot, trinityFor, mint, bits, amplitudes } from './clay-register.ts'
 import { recognise } from '../apps/index.ts'
 import { composePage } from './compose.ts'
 import { mayChoose, ROLE_RANK, type Role } from './unit/roles.ts'
@@ -65,7 +66,6 @@ export type Reply =
   | { jsonrpc: '2.0'; id: number | string | null; result: unknown }
   | { jsonrpc: '2.0'; id: number | string | null; error: { code: number; message: string; data?: unknown } }
 
-/** JSON-RPC's invalid-params code: the arguments of a tool do not describe a circuit or a processor. */
 const INVALID_PARAMS = -32602
 const METHOD_NOT_FOUND = -32601
 
@@ -99,21 +99,18 @@ const operation = (op: OperationJson): Operation => {
   return applied(powered, ...qubits)
 }
 
-/** The circuit a call describes: its operations placed by the insert strategy, then an optional measurement. */
 const circuit = (operations: OperationJson[], insert: InsertStrategy, measurement?: MeasureJson): Circuit => {
   const circuit = new Circuit().append(operations.map(operation), insert)
   if (measurement) circuit.append(measure(measurement.qubits.map(qubit), measurement.key))
   return circuit
 }
 
-/** A sealed address computed on the unscoped origin: the page is https://qpu.uuidna.com/<uuid>, and the handle is the tenant qpu.uuidna.com/<handle>/. */
 const overOrigin = (address: string) => {
   const handle = uuidChannel(address).handle
   const resolved = tenantAddress(QPU_ORIGIN, `/${handle}/`)
   return { origin: `https://${QPU_ORIGIN}`, url: `https://${QPU_ORIGIN}/${address}`, tenant: resolved.subdomain ? `https://${resolved.subdomain}` : `https://${QPU_ORIGIN}`, path: `https://${QPU_ORIGIN}/${handle}/`, handle, via: resolved.via }
 }
 
-/** Cirq-Google's engine client, on qpu.uuidna.com: a program is the circuit, a job runs it on one device, a reservation holds that device for the job. */
 const engineCall = (raw: Record<string, unknown>) => {
   const processor = String(raw.processor ?? 'Willow')
   if (!(processor in DEVICES)) reject(`processor ${processor} is not a cirq-google device; the devices are ${Object.keys(DEVICES).join(', ')}`)
@@ -140,7 +137,6 @@ const engineCall = (raw: Record<string, unknown>) => {
 
 type ChannelJson = { name: string; p?: number; p_x?: number; p_y?: number; p_z?: number; gamma?: number }
 
-/** A noise channel as a call names it: its name and the parameters that name takes. */
 const channel = (j: ChannelJson): Channel => {
   const need = (v: number | undefined, key: string): number => v ?? reject(`${j.name} needs ${key}`)
   switch (j.name) {
@@ -165,12 +161,9 @@ const OBSERVABLE_SCHEMA = {
 const INSERT_SCHEMA = { enum: ['EARLIEST', 'NEW', 'INLINE', 'NEW_THEN_INLINE'], default: 'EARLIEST' }
 
 const complex = ([re, im]: [number, number]) => ({ re, im })
-/** An optional integer argument read exactly, undefined when absent; the circuit gate seeded by the call's own arguments, so a run recomputes anywhere. */
+
 const optInteger = (v: unknown, name: string) => (v === undefined ? undefined : getInteger(v, name)), seeded = (args: unknown) => new Simulator(seededRandom(JSON.stringify(args)))
-/** An integer of any size answered by the classical door: its bits, primality, the factors the σ-reflection computes, the centre reached, the product checked.
- *  The search is unbounded and resumable (`reflections` centres from `from`, ⌈√N⌉ by default; a part not split reports `reached`): it computes, never declines. */
-/** The search's remainder as the next block of the lead chain, never a stop (textbook_impossible_sent_to_leads): the same door from the centre
- *  reached, its lead addressed by the integer and that centre, so a repeated run is the same lead and runs chain into one search (textbook_search_resumes). */
+
 const continuationOf = (n: bigint, reached: bigint | null, left: readonly bigint[], reflections: bigint) => {
   if (reached === null || left.length === 0) return {}
   const run = { tool: 'algorithm', arguments: { name: 'factor', integer: n.toString(), from: reached.toString(), reflections: reflections.toString() } }
@@ -208,7 +201,7 @@ const answerImpossible = (args: Record<string, unknown>) => {
 }
 // The hybrid reverse: N decoded by the caller's witness (one σ-reflection at the centre) or order r (Shor's reduction gcd(a^(r/2) ± 1, N)), each decode bound
 // by a receipt of its content; with neither, N is declined, never fabricated (textbook_impossible_trapdoor, textbook_shor_reduction, textbook_rsa_beyond_bound).
-/** A decode bound by content: the fold address and SHA-256 of { decode, factors, via }, recomputed by any holder (textbook_receipt_binds_sha256); a part reads prime only after Miller–Rabin. */
+
 const decode = (N: bigint, via: string, factors: readonly string[], decoded: boolean, verified: boolean) => {
   const text = JSON.stringify({ decode: N.toString(), factors: [...factors], via })
   const receipt = uuid(text), digest = hex(sha256(utf8(text))), bits = N.toString(2).length
@@ -232,7 +225,7 @@ const hybridDecode = (args: Record<string, unknown>) => {
     summary: [['Bits', String(r.bits)], ['Reflections searched', d.searched.toString()], ['Decoded', d.decoded ? 'yes' : 'no'], ['Product checked', d.verified ? 'yes' : 'no'], ['Address verified', addressVerified === null ? 'missing' : addressVerified ? 'yes' : 'no'], ['Receipt SHA-256', r.sha256]] }
 }
 const FORMULA = { order: { theorem: 'textbook_order_finding', params: ['N', 'a'] }, shor: { theorem: 'textbook_shor_reduction', params: ['N', 'a', 'order'] }, factor: { theorem: 'textbook_factors_divide', params: ['integer', 'a'] } } as const
-/** Which of the three doors the input already determines: factor from an integer, order from N and a, Shor from N and a (and the order, when it is passed). */
+
 const openDoors = (args: Record<string, unknown>): ('order' | 'shor' | 'factor')[] => {
   const doors: ('order' | 'shor' | 'factor')[] = []
   if (args.integer !== undefined || isObj(args.create)) doors.push('factor')
@@ -241,12 +234,12 @@ const openDoors = (args: Record<string, unknown>): ('order' | 'shor' | 'factor')
   if (pair) doors.push('shor')
   return doors
 }
-/** No single door: the theorem formulas, read and not run. Reading them is the fast path; running every algorithm is the slow one. */
+
 const formulaDiscovery = (which: readonly ('order' | 'shor' | 'factor')[]) => {
   const formulas = which.map((name) => { const spec = FORMULA[name], t = TEXTBOOK_THEOREMS.find((x) => x.key === spec.theorem)!, s = getStatement(t.lean); return { name, theorem: spec.theorem, params: [...spec.params], variables: s.variables, formula: s.conclusion } })
   return { phase: 'discovery' as const, ran: false as const, of: which.length === 3 ? 'all' as const : which[0]!, computed: 0 as const, fasterThanAll: true as const, unlimited: true as const, hz: 432 as const, example: null, bounded: false as const, params: which.length === 3 ? false as const : true, formulas, summary: formulas.map((f) => [f.name, f.params.join(', ')]), header: ['theorem', 'formula'], rows: formulas.map((f) => [f.theorem, f.formula]), says: which.length === 3 ? `no params: the three formulas, read and not run, unlimited at 432 Hz, faster than running them all` : `no integer params: the formula of ${which[0]}, read and not run` }
 }
-/** The order witness checked as the theorem formula. The integers in it are the params a and N and the r, m, i, j the formula names. */
+
 const confirmWitness = <T extends { order: string | null; least: boolean; atOne: boolean; powers: string[]; m: string | null; i: string | null; j: string | null; equation: string | null; holds: boolean }>(a: bigint, N: bigint, o: T): T => {
   if (!o.order || o.m === null || o.i === null || o.j === null) return o
   const r = BigInt(o.order), equation = `${r} = ${o.m} * ${o.i} - ${o.j}`
@@ -259,11 +252,11 @@ const confirmWitness = <T extends { order: string | null; least: boolean; atOne:
 }
 const gcd = (x: number, y: number): number => (y === 0 ? x : gcd(y, x % y))
 const gcdB = (x: bigint, y: bigint): bigint => { while (y) [x, y] = [y, x % y]; return x }
-/** The least base that is a unit mod the part: 2, then the next integer coprime to it. Determined by the part. */
+
 const leastUnit = (part: bigint) => { let x = 2n; while (x < part && gcdB(x, part) !== 1n) x++; return x < part ? x : null }
 const polarity = (seed: number) => (seed === 0 ? 'zero' as const : seed < 5 ? 'minus' as const : seed > 5 ? 'plus' as const : 'fixed' as const)
 const trinity = (seed: number) => (seed === 0 ? [] : seed % 3 === 0 ? [3, 6, 9] : [7, 4, 1].includes(seed) ? [7, 4, 1] : [2, 5, 8])
-/** Each 0 bit below 1024 — the width's neighbour, so a 1000-bit integer is read whole — is a complete double torus: position n steps to n + 1 and the step back is n. The bit's place is the trinity of that position, and the σ₁₀ shift of the trinity flips its polarity. */
+
 const zeroTori = (n: bigint) => {
   const below = 1024, width = n.toString(2).length, limit = width < below ? width : below
   const byTrinity: Record<string, number> = { '3-6-9': 0, '7-4-1': 0, '2-5-8': 0 }
@@ -281,13 +274,12 @@ const zeroTori = (n: bigint) => {
   }
   return { bits: width, below, zeros, found, closed, flipped: found > 0, byTrinity, theorem: 'textbook_double_torus' as const }
 }
-/** The court simulated: two qubits in superposition, copied by CNOT onto the partner. The wavefunction is the entanglement. */
+
 const verifyNumerology = () => {
   const state = courtState()
   return { phase: 'simulated' as const, ...state, theorem: 'textbook_reflection_sums_to_ten' as const, says: `four qubits, ${state.moments} moments. The simulator puts weight 1/4 on |3,7>, |6,4>, |9,1> and |0,0>, and 0 on every other basis state` }
 }
-/** The factor door finished: each part the reflection leaves is given to order-finding, then to the reduction. A passed base is used; otherwise the least unit. A split replaces that part with the primes the reduction yields; a trivial reduction or a budget keeps the part and returns the witness. */
-/** The factor door's exit in the same shape next reports: the ISO 9001 case, addressed by crypto. A finished integer is exit 0. A leftover part is exit 1, and the next document names the order of that part. A 1000-bit leftover stays open. Its next addresses the successful exit of the 1000-bit integer created with its primes. */
+
 const factorExit = (complete: boolean, receipt?: string, digest?: string, leftoverBits?: number) => {
   const row = ISO_EXIT.exits[complete ? 0 : 1]!
   const parent = receipt ?? row.id
@@ -299,7 +291,7 @@ const factorExit = (complete: boolean, receipt?: string, digest?: string, leftov
   const next = leftoverBits === 1000 ? createdThousandExit() : named
   return { ...row, closed: complete, open: !complete, status: complete ? 'factored' as const : 'open' as const, ...(receipt ? { receipt, readingSha256: digest } : {}), next }
 }
-/** Each leftover is the product the collection hooks serve, and one entries create. beforeChange records the formula. afterChange hands it to the docs door. afterRead serves it. The create runs under access. A finished integer has none. Nothing is written, and nothing here calls the factor door. */
+
 const coverLeftovers = (left: readonly bigint[]) => {
   const developed = left.map((part) => {
     const width = part.toString(2).length
@@ -321,7 +313,7 @@ const nibblePrimes = (id: string) => {
   const nibbles = [...id.replace(/-/g, '')].map((c) => parseInt(c, 16))
   return NIBBLE_PRIMES.filter((p) => nibbles.includes(p))
 }
-/** The address and its σ reflection, held at once. The shadow is that reflection. Reflecting the shadow restores the address, and a prime the shadow reads is exposed when it divides. */
+
 const addressShadow = (text: string, divides?: (p: number) => boolean) => {
   const address = uuid(text)
   const ch = uuidChannel(address)
@@ -342,7 +334,7 @@ const factorShadow = (n: bigint, factors: readonly string[], left: readonly stri
   const restored = self.restored && parts.every((part) => part.restored) && tools.every((tool) => tool.restored)
   return { atOnce: true as const, via: 'reflection' as const, restored, self, parts, tools, primes, holds: restored && primes.every((p) => divides(Number(p))) }
 }
-/** Every coordinate is coverable: the double torus gives it a next step and the step back, and the clay register holds. The coordinate that decrypts a semiprime is the witness centre (p + q) / 2. all is that centre having been reached. A leftover has no witness, so the account does not hold, and the remaining walk is not run. */
+
 const timeCover = (n: bigint, finished: boolean, searched: string, reached: string | null, factors: readonly string[]) => {
   const tori = zeroTori(n)
   const reg = recomputeClay()
@@ -367,7 +359,7 @@ const COURT = [
   { direction: 'south' as const, seed: 0, sign: 0n },
 ]
 const invertSeed = (seed: number) => seed === 0 ? 0 : 10 - seed
-/** East is 3 and west is 6. North is 9 and south is 0. The reflection inverts the court by σ₁₀: 3, 6, 9, 0 become 7, 4, 1, 0. A candidate is kept when it divides the part, or when its square leaves a square. */
+
 const compassRun = (part: bigint, origin: bigint, steps: bigint, reflections: bigint) => {
   const found: bigint[] = []
   const counts: Record<(typeof COURT)[number]['direction'], bigint> = { east: 0n, west: 0n, north: 0n, south: 0n }
@@ -429,7 +421,7 @@ const compassRun = (part: bigint, origin: bigint, steps: bigint, reflections: bi
     counts: lane(counts), reflected: lane(reflected), ran: ran.toString(), found: found.map(String),
   }
 }
-/** 00 stays 00. 19 reflects to 91, 10 to 01, and so on: each pair is invariant under reversal. None of them opens an unknown integer, so the fold is challenged and each pair is an open idea. Nothing is written. */
+
 const invariantFamily = () => {
   const out: string[] = []
   const seen = new Set<string>()
@@ -443,7 +435,7 @@ const ZERO_FOLDS = [
   { angle: 60, opens: 6, gateway: 'streams' as const },
   { angle: 90, opens: 4, gateway: 'gateways' as const },
 ] as const
-/** Folding 0 at 180° reads 8 and at 360° reads 10. Folding 0 at 30°, 60° and 90° opens 12, 6 and 4 gateways, and each angle opens on both sides. A zero of the integer falls in one gateway. The gateway divides only when its value does. */
+
 const foldZero = (part: bigint, reflections: bigint) => {
   const width = part.toString(2).length
   const limit = width < 1024 ? width : 1024
@@ -507,7 +499,7 @@ const convergentDenominators = (numerator: bigint, denominator: bigint, limit: b
   }
   return out
 }
-/** Phase estimation of the fold. 30°, 60° and 90° are the phases 1/12, 1/6 and 1/4. 180° is 1/2. A full turn measures 0, the reduced digit of 10. The register is one UUID: hexbit qubits on each of its 32 hex digits, less the decided version nibble and the fixed variant prefix. The next handle is another UUID, so that count is not a ceiling. The order stays unmeasured. */
+
 const quantumFold = (width: number) => {
   const bits = 8
   const scale = 1n << BigInt(bits)
@@ -533,9 +525,9 @@ const quantumFold = (width: number) => {
     order: null, open: true as const,
   }
 }
-/** One UUID's effective qubits. A call that omits a width uses this, and a textbook example is a width the caller passes. */
+
 const registerQubits = () => uuidQubits(AXIOMS.find((row) => row.name === 'hexbit')!.value).effective
-/** A width the dense table does not list. The qubits sit on UUID handles: one UUID holds the effective count, and the next handle is another UUID, so the width has no ceiling. */
+
 const uuidCapacity = (name: string, width: number) => {
   const per = AXIOMS.find((row) => row.name === 'hexbit')!.value
   const counted = uuidQubits(per)
@@ -544,7 +536,7 @@ const uuidCapacity = (name: string, width: number) => {
   const address = uuid(canonicalText({ name, width, formula }))
   return { via: 'uuid' as const, unlimited: true as const, ceiling: null, capacity: 'unlimited' as const, address, sealed: seal(address).valid, handles, effective: counted.effective, formula }
 }
-/** The Shor register of an integer, 3L qubits, spread over UUID handles. One UUID holds the effective count. Each handle is a sealed address of the superposition formula, and it validates its six program-space neighbours. No amplitude table is allocated, and a cofactor is not given factors. */
+
 const imprintRegister = (n: bigint) => {
   const bits = n < 2n ? 0 : n.toString(2).length
   const qubits = 3 * bits
@@ -560,7 +552,7 @@ const imprintRegister = (n: bigint) => {
   const developed = developViaHooks({ formula: `${n} = ${frames.quotient} * ${frames.scale} + ${frames.residue}`, product: 'merkaba', variant: frames.exposed ? 'analog' : 'harmonic', title: 'merkaba', theorem: 'textbook_mixed_radix' })
   return { bits, qubits, handles: spread.handles, effective: spread.effective, unlimited: true as const, ceiling: null, capacity: 'unlimited' as const, via: 'uuid' as const, superposition: amplitude, formula: spread.formula, root, sealed: imprints.every((row) => row.sealed), validated: imprints.every((row) => row.validated && row.sealed), imprints, frames, hooks: { via: 'hooks' as const, hooks: developed.hooks, beforeChange: 'the residue is recorded' as const, afterChange: 'the residue is handed to the docs door' as const, afterRead: 'the exposed residue is served' as const, documented: developed.iso.documented === true, formula: developed.iso.formula, iso: developed.iso, docs: developed.docs } }
 }
-/** The register is one UUID. hexbit qubits sit on each of its 32 hex digits. The version nibble and the variant prefix are the stamp, so the free qubits are the rest. The handle's UUID is the next register. No width, no dense cap, and no partial phase is added. */
+
 const hexbitRegister = (part: bigint) => {
   const width = AXIOMS.find((row) => row.name === 'hexbit')!.value
   const counted = uuidQubits(width)
@@ -678,8 +670,6 @@ const finishFactor = (n: bigint, a?: bigint, reflections = 1n << 12n, from?: big
     header: ['trinity', 'zeros', 'shift'], rows: [...factors.map((x) => [x.toString(), String(x.toString(2).length), 'prime']), ...Object.entries(tori.byTrinity).map(([trinity, count]) => [trinity, String(count), 'polarity flips'])] }
 }
 
-/** One tool: its name, what it does, its input schema (JSON Schema 2020-12), and the call that compiles or reads it: the
- *  structured result and the widget that shows it. */
 import { a432Specific, defineTool, isObj, unlimited, type Tool, type Toolbox, type Context } from './toolbox.ts'
 import { FLOW } from './toolboxes/flow.ts'
 import { KERNEL_THEOREMS, GENERATED_LEMMAS, THEOREMS } from './theorems-index.ts'
@@ -707,7 +697,7 @@ export { redact } from './machine.ts' // the leak table's redaction, for the gen
 const TREE = new Set(['leads', 'audit', 'match', 'clay', 'verify'])
 // Each clay case instances the textbook theorem it proves: the case surfaces that kernel proof (Lean) and docs under its textbook name (pascal-rule-28).
 const CLAY_THEOREM_FN: Readonly<Record<string, string>> = { choose: 'pascal_rule', triangular: 'gauss_triangular', qftGates: 'gauss_triangular', qftDepth: 'gauss_triangular', qftStates: 'power_of_two', mint: 'power_of_two', amplitudes: 'power_of_two', powMod: 'euler_fermat', qaoaZz: 'bilinear_symmetry', qaoaX: 'bilinear_symmetry', paulis: 'grover_search', groverSize: 'grover_search', groverIters: 'grover_search', totient: 'euler_totient', fibFusion: 'fibonacci', factorial: 'factorial', cliffordOrder: 'factorial', magicBlock: 'magic_constant', magicCubic: 'magic_constant', glProd: 'magic_constant', isingFusion: 'ising_fusion', chimera: 'ising_fusion', shorModulus: 'shor_sigma_root', gcd: 'shor_sigma_root' }
-/** Every name a textbook gives one relation: the Clay module's own key, each textbook theorem whose formula the statement uses (its case name), and each textbook whose prose names the relation. A relation may be named in several textbooks. The kernel is not asked. */
+
 const relationNames = (r: { name: string; statement: string; theorems?: readonly { theorem: string; case: string }[] }) => {
   const books = new Map<string, Set<string>>()
   const add = (textbook: string, name: string) => { const set = books.get(textbook) ?? new Set<string>(); set.add(name); books.set(textbook, set) }
@@ -718,10 +708,10 @@ const relationNames = (r: { name: string; statement: string; theorems?: readonly
   for (const t of TEXTBOOK_THEOREMS) for (const name of aliases) if (new RegExp(`\\b${name}\\b`).test(t.says)) add(t.key, name)
   return [...books.entries()].sort((a, b) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0).map(([textbook, set]) => ({ textbook, names: [...set].sort() }))
 }
-/** The official Payload plugins. When every one of them is installed, a relation is filed in the collections those plugins already own. Nothing is added and nothing is written. */
+
 const OFFICIAL_PLUGINS = ['@payloadcms/plugin-ecommerce', '@payloadcms/plugin-mcp', '@payloadcms/plugin-multi-tenant', '@payloadcms/plugin-search', '@payloadcms/plugin-import-export', '@payloadcms/plugin-form-builder', '@payloadcms/plugin-seo', '@payloadcms/plugin-nested-docs', '@payloadcms/plugin-redirects'] as const
 const collectionSlug = (raw: string) => raw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'page'
-/** Every place of a program. The first place is the address. Each place rotates one step. The last place returns the program. The handle and the tail stay. The variant nibble of a reassembled address is 8, so the address itself returns when it was already 8. Every aspect witnesses each place. */
+
 const walked = (id: string) => {
   const steps: { place: number; uuid: string; next: string; sealed: boolean; kept: boolean; back: boolean; around: boolean; all: boolean; aspects: number }[] = []
   let current = id
@@ -768,10 +758,10 @@ const clayCaseTheorems = (r: { name: string; statement: string }) => {
   for (const fn in CLAY_THEOREM_FN) if (new RegExp(`\\b${fn}\\b`).test(r.statement)) names.add(CLAY_THEOREM_FN[fn]!)
   return [...names].flatMap((nm) => { const key = 'textbook_' + nm, tb = TEXTBOOK_THEOREMS.find((t) => t.key === key), k = THEOREMS.find((t) => t.key === key), b = nm.replace(/_/g, '-'); return k ? [{ theorem: key, case: b.endsWith(v) ? b : `${b}-${v}`, proof: tb?.lean ?? k.statement, docs: tb?.says ?? '', kernelAccepted: true }] : [] })
 }
-/** A scientific name is one the textbook states for a clay formula ("The textbook meaning of") or Shor's reduction. The register's width and a project slug are not scientific names. */
+
 const scientificTheorem = (key: string) => { const t = TEXTBOOK_THEOREMS.find((x) => x.key === key); return !!t && !key.includes('relation_') && (t.says.includes('The textbook meaning of') || t.says.includes("Shor's reduction")) }
 let educationCache: { scientific: string[]; proved: { theorem: string; relations: string[] }[]; removed: string[]; category: Record<string, string[]>; namesFor: (theorem: string | undefined, exampleId: string) => string[] } | null = null
-/** Proved iff the textbook's scientific name is on the relation and that relation's formula cross-verifies. Every other name is removed from the Lean theorem category; a relation is renamed to the scientific name. */
+
 const educationProof = () => {
   if (educationCache) return educationCache
   const scientific = TEXTBOOK_THEOREMS.filter((t) => scientificTheorem(t.key)).map((t) => t.key).sort()
@@ -815,7 +805,7 @@ const clayCatalog = () => {
   }).sort((a, b) => a.product.localeCompare(b.product))
   return { products, total: products.length, theorems: ['textbook_free_or_coil'], says: 'the sellable catalog from the clay cases: each textbook a product, each case a variant, the cross-textbook theorems the variations, the families the taxonomy; priced in coins per superposition (2^bits), every price a content address so costs are comparable and pass computation to computation' }
 }
-/** The problems the register defines, solved as product combinations. A textbook's parameters are its axioms. A family is a problem, and a solution is one variant of each textbook product that carries that family. The count is the product of those radices (textbook_mixed_radix). Every clay formula holds, so every combination holds. Nothing is stored. */
+
 const productCombinations = () => {
   const reg = recomputeClay()
   const cat = clayCatalog()
@@ -854,7 +844,7 @@ const productCombinations = () => {
   const hooks = { collection: 'products' as const, iso: 'ISO 9001' as const, beforeChange: 'a variant is documented only when its formula is recorded', afterChange: 'the formula is the text the docs door writes', afterRead: 'the documented formula is the variant served', validated: products.every((p) => p.variants.every((v) => v.iso.documented && v.holds && v.crossVerified)), proved: proved.every((a) => a.proved) }
   return { phase: 'combinations' as const, verified, crossVerified, depth, axioms: proved, params, products, hooks, problems: problems.length, solved, space: space.toString(), radices, rows: problems, theorems: ['textbook_mixed_radix', 'textbook_plugin_combinations', 'textbook_standards_sliced'] as const, says: `${proved.length} axioms compute ${proved.length} parameters. Those parameters compute ${products.length} products and ${variants} variants. Each variant is its clay formula, cross-verified: the sides evaluate to one value, and developing the axioms it names reaches that same value, documented as ISO 9001. The deepest development is ${depth}. ${solved} of ${problems.length} family problems are the combinations of those products, ${space.toString()} in all, and none is stored.` }
 }
-/** A leftover the order budget does not split is read at the zero bit. The clay theorems and their cross combinations are that reading, and every tool is a page of the Payload website. The integer stays the named cofactor. Nothing is written. */
+
 const portToZero = (parts: readonly bigint[]) => {
   const combos = productCombinations()
   const seeded = mcpPages(TOOLS.map((tool) => ({ name: tool.name, toolbox: tool.toolbox, description: tool.description })))
@@ -883,7 +873,7 @@ const portToZero = (parts: readonly bigint[]) => {
     holds: false as const,
   }
 }
-/** A product variant is shown when its value is a numeral of the textbook Lean that names it. The rest are the real gaps. */
+
 const textbookGaps = () => {
   const reg = recomputeClay()
   const amount = new Map(reg.relations.map((r) => [r.name, r.sides[0]!.value]))
@@ -901,7 +891,7 @@ const textbookGaps = () => {
   })
   return { phase: 'gaps' as const, variants: rows.length, shown: rows.length - missing.length, gaps: missing.length, products, rows, missing, says: `${missing.length} of ${rows.length} product variants are values the textbook Lean does not state` }
 }
-/** The dearest subscription of each catalogue product, then the four abilities from delete down, so each ability is sold on the plan that monetises it. */
+
 const abilitySubscriptions = () => {
   const monthly = (v: { interval: string; amounts: Record<string, number> }) => v.interval === 'month' || v.interval === 'metered' ? v.amounts.eur : v.interval === 'year' ? v.amounts.eur / 12 : null
   const best = new Map<string, { product: string; variant: string; interval: string; monthly: number }>()
@@ -921,7 +911,7 @@ const RELATION_ABILITIES: readonly Ability[] = [
   { role: 'tenant-admin', can: ['manage'], subject: 'relations' },
 ]
 const TENANT_OF: Readonly<Record<string, string>> = { reader: 'viewer', writer: 'editor', admin: 'tenant-admin' }
-/** SEO is public: every product relation carries its formula and its proof. A named API call is the backend: the role's ability, the subscription that ability is sold on, and the usage the coins book. */
+
 const publicSeo = (ask: Record<string, unknown>) => {
   const reg = recomputeClay()
   const shown = new Map(textbookGaps().rows.map((v) => [`${v.product}/${v.relation}`, v.shown]))
@@ -971,7 +961,7 @@ const publicSeo = (ask: Record<string, unknown>) => {
   })() : null
   return { phase: 'public' as const, public: true as const, component: 'content' as const, renderedBy: 'src/components/blocks/Content' as const, coverage: { full: covered === seeded.length, covered, of: seeded.length }, pages: seeded, coins: minted, gaps: { missing: seeded.filter((p) => p.gap).length, of: seeded.length }, backend: { subject: 'relations' as const, abilities: plans.map((p) => ({ ability: p.ability, subscription: { product: p.product, variant: p.variant, interval: p.interval, monthlyEur: p.monthly }, includes: p.includes })), roles, call, rbac: 'viewer reads, editor creates and updates, tenant-admin deletes; SEO is not one of these abilities', subscription: 'each ability is sold on the catalogue subscription with the greatest monthly rate still left, dearest ability on the dearest plan', usage: 'an allowed call spends the formula\'s UUID, the same address the public page already holds; a repeated formula is the same coin, and a refusal spends none' }, says: `${seeded.length} product relations are public pages of the website: a default hero and one content block, the formula and the proof in that block, drawn by the content component. ${minted.count} coins, ${minted.merged} merged, each a UUID. ${seeded.filter((p) => p.gap).length} values are gaps in the textbook Lean. A backend call spends that UUID.` }
 }
-/** Solving the register: the docs define the framework only. Each relation is a variant of the textbook it names. */
+
 const solveClay = () => {
   const reg = recomputeClay()
   const reading = reflectionOfRegister(reg.relations)
@@ -1048,9 +1038,7 @@ const clayReadme = (m: ReadmeMeasured = {}) => {
   L.push(`## References`, '', `- Google Quantum AI — Willow spec sheet, Cirq documentation and \`cirq.google.known_devices\`, the roadmap (quantumai.google)`, `- Google — *Meet Willow* and *Quantum Echoes* (blog.google; research.google)`, `- quantumlib organization (github.com/quantumlib)`, '')
   return { markdown: L.join('\n'), total: reg.total, holding: reg.holding, maxBits: reg.maxBits, relationCount: reg.total, toolCount: TOOLS.length, productCount: cat.total, thousandBit: { bits: made.bits, N: made.N.toString(), p: made.p.toString(), q: made.q.toString(), witness: made.witness.toString(), decoded: dec.decoded, searched: dec.searched.toString(), verified: dec.verified, address: addr }, theorems: ['textbook_impossible_trapdoor', 'textbook_shor_sigma_root'], says: `the README generated by the clay cluster: ${reg.total} register relations (not a CMI prize claim), ${TOOLS.length} tools, ${cat.total} products, and the thousand-bit σ-trapdoor minted and decoded (searched ${dec.searched}, verified ${dec.verified}) — one σ-reflection; Clay here is the register, not a prize solution` }
 }
-/** A proof checked both ways and cheaply: a theorem by its key (accepted by the kernel, its statement, the examples it proves), a call by its
- *  content address (the theorem of the example making the same call, and that theorem's examples holding the call again); one lookup, the call
- *  never recomputed — verifying costs a lookup where producing cost the run. */
+
 const proofCheck = (args: Record<string, unknown>) => {
   const callAt = (tool: unknown, a: unknown) => uuid(JSON.stringify([tool, a ?? {}])), known = (k: string) => THEOREMS.find((x) => x.key === k || x.key.endsWith('.' + k))
   const c = args.call as { tool?: string; arguments?: unknown } | undefined, at = c ? callAt(c.tool, c.arguments) : null, e = at ? EXAMPLES.find((x) => x.theorem && callAt(x.tool, x.arguments) === at) : undefined
@@ -1076,10 +1064,8 @@ const OPERATION_SCHEMA = {
 }
 const MEASURE_SCHEMA = { type: 'object', required: ['key', 'qubits'], properties: { key: { type: 'string' }, qubits: { type: 'array', items: QUBIT_SCHEMA } } }
 
-/** An answer still being computed: anything with a then, as Promise.resolve reads it. */
 const thenable = <T>(value: T | PromiseLike<T>): value is PromiseLike<T> => value !== null && typeof value === 'object' && typeof (value as { then?: unknown }).then === 'function'
 const reject: (what: string) => never = (what) => { throw new ParamError(what) }
-
 
 const OWN: Tool[] = [
   tool({
@@ -1922,10 +1908,9 @@ const OWN: Tool[] = [
   tool({
     name: 'clay',
     description: 'The Clay register recomputed in exact integer arithmetic: the Lean definitions of Qpu/Clay.lean and its imports ported one for one, every relation_N statement parsed and evaluated, each side\'s value and the bit width it needs reported. What the Lean kernel accepted by rfl, redone with + − × ÷ on naturals only, so a small machine can redo the same sums and compare addresses. Nothing here is a proof of an open problem: the relations are identities between the unit\'s own constants.',
-    inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'one relation, e.g. relation_15; omit for all' }, lean: { type: 'boolean', description: 'verify the register by the UUID alone: the address of a relation\'s integer, digits only, seals, and the UUID of its Lean statement is the receipt, bound by the SHA-256 of that statement. Every name each textbook gives the relation is collected. When every official plugin is installed, each relation is filed in the collections those plugins already own. Every place of the program is walked: the first is the address, each place rotates one step, and the last returns the program. The handle and the tail stay. The variant nibble of a reassembled address is 8, so the address itself returns when it was already 8. Every aspect witnesses each place. The kernel is not asked. Nothing is added and nothing is written' }, technique: { type: 'string', enum: ['reflection'], description: 'the register read by the σ-reflection technique: every value\'s vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit\'s sequence answers compared' }, unit: { type: 'array', items: { type: 'object' }, description: 'the unit\'s run_sequence answers per value ({ value, answer | refusal })' }, catalog: { type: 'boolean', description: 'the sellable catalog derived from the clay cases: each textbook theorem a product, each clay case a variant, the cross-textbook theorems the variations, the families the taxonomy, priced in coins per superposition (content-addressed)' }, combinations: { type: 'boolean', description: 'the problems the register defines, solved as product combinations: a textbook\'s parameters are its axioms, a family is a problem, and a solution is one variant of each textbook product in that family. The count is the product of the radices and nothing is stored' }, chess: { type: 'boolean', description: 'the clay chess game: each family a team of formulas, each formula played by its coin, coins whose seeds sum to ten against each other, and only a chess move meets them. The board is the NIST beacon (512 bits, 8×8, a minute a move) and the CERN open-data record sits on it by its Adler32. Nothing is fetched' }, nist: { type: 'object', description: 'a NIST beacon pulse the client read: { outputValue, pulseIndex, period, chainIndex }. The 128 hex digits are the 8×8 board. Nothing is fetched' }, cern: { type: 'object', description: 'a CERN open-data page the client read: { total, records: [{ id, size, checksum, doi? }] }. A record is seated by its adler32 checksum. Nothing is fetched' }, solve: { type: 'boolean', description: 'the solved register as one framework document. The case families are categories and every case is a product variant of that framework; no other doc is written' }, drift: { type: 'boolean', description: 'true runs every Clay family as a UUID program. The program stores no params. The tail is the params and the ten program nibbles are the expected schema. The next place rotates the program one step. The handle and the tail stay, and ten places return the program. Cross-encryption is the reflection both ways and the six neighbour steps, read as nine schemas. A changed nibble breaks the seal. A forged record costs 2^128 to collide and 2^256 as a second preimage. Each wave computes at 432 Hz. The next program is the next family. A family stays a register identity with solved false, and its program is closed. Each folder is closed by its own UUID program. The next place of a closed program rotates it one step. The handle, 432 Hz and the closed mark stay, and ten places return the program. Lean is Qpu.Program only when all 14 witnessing superpositions cross-verify that program in the same UUID. Nothing is fetched. The program file is written and every quantum folder is aligned to a multiple of 432 bytes. The coin drift is 8' }, readme: { description: 'the README generated by the clay cluster from the computed tree — the register, the impossible-integer trapdoor (clay via the thousand bit and back), the kernel census, the MCP surface and the catalog; true, or an object of the measured figures the caller took ({ date, version, rows, census })' }, pravets: { type: 'boolean' } } },
+    inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'one relation, e.g. relation_15; omit for all' }, lean: { type: 'boolean', description: 'verify the register by the UUID alone: the address of a relation\'s integer, digits only, seals, and the UUID of its Lean statement is the receipt, bound by the SHA-256 of that statement. Every name each textbook gives the relation is collected. When every official plugin is installed, each relation is filed in the collections those plugins already own. Every place of the program is walked: the first is the address, each place rotates one step, and the last returns the program. The handle and the tail stay. The variant nibble of a reassembled address is 8, so the address itself returns when it was already 8. Every aspect witnesses each place. The kernel is not asked. Nothing is added and nothing is written' }, technique: { type: 'string', enum: ['reflection'], description: 'the register read by the σ-reflection technique: every value\'s vortex seed, reflection and trinities, the reflecting pairs, the fixed and the tuned; with unit, the unit\'s sequence answers compared' }, unit: { type: 'array', items: { type: 'object' }, description: 'the unit\'s run_sequence answers per value ({ value, answer | refusal })' }, catalog: { type: 'boolean', description: 'the sellable catalog derived from the clay cases: each textbook theorem a product, each clay case a variant, the cross-textbook theorems the variations, the families the taxonomy, priced in coins per superposition (content-addressed)' }, combinations: { type: 'boolean', description: 'the problems the register defines, solved as product combinations: a textbook\'s parameters are its axioms, a family is a problem, and a solution is one variant of each textbook product in that family. The count is the product of the radices and nothing is stored' }, chess: { type: 'boolean', description: 'the clay chess game: each family a team of formulas, each formula played by its coin, coins whose seeds sum to ten against each other, and only a chess move meets them. The board is the NIST beacon (512 bits, 8×8, a minute a move) and the CERN open-data record sits on it by its Adler32. Nothing is fetched' }, nist: { type: 'object', description: 'a NIST beacon pulse the client read: { outputValue, pulseIndex, period, chainIndex }. The 128 hex digits are the 8×8 board. Nothing is fetched' }, cern: { type: 'object', description: 'a CERN open-data page the client read: { total, records: [{ id, size, checksum, doi? }] }. A record is seated by its adler32 checksum. Nothing is fetched' }, solve: { type: 'boolean', description: 'the solved register as one framework document. The case families are categories and every case is a product variant of that framework; no other doc is written' }, drift: { type: 'boolean', description: 'true runs every Clay family as a UUID program. The program stores no params. The tail is the params and the ten program nibbles are the expected schema. The next place rotates the program one step. The handle and the tail stay, and ten places return the program. Cross-encryption is the reflection both ways and the six neighbour steps, read as nine schemas. A changed nibble breaks the seal. A forged record costs 2^128 to collide and 2^256 as a second preimage. Each wave computes at 432 Hz. The next program is the next family. A family stays a register identity with solved false, and its program is closed. Each folder is closed by its own UUID program. The next place of a closed program rotates it one step. The handle, 432 Hz and the closed mark stay, and ten places return the program. Lean is Qpu.Program only when all 14 witnessing superpositions cross-verify that program in the same UUID. Nothing is fetched. The program file is written and every quantum folder is aligned to a multiple of 432 bytes. The coin drift is 8' }, readme: { description: 'the README generated by the clay cluster from the computed tree — the register, the impossible-integer trapdoor (clay via the thousand bit and back), the kernel census, the MCP surface and the catalog; true, or an object of the measured figures the caller took ({ date, version, rows, census })' }, pravets: { type: 'boolean', description: 'recompute the Clay register in 16-bit limbs on the Pravets 8M path and compare content-address receipts to the Number path (textbook_clay_register_width)' } } },
     run: (args) => {
       if (args.drift === true) return driftPrograms() as never
-      if (args.pravets === true) return recomputeClayPravets() as never
       const base = recomputeClay()
       const all = { ...base, relations: base.relations.map((r) => { const theorems = clayCaseTheorems(r); const variants = theorems.map((t) => ({ product: t.theorem, variant: t.case })); return { ...r, case: variants[0]?.variant ?? r.name, product: variants[0]?.product ?? null, variant: variants[0]?.variant ?? r.name, variants, theorems } }) }
       if (args.chess === true) return recognise(all.relations.map((r) => ({ name: r.name, statement: r.statement, families: r.families ?? [], value: r.sides[0]!.value })), { nist: isObj(args.nist) ? args.nist as { outputValue?: string; pulseIndex?: number; period?: number; chainIndex?: number } : null, cern: isObj(args.cern) ? args.cern as { total?: number; records?: { id?: string; size?: number; checksum?: string; doi?: string }[] } : null })
@@ -1969,23 +1954,21 @@ const OWN: Tool[] = [
   }),
 ]
 
-/** Results by block address, once per process: the memory of the balancer. */
 const BALANCER = new Map<string, { structured: unknown; widget: string }>()
-/** The blocks teleported into this balancer by a client (computed by another process), so a snapshot can leave only the new ones. */
+
 const TELEPORTED = new Set<string>(), TELEPORT_USED = new Set<string>()
 let TELEPORT_HITS = 0
-/** The balancer's blocks as data, for a client to carry to another process: all of them, or only those this process computed. Pure. */
+
 export const balancerSnapshot = (p: { onlyNew?: boolean; used?: boolean } = {}): { address: string; structured: unknown; widget: string }[] => [...BALANCER.entries()].filter(([a]) => (!p.onlyNew || !TELEPORTED.has(a)) && (!p.used || TELEPORT_USED.has(a))).map(([address, v]) => ({ address, ...v }))
-/** Blocks computed elsewhere, teleported into this balancer: a block already here is kept (first computed wins); returns how many arrived. Pure. */
+
 export const balancerLoad = (blocks: readonly { address: string; structured: unknown; widget: string }[]): number => { let n = 0; for (const b of blocks) { if (typeof b.address !== 'string' || BALANCER.has(b.address)) continue; BALANCER.set(b.address, { structured: b.structured, widget: b.widget }); TELEPORTED.add(b.address); n += 1 } return n }
-/** Observability: per tool, how often it was asked, how often it computed (a miss), how long the misses took, how many bytes they produced. */
+
 const OBSERVED = new Map<string, { calls: number; misses: number; ms: number; bytes: number; servedMs: number }>()
 const NESTED: number[] = []
 const observed = (k: 'calls' | 'misses' | 'ms' | 'bytes' | 'servedMs') => [...OBSERVED.values()].reduce((n, o) => n + o[k], 0)
 
-/** The computable metrics of the tree, in real time: what the registries, the kernel's index and one audit say right now. */
 type RunArtefacts = { advantageByUnit?: unknown; audit?: { total?: number; passed?: number; failed?: number }; e2e?: { combos?: number; copies?: number; involutions?: number; outcomes?: Record<string, number>; competition?: { saved?: number; msMajority?: number; winners?: Record<string, number> } }; coins?: { calls: number; coins: number; byDoor: Record<string, number>; gated: number; unclean: number }; receipt?: { steps?: { name: string; status: string; ms: number }[] }; sizes?: Record<string, number>; discovery?: { hosts?: { kind: string; detected: string }[]; doors?: unknown[]; capabilities?: Record<string, string[]> }; verification?: { summary?: Record<string, { requests: number; ok: number; contracted: number; uncontracted: number }> }; readiness?: { classes?: { served: number; refuted: number; trial: number }; readiness?: { ready: boolean }; border?: { doors?: unknown[]; sealedBy?: string[] } }; repository?: { branches?: { agree: string[]; local: number }; tags?: { agree: string[]; local: number; mismatch: string[] }; leads?: unknown[] }; legal?: { claims?: number; verdicts?: Record<string, number>; violations?: number; refusals?: number; securityPassed?: number; securityTotal?: number; id?: string }; docket?: { entries?: number; root?: string | null; mirrors?: number }; receipts?: { count?: number; last?: string | null } }
-/** What the run's artefacts add to the metrics: textbook APIs autodiscovered and covered, verification on public datasets, the border, the repository watched, the legal audit, the RAID's signalling (docket entries chained to a root), the receipt chain. */
+
 const coverage = (a: RunArtefacts): Record<string, unknown> => {
   // the load: a block is paid once when computed (a miss of the balancer, a coin at a gated door); every re-ask is a teleport, free — the cache by address here, the involution (304 by content hash) at the edge
   const calls = observed('calls'), misses = observed('misses')
@@ -2014,10 +1997,7 @@ const coverage = (a: RunArtefacts): Record<string, unknown> => {
     msPerSettledLead: settled && flowMs !== null ? Number((flowMs / settled).toFixed(1)) : null,
   }
 }
-/** Everything the kernel accepts, served whole by this version from its own index: every hand-written theorem with its module and statement, every
- *  textbook theorem with its Lean text and the examples it backs, the generated lemmas counted, the kernel's total; the axioms per theorem stand in
- *  /theorems.ndjson, written by the lean step. No version hides anything Lean: the audit fails when this serves less than the kernel accepts
- *  (textbook_lean_served_whole). */
+
 const LEAN_RESOURCE = 'lean://qpu/theorems'
 const leanLedger = () => {
   const modules: Record<string, number> = {}; for (const t of THEOREMS) modules[t.module] = (modules[t.module] ?? 0) + 1
@@ -2077,9 +2057,6 @@ const apis = defineTool('tree', {
 })
 const metrics = defineTool('tree', { name: 'metrics', description: 'The computable metrics of this tree in real time: tools and toolboxes, examples and how many name the kernel-accepted theorem that makes them true, the kernel\'s theorem counts from its own index, leads by status, the audit\'s checks, the balancer\'s memory. Quality is proven by theorems, not textbook examples; this is the measure of how far that holds.', inputSchema: { type: 'object', properties: { artefacts: { type: 'object', description: 'the run\'s artefacts the client read: discovery, verification, readiness, repository, legal, docket, receipts; without them the tree\'s own counts alone' } } }, run: (args) => treeMetrics((args.artefacts ?? {}) as RunArtefacts), widget: flowWidget })
 
-/** The textbook as an adapter: every example categorised for reuse — by toolbox, by tool, by the theorem that backs it, by the
- * theorem's module — and any example replayed by id (the balancer makes a replay free). Quality is proven by theorems; the
- * textbook is where the examples wait, respected, each a lead for its theorem. */
 const textbook = defineTool('tree', {
   name: 'textbook',
   description: 'The QPU textbook as an adapter: every example categorised for reuse — by toolbox, by tool, by the kernel-accepted theorem that backs it, by that theorem\'s module — and, with reuse: <example id>, that example replayed and its result returned. The categories are computed from the registries, never written by hand. seo serves every product relation in public: the formula and the proof, in the answer and the widget. A backend call names the role, the ability and the relation; the subscription and the coin bill are decided there.',
@@ -2265,7 +2242,6 @@ const textbook = defineTool('tree', {
   widget: (d) => ('phase' in d && d.phase === 'public' ? seoWidget(d) : flowWidget(d)),
 })
 
-/** The UI as CSS, served: the stylesheet from the key and, for a UUID, the custom properties its block root carries. */
 const css = defineTool('tree', {
   name: 'css',
   description: 'The quantum UI as CSS alone: the stylesheet derived from the key 432 (the harmonics, and the rules that draw every block from its own custom properties with no script, motion only where the device allows it, off-screen blocks at no cost) and, for a uuid, the custom properties its block root carries (hue, CMYK, accent, tail colour and angle, the 9-vortex seed and period). Computed once; a device renders at the cost of CSS.',
@@ -2290,10 +2266,6 @@ const css = defineTool('tree', {
   widget: flowWidget,
 })
 
-/** A bounded tool laid out whole: every value each property admits (an enum, a boolean, an integer range, the ends of a
- * numeric bound, the textbook's values where a string is free), every combination of them with its block address and its
- * walk page, rendered as a grid of cells each drawn by its own UUID's CSS — so the user's click in the UI is the decision,
- * final, and nothing is computed until it is made. */
 type Facet = { property: string; kind: 'enum' | 'boolean' | 'range' | 'textbook' | 'free'; required: boolean; values: unknown[]; domain: string; space: number }
 const facets = (name: string): { facets: Facet[]; tool: Tool | undefined } => {
   const tool = TOOLS.find((t) => t.name === name) as (Tool & { inputSchema: { properties?: Record<string, { type?: string; enum?: unknown[]; minimum?: number; maximum?: number }>; required?: string[] } }) | undefined
@@ -2562,8 +2534,6 @@ const records = (args: Record<string, unknown>): Context => { const given = [...
 
 const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q.col}` : q.kind === 'line' ? `line:${q.x}` : `named:${q.name}`)
 
-/** A slim router: each method is answered, and each tool is the website page of its gate. */
-/** A batch: a JSON-RPC array is answered as one array, in order. Each call is its batch action, and RBAC decides that action for the claimed role before the call runs. */
 export const handleBatch = (messages: readonly Rpc[]): (Reply | Promise<Reply>)[] => {
   const claimed = messages.map((m) => { const p = m.params; if (!p || typeof p !== 'object') return undefined; const role = (p as { role?: unknown; _meta?: { role?: unknown } }).role ?? (p as { _meta?: { role?: unknown } })._meta?.role; return typeof role === 'string' ? role : undefined }).find((role) => role !== undefined)
   const calls = messages.map((m) => askPayloadRbac(mcpHostList(), QPU_MCP, m.method, claimed))
@@ -2573,8 +2543,7 @@ export const handleBatch = (messages: readonly Rpc[]): (Reply | Promise<Reply>)[
     return { jsonrpc: '2.0', id: m.id ?? null, error: { code: INVALID_PARAMS, message: `${call.role} may not ${call.action} through the Payload MCP`, data: { rbac: call } } }
   })
 }
-/** One door for every client written once: a tool called by name, its structured answer returned or its error thrown — the tools/call
- *  envelope the scripts wrote out each for itself (recognised as a shape by the entropy cleaner). */
+
 export const caller = (name: string) => (args: Record<string, unknown> = {}): any => { const r = call(name, args); if (r.error) throw new Error(r.error.message); return r.result!.structuredContent }
 export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> => {
   if (Array.isArray(message)) return handleBatch(message as unknown as Rpc[]) as unknown as Reply
@@ -2607,7 +2576,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       if (!asked.access) return { jsonrpc: '2.0', id, error: { code: INVALID_PARAMS, message: `${asked.role} may not ${asked.action} through the Payload MCP`, data: { rbac: asked } } }
       askedFirst = { server: asked.server, one: asked.one, first: asked.first, asked: asked.asked, tool: asked.tool }
     }
-    if (message.method === 'initialize') return ok({ protocolVersion: '2025-06-18', capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, website: { collection: 'pages', path: websiteGate('gates', 'root').rootPath }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
+    if (message.method === 'initialize') return ok({ protocolVersion: '2025-06-18', capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online], law: MCP_API_KEY.law, auth: MCP_API_KEY }, website: { collection: 'pages', path: websiteGate('gates', 'root').rootPath }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
     // every tool declares its UI resource (MCP Apps, _meta.ui.resourceUri): a host that negotiates the extension renders the tool's result through it
     // every tool listed widget-skilled: its UI resource (the widget) and its toolbox's skill (the instructions a client follows, the directions it tests in)
     if (message.method === 'tools/list') {
@@ -2639,19 +2608,19 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
         const properties = Object.fromEntries(Object.entries(x.properties ?? {}).filter(([k]) => !h.withheld.includes(k)).map(([k, p]) => [k, { ...p, ...(Array.isArray(p.enum) && role ? { enum: h.options[k] } : {}), ...(k in h.defaults ? { default: h.defaults[k] } : {}) }]))
         return { ...x, properties, ...(x.required ? { required: x.required.filter((r) => !h.withheld.includes(r)) } : {}), 'x-harmonic': stamp }
       }
-      const list = chosen.map(({ name, description, inputSchema, toolbox }) => { const box = TOOLBOXES.find((b) => b.name === toolbox); return { name, description: brief(description), inputSchema: harmonic(name, briefSchema(inputSchema), toolbox === 'google'), annotations: { title: name, readOnlyHint: true, idempotentHint: true, openWorldHint: false }, _meta: { toolbox, website: websiteGate(toolbox, name), skill: { ...(full ? { instructions: box?.skill.instructions ?? '' } : {}), directions: box?.skill.directions.length ?? 0 }, ...(full && toolbox === 'google' ? { specific: a432Specific(name) } : {}), ...(full && box ? { lean: toolboxLean(box) } : {}), ui: { resourceUri: `ui://qpu/${name}`, visibility: ['model', 'app'] } } } })
+      const list = chosen.map(({ name, description, inputSchema, toolbox }) => { const box = TOOLBOXES.find((b) => b.name === toolbox); const online = isOnlineVerify(name); return { name, description: brief(description), inputSchema: harmonic(name, briefSchema(inputSchema), toolbox === 'google'), annotations: { title: name, readOnlyHint: true, idempotentHint: true, openWorldHint: online }, _meta: { toolbox, experience: ISO_QUANTUM_AI.experience, online, ...(online ? { auth: MCP_API_KEY, law: MCP_API_KEY.law } : {}), website: websiteGate(toolbox, name), skill: { ...(full ? { instructions: box?.skill.instructions ?? '' } : {}), directions: box?.skill.directions.length ?? 0 }, ...(full && toolbox === 'google' ? { specific: a432Specific(name) } : {}), ...(full && box ? { lean: toolboxLean(box) } : {}), ui: { resourceUri: `ui://qpu/${name}`, visibility: ['model', 'app'] } } } })
       const listed = accountBytes([JSON.stringify(list)]), whole = accountBytes([JSON.stringify(CONTRACTS)])
       const efficiency = measureContext(listed, whole)
       const kept = efficiency.tokens, fullTokens = efficiency.full, saved = efficiency.saved
       return ok({ tools: list, _meta: { context: { tools: list.length, of: TOOLS.length, chars: listed.bytes, tokens: kept, fullChars: whole.bytes, fullTokens, saved, balanced: Boolean(wanted || cluster || !full), full, bytes: listed, efficiency, formula: { theorem: 'textbook_context_balanced' as const, lean: 'full - kept + kept = full' as const, full: fullTokens, kept, saved, holds: efficiency.holds }, bill: getBill({ tokens: kept, bits: listed.bits, coins: efficiency.coins, saved: { tokens: saved, bits: whole.bits - listed.bits } }), says: 'the list balanced to the request over MCP: the cluster the match tool decides, brief descriptions on request, the context counted; the saved and the kept make the whole (textbook_context_balanced); the list\'s bytes sit in the handle, the program and the params carrying the rest. Efficiency is the tokens kept for that one coin.' } } })
     }
     // the UI resources: one ui://qpu/<tool> per tool, the app shell served over the standard resource methods, nothing bypassed
-    // the SDK is a resource too: served here and, through the plugin's resources, by the Payload MCP plugin — and the SDK calls both back (vice versa)
-    if (message.method === 'resources/list') return ok({ resources: [...VIEWS.map((v) => { const u = ui(v); return { uri: u.uri, name: u.name, description: v === 'chat' ? 'the chat: a problem routed to its door, or one programmable question' : `the MCP Apps view of ${v}: renders the widget the tool computes`, mimeType: u.mimeType, _meta: { ui: { csp: u.csp, prefersBorder: u.prefersBorder } } } }), { uri: 'sdk://qpu/lib', name: 'qpu · sdk', description: 'the SDK: the config sets as the base of combinatorial application builders — one TypeScript module that calls this server over MCP (token free) and the Payload MCP plugin with a user\'s API key (the collections among its tools); served here and by the plugin', mimeType: 'text/typescript' }, { uri: OPENAPI_RESOURCE, name: 'qpu · openapi', description: 'the standard contract: an OpenAPI 3.1 document derived from tools/list and the endpoint table — every tool a component schema, every endpoint a path, the mcp operation a JSON-RPC envelope; the same document stands in the discovery document at /.well-known/qpu.json', mimeType: 'application/json' }, { uri: LEAN_RESOURCE, name: 'qpu · lean', description: 'everything the kernel accepts, served whole: every theorem with its module and statement, the textbook theorems with their Lean text, the generated lemmas counted, the kernel\'s total; no version hides anything Lean', mimeType: 'application/json' }] })
+    // builders (mcp://qpu/lib) are a resource too: served here and by the Payload MCP plugin — MCP client, not a REST SDK mirror
+    if (message.method === 'resources/list') return ok({ resources: [...VIEWS.map((v) => { const u = ui(v); return { uri: u.uri, name: u.name, description: v === 'chat' ? 'the chat: a problem routed to its door, or one programmable question' : `the MCP Apps view of ${v}: renders the widget the tool computes`, mimeType: u.mimeType, _meta: { ui: { csp: u.csp, prefersBorder: u.prefersBorder } } } }), { uri: 'mcp://qpu/lib', name: 'qpu · builders', description: 'the builders: the config sets as the base of combinatorial application builders — one TypeScript module that calls this server over MCP (token free) and the Payload MCP plugin with a user\'s API key (the collections among its tools); served here and by the plugin', mimeType: 'text/typescript' }, { uri: OPENAPI_RESOURCE, name: 'qpu · openapi', description: 'the standard contract: an OpenAPI 3.1 document derived from tools/list and the endpoint table — every tool a component schema, every endpoint a path, the mcp operation a JSON-RPC envelope; the same document stands in the discovery document at /.well-known/qpu.json', mimeType: 'application/json' }, { uri: LEAN_RESOURCE, name: 'qpu · lean', description: 'everything the kernel accepts, served whole: every theorem with its module and statement, the textbook theorems with their Lean text, the generated lemmas counted, the kernel\'s total; no version hides anything Lean', mimeType: 'application/json' }] })
     if (message.method === 'resources/templates/list') return ok({ resourceTemplates: [{ uriTemplate: 'ui://qpu/{tool}', name: 'qpu · a tool\'s view', mimeType: MCP_APPS.mimeType, description: 'the app shell of any tool of the catalogue' }] })
     if (message.method === 'resources/read') {
       const uri = String(params.uri ?? ''), read = (mimeType: string, text: string, more = {}) => ok({ contents: [{ uri, mimeType, text, ...more }] })
-      if (uri === 'sdk://qpu/lib') { const module = sdk('https://qpu.uuidna.com', NAMES); return read('text/typescript', module.module) }
+      if (uri === 'mcp://qpu/lib') { const module = builders('https://qpu.uuidna.com', NAMES); return read('text/typescript', module.module) }
       if (uri === LEAN_RESOURCE) return read('application/json', JSON.stringify(leanLedger(), null, 1))
       if (uri === OPENAPI_RESOURCE) return read('application/json', JSON.stringify(createOpenapi('https://qpu.uuidna.com', CONTRACTS), null, 1))
       const name = /^ui:\/\/qpu\/([a-z0-9_-]+)$/.exec(uri)?.[1]

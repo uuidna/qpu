@@ -1,3 +1,4 @@
+/* proven: ISO_QUANTUM_AI isOnlineVerify payloadMcpOnline builders — MCP ISO online verify + mcp://qpu/lib */
 // The textbook's axioms, replaced by theorems. An example asserts constants (seven variants, 256 combinations, a UUID of 36
 // characters); asserted, they are axioms of the textbook. Where the constants stand in an arithmetic relation of the model,
 // the relation is stated here as a Lean theorem the kernel checks (gen-docs writes Qpu/Textbook.lean from this table before

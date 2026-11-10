@@ -3,11 +3,11 @@ import { IDEA_HOME } from './collisions.ts'
 import { ISO_EXIT } from './iso-exit.ts'
 import { quantumVocabulary } from './quantum-vocabulary.ts'
 import { uuid } from '../uuid/index.ts'
-import { MCP_API_KEY, QPU_CONNECTOR, WEBSITE_ORIGIN, payloadMcpNext, payloadMcpRequest } from '../../plugins/websiteClient.ts'
+import { ISO_QUANTUM_AI, MCP_API_KEY, QPU_CONNECTOR, WEBSITE_ORIGIN, payloadMcpNext, payloadMcpOnline, payloadMcpRequest } from '../../plugins/websiteClient.ts'
 import { TABLES } from './tables-index.ts'
 
 const IDEA_INBOX = `${IDEA_HOME}/leads` as const
-/** The ISO 9001 processes. The one that computes next lives once the harmonic patch holds. Every other process exits. */
+
 export const PROCESS_LIFE = [
   { clause: 'ISO 9001:2015, 9.2', phase: 'audit', computesNext: false },
   { clause: 'ISO 9001:2015, 9.3', phase: 'next', computesNext: true },
@@ -18,13 +18,14 @@ export const PROCESS_LIFE = [
   { clause: 'ISO 9001:2015, 9.1', phase: 'monitor', computesNext: false },
   { clause: 'ISO 9001:2015, 10.3', phase: 'improve', computesNext: false },
 ] as const
-/** One UUID program is one nanosecond. A second of CPU life and a second of GPU life are this many programs. */
+
 export const LIFE_PER_SECOND = 1000000000
 export const lifeBound = (lives: boolean, clause: string, count: number) => `${lives ? 'live' : 'exit'}\n${clause}\n${count}`
-/** The one MCP ISO 9001 approves: the Payload plugin. tools/list is public to name the doors; next (findDocuments → GET /api/pages) opens only with a payload-mcp-api-keys Bearer. src is not a door. */
+
 export const isoApprovedMcp = (apiKey?: string) => {
   const list = payloadMcpRequest()
   const next = payloadMcpNext([{ name: 'findDocuments' }], WEBSITE_ORIGIN, undefined, apiKey)
+  const online = payloadMcpOnline(undefined, WEBSITE_ORIGIN, apiKey)
   const call = next.calls[0]
   const keyed = next.keyed === true && next.refused === false && !!call
   const planned = {
@@ -37,12 +38,14 @@ export const isoApprovedMcp = (apiKey?: string) => {
   return {
     name: QPU_CONNECTOR.name, plugin: QPU_CONNECTOR.plugin, api: QPU_CONNECTOR.api, via: QPU_CONNECTOR.via,
     approved: true as const, only: true as const, src: false as const, fetched: false as const,
+    experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary,
     keyed, refused: next.refused, law: MCP_API_KEY.law, auth: MCP_API_KEY,
     list: { method: list.method, url: list.api, body: list.body },
     call: planned,
+    online: { doors: online.doors, keyed: online.keyed, refused: online.refused, law: online.law, calls: online.calls.length },
     says: keyed
-      ? 'Next is findDocuments on qpuMcpPlugin with a payload-mcp-api-keys Bearer, then GET /api/pages. src is not a door.'
-      : `The only approved door is ${QPU_CONNECTOR.plugin} at ${QPU_CONNECTOR.api}. ${next.says}`,
+      ? `ISO quantum AI: next is findDocuments on qpuMcpPlugin with a payload-mcp-api-keys Bearer, then GET /api/pages; online verification doors ${online.doors.join(', ')} are keyed the same way. src is not a door.`
+      : `The only approved door is ${QPU_CONNECTOR.plugin} at ${QPU_CONNECTOR.api} (${ISO_QUANTUM_AI.experience}). ${next.says} Online verify: ${online.says}`,
   }
 }
 
@@ -141,17 +144,14 @@ const draftFile = (draft: Draft): IdeaFile => {
   return { path, text: fileText(draft), from: path }
 }
 
-/** Crypto applied to DNA or genomic data, on a CERN or NIST page. */
 const cryptoBio = (draft: Draft) => draft.slug === 'oligoarchive' || draft.slug.startsWith('oligoarchive-') || draft.slug.startsWith('genomic-') || draft.slug === 'synthetic-nucleic-acid' || draft.slug === 'fips-202'
 
-/** The next idea under each ISO/IEC 4879:2024 term: the fact on this simulator that makes the term hold. */
 const QUANTUM_NEXT: Record<string, string> = TABLES.QUANTUM_NEXT
 
 type GapLead = { id: string; source: string; statement: string; status?: string; tool?: string }
 
 const QUANTUM_GAP_TOOLS = new Set(['processor', 'circuit', 'echo', 'echo_benchmark', 'algorithm', 'quantumlib', 'quantum-error-correction', 'chemistry-simulation', 'fault-tolerant-design'])
 
-/** A quantum lead the 86 terms do not already develop: open, partial, or blocked, on a quantum tool, a quantum id, or a quantumai.google page. */
 const quantumGapLead = (lead: GapLead) => {
   if (lead.status === 'served' || lead.status === 'out_of_scope' || lead.id.startsWith('iso-4879-') || !lead.statement.trim()) return false
   if (QUANTUM_GAP_TOOLS.has(lead.tool ?? '')) return true
@@ -159,7 +159,6 @@ const quantumGapLead = (lead: GapLead) => {
   return lead.source.includes('quantumai.google')
 }
 
-/** The next idea under each missing quantum lead: the fact this simulator already computes. */
 const QUANTUM_GAP_NEXT: Record<string, string> = {
   'chemistry-simulation-lead': 'VQE of H2 in STO-3G is the one molecule this simulator computes.',
   'cirq-google-integration': 'Willow, Sycamore, Sycamore23, Bristlecone and Foxtail are the layouts, and only Willow carries spec-sheet noise.',
@@ -176,7 +175,6 @@ const QUANTUM_GAP_NEXT: Record<string, string> = {
   'videos': 'The statements tool serves the page title. The video bytes are not fetched here.',
 }
 
-/** Every quantum lead that is still open, partial, or blocked. The idea that lead names sits beside it. The order is the id. */
 export const openQuantum = (leads: readonly GapLead[]) => leads.filter(quantumGapLead).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)).map((lead) => ({
   id: lead.id,
   source: lead.source,
@@ -186,7 +184,6 @@ export const openQuantum = (leads: readonly GapLead[]) => leads.filter(quantumGa
   idea: QUANTUM_GAP_NEXT[lead.id] ?? null,
 }))
 
-/** Those leads, each one idea under .idea/leads/quantum/gaps, and the next idea that lead names sits under it. */
 const quantumGapFiles = (leads: readonly GapLead[]): IdeaFile[] => leads.filter(quantumGapLead).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)).map((lead) => {
   const formula = lead.statement.replace(/@/g, ' ').replace(/\s+/g, ' ').trim()
   const path = `${IDEA_INBOX}/quantum/gaps/${clean(lead.id)}.txt`
@@ -196,7 +193,6 @@ const quantumGapFiles = (leads: readonly GapLead[]): IdeaFile[] => leads.filter(
   return { path, text: `source: ${lead.source}\ntitle: ${title}\n\n${body}\n`, from: lead.id }
 })
 
-/** Each ISO/IEC 4879:2024 term is one idea under .idea/leads/quantum, and the next idea that term names sits under it. */
 const quantumIdeaFiles = (): IdeaFile[] => quantumVocabulary().map((term) => {
   const slug = `${term.clause.replace(/\./g, '-')}-${clean(term.name)}`
   const path = `${IDEA_INBOX}/quantum/${slug}.txt`
@@ -221,7 +217,6 @@ const inboxPath = (path: string) => {
   return `${IDEA_INBOX}/inbox/${name.endsWith('.txt') ? name : `${name}.txt`}`
 }
 
-/** The process that computes next, and every process that exits, as ideas under .idea/leads/life. Nothing is written. */
 const lifeIdeaFiles = (): IdeaFile[] => {
   const living = PROCESS_LIFE.find((row) => row.computesNext)!
   const liveId = uuid(lifeBound(true, living.clause, LIFE_PER_SECOND))
@@ -232,7 +227,6 @@ const lifeIdeaFiles = (): IdeaFile[] => {
   return [{ path, text: `source: ${mcp.api}\ntitle: The process that computes next\n\n${parent}\n${lines.join('\n')}\n`, from: path }]
 }
 
-/** true is the Zenodo and DOI inbox. Anything else is moved under .idea/leads before it can be handled. */
 export const placeInIdea = (raw: unknown, leads: readonly GapLead[] = []): IdeaFile[] => {
   if (raw === true) return DRAFTS.map(draftFile)
   if (raw === 'life') return lifeIdeaFiles()
@@ -276,7 +270,6 @@ type Develop = (input: { formula?: string; product?: string; variant?: string; t
 
 type Node = { statement: string; children: Node[] }
 
-/** idea: lines are the ideas this file opens. An indented idea: belongs to the idea above it. */
 const ideaTree = (statement: string) => {
   const body: string[] = []
   const roots: Node[] = []
@@ -299,10 +292,8 @@ const ideaTree = (statement: string) => {
 
 const walkIdeas = (nodes: Node[], out: string[]) => { for (const node of nodes) { out.push(node.statement); walkIdeas(node.children, out) } }
 
-/** Every idea: line a lead states, including one nested under another. The statement around those lines is not itself an idea. */
 const ideasFrom = (statement: string): string[] => { const out: string[] = []; walkIdeas(ideaTree(statement).children, out); return out }
 
-/** The ideas a set of leads states, each as a file under .idea/leads so next and develop can read it. */
 export const ideaFilesFromLeads = (leads: readonly { id: string; source: string; statement: string }[]): IdeaFile[] => leads.flatMap((lead) => ideasFrom(lead.statement).map((statement, index) => {
   const path = `${IDEA_INBOX}/from-leads/${clean(lead.id)}-${index}-${clean(statement)}.txt`
   return { path, text: `source: ${lead.source}\ntitle: ${statement}\n\n${statement}\n`, from: lead.id }
@@ -323,10 +314,8 @@ const written = (read: { source: string; title: string; statement: string }, dev
   return `source: ${read.source}\ntitle: ${read.title}\nstandard: ${standard}\ndocumented: ${documented}\n\n${read.statement}${more}\n`
 }
 
-/** A lead developed in .idea: the call that develops it again, and what it developed. */
 type IdeaLead = { id: string; path: string; source: string; statement: string; status: 'open'; tool: 'payload'; reason: string; run: { tool: 'payload'; arguments: { develop: { formula: string; product: string; variant: string; title: string } } }; developed: Developed }
 
-/** Develop each file in .idea, then handle the leads by reading those files. A path outside .idea is not handled. */
 export const developIdeas = (raw: unknown, develop: Develop) => {
   const placed = placeInIdea(raw)
   const files = placed.map(({ path, text }) => {
@@ -352,7 +341,6 @@ export const developIdeas = (raw: unknown, develop: Develop) => {
   return { phase: 'ideas' as const, home: IDEA_HOME, inbox: IDEA_INBOX, files, leads, left, outside, placed: placed.map((file) => ({ from: file.from, path: file.path })), counts, total: leads.length, says: `${leads.length} lead(s) developed in ${IDEA_HOME} and handled from there` }
 }
 
-/** Next develops what .idea holds. An idea it names is put back in. The file it finished is removed. It stops when .idea is empty. A path already taken is not taken again. */
 export const nextIdeas = (raw: unknown, develop: Develop) => {
   const placed = placeInIdea(raw)
   const inbox: { path: string; text: string; at: number }[] = []

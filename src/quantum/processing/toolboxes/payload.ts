@@ -103,7 +103,6 @@ import { scripts, type ScriptsArgs, skill, SKILL_MCP } from '../script-doors.ts'
 type LexicalDoc = { root: { type: 'root'; version: 1; direction: 'ltr'; format: ''; indent: 0; children: unknown[] } }
 type PayloadDoc = { id: string; lexical: LexicalDoc; nestedDocs: { parent: string | null; breadcrumbs: { doc: string; url: string; label: string }[] }; seo: { title: string; description: string; image: string | null }; jsonLd: unknown; license: string }
 
-/** A result as the document Payload's plugins would hold: one lexical block of UUID logic, nested by prev, described for SEO. */
 export const payloadDoc = (p: { uuid: string; tool: string; arguments: Record<string, unknown>; description: string; openGraph?: Record<string, string>; html?: string; prev?: string | null; chain?: string[]; origin?: string }): PayloadDoc => {
   const ch = channel(p.uuid)
   const next = uuidFromParts(ch.handle, [...ch.program.slice(1), ch.program[0]!], ch.tail)
@@ -122,15 +121,6 @@ export const payloadDoc = (p: { uuid: string; tool: string; arguments: Record<st
   }
 }
 
-/** The QPU monetises by generating enterprise-grade production apps on request from the Payload UI: a request (a name, a host that becomes the
- *  first tenant at deploy, the plugins, the environment names, the licence variant) answered as the app — every generated file with its content
- *  address and the address of the bundle (textbook_app_bundle: the full stack's files plus the Worker configuration and the environment example),
- *  the adapters the environment chooses, the enterprise capabilities it carries, the licence variant priced by the catalogue in the host's
- *  currency, and the order the ecommerce plugin sells at its own checkout. The Apps collection takes the request; this answer is what it stores. */
-/** The streamed form validated as it is typed and verified online, token free: every field judged by the patterns the full stack enforces,
- *  the environment names by the bindings and adapters the stack knows, the variant by the catalogue; the host verified by a request the client
- *  sends itself (the host answers or not) and this answer from the Worker's /mcp, which needs no key. The Form block streams the values on
- *  every change and renders each verdict before the submit; the submission hook validates once more and refuses what the stream refused. */
 const appValidation = (v: Record<string, unknown>) => {
   const name = String(v.name ?? '').trim(); const host = String(v.host ?? '').trim().toLowerCase(); const env = String(Array.isArray(v.env) ? v.env.join(',') : v.env ?? '').split(/[,\s]+/).filter(Boolean); const variant = String(v.variant ?? 'yearly')
   const known = new Set([...BINDINGS.flatMap((b) => b.names.map((n) => n.replace(/_<TENANT>$/, ''))), ...(Object.values(ADAPTERS).flat() as unknown[]).filter((a): a is { needs: string[] } => typeof a === 'object' && a !== null && 'needs' in a).flatMap((a) => a.needs.map((n) => n.split(' ')[0]!))])
@@ -144,11 +134,11 @@ const appValidation = (v: Record<string, unknown>) => {
   const ok = Object.values(fields).every((f) => f.ok)
   return { fields, ok, online: { tokenFree: true, requests: fields.host.ok ? [{ id: `host:${host}`, method: 'HEAD', url: `https://${host}/`, verifier: 'the host answers (any status, even opaque): it exists to become the first tenant at deploy; sent by the client, no token' }] : [], mcp: 'POST /mcp tools/call payload { app: { validate } }: this answer, from the Worker, free of any key' }, streamed: 'the Form block sends the values on every change (validate.ts, debounced) and renders each field\'s verdict before the submit; the submission hook validates once more and refuses what the stream refused' }
 }
-/** The form a user submits to request an app: the form-builder plugin's own document, nothing added to the schema. Captcha is a human check on that product form. Quantum is not a robot, so it does not mint a token and does not bypass the check. */
+
 const appRequestForm = () => ({ title: 'Request an app', submitButtonLabel: 'Request the app', confirmationType: 'message', confirmationMessage: lx.doc([lx.paragraph([lx.text('Your app is being generated: its bundle appears in Media (every file with its address), the licence is a product at the checkout.')])]), requireRecaptcha: true as const, fields: [{ blockType: 'text', name: 'name', label: 'App name', required: true, width: 100 }, { blockType: 'text', name: 'host', label: 'Host (the first tenant at deploy)', required: true, width: 100 }, { blockType: 'text', name: 'env', label: 'Environment variable names (D1, R2, RESEND_API_KEY, DATABASE_URI, ...; values never travel)', required: false, width: 100 }, { blockType: 'select', name: 'variant', label: 'Licence', required: true, defaultValue: 'yearly', options: CATALOGUE.filter((v) => v.product === 'qpu-domain').map((v) => ({ label: `${v.variant}: ${v.description}`, value: v.variant })) }] })
-/** Captcha models a product form may require. Each model is an issuer check of the user's response. Quantum does not mint a token and does not bypass the check. */
+
 const CAPTCHA_MODELS = TABLES.CAPTCHA_MODELS
-/** A captcha is solved only by a human on a product form. Every captcha model plans the issuer verify for the user's response; quantum does not solve captchas and does not mint a token. */
+
 const captchaViaProduct = (ask: { response?: unknown; product?: unknown; variant?: unknown; model?: unknown; models?: unknown; all?: unknown }) => {
   const response = typeof ask.response === 'string' ? ask.response.trim() : ''
   const product = typeof ask.product === 'string' && ask.product.length > 0 ? ask.product : 'captcha'
@@ -249,11 +239,9 @@ const google = (g: { pages?: any[]; tenants?: object[]; entries?: any[]; keys?: 
   const jobs = (g.entries ?? []).filter((e) => e.from === 'qpu-google-call' && e.body), pages = (g.pages ?? []).filter((p) => /google/i.test(p.fullTitle ?? p.title) || p.layout?.some((b: { tool: string }) => tools.includes(b.tool))), answered = pair((g.entries ?? []).filter((e) => e.kind === 'call' && tools.includes(e.body?.tool)), (e) => e.result?.error === undefined)
   return { pages: { published: pair(pages, (p) => p._status === 'published'), parented: pair(pages, (p) => p.parent), blocks: pages.flatMap((p) => p.layout ?? []).reduce((a: Record<string, number>, b: { tool: string }) => ({ ...a, [b.tool]: (a[b.tool] ?? 0) + 1 }), {}) }, tenants: pair(g.tenants, names), calls: { answered, refused: answered.of - answered.live, job: pair(jobs.filter((e) => 'allowed' in e.body), (e) => e.body.allowed && e.body.status < 400), queued: jobs.filter((e) => !('allowed' in e.body)).length, elsewhere: (g.entries ?? []).filter((e) => e.from !== 'qpu-google-call' && URL.canParse(e.body?.url) && GOOGLE_HOST.test(new URL(e.body.url).hostname)).length }, keys: pair(g.keys, names), theorem: 'textbook_google_measured' }
 }
-/** Every method of a Discovery document, its resources walked level by level. */
+
 const discoveryMethods = (d: any): any[] => { const out: any[] = [], level = [d]; while (level.length) { const r = level.pop(); out.push(...Object.values(r?.methods ?? {})); level.push(...Object.values(r?.resources ?? {})) } return out }
-/** Google's APIs as gates: every API the directory lists, placed by its own Discovery document. Reads (GET) are the frontend's candidates under
- *  the tenant's API key, the first keyed call deciding which are public; every method runs in the admin under the tenant's OAuth; an admin.*
- *  scope only under a Workspace admin's domain-wide delegation (the Admin SDK). Every call goes through the one door, payload { googleCall }. */
+
 type GoogleApis = { list?: { items?: { name?: string; version?: string; title?: string; documentationLink?: string; discoveryRestUrl?: string }[] }; documents?: Record<string, unknown> }
 const placeGoogleApis = (google: GoogleApis = {}): RawGate[] => (google.list?.items ?? []).filter((it) => it.name && it.version).map((it) => {
   const key = `${it.name}-${it.version}`, doc = google.documents?.[key], all = doc ? discoveryMethods(doc) : [], reads = all.filter((m) => m.httpMethod === 'GET').length
@@ -289,7 +277,7 @@ const rpc = (ctx: Context, name: string, args: unknown = {}): { result?: any; er
 /** Pages.layout blockReferences at github.com/payloadcms/website, src/collections/Pages.ts, read 2026-11-03. qpu fits any of them, and any other framework's slots, by the product of the slot counts. */
 const WEBSITE_REPO = 'https://github.com/payloadcms/website'
 const WEBSITE_SLOTS = ['callout', 'cta', 'cardGrid', 'caseStudyCards', 'caseStudiesHighlight', 'caseStudyParallax', 'codeFeature', 'content', 'contentGrid', 'comparisonTable', 'form', 'hoverCards', 'hoverHighlights', 'linkGrid', 'logoGrid', 'mediaBlock', 'mediaContent', 'mediaContentAccordion', 'pricing', 'reusableContentBlock', 'slider', 'statement', 'steps', 'stickyHighlights', 'exampleTabs'] as const
-/** The website templates most used online. Each one is Payload blocks and shadcn items this tree already has. VitePress is the docs template: a name, not the VitePress package. Payload's API serves every one of them. */
+
 const SITE_TEMPLATES = [
   { id: 'landing', via: 'payload', parts: [{ source: 'payload', name: 'content' }, { source: 'payload', name: 'cta' }, { source: 'payload', name: 'pricing' }, { source: 'shadcn', name: 'qpu-card' }] },
   { id: 'blog', via: 'payload', parts: [{ source: 'payload', name: 'content' }, { source: 'shadcn', name: 'qpu-stream' }, { source: 'shadcn', name: 'qpu-card' }] },
@@ -299,7 +287,7 @@ const SITE_TEMPLATES = [
   { id: 'portfolio', via: 'payload', parts: [{ source: 'payload', name: 'mediaBlock' }, { source: 'payload', name: 'cardGrid' }, { source: 'shadcn', name: 'qpu-badge' }] },
   { id: 'auth', via: 'payload', parts: [{ source: 'payload', name: 'form' }, { source: 'shadcn', name: 'qpu-card' }] },
 ] as const
-/** shadcn's base colours. The admin stores one of these on the tenant. The stylesheet is already loaded. */
+
 const THEME_PRESETS = ['neutral', 'stone', 'zinc', 'gray', 'slate'] as const
 const websiteUrl = (url: string): boolean => {
   let u: URL
@@ -311,7 +299,7 @@ const websiteUrl = (url: string): boolean => {
   if (u.host === 'raw.githubusercontent.com') return path.startsWith('/payloadcms/website/')
   return false
 }
-/** Dirty spans in a reading: typography the standardiser rewrites, and a URL that is not https://github.com/payloadcms/website. Each span is addressed, so the dry cleaner receives the address and the words stay. */
+
 const spotDirty = (text: string) => {
   const body = text.replace(/\n---\n/g, '\n   \n')
   const spans: { at: number; kind: 'ellipsis' | 'dash' | 'spaces' | 'quote' | 'url'; text: string; address: string }[] = []
@@ -867,7 +855,7 @@ const CLONE_FRAMEWORKS = [
   { name: 'Axum', language: 'Rust' },
   { name: 'Phoenix', language: 'Elixir' },
 ] as const
-/** One self clone of the Payload website per framework. The slots are the website's own, so the clone is the same site. Each clone has its own canonical, so search sees a different URL, and each is an order of the yearly domain licence. */
+
 const selfClones = (origin = 'https://qpu.uuidna.com', asked: unknown = true) => {
   const want = asked === true || asked == null ? null : typeof asked === 'string' ? asked : isObj(asked) && typeof asked.framework === 'string' ? asked.framework : null
   if (asked !== true && asked != null && want == null) throw new Error('clone is true, a framework name, or { framework }')
@@ -902,7 +890,7 @@ const selfClones = (origin = 'https://qpu.uuidna.com', asked: unknown = true) =>
     says: `${clones.length} self clone(s) of the website, each with its own canonical and the same ${WEBSITE_SLOTS.length} slots, each an order of the yearly domain licence`,
   }
 }
-/** Rails MVC and Payload are one layout. A role Rails already has is kept and rewritten onto the Payload folder. A Payload file role with no Rails twin is added. A Rails folder the website does not keep is removed. The standards this tree already names are documented on that layout. beforeChange records the merge. afterChange writes the layout and the standards under src/collections/concerns. afterRead serves those files. */
+
 const MERGED_LAYOUT = [
   { role: 'model', rails: 'app/models', payload: 'src/collections', fileRole: 'collection' },
   { role: 'concern', rails: 'app/models/concerns', payload: 'src/collections/concerns', fileRole: 'hooks' },
@@ -965,7 +953,7 @@ const morphFrameworks = (raw: unknown) => {
     served: files.map((file) => ({ path: file.path, bytes: Buffer.byteLength(file.text), text: file.text })),
   }
 }
-/** Each ISO dimension is the deliverable that defines it: its reference, its English title and its scope. ISO 9001 also requires the formula to be documented. ISO 8601 requires a date in the formula, when one is named, to be a calendar date. */
+
 const isoRows = (formula: string, documented: boolean, read: boolean, hz?: number | null) => {
   const dates: string[] = formula.match(/\b\d{4}-\d\d-\d\d\b/g) ?? []
   const datesHold = dates.every((token) => { const [, month = 0, day = 0] = token.split('-').map(Number); return month >= 1 && month <= 12 && day >= 1 && day <= 31 })
@@ -983,7 +971,7 @@ const isoRows = (formula: string, documented: boolean, read: boolean, hz?: numbe
     return { dimension, reference: defined?.reference ?? null, title, definition, example: pitch ? scope : null, computes, hz: computes, unlimited: pitch && typeof hz !== 'number', holds: named && quality && calendar && definition.length > 0 }
   })
 }
-/** ISO 9001:2015, 9.2. The audit reads the record before any save. The formula is documented, the docs door holds that same formula, and each dimension is the deliverable that defines it. */
+
 const isoAudit = (data: Record<string, unknown>) => {
   const iso = isObj(data.iso) ? data.iso : null
   const docs = isObj(data.docs) ? data.docs : null
@@ -995,7 +983,7 @@ const isoAudit = (data: Record<string, unknown>) => {
   const holds = documented && read && rows.length === ISO_DIMENSIONS.length && rows.every((row) => row.holds)
   return { phase: 'audit' as const, process: 'ISO 9001' as const, clause: 'ISO 9001:2015, 9.2' as const, formula, documented, read, rows, dimensions: rows.length, of: ISO_DIMENSIONS.length, holds, theorem: 'textbook_standards_sliced' as const }
 }
-/** The step after the audit. Clause 9.3 accepts a formula the audit passed. Clause 10.2 records a formula the audit did not pass, and that record is not saved. */
+
 const saveNext = (audit: { holds: boolean; formula: string }) => {
   const clause = audit.holds ? 'ISO 9001:2015, 9.3' as const : 'ISO 9001:2015, 10.2' as const
   const decision = audit.holds ? 'accept' as const : 'nonconformity' as const
@@ -1005,7 +993,7 @@ const saveNext = (audit: { holds: boolean; formula: string }) => {
   const sealed = seal(id).valid
   return { phase: 'next' as const, process: 'ISO 9001' as const, clause, decision, formula: audit.formula, says, id, sealed, holds: sealed && id.length === 36 && uuid(bound) === id && (audit.holds ? decision === 'accept' : decision === 'nonconformity') }
 }
-/** The step after the review. Clause 6.3 plans the change when the review accepted it and every dimension still holds. A nonconformity plans no change. */
+
 const planChange = (audit: { holds: boolean; formula: string; rows: readonly { holds: boolean }[] }, review: { holds: boolean; decision: string; clause: string; id: string }) => {
   const accepted = audit.holds === true && review.holds === true && review.decision === 'accept' && review.clause === 'ISO 9001:2015, 9.3'
   const integrity = accepted && audit.rows.length === ISO_DIMENSIONS.length && audit.rows.every((row) => row.holds)
@@ -1018,7 +1006,7 @@ const planChange = (audit: { holds: boolean; formula: string; rows: readonly { h
   const holds = integrity && sealed && id.length === 36 && uuid(bound) === id
   return { phase: 'next' as const, process: 'ISO 9001' as const, clause, purpose, integrity, formula: audit.formula, says, id, sealed, holds }
 }
-/** The step after the plan. Clause 8.1 carries the change out. The accepted formula is the process, and the same audit still holds. A change that was not planned is not carried out. */
+
 const controlProcess = (audit: { holds: boolean; formula: string }, change: { holds: boolean; integrity: boolean; clause: string; id: string }) => {
   const planned = audit.holds === true && change.holds === true && change.integrity === true && change.clause === 'ISO 9001:2015, 6.3'
   const clause = 'ISO 9001:2015, 8.1' as const
@@ -1030,7 +1018,7 @@ const controlProcess = (audit: { holds: boolean; formula: string }, change: { ho
   const holds = planned && formula.length > 0 && formula === audit.formula && sealed && id.length === 36 && uuid(bound) === id
   return { phase: 'control' as const, process: 'ISO 9001' as const, clause, operated: planned, formula, says, id, sealed, holds }
 }
-/** The step after the process is carried out. Clause 8.6 releases it when the planned arrangements are complete and the formula still meets them. A process that was not carried out is not released. */
+
 const releaseOutput = (audit: { holds: boolean; formula: string }, control: { holds: boolean; operated: boolean; clause: string; formula: string; id: string }) => {
   const carried = audit.holds === true && control.holds === true && control.operated === true && control.clause === 'ISO 9001:2015, 8.1' && control.formula === audit.formula && control.formula.length > 0
   const clause = 'ISO 9001:2015, 8.6' as const
@@ -1042,7 +1030,7 @@ const releaseOutput = (audit: { holds: boolean; formula: string }, control: { ho
   const holds = carried && formula.length > 0 && formula === audit.formula && sealed && id.length === 36 && uuid(bound) === id
   return { phase: 'release' as const, process: 'ISO 9001' as const, clause, released: carried, formula, says, id, sealed, holds }
 }
-/** The step after the release. Clause 9.1 monitors the released output. Each dimension is measured by the open data. A withdrawn dimension names the current successor that dataset gives. */
+
 const monitorOutput = (release: { holds: boolean; released: boolean; formula: string; id: string }, rows: readonly { dimension: string; verified: boolean; current: boolean; successor: { reference: string; catalogue: number; current: boolean } | null }[]) => {
   const watched = release.holds === true && release.released === true && release.formula.length > 0 && rows.length === ISO_DIMENSIONS.length && rows.every((row) => row.verified)
   const withdrawn = rows.filter((row) => row.verified && row.current === false)
@@ -1061,7 +1049,7 @@ const onlineAnswer = (raw: unknown): { status: number; text: string } | undefine
   if (typeof given.text !== 'string' || given.text.length === 0) return undefined
   return { status: typeof given.status === 'number' ? given.status : 0, text: given.text }
 }
-/** ISO 9001:2015, 10.3. The audit is improved: each dimension holds on its own evidence. The defining rows of the ISO Open Data file verify and define every dimension by its English title and its scope. A newer file is the online answer. The management review accepts the improvement. Nothing is fetched and nothing is written. */
+
 const improveIso = (raw?: unknown) => {
   const given = onlineAnswer(raw)
   const answer = given ?? { status: 200, text: ISO_OPEN_DEFINITIONS.map((row) => JSON.stringify(row)).join('\n') }
@@ -1086,7 +1074,7 @@ const improveIso = (raw?: unknown) => {
     verified: online.verified, defined: online.defined, fetched: false as const, held: given === undefined, online, audit: saved.audit, next: saved.next, change, control, release, monitor, save: saved.saved ? { api: saved.api, args: saved.args } : null, says,
   }
 }
-/** The ISO patch. beforeChange records every stated drift. afterChange covers each one with an a432 harmonic and leaves the note. afterRead serves that note. Nothing is fetched. The programs write the codebase fix. */
+
 const patchIso = (raw: unknown) => {
   const given = raw === true ? [] : typeof raw === 'string' ? [{ id: 'stated', statement: raw }] : isObj(raw) && Array.isArray((raw as { leads?: unknown }).leads) ? (raw as { leads: { id?: unknown; statement?: unknown }[] }).leads.flatMap((row) => typeof row?.id === 'string' ? [{ id: row.id, statement: typeof row.statement === 'string' ? row.statement : '' }] : []) : []
   const wave = followWave(given)
@@ -1102,7 +1090,7 @@ const patchIso = (raw: unknown) => {
   const says = holds ? cover.note.text : 'the ISO patch did not cover every drift'
   return { phase: 'patch' as const, via: 'hooks' as const, process: 'ISO 9001' as const, clause: 'ISO 9001:2015, 6.3' as const, harmonic: true as const, hooks: developed.hooks, beforeChange, afterChange, afterRead, note: cover.note, covered: cover.rows, series: cover.series, waves, programs, audit: saved.audit, next: saved.next, change: saved.change, holds, fetched: false as const, written: programs.written, says }
 }
-/** ISO. true defines every dimension from the defining rows of the iso_deliverables_metadata dataset. A newer file is { online: { status, text } }. { producers: true | { answers } } extracts the ISO standards NIST and CERN produce; Clay completes the trinity that unlocks each hidden perspective. { trinity: true | { bits } } is that unlock alone. Nothing is fetched and nothing is written. Every dimension is also split to schema.org microdata at the deepest SKU leaf (parseToMicrodata). */
+
 const isoCall = (raw: unknown) => {
   const trinityAsked = raw === 'trinity' || (isObj(raw) && ((raw as { trinity?: unknown }).trinity === true || isObj((raw as { trinity?: unknown }).trinity)))
   if (trinityAsked) {
@@ -1130,7 +1118,7 @@ const isoCall = (raw: unknown) => {
   const one = isoAspects()
   return { ...result, phase: 'iso' as const, via: 'iso' as const, held: !supplied, fetched: false as const, says, holds: result.holds && one.holds && microdata.holds, one, microdata }
 }
-/** A pages or products create, and only after the ISO audit holds. Next is the management review of that audit. A record the audit does not pass is a nonconformity and is not a save. A carried out process is released under clause 8.6. */
+
 export const auditedSave = (spec: { collection: string; data: Record<string, unknown>; override?: boolean }) => {
   const audit = isoAudit(spec.data)
   const next = saveNext(audit)
@@ -1140,7 +1128,7 @@ export const auditedSave = (spec: { collection: string; data: Record<string, unk
   if (!audit.holds) return { saved: false as const, audit, next, change, control, release, api: null, args: null }
   return { saved: true as const, audit, next, change, control, release, ...manageApi({ collection: spec.collection, action: 'create', override: spec.override, data: spec.data }) }
 }
-/** Any idea as that pages seed. The words are the content block; the title is the one given, else the first line. The ISO audit holds before the create. */
+
 const ideaSeed = (raw: unknown) => {
   const spec = typeof raw === 'string' ? { idea: raw } : isObj(raw) ? raw : null
   if (!spec) throw new Error('idea is the words, or { idea | text | statement, title? }')
@@ -1170,7 +1158,7 @@ const factorInteger = (integer: string) => {
   const coins = [...primes.map((part) => ({ integer: part, kind: 'prime' as const })), ...found.left.map((x) => ({ integer: x.toString(), kind: 'left' as const }))].map((part) => { const address = uuid(part.integer); return { ...part, uuid: address, sealed: seal(address).valid } })
   return { integer, primes, left: found.left.length, complete: found.left.length === 0 && (n < 2n || !primality.prime || primality.certain), verified: found.verified, coins }
 }
-/** Any paste, read when it arrives. A UUID in it is a coin and is passed. Every integer in it is factored by the same door, and each prime is passed as the UUID of that prime. The thousand-bit factor 3 is the width's, and the width's integer is not written. */
+
 export const predict = (raw: unknown, surface: { tools: number; resources: number; templates: number }) => {
   const leaves = (v: unknown): string[] => typeof v === 'string' ? [v] : typeof v === 'number' && Number.isInteger(v) ? [String(Math.abs(v))] : Array.isArray(v) ? v.flatMap(leaves) : v !== null && typeof v === 'object' ? Object.values(v as Record<string, unknown>).flatMap(leaves) : []
   const text = typeof raw === 'string' ? raw : raw === true || raw == null ? '' : typeof raw === 'number' && Number.isInteger(raw) ? String(Math.abs(raw)) : leaves(raw).join(' ')
@@ -1197,7 +1185,7 @@ export const predict = (raw: unknown, surface: { tools: number; resources: numbe
 type McpDoor = { name: string; inputSchema?: { properties?: Record<string, { default?: unknown }> } }
 const keys = (door: McpDoor) => Object.keys(door.inputSchema?.properties ?? {})
 const findDoor = (tools: readonly McpDoor[]) => tools.find((t) => (keys(t).includes('slug') || keys(t).includes('collection')) && (keys(t).includes('where') || keys(t).includes('limit') || keys(t).includes('search')) && !keys(t).includes('data'))
-/** A find is the door the Payload MCP listed. An argument is sent only when that door declares it. The page is the one the previous answer named. */
+
 const findRequest = (door: McpDoor, endpoint: string, fields: { slug: string; where?: unknown; search?: string; page?: number; select?: Record<string, boolean> }, id = 'payload-mcp-find') => {
   const prop = (name: string) => door.inputSchema?.properties?.[name]
   const arguments_: Record<string, unknown> = {}
@@ -1221,7 +1209,7 @@ const parentKey = (doc: { parent?: unknown }): string | null => {
   if (typeof parent === 'object') { const named = parent as { slug?: unknown; id?: unknown }; const key = named.slug ?? named.id; return key == null ? null : String(key) }
   return null
 }
-/** The website holds the pages. A page is processed after the page it names as its parent. */
+
 const processWebsite = (docs: readonly { slug?: unknown; id?: unknown; parent?: unknown }[]) => {
   const known = new Set(docs.map(pageKey))
   const depth = (doc: { slug?: unknown; id?: unknown; parent?: unknown }, seen = new Set<string>()): number => {
@@ -1236,7 +1224,7 @@ const processWebsite = (docs: readonly { slug?: unknown; id?: unknown; parent?: 
   const merged = pages.every((doc, index) => { const parent = parentKey(doc); const at = parent ? pages.findIndex((item) => pageKey(item) === parent) : -1; return at < index })
   return { phase: 'parent' as const, collection: 'pages' as const, memory: 'website' as const, processing: 'website' as const, docs: pages, merged, says: `${pages.length} pages from the website, each after the page it names as parent` }
 }
-/** A document nested under another by crypto. The address is the UUID of the parent address and the formula, and the SHA-256 of that same text sits beside it. One further document is that same step again. Nothing in the step reads a maximum depth. */
+
 const cryptoDepth = (raw: unknown) => {
   const given = typeof raw === 'string' ? { formula: raw } : isObj(raw) ? raw as { formula?: unknown; statements?: unknown; steps?: unknown; parent?: unknown; from?: unknown } : {}
   const named = Array.isArray(given.statements) ? given.statements.map((item) => String(item)) : typeof given.formula === 'string' ? [given.formula] : []
@@ -1278,8 +1266,6 @@ const cryptoDepth = (raw: unknown) => {
   return { phase: 'depth' as const, via: 'crypto' as const, bounded: false as const, maximum: null, depth: last.depth, documents, next, holds: holds && next.holds, says: `${documents.length} document(s) nested by address. Each address is the UUID of the parent address and the formula, with the SHA-256 of that text beside it. The next document is that same step, so the depth has no maximum.` }
 }
 
-/** A widget accepts a credential. The tool receives the SHA-256 witness and nothing of the secret. ISO/IEC 27001:2022 and ISO/IEC 27034 hold on that acceptance. */
-/** The website seeded through Payload, then deployed by the completed order's afterChange hook. The live gate is the e2e requests. Nothing is fetched and nothing is written. */
 const websiteSeed = () => {
   const records = Object.entries(TENANTS).reduce<Record<string, { name: string; slug: string; domains: { domain: string }[] }>>((acc, [host, slug]) => ({ ...acc, [slug]: { name: slug, slug, domains: [...(acc[slug]?.domains ?? []), { domain: host }] } }), {})
   const names = [...new Set(CATALOGUE.map((item) => item.product))]
@@ -1509,7 +1495,6 @@ const payload = defineTool('payload', {
   widget: flowWidget,
 })
 
-/** Payload's default plugins, the ones MCP configures; no custom collection: the one collection is the plugins' own pages. */
 const PAYLOAD_PLUGINS: readonly { name: string; pkg: string; options: Record<string, unknown> }[] = [
   { name: 'lexical', pkg: '@payloadcms/richtext-lexical', options: { features: ['BlocksFeature'], blocks: ['qpu'], blockFields: ['uuid', 'handle', 'program', 'tail', 'tool', 'arguments', 'prev', 'next'] } },
   { name: 'nested-docs', pkg: '@payloadcms/plugin-nested-docs', options: { collections: ['pages'], generateLabel: 'the block\'s tool', generateURL: '/<uuid>', breadcrumbsFieldSlug: 'breadcrumbs', parentFieldSlug: 'parent' } },
@@ -1521,7 +1506,7 @@ const PAYLOAD_PLUGINS: readonly { name: string; pkg: string; options: Record<str
   { name: 'ecommerce', pkg: '@payloadcms/plugin-ecommerce', options: { customers: 'users', currencies: ['EUR', 'USD', 'BGN'], payments: 'stripeAdapter (secretKey, publishableKey, webhookSecret: names, never values)', products: 'the licence catalogue: six products, seven variants, prices in three currencies', orders: 'accessToken = the licence key, generated on create as the template does' } },
   { name: 'mcp', pkg: '@payloadcms/plugin-mcp', options: { servers: 'one server, payload-rbac: the registration extend gives, and every host the tenant names, are its doors', rbac: 'one grant on subject mcps decides every door; the Worker asks this host first (QPU_RBAC_MCP, QPU_RBAC_TOOL)' } },
 ]
-/** One nested page that uses every plugin through its UUID. The first nine program nibbles are on, one per plugin. Lexical holds the block, nested docs the parent and the breadcrumbs, SEO the meta of this instance. The batch action is the action the request names, and its REST is the collection. The hook names the next instance. Nothing is fetched and nothing is written. */
+
 const pluginInstance = (asked: Record<string, unknown>) => {
   const action = typeof asked.action === 'string' ? asked.action : 'read'
   const known = BATCH_ACTIONS.find((batch) => batch.action === action)
@@ -1578,11 +1563,7 @@ const pluginInstance = (asked: Record<string, unknown>) => {
     says: holds ? `all ${plugins.length} plugins are installed, configured and used at ${placed.path}. The filesystem places this object under the program dataset, at depth ${placed.depth} of 0..7. This page is nested, its meta is the instance, and the request ${action}s it through ${rest}.` : 'the plugins were not used through the address',
   }
 }
-/** The site as its own use cases: the reference is payloadcms.com, whose REST answers pages of blocks with SEO meta and breadcrumbs — the site is what the product computes. Here every toolbox is a use case and every example a page document whose one block is the result's UUID logic, at its live address. */
-/** Every API is a gate of some sort: an address a tool passes (open), waits at for the tenant's key (keyed), a browser alone passes
- *  (browser), the registry names and no tool calls (proposed), or a door of this catalogue (tool). Organised as nested docs — Gates ›
- *  category › gate, three deep — each doc is a gate of lexical leads: its body lists the leads whose source passes through it, and its one
- *  block answers them live (leads { ids }). The tree is what the nested-docs plugin computes from parent: breadcrumbs, URLs, nothing custom. */
+
 type GateKind = 'open' | 'keyed' | 'browser' | 'proposed' | 'tool'
 export type Gate = { id: string; category: string; name: string; url: string; host: string; kind: GateKind; by: string; measured: string | null; leads: string[] }
 const GATE_CATEGORIES: readonly { id: string; name: string; says: string }[] = TABLES.GATE_CATEGORIES as readonly { id: string; name: string; says: string }[]
@@ -1590,7 +1571,7 @@ const escapeRe = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const gateHost = (url: string): string => { try { return new URL(url).host.replace(/^www\./, '') } catch { return url.replace(/^[a-z]+:\/\//, '').split(/[/:]/)[0] ?? url } }
 const gatePath = (url: string): string => { try { const u = new URL(url); return `${u.host.replace(/^www\./, '')}${u.pathname.replace(/\/$/, '')}` } catch { return url } }
 const gateSlug = (id: string) => uuid(`gate:${id}`)
-/** The website page a gate is: Gates › category › gate, the path the nested-docs plugin joins. MCP routes a tool here. */
+
 export const websiteGate = (category: string, id: string, origin = 'https://qpu.uuidna.com') => {
   const root = gateSlug('root')
   const categorySlug = gateSlug(`category:${category}`)
@@ -1599,18 +1580,15 @@ export const websiteGate = (category: string, id: string, origin = 'https://qpu.
   return { collection: 'pages' as const, root, rootPath: `/${root}`, category, categorySlug, categoryPath: `/${root}/${categorySlug}`, gate, id, path, url: `${origin}${path}` }
 }
 type RawGate = Omit<Gate, 'leads'> & { match?: string }
-/** Hosts many unrelated addresses share: a gate on one of them is matched by its path, never by the host alone. */
+
 const SHARED_HOSTS: readonly string[] = ['github.com', 'api.github.com', 'raw.githubusercontent.com', 'cdn.jsdelivr.net', 'cloudflare.com', 'vercel.com']
-/** The leads that pass through a gate: a door's by the tool that serves them; an address's by the registry search it names, else by its host
- *  (its path on a shared host), else by its id as a whole word in the source. */
+
 const passes = (leads: readonly Lead[], g: RawGate): string[] => {
   const needle = (g.match ?? (SHARED_HOSTS.includes(g.host) ? gatePath(g.url) : g.host)).toLowerCase()
   const word = new RegExp(`(^|[^a-z0-9_])${escapeRe(g.id)}([^a-z0-9_]|$)`, 'i')
   return leads.filter((l) => (g.kind === 'tool' ? l.tool === g.id : l.source.toLowerCase().includes(needle) || word.test(l.source))).map((l) => l.id)
 }
-/** Every API handled in quantum: each gate's adapter is a dimension of the one Payload plugin over the default schema — where its answers land
- *  (the docket entries by kind, the gate pages, the catalogue's prices, the MCP doors), the step of next that keeps them fresh, the fields the
- *  entry carries, and the shadcn combination its address picks (styled from itself). No plugin per API: one plugin, every API a dimension. */
+
 const gateAdapter = (g: { id: string; category: string; kind: GateKind; by: string }) => {
   const slug = gateSlug(g.id)
   const p = presentation(slug)
@@ -1632,9 +1610,9 @@ const gateAdapter = (g: { id: string; category: string; kind: GateKind; by: stri
   const stream = { gate: slug, configs: kinds.map((k) => ({ kind: k, uuid: uuid(`config:${k}`) })), uuids: [slug, ...kinds.map((k) => uuid(`config:${k}`))], says: 'the UUID stream of this dimension: the gate\'s address and the addresses of the configs it streams, queryable, sortable and executable through fold { uuids }' }
   return { plugin: 'qpuPlugin', dimension: g.id, kind: g.kind, lands: l.lands, hook: l.hook, fields: l.fields, rest, stream, ui: { item: p.parts[0]!.item, variant: p.parts[0]!.variant, style: p.style }, says: 'a dimension of the one plugin over the default schema: nothing added, the API\'s answers land where Payload already holds them, presented by the item its address picks' }
 }
-/** Every dev dependency of the tree as an MCP door usable in the UI: the step of next that runs it is its tool, its gate page carries that step's block rendered by the MCP App. */
+
 const DEV_DEPENDENCY_ROLES = TABLES.DEV_DEPENDENCY_ROLES as unknown as Readonly<Record<string, { step: string; does: string }>>
-/** The energy sector's gates: the market prices the bill's kilowatt-hours are priced against, keyed by the tenant; proposed, never called from the tree. */
+
 const ENERGY_APIS = TABLES.ENERGY_APIS as unknown as readonly { id: string; name: string; url: string; key: string }[]
 const pagesOf = (raw: unknown): unknown => (!raw || typeof raw !== 'object' || Array.isArray(raw) || !('pages' in raw) ? undefined : (raw as { pages: unknown }).pages)
 const gates = (ctx: Context, origin: string, devDependencies: Record<string, string> = {}, google: GoogleApis = {}, mcpAnswer?: unknown) => {
@@ -1995,7 +1973,7 @@ const textbookFor = (dimension: string) => {
   const named = number.length > 0 ? TEXTBOOK_THEOREMS.find((book) => book.lean.includes(number) || book.says.includes(dimension)) : undefined
   return named ?? TEXTBOOK_THEOREMS.find((book) => book.key === 'textbook_standards_sliced')!
 }
-/** Textbooks process every ISO standard. An error or an impossibility falls back to the UUID handle: σ twice is the identity, and the Steane code corrects that single error. Each fallback is a novelty verified against the DOI precedence. A standard that still states another pitch is a sure novelty, and the pages are seeds written one wave at a time. */
+
 const processIsoTextbooks = (asked: Record<string, unknown>, examples: readonly { id: string; shows: string }[] = []) => {
   const texts = (raw: unknown) => Array.isArray(raw) ? raw.filter((item): item is string => typeof item === 'string' && item.trim().length > 0).map((item) => item.trim()) : []
   const errors = texts(asked.errors)
@@ -2069,9 +2047,7 @@ const textbooksDoor = (asked: Record<string, unknown>, ctx: Context) => {
   const clay = ctx.call('clay', { catalog: true }) as { products?: { product: string; variants?: { case: string; relation: string; formula?: string }[] }[] }
   return documentLibrary(clay.products ?? [], { role, action, params, batch }, ctx)
 }
-/** Typography standardised without changing meaning: only the text nodes change (straight quotes to typographic ones, -- to a dash, ... to an
- *  ellipsis, runs of spaces to one); the words, read in order without case or punctuation, must be the same before and after, and every qpu block
- *  stays as it was — otherwise the original stands. A change of meaning is never made here: an improvement is another qpu block, verified by its theorem. */
+
 const typeset = (s: string) => s.replace(/\.\.\./g, '…').replace(/(?<!-) ?--(?!-) ?/g, ' — ').replace(/(^|[\s(\[{])"/g, '$1“').replace(/"/g, '”').replace(/(\w)'(\w)/g, '$1’$2').replace(/(^|[\s(\[{])'/g, '$1‘').replace(/'/g, '’').replace(/ {2,}/g, ' ')
 const words = (n: unknown): string[] => { const out: string[] = []; const walk = (x: unknown) => { if (!x || typeof x !== 'object') return; const o = x as { type?: string; text?: string; children?: unknown[] }; if (o.type === 'text' && typeof o.text === 'string') out.push(...(o.text.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [])); for (const c of o.children ?? []) walk(c) }; walk(n); return out }
 const standardise = (doc: LexicalDoc) => {
@@ -2114,11 +2090,10 @@ const merge = (base: LexicalDoc, a: LexicalDoc, b: LexicalDoc) => {
   return { doc: page, address: fold(page), blocks: kept.length, fromA: only(A, Bb).length, fromB: only(Bb, A).length, both: [...A].filter((id) => Bb.has(id) && !removed.has(id)).length, removed: removed.size, collisions: collided.length, collided, angles: ANGLES, says: `merged by block address: every block either edit holds and neither removed is kept once; the address folds the content, so the merge commutes and is idempotent; ${collided.length} collision(s) held out` }
 }
 const prose = (d: LexicalDoc) => d.root.children.filter((n) => !(typeof n === 'object' && n !== null && (n as { type?: string }).type === 'block')).map(canonicalText)
-/** A document's address: the fold of its blocks' and prose's canonical texts, sorted: its content, not its order. */
+
 export const fold = (doc: LexicalDoc): string => uuid(canonicalText([...blocks(doc).map(canonicalText).sort(), ...[...new Set(prose(doc))].sort()]))
 type GateDoc = { id: string; title: string; slug: string; path: string; parent: string | null; depth: number; layout: Record<string, unknown>[]; meta: { title: string; description: string }; hero: { type: 'default'; richText: LexicalDoc }; breadcrumbs: { page: string; url: string; label: string }[] }
-/** The gates as the nested page documents the seed creates, parents first: the root, a page per category, a page per gate. */
-/** A competition gate knows its competitors as well as the theorems: both in its lexical body (the pages collection the Payload MCP plugin serves). */
+
 const adapter = (x: Gate): unknown[] => { const a = gateAdapter(x); return [lx.heading('Adapter: a dimension of the one plugin', 'h2'), lx.paragraph([lx.text(`Lands in ${a.lands}. ${a.hook}. Fields: ${a.fields.join(', ')}. Presented as ${a.ui.item} (${a.ui.variant}), styled from the address.`)]), lx.paragraph([lx.text(`REST both ways under RBAC — in: ${a.rest.in}; out: ${a.rest.out}; read ${a.rest.rbac.read}, create ${a.rest.rbac.create}, update ${a.rest.rbac.update}, delete ${a.rest.rbac.delete}; tenant roles ${a.rest.rbac.tenantRoles.join(', ')}.`)]), lx.paragraph([lx.text(`UUID stream of its configs: ${a.stream.configs.map((c) => `${c.kind} ${c.uuid}`).join('; ')}.`)])] }
 const knowledge = (x: Gate): unknown[] => { const c = x.category === 'competitions' ? COMPETITIONS.find((k) => k.id === x.id) : undefined; if (!c) return []; const k = knowCompetition(c); return [lx.heading('Competitors, as the page measures them', 'h2'), lx.paragraph([lx.link(c.competitors.source, c.competitors.source), lx.text(` (read ${c.competitors.read}): ${c.competitors.measured}`)]), ...(c.competitors.known.length ? [lx.list(c.competitors.known.map((n) => [lx.text(n)]))] : []), lx.heading(`${k.theorems.length} theorems the tree carries`, 'h2'), lx.list(k.theorems.map((t) => [lx.text(t)]))] }
 const gateDocs = (ctx: Context, origin: string, devDependencies: Record<string, string> = {}, google: GoogleApis = {}, mcpAnswer?: unknown) => {
@@ -2141,14 +2116,8 @@ const gateDocs = (ctx: Context, origin: string, devDependencies: Record<string, 
   return { ...g, docs }
 }
 
-/** The MCP imagined as config sets of widget-skilled tools: a server is nothing but a set of configurations — its tools, each carrying its
- *  widget (the UI resource it renders through) and its skill (the toolbox's instructions and directions), its resources, its examples, its
- *  configuration kinds, its theorems — and every subset (a toolbox, a tenant's mount, the tools with a UI, the examples a theorem backs) is a
- *  config set with a content address: the fold of its sorted members, so two hosts serving the same set share one address (the involution)
- *  and a tenant's mount of the whole server is the same set at every host. Sets compose by union, intersection and difference (inclusion–
- *  exclusion holds by theorem); the server's initialize answer is derived from the whole set, not declared beside it. */
 type ConfigSet = { name: string; by: string; size: number; address: string; members: string[] }
-/** A set's distinct members, sorted and addressed by their canonical text: a repeat is one member, a newline in one never two. */
+
 const set = (members: readonly string[]) => { const m = [...new Set(members)].sort(); return { size: m.length, address: uuid(canonicalText(m)), members: m } }
 const sets = (ctx: Context, names: readonly (string | { name: string; members: readonly string[] })[] = ['legal', 'crypto']) => {
   const tools = listTools(ctx)
@@ -2195,7 +2164,7 @@ const sets = (ctx: Context, names: readonly (string | { name: string; members: r
     mounts: { tenants: mounts.map((m) => m.name.slice(6)), oneAddress: new Set(mounts.map((m) => m.address)).size === 1, address: mounts[0]?.address ?? null, says: 'every tenant mounts the same set, so every mount has the same address: the e2e gate decodes the hosts as copies of it' },
     algebra, widgetSkilled,
     initialize: { derived, live, agrees: JSON.stringify(derived) === JSON.stringify(live) },
-    sdk: (({ module: _m, ...rest }) => rest)(sdk('https://qpu.uuidna.com', tools.map((t) => t.name))),
+    sdk: (({ module: _m, ...rest }) => rest)(builders('https://qpu.uuidna.com', tools.map((t) => t.name))),
     says: 'the MCP is its config sets of widget-skilled tools: the server is the set of every element, a toolbox a subset, a mount the whole set at a host; sets are addressed by the fold of their sorted members and composed by union, intersection and difference; the initialize answer follows from the set',
   }
 }
@@ -2243,12 +2212,11 @@ const site = (ctx: Context, origin: string, devDependencies: Record<string, stri
   const clones = selfClones(origin, true)
   return { reference: { site: 'https://payloadcms.com', contract: 'https://payloadcms.com/api/pages?limit=1&depth=0', shape: 'docs with layout blocks (blockType), meta (title, description), breadcrumbs: the site is what Payload computes; discovery reads it as the standard payload-site' }, origin, home, useCases: useCases.length, pages: docs.length, byUseCase: useCases, docs, clones: { frameworks: clones.frameworks, unique: clones.unique, orders: clones.orders, price: clones.price, canonicals: clones.canonicals }, gates: { root: gated.tree.root, categories: gated.counts.categories, gates: gated.counts.gates, pages: gated.docs.length, depth: gated.tree.depth, partition: gated.counts.partition, byKind: gated.counts.byKind, leads: gated.leads, byCategory: gated.categories }, challenges: { section: challenges.section, challenges: challenges.challenges, pages: challenges.pages, verified: challenges.verified, holds: challenges.holds }, collection: { slug: 'pages', totalDocs: docs.length + gated.docs.length + challenges.docs.length, docs: [...docs.filter((d) => 'uuid' in d).map((d) => ({ id: d.uuid, title: d.title, slug: `/${d.uuid}`, layout: [(() => { const ch = channel(String(d.uuid)); return { blockType: 'qpu', tool: d.tool, uuid: d.uuid, handle: ch.handle, program: ch.program.join(''), tail: ch.tail, arguments: (d as { arguments?: Record<string, unknown> }).arguments ?? null, theorem: d.theorem ?? null } })()], meta: { title: d.title, description: d.description }, breadcrumbs: [{ doc: d.uuid, url: `/${d.uuid}`, label: d.title }], path: `/${d.uuid}`, parent: null, depth: 1 })), ...gated.docs, ...challenges.docs] } }
 }
-/** Payload skills: skill(name) formulates each MCP tools/call. */
-/** payloadcms.com's own configuration, read at github.com/payloadcms/website (MIT) on 2026-10-25, src/payload.config.ts: the plugins it mounts and the database it runs on — facts, compared with the plugins MCP configures here. */
+
 const PAYLOAD_WEBSITE = TABLES.PAYLOAD_WEBSITE
 const camel = (dir: string) => dir.replace(/\.tsx?$/, '').replace(/^[A-Z]/, (c) => c.toLowerCase())
 const BLOCK_ALIASES: Readonly<Record<string, string>> = { callToAction: 'cta', mediaContent: 'mediaContent' }
-/** The website's source read as a tree: its collections, blocks, globals, fields and plugins by path; with the live page's block types, whether the site agrees with its source. */
+
 const website = (tree: { tree?: { path: string; type?: string; size?: number }[]; sha?: string; truncated?: boolean }, liveBlockTypes: readonly string[] = []) => {
   const entries = Array.isArray(tree.tree) ? tree.tree : []
   const under = (dir: string) => [...new Set(entries.filter((e) => e.path.startsWith(`${dir}/`)).map((e) => e.path.split('/')[2]!).filter(Boolean))]
@@ -2301,10 +2269,10 @@ const packages = (names: readonly string[] = PAYLOAD_PACKAGES.names) => {
     says: `${names.length} packages: ${Object.entries(byKind).map(([k, v]) => `${v.length} ${k}`).join(', ')}; ${mounted.filter((m) => names.includes(m)).length} mounted by the full stack; ${onCloudflare.length} usable on Cloudflare via qpuMcpPlugin keys${unknown.length ? `; UNKNOWN to Payload: ${unknown.join(', ')}` : ''}`,
   }
 }
-/** Payload's ecommerce template, read at the source (github.com/payloadcms/payload, templates/ecommerce, 2026-10-26; names and shapes only): the standard payload-ecommerce-template discovery reads on every run. */
+
 const PAYLOAD_ECOMMERCE = TABLES.PAYLOAD_ECOMMERCE
 export const QPU_CURRENCIES = [{ code: 'EUR', decimals: 2, label: 'Euro', symbol: '€' }, { code: 'USD', decimals: 2, label: 'US Dollar', symbol: '$' }, { code: 'BGN', decimals: 2, label: 'Bulgarian lev', symbol: 'лв' }] as const
-/** The licence catalogue as the ecommerce plugin's products. The billing catalogue is the list; the pages seed is the document. */
+
 const ecommerce = (rates?: Record<string, { rate: number }>) => {
   const products = [...new Set(CATALOGUE.map((v) => v.product))]
   const harmonised = rates && Object.keys(rates).length ? rates : null
@@ -2318,13 +2286,11 @@ const ecommerce = (rates?: Record<string, { rate: number }>) => {
     seeded: 'payload { idea } writes a pages seed; payload { feeds } is the billing catalogue',
   }
 }
-/** The UI as a configuration (MCP Apps, SEP-1865, specification 2026-01-26, read at the source 2026-10-26): one app shell for every tool, a pure
- * function of the key and the theme — no randomness, no clock, no external domain — served as the ui:// resource of each tool and hosted by any
- * host that negotiates the extension; the site's playground hosts the same resource. The widget the tool computes is what the shell renders. */
+
 export const MCP_APPS = TABLES.MCP_APPS
-/** The host's standardised theme variables mapped onto the tokens every widget of this tree uses: the widget never changes, the host's theme shows through. A token never maps onto its own name (a self-reference is a cycle the browser drops: measured as serif text in the playground); --font-sans is the host's own and read where it is used. */
+
 const UI_TOKENS = TABLES.UI_TOKENS as unknown as readonly [string, string, string][]
-/** The host of an MCP App in React (a client component): reads the tool's ui:// resource over the app's own MCP endpoint, hosts it in a sandboxed frame and speaks the Apps protocol; the same host the site's playground runs in Vue. Served to any shadcn frontend as the registry item qpu-app. */
+
 const reactHost = (): string => [
   "'use client'",
   "// The host of an MCP App: the tool's ui:// resource read over the MCP endpoint (resources/read), hosted in a sandboxed frame and spoken to",
@@ -2370,7 +2336,7 @@ const reactHost = (): string => [
   '}',
   '',
 ].join('\n')
-/** The shadcn registry (ui.shadcn.com/schema/registry.json, read 2026-10-26): the host and the block as registry items any shadcn frontend adds with npx shadcn add <url>; written by the configs step to the app's and the site's public/r. */
+
 const STYLED_ITEMS: readonly { name: string; type: 'registry:lib' | 'registry:component' | 'registry:block'; title: string; description: string; file: string; content: string }[] = [
   { name: 'qpu-style', type: 'registry:lib', title: 'QPU style', description: 'style(uuid): the CSS variables of a block computed from its address; nothing loaded', file: 'lib/qpu-style.ts', content: `export const style = (uuid: string) => { const hex = uuid.replace(/-/g, ''); const program = [...hex.slice(8, 20)].filter((_c, i) => i !== 4 && i !== 8).map((c) => parseInt(c, 16)), tail = hex.slice(20); const hue = parseInt(hex.slice(0, 8), 16) % 360; const [c, m, y, k] = [8, 11, 14, 17].map((i) => parseInt(hex.slice(i, i + 3), 16) / 0xfff); const rgb = (v: number) => Math.round(255 * (1 - v) * (1 - k!)); const sat = 40 + (program.reduce((n, d) => n + d, 0) % 40); const radius = 2 + (parseInt(tail.slice(0, 1), 16) % 14), gap = 4 + (parseInt(tail.slice(1, 2), 16) % 12); return { '--qpu-hue': String(hue), '--qpu-accent': \`rgb(\${rgb(c!)} \${rgb(m!)} \${rgb(y!)})\`, '--qpu-surface': \`hsl(\${hue} \${Math.round(sat / 4)}% 97%)\`, '--qpu-ink': \`hsl(\${hue} \${Math.round(sat / 3)}% 14%)\`, '--qpu-radius': \`\${radius}px\`, '--qpu-gap': \`\${gap}px\` } as React.CSSProperties }\n` },
   { name: 'qpu-card', type: 'registry:component', title: 'QPU card', description: 'a card styled by the address it shows', file: 'components/qpu/card.tsx', content: `import React from 'react'\nimport { style } from '@/lib/qpu-style'\nexport const QpuCard: React.FC<{ uuid: string; title: string; children?: React.ReactNode }> = ({ uuid, title, children }) => (\n  <section style={{ ...style(uuid), background: 'var(--qpu-surface)', color: 'var(--qpu-ink)', borderLeft: '3px solid var(--qpu-accent)', borderRadius: 'var(--qpu-radius)', padding: 'var(--qpu-gap)' }} data-uuid={uuid}>\n    <h3 style={{ margin: 0, color: 'var(--qpu-accent)' }}>{title}</h3>\n    {children}\n  </section>\n)\n` },
@@ -2380,16 +2346,13 @@ const STYLED_ITEMS: readonly { name: string; type: 'registry:lib' | 'registry:co
   { name: 'qpu-scan', type: 'registry:component', title: 'QPU scan', description: 'the scannable stream of an address: one frame per character at the vortex period, multidimensional (hue, glyph, angle), impossible to link from one frame, read back by a device that streams it (verify { scan })', file: 'components/qpu/scan.tsx', content: `import React from 'react'\nimport { style } from '@/lib/qpu-style'\n/** The stream of an address: the frames the block's own --qpu-frames gradient holds, stepped through at the vortex period (36 frames of 108 ms). A device reads it by streaming: verify { scan: samples }. */\nexport const QpuScan: React.FC<{ uuid: string; phase?: number; label?: string }> = ({ uuid, phase, label }) => (\n  <div className="qpu-scan" role="img" aria-label={label ?? 'a scannable stream: one character a frame'} data-phase={phase === undefined ? undefined : ''} style={{ ...style(uuid), ...(phase === undefined ? {} : { ['--qpu-phase' as string]: String(Math.floor(phase)) }), borderRadius: 'var(--radius, 0.432rem)', minHeight: '3em' }} />\n)\n` },
   { name: 'qpu-dashboard', type: 'registry:block', title: 'QPU dashboard', description: 'a dashboard of the stream: cards of counts by kind, the table of the latest blocks, the stream itself; every bit styled from the addresses', file: 'blocks/qpu-dashboard/page.tsx', content: `import React from 'react'\nimport { QpuCard } from '@/components/qpu/card'\nimport { QpuTable } from '@/components/qpu/table'\nimport { QpuStream } from '@/components/qpu/stream'\nexport default function QpuDashboard({ blocks }: { blocks: { address: string; kind?: string; date?: string }[] }) {\n  const kinds = [...new Set(blocks.map((b) => b.kind ?? 'block'))]\n  return (\n    <main style={{ display: 'grid', gap: 16 }}>\n      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 8 }}>{kinds.map((k) => { const of = blocks.filter((b) => (b.kind ?? 'block') === k); return <QpuCard key={k} uuid={of[of.length - 1]!.address} title={k}><strong>{of.length}</strong></QpuCard> })}</div>\n      <QpuTable head={['address', 'kind', 'date']} rows={blocks.slice(-20).map((b) => ({ uuid: b.address, cells: [b.address, b.kind ?? 'block', b.date ?? ''] }))} />\n      <QpuStream blocks={blocks} />\n    </main>\n  )\n}\n` },
 ]
-/** The SDK: the config sets as the base of combinatorial application builders — one generated module (a shadcn lib item, nothing loaded but it)
- *  that calls the QPU over MCP, token free at the Worker's /mcp or with a user's API key at the app's /api/mcp, and composes an app from the
- *  sets: the configuration kinds, the set algebra, the app request (form, validation, build), the core (present, stream), the gates and the
- *  realtime channels. Generated by configure { kind: 'sets' }; written to the registry as qpu-sdk. */
-export const sdk = (origin = 'https://qpu.uuidna.com', tools: readonly string[] = []) => {
+
+export const builders = (origin = 'https://qpu.uuidna.com', tools: readonly string[] = []) => {
   const core = ['configure(kind, args)', 'sets(a, b)', 'scope(env)', 'app.form()', 'app.validate(values)', 'app.build(request)', 'lexical.doc(tool, args)', 'lexical.app(request)', 'lexical.merge(base, a, b)', 'present(hex)', 'stream(uuids, query)', 'gates()', 'realtime()', 'schema()', 'call(tool, args)', 'collections.find(slug, args)', 'collections.create(slug, data)', 'collections.update(slug, id, data)', 'collections.delete(slug, id)', 'plugins.<name>.collections / find / create / update', 'plugins.compose(names)', 'plugins.list()']
   const builders = [...core, ...tools.map((name) => `tools.${name}(args)`), 'all()', 'develop(formula)']
   const module = `// @uuidna/qpu SDK: the config sets as the base of combinatorial application builders. Generated by configure { kind: 'sets' } on the QPU; nothing loaded but this file.
 // Token free at the Worker's /mcp (every pure tool); with a user's API key at the app's /api/mcp (the Payload MCP plugin, the collections among its tools).
-// Via Payload MCP and vice versa: the plugin serves this module as the resource sdk://qpu/lib, and this module calls the plugin's own collection tools (findPages, createEntries, ...).
+// Via Payload MCP and vice versa: the plugin serves this module as the resource mcp://qpu/lib, and this module calls the plugin's own collection tools (findPages, createEntries, ...).
 export type Call = (name: string, args?: Record<string, unknown>) => Promise<unknown>
 const CONFIG_KINDS = ${JSON.stringify([...configKinds])} as const
 export const TOOLS = ${JSON.stringify(tools)} as const
@@ -2457,11 +2420,11 @@ ${tools.map((name) => `      ${/^[A-Za-z_][A-Za-z0-9_]*$/.test(name) ? name : JS
 /** the plugin names a collection tool by verb and the slug in PascalCase: form-submissions → findFormSubmissions */
 const toolName = (verb: 'find' | 'create' | 'update' | 'delete', slug: string): string => verb + slug.split(/[-_]/).map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join('')
 `
-  return { item: 'qpu-sdk', add: `npx shadcn add ${origin}/r/qpu-sdk.json`, builders, core: core.length, kinds: configKinds.length, tools: tools.length, bytes: module.length, module, says: `the SDK composes an app from the config sets and from every tool: ${core.length} core builders, one method per tool, all() for every API and MCP, and develop() through the product hooks. Every call is a tools/call over MCP, nothing loaded but the module` }
+  return { item: 'qpu-sdk', add: `npx shadcn add ${origin}/r/qpu-builders.json`, builders, core: core.length, kinds: configKinds.length, tools: tools.length, bytes: module.length, module, says: `the SDK composes an app from the config sets and from every tool: ${core.length} core builders, one method per tool, all() for every API and MCP, and develop() through the product hooks. Every call is a tools/call over MCP, nothing loaded but the module` }
 }
 export const registry = (origin = 'https://qpu.uuidna.com', blockSource = ''): Record<string, unknown> => {
-  const module = sdk(origin), $schema = 'https://ui.shadcn.com/schema/registry-item.json'
-  const sdkItem = { $schema, name: 'qpu-sdk', type: 'registry:lib', title: 'QPU SDK', description: 'the config sets as the base of combinatorial application builders: one module that calls the QPU over MCP and composes an app from the sets', files: [{ path: 'lib/qpu-sdk.ts', type: 'registry:lib', content: module.module }] }
+  const module = builders(origin), $schema = 'https://ui.shadcn.com/schema/registry-item.json'
+  const sdkItem = { $schema, name: 'qpu-sdk', type: 'registry:lib', title: 'QPU SDK', description: 'the config sets as the base of combinatorial application builders: one module that calls the QPU over MCP and composes an app from the sets', files: [{ path: 'lib/qpu-builders.ts', type: 'registry:lib', content: module.module }] }
   const styled = STYLED_ITEMS.map((it) => ({ $schema, name: it.name, type: it.type, title: it.title, description: it.description, registryDependencies: it.name === 'qpu-style' ? [] : [`${origin}/r/qpu-style.json`, ...(it.name === 'qpu-stream' ? [`${origin}/r/qpu-card.json`, `${origin}/r/qpu-badge.json`] : it.name === 'qpu-dashboard' ? [`${origin}/r/qpu-card.json`, `${origin}/r/qpu-table.json`, `${origin}/r/qpu-stream.json`] : [])], files: [{ path: it.file, type: it.type === 'registry:block' ? 'registry:page' : it.type === 'registry:lib' ? 'registry:lib' : 'registry:component', content: it.content, ...(it.type === 'registry:block' ? { target: 'app/qpu/page.tsx' } : {}) }] }))
   const app = { $schema, name: 'qpu-app', type: 'registry:component', title: 'QPU App host', description: 'The host of an MCP App: reads a tool\'s ui://qpu/<tool> resource over the MCP endpoint and hosts it through the MCP Apps protocol in a sandboxed frame.', dependencies: [], registryDependencies: [], files: [{ path: 'components/qpu/app.tsx', type: 'registry:component', content: reactHost() }], docs: `import { QpuApp } from '@/components/qpu/app' — <QpuApp tool="processor" args={{ name: 'Willow' }} result={reply.result} mcp="${origin}/mcp" /> (the Worker takes no key); against a Payload app's /api/mcp pass apiKey (a payload-mcp-api-keys key the admin made) or html read by your server`, categories: ['mcp', 'qpu'] }
   const chat = { $schema, name: 'qpu-chat', type: 'registry:component', title: 'QPU chat', description: 'The chat as an MCP App: <QpuApp /> with no tool hosts ui://qpu/chat, every turn a tools/call through the app\'s MCP.', registryDependencies: [`${origin}/r/qpu-app.json`], categories: ['mcp', 'qpu'] }
@@ -2469,7 +2432,7 @@ export const registry = (origin = 'https://qpu.uuidna.com', blockSource = ''): R
   const create = createTheme(KEY, origin, ['qpu-style', 'qpu-block', 'qpu-app', 'qpu-chat', ...STYLED_ITEMS.map((i) => i.name).filter((n) => n !== 'qpu-style')]).item
   // the index lists every item's files by path, type and target; each item serves its content
   const listed = (i: { name: string; files?: readonly { path: string; type: string; target?: string }[] }) => ({ ...i, files: i.files?.map(({ path, type, target }) => ({ path, type, target })) })
-  return { 'qpu-create.json': create, 'registry.json': { $schema: 'https://ui.shadcn.com/schema/registry.json', name: 'qpu', homepage: origin, items: [create, sdkItem, ...styled, app, chat, block].map(listed) }, 'qpu-app.json': app, 'qpu-chat.json': chat, 'qpu-block.json': block, 'qpu-sdk.json': sdkItem, ...Object.fromEntries(styled.map((i) => [`${i.name}.json`, i])) }
+  return { 'qpu-create.json': create, 'registry.json': { $schema: 'https://ui.shadcn.com/schema/registry.json', name: 'qpu', homepage: origin, items: [create, sdkItem, ...styled, app, chat, block].map(listed) }, 'qpu-app.json': app, 'qpu-chat.json': chat, 'qpu-block.json': block, 'qpu-builders.json': sdkItem, ...Object.fromEntries(styled.map((i) => [`${i.name}.json`, i])) }
 }
 export const ui = (tool: string, key: number = KEY): { uri: string; name: string; mimeType: string; html: string; csp: { connectDomains: string[]; resourceDomains: string[] }; prefersBorder: boolean } => {
   const accent = `hsl(${hue(key)} 62% 44%)`
@@ -2631,7 +2594,7 @@ export const siteWrangler = () => ({
   observability: { enabled: true, head_sampling_rate: 1, logs: { enabled: true, head_sampling_rate: 1, invocation_logs: true, persist: true }, traces: { enabled: true, head_sampling_rate: 1, persist: true }, issues: { enabled: true } },
   vars: { QPU_ADAPTERS: 'cloudflare' },
 })
-/** The scopes of the full stack: every tenant over every scoped collection (the multi-tenant plugin), every role over the docket (the Worker's roles), every toolbox as a scope of the MCP server. More tenants is the whole of scaling: no more code. */
+
 const SCOPES = {
   tenants: [...Object.values(TENANTS), 'ceci'],
   collections: ['pages', 'entries', 'products', 'orders'],
@@ -2643,27 +2606,18 @@ const SCOPES = {
   toolboxes: 'every toolbox is a scope of the MCP server: a client that names a toolbox sees its tools alone (tools/list?toolbox=)',
   scale: 'a tenant is a host in TENANTS and a row of the tenants collection; its scope is its own docket, pages and tokens; adding one adds no code',
 } as const
-/** The fields of what QPU adds to Payload: the entries collection (the docket) and the qpu block, each with its validation (a function of the value alone). */
+
 export const FIELDS = TABLES.FIELDS
-/** The validations as regular expressions the generated collection enforces (Payload validate functions): pure, the same in the app and at the edge. */
-/** Every field validation the tree generates, each named by the kernel-accepted theorem that states its arithmetic (the harmonic basis: a pattern
- *  is a count the kernel checks, never a convention); a validation no theorem states is a lead the validations kind reports. The same table
- *  renders the validate function of every generated field (validate), with the theorem carried in the field's custom, so the Payload MCP's
- *  getCollectionSchema answers it. */
+
 const VALIDATIONS = TABLES.VALIDATIONS as unknown as readonly { field: string; of: 'entries' | 'qpu' | 'tenants'; pattern: string; says: string; nullable?: boolean; theorem: string | null }[]
-/** The validate function of a generated field, rendered from the table: the pattern, the sentence, and the theorem in custom (null when none states it). */
+
 export const validate = (of: 'entries' | 'qpu' | 'tenants', field: string): string => {
   const v = VALIDATIONS.find((x) => x.of === of && x.field === field)
   if (!v) throw new Error(`no validation for ${of}.${field}`)
   const re = v.pattern.replace(/\\/g, '\\\\')
   return `validate: (v: unknown) => ${v.nullable ? "(v == null || v === '') || " : ''}/${re}/.test(String(v)) || '${v.says.replace(/'/g, "\\'")}', custom: { theorem: ${v.theorem ? `'${v.theorem}'` : 'null'} }`
 }
-/** The access of the entries collection by role, the Worker's roles carried into Payload: a reader reads, a writer creates, nothing updates (content-addressed: immutable), an admin deletes. */
-/** Abilities after CanCanCan: rules `can action, subject, conditions` over Payload's collections, none by default; manage covers every action,
- *  all every collection, a cannot rule subtracts. Roles after rolify: a name, global, or scoped to a collection (a resource class) or to one
- *  document of it (a resource instance); a global role holds everywhere. The answer is Payload's own access result: true, false, or the Where
- *  that fetches only what the user may (CanCanCan's accessible_by). $user and $tenants in a condition stand for the user's id and tenants; the
- *  role all is held by every user, so its cannot binds every role. */
+
 export type Ability = { role: string; can: readonly string[]; subject: string; where?: Record<string, unknown>; cannot?: boolean }
 export type ScopedRole = { name: string; resourceType?: string; resource?: string }
 // Payload's Where has no general negation: a cannot with conditions negates field operators only (equals, in, exists)
@@ -2695,11 +2649,7 @@ const matchesWhere = (doc: unknown, root: Record<string, unknown>): boolean => {
   return decided.get(root)!
 }
 export const checkAccess = (abilities: readonly Ability[], roles: readonly ScopedRole[], subject: string, action: string, doc: unknown, user: { id?: string | null; tenants?: readonly string[] } = {}): boolean => { const a = getAccess(abilities, roles, subject, action, user); return typeof a === 'boolean' ? a : matchesWhere(doc, a) }
-/** The Rails guide Active Record Associations, implemented by Payload's own fields: the fields each side of an association carries. belongs_to is a
- *  relationship; has_many a join on the target's relationship back; has_one that join limited to one, the target's relationship unique; :through
- *  a join over the join model's two belongs_to; has_and_belongs_to_many a hasMany relationship with a join as its inverse; polymorphic a
- *  relationship to many collections; a self join a relationship to its own collection; single table inheritance a type select whose subtypes'
- *  fields show by condition; delegated types a polymorphic relationship from the base. Options: dependent, counter_cache and touch as hooks. */
+
 type Field = Record<string, unknown>
 export type Association = { type: 'belongs_to' | 'has_one' | 'has_many' | 'has_many_through' | 'has_one_through' | 'has_and_belongs_to_many' | 'polymorphic' | 'self_join' | 'sti' | 'delegated_type'; owner: string; name: string; target?: string; targets?: readonly string[]; through?: string; on?: string; inverse?: string; optional?: boolean; subtypes?: Readonly<Record<string, readonly Field[]>>; dependent?: 'destroy'; counterCache?: string; touch?: boolean }
 export const createAssociation = (a: Association) => {
@@ -2719,9 +2669,7 @@ export const createAssociation = (a: Association) => {
   const hooks = [...(a.dependent === 'destroy' ? [{ on: a.owner, hook: 'afterDelete', source: `async ({ doc, req }) => { await req.payload.delete({ collection: '${t}', where: { ${on}: { equals: doc.id } }, req }) }` }] : []), ...(a.counterCache ? [{ on: t || a.owner, hook: 'afterChange', source: `async ({ doc, req }) => { const parent = doc.${on}; if (parent) await req.payload.update({ collection: '${a.owner}', id: typeof parent === 'object' ? parent.id : parent, data: { ${a.counterCache}: (await req.payload.count({ collection: '${t}', where: { ${on}: { equals: typeof parent === 'object' ? parent.id : parent } }, req })).totalDocs }, req }) }` }] : []), ...(a.touch ? [{ on: t || a.owner, hook: 'afterChange', source: `async ({ doc, req }) => { const parent = doc.${on}; if (parent) await req.payload.update({ collection: '${a.owner}', id: typeof parent === 'object' ? parent.id : parent, data: {}, req }) }` }] : [])]
   return { phase: 'association' as const, rails: a.type, ...sides, hooks, theorem: 'textbook_association_fields' }
 }
-/** The Rails guide Active Record Validations, implemented by Payload's own field options where Payload has one (required, unique, minLength,
- *  maxLength, min, max, options), else by a validate function whose source the generator writes: a string is the error message, true passes.
- *  :allow_nil and :allow_blank pass an empty value, :on names the operation, :if and :unless read the sibling data, :message replaces the text. */
+
 export type Validation = { name: string; helper: 'absence' | 'acceptance' | 'confirmation' | 'comparison' | 'format' | 'inclusion' | 'exclusion' | 'length' | 'numericality' | 'presence' | 'uniqueness' | 'validates_associated' | 'validates_each' | 'validates_with'; options?: { with?: string; in?: readonly (string | number)[]; minimum?: number; maximum?: number; is?: number; onlyInteger?: boolean; greaterThan?: number | string; lessThan?: number | string; allowNil?: boolean; allowBlank?: boolean; message?: string; on?: 'create' | 'update'; if?: string; unless?: string; validator?: string } }
 export const createValidation = (v: Validation) => {
   const o = v.options ?? {}, say = (m: string) => JSON.stringify(o.message ?? `${v.name} ${m}`), field: Field = {}
@@ -2752,10 +2700,8 @@ export const listRolesFromGroups = (mapping: readonly (ScopedRole & { group: str
   groups ? { phase: 'roles' as const, roles: groups.flatMap((g) => mapping.filter((r) => r.group === g.email).map(({ group: _g, ...role }) => role)) }
     : { phase: 'plan' as const, googleCall: { api: 'admin', version: 'directory_v1', method: 'groups.list', params: { userKey: userKey ?? '' } }, scope: 'admin.directory.group.readonly', says: 'ask the Directory API through payload { googleCall }, under a Workspace admin\'s domain-wide delegation, and hand the groups back' }
 
-/** The read groups and the per-collection access, read from Payload: groups after Google's data classes — what everyone reads stays outside them;
- *  an operational kind (machine, chat, penalty, session, call, message) is read by its tenant and admins; google-user-data by its grantor (Limited Use). */
 export const ACCESS = TABLES.ACCESS
-/** The Entries read, computed from the groups: a kind outside them read by everyone, each group's kinds by its readers. */
+
 const readClause = () => {
   const q = (xs: readonly string[]) => JSON.stringify(xs).replace(/"/g, "'").replace(/,/g, ', '), gs = Object.values(ACCESS.groups), by = (r: string) => gs.filter((g) => g.readers === r).flatMap((g) => g.kinds)
   return `({ or: [{ kind: { not_in: ${q(gs.flatMap((g) => g.kinds))} } }, { and: [{ kind: { in: ${q(by('tenant'))} } }, { tenant: { in: tenants(req.user) } }] }, { and: [{ kind: { in: ${q(by('grantor'))} } }, { or: [{ from: { equals: String((req.user as { id?: unknown } | null)?.id ?? '') } }, { tenant: { in: tenantsWithRole(req.user, ['tenant-admin']) } }] }] }] } as Where)`
@@ -2772,23 +2718,17 @@ const actions = (experience?: { copies?: number; involutions?: number; msByHost?
     experience: { measured: experience ?? null, freeShare: free, slowestMedianMs: slowest, shardSize, says: experience ? `${free}% of the gate\'s copies answered free (304 by involution); the slowest host answers in ${slowest} ms, so a batch is sharded to ${shardSize} calls a shard to stay within a second` : 'no measurement passed: the defaults stand (8 calls a shard)' },
   }
 }
-/** The Payload hooks the full stack carries, each with what it does and what it keeps free: a hook is configuration too, improved on every run. */
-/** The organisation of the generated files is decided by role, never typed by hand: a role fixes the folder, the case of the name and the
- *  extension (Payload's own layout under the fork's aliases) and says what loads the file — the computational reason for its place: a block
- *  config, a collection and a global load with the Payload config (server only); a config module is imported by payload.config.ts, one per
- *  concern; a component is reachable by the Pages Router too, so it imports no next/headers and no @payload-config; a script runs under
- *  payload run; a notice is never compiled. textbook_fullstack_files_by_role partitions the generated files over the roles; the app's own files are not generated here. */
+
 export const FILE_ROLES = TABLES.FILE_ROLES
 type FileRole = keyof typeof FILE_ROLES
 const pascal = (t: string) => t.replace(/(^|[-_ ])([a-z])/g, (_m, _s, c: string) => c.toUpperCase())
 const fileCamel = (t: string) => { const p = pascal(t); return p.slice(0, 1).toLowerCase() + p.slice(1) }
-/** The path of a generated file from its role and key alone. */
+
 // the default payloadcms/website app directory the overlay is generated into (the deploy clones the template here); site/ is removed
-/** This repository is the full stack. Develop under src/ to the payloadcms/website standard; packages and MCP from payloadcms/payload (@payloadcms/plugin-mcp). */
+
 export const APP_DIR = ''
 const joinApp = (...parts: string[]) => parts.filter(Boolean).join('/')
-/** The README's capacity section, every number the fold door's answer (uuidQubits, hexbit, organiseQubits) over one receipt address derived from the
- *  section's own name; the generator refuses when the parts' sums differ from the register the door counts or a receipt does not hold. */
+
 const readmeCapacity = (): string => {
   const width = AXIOMS.find((row) => row.name === 'hexbit')!.value
   const counted = uuidQubits(width)
@@ -2866,7 +2806,7 @@ export const file = (role: FileRole, key: string): string => {
     case 'migration': return joinApp(base, `${key}.ts`)
   }
 }
-/** The clay workflow of one address: every place of its program, one rotation each. The handle and the tail stay. Ten places return the program. The address itself returns when its variant nibble is already 8. Every aspect witnesses each place. */
+
 const clayProgram = (address: string) => {
   const read = channel(address)
   const installed = program(read.handle)
@@ -2884,14 +2824,14 @@ const clayProgram = (address: string) => {
   const witnessed = steps.length === places && steps.every((step) => step.sealed && step.kept && step.back && step.around && step.all && step.aspects === 4)
   return { handle: read.handle, path: installed.path, depth: installed.depth, indexed: installed.indexed, places, steps: steps.length, program: same, variant: arrived.variant, address: current === address, returned: same && (arrived.variant === '8' ? current === address : true), witnessed, holds: installed.indexed && installed.depth === 7 && same && witnessed }
 }
-/** The exit a hook status selects. Code 0 conforms. Every other code is reported, and the walk stays open. */
+
 const hookExit = (code: number, answer?: { status?: number; text?: string }) => {
   const row = ISO_EXIT.exits[code] ?? ISO_EXIT.exits[1]!
   const online = verifyIsoOnline(answer)
   const research = { before: true as const, fetched: false as const, phase: online.phase, request: online.request, source: online.source, verified: online.verified, defined: online.defined, holds: online.holds }
   return { research, code: row.code, strategy: row.strategy, forth: row.forth, back: row.back, closed: row.closed, exited: row.exited, says: row.says }
 }
-/** ISO 9001 audited in every scientific domain. Each domain is a UUID program, and the clay workflow develops that program. A page that is not the whole set still names the one domains request. */
+
 const auditDomains = (raw: unknown) => {
   const cover = domainConfigs(raw)
   const named = 'names' in cover.domains && Array.isArray(cover.domains.names) ? cover.domains.names.map((name, index) => ({ name, fields: cover.domains.radices[index] ?? 0 })) : []
@@ -2913,7 +2853,7 @@ const auditDomains = (raw: unknown) => {
   const holds = programs.length > 0 && programs.every((row) => row.sealed && row.developed && row.audit.holds && row.audit.dimensions === ISO_DIMENSIONS.length && row.program.holds && row.program.places === 10 && row.program.witnessed && row.next.holds)
   return { ...cover, programs, audit: { process: 'ISO 9001' as const, clause: 'ISO 9001:2015, 9.2' as const, via: 'clay' as const, domains: programs.length, dimensions: ISO_DIMENSIONS.length, holds } }
 }
-/** ISO 9001 improvement. A formula is improved through every dimension and every Alpine case. true improves all of that via the ideas: next walks every idea until .idea is empty, each idea is developed and then improved, and each one is a pages create and a products create. quantum develops each ISO/IEC 4879:2024 term as an idea and improves it the same way. An empty formula is not documented. */
+
 const documentedIso = (iso: { formula?: string; documented?: boolean } | undefined) => (iso?.formula?.length ?? 0) > 0 && iso?.documented === true
 const improveCover = () => {
   const alpine = listAlpine()
@@ -2929,7 +2869,7 @@ const improveFormula = (formula: string, product: string, variant: string, title
   const again = developViaHooks({ formula: developed.iso.formula, product, variant, title, theorem: 'textbook_standards_sliced' })
   return { developed, improved: again, documented: documentedIso(developed.iso) && documentedIso(again.iso) }
 }
-/** Each declared aspect of one address, optimised against the quantum AI challenges, the leads, and the ideas. The object stays the handle. The bonus is the program and the tail. The birth is the UUID. */
+
 const optimiseFilesystem = (raw: unknown) => {
   const given = typeof raw === 'string' ? raw : isObj(raw) && typeof (raw as { address?: unknown }).address === 'string' ? (raw as { address: string }).address : uuid('filesystem')
   const turned = rotateProgram(given)
@@ -2973,7 +2913,7 @@ const optimiseFilesystem = (raw: unknown) => {
     says: holds ? `each aspect keeps the object ${born.handle} and the tail. collection uses the ${challenges.length} quantum AI challenges, global the ${leadAddresses.length} leads, field the ${ideaAddresses.length} ideas, and node all three. The birth is 128 bits at fanout 65536. The next step rotates the program one place.` : 'an aspect did not keep the object',
   }
 }
-/** Each filesystem adapter is improved with the ideas: its formula is documented, and the audit holds on every dimension. */
+
 const improveFilesystem = () => {
   const zfs = chosen('programs').improve()
   const specs = [
@@ -3075,10 +3015,10 @@ const kernelTheorem = (key: string | undefined) => {
   const textbook = TEXTBOOK_THEOREMS.find((theorem) => theorem.key === key)
   return { theorem: key, lean: textbook?.lean ?? kernel.statement, says: textbook?.says ?? kernel.statement }
 }
-/** The defining rows, read once. Clause 9.1 measures a release against this file. Nothing is fetched. */
+
 let definingRows: ReturnType<typeof verifyIsoOnline> | null = null
 const definingFile = () => (definingRows ??= verifyIsoOnline({ status: 200, text: ISO_OPEN_DEFINITIONS.map((row) => JSON.stringify(row)).join('\n') }))
-/** A product is developed by the three collection hooks, then through the end those hooks already name. beforeChange decides the Lean and takes a possible path: a theorem the kernel accepts. A theorem the kernel does not accept is not taken. afterChange hands the formula to the docs door. afterRead serves the documented product. The audit reads that record, the management review accepts it, clause 6.3 plans the change, clause 8.1 carries it out, clause 8.6 releases it, and clause 9.1 monitors it. An empty formula is not documented, and its end is the nonconformity. */
+
 export const developViaHooks = (input: { formula?: string; product?: string; variant?: string; title?: string; theorem?: string }) => {
   const stated = input.formula ?? ''
   const named = kernelTheorem(input.theorem)
@@ -3108,7 +3048,7 @@ export const developViaHooks = (input: { formula?: string; product?: string; var
   const { lean: _lean, ...record } = served
   return { phase: 'develop' as const, via: 'hooks' as const, process: 'ISO 9001' as const, framework: COIN_STANDARDS, params, hooks: ['beforeChange', 'afterChange', 'afterRead'] as const, lean, exit, ...record, served, end }
 }
-/** All ISO quantum as nested Payload pages. The vocabulary sits under its clause sections, and the groups, the guards, the layers and the companion dimensions sit beside it. Each page is a pages create after the ISO 9001 audit. Nothing is fetched and nothing is written. */
+
 const quantumPages = () => {
   const eq = verifyIsoQuantumEquivalence()
   const theorem = 'textbook_standards_sliced' as const
@@ -3234,7 +3174,7 @@ const quantumPages = () => {
     says: holds ? `${pages.length} nested pages under /quantum. A prefix is a plain word such as term or layer, so ${held.length} shared ${held.length === 1 ? 'name stays' : 'names stay'} apart when merged. The word iso is not a prefix. ${holding} of ${vocabulary.length} terms hold, from 3.1.1 through 3.6.4. Each page is a pages create the audit accepted, and clause 6.3 plans that change.` : `${holding} of ${vocabulary.length} terms hold. The nested pages did not all pass.`,
   }
 }
-/** A theorem name is a deliverable, or it is not. A deliverable number, or a term the vocabulary names, stays a theorem and points at that page. Every other name moves from theorems to the place its own word already has. The kernel key is not renamed. The word iso is not a prefix. Nothing is fetched and nothing is written. */
+
 const theoremNames = () => {
   const theorem = 'textbook_standards_sliced' as const
   const slug = (raw: string) => raw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/iso-iec-/g, '').replace(/iso-tr-/g, '').replace(/iso-/g, '').replace(/^-|-$/g, '').replace(/-{2,}/g, '-') || 'page'
@@ -3325,7 +3265,7 @@ const theoremNames = () => {
     says: holds ? `${moved.length} names moved from theorems to the place the name already has. ${stayed.length} names are deliverable terms and stay theorems. The management review accepts all ${next.accepted} placed pages, clause 6.3 plans those ${change.planned} changes, clause 8.1 carries out ${control.operated} of them, and clause 8.6 releases ${release.released} of them. The kernel key stays on each name. The word iso is not a prefix.` : 'a theorem name was not placed',
   }
 }
-/** The theorem reading as the product the collection hooks serve. beforeChange records each formula. afterChange hands the combination to the docs door. afterRead serves that document. The create runs under access. Nothing here calls the factor door. */
+
 export const serveViaHooks = (theorems: readonly string[] = DECODE_THEOREMS) => {
   const developed = theorems.map((theorem) => {
     const stated = TEXTBOOK_THEOREMS.find((item) => item.key === theorem)
@@ -3343,12 +3283,12 @@ export const serveViaHooks = (theorems: readonly string[] = DECODE_THEOREMS) => 
     served, entry,
   }
 }
-/** A refusal is not a dead end. beforeChange records it, afterChange hands it to online research, afterRead serves the possibilities. The research is the ISO Open Data request. Nothing is fetched here. */
+
 const hookResearch = (why: string, possibilities: readonly { id: string; does: string }[]) => {
   const online = verifyIsoOnline()
   return { phase: 'research' as const, via: 'hooks' as const, hooks: ['beforeChange', 'afterChange', 'afterRead'] as const, beforeChange: 'the refusal is recorded', afterChange: 'the refusal is handed to online research', afterRead: 'the possibilities are served', tokenFree: true as const, fetched: false as const, why, request: online.request, citations: online.research, source: online.source, possibilities, says: 'a refusal is re-fused through the hooks into online research; the possibilities are served and nothing is fetched here' }
 }
-/** Cursor's Google connectors, as the ISO document is written. Drive is Cursor's HTTP MCP; Gmail and Calendar are Google's. Tools stay hidden until sign-in. A file id comes from search or create. The formula is markdown converted to a Doc in one create_file. read_file is the ground truth: the document counts when that text contains the formula. */
+
 const CONNECTORS = [
   { product: 'Drive', url: 'https://api.cursor.com/rest-mcp/google-drive/mcp', hosted: 'cursor' as const, does: 'the ISO document: markdown to a Doc in one create_file' },
   { product: 'Gmail', url: 'https://gmailmcp.googleapis.com/mcp/v1', hosted: 'google' as const, does: 'the tenant mail, after the document exists' },
@@ -3388,7 +3328,7 @@ const skillAbilities = (): Ability[] => {
   SKILL_ABILITIES.push(...rows)
   return SKILL_ABILITIES
 }
-/** Legal, editorial and translation skills of an ISO standard. A role develops one only when it may create on the skills subject. The ISO side is the Open Data page; the signature side is ML-DSA, FIPS 204. */
+
 const developSkills = (role = 'reader') => {
   const abilities = skillAbilities()
   const held = [{ name: role }]
@@ -3413,10 +3353,10 @@ const developSkills = (role = 'reader') => {
 }
 const NIST_OPEN_DATA = 'https://data.nist.gov/rmm/records?page=0&size=5'
 const PITCH_WARNING = 'ISO 16 states 440 Hz'
-/** One UUID program is one nanosecond. A second of CPU life and a second of GPU life are that many programs, and the one-second budget prices only the milliseconds past it. */
+
 const US_PER_SECOND = 1000000
 const LIFE_BUDGET_MS = 1000
-/** The process that computes next, once the harmonic patch holds, lives the second. Every other ISO 9001 process exits in one program. That exit is under the budget, so it costs nothing. CPU and GPU share the nanosecond program: the tree prices no second clock. */
+
 const isoProcessLife = (patched: boolean) => {
   const hz = 432
   const stated = 440
@@ -3454,7 +3394,7 @@ const isoProcessLife = (patched: boolean) => {
   }
 }
 const listedFindings = (value: unknown, kind: 'error' | 'warning') => Array.isArray(value) ? value.flatMap((item) => typeof item === 'string' && item.trim().length > 0 ? [{ kind, text: item.trim() }] : []) : []
-/** The errors and the warnings are the solutions. An empty ask discovers every learned error and the pitch warning. Each one is audited, accepted, planned, carried out and released, and the a432 harmonic covers a stated 440. Nothing is fetched. */
+
 const solutionsNext = (raw: unknown = true) => {
   const asked = raw === true || raw === undefined ? null : isObj(raw) ? raw as { errors?: unknown; warnings?: unknown; mcpHosts?: unknown } : null
   const passed = asked ? [...listedFindings(asked.errors, 'error'), ...listedFindings(asked.warnings, 'warning')] : []
@@ -3507,7 +3447,7 @@ const solutionsNext = (raw: unknown = true) => {
     says: holds ? `${solutions.length} solutions. Each error and each warning is the solution. ${passed.length === 0 ? `Next discovers all ${requests.length} requests across ${hosts.length} hosts. ` : ''}ISO 9001 holds, and the a432 harmonic patch covers the drift. The process that computes next lives. Every other process exits and dies in one nanosecond program, and that exit costs nothing. A second of CPU or GPU life uses ${life.perSecond.programs} programs and costs ${life.perSecond.cpu.cost}. Next addresses the 1000-bit successful exit with the primes it was created with.` : 'an error or a warning was not the solution',
   }
 }
-/** Each error and each warning is the solution. Next is that solution, audited under ISO 9001 and covered by the a432 harmonic. */
+
 export const developFindings = (findings: readonly { kind: 'error' | 'warning'; text: string }[]) => {
   const next = solutionsNext({ errors: findings.filter((finding) => finding.kind === 'error').map((finding) => finding.text), warnings: findings.filter((finding) => finding.kind === 'warning').map((finding) => finding.text) })
   return { ...next, findings: next.solutions.length, variants: next.solutions, framework: COIN_STANDARDS, dimensions: ISO_DIMENSIONS }
@@ -3544,14 +3484,14 @@ const developNode = (formula: string, stack: ReadonlySet<string>): ClayDevelopme
   clayNodes.set(formula, node)
   return node
 }
-/** A clay formula developed by the product hooks, and every axiom it names developed by that axiom's formula, down to n. */
+
 const developFormula = (formula: string, input: { product?: string; variant?: string; theorem?: string } = {}) => {
   const node = developNode(formula, new Set())
   if (!input.product && !input.variant && !input.theorem) return node
   const developed = developViaHooks({ formula, product: input.product, variant: input.variant, title: input.variant ?? input.product, theorem: input.theorem })
   return { ...node, ...developed, name: node.name, value: node.value, holds: node.holds, depth: node.depth, children: node.children }
 }
-/** The formula checked two ways: each side evaluated on its own, and the same formula developed through the axioms it names. Both values agree, the hooks documented that formula, and the kernel accepts the theorem. */
+
 export const crossVerifiedFormula = (formula: string, input: { product?: string; variant?: string; theorem?: string; kernel?: boolean; value?: number } = {}) => {
   const developed = developFormula(formula, input)
   const sides = formula.includes('=') || formula.includes('∧') ? [...new Set(formula.split('∧').flatMap((eq) => eq.split('=').map((s) => s.trim())).filter((s) => s.length > 0))] : [formula]
@@ -3565,11 +3505,7 @@ export const crossVerifiedFormula = (formula: string, input: { product?: string;
 }
 const isoPrice = (amounts: Record<string, number>) => Object.fromEntries(Object.entries(amounts).map(([code, amount]) => [code.toUpperCase(), amount]))
 const doneEnd = (row: ReturnType<typeof developViaHooks>) => row.end.complete === true && row.end.fetched === false && row.end.written === false && row.end.audit.holds === true && row.end.next.decision === 'accept' && row.end.next.holds === true && row.end.change.holds === true && row.end.control.operated === true && row.end.control.holds === true && row.end.release.released === true && row.end.release.holds === true && row.end.monitor.holds === true && row.end.monitor.clause === 'ISO 9001:2015, 9.1'
-/**
- * Nested pages generate the ecommerce catalogue, parents first and three deep.
- * Ecommerce reads those pages. Each variant is one published post.
- * Each post is a Zenodo publication through the deposit hooks. Nothing is fetched and nothing is written.
- */
+
 const catalogueChain = () => {
   const rootPath = '/catalogue'
   const rootCrumb = crumb(rootPath, 'Catalogue')
@@ -3635,7 +3571,7 @@ const catalogueChain = () => {
   })
   return { pages, products: productPages, variants: variantPages, posts, publications, holds, nestedHolds, ecommerceHolds, postsHolds, zenodoHolds, fetched: false as const, written: false as const, nested: { depth: 3 as const, pages: pages.length, products: productPages.length, variants: variantPages.length }, ecommerce: { products: ecommerceProducts.length, variants: ecommerceVariants.length }, chain: { nested: { depth: 3 as const, pages: pages.length, products: productPages.length, variants: variantPages.length, holds: nestedHolds }, ecommerce: { products: ecommerceProducts.length, variants: ecommerceVariants.length, holds: ecommerceHolds }, posts: posts.length, publications: publications.length, sent: publications.filter((item) => item.sent).length, fetched: false as const, written: false as const, holds, rows: slim } }
 }
-/** One tool improved twice on the catalogue product it serves, then carried to the monitor. The same formula is developed and improved. Both ends accept it. */
+
 const improveMcp = (formula: string, product: string, variant: string) => {
   const theorem = 'textbook_mcp_tools_by_toolbox'
   const developed = developViaHooks({ formula, product, variant, title: `${product} ${variant}`, theorem })
@@ -3643,7 +3579,7 @@ const improveMcp = (formula: string, product: string, variant: string) => {
   const finished = documentedIso(developed.iso) && documentedIso(improved.iso) && developed.iso.formula === formula && improved.iso.formula === formula && doneEnd(developed) && doneEnd(improved)
   return { improved, finished, end: { complete: finished, decision: improved.end.next.decision, monitor: improved.end.monitor.clause } }
 }
-/** Whatever the input is, the output is the same ISO-standard list. Nested pages generate the ecommerce catalogue. Each variant is a post, and each post is a Zenodo publication. MCP serves that catalogue. It is not a product. */
+
 const isoVariants = (input: unknown, clay: { products?: { product: string; proof?: string | null; variants: { case: string; relation: string; coins: number; formula?: string; crossVerified?: boolean }[] }[] } | null, tools: readonly { name: string; toolbox: string }[]) => {
   const recorded = canonicalText(input)
   const chain = catalogueChain()
@@ -3679,8 +3615,7 @@ const isoVariants = (input: unknown, clay: { products?: { product: string; proof
   const next = { phase: 'next' as const, process: 'ISO 9001' as const, clause: 'ISO 9001:2015, 9.3' as const, decision: accepted ? 'accept' as const : 'nonconformity' as const, accepted: complete, refused: mcp.length - complete, of: mcp.length, from: address, id: turned.next, handle: turned.handle, program: turned.program, rotated: turned.rotated, executable, aspects: turned.aspects.length, all: turned.all === true, kept: turned.kept, back: turned.back, around: turned.around, places: turned.places, walked: false as const, fetched: false as const, written: false as const, tool: 'payload' as const, arguments: { variants: true as const }, documented: developed.end.complete === true && developed.iso.formula === formula, holds: accepted && executable && developed.end.complete === true && developed.end.next.decision === 'accept' && developed.iso.formula === formula && turned.notification.walked === false && turned.notification.atOnce === true && turned.notification.holds === true }
   return { phase: 'iso' as const, standard: 'ISO 9001' as const, standards: ['ISO 9001', 'ISO 4217', 'ISO 639-1', 'ISO/IEC 19770'] as const, language: 'en' as const, via: 'hooks' as const, input: { recorded, address: uuid(recorded) }, currencies: ['EUR', 'USD', 'BGN'] as const, catalogue: catalogue.length, combinations: combinations.length, textbooks: textbooks.length, mcp: mcp.length, variants: products.length, documented: products.filter((p) => p.iso.documented).length, coverage, improvement, next, formulas: { presentations: { formula: '10 * locales' as const, locales, value: presentations, theorem: 'textbook_hologram_rotations' as const }, sitemapCapacity: { formula: '50000 * 50000' as const, value: sitemapCapacity, theorem: 'textbook_sitemap_capacity' as const }, pluginCombinations: { formula: '2 ^ trinities' as const, plugins: Object.keys(PLUGIN_TRINITIES).length, space: PLUGIN_SPACE, value: combinations.length, theorem: 'textbook_collision_solves_many' as const } }, products, says: `${products.length} product variants, whatever was passed. ${mcp.length} of them are the MCP, one variant per tool. Each is improved through the monitor. The management review accepts them, and the hook names the next step: the program rotates one place, the handle and the tail stay. The coverage is ${percent} — maximal, because the management is the automation.` }
 }
-/** The witness hooks: the pairs, the Hooks pages ("<where> <hook>") against the declared hooks, a config's finds, a change pair over two states */
-/** The handle is the aspect a hook keeps. The program moves on a step. The tail is the params. The stamp is decided. Each declared hook handles every status, and the report's byte length is the verbosity that mints the next executable address. The 1000-bit leftover is that task. It is not factored. */
+
 const STATUSES = ['success', 'error', 'warning', 'notice', 'info', 'critical'] as const
 const handleTasks = () => {
   const sample = uuid('handle')
@@ -3743,10 +3678,10 @@ const hooks = (h: { pages?: { title: string }[]; config?: Record<string, any>; s
   run.beforeChange[0]({ data: h.states?.[0] ?? null, context: c }); run.afterChange.at(-1)({ doc: h.states?.[1] ?? null, context: c })
   return { pairs, witnesses: declared.length, pages: h.pages ? { declared: declared.length, paged: declared.filter((d) => titles.includes(d)).length, missing: declared.filter((d) => !titles.includes(d)), extra: titles.filter((x) => /^(collection|global|field|node) /.test(x) && !declared.includes(x)) } : null, found: h.config ? qpuHooks(h.config).found : null, pair: c.qpuWitness['collection::change'] }
 }
-/** The repository's home and code owner, for the policies and the MCP registry entry */
+
 const REPOSITORY = { home: 'https://github.com/uuidna/qpu', owner: '@ceccec' } as const
-/** Every configuration's file in the tree and who is its source: the tool (written on every run, drift zero by construction) or the hand (measured on every run, drift a lead). */
-const CONFIG_FILES: readonly { kind: ConfigKind; path: string; source: 'tool' | 'hand'; format: 'jsonc' | 'json' | 'text' | 'ts'; /** files the hand-held one spreads into itself: measured as one text */ with?: readonly string[] }[] = [
+
+const CONFIG_FILES: readonly { kind: ConfigKind; path: string; source: 'tool' | 'hand'; format: 'jsonc' | 'json' | 'text' | 'ts';  with?: readonly string[] }[] = [
   { kind: 'wrangler', path: 'wrangler.jsonc', source: 'tool', format: 'jsonc' },
   { kind: 'pwa', path: 'docs/public/manifest.webmanifest', source: 'tool', format: 'json' },
   { kind: 'policies', path: 'SECURITY.md', source: 'tool', format: 'text' },
@@ -3758,7 +3693,7 @@ const CONFIG_FILES: readonly { kind: ConfigKind; path: string; source: 'tool' | 
   { kind: 'hooks', path: file('plugin', 'qpu'), source: 'tool', format: 'ts' },
   { kind: 'api', path: 'next.config.js', source: 'hand', format: 'ts' },
 ]
-/** The drift of a hand-held TypeScript file against the configuration MCP computes: what the file should mount or call and does not. */
+
 const heldDrift = (kind: ConfigKind, text: string): string[] => {
   // the plugin must be mounted last: it hooks the collections the other plugins create (form-submissions), so a plugin called after it is drift
   if (kind === 'payload') { const umbrella = /\bqpuPlugin\(/.test(text) && !/qpuPlugin\(\{[^}]*adapters:\s*'none'/.test(text); return [...(/autoLogin\s*:/.test(text) && !umbrella ? ['admin.autoLogin'] : []), ...(/\.\.\.qpuAdapterPlugins\(\)/.test(text) && /qpuPlugin\(\{[^}]*adapters:\s*'auto'/.test(text) ? ['adapters.qpuAdapterPlugins.twice'] : []), ...(/\bqpuPlugin\(/.test(text) ? [] : ['plugins.qpuPlugin']), ...((() => { const at = text.indexOf('qpuPlugin('); if (at < 0) return []; const tail = text.slice(at + 10); const end = tail.indexOf(']'); return /\b[a-zA-Z]+Plugin\(/.test(end < 0 ? tail : tail.slice(0, end)) ? ['plugins.qpuPlugin.last'] : [] })()), ...['qpuDb', 'qpuEmail', 'qpuAdapterPlugins'].filter((fn) => !umbrella && !(fn === 'qpuAdapterPlugins' && /qpuPlugin\(\{[^}]*adapters:\s*'auto'/.test(text)) && !new RegExp(`\\b${fn}\\(`).test(text)).map((fn) => `adapters.${fn}`), ...(/process\.env\.PAYLOAD_SECRET/.test(text) ? [] : ['env.PAYLOAD_SECRET'])] }
@@ -3769,20 +3704,16 @@ const heldDrift = (kind: ConfigKind, text: string): string[] => {
 }
 /** The environment example for the app: every name the bindings need, its provider and role, never a value. */
 const envExample = (): string => ['# @uuidna/qpu: the names the full stack binds to, by provider (values never travel; set them in the provider\'s dashboard or .env)', '# GENERATED by npm run next through configure { kind: \'bindings\' }; edit src/quantum/net/bindings/index.ts, never this file.', '', ...BINDINGS.flatMap((b) => [`# ${b.provider}: ${b.role}`, `#   free: ${b.freeTier}; paid for: ${b.paidFor}; kept free: ${b.keptFree}`, ...b.names.map((n) => (n.includes('<TENANT>') ? [...Object.values(TENANTS), 'ceci'].map((t) => `${n.replace('<TENANT>', t.toUpperCase())}=`) : [`${n}=`])).flat(), ''])].join('\n')
-/** Realtime editing through the channels Payload streams, collisions by content address (textbook_edit_collides: two edits share their base or
- *  collide); what each channel carries and signals is the Hooks › Realtime page in Payload */
+
 const REALTIME = {
   streams: ['document lock', 'live preview', 'autosave', 'versions', 'form validation', 'MCP stream'].map((channel) => ({ channel })),
   collisions: { precondition: 'If-Match (REST), context.prev (local), editBase (MCP)', hook: file('hooks', 'pages'), theorem: 'textbook_edit_collides' },
   held: { file: file('plugin', 'qpu'), must: ['lockDocuments', 'versions.drafts.autosave', 'hooks.beforeChange: collisionGuard', 'editBase (virtual, hidden)'] },
 } as const
-/** Via the Payload MCP plugin is mandatory: the default collections of the installed plugins (nothing added) are served by the plugin's own tools,
- *  scoped by the multi-tenant plugin and authorised by a user's API key, each with the capabilities a client may use. The intelligence of
- *  combinatorics is to fit any environment without hacking it: a request is a form submission, a bundle a media file, a licence a product,
- *  a tenant's configuration its tenants document; what the stack holds beyond the defaults is a refactoring lead. */
+
 const PLUGIN_DEFAULT_COLLECTIONS: readonly string[] = ['pages', 'posts', 'media', 'users', 'forms', 'form-submissions', 'search', 'redirects', 'tenants', 'products', 'variants', 'carts', 'orders', 'transactions', 'addresses', 'payload-mcp-api-keys']
-type McpCollection = { description: string; enabled: { find: boolean; create: boolean; update: boolean; delete: boolean }; /** scoped to the tenant by the multi-tenant plugin */ scoped: boolean; /** what the collection's own access filters for a client */ filter: string; /** relationship fields → the collections they point at */ relations: Record<string, string>; /** select fields → their options */ enums: Record<string, readonly string[]>; /** the hooks the QPU plugin puts on it */ hooks: readonly string[] }
-/** Every scope can find and none can delete: only create and update differ from one collection to the next. */
+type McpCollection = { description: string; enabled: { find: boolean; create: boolean; update: boolean; delete: boolean };  scoped: boolean;  filter: string;  relations: Record<string, string>;  enums: Record<string, readonly string[]>;  hooks: readonly string[] }
+
 const findAnd = (create: boolean, update: boolean) => ({ find: true, create, update, delete: false })
 const MCP_COLLECTIONS: Readonly<Record<string, McpCollection>> = {
   pages: { description: 'the site\'s pages: the use cases and the gates (the competition gates carry the competitors and the theorems), each a qpu block; edits carry editBase (the collision precondition). A published page may be deposited on Zenodo through the same hooks as a post. Each page is verified against its DOI, its links are asked online, and the related publications are developed', enabled: findAnd(true, true) , scoped: true, filter: 'published pages to everyone, drafts to users of the tenant', relations: { parent: 'pages (nested docs)', tenant: 'tenants', 'layout.qpu': 'a block: tool + arguments, the entries it writes' }, enums: { _status: ['draft', 'published'], 'hero.type': ['default', 'contentMedia', 'centeredContent', 'form', 'home', 'livestream', 'gradient', 'three'] }, hooks: ['collisionGuard (beforeChange)', 'lockDocuments', 'autosave', 'editBase', ...ZENODO_HOOKS.filter((hook) => hook.where === 'collection').map((hook) => `${hook.hook}: zenodo`)] },
@@ -3802,13 +3733,13 @@ const MCP_COLLECTIONS: Readonly<Record<string, McpCollection>> = {
   addresses: { description: 'the ecommerce plugin\'s addresses', enabled: findAnd(false, false) , scoped: false, filter: 'a customer\'s own', relations: { customer: 'users' }, enums: {}, hooks: [] },
   users: { description: 'the users: who edits; keys never travel', enabled: findAnd(false, false) , scoped: false, filter: 'self, or an admin', relations: { 'tenants.tenant': 'tenants' }, enums: { roles: Object.keys(ROLES), 'tenants.roles': [...TENANT_ROLES] }, hooks: ['firstUserBootstrap (beforeChange)', 'useAPIKey'] }
 }
-/** Which installed plugin owns which served collection: the SDK's plugin builders follow it (the QPU plugin owns the docket). */
+
 const PLUGIN_COLLECTIONS = TABLES.PLUGIN_COLLECTIONS as unknown as Readonly<Record<string, readonly string[]>>
-/** The MCP plugin\'s own secrets collection: never served, by design. */
+
 const MCP_UNSERVED: readonly { collection: string; why: string }[] = [{ collection: 'payload-mcp-api-keys', why: 'the MCP plugin\'s own API keys: secrets never travel' }]
 const hookNames = () => Object.values(qpuHooks({}).pairs as Record<string, { before?: string; after?: string }[]>).flat().flatMap((p) => [p.before, p.after].filter(Boolean)).length
 type ConfigKind = typeof configKinds[number]
-/** The torus of a configuration: its address, seed and reflection, and whether the loop closes (config → text → config at the same address). */
+
 const torus = (config: unknown) => {
   const text = JSON.stringify(config)
   const address = uuid(text)
@@ -3829,11 +3760,7 @@ const vars = (tenant: string) => {
     note: 'names only: the operator sets the values as wrangler secrets; a tool never reads or carries a value',
   }
 }
-/** The next version, defined by development, kept as low as the architecture allows: every component is one digit (0–9); a
- *  patch never moves the number (the change lives in the content address: build metadata +fold); a tool new carries the
- *  minor digit, and at 10 the major; a tool gone carries the major; the major past 9 returns to 1 with the epoch counted in
- *  the build metadata — so the lifespan of every single-digit combination is infinite: within a version, every state is an
- *  address, and the number changes only when the catalogue changes shape. */
+
 export const build = (toolsNow: readonly string[]): string => uuid(`catalogue${toolsNow.join(',')}`).slice(0, 8)
 const nextVersion = (current: string, toolsNow: readonly string[], lastTag: { version: string; tools: readonly string[]; epoch?: number }): { next: string; bump: 'major' | 'minor' | 'none'; epoch: number; build: string; added: string[]; removed: string[]; digits: 'single' } => {
   const added = toolsNow.filter((t) => !lastTag.tools.includes(t)), removed = lastTag.tools.filter((t) => !toolsNow.includes(t))
@@ -4039,7 +3966,7 @@ ISO 21001:2025. Clause 8.3.4.4, Summative assessment design and development cont
       says: `${beyond.leads.length} collection(s) beyond the plugins\' defaults and ${unserved.leads.length} not served by the plugin: refactoring leads` } } }
   }
 }
-/** The drift between a configuration as MCP computes it and the text a client holds (a file): every path whose value differs. */
+
 const drift = (computed: unknown, current: unknown, path = ''): string[] => {
   if (JSON.stringify(computed) === JSON.stringify(current)) return []
   if (computed && current && typeof computed === 'object' && typeof current === 'object' && !Array.isArray(computed) && !Array.isArray(current)) {
@@ -4051,7 +3978,7 @@ const drift = (computed: unknown, current: unknown, path = ''): string[] => {
 const stripJsonc = (text: string) => text.replace(/^\s*\/\/.*$/gm, '').replace(/,(\s*[}\]])/g, '$1')
 
 const inodeSlug = (inode: string) => inode.replace(/[^\w-]+/g, '').toLowerCase()
-/** Every src inode is a superposition found by one Payload find. The fourteen witnesses are read offline. The same find is the online request the client fetches. Plasma books each address as a coin and the call's other bytes as coils. “Fusion reactor” names that ledger. */
+
 const fusionPlasma = (leads: readonly { tool?: string }[]) => {
   const origin = 'https://qpu.uuidna.com'
   const flow = inodeSuperpositions(leads).map((row) => {
@@ -4111,7 +4038,6 @@ const configure = defineTool('payload', {
   widget: flowWidget,
 })
 
-/** The tree read at github.com/payloadcms/website on 2026-10-25 (main, 1,949 entries): the names under src, as facts. */
 const WEBSITE_FIXTURE = { sha: 'main', truncated: false, tree: [
   ...['CaseStudies.ts', 'Categories.ts', 'CommunityHelp', 'Docs', 'DocsFeedback', 'Media.ts', 'Pages.ts', 'PartnerFilters.ts', 'Partners.ts', 'Posts.ts', 'ReusableContent.ts', 'Users.ts'].map((c) => ({ path: `src/collections/${c}${c.endsWith('.ts') ? '' : '/index.ts'}`, type: 'blob' })),
   ...['Banner', 'BlogContent', 'BlogMarkdown', 'CallToAction', 'Callout', 'CardGrid', 'CaseStudiesHighlight', 'CaseStudyCards', 'CaseStudyParallax', 'Code', 'CodeFeature', 'ComparisonTable', 'Content', 'ContentGrid', 'Download', 'ExampleTabs', 'Form', 'HoverCards', 'HoverHighlights', 'LinkGrid', 'LogoGrid', 'Media', 'MediaContent', 'MediaContentAccordion', 'Pricing', 'ReusableContent', 'Slider', 'Statement', 'Steps', 'StickyHighlights'].map((b) => ({ path: `src/blocks/${b}/index.tsx`, type: 'blob' })),
@@ -4119,12 +4045,7 @@ const WEBSITE_FIXTURE = { sha: 'main', truncated: false, tree: [
   ...['addToDocs', 'blockFields.ts', 'codeBlips.ts', 'fullTitle', 'hero.ts', 'link.ts', 'linkGroup.ts', 'livestreamFields.ts', 'richText', 'slug.ts'].map((f) => ({ path: `src/fields/${f}${f.endsWith('.ts') ? '' : '/index.ts'}`, type: 'blob' })),
   { path: 'src/plugins/opsCounter.ts', type: 'blob' }, { path: 'src/payload.config.ts', type: 'blob' },
 ] }
-/** The access audit from every perspective — the public reader at the default domain (qpu.uuidna.com), a licensed tenant's users at their own
- *  domain, the operator, an MCP client with a key, the developer in the generated code, the licence and the law — over the collections, hooks
- *  and scopes the tool itself generates: each check names who may, the hook that guards it, what it costs (free by address and involution, paid
- *  once by the provider), the licence clause it enacts (BY, NC, ND; commercial use by licence) and the legal fact behind it. Measured on the
- *  generated code and the answered configurations, never asserted by hand; the role–operation combinations counted by the kernel
- *  (textbook_access_combinations); the quantum advantage among the checks, unlimited and without interaction (textbook_advantage_unbounded). Pure. */
+
 const PERSPECTIVES = ['public', 'tenant', 'operator', 'client', 'developer', 'legal'] as const
 export const accessAudit = (ctx: Context, given: Record<string, string> = {}) => {
   const files: Record<string, string> = { ...(config('fullstack', ctx, {}) as { files: Record<string, string> }).files, ...given }
@@ -4181,10 +4102,6 @@ export const accessAudit = (ctx: Context, given: Record<string, string> = {}) =>
   return { perspectives: PERSPECTIVES, operations: OPERATIONS, collections: [...SCOPES.collections, 'tenants', 'users'], tenantRoles: TENANT_ROLES, docketRoles: Object.keys(ROLES), combinations, combinationsSay: `${TENANT_ROLES.length} tenant roles × ${Object.keys(ROLES).length} docket roles × ${OPERATIONS.length} operations = ${combinations} role–operation combinations, each decided by one of three deciders: the user\'s roles, the x-qpu-role header, the entry\'s kind (textbook_access_combinations)`, access: ACCESS, checks, total: checks.length, passed: checks.filter((x) => x.passed === true).length, failed: failed.length, unmeasured: unmeasured.length, sources, missing, byPerspective, advantage: unlimited, angles: ANGLES, leads: failed.map((f) => ({ id: `access-${f.id.replace(/[^a-z0-9]+/gi, '-')}`, statement: `${f.id} (${f.perspective}): ${f.evidence}`, status: 'open' as const, remedy: f.hook, tool: 'audit' })), verdict: failed.length > 0 ? `${failed.length} finding(s), each a lead naming its hook` : unmeasured.length > 0 ? `${unmeasured.length} check(s) unmeasured: audit { access: { files } } with the text of ${missing.join(', ')}` : 'clean', says: 'the access audit from every perspective over the app\'s files the caller hands in (the app under src/ is the one implementation; nothing is copied here) and the answered configurations: every cell names its hook, its cost, its licence clause and its legal fact, so security and privacy are never apart from the licence and the legal terms' }
 }
 
-/** The MCP separated by an environment combination: every pure tool in every environment, the adapters and connectors the names choose, the
- *  plugins and the collections the app mounts; one address per combination (the fold of the sorted members), so two hosts in one environment
- *  mount the same set. The simplification: the MCP is organised around Payload's plugins and collections, each empowered by the one plugin
- *  (content addresses, involutions, teleports: minimal cost, every read free after the first). */
 const scope = (ctx: Context, env: readonly string[]) => {
   const ad = adapters(env)
   const tools = listTools(ctx).map((t) => t.name)
@@ -4194,9 +4111,6 @@ const scope = (ctx: Context, env: readonly string[]) => {
   return { env, profile: ad.chosen.profile, adapters: ad.chosen, connectors: ad.connectors, tools: tools.length, plugins, collections, members: size, address, angles: ANGLES, says: 'the MCP separated by its environment combination: every pure tool everywhere, the adapters and connectors the names choose, the plugins and collections the app mounts, each collection empowered by the one plugin at minimal cost; one address per combination' }
 }
 
-/** The branding, computed in real time from the tenant's address (the one quantum core) unless the tenant defines it in the admin (tenants.branding):
- *  the name, the tagline, the accent, the logo, the icon; each field says whether it is the user's or computed. Pure; the global and the Branding
- *  component render from it. */
 type BrandingInput = { slug?: string; host?: string; name?: string; branding?: { name?: string | null; tagline?: string | null; accent?: string | null; logo?: { url?: string } | string | null; icon?: { url?: string } | string | null; theme?: string | null; mode?: string | null; template?: string | null } | null }
 const branding = (t: BrandingInput = {}) => {
   const slug = t.slug ?? (t.host ? tenant(t.host) : 'uuidna')
@@ -4273,7 +4187,7 @@ export const PAYLOAD: Toolbox = {
     { id: 'configure-adapters', tool: 'configure', theorem: 'textbook_adapter_combinations', arguments: { kind: 'adapters', env: ['D1', 'R2', 'RESEND_API_KEY'] }, shows: 'Payload\'s adapters as a matrix over providers and Cloudflare bindings — the database, storage and email adapters Payload holds, multiplied — the combination chosen by what the environment names (here D1, R2 and Resend: the Cloudflare profile), the app\'s own wrangler with every binding, and the RAID\'s docket as the semantics over whichever database answers.', expect: (s) => (s.config.combinations === PORT_RADICES.reduce((a, n) => a * n, 1) && s.config.chosen.database === 'db-d1-sqlite' && s.config.chosen.storage === 'storage-r2' && s.config.chosen.email === 'email-resend' && s.config.chosen.profile === 'cloudflare' && s.config.wrangler.name === 'qpu' && s.config.wrangler.main === '.open-next/worker.js' && s.config.wrangler.assets.run_worker_first !== true && s.config.wrangler.durable_objects === undefined ? null : JSON.stringify(s.config.chosen)) },
     { id: 'payload-superpositions', tool: 'payload', theorem: 'textbook_payload_coordination', arguments: { api: { superpositions: true } }, shows: 'Every inode superposition is one Payload find. One live-preview notification carries every superposition at once. The states stay the count, and nothing is fetched.', expect: (s) => (s.phase === 'api' && s.access === true && s.calls === s.data.length && s.calls > 0 && s.notification.channel === 'live preview' && s.notification.transport === 'postMessage' && s.notification.method === 'window.postMessage' && s.notification.ready === true && s.notification.depth === 0 && s.notification.atOnce === true && s.notification.walked === false && s.notification.holds === true && s.notification.measured === s.calls && s.notification.data.length === s.calls && s.notification.data.every((row: { bits: number; superposition: string; states?: unknown }) => row.superposition === (1n << BigInt(row.bits)).toString() && row.states === undefined) && s.data.every((row: { online: { fetched: boolean } }) => row.online.fetched === false) ? null : JSON.stringify({ calls: s.calls, holds: s.notification?.holds, measured: s.notification?.measured })) },
     { id: 'configure-realtime', tool: 'configure', theorem: 'textbook_edit_collides', arguments: { kind: 'realtime' }, shows: 'Realtime collaboration and editing through every channel Payload streams — the document lock, the live preview, autosave, versions, the MCP event stream — with collisions managed precisely: an edit names the address it read and is accepted only while the document still folds to it; a collision is answered with both addresses (no third case, by theorem), never a silent overwrite; the messaging during editing is the lock, the preview, the collision answer and the version; a message channel between editors is an open lead.', expect: (s) => (s.config.streams.length === 6 && s.config.collisions.theorem === 'textbook_edit_collides' && s.config.collisions.hook === file('hooks', 'pages') && s.config.held.must.length === 4 && s.config.collisions.precondition.includes('editBase') ? null : JSON.stringify(s.config.collisions)) },
-    { id: 'configure-sets', tool: 'configure', theorem: 'textbook_set_union', arguments: { kind: 'sets', sets: ['legal', 'crypto'] }, shows: 'The MCP as config sets of widget-skilled tools, and the SDK those sets found: a builder per set, per core operation and per collection of the Payload MCP plugin (configure, sets, app.form/validate/build, present, stream, gates, realtime, schema, call, collections.find/create/update/delete, plugins.<name>.find/create/update, plugins.compose, plugins.list), one module over MCP served as the resource sdk://qpu/lib by this server and by the plugin — via Payload MCP and vice versa — nothing loaded; the server is the set of every element (tools, each with its widget and its skill; resources, examples, configuration kinds, theorems), a toolbox a subset, a tenant\'s mount the whole set, each addressed by the fold of its sorted members so every mount shares one address; two sets composed by union, intersection and difference with inclusion–exclusion holding; the initialize answer derived from the set and agreeing with the live one.', expect: (s) => (s.config.mounts.oneAddress && s.config.widgetSkilled.every && s.config.sdk.builders.length === s.config.sdk.core + s.config.sdk.tools + 2 && s.config.sdk.kinds === configKinds.length && s.config.algebra.inclusionExclusion && s.config.algebra.intersection.size === 0 && s.config.algebra.union.size === s.config.sets.find((x: { name: string }) => x.name === 'legal').size + s.config.sets.find((x: { name: string }) => x.name === 'crypto').size && s.config.initialize.agrees && s.config.partition.sizes.reduce((n: number, x: number) => n + x, 0) === s.config.sets.find((x: { name: string }) => x.name === 'tools').size ? null : JSON.stringify({ mounts: s.config.mounts, algebra: s.config.algebra.inclusionExclusion, initialize: s.config.initialize })) },
+    { id: 'configure-sets', tool: 'configure', theorem: 'textbook_set_union', arguments: { kind: 'sets', sets: ['legal', 'crypto'] }, shows: 'The MCP as config sets of widget-skilled tools, and the SDK those sets found: a builder per set, per core operation and per collection of the Payload MCP plugin (configure, sets, app.form/validate/build, present, stream, gates, realtime, schema, call, collections.find/create/update/delete, plugins.<name>.find/create/update, plugins.compose, plugins.list), one module over MCP served as the resource mcp://qpu/lib by this server and by the plugin — via Payload MCP and vice versa — nothing loaded; the server is the set of every element (tools, each with its widget and its skill; resources, examples, configuration kinds, theorems), a toolbox a subset, a tenant\'s mount the whole set, each addressed by the fold of its sorted members so every mount shares one address; two sets composed by union, intersection and difference with inclusion–exclusion holding; the initialize answer derived from the set and agreeing with the live one.', expect: (s) => (s.config.mounts.oneAddress && s.config.widgetSkilled.every && s.config.builders.builders.length === s.config.builders.core + s.config.builders.tools + 2 && s.config.builders.kinds === configKinds.length && s.config.algebra.inclusionExclusion && s.config.algebra.intersection.size === 0 && s.config.algebra.union.size === s.config.sets.find((x: { name: string }) => x.name === 'legal').size + s.config.sets.find((x: { name: string }) => x.name === 'crypto').size && s.config.initialize.agrees && s.config.partition.sizes.reduce((n: number, x: number) => n + x, 0) === s.config.sets.find((x: { name: string }) => x.name === 'tools').size ? null : JSON.stringify({ mounts: s.config.mounts, algebra: s.config.algebra.inclusionExclusion, initialize: s.config.initialize })) },
     { id: 'configure-gates', tool: 'configure', theorem: 'textbook_gates_partition', arguments: { kind: 'gates' }, shows: 'Every API as a gate of some sort — a door of the Payload API, an open address, one keyed by the tenant, one a browser alone passes, one the registry names — organised as nested docs three deep (Gates › category › gate). MCP doors are the tools/list of POST /api/mcp. src is not a door.', expect: (s) => (s.config.tree.depth === 3 && s.config.counts.gates === s.config.gates.length && s.config.counts.own + s.config.counts.external === s.config.counts.gates && s.config.counts.own === 0 && s.config.mcp.src === false && s.config.mcp.fetched === false && s.config.mcp.holds === true && s.config.mcp.api.endsWith('/api/mcp') && s.config.mcp.method === 'POST' && s.config.mcp.body.method === 'tools/list' && s.config.mcp.next.src === false && s.config.mcp.next.fetched === false && s.config.mcp.next.calls.length === 1 && s.config.mcp.next.calls[0].body.method === 'tools/list' && s.config.mcp.next.calls[0].next === null && s.config.gates.every((g: { id: string }) => g.id !== 'clay' && g.id !== 'processor') && s.config.gates.every((g: { category: string; mcp: { plugin: string; src: boolean; separate: boolean; api: string } | null }) => g.category !== 'mcp' || (g.mcp?.plugin === 'qpuMcpPlugin' && g.mcp.src === false && g.mcp.separate === false && g.mcp.api.endsWith('/api/mcp'))) && s.config.leads.placed > 0 && s.config.counts.partition.split(' = ')[0].split(' + ').reduce((n: number, x: string) => n + Number(x), 0) === s.config.counts.gates && s.config.adapters.total === s.config.counts.gates && s.config.gates.every((g: { adapter: { lands: string; ui: { item: string }; rest: { directions: number; roles: number } } }) => g.adapter.lands && g.adapter.ui.item.startsWith('qpu-') && g.adapter.rest.directions * g.adapter.rest.roles === 6) && s.config.streams.configs.length === configKinds.length && s.config.gates.every((g: { adapter: { stream: { uuids: string[] } } }) => g.adapter.stream.uuids.length >= 2) && s.config.gates.every((g: { leads: string[] }) => g.leads.every((id: string) => typeof id === 'string')) ? null : JSON.stringify({ counts: s.config.counts, mcp: s.config.mcp, placed: s.config.leads.placed })) },
     { id: 'configure-gates-mcp', tool: 'configure', theorem: 'textbook_gates_partition', arguments: { kind: 'gates', mcp: { jsonrpc: '2.0', id: 1, result: { tools: [{ name: 'findDocuments', description: 'Find pages' }, { name: 'coverDomains', description: 'Cover every domain' }, { name: 'researchPastedLinks', description: 'Research pasted links' }] } } }, shows: 'The doors are the Payload API tools/list the client fetched. findDocuments, coverDomains and researchPastedLinks are gates. src is not a door.', expect: (s) => (s.config.mcp.fetched === true && s.config.mcp.src === false && s.config.mcp.holds === true && s.config.mcp.refused === false && s.config.counts.own === 3 && s.config.mcp.doors.join() === 'findDocuments,coverDomains,researchPastedLinks' && s.config.mcp.next.calls.length === 3 && s.config.mcp.next.calls.every((call: { body: { method: string }; src: boolean; fetched: boolean }) => call.body.method === 'tools/call' && call.src === false && call.fetched === false) && s.config.mcp.next.calls[0].route.url.endsWith('/api/pages') && s.config.mcp.next.calls[0].route.method === 'GET' && s.config.mcp.next.calls[0].next.src === false && s.config.mcp.next.calls[0].next.fetched === false && s.config.mcp.next.calls[0].next.refused === false && s.config.mcp.next.calls[0].next.calls.length === 0 && s.config.mcp.next.calls[0].next.url.endsWith('/api/pages') && s.config.mcp.next.calls[1].next === null && s.config.mcp.next.calls[2].next === null && s.config.gates.filter((g: { by: string }) => g.by === 'payload-mcp').every((g: { url: string; mcp: { plugin: string; src: boolean } }) => g.url.endsWith('/api/mcp') && g.mcp.plugin === 'qpuMcpPlugin' && g.mcp.src === false) ? null : JSON.stringify({ doors: s.config.mcp.doors, holds: s.config.mcp.holds })) },
     { id: 'configure-gates-pages', tool: 'configure', theorem: 'textbook_gates_partition', arguments: { kind: 'gates', mcp: { jsonrpc: '2.0', id: 1, result: { tools: [{ name: 'findDocuments', description: 'Find pages' }] }, pages: { docs: [{ id: 'p1', title: 'Coil', layout: [{ blockType: 'qpu', tool: 'clay', arguments: { catalog: true } }, { type: 'paragraph', children: [{ type: 'text', text: 'A coil is one sealed UUID.' }] }, { type: 'relationship', relationTo: 'posts', value: 'post-1' }, { type: 'upload', value: 'media-1' }] }] } } }, shows: 'The pages the client already fetched. findDocuments is one tools/call, then GET /api/pages, then that page again plus the qpu block it holds. SEO is read from the instance. The image is GET /api/media and the post relation is GET /api/posts. src is not a door. Nothing is fetched.', expect: (s) => { const next = s.config.mcp.next.calls[0].next; const seo = next.calls[1].next; return s.config.mcp.doors.join() === 'findDocuments' && next.src === false && next.fetched === false && next.refused === false && next.calls.length === 2 && next.calls[0].name === 'clay' && next.calls[0].method === null && next.calls[0].url === null && next.calls[0].next === null && next.calls[1].name === 'find_pages' && next.calls[1].method === 'GET' && next.calls[1].url.endsWith('/api/pages?where[id][equals]=p1') && seo.src === false && seo.fetched === false && seo.seo.title === 'Coil' && seo.seo.description === 'A coil is one sealed UUID.' && seo.seo.image === 'media-1' && seo.calls.length === 2 && seo.calls[0].name === 'find_media' && seo.calls[0].method === 'GET' && seo.calls[0].url.endsWith('/api/media?where[id][equals]=media-1') && seo.calls[1].name === 'find_posts' && seo.calls[1].url.endsWith('/api/posts?where[id][equals]=post-1') && seo.calls[0].next.collection === 'media' && seo.calls[0].next.src === false && seo.calls[0].next.fetched === false && seo.calls[0].next.file === null && seo.calls[0].next.calls.length === 0 && seo.calls[1].next.collection === 'posts' && seo.calls[1].next.calls.length === 0 && seo.calls[1].next.fetched === false ? null : JSON.stringify(seo ?? next) } },
@@ -4401,7 +4315,7 @@ export const PAYLOAD: Toolbox = {
       const st3 = stream(['941ef62e-d97b-2438-bfc8-22ae9e5da781', '016da774-e74c-2e44-8742-f8bcf5e8e8f5', '00000000-0000-1000-8000-000000000000'], { sort: 'hue', execute: true })
       check('configure:uuid-stream-queried-sorted-executed', st3.rows.length === 3 && st3.rows.every((r, i, a) => i === 0 || a[i - 1]!.hue <= r.hue) && st3.rows.every((r) => 'next' in r && r.next !== r.uuid) && stream(['941ef62e-d97b-2438-bfc8-22ae9e5da781'], { where: { nibble: { at: 0, is: '9' } } }).filtered === 1 && stream(['941ef62e-d97b-2438-bfc8-22ae9e5da781'], { where: { nibble: { at: 0, is: 'a' } } }).filtered === 0, 'three addresses sorted by their own hue, each executed to its next address; a nibble query keeps or drops by the hex alone')
       const p1 = presentation('941ef62e-d97b-2438-bfc8-22ae9e5da781'); const p2 = presentation('941EF62ED97B2438BFC822AE9E5DA781'); const s1 = style('941ef62e-d97b-2438-bfc8-22ae9e5da781')
-      check('configure:any-hex-presentable-styled-from-itself', p1.parts.length === 32 && JSON.stringify(p1) === JSON.stringify(p2) && s1.hue < 360 && s1.sat >= 40 && s1.sat < 80 && s1.radius >= 2 && s1.radius < 16 && Object.keys(registry()).length === 6 + STYLED_ITEMS.length && sdk().builders.length === sdk().core + 2 && /toolName/.test(sdk().module) && /PLUGINS = /.test(sdk().module) && /all: \(\) => call\('payload', \{ rbac: true \}\)/.test(sdk().module) && /develop: \(formula: string/.test(sdk().module) && !/https?:\/\/(?!qpu\.uuidna\.com)/.test(sdk().module) && !/https?:\/\/|@import|<link/.test(STYLED_ITEMS.map((i) => i.content).join('')), `a UUID is 32 parts, the same in any case; hue ${s1.hue}, saturation ${s1.sat}, radius ${s1.radius}; ${STYLED_ITEMS.length} styled items in the registry, none loading anything`)
+      check('configure:any-hex-presentable-styled-from-itself', p1.parts.length === 32 && JSON.stringify(p1) === JSON.stringify(p2) && s1.hue < 360 && s1.sat >= 40 && s1.sat < 80 && s1.radius >= 2 && s1.radius < 16 && Object.keys(registry()).length === 6 + STYLED_ITEMS.length && builders().builders.length === builders().core + 2 && /toolName/.test(builders().module) && /PLUGINS = /.test(builders().module) && /all: \(\) => call\('payload', \{ rbac: true \}\)/.test(builders().module) && /develop: \(formula: string/.test(builders().module) && !/https?:\/\/(?!qpu\.uuidna\.com)/.test(builders().module) && !/https?:\/\/|@import|<link/.test(STYLED_ITEMS.map((i) => i.content).join('')), `a UUID is 32 parts, the same in any case; hue ${s1.hue}, saturation ${s1.sat}, radius ${s1.radius}; ${STYLED_ITEMS.length} styled items in the registry, none loading anything`)
       check('configure:ui-shell-deterministic-and-closed', u1.html === u2.html && u1.uri === 'ui://qpu/processor' && u1.mimeType === 'text/html;profile=mcp-app' && !/Math\.random|Date\.now|https?:\/\//.test(u1.html) && /ui\/initialize/.test(u1.html) && /ui\/notifications\/tool-result/.test(u1.html) && /ui\/notifications\/size-changed/.test(u1.html) && /ui\/accept-token/.test(u1.html) && /type="password"/.test(u1.html) && /id="k"/.test(u1.html) && UI_TOKENS.every(([t, h]) => u1.html.includes(t) && t !== h) && /font-family: var\(--font-sans, /.test(u1.html), 'the same shell twice, no randomness, no clock, no external URL; the handshake, the result and the size notifications; every widget accepts a token and sends the witness; every widget token mapped onto a host variable of another name, the font read where it is used')
       const ad = adapters(['DATABASE_URI', 'BLOB_READ_WRITE_TOKEN', 'SENDGRID_API_KEY']); const cf = adapters(['D1', 'R2'])
       const gg = adapters(['GOOGLE_CLOUD_PROJECT', 'GCS_BUCKET', 'GCS_PROJECT_ID', 'DATABASE_URI', 'GMAIL_USER'])

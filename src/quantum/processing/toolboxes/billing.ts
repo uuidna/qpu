@@ -551,7 +551,7 @@ const contributorOf = (idea: unknown) => {
 }
 /** An author claim names one of the author's DOIs. It is verified when every request for that DOI is answered and each answer that must name the author does. The handler does not fetch. */
 const authorClaim = (idea: unknown) => {
-  const named = isObj(idea) && typeof idea.doi === 'string' ? idea.doi.replace(/^https?:\/\/(?:dx\.)?doi\.org\//, '') : ''
+  const named = isObj(idea) && typeof idea.doi === 'string' ? idea.doi.replace(new RegExp('^https?:\\/\\/(?:dx\\.)?doi\\.org\\/'), '') : ''
   const doi = /^10\.\d{4,9}\/\S+$/.test(named) ? named : ''
   const own = doi !== '' && PRECEDENCE.some((record) => record.doi === doi)
   const verify = own ? createVerifyRequests({ kind: 'doi', value: doi }) : []
