@@ -60,3 +60,12 @@ next-env.d.ts
 !/.idea/payload.iml
 
 /db/*
+
+# Payload ecommerce template (create-payload-app 4.0.0-beta.7)
+.playwright
+playwright-report/
+playwright-report/index.html
+.env*
+!.env.example
+public/media
+/legacy/.next/

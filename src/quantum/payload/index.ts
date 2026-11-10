@@ -211,9 +211,9 @@ export const openPages = (): Promise<PagesApi> => {
     const { getPayload } = await import('payload')
     const payload = await getPayload({ config })
     return {
-      find: (args: FindArgs) => payload.find(args) as Promise<{ docs: PageDoc[] }>,
-      create: (args: WriteArgs) => payload.create(args) as Promise<PageDoc>,
-      update: (args: WriteArgs & { id: string | number }) => payload.update(args) as Promise<PageDoc>,
+      find: (args: FindArgs) => payload.find(args as never) as unknown as Promise<{ docs: PageDoc[] }>,
+      create: (args: WriteArgs) => payload.create(args as never) as unknown as Promise<PageDoc>,
+      update: (args: WriteArgs & { id: string | number }) => payload.update(args as never) as unknown as Promise<PageDoc>,
     }
   })()
   return opening

@@ -463,7 +463,7 @@ const deposit = (raw: unknown) => {
 const ASPECTS = ['collection', 'global', 'field', 'node'] as const
 
 /** The deposit runs through every hook Payload declares, and through every aspect those hooks belong to. A published page, product or variant is deposited the same way as a post. */
-export const publishPost = (raw: unknown) => {
+export const publishPost = (raw: unknown): Record<string, any> => {
   const given = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw as Post : {}
   if (given.collections === true && !Array.isArray(given.items)) {
     const { collections: _dropped, ...rest } = given

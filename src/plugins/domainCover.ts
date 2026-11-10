@@ -27,7 +27,7 @@ const coverOf = (page?: DomainPage) => {
   const domains = results.flatMap((row) => {
     if (!row || typeof row !== 'object' || typeof row.id !== 'string' || row.id.length === 0) return []
     const named = Array.isArray(row.fields) ? row.fields : []
-    const ids = [...new Set(named.flatMap((field) => (field && typeof field.id === 'string' && field.id.length > 0 ? [field.id] : [])))]
+    const ids = [...new Set(named.flatMap((field: { id?: unknown } | null | undefined) => (field && typeof field.id === 'string' && field.id.length > 0 ? [field.id] : [])))]
     return [{ id: row.id, name: typeof row.display_name === 'string' ? row.display_name : row.id, fields: ids.length }]
   })
   const whole = count !== null && count === results.length && results.length > 0 && domains.length === results.length && domains.every((domain) => domain.fields >= 1)
