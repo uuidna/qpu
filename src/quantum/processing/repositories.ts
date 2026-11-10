@@ -3,6 +3,7 @@
 // OpenFermion family are the quantumlib ones this repository implements or names elsewhere; PAYLOADCMS_REPOSITORIES consolidates
 // every QPU surface around its canonical github.com/payloadcms/* repository, monorepo package, and QPU plugin counterpart.
 import { TABLES } from './tables-index.ts'
+import { skill, skills as skillCalls } from './skill/index.ts'
 import { canonicalText, seal, uuid } from '../uuid/index.ts'
 
 export type Repository = { name: string; description: string; language: string }
@@ -171,8 +172,8 @@ export const PAYLOADCMS_REPOSITORIES: readonly PayloadcmsRepoMapping[] = [
     url: `${PAYLOADCMS_ORIGIN}/skills`,
     licence: 'facts-only (names, paths, sizes)',
     language: 'Markdown',
-    localClone: 'TABLES.SKILL_MAP',
-    role: 'Payload skills for AI agents (2 skills: payload and cms-migration, 14 reference files): every skill and reference is mapped in TABLES.SKILL_MAP to the QPU tool (payload, configure, mongo, validate, fold) that enacts it',
+    localClone: '.agents/skills',
+    role: 'skill(name) MCP tools/call',
     qpuExports: ['qpuMcpPlugin', 'qpuPlugin'],
     endpoints: ['/api/mcp', '/api/qpu/repos'],
     door: { tool: 'payload', arguments: { skills: true } },
@@ -209,8 +210,7 @@ export const PAYLOADCMS_WORKSPACE_ALIGNMENT = {
 
 /**
  * Compute the consolidated `payloadcms` repository matrix, verifying that every mounted `@payloadcms/*` package
- * belongs to `TABLES.PAYLOAD_PACKAGES` (`github.com/payloadcms/payload/tree/main/packages`) and every skill
- * reference in `TABLES.SKILL_MAP` is enacted by a QPU tool.
+ * belongs to `TABLES.PAYLOAD_PACKAGES`; skill() formulates each call.
  */
 export const payloadcmsRepos = (opts: { repo?: string; role?: PayloadcmsPackageRole } = {}) => {
   const catalogNames = new Set<string>(TABLES.PAYLOAD_PACKAGES.names)
@@ -226,9 +226,9 @@ export const payloadcmsRepos = (opts: { repo?: string; role?: PayloadcmsPackageR
   const repositories = PAYLOADCMS_REPOSITORIES.filter(
     (r) => !opts.repo || r.id === opts.repo || r.repo === opts.repo,
   )
-  const skillEntries = Object.entries(TABLES.SKILL_MAP as Record<string, { enactedBy: readonly string[]; how: string }>)
+  const skillEntries = skillCalls()
   const allPackagesInMonorepo = packages.every((p) => p.inUpstreamMonorepo)
-  const allSkillsEnacted = skillEntries.every(([, v]) => v.enactedBy.length > 0)
+  const allSkillsEnacted = skillEntries.every((s) => s.enactedBy.length > 0 && !!skill(s.name)?.call.tool)
   const byRole = Object.fromEntries(
     (['core', 'editor', 'database', 'storage', 'email', 'plugin'] as const).map((r) => [
       r,

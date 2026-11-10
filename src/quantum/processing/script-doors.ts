@@ -242,6 +242,8 @@ export const tablesIndex = (
 }
 
 /** How each former npm script / scripts/*.ts is invoked through Payload/MCP — no new list doors. */
+export { skill, skills, SKILL_MCP, type SkillCall } from './skill/index.ts'
+
 const SCRIPT_INVOKE = {
   audit: { tool: 'audit', via: 'mcp tools/call audit', npm: 'npm run audit → node scripts/run.ts audit' },
   verify: { tool: 'wave', via: 'scripts/verify.ts (fetch client of wave)', npm: 'npm run verify' },

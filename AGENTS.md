@@ -1,3 +1,3 @@
 # AI Agent
 
-For any Payload-related work, reference the skill at `node_modules/payload/skills/payload/SKILL.md`.
+Skills: `.agents/skills/`; skill/skills/SKILL_MCP → MCP tools/call (`payload { skills: true }`).

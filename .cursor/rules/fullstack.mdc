@@ -15,7 +15,7 @@ Develop in `src/` against these `github.com/payloadcms/*` repositories:
 |---|---|
 | `payloadcms/website` | Layout standard for `src/` (collections, blocks, globals, App Router) |
 | `payloadcms/payload` | Every `@payloadcms/*` package under `packages/*` — pin one version across the set |
-| `payloadcms/skills` | Agent skill names/paths mapped in `TABLES.SKILL_MAP` |
+| `payloadcms/skills` | Agent skills via `skill(name)` MCP calls |
 
 ## MCP
 
