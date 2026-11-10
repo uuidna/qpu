@@ -4,6 +4,7 @@ import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { GridTileImage } from '@/components/Grid/tile'
 import { Gallery } from '@/components/product/Gallery'
 import { ProductDescription } from '@/components/product/ProductDescription'
+import { QuantumRunner } from '@/components/quantum/QuantumRunner'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
@@ -106,6 +107,12 @@ export default async function ProductPage({ params }: Args) {
     },
   }
 
+  // the product's program and each variant's, where they have one
+  const programs = [
+    { quantum: product.quantum, title: product.title },
+    ...(product.variants?.docs ?? []).flatMap((v) => (typeof v === 'object' ? [{ quantum: v.quantum, title: v.title }] : [])),
+  ].flatMap(({ quantum, title }) => (quantum?.program ? [{ quantum, title }] : []))
+
   const relatedProducts =
     product.relatedProducts?.filter((relatedProduct) => typeof relatedProduct === 'object') ?? []
 
@@ -140,6 +147,22 @@ export default async function ProductPage({ params }: Args) {
           </div>
         </div>
       </div>
+
+      {programs.length ? (
+        <div className="container pb-8">
+          <h2 className="text-2xl mb-2">Run it</h2>
+          <p className="mb-4">
+            A classical exact simulator of quantum circuits computes each program below. The outcome shown was computed when the
+            product was saved; the button asks the same simulator again at /api/mcp, as an MCP client would.
+          </p>
+          {programs.map(({ quantum, title }) => (
+            <section className="mb-8" key={title}>
+              <h3 className="text-xl mb-2">{title}</h3>
+              <QuantumRunner program={quantum.program} stored={{ outcome: quantum.outcome, receipt: quantum.receipt }} />
+            </section>
+          ))}
+        </div>
+      ) : null}
 
       {product.layout?.length ? <RenderBlocks blocks={product.layout} /> : <></>}
 
@@ -210,6 +233,7 @@ const queryProductBySlug = async ({ slug }: { slug: string }) => {
         priceInUSD: true,
         inventory: true,
         options: true,
+        quantum: true,
       },
     },
   })

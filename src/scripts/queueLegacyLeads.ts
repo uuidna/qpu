@@ -53,13 +53,29 @@ const tenant =
   tenants.docs[0] ??
   (await payload.create({ collection: 'tenants', data: { name: 'qpu', slug: 'qpu', allowPublicRead: true }, req }))
 
-for (const entry of entries)
+// a module already stored as a lead is not queued again. The jobs collection is closed to every reader, so a job still
+// pending from an earlier run is not seen here; queued twice, the second finds the stored page and tries nothing.
+// LEGACY_LIMIT=0 queues nothing and only runs what is pending.
+const stored = await payload.find({ collection: 'pages', depth: 0, draft: true, pagination: false, req, select: { lead: true }, where: { 'lead.kind': { equals: 'module' } } })
+const known = new Set(stored.docs.map((d) => d.lead?.path))
+const fresh = entries.filter((e) => !known.has(e.path))
+for (const entry of fresh)
   await payload.jobs.queue({
     task: 'legacyLead',
     input: { address: entry.address, exports: entry.exports.join(', '), path: entry.path, tenant: tenant.id },
     req,
   })
-// in queue order: a module's directory pages are created by the first module under them, not raced by its siblings
-const result = await payload.jobs.run({ limit, req, sequential: true })
-payload.logger.info({ msg: 'legacy leads run', queued: limit, ...result })
+// in queue order: a module's directory pages are created by the first module under them, not raced by its siblings.
+// D1 binds at most 100 parameters per query, and the runner claims a batch in one IN (...), so it runs 50 at a time.
+const totals = { ran: 0, errors: 0 }
+for (;;) {
+  const result = await payload.jobs.run({ limit: 50, req, sequential: true })
+  const statuses = Object.values(result.jobStatus ?? {}) as { status: string }[]
+  if (!statuses.length) break
+  totals.ran += statuses.length
+  totals.errors += statuses.filter((s) => s.status !== 'success').length
+  payload.logger.info({ msg: 'legacy leads batch', ...totals })
+  if (result.noJobsRemaining) break
+}
+payload.logger.info({ msg: 'legacy leads run', chosen: entries.length, alreadyKnown: entries.length - fresh.length, queued: fresh.length, ...totals })
 process.exit(0)

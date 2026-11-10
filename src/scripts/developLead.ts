@@ -39,19 +39,31 @@ const text = (t: string) => ({
   },
 })
 
-// the circuit widths qpu's circuit tool runs exactly: Bell on 2 qubits, GHZ on 3
+// the GHZ state on n qubits as a circuit program: H on the first, then a CNOT chain. On 2 qubits it is the Bell pair.
+const line = (x: number) => ({ kind: 'line', x })
+const ghz = (n: number) => ({
+  operations: [{ gate: 'H', qubits: [line(0)] }, ...Array.from({ length: n - 1 }, (_, i) => ({ gate: 'CNOT', qubits: [line(i), line(i + 1)] }))],
+})
+// the variants: qubit count (Bell on 2, GHZ on 3) and shots (the exact state vector, or 8 measured samples)
 const qubits = await payload.create({ collection: 'variantTypes', data: { label: 'Qubits', name: 'qubits' }, user })
-const options = await Promise.all(
-  ['2', '3'].map((value) => payload.create({ collection: 'variantOptions', data: { label: `${value} qubits`, value, variantType: qubits.id }, user })),
-)
+const shots = await payload.create({ collection: 'variantTypes', data: { label: 'Shots', name: 'shots' }, user })
+const option = (variantType: number, value: string, label: string) =>
+  payload.create({ collection: 'variantOptions', data: { label, value, variantType }, user })
+const widths = await Promise.all(['2', '3'].map((v) => option(qubits.id, v, `${v} qubits`)))
+const samples = await Promise.all([option(shots.id, 'exact', 'exact state vector'), option(shots.id, '8', '8 shots')])
+const program = (n: number, shot: string) => {
+  const qs = Array.from({ length: n }, (_, i) => line(i))
+  return shot === 'exact' ? ghz(n) : { ...ghz(n), measure: { key: 'm', qubits: qs }, repetitions: Number(shot) }
+}
 const product = await payload.create({
   collection: 'products',
   data: {
-    title: 'Exact quantum circuit run',
-    slug: 'exact-quantum-circuit-run',
-    description: text(`An exact run of a Clifford + Toffoli circuit on a classical simulator, answered by qpu's circuit tool at /api/mcp. Developed from ${leadPath}.`),
+    title: 'GHZ state, exactly simulated',
+    slug: 'ghz-state-exactly-simulated',
+    quantum: { program: ghz(2) },
+    description: text(`The GHZ state prepared by a circuit and computed by a classical exact simulator of quantum circuits: qpu's circuit tool at /api/mcp. Each variant is the program at one qubit count and one number of shots; an order of it runs the program and carries the outcome and its receipt. Developed from ${leadPath}.`),
     enableVariants: true,
-    variantTypes: [qubits.id],
+    variantTypes: [qubits.id, shots.id],
     developedFrom: lead.id,
     tenant,
     _status: 'published',
@@ -59,19 +71,26 @@ const product = await payload.create({
   draft: false,
   user,
 })
-for (const option of options)
-  await payload.create({
-    collection: 'variants',
-    data: { product: product.id, options: [option.id], title: `${product.title}, ${option.label}`, _status: 'published' },
-    user,
-  })
+for (const width of widths)
+  for (const sample of samples)
+    await payload.create({
+      collection: 'variants',
+      data: {
+        product: product.id,
+        options: [width.id, sample.id],
+        title: `${product.title}, ${width.label}, ${sample.label}`,
+        quantum: { program: program(Number(width.value), sample.value) },
+        _status: 'published',
+      },
+      user,
+    })
 const post = await payload.create({
   collection: 'posts',
   context: { disableRevalidate: true },
   data: {
     title: `${product.title}: developed from ${leadPath}`,
     slug: `${product.slug}-developed`,
-    content: text(`${product.title} is now a product, with variants for 2 and 3 qubits. It was developed from the lead ${leadPath}, which entered this installation through the uuidna trial door.`),
+    content: text(`${product.title} is now a product, with variants for 2 and 3 qubits, exact or sampled. It was developed from the lead ${leadPath}, which entered this installation through the uuidna trial door.`),
     developedFrom: lead.id,
     _status: 'published',
   },

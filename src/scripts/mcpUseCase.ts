@@ -22,12 +22,13 @@ await payload.update({
 })
 
 let id = 0
-const rpc = async (method: string, params: Record<string, unknown> = {}) => {
+// anonymous: no key, as a public connector asks
+const rpc = async (method: string, params: Record<string, unknown> = {}, anonymous = false) => {
   const res = await fetch(url, {
     body: JSON.stringify({ id: ++id, jsonrpc: '2.0', method, params }),
     headers: {
       accept: 'application/json, text/event-stream',
-      authorization: `users API-Key ${apiKey}`,
+      ...(anonymous ? {} : { authorization: `users API-Key ${apiKey}` }),
       'content-type': 'application/json',
     },
     method: 'POST',
@@ -44,6 +45,31 @@ const find = tools.find((n) => /^find/i.test(n) && /product/i.test(n)) ?? tools.
 const products = find ? await rpc('tools/call', { arguments: find === 'findDocuments' ? { slug: 'products' } : {}, name: find }) : null
 const qpu = await rpc('tools/call', { arguments: { uuid: '00000000-0000-4000-8000-000000000000' }, name: 'verify' })
 const door = await rpc('tools/call', { arguments: { arguments: { input: '2 + 2 = 4' }, name: 'decide_expression' }, name: 'uuidna' })
+// the anonymous view: what a client without a key may list and call
+const anonList = await rpc('tools/list', {}, true)
+const anonTools = ((anonList.body.result?.tools as { name: string }[] | undefined) ?? []).map((t) => t.name)
+const anonProducts = await rpc('tools/call', { arguments: { slug: 'products' }, name: 'findDocuments' }, true)
+const anonUsers = await rpc('tools/call', { arguments: { slug: 'users' }, name: 'findDocuments' }, true)
+// UI and MCP agree: each stored program, asked again at /api/mcp, answers the outcome its hook stored
+const stored = [
+  ...(await payload.find({ collection: 'products', depth: 0, limit: 20, overrideAccess: true, where: { 'quantum.receipt': { exists: true } } })).docs,
+  ...(await payload.find({ collection: 'variants', depth: 0, limit: 20, overrideAccess: true, where: { 'quantum.receipt': { exists: true } } })).docs,
+]
+const agreement = await Promise.all(
+  stored.map(async (d) => {
+    const r = await rpc('tools/call', { arguments: d.quantum?.program, name: 'circuit' }, true)
+    return { title: d.title, receipt: d.quantum?.receipt, equal: JSON.stringify(r.body.result?.structuredContent) === JSON.stringify(d.quantum?.outcome) }
+  }),
+)
+// an agent orders one run through the MCP door, with its key: the order hook runs the line's program
+const bell = (await payload.find({ collection: 'variants', depth: 0, limit: 1, overrideAccess: true, where: { title: { equals: 'GHZ state, exactly simulated — 2 qubits — exact state vector' } } })).docs[0]
+const ordered = bell
+  ? await rpc('tools/call', {
+      arguments: { slug: 'orders', documents: [{ data: { amount: 0, currency: 'USD', customer: admin.id, items: [{ product: bell.product, quantity: 1, variant: bell.id }] } }] },
+      name: 'createDocuments',
+    })
+  : null
+const order = (await payload.find({ collection: 'orders', depth: 0, limit: 1, overrideAccess: true, sort: '-createdAt' })).docs[0]
 const textOf = (r: typeof door | null) =>
   ((r?.body.result?.content as { text?: string }[] | undefined) ?? []).map((c) => c.text ?? '').join(' ').slice(0, 240)
 
@@ -56,6 +82,13 @@ payload.logger.info({
   products: textOf(products),
   qpuVerify: textOf(qpu),
   uuidnaDoor: textOf(door),
+  anonymousTools: anonTools.length,
+  anonymousCollectionTools: anonTools.filter((n) => /^[a-z]+[A-Z]/.test(n) && !/^echo_/.test(n)),
+  anonymousProducts: textOf(anonProducts).slice(0, 80),
+  anonymousUsers: textOf(anonUsers).slice(0, 120) || anonUsers.body.error?.message,
+  agreement,
+  orderAnswer: textOf(ordered).slice(0, 160),
+  orderRuns: order?.runs?.map((r) => ({ item: r.item, receipt: r.receipt, outcome: r.outcome, equalsVariant: JSON.stringify(r.outcome) === JSON.stringify(bell?.quantum?.outcome) })),
   errors: [list, products, qpu, door].map((r) => r?.body.error?.message).filter(Boolean),
 })
 process.exit(0)

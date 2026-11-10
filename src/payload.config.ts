@@ -67,6 +67,14 @@ export default buildConfig({
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeLogin` statement on line 15.
       beforeLogin: ['@/components/BeforeLogin#BeforeLogin'],
+      afterNavLinks: ['@/components/quantum/QuantumNavLink#QuantumNavLink'],
+      views: {
+        // qpu's classical exact simulator of quantum circuits, run through /api/mcp
+        quantum: {
+          Component: '@/components/quantum/QuantumView#QuantumView',
+          path: '/quantum',
+        },
+      },
     },
     dashboard: {
       // The `GettingStarted` widget renders the onboarding steps below the welcome heading.

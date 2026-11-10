@@ -407,6 +407,39 @@ export interface Order {
   amount?: number | null;
   currency?: 'USD' | null;
   accessToken?: string | null;
+  /**
+   * Each ordered quantum program, run by a classical exact simulator of quantum circuits when the order is placed.
+   */
+  runs?:
+    | {
+        /**
+         * the order line
+         */
+        item?: string | null;
+        product?: (number | null) | Product;
+        variant?: (number | null) | Variant;
+        program?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        outcome?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        receipt?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -449,6 +482,33 @@ export interface Product {
   categories?: (number | Category)[] | null;
   slug: string;
   developedFrom?: (number | null) | Page;
+  /**
+   * A circuit run by a classical exact simulator of quantum circuits (ISO/IEC 4879 terms). The outcome is computed when the document is saved, by the same handler as the circuit tool at /api/mcp.
+   */
+  quantum?: {
+    /**
+     * The circuit tool's arguments: { operations: [{ gate, qubits: [{ kind: "line", x }] }], measure?, repetitions? }
+     */
+    program?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+    outcome?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+    receipt?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
@@ -1042,6 +1102,33 @@ export interface Variant {
   inventory?: number | null;
   priceInUSDEnabled?: boolean | null;
   priceInUSD?: number | null;
+  /**
+   * A circuit run by a classical exact simulator of quantum circuits (ISO/IEC 4879 terms). The outcome is computed when the document is saved, by the same handler as the circuit tool at /api/mcp.
+   */
+  quantum?: {
+    /**
+     * The circuit tool's arguments: { operations: [{ gate, qubits: [{ kind: "line", x }] }], measure?, repetitions? }
+     */
+    program?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+    outcome?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+    receipt?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
@@ -2145,6 +2232,13 @@ export interface VariantsSelect<T extends boolean = true> {
   inventory?: T;
   priceInUSDEnabled?: T;
   priceInUSD?: T;
+  quantum?:
+    | T
+    | {
+        program?: T;
+        outcome?: T;
+        receipt?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;
@@ -2214,6 +2308,13 @@ export interface ProductsSelect<T extends boolean = true> {
   categories?: T;
   slug?: T;
   developedFrom?: T;
+  quantum?:
+    | T
+    | {
+        program?: T;
+        outcome?: T;
+        receipt?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;
@@ -2276,6 +2377,17 @@ export interface OrdersSelect<T extends boolean = true> {
   amount?: T;
   currency?: T;
   accessToken?: T;
+  runs?:
+    | T
+    | {
+        item?: T;
+        product?: T;
+        variant?: T;
+        program?: T;
+        outcome?: T;
+        receipt?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

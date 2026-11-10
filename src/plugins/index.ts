@@ -24,8 +24,14 @@ import { customerOnlyFieldAccess } from '@/access/customerOnlyFieldAccess'
 import { isAdmin } from '@/access/isAdmin'
 import { isDocumentOwner } from '@/access/isDocumentOwner'
 import { checkRole } from '@/access/utilities'
+import { quantumField, runQuantumProgram } from '@/fields/quantum'
+import { orderRunsField, runOrderPrograms } from '@/hooks/runOrderPrograms'
+import { fuseToolResponse } from '@/plugins/isoSolution'
 import { qpuCatalogueTools } from '@/utilities/qpuCatalogue'
 import { callUuidna } from '@/utilities/uuidnaDoor'
+
+/** plugin-mcp's access arguments (permissions for the request, and the request), as its Tool type declares them */
+type MCPAccessArgs = Parameters<NonNullable<ReturnType<ReturnType<typeof defineTool>['handler']>['access']>>[0]
 
 const generateTitle: GenerateTitle<Product | Page> = ({ doc }) => {
   return doc?.title ? `${doc.title} | Payload Ecommerce Template` : 'Payload Ecommerce Template'
@@ -36,6 +42,51 @@ const generateURL: GenerateURL<Product | Page> = ({ doc }) => {
 
   return doc?.slug ? `${url}/${doc.slug}` : url
 }
+
+/** plugin-mcp asks its options for each slug (collections[slug], globals[slug]). This lookup answers every slug, the
+ *  collections other plugins add included, with read access on the given tools: whoever Payload's read permission lets
+ *  read, the null user included, as GET /api/<slug> is (the find applies where and field access). An auth collection
+ *  still needs a signed-in user, and every other tool keeps plugin-mcp's default (a key). */
+const readsFor = (kind: 'collections' | 'globals', tools: readonly string[]) =>
+  new Proxy({}, {
+    get: (_, slug) =>
+      typeof slug !== 'string'
+        ? undefined
+        : {
+            tools: Object.fromEntries(
+              tools.map((tool) => [
+                tool,
+                {
+                  access: ({ permissions, req }: MCPAccessArgs) =>
+                    Boolean((permissions?.[kind] as Record<string, { read?: boolean }> | undefined)?.[slug]?.read) &&
+                    (kind === 'globals' || Boolean(req.user) || !(req.payload.collections as Record<string, { config: { auth?: unknown } } | undefined>)[slug]?.config.auth),
+                },
+              ]),
+            ),
+          },
+  })
+
+/** The top-level MCP tools: the uuidna door and qpu's catalogue, both public as their own servers are. */
+const mcpTools = async () => ({
+  uuidna: defineTool({
+    access: () => true,
+    description:
+      'Call a uuidna MCP door by name (https://uuidna.com/mcp): trials, decide, quantum programs, the ledger. list_tools lists them.',
+    input: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', description: 'the uuidna tool, e.g. run_trial, decide_expression, get_quantum, list_tools' },
+        arguments: { type: 'object', description: 'that tool\'s arguments' },
+      },
+      required: ['name'],
+    },
+  }).handler(async ({ input }) => {
+    const { name, arguments: args } = input as { name: string; arguments?: Record<string, unknown> }
+    const answer = await callUuidna(name, args ?? {})
+    return { content: [{ type: 'text', text: answer.text }], isError: answer.isError }
+  }),
+  ...(await qpuCatalogueTools()),
+})
 
 export const plugins: Plugin[] = [
   seoPlugin({
@@ -123,7 +174,13 @@ export const plugins: Plugin[] = [
               ],
             },
           },
+          orderRunsField,
         ],
+        // a line that is a quantum program runs as the order is placed: the order carries its outcome and receipt
+        hooks: {
+          ...defaultCollection.hooks,
+          beforeChange: [...(defaultCollection.hooks?.beforeChange ?? []), runOrderPrograms],
+        },
       }),
     },
     payments: {
@@ -137,6 +194,17 @@ export const plugins: Plugin[] = [
     },
     products: {
       productsCollectionOverride: ProductsCollection,
+      // a variant is the product's program at one setting (qubit count, shots), run by the same hook
+      variants: {
+        variantsCollectionOverride: ({ defaultCollection }) => ({
+          ...defaultCollection,
+          fields: [...defaultCollection.fields, quantumField],
+          hooks: {
+            ...defaultCollection.hooks,
+            beforeChange: [...(defaultCollection.hooks?.beforeChange ?? []), runQuantumProgram],
+          },
+        }),
+      },
     },
   }),
   redirectsPlugin({
@@ -175,26 +243,23 @@ export const plugins: Plugin[] = [
       ]
     : []),
   // plugin-mcp v4 exposes every collection at /api/mcp with access running; qpu's quantum catalogue and the uuidna door
-  // answer beside them.
+  // answer beside them. Its default access asks a signed-in user for every item; readsFor opens the reads REST serves.
   mcpPlugin({
-    tools: {
-      uuidna: defineTool({
-        description:
-          'Call a uuidna MCP door by name (https://uuidna.com/mcp): trials, decide, quantum programs, the ledger. list_tools lists them.',
-        input: {
-          type: 'object',
-          properties: {
-            name: { type: 'string', description: 'the uuidna tool, e.g. run_trial, decide_expression, get_quantum, list_tools' },
-            arguments: { type: 'object', description: 'that tool\'s arguments' },
-          },
-          required: ['name'],
-        },
-      }).handler(async ({ input }) => {
-        const { name, arguments: args } = input as { name: string; arguments?: Record<string, unknown> }
-        const answer = await callUuidna(name, args ?? {})
-        return { content: [{ type: 'text', text: answer.text }], isError: answer.isError }
-      }),
-      ...(await qpuCatalogueTools()),
+    collections: readsFor('collections', ['find', 'count']),
+    globals: readsFor('globals', ['find']),
+    // every tool's answer (collection, global, catalogue, uuidna) is fused with qpu's ISO solution: the answer stays as
+    // the handler gave it, and the ISO dimensions, aspect programs, link space and UUID program route ride in _meta.qpu
+    hooks: {
+      // findDocuments also returns what it found as structuredContent, so a client reads the documents, not only the text
+      afterToolCall: [
+        ({ input, response, toolName }) =>
+          fuseToolResponse(
+            toolName === 'findDocuments' && response.doc && !response.structuredContent ? { ...response, structuredContent: response.doc } : response,
+            toolName,
+            input,
+          ),
+      ],
     },
+    tools: await mcpTools(),
   }),
 ]
