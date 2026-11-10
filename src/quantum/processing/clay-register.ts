@@ -1,18 +1,12 @@
-// The Clay register recomputed in integer arithmetic only: the Lean definitions ported one for one, the 55 relation
-// statements parsed and evaluated, every intermediate value checked to stay an exact integer, and the width each relation
-// needs recorded, so a small machine (the Pravets 8M of the author's register) can redo the same sums in software
-// multi-byte arithmetic and compare content addresses. The kernel check happened once, in Lean; this recomputes what it
-// accepted and says how many bits each identity needs. No floats: `/` is floor division on naturals, `-` truncates at 0.
 import { CLAY_RELATIONS } from './clay-statements.ts'
 import { memo } from '../uuid/index.ts'
 
 const MAX_SAFE = Number.MAX_SAFE_INTEGER
 const nat = (x: number, what: string): number => { if (!Number.isInteger(x) || x < 0 || x > MAX_SAFE) throw new Error(`${what} left the exact naturals: ${x}`); return x }
 
-// Mint
 export const mint = memo((k: number): number => (k === 0 ? 1 : nat(mint(k - 1) + mint(k - 1), 'mint')))
 export const choose = memo((n: number, k: number): number => (k === 0 ? 1 : n === 0 ? 0 : nat(choose(n - 1, k) + choose(n - 1, k - 1), 'choose')))
-// Lattice
+
 export const n = ['quantum', 'processing', 'unit'].length
 const seed = mint(n - n)
 export const coins = seed + seed
@@ -24,21 +18,21 @@ export const faces = vertices + hexbit + coins
 export const amplitudes = mint(bits)
 const fused = faces * mint(bits + seed)
 export const plane = coins * coins * rays
-// Combinatorics
+
 const factorial = memo((k: number): number => (k === 0 ? 1 : nat(k * factorial(k - 1), 'factorial')))
 const triangular = memo((k: number): number => (k === 0 ? 0 : nat(k + triangular(k - 1), 'triangular')))
-// Shor (fuelled recursions, as the Lean states them)
+
 const powModAux = (k: number, a: number, m: number, acc: number): number => (k === 0 ? acc : powModAux(k - 1, a, m, nat((acc * a) % m, 'powMod')))
 export const powMod = (a: number, e: number, m: number): number => powModAux(e, a, m, 1 % m)
 const periodAux = (fuel: number, a: number, m: number, r: number): number => (fuel === 0 ? 0 : powMod(a, r, m) === 1 ? r : periodAux(fuel - 1, a, m, r + 1))
 export const multiplicativePeriod = (a: number, m: number): number => periodAux(m, a, m, 1)
 const half = (a: number, m: number): number => powMod(a, Math.floor(multiplicativePeriod(a, m) / 2), m)
-// Crypto (Shor): gcd by the Euclidean recursion, and the modulus and base named by the lattice (Qpu/Shor.lean, ported one for one)
+
 const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b))
 const totient = (nn: number): number => { let c = 0; for (let k = 1; k <= nn; k++) if (gcd(k, nn) === 1) c += 1; return c }
 const shorModulus = rays * (faces - seed)
 const shorBase = mint(n)
-// Galois, Anyon, Annealing, Clifford, Coil, Grover, Hybrid, Magic, Qaoa, Qft, Stabilizer
+
 const glProd = memo((nn: number, i: number): number => (i === 0 ? 1 : nat(Math.max(0, mint(nn) - mint(i - 1)) * glProd(nn, i - 1), 'glProd')))
 const fibAux = (k: number, a: number, b: number): number => (k === 0 ? a : fibAux(k - 1, b, nat(a + b, 'fibFusion')))
 const fibFusion = (nn: number): number => fibAux(nn, seed - seed, seed)
@@ -61,7 +55,6 @@ const qftDepth = (q: number): number => Math.max(0, 2 * q - 1)
 const qftStates = (q: number): number => nat(2 ** q, 'qftStates')
 const paulis = (nn: number): number => mint(2 * nn + 2)
 
-/** The nullary definitions of the register, in the order the Lean files state them. Each formula is the axiom. Its value is the parameter the products and variants are computed from. */
 export const AXIOMS: readonly { name: string; formula: string; value: number }[] = [
   { name: 'n', formula: '["quantum", "processing", "unit"].length', value: n },
   { name: 'seed', formula: 'mint (n - n)', value: seed },
@@ -91,7 +84,6 @@ const FUNCTIONS: Record<string, { arity: number; f: (...a: number[]) => number }
   qftGates: { arity: 1, f: (k) => qftGates(k!) }, qftDepth: { arity: 1, f: (k) => qftDepth(k!) }, qftStates: { arity: 1, f: (k) => qftStates(k!) }, paulis: { arity: 1, f: (k) => paulis(k!) },
 }
 
-// A small reader of Lean arithmetic: application by juxtaposition, then ^, then * / %, then + -, with ( ).
 type Tok = { t: 'num'; v: number } | { t: 'id'; v: string } | { t: 'op'; v: string }
 const lex = (src: string): Tok[] => { const out: Tok[] = []; const re = /\s*(\d+|[A-Za-z_][A-Za-z0-9_']*|[-+*/%^()])/gy; let m: RegExpExecArray | null; let i = 0; while (i < src.length) { re.lastIndex = i; m = re.exec(src); if (!m) throw new Error(`cannot read "${src.slice(i)}"`); const s = m[1]!; out.push(/^\d/.test(s) ? { t: 'num', v: Number(s) } : /^[A-Za-z_]/.test(s) ? { t: 'id', v: s } : { t: 'op', v: s }); i = re.lastIndex } return out }
 export const evaluate = (src: string): number => {
@@ -136,49 +128,18 @@ type ClayReading = { name: string; value: number; seed: number; reflection: numb
 // so every run documents which cross-toolset formula each value superposes with — a triangular number is also a QFT gate count, a power of two a
 // Grover state space, a perfect number also triangular and hexagonal (oeis.org, verified live for 28 and 496).
 const isSquare = (x: number): boolean => { if (x < 0) return false; const r = Math.round(Math.sqrt(x)); return r * r === x }
-const isPrime = (x: number): boolean => { if (x < 2) return false; for (let i = 2; i * i <= x; i++) if (x % i === 0) return false; return true }
+
 const oeis = (v: number, statement = ''): { a: string; name: string }[] => {
   const s: { a: string; name: string }[] = []
-  if (v > 0 && (v & (v - 1)) === 0) s.push({ a: 'A000079', name: 'powers of 2 (Grover/QFT state space, mint)' })
-  if (isSquare(8 * v + 1)) s.push({ a: 'A000217', name: 'triangular numbers (QFT gate count)' })
-  if (isSquare(8 * v + 1) && (Math.sqrt(8 * v + 1) + 1) % 4 === 0) s.push({ a: 'A000384', name: 'hexagonal numbers' })
-  { let f = 1, k = 1; while (f < v) f *= ++k; if (f === v) s.push({ a: 'A000142', name: 'factorials (Clifford order)' }) }
-  if (v > 0 && (isSquare(5 * v * v + 4) || isSquare(5 * v * v - 4))) s.push({ a: 'A000045', name: 'Fibonacci numbers (fibFusion)' })
-  { let m = v, e = 0; if (v > 0 && v % 2 === 0) { while ((m & 1) === 0) { m /= 2; e++ } if (m === 2 ** (e + 1) - 1 && isPrime(m)) s.push({ a: 'A000396', name: 'perfect numbers (Euclid–Euler 2^(k−1)(2^k−1), 2^k−1 prime)' }) } }
-  if (v > 0 && isSquare(v)) s.push({ a: 'A000290', name: 'squares (qaoaZz m m)' })
-  { const c = Math.round(Math.cbrt(v)); if (v > 0 && c * c * c === v) s.push({ a: 'A000578', name: 'cubes' }) }
-  if (v > 0 && isSquare(4 * v + 1)) s.push({ a: 'A002378', name: 'pronic numbers k(k+1)' })
-  if (isPrime(v)) s.push({ a: 'A000040', name: 'prime numbers' })
-  if (/choose/.test(statement)) s.push({ a: 'A007318', name: 'binomial coefficients (Pascal, choose; e.g. C(32,14)=471435600, OEIS A010948)' })
-  const catalan = catalanIndex(v)
-  if (catalan !== null) s.push({ a: 'A000108', name: `Catalan numbers C_${catalan} = C(${2 * catalan}, ${catalan}) / ${catalan + 1} (coil, qaoaParams)` })
-  if (sevenSmooth(v)) s.push({ a: 'A002473', name: '7-smooth numbers: every prime factor is 2, 3, 5 or 7 (qaoaZz and chimera products of the register)' })
+  if (v > 0 && (v & (v - 1)) === 0) s.push({ a: 'A000079', name: 'p2' })
+  if (isSquare(8 * v + 1)) s.push({ a: 'A000217', name: 't' })
   return s
 }
-const binom = (n: number, k: number): number => {
-  if (k < 0 || k > n) return 0
-  let c = 1
-  const kk = Math.min(k, n - k)
-  for (let i = 1; i <= kk; i++) c = Math.floor((c * (n - kk + i)) / i)
-  return c
-}
+
 /** C_n = C(2n, n) / (n + 1), decided by the exact product (n + 1) C_n = C(2n, n). */
-const catalanIndex = (v: number): number | null => {
-  if (v < 1) return null
-  for (let i = 0; i <= 16; i++) {
-    const b = binom(2 * i, i)
-    if ((i + 1) * v === b) return i
-    if (b > (i + 1) * v) return null
-  }
-  return null
-}
+
 /** Humble numbers (OEIS A002473): after the primes 2, 3, 5 and 7 are divided out, 1 remains. */
-const sevenSmooth = (v: number): boolean => {
-  if (v < 1) return false
-  let m = v
-  for (const p of [2, 3, 5, 7]) while (m % p === 0) m = Math.floor(m / p)
-  return m === 1
-}
+
 export const digitalRoot = (n: number): number => (n === 0 ? 0 : 1 + ((n - 1) % 9))
 export const trinityFor = (seed: number): number[] => (seed === 0 ? [] : seed % 3 === 0 ? [3, 6, 9] : [7, 4, 1].includes(seed) ? [7, 4, 1] : [2, 5, 8])
 /** Numerology of the digits handed to it: their sum, the digital root of that sum, and the trinity of that root. */
@@ -198,3 +159,4 @@ export const reflectionOfRegister = (relations: readonly Relation[]): { readings
   const open = readings.filter((x) => !x.solved).map((x) => ({ id: `clay-open-${x.value}`, statement: `${x.name} (${x.value}) holds but no public sequence cross-formulates it yet: a discovery lead to ground the product`, status: 'open' as const, tool: 'clay' }))
   return { readings, bySeed, byTrinity, pairs, fixed: readings.filter((x) => x.fixed).map((x) => x.name), tuned: readings.filter((x) => x.tuned).map((x) => x.name), open }
 }
+export { toLimbs16, fromLimbs16, recomputeClayPravets, clay } from '../uuid/programs/clay/index.ts'
