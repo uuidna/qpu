@@ -4,7 +4,7 @@
 // throwing or colliding — so a change that breaks the address space fails here, not in a client.
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { block, uuid, uuidFromParts, fold, seal, channel, reflection, neighbours, style, presentation, stream, canonicalText, memo, compositions, composition, compositionIndex, rosetta, harmonicDefaults, tailReadings, sequenceUuid, uuidQubits, hexbit, merkaba, organiseQubits } from './index.ts'
+import { block, uuid, uuidFromParts, fold, seal, channel, reflection, neighbours, style, presentation, stream, overlays, canonicalText, memo, compositions, composition, compositionIndex, rosetta, harmonicDefaults, tailReadings, sequenceUuid, uuidQubits, hexbit, merkaba, organiseQubits } from './index.ts'
 import { numerology } from '../processing/clay-register.ts'
 import { call } from '../processing/mcp.ts'
 
@@ -123,6 +123,20 @@ test('presentation and stream read a hex as itself: a nibble is one of sixteen c
   // one cascade source: the presentation's accent is the one the block wears inline
   const b = block('present', {}, null, '', 'x')
   assert.ok(styled.hue >= 0 && styled.hue < 360 && styled.vars['--qpu-accent'] === p.style['--qpu-accent'] && b.html.includes(`style="${style(b.id).css};`) && style(b.id).vars['--qpu-accent'] === b.theme.accent)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: overlays are formulated calls of the UUID core; the sealed address alone matches password/address. */
+test('overlays are formulated calls of the UUID core; the sealed address alone matches password/address', () => {
+  const o = overlays('a432')
+  assert.equal(o.holds, true)
+  assert.equal(o.alone.same, true)
+  assert.equal(o.a432.key, 432)
+  assert.equal(o.a432.hue, 72)
+  assert.ok(o.thousandBit?.waveLockA432.includes('432 Hz'))
+  assert.equal(o.dna.roundTrips, true)
+  assert.equal(o.shadcn.type, 'registry:block')
+  assert.equal(o.openGraph['og:type'], 'website')
+  assert.match(o.accent, /^rgb\(\d+ \d+ \d+\)$/)
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the tail reads every way and the channel reads one UUID. */

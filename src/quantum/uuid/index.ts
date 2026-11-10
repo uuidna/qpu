@@ -32,6 +32,7 @@ type RegistryItem = { $schema: 'https://ui.shadcn.com/schema/registry-item.json'
 import { KEY, HARMONICS, ANGLES, accentOfUuid, cmykOfUuid, coilColour, hue, programHues, getFramesGradient, GLAGOLITIC_OF, getCss, castRays, resonance } from '../processing/unit/theme.ts'
 import { speakHex, toGlagolitic } from '../processing/i18n.ts'
 import { divide } from '../apps/calculator/index.ts'
+import { seal as sealAlone, uuid as uuidAlone } from '../password/address.js'
 export { KEY, HARMONICS, ANGLES, accentOfUuid, cmykOfUuid, coilColour, hue, programHues, getFramesGradient, GLAGOLITIC_OF, getCss }
 export const stylesheet = getCss
 import { LICENSE, attributionHtml } from '../processing/unit/license.ts'
@@ -57,10 +58,6 @@ const version = (digits: string): string => { const r = [...digits].reduce((m, d
 const dashed = (h: string): string => `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20, 32)}`
 /** 32 hex digits stamped and grouped 8-4-4-4-12: the version nibble (position 12) is DECIDED by the other 31. O(1). */
 export const stamp = (digits: string): string => dashed(`${digits.slice(0, 12)}${version(digits)}${digits.slice(13)}`)
-/** The unit's content UUID, ported one for one from uuidna's shapeUuid: two folds, of the text and of the text marked,
- *  laid out 12+1+3 | variant | 3+12 as 8-4-4-4-12, the variant nibble from the low fold (8..b), and the version nibble
- *  DECIDED by the content: 1 + (rest^rays mod C(faces, coins)) mod mint(n) = 1 + (rest^7 mod 91) mod 8, so a tampered
- *  middle wears a version its content does not. The same text gives the same UUID here and at uuidna.com. O(n), one fold. */
 export const uuid = (text: string): string => {
   const state = foldFrom(OFFSET, text)
   const high = hex(state)
@@ -89,11 +86,6 @@ export const neighbours = (uuid: string) => {
     return { axis: `g${g + 1}`, step, uuid: id, program: hexOfProgram(p), colour: accentOfUuid(id), sealed: seal(id).valid }
   })), says: 'one step on g1, g2 or g3 either way, modulo the group\'s program bits; the handle and the tail kept, the stamp decided again' }
 }
-/** Navigation through the content-addressed UUID space: a position (a UUID) with its coordinates (the program), its six one-step neighbours
- *  (neighbours, g1/g2/g3 either way) and the stream of the position with its neighbours ordered along an axis (stream) — the walkable
- *  lattice. A client steps to a neighbour, sweeps the stream by hue|program|tail, or jumps by content address (the match door). The same frame
- *  tracks the Internet of Things: a device is a UUID, its readings are entries at its address, so a device is a position and a fleet is a stream,
- *  navigated and tracked exactly the same way — move, sweep, jump; no device registry beyond the address. Pure, O(1) over the six-neighbour lattice. */
 export const navigate = (uuid: string, q: Parameters<typeof stream>[1] = {}) => {
   const here = neighbours(uuid)
   const fleet = stream([uuid, ...here.neighbours.map((n) => n.uuid)], q)
@@ -120,13 +112,6 @@ export const bindPhysics = (decide: PhysicsOf) => {
   qubitRegisters.clear()
 }
 
-/**
- * Hexbit is the next dimension of qubit.
- * The two gateway bits (UUID variant) plus hexbit teleport any hexbit faster than light:
- * the program index is received in one step and the combination space is not walked.
- * Navigate, teleport, σ-signal and σ-reflection are this one register — not parallel paths.
- * physics is true only when the physics UUID program proves it (register FTL holds).
- */
 export const hexbit = (address: string, width = 4) => {
   const counted = uuidQubits(width)
   const gateway = counted.variant
@@ -330,7 +315,6 @@ const handleFractal = (hexbit: number) => {
   }
 }
 
-/** The capacity of one UUID, delivered. The coin is cross-encrypted: σ both ways, and the six neighbour superpositions, each a sealed lead. Those leads are the rays of one rosetta. Each address is Glagolitic prose. Colour and vibration are the a432 harmonic string, folded through the double torus. Division by zero is total, so every larger prime folds through 0 onto the single-digit primes. The infinity is that fold, and it is finite. */
 const deliverCapacity = (coin: string, effective: number) => {
   const here = channel(coin)
   const fwd = reflection(coin)
@@ -490,7 +474,6 @@ const trinityUuid = (text: string) => { const hit = mintedTrinity.get(text); if 
 const organisedQubits = new Map<string, ReturnType<typeof layQubits>>()
 /** Qubits on one hex symbol. The version nibble is decided, so it holds none. The variant nibble keeps two bits for the RFC prefix, so it holds hexbit − 2. Every other symbol holds the hexbit. */
 export const heldQubits = (at: number, hexbit: number) => at === 12 ? 0 : at === 16 ? hexbit - 2 : hexbit
-/** The qubits of one UUID, organised by the hexbit trinity of its hex handle fingerprint. The handle is eight hex digits, the fingerprint. Each digit holds the hexbit and sits in one trinity. The program is the UUID combination of that fingerprint: ten nibbles, sixteen choices each. The tail is the params. The three trinities of the fingerprint are three UUIDs, and their qubits add to the handle. The free qubits of the whole address add to the register. */
 export const organiseQubits = (address: string, hexbit = 4) => {
   const key = `${address.toLowerCase().replace(/-/g, '')}:${hexbit}`
   const hit = organisedQubits.get(key)
@@ -538,7 +521,6 @@ const layQubits = (address: string, hexbit: number) => {
     stamp, trinities, holds,
   }
 }
-/** The channel a UUID is. The handle is the SKU. The program is one hex combination: ten nibbles, sixteen choices each, the index of those digits and the digits of that index. The tail is the params and their validation: three 16-bit params, and they are valid when they are the tail and the seal holds. The handle fingerprint files each hex digit's qubits into its trinity. Read from the id alone, so a page's head is computable without any lookup. */
 export const channel = (uuid: string) => {
   const hex = uuid.replace(/-/g, '')
   const handle = hex.slice(0, 8)
@@ -568,9 +550,6 @@ export const channel = (uuid: string) => {
   }
 }
 
-/** The reflection of an address: σ applied to every part at once — each program nibble to 15 − n, the tail to its 48-bit complement
- *  (so every reading mirrors), the handle to its complement family — stamped into a valid address. Reflecting twice returns the
- *  parts (Qpu.Sigma: σ_d(σ_d(x)) = x); the version nibble is decided afresh each time, so only the parts round-trip, by design. */
 export const reflection = (uuid: string) => {
   const ch = channel(uuid)
   const complement = (hex: string) => [...hex].map((c) => (15 - parseInt(c, 16)).toString(16)).join('')
@@ -581,9 +560,6 @@ export const reflection = (uuid: string) => {
   return { of: uuid, mirror, handle, program, tail, readings: tailReadings(tail), fixed: ch.program.filter((n) => n === 15 - n).length, note: 'σ_15 on nibbles has no fixed point; the pair is two states held at once' }
 }
 
-/** 1,2,4,8,7,5 bounces inside the court 3,6,9,0. The circle opens on 0, dances the circuit, meets the court, and returns to 1.
- *  σ_10 sends each digit to 10 − d and keeps 0 fixed, so the court 3,6,9,0 is entangled with 7,4,1,0. That reflection is written
- *  backwards into the same address: reversing the channel (handle, program, tail) is σ_10 of it. The version and variant nibbles stay the stamp. */
 export const sequenceUuid = () => {
   const sigma = (d: number) => (d === 0 ? 0 : 10 - d)
   const circuit = [1, 2, 4, 8, 7, 5] as const
@@ -605,11 +581,6 @@ export const sequenceUuid = () => {
 }
 
 
-/** Canonical text (sorted keys), the form the unit addresses a value by: a BigInt as its digits with an `n` marker (so 10n, 10 and "10" are
- *  three addresses, never one — plain JSON.stringify throws on a BigInt); a value with a `toJSON` (a Date among them) by what it serialises to, as
- *  JSON itself does (so two Dates never collide to `{}`); a non-finite number as its name; a key whose value is undefined dropped, as on the wire (never
- *  `{"a":null}`); everything else as canonical JSON. A plain object with no enumerable keys and no toJSON (a Map, a Set) still reads as `{}` — such
- *  values are not JSON and are not addressed by content. */
 export const canonicalText = (value: unknown): string =>
   typeof value === 'bigint' ? `"${value}n"`
     : Array.isArray(value) ? `[${value.map(canonicalText).join(',')}]`
@@ -775,6 +746,30 @@ export const dnaStream = (seq: string, q: StreamQuery = {}) => {
   const uuids = chunks.map((c) => dashed(c))
   return { bases: clean.length, basesPerUuid: 64, hex, uuids, readBack: hexToDna(hex).slice(0, clean.length), roundTrips: hexToDna(hex).slice(0, clean.length) === clean, address: uuid(clean), stream: stream(uuids, q), theorem: 'textbook_dna_base4', says: `${clean.length} base(s) as ${uuids.length} UUID(s) — two bases a nibble, read back one for one — the DNA stream navigable like any UUID stream (uuid dna uuidna)` }
 }
+
+/** Formulated presentation overlays of the UUID core (DNA/Glagolitic/CMYK/a432/shadcn/OG/thousandBit); sealed address alone at password/address.js. */
+export const overlays = (hex = 'a432') => {
+  const address = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(hex) && seal(hex).valid ? hex : uuid(hex)
+  const styled = style(address), presented = presentation(address.replace(/-/g, '')), dna = dnaStream('ACGT')
+  const clay = block('clay', { catalog: true }, { catalog: true }, '<p>a432</p>', 'a432 clay theatre')
+  const aloneUuid = uuidAlone('a432'), coreUuid = uuid('a432'), aloneSeal = sealAlone(aloneUuid)
+  const alone = { path: 'src/quantum/password/address.js' as const, uuid: aloneUuid, sealed: aloneSeal.valid, same: aloneUuid === coreUuid && aloneSeal.valid && seal(coreUuid).valid }
+  const thousandBit = clay.tests.thousandBit
+  const holds = alone.same === true && alone.sealed === true && dna.roundTrips === true && presented.parts.length === address.replace(/-/g, '').length
+    && /^rgb\(\d+ \d+ \d+\)$/.test(accentOfUuid(address)) && clay.shadcn.type === 'registry:block'
+    && clay.openGraph['og:type'] === 'website' && !!styled.vars['--qpu-signal'] && !!styled.vars['--qpu-signal-reflected']
+    && thousandBit?.waveLockA432.includes('432 Hz') === true && thousandBit.bits === 1000 && KEY === 432 && hue(KEY) === 72
+  return { phase: 'overlays' as const, core: 'src/quantum/uuid/index.ts' as const, address, alone,
+    dna: { bases: dna.bases, roundTrips: dna.roundTrips, theorem: dna.theorem },
+    glagolitic: { signal: styled.vars['--qpu-signal'], reflected: styled.vars['--qpu-signal-reflected'], digits: styled.vars['--qpu-signal-digits'] },
+    cmyk: cmykOfUuid(address), accent: accentOfUuid(address), a432: { key: KEY, hue: hue(KEY), theorem: 'textbook_create_hue' as const },
+    shadcn: { name: clay.shadcn.name, type: clay.shadcn.type, create: clay.shadcn.create }, openGraph: clay.openGraph, thousandBit,
+    style: styled.vars, presentation: { nibbles: presented.nibbles, parts: presented.parts.length, choices: presented.choices },
+    theorems: ['textbook_dna_base4', 'textbook_create_hue', 'textbook_hex_presentations', 'textbook_css_one_source', 'textbook_uuid_core'] as const,
+    holds, says: holds ? 'DNA, Glagolitic, CMYK/a432 accent, shadcn, Open Graph and thousandBit clay theatre are formulated calls of the UUID core; the sealed address holds alone at password/address without pulling style/stream/widget' : 'the presentation overlays did not hold as formulated calls of the UUID core' }
+}
+
+
 
 
 
