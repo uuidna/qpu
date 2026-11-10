@@ -104,7 +104,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "16.4.5",
-    "@octokit/types": "^9.0.0",
+    "@octokit/types": "^18.0.0",
     "@payloadcms/eslint-config": "3.28.0",
     "@payloadcms/eslint-plugin": "3.28.0",
     "@types/cli-progress": "^3.11.0",
