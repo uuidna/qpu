@@ -28,6 +28,7 @@ import { quantumField, runQuantumProgram } from '@/fields/quantum'
 import { orderRunsField, runOrderPrograms } from '@/hooks/runOrderPrograms'
 import { fuseToolResponse } from '@/plugins/isoSolution'
 import { qpuCatalogueTools } from '@/utilities/qpuCatalogue'
+import { VERSION } from '@uuidna/qpu/version'
 import { callUuidna } from '@/utilities/uuidnaDoor'
 
 /** plugin-mcp's access arguments (permissions for the request, and the request), as its Tool type declares them */
@@ -260,6 +261,8 @@ export const plugins: Plugin[] = [
           ),
       ],
     },
+    // the server names itself as qpu.uuidna.com/mcp did: qpu, at the catalogue's version
+    mcp: { serverOptions: { serverInfo: { name: 'qpu', version: VERSION } } },
     tools: await mcpTools(),
   }),
 ]

@@ -1,7 +1,8 @@
 /** The products qpu closes, and the sealed Lean theorems each one cites: nothing else. Every sentence of a product's
  *  description is read from the Lean inline docs of the theorems it cites (and their module's doc) by
- *  src/scripts/closeProducts.ts, each doc an ISO/IEC 25051:2014 test prompt whose test is the theorem itself, checked by
- *  the kernel, and the recomputed receipt. A function with no theorem doc ships as a known limitation. */
+ *  src/scripts/closeProducts.ts through /api/mcp (textbook { theorem }, which serves the kernel index's docs and axioms),
+ *  each doc an ISO/IEC 25051:2014 test prompt whose test is the theorem itself, as the kernel reports it, and the receipt.
+ *  A function with no theorem doc ships as a known limitation. */
 
 export type Shots = 'exact' | number
 
