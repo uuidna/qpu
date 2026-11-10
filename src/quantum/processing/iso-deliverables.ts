@@ -102,6 +102,51 @@ export const isoEntropyOf = (W: number) => {
   }
 }
 
+/**
+ * ISO 22739:2024 blockchain and DLT vocabulary census (Lean SoT: textbook_iso_22739_terms_read).
+ * Dig.watch publishes the full public text (3.1–3.99 and 3.100 wallet); the iteh sample once cut at 3.46.
+ */
+export const ISO_22739 = {
+  standard: 'ISO 22739:2024' as const,
+  source: 'https://dig.watch/resource/iso-227392020-blockchain-and-distributed-ledger-technologies-vocabulary' as const,
+  sampleWas: 'https://cdn.standards.iteh.ai/samples/82208/bf874d948e6e4ce9a07a73f4ddfee75e/ISO-22739-2024.pdf' as const,
+  terms: 99 as const,
+  read: 99 as const,
+  cut: 0 as const,
+  unread: 0 as const,
+  wallet: 100 as const,
+  theorem: 'textbook_iso_22739_terms_read' as const,
+  lead: 'iso-22739-terms-unread' as const,
+  clauses: {
+    hashFunction: '3.46' as const,
+    hashLink: '3.47' as const,
+    hashValue: '3.48' as const,
+    immutability: '3.51' as const,
+    ledger: '3.54' as const,
+    merkleTree: '3.58' as const,
+    nonce: '3.62' as const,
+    orphanBlock: '3.69' as const,
+    timestamp: '3.91' as const,
+    transactionRecord: '3.95' as const,
+    wallet: '3.100' as const,
+  },
+} as const
+
+/**
+ * ISO 4217 coin pricing via Lean SoT (textbook_coin_lean_sot / textbook_market_iso_4217).
+ * Catalogue coins are sealed UUID registers of 122 qubits — never Capacity 29/232 or a forged QPU code.
+ */
+export const ISO_4217_COIN = {
+  standard: 'ISO 4217' as const,
+  currencies: ['EUR', 'USD', 'BGN'] as const,
+  register: 122 as const,
+  theorem: 'textbook_coin_lean_sot' as const,
+  market: 'textbook_market_iso_4217' as const,
+  forged: { code: 'QPU' as const, iso4217: false as const, refused: true as const },
+  capacityRefused: { qubits: 29 as const, span: 232 as const, reason: 'Capacity 29/232 is not the Lean coin register' as const },
+  surfaces: ['market', 'REGISTER', 'pack', 'cross', 'price', 'catalog'] as const,
+} as const
+
 export const ISO_OPEN_DEFINITIONS = TABLES.ISO_OPEN_DEFINITIONS
 
 /** A withdrawn dimension's current successor in the same dataset. The dimension itself stays the row that names it. */
