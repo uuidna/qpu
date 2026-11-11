@@ -62,9 +62,6 @@ importers:
       '@payloadcms/richtext-lexical':
         specifier: 4.0.0-beta.7
         version: 4.0.0-beta.7(@faceless-ui/modal@3.0.2(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@faceless-ui/scroll-info@2.0.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(monaco-editor@0.57.0)(payload@4.0.0-beta.7(graphql@16.15.0)(supports-color@10.2.2)(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(typescript@6.0.3)(yjs@13.6.33)
-      '@payloadcms/sdk':
-        specifier: 4.0.0-beta.7
-        version: 4.0.0-beta.7(graphql@16.15.0)(supports-color@10.2.2)(typescript@6.0.3)
       '@payloadcms/storage-r2':
         specifier: 4.0.0-beta.7
         version: 4.0.0-beta.7(@types/react@19.3.0)(monaco-editor@0.57.0)(payload@4.0.0-beta.7(graphql@16.15.0)(supports-color@10.2.2)(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(typescript@6.0.3)
@@ -2647,9 +2644,6 @@ packages:
       payload: 4.0.0-beta.7
       react: ^19.0.1 || ^19.1.2 || ^19.2.1
       react-dom: ^19.0.1 || ^19.1.2 || ^19.2.1
-
-  '@payloadcms/sdk@4.0.0-beta.7':
-    resolution: {integrity: sha512-DYg/CqyjdJa1bZB508HflQm7jy2TYKn4p8ULMEvGQNPOsR46NT/dzYkMOfzn0l7KTyZ5p3ltHunxngvaUAxQeQ==}
 
   '@payloadcms/storage-r2@4.0.0-beta.7':
     resolution: {integrity: sha512-6up1EjEV3WCXGmjvVYVx41xYo6K+pklhOr4EFRFWVZoQMYeCqEs7pX+HtqdKbRotYo4uuS/otl2XNEexHQ6Jdw==}
@@ -10266,18 +10260,6 @@ snapshots:
       - typescript
       - utf-8-validate
       - yjs
-
-  '@payloadcms/sdk@4.0.0-beta.7(graphql@16.15.0)(supports-color@10.2.2)(typescript@6.0.3)':
-    dependencies:
-      payload: 4.0.0-beta.7(graphql@16.15.0)(supports-color@10.2.2)(typescript@6.0.3)
-      qs-esm: 8.0.1
-      ts-essentials: 10.0.3(typescript@6.0.3)
-    transitivePeerDependencies:
-      - bufferutil
-      - graphql
-      - supports-color
-      - typescript
-      - utf-8-validate
 
   '@payloadcms/storage-r2@4.0.0-beta.7(@types/react@19.3.0)(monaco-editor@0.57.0)(payload@4.0.0-beta.7(graphql@16.15.0)(supports-color@10.2.2)(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(typescript@6.0.3)':
     dependencies:
