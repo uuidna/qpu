@@ -27,6 +27,7 @@ import { checkRole } from '@/access/utilities'
 import { quantumField, runQuantumProgram } from '@/fields/quantum'
 import { orderRunsField, runOrderPrograms } from '@/hooks/runOrderPrograms'
 import { fuseToolResponse } from '@/plugins/isoSolution'
+import qpuPlugin from '@/plugins/qpu'
 import { qpuCatalogueTools } from '@/utilities/qpuCatalogue'
 import { VERSION } from '@uuidna/qpu/version'
 import { callUuidna } from '@/utilities/uuidnaDoor'
@@ -44,10 +45,7 @@ const generateURL: GenerateURL<Product | Page> = ({ doc }) => {
   return doc?.slug ? `${url}/${doc.slug}` : url
 }
 
-/** plugin-mcp asks its options for each slug (collections[slug], globals[slug]). This lookup answers every slug, the
- *  collections other plugins add included, with read access on the given tools: whoever Payload's read permission lets
- *  read, the null user included, as GET /api/<slug> is (the find applies where and field access). An auth collection
- *  still needs a signed-in user, and every other tool keeps plugin-mcp's default (a key). */
+/** readsFor: public find/count like GET /api/<slug>; auth collections still need a user. */
 const readsFor = (kind: 'collections' | 'globals', tools: readonly string[]) =>
   new Proxy({}, {
     get: (_, slug) =>
@@ -67,17 +65,16 @@ const readsFor = (kind: 'collections' | 'globals', tools: readonly string[]) =>
           },
   })
 
-/** The top-level MCP tools: the uuidna door and qpu's catalogue, both public as their own servers are. */
+/** uuidna door + qpu catalogue tools (public). */
 const mcpTools = async () => ({
   uuidna: defineTool({
     access: () => true,
-    description:
-      'Call a uuidna MCP door by name (https://uuidna.com/mcp): trials, decide, quantum programs, the ledger. list_tools lists them.',
+    description: 'Call a uuidna MCP door by name (https://uuidna.com/mcp).',
     input: {
       type: 'object',
       properties: {
-        name: { type: 'string', description: 'the uuidna tool, e.g. run_trial, decide_expression, get_quantum, list_tools' },
-        arguments: { type: 'object', description: 'that tool\'s arguments' },
+        name: { type: 'string', description: 'uuidna tool name' },
+        arguments: { type: 'object', description: 'tool arguments' },
       },
       required: ['name'],
     },
@@ -243,15 +240,11 @@ export const plugins: Plugin[] = [
         }),
       ]
     : []),
-  // plugin-mcp v4 exposes every collection at /api/mcp with access running; qpu's quantum catalogue and the uuidna door
-  // answer beside them. Its default access asks a signed-in user for every item; readsFor opens the reads REST serves.
+  // plugin-mcp: collections/globals via readsFor; catalogue + uuidna beside them
   mcpPlugin({
     collections: readsFor('collections', ['find', 'count']),
     globals: readsFor('globals', ['find']),
-    // every tool's answer (collection, global, catalogue, uuidna) is fused with qpu's ISO solution: the answer stays as
-    // the handler gave it, and the ISO dimensions, aspect programs, link space and UUID program route ride in _meta.qpu
     hooks: {
-      // findDocuments also returns what it found as structuredContent, so a client reads the documents, not only the text
       afterToolCall: [
         ({ input, response, toolName }) =>
           fuseToolResponse(
@@ -261,8 +254,8 @@ export const plugins: Plugin[] = [
           ),
       ],
     },
-    // the server names itself as qpu.uuidna.com/mcp did: qpu, at the catalogue's version
     mcp: { serverOptions: { serverInfo: { name: 'qpu', version: VERSION } } },
     tools: await mcpTools(),
   }),
+  qpuPlugin(),
 ]
