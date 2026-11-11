@@ -1,4 +1,5 @@
 import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'
+import { migrations } from './migrations'
 import {
   BoldFeature,
   IndentFeature,
@@ -103,6 +104,7 @@ export default buildConfig({
   collections: [Users, Pages, Posts, Categories, Media, Tenants],
   db: sqliteD1Adapter({
     binding: cloudflare.env.D1,
+    prodMigrations: migrations,
   }),
   editor: lexicalEditor({
     features: () => {
