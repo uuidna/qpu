@@ -405,7 +405,7 @@ export interface Order {
   transactions?: (number | Transaction)[] | null;
   status?: OrderStatus;
   amount?: number | null;
-  currency?: 'USD' | null;
+  currency?: ('EUR' | 'USD' | 'BGN') | null;
   accessToken?: string | null;
   /**
    * Each ordered quantum program, run by a classical exact simulator of quantum circuits when the order is placed.
@@ -468,8 +468,12 @@ export interface Product {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  priceInEUREnabled?: boolean | null;
+  priceInEUR?: number | null;
   priceInUSDEnabled?: boolean | null;
   priceInUSD?: number | null;
+  priceInBGNEnabled?: boolean | null;
+  priceInBGN?: number | null;
   relatedProducts?: (number | Product)[] | null;
   meta?: {
     title?: string | null;
@@ -1100,8 +1104,12 @@ export interface Variant {
   product: number | Product;
   options: (number | VariantOption)[];
   inventory?: number | null;
+  priceInEUREnabled?: boolean | null;
+  priceInEUR?: number | null;
   priceInUSDEnabled?: boolean | null;
   priceInUSD?: number | null;
+  priceInBGNEnabled?: boolean | null;
+  priceInBGN?: number | null;
   /**
    * A circuit run by a classical exact simulator of quantum circuits (ISO/IEC 4879 terms). The outcome is computed when the document is saved, by the same handler as the circuit tool at /api/mcp.
    */
@@ -1172,7 +1180,7 @@ export interface Transaction {
   order?: (number | null) | Order;
   cart?: (number | null) | Cart;
   amount?: number | null;
-  currency?: 'USD' | null;
+  currency?: ('EUR' | 'USD' | 'BGN') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1195,7 +1203,7 @@ export interface Cart {
   purchasedAt?: string | null;
   status?: ('active' | 'purchased' | 'abandoned') | null;
   subtotal?: number | null;
-  currency?: 'USD' | null;
+  currency?: ('EUR' | 'USD' | 'BGN') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2230,8 +2238,12 @@ export interface VariantsSelect<T extends boolean = true> {
   product?: T;
   options?: T;
   inventory?: T;
+  priceInEUREnabled?: T;
+  priceInEUR?: T;
   priceInUSDEnabled?: T;
   priceInUSD?: T;
+  priceInBGNEnabled?: T;
+  priceInBGN?: T;
   quantum?:
     | T
     | {
@@ -2295,8 +2307,12 @@ export interface ProductsSelect<T extends boolean = true> {
   enableVariants?: T;
   variantTypes?: T;
   variants?: T;
+  priceInEUREnabled?: T;
+  priceInEUR?: T;
   priceInUSDEnabled?: T;
   priceInUSD?: T;
+  priceInBGNEnabled?: T;
+  priceInBGN?: T;
   relatedProducts?: T;
   meta?:
     | T

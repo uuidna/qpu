@@ -15,6 +15,7 @@ import { stripePlugin } from '@payloadcms/plugin-stripe'
 
 import { stripeAdapter } from '@payloadcms/plugin-ecommerce/payments/stripe'
 
+import { currencies } from '@/currencies'
 import { Page, Product } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
 import { ProductsCollection } from '@/collections/Products'
@@ -144,6 +145,7 @@ export const plugins: Plugin[] = [
       isAdmin,
       isDocumentOwner,
     },
+    currencies,
     customers: {
       slug: 'users',
     },
