@@ -48,6 +48,64 @@ def applySignedS : Signed → Signed :=
 def applySignedSdg (v : Signed) : Signed :=
   applySignedS (applySignedS (applySignedS v))
 
+/-- A one-qubit operator represented by its coefficients on I, X, Y, and Z.
+
+    The representation is `(aI, aX, aY, aZ)`, meaning
+
+      aI · I + aX · X + aY · Y + aZ · Z.
+
+    This is sufficient for T conjugation, whose action on X and Y produces
+    non-Pauli operators. -/
+abbrev Operator1 := ℝ × ℝ × ℝ × ℝ
+
+/-- The identity operator. -/
+def opI : Operator1 := (1, 0, 0, 0)
+
+/-- The Pauli X operator. -/
+def opX : Operator1 := (0, 1, 0, 0)
+
+/-- The Pauli Y operator. -/
+def opY : Operator1 := (0, 0, 1, 0)
+
+/-- The Pauli Z operator. -/
+def opZ : Operator1 := (0, 0, 0, 1)
+
+/-- Conjugation by T on an operator represented in the I/X/Y/Z basis.
+
+    T maps:
+      I ↦ I,
+      X ↦ (X + Y) / √2,
+      Y ↦ (Y - X) / √2,
+      Z ↦ Z.
+
+    The result is not generally a Pauli operator, so T is not Clifford. -/
+def conjT (p : Operator1) : Operator1 :=
+  let (aI, aX, aY, aZ) := p
+  (aI,
+   (aX - aY) / Real.sqrt 2,
+   (aX + aY) / Real.sqrt 2,
+   aZ)
+
+/-- T fixes the identity operator. -/
+theorem stabilizer_t_identity :
+    conjT opI = opI := by
+  simp [conjT, opI]
+
+/-- T maps X to (X + Y) / √2. -/
+theorem stabilizer_t_x :
+    conjT opX = (0, 1 / Real.sqrt 2, 1 / Real.sqrt 2, 0) := by
+  simp [conjT, opX]
+
+/-- T maps Y to (Y - X) / √2. -/
+theorem stabilizer_t_y :
+    conjT opY = (0, -1 / Real.sqrt 2, 1 / Real.sqrt 2, 0) := by
+  simp [conjT, opY]
+
+/-- T fixes Z. -/
+theorem stabilizer_t_z :
+    conjT opZ = opZ := by
+  simp [conjT, opZ]
+
 /-- Conjugation by CNOT (control first): X on the control spreads to the
     target, Z on the target spreads to the control. No sign changes. -/
 def conjCnot (ct : P1 × P1) : P1 × P1 :=
