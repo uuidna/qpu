@@ -1,1 +1,1 @@
-<FULL LITERAL LEAN MODULE TEXT — imports through extract_correct, ~250 lines, ISO-style audit header and numbered sections, no placeholder, no truncation>
+<FULL LITERAL LEAN MODULE TEXT — imports through extract_correct, ~250 lines, no placeholder, no truncation>
