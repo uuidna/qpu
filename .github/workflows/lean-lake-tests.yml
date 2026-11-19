@@ -1,0 +1,49 @@
+name: Lean Lake tests
+
+on:
+  push:
+    branches:
+      - benchmark/real-corpus-runs
+  pull_request:
+    branches:
+      - main
+      - benchmark/real-corpus-runs
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lean-lake-tests:
+    name: Build and run Lean Lake tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Lean toolchain
+        uses: leanprovergh/lean-action@v1
+        with:
+          lean-version: file:lean-toolchain
+
+      - name: Build qpu Lean library
+        run: lake build
+
+      - name: Build corpus manifest parser regression test
+        run: lake build qpu_corpus_invalid_manifest_test
+
+      - name: Run corpus manifest parser regression test
+        run: lake env qpu_corpus_invalid_manifest_test
+
+      - name: Upload Lean build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lean-lake-test-logs
+          path: |
+            .lake/build/log/**
+          if-no-files-found: ignore
+          retention-days: 7
