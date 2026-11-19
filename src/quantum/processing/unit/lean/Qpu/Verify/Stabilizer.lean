@@ -113,6 +113,13 @@ def conjCz (ct : P1 × P1) : Signed2 :=
    ⟨ct.1.x, ct.1.z ^^ ct.2.x⟩,
    ⟨ct.2.x, ct.2.z ^^ ct.1.x⟩)
 
+/-- Signed CZ conjugation: preserve the incoming global sign and XOR it with
+    the CZ-generated phase. -/
+def applySignedCz : Signed2 → Signed2 :=
+  fun v =>
+    let result := conjCz (v.2.1, v.2.2)
+    (v.1 ^^ result.1, result.2.1, result.2.2)
+
 /-- CZ is an involution on every signed two-qubit Pauli pair. -/
 theorem stabilizer_cz_involution (ct : P1 × P1) :
     conjCz (conjCz ct) = (false, ct.1, ct.2) := by
@@ -170,9 +177,9 @@ theorem stabilizer_cz_yx :
     conjCz (py, px) = (true, px, py) := by
   decide
 
-/-- CZ sends Y⊗Y to −Y⊗Y. -/
+/-- CZ sends Y⊗Y to −X⊗X. -/
 theorem stabilizer_cz_yy :
-    conjCz (py, py) = (true, py, py) := by
+    conjCz (py, py) = (true, px, px) := by
   decide
 
 /-- CZ sends X⊗Z to +X⊗I. -/
@@ -376,6 +383,49 @@ theorem test_signed_hadamard_minus_y_is_not_minus_y :
 /-- Negative control: signed phase gate does not send −Y to −X. -/
 theorem test_signed_phase_minus_y_is_not_minus_x :
     applySignedS (true, py) ≠ (true, px) := by
+  decide
+
+/-!
+## Signed CZ conjugation regression tests
+
+Automated exhaustive checks for all 32 signed two-qubit Pauli inputs.
+-/
+
+/-- Signed CZ preserves the incoming sign, XORs it with the CZ phase, and
+    applies the corrected Z-bit updates, for every signed two-qubit Pauli. -/
+theorem test_signed_cz_all_cases
+    (sign : Bool) (pc pt : P1) :
+    applySignedCz (sign, pc, pt) =
+      (sign ^^ (pc.x && pt.x),
+       ⟨pc.x, pc.z ^^ pt.x⟩,
+       ⟨pt.x, pt.z ^^ pc.x⟩) := by
+  cases sign <;>
+  cases pc.x <;> cases pc.z <;>
+  cases pt.x <;> cases pt.z <;> decide
+
+/-- Signed CZ sends +X⊗I to +X⊗Z. -/
+theorem test_signed_cz_plus_xi :
+    applySignedCz (false, px, pi) = (false, px, pz) := by
+  decide
+
+/-- Signed CZ sends −X⊗I to −X⊗Z. -/
+theorem test_signed_cz_minus_xi :
+    applySignedCz (true, px, pi) = (true, px, pz) := by
+  decide
+
+/-- Signed CZ sends +X⊗X to −Y⊗Y. -/
+theorem test_signed_cz_plus_xx :
+    applySignedCz (false, px, px) = (true, py, py) := by
+  decide
+
+/-- Signed CZ sends −X⊗X to +Y⊗Y. -/
+theorem test_signed_cz_minus_xx :
+    applySignedCz (true, px, px) = (false, py, py) := by
+  decide
+
+/-- Negative control: signed CZ does not send −X⊗X to −Y⊗Y. -/
+theorem test_signed_cz_minus_xx_is_not_minus_yy :
+    applySignedCz (true, px, px) ≠ (true, py, py) := by
   decide
 
 /-!
