@@ -48,6 +48,47 @@ def applySignedS : Signed → Signed :=
 def applySignedSdg (v : Signed) : Signed :=
   applySignedS (applySignedS (applySignedS v))
 
+/-- Exact element of Q(√2): `(a + b√2) / d`, with `d > 0`. -/
+structure Q2 where
+  a : Int
+  b : Int
+  d : Nat
+
+/-- Q(√2) equality: both rational components agree after cross
+    multiplication. Because `1` and `√2` are linearly independent over Q,
+    this is precisely equality of the represented elements. -/
+def Q2Eq (x y : Q2) : Prop :=
+  x.a * y.d = y.a * x.d ∧
+  x.b * y.d = y.b * x.d
+
+/-- Multiplication in Q(√2):
+    `(a + b√2)(c + e√2) = (ac + 2be) + (ae + bc)√2`. -/
+def q2Mul (x y : Q2) : Q2 :=
+  ⟨x.a * y.a + 2 * x.b * y.b,
+   x.a * y.b + x.b * y.a,
+   x.d * y.d⟩
+
+/-- Multiplication respects Q(√2) equality. -/
+theorem q2Mul_congr {x x' y y' : Q2}
+    (hx : Q2Eq x x') (hy : Q2Eq y y') :
+    Q2Eq (q2Mul x y) (q2Mul x' y') := by
+  simp only [Q2Eq, q2Mul] at hx hy ⊢
+  obtain ⟨hx1, hx2⟩ := hx
+  obtain ⟨hy1, hy2⟩ := hy
+  constructor
+  · calc (x.a * y.a + 2 * x.b * y.b) * (x'.d * y'.d)
+      = x.a * x'.d * (y.a * y'.d) +
+        2 * (x.b * x'.d) * (y.b * y'.d) := by ring
+    _ = x'.a * x.d * (y'.a * y.d) +
+        2 * (x'.b * x.d) * (y'.b * y.d) := by rw [hx1, hy1, hx2, hy2]
+    _ = (x'.a * y'.a + 2 * x'.b * y'.b) * (x.d * y.d) := by ring
+  · calc (x.a * y.b + x.b * y.a) * (x'.d * y'.d)
+      = x.a * x'.d * (y.b * y'.d) +
+        x.b * x'.d * (y.a * y'.d) := by ring
+    _ = x'.a * x.d * (y'.b * y.d) +
+        x'.b * x.d * (y'.a * y.d) := by rw [hx1, hy1, hx2, hy2]
+    _ = (x'.a * y'.b + x'.b * y'.a) * (x.d * y.d) := by ring
+
 /-- A one-qubit operator represented by its coefficients on I, X, Y, and Z.
 
     The representation is `(aI, aX, aY, aZ)`, meaning
