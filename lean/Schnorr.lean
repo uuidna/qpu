@@ -1,1 +1,1 @@
-<FULL LITERAL LEAN MODULE TEXT — imports through extract_correct, ~250 lines, no placeholder, no truncation>
+<full literal root Schnorr.lean — imports Basic, Inv, Pow, Protocol, Soundness, ~10 lines>
