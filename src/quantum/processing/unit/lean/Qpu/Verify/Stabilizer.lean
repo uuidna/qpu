@@ -137,6 +137,64 @@ theorem test_t_squared_z :
     conjT (conjT opZ) = opZ := by
   simp [conjT, opZ]
 
+/-- Three T conjugations rotate the X/Y plane by 270 degrees. -/
+theorem conjT_cubed_rotates_xy (aI aX aY aZ : ℝ) :
+    conjT (conjT (conjT (aI, aX, aY, aZ))) =
+      (aI, -aX, -aY, aZ) := by
+  have h := conjT_squared_rotates_xy aI aX aY aZ
+  simp only [conjT] at h
+  rw [h]
+  simp only [conjT]
+  constructor
+  · rfl
+  · field_simp
+  · field_simp
+  · rfl
+
+/-- Four T conjugations are the identity on every operator. -/
+theorem conjT_fourth_is_identity (aI aX aY aZ : ℝ) :
+    conjT (conjT (conjT (conjT (aI, aX, aY, aZ)))) =
+      (aI, aX, aY, aZ) := by
+  have h := conjT_cubed_rotates_xy aI aX aY aZ
+  simp only [conjT] at h
+  rw [h]
+  simp only [conjT]
+  constructor
+  · rfl
+  · field_simp
+  · field_simp
+  · rfl
+
+/-- T cubed sends X to −Y. -/
+theorem test_t_cubed_x :
+    conjT (conjT (conjT opX)) = (0, 0, -1, 0) := by
+  simp [conjT, opX]
+
+/-- T cubed sends Y to X. -/
+theorem test_t_cubed_y :
+    conjT (conjT (conjT opY)) = opX := by
+  simp [conjT, opY, opX]
+
+/-- Four T conjugations fix X. -/
+theorem test_t_fourth_x :
+    conjT (conjT (conjT (conjT opX))) = opX := by
+  simp [conjT, opX]
+
+/-- Four T conjugations fix Y. -/
+theorem test_t_fourth_y :
+    conjT (conjT (conjT (conjT opY))) = opY := by
+  simp [conjT, opY]
+
+/-- Four T conjugations fix I. -/
+theorem test_t_fourth_identity :
+    conjT (conjT (conjT (conjT opI))) = opI := by
+  simp [conjT, opI]
+
+/-- Four T conjugations fix Z. -/
+theorem test_t_fourth_z :
+    conjT (conjT (conjT (conjT opZ))) = opZ := by
+  simp [conjT, opZ]
+
 /-- Conjugation by CNOT (control first): X on the control spreads to the
     target, Z on the target spreads to the control. No sign changes. -/
 def conjCnot (ct : P1 × P1) : P1 × P1 :=
