@@ -1,6 +1,7 @@
 import Lean
 
 import Qpu.Benchmark.Corpus
+import Qpu.Benchmark.Validation
 import Qpu.Verify.Uuid
 import Qpu.Verify.Receipt
 import Qpu.Verify.Correct
@@ -48,13 +49,14 @@ def receiptValid (address : Nat) : Bool :=
   let actual := Qpu.Verify.Receipt.merkleFold [address]
   expected == actual
 
-/-- Existing qpu result-validation seam. Replace with the corpus-specific
-    `Qpu.Verify.Correct` validation path before merge. -/
+/-- Validate a result through corpus-specific Verify-module validation. -/
 def resultValid
-  (_corpus : CorpusManifest)
-  (_inputDigest : String)
+  (corpus : CorpusManifest)
+  (inputDigest : String)
   (result : String) : Bool :=
-  result.length > 0
+  match Json.parse? result with
+  | some json => validateCorpusResult corpus inputDigest json
+  | none => false
 
 /-- Run one corpus at one reuse factor. -/
 def runCorpus

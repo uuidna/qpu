@@ -44,4 +44,5 @@ import Qpu.Verify.Receipt
 import Qpu.Verify.Hexbit
 import Qpu.Verify.Uuid
 import Qpu.Benchmark.Corpus
+import Qpu.Benchmark.Validation
 import Qpu.Benchmark.Runner

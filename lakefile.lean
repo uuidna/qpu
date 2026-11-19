@@ -16,6 +16,7 @@ lean_lib Qpu where
     `Qpu.Verify.Stabilizer,
     `Qpu.Verify.Uuid,
     `Qpu.Benchmark.Corpus,
+    `Qpu.Benchmark.Validation,
     `Qpu.Benchmark.Runner
   ]
 
