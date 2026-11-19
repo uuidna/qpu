@@ -1,0 +1,1 @@
+<full literal Tests.lean — concrete example p=11, g=2, sanity checks for mul/inv/pow/verify, ~40 lines>
