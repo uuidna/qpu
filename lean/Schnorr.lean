@@ -1,0 +1,1 @@
+<FULL actual Lean source: 10-section structured module — group foundation, laws, exponentiation, Fermat/orders, congruence, protocol, completeness, ZK, soundness (Nat.gcd_eq_gcd_ab), extraction (computable modInv via Nat.gcdA) — 0 axioms, 0 sorries, 0 noncomputable>

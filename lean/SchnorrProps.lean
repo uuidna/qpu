@@ -1,0 +1,1 @@
+<FULL actual Lean source: 16 universally-quantified property tests + 4 derived cross-property tests over p=7, g=3>
