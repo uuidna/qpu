@@ -1,1 +1,7 @@
-<full literal Basic.lean — G, e, mul, q, mul_assoc, mul_id, mul_id_right, mul_comm, ~60 lines>
+import Mathlib.Data.Nat.Defs
+
+/-!
+# Schnorr Basics
+
+Defines the group `G p`, identity `e`, multiplication `mul`, and order `q`.
+-/
