@@ -1,0 +1,282 @@
+// The repositories of the quantumlib and payloadcms GitHub organizations, as their repository lists state them. Each description is the
+// repository's own one-line description; the language is the primary language the list shows. Cirq, qsim, Qualtran and the
+// OpenFermion family are the quantumlib ones this repository implements or names elsewhere; PAYLOADCMS_REPOSITORIES consolidates
+// every QPU surface around its canonical github.com/payloadcms/* repository, monorepo package, and QPU plugin counterpart.
+import { TABLES } from './tables-index.ts'
+import { skill, skills as skillCalls } from './skill/index.ts'
+import { canonicalText, seal, uuid } from '../uuid/index.ts'
+
+export type Repository = { name: string; description: string; language: string }
+
+export const REPOSITORIES = TABLES.REPOSITORIES as readonly Repository[]
+
+const PAYLOADCMS_ORIGIN = ['https:', '', 'github.com', 'payloadcms'].join('/')
+
+export type PayloadcmsPackageRole =
+  | 'core'
+  | 'editor'
+  | 'database'
+  | 'storage'
+  | 'email'
+  | 'plugin'
+  | 'tooling'
+
+export type PayloadcmsPackageMapping = {
+  /** npm package name (`payload` or `@payloadcms/*`) */
+  pkg: string
+  /** Upstream path in `github.com/payloadcms/payload` */
+  upstreamPath: string
+  /** Version pinned in `@uuidna/qpu` */
+  version: string
+  /** Architectural role in the Payload stack */
+  role: PayloadcmsPackageRole
+  /** QPU plugin / module export(s) that wrap, configure, or extend this package */
+  qpuCounterparts: readonly string[]
+  /** QPU plugin slug in `definePlugin` / `plugins` map */
+  qpuPluginSlug: string
+  /** Collections owned or hooked by this package in QPU */
+  collections: readonly string[]
+  /** Coin-coil / accounting / quantum role in QPU */
+  accounting: string
+  /** MCP / API door that configures or inspects this package */
+  door: { tool: 'payload' | 'configure'; arguments: Record<string, unknown> }
+}
+
+export type PayloadcmsRepoMapping = {
+  /** Short repo slug under `payloadcms` (`website`, `payload`, `skills`) */
+  id: 'website' | 'payload' | 'skills'
+  /** Full GitHub repository (`payloadcms/<id>`) */
+  repo: `payloadcms/${'website' | 'payload' | 'skills'}`
+  /** Canonical upstream URL */
+  url: string
+  /** Upstream license */
+  licence: string
+  /** Primary language */
+  language: 'TypeScript' | 'Markdown'
+  /** Local clone or sibling workspace path relative to `qpu` */
+  localClone: string
+  /** Role in the QPU architecture */
+  role: string
+  /** QPU exports and plugins consolidated around this repository */
+  qpuExports: readonly string[]
+  /** Public Payload API & MCP doors that serve this repository's surface */
+  endpoints: readonly string[]
+  /** MCP tool call that inspects or configures this repository */
+  door: { tool: 'payload' | 'configure'; arguments: Record<string, unknown> }
+  /** Upstream templates or subtrees inside this repository */
+  templates?: readonly {
+    name: string
+    upstreamPath: string
+    qpuCounterparts: readonly string[]
+    collections: readonly string[]
+    door: { tool: 'payload' | 'configure'; arguments: Record<string, unknown> }
+  }[]
+  /** Monorepo packages mapped one-for-one to QPU plugins/adapters (for `payloadcms/payload`) */
+  packages?: readonly PayloadcmsPackageMapping[]
+}
+
+/**
+ * Canonical `payloadcms/payload` monorepo packages mounted by `@uuidna/qpu`,
+ * each mapped directly to its QPU plugin, adapter, collection, and coin-coil accounting counterpart.
+ */
+export const PAYLOADCMS_MONOREPO_PACKAGES: readonly PayloadcmsPackageMapping[] = TABLES.PAYLOADCMS_MONOREPO_PACKAGES
+
+/**
+ * Canonical `github.com/payloadcms/*` repository registry consolidating all QPU surfaces:
+ *   1. `payloadcms/website` — this repository develops in `src/` to that upstream standard; MCP mounts via `qpuMcpPlugin` / `qpuPlugin()`
+ *   2. `payloadcms/payload` — the monorepo of 45 packages (21 directly mounted in `@uuidna/qpu`) + `templates/ecommerce` + `templates/website`
+ *   3. `payloadcms/skills` — agent skills (`payload`, `cms-migration`) and 14 reference guides enacted by QPU tools
+ */
+export const PAYLOADCMS_REPOSITORIES: readonly PayloadcmsRepoMapping[] = [
+  {
+    id: 'website',
+    repo: 'payloadcms/website',
+    url: `${PAYLOADCMS_ORIGIN}/website`,
+    licence: 'MIT',
+    language: 'TypeScript',
+    localClone: 'src',
+    role: 'This full-stack repo develops in src/ against payloadcms/website (12 collections, 30 blocks, 5 globals, 10 fields). Upstream github.com/payloadcms/website is the layout standard; qpuPlugin / qpuMcpPlugin mount feeds and MCP on /api/qpu/feeds and /api/mcp',
+    qpuExports: [
+      'qpuWebsitePlugins',
+      'websiteTemplatePlugins',
+      'qpuPlugin',
+      'qpuCore',
+      'feeds',
+      'Qpu',
+      'Entries',
+      'Tenants',
+      'QpuGlobal',
+    ],
+    endpoints: ['/api/qpu/feeds', '/api/qpu/repos', '/api/qpu/google', '/api/qpu/accounting', '/api/mcp', '/api/globals/qpu', '/api/entries'],
+    door: { tool: 'payload', arguments: { website: true } },
+    templates: [
+      {
+        name: 'payloadcms.com website',
+        upstreamPath: 'src/payload.config.ts',
+        qpuCounterparts: ['qpuWebsitePlugins', 'websiteTemplatePlugins', 'qpuPlugin'],
+        collections: ['case-studies', 'categories', 'community-help', 'docs', 'docs-feedback', 'media', 'pages', 'partners', 'posts', 'reusable-content', 'users', 'budgets', 'industries', 'regions', 'specialties'],
+        door: { tool: 'configure', arguments: { kind: 'fullstack' } },
+      },
+    ],
+  },
+  {
+    id: 'payload',
+    repo: 'payloadcms/payload',
+    url: `${PAYLOADCMS_ORIGIN}/payload`,
+    licence: 'MIT',
+    language: 'TypeScript',
+    localClone: 'node_modules/payload',
+    role: 'Payload CMS monorepo (45 packages under packages/* and official templates under templates/*): every plugin, database adapter, storage adapter, email adapter and lexical feature QPU mounts is a package from this monorepo',
+    qpuExports: [
+      'qpuPlugin',
+      'qpuCore',
+      'qpuAgents',
+      'qpuMachine',
+      'qpuGoogle',
+      'qpuRaid',
+      'qpuHooks',
+      'qpuPlugins',
+      'qpuEcommerce',
+      'qpuDb',
+      'qpuEmail',
+      'qpuAdapterPlugins',
+      'qpuRaid',
+      'qpuLexicalBlocks',
+      'qpuFormFields',
+      'qpuMcpPlugin',
+      'qpuMachineTool',
+    ],
+    endpoints: ['/api/mcp', '/api/qpu/repos', '/api/qpu/feeds', '/api/qpu/accounting'],
+    door: { tool: 'configure', arguments: { kind: 'packages' } },
+    templates: [
+      {
+        name: 'ecommerce',
+        upstreamPath: 'templates/ecommerce',
+        qpuCounterparts: ['qpuEcommerce', 'QPU_CURRENCIES', 'feeds', 'ecommerceSeedItems'],
+        collections: ['products', 'variants', 'variantTypes', 'variantOptions', 'carts', 'orders', 'transactions', 'addresses'],
+        door: { tool: 'configure', arguments: { kind: 'ecommerce' } },
+      },
+      {
+        name: 'website',
+        upstreamPath: 'templates/website',
+        qpuCounterparts: ['websiteTemplatePlugins', 'qpuWebsitePlugins'],
+        collections: ['pages', 'posts', 'media', 'categories', 'users'],
+        door: { tool: 'payload', arguments: { site: true } },
+      },
+    ],
+    packages: PAYLOADCMS_MONOREPO_PACKAGES,
+  },
+  {
+    id: 'skills',
+    repo: 'payloadcms/skills',
+    url: `${PAYLOADCMS_ORIGIN}/skills`,
+    licence: 'facts-only (names, paths, sizes)',
+    language: 'Markdown',
+    localClone: '.agents/skills',
+    role: 'skill(name) MCP tools/call',
+    qpuExports: ['qpuMcpPlugin', 'qpuPlugin'],
+    endpoints: ['/api/mcp', '/api/qpu/repos'],
+    door: { tool: 'payload', arguments: { skills: true } },
+  },
+] as const
+
+/** Workspace alignment: this repo is the full stack (website standard in src); packages come from payloadcms/payload; skills from payloadcms/skills; sibling ../payload is the Cloudflare Workers deploy. */
+export const PAYLOADCMS_WORKSPACE_ALIGNMENT = {
+  qpu: {
+    name: '@uuidna/qpu',
+    path: 'src/quantum',
+    payloadVersion: '4.0.0-beta.7',
+    upstreamRepos: ['payloadcms/website', 'payloadcms/payload', 'payloadcms/skills'] as const,
+    exports: ['.', './payload', './feeds', './mcp', './blocks', './roles', './version', './discovery-document', './machine'] as const,
+  },
+  website: {
+    name: 'qpu',
+    path: 'src',
+    upstreamRepo: 'payloadcms/website' as const,
+    payloadVersion: '4.0.0-beta.7',
+    consumes: '@payloadcms/* from payloadcms/payload',
+    role: 'Develop in src/ to the payloadcms/website standard; configure { kind: "fullstack" } refreshes overlay files in this tree, not a second .qpu-app fork',
+  },
+  siblingPayload: {
+    name: 'uuidna-payload',
+    path: '../payload',
+    remote: 'github.com/uuidna/payload',
+    upstreamTemplate: 'payloadcms/payload/templates/website (Cloudflare D1 + R2)',
+    payloadVersion: '4.0.0-canary.37',
+    consumes: '@uuidna/qpu + @uuidna/uuidna + @uuidna/school',
+    role: 'Cloudflare Workers D1+R2 multi-tenant deployment consuming @uuidna/qpu lattice/db/zone primitives alongside official @payloadcms/* plugins (nested-docs, seo, redirects, search, form-builder, mcp, import-export, storage-r2, db-d1-sqlite)',
+  },
+} as const
+
+/**
+ * Compute the consolidated `payloadcms` repository matrix, verifying that every mounted `@payloadcms/*` package
+ * belongs to `TABLES.PAYLOAD_PACKAGES`; skill() formulates each call.
+ */
+export const payloadcmsRepos = (opts: { repo?: string; role?: PayloadcmsPackageRole } = {}) => {
+  const catalogNames = new Set<string>(TABLES.PAYLOAD_PACKAGES.names)
+  const packages = PAYLOADCMS_MONOREPO_PACKAGES.filter((p) => !opts.role || p.role === opts.role).map((p) => {
+    const shortName = p.pkg.replace(/^@payloadcms\//, '')
+    const inUpstreamMonorepo = catalogNames.has(shortName)
+    return {
+      ...p,
+      shortName,
+      inUpstreamMonorepo,
+    }
+  })
+  const repositories = PAYLOADCMS_REPOSITORIES.filter(
+    (r) => !opts.repo || r.id === opts.repo || r.repo === opts.repo,
+  )
+  const skillEntries = skillCalls()
+  const allPackagesInMonorepo = packages.every((p) => p.inUpstreamMonorepo)
+  const allSkillsEnacted = skillEntries.every((s) => s.enactedBy.length > 0 && !!skill(s.name)?.call.tool)
+  const byRole = Object.fromEntries(
+    (['core', 'editor', 'database', 'storage', 'email', 'plugin'] as const).map((r) => [
+      r,
+      PAYLOADCMS_MONOREPO_PACKAGES.filter((p) => p.role === r).length,
+    ]),
+  )
+  const canonical = canonicalText({
+    repos: PAYLOADCMS_REPOSITORIES.map((r) => r.repo),
+    packages: PAYLOADCMS_MONOREPO_PACKAGES.map((p) => p.pkg),
+    monorepoTotal: TABLES.PAYLOAD_PACKAGES.names.length,
+    skills: skillEntries.length,
+  })
+  const address = uuid(canonical)
+  return {
+    phase: 'payloadcms-repositories' as const,
+    organization: 'payloadcms' as const,
+    url: PAYLOADCMS_ORIGIN,
+    address,
+    sealed: seal(address).valid,
+    holds: allPackagesInMonorepo && allSkillsEnacted && seal(address).valid,
+    counts: {
+      repositories: PAYLOADCMS_REPOSITORIES.length,
+      monorepoPackagesTotal: TABLES.PAYLOAD_PACKAGES.names.length,
+      mountedPackages: PAYLOADCMS_MONOREPO_PACKAGES.length,
+      byRole,
+      websitePlugins: TABLES.PAYLOAD_WEBSITE.plugins.length,
+      qpuPlugins: 9,
+      qpuCombinations: 512,
+      skillEntries: skillEntries.length,
+      quantumlibRepositories: REPOSITORIES.length,
+    },
+    repositories,
+    packages,
+    alignment: PAYLOADCMS_WORKSPACE_ALIGNMENT,
+    endpoints: {
+      repos: '/api/qpu/repos',
+      feeds: '/api/qpu/feeds?repos=1',
+      accounting: '/api/qpu/accounting',
+      google: '/api/qpu/google',
+      mcp: '/api/mcp',
+    },
+    theorems: [
+      'textbook_packages_partition',
+      'textbook_website_plugins_partition',
+      'textbook_plugin_combinations',
+      'textbook_skills_documents',
+      'textbook_fullstack_files_by_role',
+    ] as const,
+    says: `All QPU surfaces consolidated around ${PAYLOADCMS_REPOSITORIES.length} github.com/payloadcms/* repositories (payloadcms/website, payloadcms/payload, payloadcms/skills): ${PAYLOADCMS_MONOREPO_PACKAGES.length} of ${TABLES.PAYLOAD_PACKAGES.names.length} monorepo packages mounted and mapped to QPU plugins/adapters, ${skillEntries.length} agent skill references enacted, sealed at ${address}`,
+  }
+}

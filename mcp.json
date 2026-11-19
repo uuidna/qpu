@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "qpu": {
+      "url": "https://qpu.uuidna.com/api/mcp"
+    }
+  }
+}

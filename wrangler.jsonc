@@ -1,0 +1,118 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "qpu",
+  "compatibility_date": "2025-08-15",
+  "compatibility_flags": [
+    // Enable Node.js API
+    // see https://developers.cloudflare.com/workers/configuration/compatibility-flags/#nodejs-compatibility-flag
+    "nodejs_compat",
+    // Allow to fetch URLs in your app
+    // see https://developers.cloudflare.com/workers/configuration/compatibility-flags/#global-fetch-strictly-public
+    "global_fetch_strictly_public",
+  ],
+  // qpu.uuidna.com and qpu.psg.bg, as the live qpu Worker serves them
+  "routes": [
+    { "pattern": "qpu.uuidna.com", "custom_domain": true },
+    { "pattern": "qpu.psg.bg", "custom_domain": true },
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "d1_databases": [
+    {
+      "binding": "D1",
+      "database_id": "126117f2-95b6-4d63-a3c3-65556ebbfc7a",
+      "database_name": "qpu",
+      "remote": true,
+    },
+  ],
+  "services": [
+    // The service should match the "name" of your worker
+    // {
+    //   "binding": "WORKER_SELF_REFERENCE",
+    //   "service": "qpu"
+    // },
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "qpu-media",
+    },
+    // Create a R2 binding with the binding name "NEXT_INC_CACHE_R2_BUCKET"
+    // {
+    //   "binding": "NEXT_INC_CACHE_R2_BUCKET",
+    //   "bucket_name": "<BUCKET_NAME>",
+    // },
+  ],
+
+  // The live qpu Worker holds these Durable Object migration tags (v2 deleted its only class); a deploy under the
+  // same name repeats them.
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["DocketObject"] },
+    { "tag": "v2", "deleted_classes": ["DocketObject"] },
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.1,
+  },
+
+  // The "local" environment binds D1 and R2 without "remote", so a production build or preview reads the local
+  // D1 that `pnpm dev` fills (CLOUDFLARE_ENV=local) instead of the live qpu database.
+  "env": {
+    "local": {
+      "name": "qpu-local",
+      "workers_dev": false,
+      "routes": [],
+      "services": [],
+      "d1_databases": [
+        {
+          "binding": "D1",
+          "database_id": "126117f2-95b6-4d63-a3c3-65556ebbfc7a",
+          "database_name": "qpu",
+        },
+      ],
+      "r2_buckets": [
+        {
+          "binding": "R2",
+          "bucket_name": "qpu-media",
+        },
+      ],
+    },
+  },
+
+  // Here's how to configure an additional environment
+  // It can be deployed with `CLOUDFLARE_ENV=staging pnpm run deploy`
+  // "env": {
+  //   "staging": {
+  //     "name": "my-app-staging",
+  //     "d1_databases": [
+  //       {
+  //         "binding": "D1",
+  //         "database_id": "DATABASE_ID",
+  //         "database_name": "my-app-staging",
+  //         "remote": true
+  //       }
+  //     ],
+  //     "services": [
+  //       // The service should match the "name" of your worker
+  //       // {
+  //       //   "binding": "WORKER_SELF_REFERENCE",
+  //       //   "service": "my-app-staging"
+  //       // },
+  //     ],
+  //     "r2_buckets": [
+  //       {
+  //         "binding": "R2",
+  //         "bucket_name": "my-app-staging"
+  //       }
+  //       // Create a R2 binding with the binding name "NEXT_INC_CACHE_R2_BUCKET"
+  //       // {
+  //       //   "binding": "NEXT_INC_CACHE_R2_BUCKET",
+  //       //   "bucket_name": "<BUCKET_NAME>",
+  //       // },
+  //     ]
+  //   }
+  // }
+}

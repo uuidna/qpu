@@ -1,0 +1,66 @@
+{
+  "kinds": 25,
+  "tested": 25,
+  "closed": true,
+  "byTrinity": {
+    "258": [
+      "payload",
+      "wrangler",
+      "mcp",
+      "versions",
+      "fullstack",
+      "hooks",
+      "branding",
+      "policies"
+    ],
+    "369": [
+      "tenant",
+      "fields",
+      "validations",
+      "access",
+      "actions",
+      "packages",
+      "adapters",
+      "gates",
+      "sets"
+    ],
+    "741": [
+      "pwa",
+      "migration",
+      "api",
+      "bindings",
+      "scopes",
+      "ecommerce",
+      "ui",
+      "realtime"
+    ]
+  },
+  "mcpServers": {
+    "qpu": {
+      "url": "https://qpu.uuidna.com/api/mcp",
+      "transport": "http",
+      "routes": 4,
+      "toolboxes": [
+        "tree",
+        "google",
+        "flow",
+        "language",
+        "raid",
+        "billing",
+        "legal",
+        "repository",
+        "standards",
+        "payload",
+        "extension",
+        "crypto"
+      ],
+      "server": "payload-rbac",
+      "one": true,
+      "first": true,
+      "managedBy": "payload-mcp",
+      "asked": "QPU_RBAC_MCP",
+      "tool": "payload"
+    }
+  },
+  "generated": "2026-11-07"
+}

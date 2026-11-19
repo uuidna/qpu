@@ -1,0 +1,100 @@
+import assert from 'node:assert/strict'
+import test from 'node:test'
+
+import { auditProgramNeighbours, challenge, competeProgramNeighbours, gateProgramFiles, gateProgramSeal, guardUpstream, indexProgramFolders, productCombinations, program, programPlugin, reflectProgramNeighbours, sealProgramProducts } from './index.ts'
+
+/** Challenge physics and laws under adversarial register pressure. */
+void test('challenge physics and laws under adversarial register pressure', () => {
+  const hit = challenge()
+  assert.equal(hit.phase, 'challenge')
+  assert.equal(hit.theorem, 'textbook_hexbit_gateway_ftl')
+  assert.equal(hit.law, 'hexbit + 2 gateway bits teleport any hexbit faster than light')
+  assert.equal(hit.holds, true, hit.says)
+  assert.equal(hit.adversarial.length, 5)
+  assert.ok(hit.adversarial.every((row) => row.match))
+  assert.equal(hit.physics.leafExists, true)
+  assert.equal(hit.physics.conceptExists, true)
+  assert.equal(hit.zero.viaProgram, true)
+  assert.equal(hit.hexbit.gate, true)
+  assert.equal(hit.compete.online, true)
+  assert.equal(hit.entropy.verified.W, 1)
+  assert.equal(hit.entropy.verified.S, 0)
+})
+
+/** Neighbours reflect and test each other in games and competitions online. */
+void test('neighbours reflect and test each other in games and competitions online', () => {
+  const audit = auditProgramNeighbours()
+  assert.equal(audit.law, 'neighbours reflect and test each other in games and competitions online')
+  assert.equal(audit.via, 'online')
+  assert.equal(audit.holds, true, audit.says + (audit.failed[0] ? ` first=${audit.failed[0].handle}` : ''))
+  assert.equal(audit.holding, audit.folders)
+  assert.equal(audit.missing, 0)
+  assert.equal(audit.combinations, productCombinations().length)
+  assert.equal(audit.space, 8)
+  assert.ok(audit.competitions > 0)
+  assert.ok(audit.folders > 0)
+  assert.equal(audit.failed.length, 0)
+  assert.equal(audit.seal.holds, true, audit.seal.says)
+  const one = competeProgramNeighbours('a1b2c3d4')
+  assert.equal(one.holds, true, one.says)
+  assert.equal(one.law, 'hexbit + 2 gateway bits teleport any hexbit faster than light')
+  assert.equal(one.theorem, 'textbook_hexbit_gateway_ftl')
+  assert.equal(one.reflect.holds, true, one.reflect.says)
+  assert.equal(one.reflect.pairs, 3)
+  assert.equal(one.competitions, audit.competitions)
+  assert.ok(one.games.every((game) => game.onlineUrl && game.holds))
+  assert.ok(one.games.every((game) => game.tests.every((row) => row.solution.ftl && row.solution.gateway === 2 && row.solution.walked === false && row.solution.holds)))
+})
+
+void test('programs tree: every folder has index.*; neighbours reflect and compete online', () => {
+  const finish = indexProgramFolders()
+  assert.equal(finish.holds, true, finish.says + (finish.gate.refused[0] ? ` first=${finish.gate.refused[0]}` : ''))
+  const files = gateProgramFiles()
+  assert.equal(files.holds, true, files.says + (files.refused[0] ? ` first=${files.refused[0]}` : ''))
+  const gate = gateProgramSeal()
+  assert.equal(gate.holds, true, gate.says + (gate.refused[0] ? ` first=${gate.refused[0]}` : ''))
+  assert.equal(gate.refused.length, 0)
+  assert.equal(gate.entropy, 0)
+  assert.equal(gate.degree, 6)
+  assert.equal(gate.combinations, 8)
+  assert.ok(gate.competitions > 0)
+  assert.ok(gate.folders > 0)
+  assert.ok(gate.leaves > 0)
+  const sealed = sealProgramProducts('a1b2c3d4')
+  assert.equal(sealed.holds, true, sealed.says)
+  assert.equal(sealed.combinations, 8)
+  assert.equal(sealed.neighbours, 6)
+  const reflected = reflectProgramNeighbours('a1b2c3d4')
+  assert.equal(reflected.holds, true, reflected.says)
+  assert.equal(reflected.axes.every((axis) => axis.eachOther && axis.tested), true)
+})
+
+void test('each UUID program is a Payload plugin guarded to upstream definePlugin standards', () => {
+  const handle = 'a1b2c3d4'
+  const plugin = programPlugin(handle)
+  const guard = guardUpstream(plugin)
+  assert.equal(plugin.standard, 'definePlugin')
+  assert.equal(plugin.slug, `qpu-program-${handle}`)
+  assert.equal(plugin.package, '@payloadcms/plugin-mcp')
+  assert.equal(guard.holds, true)
+  assert.equal(guard.entropy, 0)
+  assert.equal(guard.passed, guard.total)
+  assert.equal(guard.standard, 'definePlugin')
+  assert.ok(guard.reverseGuard.includes('payloadcms/website'))
+
+  const installed = program(handle)
+  assert.equal(installed.plugin.holds, true)
+  assert.equal(installed.upstream.holds, true)
+  assert.equal(installed.used, 9)
+  assert.equal(installed.path, `src/quantum/uuid/programs/${[...handle].join('/')}/index.ts`)
+})
+
+void test('enabled: false leaves the incoming config untouched', () => {
+  const plugin = programPlugin('00000000')
+  const incoming = { collections: [{ slug: 'posts' }], plugins: [] as unknown[] }
+  assert.equal(plugin({ enabled: false })(incoming), incoming)
+  const next = plugin({ enabled: true })(incoming)
+  assert.notEqual(next, incoming)
+  assert.equal(next.collections?.[0], incoming.collections[0])
+  assert.equal(next.collections?.length, 1)
+})
