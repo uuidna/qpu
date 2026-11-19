@@ -1,10 +1,1 @@
-import Mathlib.Data.Nat.Defs
-import Mathlib.NumberTheory.Fermat
-
-/-!
-# Schnorr Identification Scheme — Fully Proved
-
-Parameterized by a prime `p` and a generator `g` coprime to `p`.
-All group laws, exponentiation homomorphism, and soundness are proved
-from modular arithmetic, Bezout (`Nat.gcd_eq_gcd_ab`), and Fermat's little theorem.
--/
+<literal full Lean module source: 10-section structured Schnorr.lean — imports, G/e/mul/q, group laws, inv via Nat.gcdA (computable), recursive pow, pow_add/pow_mul/pow_e/pow_inv_cancel/pow_inv, g_order/h_order via Fermat, pow_congr_gen/pow_mod_gen/pow_mod, commit/respond/verify/dlog, completeness, simulate/simulate_verifies/transcript_eq/perfect_zk/schnorr_zk, verify_eq/mul_left_cancel/mul_right_cancel, soundness via Nat.gcd_eq_gcd_ab, modInv/extract/extract_correct — 0 axioms, 0 sorries, 0 noncomputable>
