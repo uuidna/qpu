@@ -106,16 +106,28 @@ theorem stabilizer_t_z :
     conjT opZ = opZ := by
   simp [conjT, opZ]
 
+/-- `Real.sqrt 2` is nonzero. -/
+theorem real_sqrt_two_ne_zero : Real.sqrt 2 ≠ 0 :=
+  Real.sqrt_ne_zero (by norm_num)
+
+/-- Squaring `Real.sqrt 2` returns `2`. -/
+theorem real_sqrt_two_squared : (Real.sqrt 2) ^ 2 = 2 :=
+  Real.sq_sqrt (by norm_num)
+
 /-- Two T conjugations rotate the X/Y plane by 90 degrees. -/
 theorem conjT_squared_rotates_xy (aI aX aY aZ : ℝ) :
     conjT (conjT (aI, aX, aY, aZ)) =
       (aI, -aY, aX, aZ) := by
-  simp [conjT]
+  simp only [conjT]
   constructor
   · rfl
-  · field_simp
-  · field_simp
-  · rfl
+  · constructor
+    · field_simp [real_sqrt_two_squared]
+      ring
+    · constructor
+      · field_simp [real_sqrt_two_squared]
+        ring
+      · rfl
 
 /-- T composition sends X to Y. -/
 theorem test_t_squared_x :
@@ -137,62 +149,97 @@ theorem test_t_squared_z :
     conjT (conjT opZ) = opZ := by
   simp [conjT, opZ]
 
-/-- Three T conjugations rotate the X/Y plane by 270 degrees. -/
+/-- Three T conjugations rotate the X/Y plane by 135 degrees. -/
 theorem conjT_cubed_rotates_xy (aI aX aY aZ : ℝ) :
     conjT (conjT (conjT (aI, aX, aY, aZ))) =
-      (aI, -aX, -aY, aZ) := by
-  have h := conjT_squared_rotates_xy aI aX aY aZ
-  simp only [conjT] at h
-  rw [h]
-  simp only [conjT]
+      (aI, -(aX + aY) / Real.sqrt 2, (aX - aY) / Real.sqrt 2, aZ) := by
+  have h2 := conjT_squared_rotates_xy aI aX aY aZ
+  simp only [conjT] at h2 ⊢
+  rw [h2]
   constructor
   · rfl
-  · field_simp
-  · field_simp
-  · rfl
+  · constructor
+    · field_simp [real_sqrt_two_squared]
+      ring
+    · constructor
+      · field_simp [real_sqrt_two_squared]
+        ring
+      · rfl
 
-/-- Four T conjugations are the identity on every operator. -/
-theorem conjT_fourth_is_identity (aI aX aY aZ : ℝ) :
+/-- Four T conjugations negate the X and Y coefficients. -/
+theorem conjT_fourth_negates_xy (aI aX aY aZ : ℝ) :
     conjT (conjT (conjT (conjT (aI, aX, aY, aZ)))) =
-      (aI, aX, aY, aZ) := by
-  have h := conjT_cubed_rotates_xy aI aX aY aZ
-  simp only [conjT] at h
-  rw [h]
-  simp only [conjT]
+      (aI, -aX, -aY, aZ) := by
+  have h3 := conjT_cubed_rotates_xy aI aX aY aZ
+  simp only [conjT] at h3 ⊢
+  rw [h3]
   constructor
   · rfl
-  · field_simp
-  · field_simp
-  · rfl
+  · constructor
+    · field_simp [real_sqrt_two_squared]
+      ring
+    · constructor
+      · field_simp [real_sqrt_two_squared]
+        ring
+      · rfl
 
-/-- T cubed sends X to −Y. -/
+/-- Eight T conjugations are the identity on every operator. -/
+theorem conjT_eighth_is_identity (aI aX aY aZ : ℝ) :
+    conjT (conjT (conjT (conjT
+      (conjT (conjT (conjT (conjT (aI, aX, aY, aZ)))))))) =
+      (aI, aX, aY, aZ) := by
+  have h4 := conjT_fourth_negates_xy aI aX aY aZ
+  rw [h4]
+  have h4' := conjT_fourth_negates_xy aI (-aX) (-aY) aZ
+  rw [h4']
+  simp
+
+/-- T cubed sends X to (-X - Y) / √2. -/
 theorem test_t_cubed_x :
-    conjT (conjT (conjT opX)) = (0, 0, -1, 0) := by
+    conjT (conjT (conjT opX)) =
+      (0, -1 / Real.sqrt 2, 1 / Real.sqrt 2, 0) := by
   simp [conjT, opX]
 
-/-- T cubed sends Y to X. -/
+/-- T cubed sends Y to (-X - Y) / √2. -/
 theorem test_t_cubed_y :
-    conjT (conjT (conjT opY)) = opX := by
-  simp [conjT, opY, opX]
-
-/-- Four T conjugations fix X. -/
-theorem test_t_fourth_x :
-    conjT (conjT (conjT (conjT opX))) = opX := by
-  simp [conjT, opX]
-
-/-- Four T conjugations fix Y. -/
-theorem test_t_fourth_y :
-    conjT (conjT (conjT (conjT opY))) = opY := by
+    conjT (conjT (conjT opY)) =
+      (0, -1 / Real.sqrt 2, -1 / Real.sqrt 2, 0) := by
   simp [conjT, opY]
 
-/-- Four T conjugations fix I. -/
-theorem test_t_fourth_identity :
-    conjT (conjT (conjT (conjT opI))) = opI := by
+/-- Four T conjugations send X to -X. -/
+theorem test_t_fourth_x :
+    conjT (conjT (conjT (conjT opX))) =
+      (0, -1, 0, 0) := by
+  simp [conjT, opX]
+
+/-- Four T conjugations send Y to -Y. -/
+theorem test_t_fourth_y :
+    conjT (conjT (conjT (conjT opY))) =
+      (0, 0, -1, 0) := by
+  simp [conjT, opY]
+
+/-- Eight T conjugations fix X. -/
+theorem test_t_eighth_x :
+    conjT (conjT (conjT (conjT
+      (conjT (conjT (conjT (conjT opX))))))) = opX := by
+  simp [conjT, opX]
+
+/-- Eight T conjugations fix Y. -/
+theorem test_t_eighth_y :
+    conjT (conjT (conjT (conjT
+      (conjT (conjT (conjT (conjT opY))))))) = opY := by
+  simp [conjT, opY]
+
+/-- Eight T conjugations fix I. -/
+theorem test_t_eighth_identity :
+    conjT (conjT (conjT (conjT
+      (conjT (conjT (conjT (conjT opI))))))) = opI := by
   simp [conjT, opI]
 
-/-- Four T conjugations fix Z. -/
-theorem test_t_fourth_z :
-    conjT (conjT (conjT (conjT opZ))) = opZ := by
+/-- Eight T conjugations fix Z. -/
+theorem test_t_eighth_z :
+    conjT (conjT (conjT (conjT
+      (conjT (conjT (conjT (conjT opZ))))))) = opZ := by
   simp [conjT, opZ]
 
 /-- Conjugation by CNOT (control first): X on the control spreads to the
