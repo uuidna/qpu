@@ -32,6 +32,9 @@ import Qpu.Leads.FederatedLearning
 import Qpu.Leads.ProgramSynthesis
 import Qpu.Leads.ZeroShotLearning
 import Qpu.Leads.HarmonicClosure
+import Qpu.Physics.HilbertSpace
+import Qpu.Physics.Operator
+import Qpu.Physics.PhysicalConstant
 import Qpu.Verify.Gate
 import Qpu.Verify.Stabilizer
 import Qpu.Verify.Entangle
