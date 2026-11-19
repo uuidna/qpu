@@ -106,4 +106,14 @@ theorem conjCnotSigned_agrees_with_ruleCNOT (k : Nat) (ct : P1 × P1) :
        ct.1.x, ct.1.z ^^ ct.2.z,
        ct.1.x ^^ ct.2.x, ct.2.z⟩ := rfl
 
+/-- The signed CNOT rule is exactly the rule appearing in the proved
+    `Exact CNOT` proposition, with its Boolean phase encoding the parity of
+    the rule's `i^k` phase. -/
+theorem conjCnotSigned_matches_ruleCNOT (k : Nat) (ct : P1 × P1) :
+    CircuitBasedQuantumComputing.ruleCNOT
+      ⟨k, ct.1.x, ct.1.z, ct.2.x, ct.2.z⟩ =
+      ⟨(k + if (conjCnotSigned ct).1 then 2 else 0) % 4,
+       (conjCnotSigned ct).2.1,
+       (conjCnotSigned ct).2.2⟩ := rfl
+
 end Qpu.Verify.Stabilizer
