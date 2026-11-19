@@ -1,1 +1,1 @@
-<FULL actual Lean source: concrete #eval smoke tests (p=7, g=3) for mul/pow/inv/modInv/commit/respond/verify/extract, plus rfl/decide proof-style tests>
+<literal full Lean test source: #eval smoke tests with p=7, g=3 for mul/pow/inv/modInv/commit/respond/verify/extract, plus rfl/decide proof-style tests>
