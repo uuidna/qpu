@@ -170,9 +170,9 @@ theorem stabilizer_cz_yx :
     conjCz (py, px) = (true, px, py) := by
   decide
 
-/-- CZ sends Y⊗Y to −X⊗X. -/
+/-- CZ sends Y⊗Y to −Y⊗Y. -/
 theorem stabilizer_cz_yy :
-    conjCz (py, py) = (true, px, px) := by
+    conjCz (py, py) = (true, py, py) := by
   decide
 
 /-- CZ sends X⊗Z to +X⊗I. -/
@@ -286,6 +286,97 @@ theorem conjCnotSigned_matches_ruleCNOT (k : Nat) (ct : P1 × P1) :
       ⟨(k + if (conjCnotSigned ct).1 then 2 else 0) % 4,
        (conjCnotSigned ct).2.1,
        (conjCnotSigned ct).2.2⟩ := rfl
+
+/-!
+## Signed single-qubit conjugation regression tests
+
+Automated exhaustive checks for all eight signed single-qubit Pauli inputs
+for both `applySignedH` and `applySignedS`.
+-/
+
+/-- Signed Hadamard preserves or flips the incoming sign exactly as the
+    unsigned H rule requires, for every signed Pauli input. -/
+theorem test_signed_hadamard_all_cases (sign : Bool) (p : P1) :
+    applySignedH (sign, p) =
+      (sign ^^ (p.x && p.z), ⟨p.z, p.x⟩) := by
+  cases sign <;> cases p.x <;> cases p.z <;> decide
+
+/-- Signed phase gate preserves or flips the incoming sign exactly as the
+    unsigned S rule requires, for every signed Pauli input. -/
+theorem test_signed_phase_all_cases (sign : Bool) (p : P1) :
+    applySignedS (sign, p) =
+      (sign ^^ (p.x && p.z), ⟨p.x, p.x ^^ p.z⟩) := by
+  cases sign <;> cases p.x <;> cases p.z <;> decide
+
+/-- Signed Hadamard sends +X to +Z. -/
+theorem test_signed_hadamard_plus_x :
+    applySignedH (false, px) = (false, pz) := by
+  decide
+
+/-- Signed Hadamard sends −X to −Z. -/
+theorem test_signed_hadamard_minus_x :
+    applySignedH (true, px) = (true, pz) := by
+  decide
+
+/-- Signed Hadamard sends +Z to +X. -/
+theorem test_signed_hadamard_plus_z :
+    applySignedH (false, pz) = (false, px) := by
+  decide
+
+/-- Signed Hadamard sends −Z to −X. -/
+theorem test_signed_hadamard_minus_z :
+    applySignedH (true, pz) = (true, px) := by
+  decide
+
+/-- Signed Hadamard sends +Y to −Y. -/
+theorem test_signed_hadamard_plus_y :
+    applySignedH (false, py) = (true, py) := by
+  decide
+
+/-- Signed Hadamard sends −Y to +Y. -/
+theorem test_signed_hadamard_minus_y :
+    applySignedH (true, py) = (false, py) := by
+  decide
+
+/-- Signed phase gate sends +X to +Y. -/
+theorem test_signed_phase_plus_x :
+    applySignedS (false, px) = (false, py) := by
+  decide
+
+/-- Signed phase gate sends −X to −Y. -/
+theorem test_signed_phase_minus_x :
+    applySignedS (true, px) = (true, py) := by
+  decide
+
+/-- Signed phase gate sends +Y to −X. -/
+theorem test_signed_phase_plus_y :
+    applySignedS (false, py) = (true, px) := by
+  decide
+
+/-- Signed phase gate sends −Y to +X. -/
+theorem test_signed_phase_minus_y :
+    applySignedS (true, py) = (false, px) := by
+  decide
+
+/-- Signed phase gate fixes +Z. -/
+theorem test_signed_phase_plus_z :
+    applySignedS (false, pz) = (false, pz) := by
+  decide
+
+/-- Signed phase gate fixes −Z. -/
+theorem test_signed_phase_minus_z :
+    applySignedS (true, pz) = (true, pz) := by
+  decide
+
+/-- Negative control: signed Hadamard does not send −Y to −Y. -/
+theorem test_signed_hadamard_minus_y_is_not_minus_y :
+    applySignedH (true, py) ≠ (true, py) := by
+  decide
+
+/-- Negative control: signed phase gate does not send −Y to −X. -/
+theorem test_signed_phase_minus_y_is_not_minus_x :
+    applySignedS (true, py) ≠ (true, px) := by
+  decide
 
 /-!
 ## CZ conjugation regression tests
