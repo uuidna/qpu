@@ -66,8 +66,8 @@ importers:
         specifier: 4.0.0-beta.7
         version: 4.0.0-beta.7(@types/react@19.3.0)(monaco-editor@0.57.0)(payload@4.0.0-beta.7(graphql@16.15.0)(supports-color@10.2.2)(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(typescript@6.0.3)
       '@payloadcms/translations':
-        specifier: 4.0.0-beta.7
-        version: 4.0.0-beta.7
+        specifier: 4.0.0-internal.9726517
+        version: 4.0.0-internal.9726517
       '@payloadcms/ui':
         specifier: 4.0.0-beta.7
         version: 4.0.0-beta.7(@types/react@19.3.0)(monaco-editor@0.57.0)(payload@4.0.0-beta.7(graphql@16.15.0)(supports-color@10.2.2)(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(typescript@6.0.3)
@@ -2660,6 +2660,9 @@ packages:
   '@payloadcms/translations@4.0.0-beta.7':
     resolution: {integrity: sha512-6tBxIF7ijA/M+sK1Mj3F9aArO3BIdvMqtgn3GHRxTALO6fj8tMngpdIYbOnx4+vqg6KYwyFt9bNV4HkhMqdLwA==}
 
+  '@payloadcms/translations@4.0.0-internal.9726517':
+    resolution: {integrity: sha512-K+ttewwFBuevQcvGV1P3o+1GqnLdDzyxPApnsU4N4+Cvmb4xjq7MIvHWLY3FLRXS3xcyWwoS6AwVR5g+9GPkqg==}
+
   '@payloadcms/ui@4.0.0-beta.7':
     resolution: {integrity: sha512-PpqvdGuLPBxx4wC+nMJNmlMPc/Q1l74/Vqm+YZzxwuNjzVunKk35E7bp+h0YyzvJHHl/oG9GyarUK/iD9ebgSQ==}
     engines: {node: '>=24.22.1'}
@@ -4567,6 +4570,9 @@ packages:
 
   dataloader@2.2.3:
     resolution: {integrity: sha512-y2krtASINtPFS1rSDjacrFgn1dcUuoREVabwlOGOe4SdxenREqwjwjElAdwvbGM7kgZz9a3KVicWR7vcz8rnzA==}
+
+  date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
 
   date-fns@4.4.0:
     resolution: {integrity: sha512-+1UMbeh68lH1SegH83CGWwpb6OHHbpSgr3+s5Eww5M4CAgswBpoWS0AjTOfEJ33HiYKz1hdj/KTFprzXHmq/6w==}
@@ -10291,6 +10297,10 @@ snapshots:
     dependencies:
       date-fns: 4.4.0
 
+  '@payloadcms/translations@4.0.0-internal.9726517':
+    dependencies:
+      date-fns: 4.1.0
+
   '@payloadcms/ui@4.0.0-beta.7(@types/react@19.3.0)(monaco-editor@0.57.0)(payload@4.0.0-beta.7(graphql@16.15.0)(supports-color@10.2.2)(typescript@6.0.3))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)(typescript@6.0.3)':
     dependencies:
       '@date-fns/tz': 1.2.0
@@ -12248,6 +12258,8 @@ snapshots:
       is-data-view: 1.0.2
 
   dataloader@2.2.3: {}
+
+  date-fns@4.1.0: {}
 
   date-fns@4.4.0: {}
 
