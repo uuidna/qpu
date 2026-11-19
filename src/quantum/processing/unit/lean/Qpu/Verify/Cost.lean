@@ -56,5 +56,6 @@ theorem the_anchor_holds : category2 ≤ chained (collision 256) 1 := by decide
 theorem forging_costs_more_than_verifying (bits seams : Nat) :
     verify ≤ chained (preimage (bits + 1)) (seams + 1) := by
   simp [verify, chained, preimage]
+  exact Nat.succ_le_succ (Nat.zero_le _)
 
 end Qpu.Verify.Cost

@@ -32,7 +32,8 @@ lake build
 ```
 
 The library root `Qpu.lean` imports every `Qpu/Verify/*` module, so a plain
-`lake build` kernel-checks the whole corpus.
+`lake build` kernel-checks the whole corpus. CI does the same via
+`.github/workflows/lean-verify.yml` on every push and pull request.
 
 ## Exporter PoC
 
