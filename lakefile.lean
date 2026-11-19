@@ -16,3 +16,6 @@ lean_lib Qpu where
     `Qpu.Verify.Stabilizer,
     `Qpu.Verify.Uuid
   ]
+
+lean_exe qpu_corpus_invalid_manifest_test where
+  root := `Qpu.Benchmark.CorpusInvalidManifestTest
