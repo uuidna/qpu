@@ -53,6 +53,20 @@ def applySignedSdg (v : Signed) : Signed :=
 def conjCnot (ct : P1 × P1) : P1 × P1 :=
   (⟨ct.1.x, ct.1.z ^^ ct.2.z⟩, ⟨ct.1.x ^^ ct.2.x, ct.2.z⟩)
 
+/-- Conjugation by SWAP: exchanges the two qubits' Pauli factors.
+    SWAP·(P⊗Q)·SWAP = Q⊗P, with no sign change. -/
+def conjSwap (ct : P1 × P1) : P1 × P1 :=
+  (ct.2, ct.1)
+
+/-- SWAP is an involution on every two-qubit Pauli pair. -/
+theorem stabilizer_swap_involution (ct : P1 × P1) :
+    conjSwap (conjSwap ct) = ct := by
+  cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
+
+/-- SWAP exchanges the two qubits' Pauli factors. -/
+theorem stabilizer_swap_exchanges_factors (ct : P1 × P1) :
+    conjSwap ct = (ct.2, ct.1) := rfl
+
 /-- Signed two-qubit Pauli: one global phase sign plus the two Pauli bits. -/
 abbrev Signed2 := Bool × P1 × P1
 
@@ -63,6 +77,89 @@ def conjCnotSigned (ct : P1 × P1) : Signed2 :=
   (ct.1.x && ct.2.z && (ct.2.x == ct.1.z),
    ⟨ct.1.x, ct.1.z ^^ ct.2.z⟩,
    ⟨ct.1.x ^^ ct.2.x, ct.2.z⟩)
+
+/-- Conjugation by CZ: X and Z supports are unchanged; the sign flips
+    exactly when both qubits have an X component. -/
+def conjCz (ct : P1 × P1) : Signed2 :=
+  (ct.1.x && ct.2.x, ⟨ct.1.x, ct.1.z⟩, ⟨ct.2.x, ct.2.z⟩)
+
+/-- CZ is an involution on every signed two-qubit Pauli pair. -/
+theorem stabilizer_cz_involution (ct : P1 × P1) :
+    conjCz (conjCz ct) = (false, ct.1, ct.2) := by
+  cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
+
+/-- CZ preserves the X and Z supports of both qubits. -/
+theorem stabilizer_cz_support_rule (ct : P1 × P1) :
+    (conjCz ct).2.1 = ct.1 ∧
+    (conjCz ct).2.2 = ct.2 := by
+  cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
+
+/-- CZ flips the sign exactly when both qubits have X support. -/
+theorem stabilizer_cz_sign_rule (ct : P1 × P1) :
+    (conjCz ct).1 = (ct.1.x && ct.2.x) := by
+  cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
+
+/-- CZ sends X⊗X to −X⊗X. -/
+theorem stabilizer_cz_xx :
+    conjCz (px, px) = (true, px, px) := by
+  decide
+
+/-- CZ sends X⊗Y to −X⊗Y. -/
+theorem stabilizer_cz_xy :
+    conjCz (px, py) = (true, px, py) := by
+  decide
+
+/-- CZ sends Y⊗X to −Y⊗X. -/
+theorem stabilizer_cz_yx :
+    conjCz (py, px) = (true, py, px) := by
+  decide
+
+/-- CZ sends Y⊗Y to −Y⊗Y. -/
+theorem stabilizer_cz_yy :
+    conjCz (py, py) = (true, py, py) := by
+  decide
+
+/-- CZ sends X⊗Z to +X⊗Z. -/
+theorem stabilizer_cz_xz :
+    conjCz (px, pz) = (false, px, pz) := by
+  decide
+
+/-- CZ sends Z⊗X to +Z⊗X. -/
+theorem stabilizer_cz_zx :
+    conjCz (pz, px) = (false, pz, px) := by
+  decide
+
+/-- CZ sends Y⊗Z to +Y⊗Z. -/
+theorem stabilizer_cz_yz :
+    conjCz (py, pz) = (false, py, pz) := by
+  decide
+
+/-- CZ sends Z⊗Y to +Z⊗Y. -/
+theorem stabilizer_cz_zy :
+    conjCz (pz, py) = (false, pz, py) := by
+  decide
+
+/-- CZ sends Y⊗I to +Y⊗I. -/
+theorem stabilizer_cz_yi :
+    conjCz (py, pi) = (false, py, pi) := by
+  decide
+
+/-- CZ sends I⊗Y to +I⊗Y. -/
+theorem stabilizer_cz_iy :
+    conjCz (pi, py) = (false, pi, py) := by
+  decide
+
+/-- CZ sends Z⊗Z to +Z⊗Z. -/
+theorem stabilizer_cz_zz :
+    conjCz (pz, pz) = (false, pz, pz) := by
+  decide
+
+/-- CZ commutes with a two-qubit Pauli exactly when at least one qubit has
+    no X support. -/
+theorem stabilizer_cz_commutation_rule (ct : P1 × P1) :
+    (conjCz ct = (false, ct.1, ct.2)) ↔
+      (ct.1.x = false ∨ ct.2.x = false) := by
+  cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
 
 /-- H·X·H = +Z. -/
 theorem stabilizer_hadamard_x : conjH px = (false, pz) := by decide
