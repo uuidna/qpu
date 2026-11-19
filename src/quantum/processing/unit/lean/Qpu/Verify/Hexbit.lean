@@ -1,21 +1,27 @@
 /-
   Qpu.Verify.Hexbit — nibble/hex round-trips and 32-bit routing-prefix arithmetic.
+
+  Hex digits are handled as ASCII *code points* (plain `Nat`) rather than the
+  `Char` type: `96`–`102` etc. reduces entirely inside kernel integer
+  arithmetic, with no `Char`/`UInt32` unfolding on the proof-checking path.
 -/
 namespace Qpu.Verify.Hexbit
 
-/-- Nibble 0..15 to lowercase hex character. -/
-def hexChar (n : Nat) : Char :=
-  if n < 10 then Char.ofNat (48 + n) else Char.ofNat (87 + n)
+/-- Nibble 0..15 to the ASCII code of its lowercase hex character. -/
+def hexCode (n : Nat) : Nat := if n < 10 then 48 + n else 87 + n
 
-/-- Hex character back to nibble; 256 signals "not a hex digit". -/
-def hexVal (c : Char) : Nat :=
-  let u := c.toNat
-  if 48 ≤ u && u < 58 then u - 48
-  else if 97 ≤ u && u < 103 then u - 87
+/-- ASCII code back to nibble; 256 signals "not a hex digit".
+    Each `if` tests exactly one condition — no cross-coercions. -/
+def unhexCode (c : Nat) : Nat :=
+  if 48 ≤ c then
+    if c < 58 then c - 48
+    else if 97 ≤ c then
+      if c < 103 then c - 87 else 256
+    else 256
   else 256
 
 /-- Every nibble survives the round trip. -/
-theorem hex_roundtrips (n : Nat) (h : n < 16) : hexVal (hexChar n) = n := by
+theorem hex_roundtrips (n : Nat) (h : n < 16) : unhexCode (hexCode n) = n := by
   match n, h with
   | 0, _ => decide
   | 1, _ => decide
@@ -35,8 +41,11 @@ theorem hex_roundtrips (n : Nat) (h : n < 16) : hexVal (hexChar n) = n := by
   | 15, _ => decide
   | _+16, h => omega
 
-/-- Control: a non-hex character does not decode to a nibble. -/
-theorem non_hex_is_rejected : hexVal 'g' = 256 := by decide
+/-- Control: the ASCII code of 'g' (103) does not decode to a nibble. -/
+theorem non_hex_is_rejected : unhexCode 103 = 256 := by decide
+
+/-- Control: the ASCII code of ':' (58) falls between digits and letters. -/
+theorem gap_is_rejected : unhexCode 58 = 256 := by decide
 
 /-- Routing: the 32-bit hexbit prefix of a 64-bit id is its high half. -/
 theorem prefix_is_high_half :
