@@ -8,7 +8,7 @@ on:
     branches:
       - main
       - benchmark/real-corpus-runs
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -25,9 +25,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Lean toolchain
-        uses: leanprovergh/lean-action@v1
-        with:
-          lean-version: file:lean-toolchain
+        uses: leanprover/lean-action@v1
 
       - name: Build qpu Lean library
         run: lake build
