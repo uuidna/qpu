@@ -14,7 +14,9 @@ lean_lib Qpu where
     `Qpu.Verify.Hexbit,
     `Qpu.Verify.Receipt,
     `Qpu.Verify.Stabilizer,
-    `Qpu.Verify.Uuid
+    `Qpu.Verify.Uuid,
+    `Qpu.Benchmark.Corpus,
+    `Qpu.Benchmark.Runner
   ]
 
 lean_exe qpu_corpus_invalid_manifest_test where
