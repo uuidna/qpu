@@ -1,0 +1,28 @@
+{
+  "corpusId": "cirq-bell",
+  "framework": "cirq",
+  "workloadType": "statevector_sampling",
+  "inputFormat": "cirq-json-v1",
+  "inputCount": 1000,
+  "canonicalization": "cirq-json-v1",
+  "digestAlgorithm": "sha256",
+  "workload": {
+    "qubits": 2,
+    "gates": ["H", "CNOT"],
+    "measurementKey": "result",
+    "repetitions": 1000,
+    "simulator": "cirq.Simulator",
+    "seed": 20261119
+  },
+  "expectedResult": {
+    "type": "measurement_histogram",
+    "support": ["00", "11"],
+    "expectedProbability": 0.5,
+    "tolerance": 0.05
+  },
+  "cachePolicy": {
+    "reuseFactors": [1, 2, 5, 10],
+    "repetitions": 7,
+    "warmups": 1
+  }
+}

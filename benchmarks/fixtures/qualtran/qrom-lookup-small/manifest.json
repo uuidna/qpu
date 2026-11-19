@@ -1,0 +1,65 @@
+{
+  "corpusId": "qualtran-qrom-lookup-small",
+  "framework": "qualtran",
+  "workloadType": "resource_estimation",
+  "inputFormat": "qualtran-bloq-json-v1",
+  "inputCount": 1000,
+  "canonicalization": "qualtran-bloq-json-v1",
+  "digestAlgorithm": "sha256",
+  "workload": {
+    "bloqModule": "qualtran.bloqs.data_loading.qrom",
+    "bloqName": "QROM",
+    "parameters": {
+      "selectionBitsizes": [4],
+      "targetShapes": [[16]],
+      "targetBitsizes": [8],
+      "numControls": 0
+    },
+    "data": {
+      "type": "deterministic",
+      "length": 16,
+      "elementBitsize": 8,
+      "generator": "pinned"
+    },
+    "decomposition": "pinned",
+    "adjoint": false,
+    "resourceEstimation": {
+      "target": "t_counts_and_qubits",
+      "method": "call_graph",
+      "errorCorrection": "none",
+      "hardwareModel": "none",
+      "generalizer": "none"
+    }
+  },
+  "expectedResult": {
+    "type": "resource_counts",
+    "fields": {
+      "t_count": {
+        "type": "integer",
+        "comparison": "exact",
+        "tolerance": 0
+      },
+      "clifford_count": {
+        "type": "integer",
+        "comparison": "exact",
+        "tolerance": 0
+      },
+      "rotations": {
+        "type": "integer",
+        "comparison": "exact",
+        "tolerance": 0
+      },
+      "qubit_count": {
+        "type": "integer_or_symbolic",
+        "comparison": "exact_if_integer",
+        "tolerance": 0,
+        "fallback": "symbolic_expression_match"
+      }
+    }
+  },
+  "cachePolicy": {
+    "reuseFactors": [1, 2, 5, 10],
+    "repetitions": 7,
+    "warmups": 1
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "corpusId": "qsim-statevector-16q",
+  "framework": "qsim",
+  "workloadType": "statevector_sampling",
+  "inputFormat": "cirq-json-v1",
+  "inputCount": 1000,
+  "canonicalization": "cirq-json-v1",
+  "digestAlgorithm": "sha256",
+  "workload": {
+    "qubits": 16,
+    "measurementKey": "result",
+    "repetitions": 1000,
+    "simulator": "qsimcirq.QSimSimulator",
+    "seed": 20261119
+  },
+  "expectedResult": {
+    "type": "measurement_histogram",
+    "validation": "chi_square_or_exact_multinomial",
+    "significance": 0.01
+  },
+  "cachePolicy": {
+    "reuseFactors": [1, 2, 5, 10],
+    "repetitions": 7,
+    "warmups": 1
+  }
+}
