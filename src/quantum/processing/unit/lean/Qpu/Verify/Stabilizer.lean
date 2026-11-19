@@ -105,20 +105,29 @@ def conjCnotSigned (ct : P1 × P1) : Signed2 :=
    ⟨ct.1.x, ct.1.z ^^ ct.2.z⟩,
    ⟨ct.1.x ^^ ct.2.x, ct.2.z⟩)
 
-/-- Conjugation by CZ: X and Z supports are unchanged; the sign flips
-    exactly when both qubits have an X component. -/
+/-- Conjugation by CZ: X supports are unchanged; each Z bit XORs in the
+    other qubit's X bit. The sign flips exactly when both qubits have X
+    support. -/
 def conjCz (ct : P1 × P1) : Signed2 :=
-  (ct.1.x && ct.2.x, ⟨ct.1.x, ct.1.z⟩, ⟨ct.2.x, ct.2.z⟩)
+  (ct.1.x && ct.2.x,
+   ⟨ct.1.x, ct.1.z ^^ ct.2.x⟩,
+   ⟨ct.2.x, ct.2.z ^^ ct.1.x⟩)
 
 /-- CZ is an involution on every signed two-qubit Pauli pair. -/
 theorem stabilizer_cz_involution (ct : P1 × P1) :
     conjCz (conjCz ct) = (false, ct.1, ct.2) := by
   cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
 
-/-- CZ preserves the X and Z supports of both qubits. -/
-theorem stabilizer_cz_support_rule (ct : P1 × P1) :
-    (conjCz ct).2.1 = ct.1 ∧
-    (conjCz ct).2.2 = ct.2 := by
+/-- CZ preserves the X supports of both qubits. -/
+theorem stabilizer_cz_x_support_rule (ct : P1 × P1) :
+    (conjCz ct).2.1.x = ct.1.x ∧
+    (conjCz ct).2.2.x = ct.2.x := by
+  cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
+
+/-- CZ updates each Z bit by XORing in the other qubit's X bit. -/
+theorem stabilizer_cz_z_support_rule (ct : P1 × P1) :
+    (conjCz ct).2.1.z = (ct.1.z ^^ ct.2.x) ∧
+    (conjCz ct).2.2.z = (ct.2.z ^^ ct.1.x) := by
   cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
 
 /-- CZ flips the sign exactly when both qubits have X support. -/
@@ -126,57 +135,77 @@ theorem stabilizer_cz_sign_rule (ct : P1 × P1) :
     (conjCz ct).1 = (ct.1.x && ct.2.x) := by
   cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
 
-/-- CZ sends X⊗X to −X⊗X. -/
+/-- CZ sends X⊗I to +X⊗Z. -/
+theorem stabilizer_cz_xi :
+    conjCz (px, pi) = (false, px, pz) := by
+  decide
+
+/-- CZ sends I⊗X to +Z⊗X. -/
+theorem stabilizer_cz_ix :
+    conjCz (pi, px) = (false, pz, px) := by
+  decide
+
+/-- CZ fixes Z⊗I. -/
+theorem stabilizer_cz_zi :
+    conjCz (pz, pi) = (false, pz, pi) := by
+  decide
+
+/-- CZ fixes I⊗Z. -/
+theorem stabilizer_cz_iz :
+    conjCz (pi, pz) = (false, pi, pz) := by
+  decide
+
+/-- CZ sends X⊗X to −Y⊗Y. -/
 theorem stabilizer_cz_xx :
-    conjCz (px, px) = (true, px, px) := by
+    conjCz (px, px) = (true, py, py) := by
   decide
 
-/-- CZ sends X⊗Y to −X⊗Y. -/
+/-- CZ sends X⊗Y to −Y⊗X. -/
 theorem stabilizer_cz_xy :
-    conjCz (px, py) = (true, px, py) := by
+    conjCz (px, py) = (true, py, px) := by
   decide
 
-/-- CZ sends Y⊗X to −Y⊗X. -/
+/-- CZ sends Y⊗X to −X⊗Y. -/
 theorem stabilizer_cz_yx :
-    conjCz (py, px) = (true, py, px) := by
+    conjCz (py, px) = (true, px, py) := by
   decide
 
-/-- CZ sends Y⊗Y to −Y⊗Y. -/
+/-- CZ sends Y⊗Y to −X⊗X. -/
 theorem stabilizer_cz_yy :
-    conjCz (py, py) = (true, py, py) := by
+    conjCz (py, py) = (true, px, px) := by
   decide
 
-/-- CZ sends X⊗Z to +X⊗Z. -/
+/-- CZ sends X⊗Z to +X⊗I. -/
 theorem stabilizer_cz_xz :
-    conjCz (px, pz) = (false, px, pz) := by
+    conjCz (px, pz) = (false, px, pi) := by
   decide
 
-/-- CZ sends Z⊗X to +Z⊗X. -/
+/-- CZ sends Z⊗X to +I⊗X. -/
 theorem stabilizer_cz_zx :
-    conjCz (pz, px) = (false, pz, px) := by
+    conjCz (pz, px) = (false, pi, px) := by
   decide
 
-/-- CZ sends Y⊗Z to +Y⊗Z. -/
+/-- CZ sends Y⊗Z to +Y⊗I. -/
 theorem stabilizer_cz_yz :
-    conjCz (py, pz) = (false, py, pz) := by
+    conjCz (py, pz) = (false, py, pi) := by
   decide
 
-/-- CZ sends Z⊗Y to +Z⊗Y. -/
+/-- CZ sends Z⊗Y to +I⊗Y. -/
 theorem stabilizer_cz_zy :
-    conjCz (pz, py) = (false, pz, py) := by
+    conjCz (pz, py) = (false, pi, py) := by
   decide
 
-/-- CZ sends Y⊗I to +Y⊗I. -/
+/-- CZ sends Y⊗I to +Y⊗Z. -/
 theorem stabilizer_cz_yi :
-    conjCz (py, pi) = (false, py, pi) := by
+    conjCz (py, pi) = (false, py, pz) := by
   decide
 
-/-- CZ sends I⊗Y to +I⊗Y. -/
+/-- CZ sends I⊗Y to +Z⊗Y. -/
 theorem stabilizer_cz_iy :
-    conjCz (pi, py) = (false, pi, py) := by
+    conjCz (pi, py) = (false, pz, py) := by
   decide
 
-/-- CZ sends Z⊗Z to +Z⊗Z. -/
+/-- CZ fixes Z⊗Z. -/
 theorem stabilizer_cz_zz :
     conjCz (pz, pz) = (false, pz, pz) := by
   decide
@@ -270,14 +299,14 @@ theorem test_cz_identity :
     conjCz (pi, pi) = (false, pi, pi) := by
   decide
 
-/-- CZ fixes X⊗I. -/
+/-- CZ sends X⊗I to +X⊗Z. -/
 theorem test_cz_xi :
-    conjCz (px, pi) = (false, px, pi) := by
+    conjCz (px, pi) = (false, px, pz) := by
   decide
 
-/-- CZ fixes I⊗X. -/
+/-- CZ sends I⊗X to +Z⊗X. -/
 theorem test_cz_ix :
-    conjCz (pi, px) = (false, pi, px) := by
+    conjCz (pi, px) = (false, pz, px) := by
   decide
 
 /-- CZ fixes Z⊗I. -/
@@ -290,57 +319,57 @@ theorem test_cz_iz :
     conjCz (pi, pz) = (false, pi, pz) := by
   decide
 
-/-- CZ sends X⊗X to −X⊗X. -/
+/-- CZ sends X⊗X to −Y⊗Y. -/
 theorem test_cz_xx :
-    conjCz (px, px) = (true, px, px) := by
+    conjCz (px, px) = (true, py, py) := by
   decide
 
-/-- CZ sends X⊗Y to −X⊗Y. -/
+/-- CZ sends X⊗Y to −Y⊗X. -/
 theorem test_cz_xy :
-    conjCz (px, py) = (true, px, py) := by
+    conjCz (px, py) = (true, py, px) := by
   decide
 
-/-- CZ sends Y⊗X to −Y⊗X. -/
+/-- CZ sends Y⊗X to −X⊗Y. -/
 theorem test_cz_yx :
-    conjCz (py, px) = (true, py, px) := by
+    conjCz (py, px) = (true, px, py) := by
   decide
 
-/-- CZ sends Y⊗Y to −Y⊗Y. -/
+/-- CZ sends Y⊗Y to −X⊗X. -/
 theorem test_cz_yy :
-    conjCz (py, py) = (true, py, py) := by
+    conjCz (py, py) = (true, px, px) := by
   decide
 
-/-- CZ sends X⊗Z to +X⊗Z. -/
+/-- CZ sends X⊗Z to +X⊗I. -/
 theorem test_cz_xz :
-    conjCz (px, pz) = (false, px, pz) := by
+    conjCz (px, pz) = (false, px, pi) := by
   decide
 
-/-- CZ sends Z⊗X to +Z⊗X. -/
+/-- CZ sends Z⊗X to +I⊗X. -/
 theorem test_cz_zx :
-    conjCz (pz, px) = (false, pz, px) := by
+    conjCz (pz, px) = (false, pi, px) := by
   decide
 
-/-- CZ sends Y⊗Z to +Y⊗Z. -/
+/-- CZ sends Y⊗Z to +Y⊗I. -/
 theorem test_cz_yz :
-    conjCz (py, pz) = (false, py, pz) := by
+    conjCz (py, pz) = (false, py, pi) := by
   decide
 
-/-- CZ sends Z⊗Y to +Z⊗Y. -/
+/-- CZ sends Z⊗Y to +I⊗Y. -/
 theorem test_cz_zy :
-    conjCz (pz, py) = (false, pz, py) := by
+    conjCz (pz, py) = (false, pi, py) := by
   decide
 
-/-- CZ sends Y⊗I to +Y⊗I. -/
+/-- CZ sends Y⊗I to +Y⊗Z. -/
 theorem test_cz_yi :
-    conjCz (py, pi) = (false, py, pi) := by
+    conjCz (py, pi) = (false, py, pz) := by
   decide
 
-/-- CZ sends I⊗Y to +I⊗Y. -/
+/-- CZ sends I⊗Y to +Z⊗Y. -/
 theorem test_cz_iy :
-    conjCz (pi, py) = (false, pi, py) := by
+    conjCz (pi, py) = (false, pz, py) := by
   decide
 
-/-- CZ sends Z⊗Z to +Z⊗Z. -/
+/-- CZ fixes Z⊗Z. -/
 theorem test_cz_zz :
     conjCz (pz, pz) = (false, pz, pz) := by
   decide
