@@ -32,3 +32,11 @@ import Qpu.Leads.FederatedLearning
 import Qpu.Leads.ProgramSynthesis
 import Qpu.Leads.ZeroShotLearning
 import Qpu.Leads.HarmonicClosure
+import Qpu.Verify.Gate
+import Qpu.Verify.Stabilizer
+import Qpu.Verify.Entangle
+import Qpu.Verify.Correct
+import Qpu.Verify.Cost
+import Qpu.Verify.Receipt
+import Qpu.Verify.Hexbit
+import Qpu.Verify.Uuid
