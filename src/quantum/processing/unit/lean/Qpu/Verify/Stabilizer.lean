@@ -106,6 +106,37 @@ theorem stabilizer_t_z :
     conjT opZ = opZ := by
   simp [conjT, opZ]
 
+/-- Two T conjugations rotate the X/Y plane by 90 degrees. -/
+theorem conjT_squared_rotates_xy (aI aX aY aZ : ℝ) :
+    conjT (conjT (aI, aX, aY, aZ)) =
+      (aI, -aY, aX, aZ) := by
+  simp [conjT]
+  constructor
+  · rfl
+  · field_simp
+  · field_simp
+  · rfl
+
+/-- T composition sends X to Y. -/
+theorem test_t_squared_x :
+    conjT (conjT opX) = opY := by
+  simp [conjT, opX, opY]
+
+/-- T composition sends Y to −X. -/
+theorem test_t_squared_y :
+    conjT (conjT opY) = (0, -1, 0, 0) := by
+  simp [conjT, opY]
+
+/-- T composition fixes I. -/
+theorem test_t_squared_identity :
+    conjT (conjT opI) = opI := by
+  simp [conjT, opI]
+
+/-- T composition fixes Z. -/
+theorem test_t_squared_z :
+    conjT (conjT opZ) = opZ := by
+  simp [conjT, opZ]
+
 /-- Conjugation by CNOT (control first): X on the control spreads to the
     target, Z on the target spreads to the control. No sign changes. -/
 def conjCnot (ct : P1 × P1) : P1 × P1 :=
