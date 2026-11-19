@@ -105,6 +105,13 @@ def conjCnotSigned (ct : P1 × P1) : Signed2 :=
    ⟨ct.1.x, ct.1.z ^^ ct.2.z⟩,
    ⟨ct.1.x ^^ ct.2.x, ct.2.z⟩)
 
+/-- Signed CNOT conjugation: preserve the incoming global sign and XOR it with
+    the CNOT-generated phase. -/
+def applySignedCnot : Signed2 → Signed2 :=
+  fun v =>
+    let result := conjCnotSigned (v.2.1, v.2.2)
+    (v.1 ^^ result.1, result.2.1, result.2.2)
+
 /-- Conjugation by CZ: X supports are unchanged; each Z bit XORs in the
     other qubit's X bit. The sign flips exactly when both qubits have X
     support. -/
@@ -274,6 +281,18 @@ theorem stabilizer_cnot_signed_yy :
     not merely the unsigned rule with a constant sign. -/
 theorem stabilizer_cnot_signed_xy :
     conjCnotSigned (px, py) = (false, py, pz) := by decide
+
+/-- Signed CNOT preserves the incoming sign, XORs it with the CNOT phase, and
+    applies the corrected Pauli-bit updates, for every signed two-qubit Pauli. -/
+theorem test_signed_cnot_all_cases
+    (sign : Bool) (pc pt : P1) :
+    applySignedCnot (sign, pc, pt) =
+      (sign ^^ (pc.x && pt.z && (pt.x == pc.z)),
+       ⟨pc.x, pc.z ^^ pt.z⟩,
+       ⟨pc.x ^^ pt.x, pt.z⟩) := by
+  cases sign <;>
+  cases pc.x <;> cases pc.z <;>
+  cases pt.x <;> cases pt.z <;> decide
 
 /-- The signed CNOT rule agrees with the phase-aware matrix-level rule:
     same phase parity and same Pauli-bit updates. -/
