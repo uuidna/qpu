@@ -33,6 +33,17 @@ def conjS (p : P1) : Signed := (p.x && p.z, ⟨p.x, p.x ^^ p.z⟩)
 def conjCnot (ct : P1 × P1) : P1 × P1 :=
   (⟨ct.1.x, ct.1.z ^^ ct.2.z⟩, ⟨ct.1.x ^^ ct.2.x, ct.2.z⟩)
 
+/-- Signed two-qubit Pauli: one global phase sign plus the two Pauli bits. -/
+abbrev Signed2 := Bool × P1 × P1
+
+/-- Signed CNOT conjugation (control first): copies the control's X to the
+    target, copies the target's Z to the control, and applies the Clifford
+    phase correction `x_c · z_t · (x_t ≠ z_c)`. -/
+def conjCnotSigned (ct : P1 × P1) : Signed2 :=
+  (ct.1.x && ct.2.z && (ct.2.x != ct.1.z),
+   ⟨ct.1.x, ct.1.z ^^ ct.2.z⟩,
+   ⟨ct.1.x ^^ ct.2.x, ct.2.z⟩)
+
 /-- H·X·H = +Z. -/
 theorem stabilizer_hadamard_x : conjH px = (false, pz) := by decide
 /-- H·Z·H = +X. -/
@@ -57,5 +68,31 @@ theorem stabilizer_cnot_iz : conjCnot (pi, pz) = (pz, pz) := by decide
 theorem stabilizer_cnot_yi : conjCnot (py, pi) = (py, px) := by decide
 /-- Negative control: S sends Y to −X, never to +X. -/
 theorem phase_y_is_not_plus_x : conjS py ≠ (false, px) := by decide
+
+/-- Signed CNOT sends X⊗I to +X⊗X. -/
+theorem stabilizer_cnot_signed_xi :
+    conjCnotSigned (px, pi) = (false, px, px) := by decide
+/-- Signed CNOT fixes I⊗X. -/
+theorem stabilizer_cnot_signed_ix :
+    conjCnotSigned (pi, px) = (false, pi, px) := by decide
+/-- Signed CNOT fixes Z⊗I. -/
+theorem stabilizer_cnot_signed_zi :
+    conjCnotSigned (pz, pi) = (false, pz, pi) := by decide
+/-- Signed CNOT sends I⊗Z to +Z⊗Z. -/
+theorem stabilizer_cnot_signed_iz :
+    conjCnotSigned (pi, pz) = (false, pz, pz) := by decide
+/-- Signed CNOT sends Y⊗I to +Y⊗X. -/
+theorem stabilizer_cnot_signed_yi :
+    conjCnotSigned (py, pi) = (false, py, px) := by decide
+/-- Signed CNOT sends I⊗Y to +Z⊗Y. -/
+theorem stabilizer_cnot_signed_iy :
+    conjCnotSigned (pi, py) = (false, pz, py) := by decide
+/-- Signed CNOT sends Y⊗Y to +X⊗Z. -/
+theorem stabilizer_cnot_signed_yy :
+    conjCnotSigned (py, py) = (false, px, pz) := by decide
+/-- Negative control: signed CNOT sends X⊗Y to −Y⊗Z, so its phase rule is
+    not merely the unsigned rule with a constant sign. -/
+theorem stabilizer_cnot_signed_xy :
+    conjCnotSigned (px, py) = (true, py, pz) := by decide
 
 end Qpu.Verify.Stabilizer
