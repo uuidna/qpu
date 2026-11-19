@@ -2,8 +2,8 @@
   Qpu.Verify.Hexbit — nibble/hex round-trips and 32-bit routing-prefix arithmetic.
 
   Hex digits are handled as ASCII *code points* (plain `Nat`) rather than the
-  `Char` type: `96`–`102` etc. reduces entirely inside kernel integer
-  arithmetic, with no `Char`/`UInt32` unfolding on the proof-checking path.
+  `Char` type, so every reduction stays inside kernel integer arithmetic with
+  no `Char`/`UInt32` unfolding on the proof-checking path.
 -/
 namespace Qpu.Verify.Hexbit
 
@@ -20,7 +20,8 @@ def unhexCode (c : Nat) : Nat :=
     else 256
   else 256
 
-/-- Every nibble survives the round trip. -/
+/-- Every nibble survives the round trip: encode then decode is the identity
+    on 0..15, enumerated case by case so the kernel decides each limb. -/
 theorem hex_roundtrips (n : Nat) (h : n < 16) : unhexCode (hexCode n) = n := by
   match n, h with
   | 0, _ => decide
@@ -44,7 +45,8 @@ theorem hex_roundtrips (n : Nat) (h : n < 16) : unhexCode (hexCode n) = n := by
 /-- Control: the ASCII code of 'g' (103) does not decode to a nibble. -/
 theorem non_hex_is_rejected : unhexCode 103 = 256 := by decide
 
-/-- Control: the ASCII code of ':' (58) falls between digits and letters. -/
+/-- Control: the ASCII code of ':' (58) sits in the gap between digits and
+    letters and is likewise rejected. -/
 theorem gap_is_rejected : unhexCode 58 = 256 := by decide
 
 /-- Routing: the 32-bit hexbit prefix of a 64-bit id is its high half. -/

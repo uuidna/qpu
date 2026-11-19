@@ -22,11 +22,13 @@ def collision (bits : Nat) : Nat := bits / 2
 /-- Independent seams multiply the work, so their exponents add. -/
 def chained (strength seams : Nat) : Nat := strength * seams
 
-/-- NIST PQC categories as log₂ classical floors:
-    1 ≈ AES-128 · 2 ≈ SHA-256-family collision · 3 ≈ AES-192 · 5 ≈ AES-256. -/
+/-- NIST PQC category 1 ≈ AES-128. -/
 def category1 : Nat := 128
+/-- NIST PQC category 2 ≈ SHA-256-family collision (128-bit classical). -/
 def category2 : Nat := 128
+/-- NIST PQC category 3 ≈ AES-192. -/
 def category3 : Nat := 192
+/-- NIST PQC category 5 ≈ AES-256. -/
 def category5 : Nat := 256
 
 /-- SHA-256 preimage strength sits at the category-5 floor (256-bit classical). -/
@@ -39,20 +41,22 @@ theorem digest_collision_at_category_two : collision 256 = category2 := by decid
     A bare address is not a security boundary. -/
 theorem uuid_handle_collides_below_category_one : collision 122 < category1 := by decide
 
-/-- Even two UUID seams stay short. -/
+/-- Even two UUID seams stay short: 61 + 61 = 122 < 128. -/
 theorem two_uuid_seams_are_still_short : chained (collision 122) 2 < category1 := by decide
 
 /-- Three clear the floor — that is what multi-seam must mean to be worth saying. -/
 theorem three_uuid_seams_clear_category_one : category1 ≤ chained (collision 122) 3 := by decide
 
-/-- SHA-224 is the near miss: 112-bit collision strength is below category 1. -/
+/-- SHA-224 is the near miss: 112-bit collision strength is below category 1,
+    the level NIST deprecates after 2030. -/
 theorem sha224_collision_below_category_one : collision 224 < category1 := by decide
 
 /-- Control: a full-width digest chained once does clear category 2 —
     the refusals above are not vacuous. -/
 theorem the_anchor_holds : category2 ≤ chained (collision 256) 1 := by decide
 
-/-- Forging costs more than verifying, for any nonempty width and seam count. -/
+/-- Forging costs more than verifying, for any nonempty width and seam count:
+    the asymmetry that makes receipts cheap to check and expensive to fake. -/
 theorem forging_costs_more_than_verifying (bits seams : Nat) :
     verify ≤ chained (preimage (bits + 1)) (seams + 1) := by
   simp [verify, chained, preimage]

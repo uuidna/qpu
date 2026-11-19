@@ -22,21 +22,25 @@ def checkDs : Nat := 15
 /-- Even the first run is cheaper: lookup beats evaluation. -/
 theorem address_cheaper_once : sealed 1 checkDs 0 < rerun 1 evalDs := by decide
 
-/-- Break-even arrives by run two. -/
+/-- Break-even arrives by run two: caching is already net-positive on the
+    first repeat. -/
 theorem breaks_even_by_run_two : sealed 2 checkDs 0 < rerun 2 evalDs := by decide
 
-/-- ~30× speedup: 15·30 ≤ 459 < 15·31. -/
+/-- ~30× speedup: 15·30 ≤ 459 < 15·31, so the ledger factor is bracketed
+    between 30 and 31 for the reference bundle. -/
 theorem speedup_is_thirtyfold : 30 * checkDs ≤ evalDs ∧ evalDs < 31 * checkDs := by decide
 
-/-- Control: caching is itself not free. -/
+/-- Control: caching is itself not free — the address check has nonzero cost. -/
 theorem caching_has_a_cost : 0 < checkDs := by decide
 
 /-- Order-dependent fold used for Merkle sealing: fold(a, b) = 256a + b. -/
 def foldStep (acc item : Nat) : Nat := 256 * acc + item
 
+/-- Fold a leaf list into a root digest. -/
 def merkleFold (items : List Nat) : Nat := items.foldl foldStep 0
 
-/-- Control: the fold is order-dependent, so swapping two leaves changes the root. -/
+/-- Control: the fold is order-dependent, so swapping two leaves changes the
+    root — a tamper-evident receipt cannot commute silently. -/
 theorem fold_is_order_sensitive : merkleFold [1, 2] ≠ merkleFold [2, 1] := by decide
 
 end Qpu.Verify.Receipt
