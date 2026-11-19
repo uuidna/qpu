@@ -2,7 +2,8 @@ import Qpu.Processing.CircuitBasedQuantumComputing
 
 /-
   Qpu.Verify.Stabilizer — Pauli conjugation rules for the Clifford group,
-  kernel-checked by `decide` on symplectic (x, z) bits.
+  kernel-checked by `decide` on symplectic (x, z) bits. T-gate facts are
+  delegated to the exact ℤ[ω] proof in `QuantumGate`.
 -/
 namespace Qpu.Verify.Stabilizer
 
@@ -52,6 +53,18 @@ def applySignedSdg (v : Signed) : Signed :=
     This exact result is proved over ℤ[ω] in `QuantumGate`. -/
 theorem stabilizer_t_gate :
     QuantumGate.t_gate := QuantumGate.t_gate
+
+/-- Positive control: T has order 8. -/
+theorem test_t_order_is_eight :
+    QuantumGate.SameW (QuantumGate.powW QuantumGate.TW 8)
+      QuantumGate.idW :=
+  QuantumGate.t_gate.2.1
+
+/-- Negative control: T does not have order 4. -/
+theorem test_t_order_is_not_four :
+    ¬ QuantumGate.SameW (QuantumGate.powW QuantumGate.TW 4)
+      QuantumGate.idW :=
+  QuantumGate.t_gate.2.2.1
 
 /-- Negative control: T does not commute with Hadamard. This distinguishes
     T from Clifford gates such as H, S, CNOT, and CZ. -/
