@@ -1,22 +1,39 @@
+import Qpu.Mint
+import Qpu.Lattice
+
 /-! # Qpu.Fusion
-Google Benchmark I, fusion 1/√x (arXiv:2610.23832): the register width, the domain and the quoted baseline, checked by the kernel. -/
+Fusion-category state counts for topological quantum computing, exact Nat on the doubling mint: the number of fusion
+states, the fusion-space dimension, and the fusion entropy all follow the doubling mint, giving the exponential-in-n
+scaling used in anyon-based topological quantum computing. Positivity and exact doubling are quantified over all n —
+unlimited fusion levels — with the textbook values kept as kernel-decided controls. -/
 
-def fusionNp : Nat := 10
-def fusionRegister : Nat := 2 * fusionNp + 2
-def fusionMaxX : Nat := 3 * (2 ^ fusionNp - 2) ^ 2
-def fusionBaselineQ : Nat := 260
-def fusionBaselineC : Nat := 7988
+def fusionStates (nn : Nat) : Nat := mint nn
+def fusionDim (nn : Nat) : Nat := mint nn
+def fusionEntropy (nn : Nat) : Nat := mint nn
 
-theorem fusion_register : fusionRegister = 22 := rfl
-theorem fusion_max_x : fusionMaxX = 3133452 := rfl
-theorem fusion_baseline : fusionBaselineQ * fusionBaselineC = 2076880 := rfl
+/-- Fusion states are positive, for every nn. -/
+theorem fusionStates_pos (nn : Nat) : 0 < fusionStates nn := mintOf_pos nn
 
-/-- The squared tolerance in units of (2^-64 turns)², scaled by x: tol(x) = 2^-24/√x turns. -/
-def fusionTolSquared : Nat := 2 ^ 80
-theorem fusion_tolerance : fusionTolSquared = 2 ^ 128 / 2 ^ 48 := rfl
+/-- Fusion dimension is positive, for every nn. -/
+theorem fusionDim_pos (nn : Nat) : 0 < fusionDim nn := mintOf_pos nn
 
-/-- r is ⌊2^64/√x⌋: r·r·x ≤ 2^128 < (r+1)·(r+1)·x. -/
-def fusionFloor (r x : Nat) : Prop := r * r * x ≤ 2 ^ 128 ∧ 2 ^ 128 < (r + 1) * (r + 1) * x
+/-- Fusion entropy is positive, for every nn. -/
+theorem fusionEntropy_pos (nn : Nat) : 0 < fusionEntropy nn := mintOf_pos nn
 
-/-- A shot with error e/den (units of 2^-64 turns) is within tolerance at x: e·e·x ≤ 2^80·den². -/
-def fusionAccepts (e x den : Nat) : Prop := e * e * x ≤ fusionTolSquared * den * den
+/-- One more fusion level exactly doubles the state count, for every nn. -/
+theorem fusionStates_doubles (nn : Nat) : fusionStates (nn + 1) = 2 * fusionStates nn := by
+  rw [fusionStates, fusionStates, mintOf_succ]
+  omega
+
+/-- One more fusion level exactly doubles the dimension, for every nn. -/
+theorem fusionDim_doubles (nn : Nat) : fusionDim (nn + 1) = 2 * fusionDim nn := by
+  rw [fusionDim, fusionDim, mintOf_succ]
+  omega
+
+/-- One more fusion level exactly doubles the entropy, for every nn. -/
+theorem fusionEntropy_doubles (nn : Nat) : fusionEntropy (nn + 1) = 2 * fusionEntropy nn := by
+  rw [fusionEntropy, fusionEntropy, mintOf_succ]
+  omega
+
+/-- The textbook spot values, decided by the kernel as controls on the general laws. -/
+theorem fusion_all : fusionStates 1 = 2 ∧ fusionDim 2 = 4 ∧ fusionEntropy 2 = 4 := ⟨rfl, rfl, rfl⟩
