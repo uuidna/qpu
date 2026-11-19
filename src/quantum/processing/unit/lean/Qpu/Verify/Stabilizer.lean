@@ -53,6 +53,15 @@ def applySignedSdg (v : Signed) : Signed :=
 theorem stabilizer_t_gate :
     QuantumGate.t_gate := QuantumGate.t_gate
 
+/-- Negative control: T does not commute with Hadamard. This distinguishes
+    T from Clifford gates such as H, S, CNOT, and CZ. -/
+theorem test_t_does_not_commute_with_hadamard :
+    ¬ (QuantumGate.SameW
+        (QuantumGate.mmW QuantumGate.HW QuantumGate.TW)
+        (QuantumGate.mmW QuantumGate.TW QuantumGate.HW)) := by
+  intro h
+  exact (QuantumGate.t_gate.2.2.2 h).elim
+
 /-- Conjugation by CNOT (control first): X on the control spreads to the
     target, Z on the target spreads to the control. No sign changes. -/
 def conjCnot (ct : P1 × P1) : P1 × P1 :=
