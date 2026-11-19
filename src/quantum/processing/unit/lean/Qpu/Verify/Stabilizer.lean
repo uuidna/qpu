@@ -1,3 +1,5 @@
+import Qpu.Processing.CircuitBasedQuantumComputing
+
 /-
   Qpu.Verify.Stabilizer — Pauli conjugation rules for the Clifford group,
   kernel-checked by `decide` on symplectic (x, z) bits.
@@ -38,9 +40,9 @@ abbrev Signed2 := Bool × P1 × P1
 
 /-- Signed CNOT conjugation (control first): copies the control's X to the
     target, copies the target's Z to the control, and applies the Clifford
-    phase correction `x_c · z_t · (x_t ≠ z_c)`. -/
+    phase correction `x_c · z_t · (x_t = z_c)`. -/
 def conjCnotSigned (ct : P1 × P1) : Signed2 :=
-  (ct.1.x && ct.2.z && (ct.2.x != ct.1.z),
+  (ct.1.x && ct.2.z && (ct.2.x == ct.1.z),
    ⟨ct.1.x, ct.1.z ^^ ct.2.z⟩,
    ⟨ct.1.x ^^ ct.2.x, ct.2.z⟩)
 
@@ -87,12 +89,21 @@ theorem stabilizer_cnot_signed_yi :
 /-- Signed CNOT sends I⊗Y to +Z⊗Y. -/
 theorem stabilizer_cnot_signed_iy :
     conjCnotSigned (pi, py) = (false, pz, py) := by decide
-/-- Signed CNOT sends Y⊗Y to +X⊗Z. -/
+/-- Signed CNOT sends Y⊗Y to −X⊗Z. -/
 theorem stabilizer_cnot_signed_yy :
-    conjCnotSigned (py, py) = (false, px, pz) := by decide
-/-- Negative control: signed CNOT sends X⊗Y to −Y⊗Z, so its phase rule is
+    conjCnotSigned (py, py) = (true, px, pz) := by decide
+/-- Negative control: signed CNOT sends X⊗Y to +Y⊗Z, so its phase rule is
     not merely the unsigned rule with a constant sign. -/
 theorem stabilizer_cnot_signed_xy :
-    conjCnotSigned (px, py) = (true, py, pz) := by decide
+    conjCnotSigned (px, py) = (false, py, pz) := by decide
+
+/-- The signed CNOT rule agrees with the phase-aware matrix-level rule:
+    same phase parity and same Pauli-bit updates. -/
+theorem conjCnotSigned_agrees_with_ruleCNOT (k : Nat) (ct : P1 × P1) :
+    CircuitBasedQuantumComputing.ruleCNOT
+      ⟨k, ct.1.x, ct.1.z, ct.2.x, ct.2.z⟩ =
+      ⟨(k + if (ct.1.x && ct.2.z && (ct.2.x == ct.1.z)) then 2 else 0) % 4,
+       ct.1.x, ct.1.z ^^ ct.2.z,
+       ct.1.x ^^ ct.2.x, ct.2.z⟩ := rfl
 
 end Qpu.Verify.Stabilizer
