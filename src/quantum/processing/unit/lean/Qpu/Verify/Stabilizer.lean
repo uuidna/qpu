@@ -231,4 +231,111 @@ theorem conjCnotSigned_matches_ruleCNOT (k : Nat) (ct : P1 × P1) :
        (conjCnotSigned ct).2.1,
        (conjCnotSigned ct).2.2⟩ := rfl
 
+/-!
+## CZ conjugation regression tests
+
+Concrete tests for every two-qubit Pauli input to `conjCz`, including
+negative tests for the four non-commuting X-support cases.
+-/
+
+/-- CZ fixes the identity Pauli pair. -/
+theorem test_cz_identity :
+    conjCz (pi, pi) = (false, pi, pi) := by
+  decide
+
+/-- CZ fixes X⊗I. -/
+theorem test_cz_xi :
+    conjCz (px, pi) = (false, px, pi) := by
+  decide
+
+/-- CZ fixes I⊗X. -/
+theorem test_cz_ix :
+    conjCz (pi, px) = (false, pi, px) := by
+  decide
+
+/-- CZ fixes Z⊗I. -/
+theorem test_cz_zi :
+    conjCz (pz, pi) = (false, pz, pi) := by
+  decide
+
+/-- CZ fixes I⊗Z. -/
+theorem test_cz_iz :
+    conjCz (pi, pz) = (false, pi, pz) := by
+  decide
+
+/-- CZ sends X⊗X to −X⊗X. -/
+theorem test_cz_xx :
+    conjCz (px, px) = (true, px, px) := by
+  decide
+
+/-- CZ sends X⊗Y to −X⊗Y. -/
+theorem test_cz_xy :
+    conjCz (px, py) = (true, px, py) := by
+  decide
+
+/-- CZ sends Y⊗X to −Y⊗X. -/
+theorem test_cz_yx :
+    conjCz (py, px) = (true, py, px) := by
+  decide
+
+/-- CZ sends Y⊗Y to −Y⊗Y. -/
+theorem test_cz_yy :
+    conjCz (py, py) = (true, py, py) := by
+  decide
+
+/-- CZ sends X⊗Z to +X⊗Z. -/
+theorem test_cz_xz :
+    conjCz (px, pz) = (false, px, pz) := by
+  decide
+
+/-- CZ sends Z⊗X to +Z⊗X. -/
+theorem test_cz_zx :
+    conjCz (pz, px) = (false, pz, px) := by
+  decide
+
+/-- CZ sends Y⊗Z to +Y⊗Z. -/
+theorem test_cz_yz :
+    conjCz (py, pz) = (false, py, pz) := by
+  decide
+
+/-- CZ sends Z⊗Y to +Z⊗Y. -/
+theorem test_cz_zy :
+    conjCz (pz, py) = (false, pz, py) := by
+  decide
+
+/-- CZ sends Y⊗I to +Y⊗I. -/
+theorem test_cz_yi :
+    conjCz (py, pi) = (false, py, pi) := by
+  decide
+
+/-- CZ sends I⊗Y to +I⊗Y. -/
+theorem test_cz_iy :
+    conjCz (pi, py) = (false, pi, py) := by
+  decide
+
+/-- CZ sends Z⊗Z to +Z⊗Z. -/
+theorem test_cz_zz :
+    conjCz (pz, pz) = (false, pz, pz) := by
+  decide
+
+/-- Negative test: CZ does not commute with X⊗X. -/
+theorem test_cz_does_not_commute_with_xx :
+    conjCz (px, px) ≠ (false, px, px) := by
+  decide
+
+/-- Negative test: CZ does not commute with X⊗Y. -/
+theorem test_cz_does_not_commute_with_xy :
+    conjCz (px, py) ≠ (false, px, py) := by
+  decide
+
+/-- Negative test: CZ does not commute with Y⊗X. -/
+theorem test_cz_does_not_commute_with_yx :
+    conjCz (py, px) ≠ (false, py, px) := by
+  decide
+
+/-- Negative test: CZ does not commute with Y⊗Y. -/
+theorem test_cz_does_not_commute_with_yy :
+    conjCz (py, py) ≠ (false, py, py) := by
+  decide
+
 end Qpu.Verify.Stabilizer
