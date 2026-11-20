@@ -1,7 +1,7 @@
 // Everything this installation adds to the Payload ecommerce template, kept out of the template's own files.
 // The template's src/plugins/index.ts, its collections and its components stay as payloadcms/payload ships them;
 // this file mounts the other Payload packages and extends the template's collections through the plugin API.
-import type { CollectionConfig, Config, Plugin } from 'payload'
+import type { Block, CollectionConfig, Config, Field, Plugin, TextField } from 'payload'
 
 import { importExportPlugin } from '@payloadcms/plugin-import-export'
 import { defineTool, mcpPlugin } from '@payloadcms/plugin-mcp'
@@ -125,6 +125,45 @@ const collectionAdditions: Plugin = (config: Config): Config => ({
   collections: (config.collections ?? []).map((collection) => additions[collection.slug]?.(collection) ?? collection),
 })
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+/** The id of an array row or a block: a UUID, where Payload's own default is a 24-character hex id. A row that
+ *  arrives with another id (one the admin made, or one stored before) is given a UUID as it is saved. */
+const uuidRowID: TextField = {
+  name: 'id',
+  type: 'text',
+  admin: { hidden: true },
+  defaultValue: () => crypto.randomUUID(),
+  hooks: {
+    beforeChange: [({ value }) => (typeof value === 'string' && UUID.test(value) ? value : crypto.randomUUID())],
+    beforeDuplicate: [() => crypto.randomUUID()],
+  },
+  label: 'ID',
+}
+const withRowID = (fields: Field[]): Field[] => (fields.some((field) => 'name' in field && field.name === 'id') ? fields : [...fields, uuidRowID])
+// Payload adds its own id field to every block, so a block cannot carry a second one: the blocks field itself
+// gives each of its rows a UUID before the rows are stored.
+const uuidRows = ({ value }: { value?: unknown }) =>
+  Array.isArray(value) ? value.map((row: { id?: unknown }) => (typeof row?.id === 'string' && UUID.test(row.id) ? row : { ...row, id: crypto.randomUUID() })) : value
+const uuidBlock = (block: Block): Block => ({ ...block, fields: uuidFields(block.fields) })
+/** Every array and every block below these fields carries a UUID row id. */
+const uuidFields = (fields: Field[]): Field[] =>
+  fields.map((field): Field => {
+    if (field.type === 'array') return { ...field, fields: withRowID(uuidFields(field.fields)) }
+    if (field.type === 'blocks') return { ...field, blocks: field.blocks.map(uuidBlock), hooks: { ...field.hooks, beforeChange: [...(field.hooks?.beforeChange ?? []), uuidRows] } }
+    if (field.type === 'tabs') return { ...field, tabs: field.tabs.map((tab) => ({ ...tab, fields: uuidFields(tab.fields) })) }
+    if (field.type === 'group' || field.type === 'row' || field.type === 'collapsible') return { ...field, fields: uuidFields(field.fields) } as Field
+    return field
+  })
+
+/** Every text id is a UUID: documents by the database adapter, array rows and blocks by this plugin. It runs last,
+ *  so it reaches the collections every other plugin made. */
+const uuidRowIDs: Plugin = (config: Config): Config => ({
+  ...config,
+  blocks: config.blocks?.map(uuidBlock),
+  collections: (config.collections ?? []).map((collection) => ({ ...collection, fields: uuidFields(collection.fields) })),
+  globals: (config.globals ?? []).map((global) => ({ ...global, fields: uuidFields(global.fields) })),
+})
+
 export const extensions: Plugin[] = [
   collectionAdditions,
   redirectsPlugin({
@@ -180,4 +219,5 @@ export const extensions: Plugin[] = [
     tools: await mcpTools(),
   }),
   qpuPlugin(),
+  uuidRowIDs,
 ]
