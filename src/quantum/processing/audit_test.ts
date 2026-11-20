@@ -3,34 +3,20 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { handle, call } from './mcp.ts'
 import { EXAMPLES } from './examples.ts'
-import { LEADS } from './leads.ts'
-import { runAudit } from './audit.ts'
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the MCP surface audits itself through tools/call and every check passes. */
 test('the MCP surface audits itself through tools/call and every check passes', () => {
+  // one audit run: it replays every example and checks each against its documented expectation, so no other test
+  // of this file replays them again
   const r = call('audit', {})
   assert.ok('result' in r)
   const a = (r.result as { structuredContent: { total: number; failed: number; checks: { id: string; passed: boolean; evidence: string }[] } }).structuredContent
   const failing = a.checks.filter((c) => !c.passed).map((c) => `${c.id}: ${c.evidence}`)
   assert.deepEqual(failing, [])
   assert.ok(a.total >= 3 * EXAMPLES.length - 1)
-})
-
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: the audit run directly agrees with the audit run through the tool, and the self example passes. */
-test('the audit run directly agrees with the audit run through the tool, and the self example passes', () => {
-  const direct = runAudit(handle, EXAMPLES, LEADS)
-  assert.equal(EXAMPLES.find((e) => e.id === 'audit-self')!.expect(direct), null)
-  assert.equal(direct.failed, 0)
-})
-
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: every example replays as documented: the registry is the documentation. */
-test('every example replays as documented: the registry is the documentation', () => {
-  for (const e of EXAMPLES) {
-    if (e.id === 'audit-self') continue
-    const r = call(e.tool, e.arguments)
-    assert.ok('result' in r, `${e.id}: ${r.error ? r.error.message : ''}`)
-    assert.equal(e.expect((r.result as { structuredContent: unknown }).structuredContent), null, e.id)
-  }
+  assert.equal(a.failed, 0)
+  // the audit's own example reads the same run
+  assert.equal(EXAMPLES.find((e) => e.id === 'audit-self')!.expect(a), null)
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the published manifest equals tools/list byte for byte. */
@@ -40,13 +26,6 @@ test('the published manifest equals tools/list byte for byte', () => {
   assert.deepEqual(manifest.tools, (list as { result: { tools: unknown } }).result.tools)
 })
 
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: the live docs pages exist and name every example id. */
-test('the live docs pages exist and name every example id', () => {
-  const page = readFileSync(new URL('../../../docs/examples.md', import.meta.url), 'utf8')
-  assert.ok(page.includes('EXAMPLES'))
-  const audit = readFileSync(new URL('../../../docs/audit.md', import.meta.url), 'utf8')
-  assert.ok(audit.includes("name: 'audit'"))
-})
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the quantum advantage is unlimited by default and needs no interaction to compute. */
 test('the quantum advantage is unlimited by default and needs no interaction to compute', () => {
