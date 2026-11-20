@@ -87,3 +87,12 @@ theorem fibFusion_eq_nat_fib (n : Nat) : fibFusion n = Nat.fib n := by
 /-- `qftGates` is the binomial coefficient `Nat.choose (q + 1) 2`: one gate per unordered pair, diagonal included. -/
 theorem qftGates_eq_nat_choose (q : Nat) : qftGates q = (q + 1).choose 2 := by
   rw [qftGates, Nat.choose_two_right, Nat.add_sub_cancel, Nat.mul_comm]
+
+/-- Mixing textbooks two at a time: `t` textbooks give `t * (t - 1) / 2` mixes, for every `t`. The count the nested
+catalogue states for its textbooks is this law at their number. -/
+theorem choose_two_eq_mixes (t : Nat) : choose t 2 = t * (t - 1) / 2 := by
+  rw [choose_eq_nat_choose, Nat.choose_two_right]
+
+/-- One more textbook mixes with every textbook already there: `choose (t + 1) 2 = choose t 2 + t`, for every `t`. -/
+theorem choose_two_succ (t : Nat) : choose (t + 1) 2 = choose t 2 + t := by
+  rw [choose_eq_nat_choose, choose_eq_nat_choose, Nat.choose_succ_succ, Nat.choose_one_right, Nat.add_comm]

@@ -439,5 +439,9 @@ def quantumProcessingMcp_nested1 : String := "true: the nested catalogue Lean wr
 def quantumProcessingMcp_nested2 : String := "⟦0⟧ module pages under ⟦1⟧ clause pages; ⟦2⟧ theorems are products and ⟦3⟧ textbook examples are variants, all read from the Lean environment"
 def quantumProcessingMcp_nested3 : String := "the page ⟦0⟧ nests under ⟦1⟧; its ⟦2⟧ theorems are products and its ⟦3⟧ textbook examples are variants"
 def quantumProcessingMcp_nested4 : String := "no module of that name is in the nested catalogue Lean writes"
+def quantumProcessingMcp_mix1 : String := "Two module names: the mix of those two textbooks. Every product of one varies with every product of the other, each in its ISO context (the clause) and its scientific context (the textbook), a product's examples being its variants. page chooses which fifty variations are listed."
+def quantumProcessingMcp_mix2 : String := "the mix of ⟦0⟧ and ⟦1⟧ has ⟦2⟧ product variations; ⟦3⟧ are listed from ⟦4⟧; Lean counts ⟦5⟧ mixes of ⟦6⟧ textbooks and ⟦7⟧ mixed variations in all"
+def quantumProcessingMcp_mix3 : String := "a mix takes the names of two different textbooks of the nested catalogue Lean writes"
+def quantumProcessingMcp_nested5 : String := "⟦0⟧ textbooks mix two at a time into ⟦1⟧ mixes; a product alone has ⟦2⟧ variations and the mixes have ⟦3⟧, counted by Lean"
 
 end Prose

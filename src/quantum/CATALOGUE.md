@@ -4,7 +4,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1759 products, 2 under a declared claim context and 1757 as the author's own statement, with 1469 variants (the examples a theorem names).
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1761 products, 2 under a declared claim context and 1759 as the author's own statement, with 1469 variants (the examples a theorem names).
 
 This catalogue records authorship and the date of each release. It is a publication, not a patent application: publishing a statement discloses it, and what is filed as a patent, and when, is for a patent attorney to decide before it is published.
 
@@ -3595,6 +3595,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (n k : ℕ), choose n k = n.choose k
+```
+
+### `choose_two_eq_mixes`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (t : ℕ), choose t 2 = t * (t - 1) / 2
+```
+
+### `choose_two_succ`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (t : ℕ), choose (t + 1) 2 = choose t 2 + t
 ```
 
 ### `factorial_eq_nat_factorial`

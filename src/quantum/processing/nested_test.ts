@@ -3,7 +3,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { call } from './mcp.ts'
 import { EXAMPLES } from './examples.ts'
-import { NESTED } from './nested-index.ts'
+import { NESTED, NESTED_COUNTS } from './nested-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { THEOREMS } from './theorems-index.ts'
 
@@ -32,4 +32,36 @@ test('a textbook theorem is a product and its examples are its variants, each wi
   const variants = page.products.flatMap((p: { variants: { title: string; call: unknown }[] }) => p.variants)
   assert.equal(variants.every((v: { title: string; call: unknown }) => (v.call !== null) === known.has(v.title)), true)
   assert.equal(call('textbook', { nested: 'Qpu.Nope' }).result!.structuredContent.found, false)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the mixes Lean counts are the pairs of textbooks, and every mix sums to the variations Lean counts. */
+test('the mixes Lean counts are the pairs of textbooks, and every mix sums to the variations Lean counts', () => {
+  const weight = (page: (typeof NESTED)[number]) => page.products.reduce((n, product) => n + Math.max(1, product.variants.length), 0)
+  assert.equal(NESTED_COUNTS.textbooks, NESTED.length)
+  assert.equal(NESTED_COUNTS.mixes, (NESTED.length * (NESTED.length - 1)) / 2)
+  assert.equal(NESTED_COUNTS.variations, String(NESTED.reduce((n, page) => n + weight(page), 0)))
+  let mixed = 0n
+  for (let i = 0; i < NESTED.length; i++) for (let j = i + 1; j < NESTED.length; j++) mixed += BigInt(weight(NESTED[i]!)) * BigInt(weight(NESTED[j]!))
+  assert.equal(NESTED_COUNTS.mixedVariations, mixed.toString())
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a mix lists every product of one textbook with every product of the other, each in its ISO and scientific context. */
+test('a mix lists every product of one textbook with every product of the other, each in its ISO and scientific context', () => {
+  const names = ['Qpu.Processing.Qft', 'Qpu.Application.Shor']
+  const [a, b] = names.map((name) => NESTED.find((page) => page.module === name)!)
+  const weight = (page: (typeof NESTED)[number]) => page.products.reduce((n, product) => n + Math.max(1, product.variants.length), 0)
+  const first = call('textbook', { mix: names }).result!.structuredContent
+  assert.equal(first.total, weight(a!) * weight(b!))
+  const seen = new Set<string>()
+  for (let page = 1; page <= first.pages; page++) {
+    const answer = call('textbook', { mix: names, page }).result!.structuredContent
+    for (const variation of answer.variations) {
+      const [left, right] = variation.products
+      assert.deepEqual([left.context, right.context], [{ iso: 'Processing', scientific: names[0] }, { iso: 'Application', scientific: names[1] }])
+      seen.add(`${left.product}/${left.variant}|${right.product}/${right.variant}`)
+    }
+  }
+  assert.equal(seen.size, first.total)
+  assert.equal(call('textbook', { mix: [names[0]] }).result!.structuredContent.found, false)
+  assert.equal(call('textbook', { mix: [names[0], names[0]] }).result!.structuredContent.found, false)
 })
