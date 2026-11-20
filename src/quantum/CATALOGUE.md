@@ -4,7 +4,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1764 products, 2 under a declared claim context and 1762 as the author's own statement, with 1469 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1768 products, 2 under a declared claim context and 1766 as the author's own statement, with 1469 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 This catalogue records authorship and the date of each release. It is a publication, not a patent application: publishing a statement discloses it, and what is filed as a patent, and when, is for a patent attorney to decide before it is published.
 
@@ -3597,6 +3597,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (n k : ℕ), choose n k = n.choose k
 ```
 
+### `choose_three_succ`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (t : ℕ), choose (t + 1) 3 = choose t 3 + choose t 2
+```
+
 ### `choose_two_eq_mixes`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -3683,6 +3691,30 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (q : ℕ), qftGates q = (q + 1).choose 2
+```
+
+### `six_mul_choose_three_eq_trinities`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (t : ℕ), 6 * choose t 3 = t * (t - 1) * (t - 2)
+```
+
+### `six_mul_nat_choose_three`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (t : ℕ), 6 * t.choose 3 = t * (t - 1) * (t - 2)
+```
+
+### `two_mul_nat_choose_two`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (t : ℕ), 2 * t.choose 2 = t * (t - 1)
 ```
 
 ## Qpu.General.Mint

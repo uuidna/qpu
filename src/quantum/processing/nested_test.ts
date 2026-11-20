@@ -65,3 +65,33 @@ test('a mix lists every product of one textbook with every product of the other,
   assert.equal(call('textbook', { mix: [names[0]] }).result!.structuredContent.found, false)
   assert.equal(call('textbook', { mix: [names[0], names[0]] }).result!.structuredContent.found, false)
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the trinities Lean counts are the triples of textbooks, and every trinity sums to the variations Lean counts. */
+test('the trinities Lean counts are the triples of textbooks, and every trinity sums to the variations Lean counts', () => {
+  const weight = (page: (typeof NESTED)[number]) => BigInt(page.products.reduce((n, product) => n + Math.max(1, product.variants.length), 0))
+  const t = NESTED.length, weights = NESTED.map(weight)
+  assert.equal(NESTED_COUNTS.trinities, (t * (t - 1) * (t - 2)) / 6)
+  let triples = 0, total = 0n
+  for (let i = 0; i < t; i++) for (let j = i + 1; j < t; j++) for (let k = j + 1; k < t; k++) { triples += 1; total += weights[i]! * weights[j]! * weights[k]! }
+  assert.equal(NESTED_COUNTS.trinities, triples)
+  assert.equal(NESTED_COUNTS.trinityVariations, total.toString())
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a trinity lists every product of each textbook with every product of the other two, each once. */
+test('a trinity lists every product of each textbook with every product of the other two, each once', () => {
+  const names = ['Qpu.Processing.Qft', 'Qpu.Application.Shor', 'Qpu.Application.Grover']
+  const weight = (name: string) => NESTED.find((page) => page.module === name)!.products.reduce((n, product) => n + Math.max(1, product.variants.length), 0)
+  const first = call('textbook', { mix: names }).result!.structuredContent
+  assert.equal(first.trinity, true)
+  assert.equal(first.total, names.reduce((n, name) => n * weight(name), 1))
+  const seen = new Set<string>()
+  for (let page = 1; page <= first.pages; page++) {
+    for (const variation of call('textbook', { mix: names, page }).result!.structuredContent.variations) {
+      assert.deepEqual(variation.products.map((p: { context: { scientific: string } }) => p.context.scientific), names)
+      seen.add(variation.products.map((p: { product: string; variant: string | null }) => `${p.product}/${p.variant}`).join('|'))
+    }
+  }
+  assert.equal(seen.size, first.total)
+  assert.equal(call('textbook', { mix: [names[0], names[1], names[0]] }).result!.structuredContent.found, false)
+  assert.equal(call('textbook', { mix: [...names, 'Qpu.General.Mint'] }).result!.structuredContent.found, false)
+})
