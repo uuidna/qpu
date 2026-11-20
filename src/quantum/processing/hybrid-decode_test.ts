@@ -64,6 +64,10 @@ test('the factor door claims no more than it computed', () => {
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: create takes its entropy from the caller: the pure door draws none. */
 test('create takes its entropy from the caller: the pure door draws none', () => {
-  assert.throws(() => factor({ create: { bits: 64 } }), /takes a seed/)
+  // without a seed the door makes no integer: it answers the call that continues the mint with one
+  const asked = factor({ create: { bits: 64 } })
+  assert.equal(asked.needs, 'seed')
+  assert.equal(asked.integer, undefined)
+  assert.match(String(asked.says), /seed/)
   assert.notEqual(factor({ create: { bits: 64, seed: '1' } }).integer, factor({ create: { bits: 64, seed: '2' } }).integer)
 })
