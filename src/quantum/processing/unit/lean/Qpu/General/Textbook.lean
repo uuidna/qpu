@@ -8,7 +8,7 @@ import Qpu.Processing.QuantumGate
 /-! # Qpu.General.Textbook
 The textbook's axioms replaced by theorems: every arithmetic relation an example asserts, stated so the kernel checks it, and each one reflected by its shape.
 This file is written here, in Lean. Each textbook theorem is a doc comment `<sentence> (examples: a, b)`, the theorem,
-an optional `example` testing it, and the theorems that reflect it. `pnpm run lean:index` renders textbook-index.ts
+an optional `example` testing it, and the theorems that reflect it. `lake run index` renders textbook-index.ts
 from this text, and the TypeScript side reads that. -/
 
 /-- the 9 default plugins MCP configures, each in or out: 512 configurations (examples: configure-payload) -/

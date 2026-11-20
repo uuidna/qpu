@@ -25,6 +25,6 @@ for (const door of doors) {
   console.log(JSON.stringify({ check, agrees, written: !agrees && !check, path: door.path, says: door.says }))
 }
 if (drift > 0) {
-  console.error('files rendered from Lean differ from the Lean sources: run pnpm run lean:index and commit the result')
+  console.error('files rendered from Lean differ from the Lean sources: run lake run index and commit the result')
   process.exit(1)
 }

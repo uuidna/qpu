@@ -12,7 +12,7 @@ import { THEOREMS } from './theorems-index.ts'
 /** Qpu/General/Textbook.lean is written in Lean. This door renders nothing: it names the file and counts what the index read from it. */
 const textbookLean = () => {
   const path = 'src/quantum/processing/unit/lean/Qpu/General/Textbook.lean', theorems = TEXTBOOK_THEOREMS.length
-  return { phase: 'scripts-textbook-lean' as const, path, theorems, says: `${theorems} textbook theorem(s) are written in Lean at ${path}; pnpm run lean:index renders textbook-index.ts from it` }
+  return { phase: 'scripts-textbook-lean' as const, path, theorems, says: `${theorems} textbook theorem(s) are written in Lean at ${path}; lake run index renders textbook-index.ts from it` }
 }
 
 /** BLUEPRINT.md from the blueprint's Lean: each module's doc (its frontmatter names the component) and, from the kernel's index, every

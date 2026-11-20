@@ -3,7 +3,7 @@
 // characters); asserted, they are axioms of the textbook. Where the constants stand in an arithmetic relation of the model,
 // the relation is a Lean theorem the kernel checks, and the example names its theorem. The theorems are written in Lean, in
 // Qpu/General/Textbook.lean: the sentence and the examples are the theorem's inline doc. textbook-index.ts is rendered from
-// that file (pnpm run lean:index) and this module reads it; nothing here states a theorem.
+// that file (lake run index) and this module reads it; nothing here states a theorem.
 import { evaluate } from './expressions.ts'
 import { TEXTBOOK_INDEX } from './textbook-index.ts'
 import type { TextbookRow } from './textbook-parse.ts'
