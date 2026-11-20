@@ -27,7 +27,7 @@ import { entriesCover, findArgs, manageApi, mcpPages, pageData, writeArgs } from
 import { INSTRUCTIONS, LICENSE } from './unit/license.ts'
 import { QPU_ORIGIN, tenantAddress } from './unit/index.ts'
 import { VERSION } from './unit/version.ts'
-import { AXIOMS, evaluate as clayEvaluate, recomputeClay, reflectionOfRegister, digitalRoot, trinityFor, mint, bits, amplitudes } from './clay-register.ts'
+import { AXIOMS, evaluate as clayEvaluate, recomputeClay, recomputeClayPravets, reflectionOfRegister, digitalRoot, trinityFor, mint, bits, amplitudes } from './clay-register.ts'
 import { recognise } from '../apps/index.ts'
 import { composePage } from './compose.ts'
 import { mayChoose, ROLE_RANK, type Role } from './unit/roles.ts'
@@ -1916,6 +1916,8 @@ const OWN: Tool[] = [
       const base = recomputeClay()
       const all = { ...base, relations: base.relations.map((r) => { const theorems = clayCaseTheorems(r); const variants = theorems.map((t) => ({ product: t.theorem, variant: t.case })); return { ...r, case: variants[0]?.variant ?? r.name, product: variants[0]?.product ?? null, variant: variants[0]?.variant ?? r.name, variants, theorems } }) }
       if (args.chess === true) return recognise(all.relations.map((r) => ({ name: r.name, statement: r.statement, families: r.families ?? [], value: r.sides[0]!.value })), { nist: isObj(args.nist) ? args.nist as { outputValue?: string; pulseIndex?: number; period?: number; chainIndex?: number } : null, cern: isObj(args.cern) ? args.cern as { total?: number; records?: { id?: string; size?: number; checksum?: string; doi?: string }[] } : null })
+      // the register recomputed in 16-bit limbs, as the schema's pravets argument states
+      if (args.pravets === true) return recomputeClayPravets() as never
       if (args.solve === true) return solveClay()
       if (args.combinations === true) return productCombinations()
       if (args.catalog) return clayCatalog()
