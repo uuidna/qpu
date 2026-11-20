@@ -1,3 +1,4 @@
+import { CLAY_RELATIONS } from './clay-statements.ts'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
@@ -142,7 +143,7 @@ test('a drift wave runs in every Clay family and names the next family', () => {
   const waves = driftWaves()
   assert.equal(waves.holds, true)
   assert.equal(waves.families, 19)
-  assert.equal(waves.relationCount, 55)
+  assert.equal(waves.relationCount, CLAY_RELATIONS.length)
   assert.equal(waves.hz, 432)
   assert.equal(waves.rows[0]?.family, 'Annealing')
   assert.equal(waves.rows[0]?.next, 'Anyon')

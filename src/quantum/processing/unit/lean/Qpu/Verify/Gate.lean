@@ -28,7 +28,7 @@ def g (n : Int) : Gq := ⟨n, 0⟩
 
 /-- 2×2 matrix over `Gq`, row-major. -/
 structure M2 where
-  a00 a01 a10 a11 : Gq
+  (a00 a01 a10 a11 : Gq)
 deriving DecidableEq, Repr
 
 namespace M2
@@ -77,12 +77,12 @@ theorem h_x_h_is_not_two_y : scaledH * matX * scaledH ≠ ⟨g 0, ⟨0, -2⟩, �
 
 /-- Row of four Gaussian integers. -/
 structure V4 where
-  e0 e1 e2 e3 : Gq
+  (e0 e1 e2 e3 : Gq)
 deriving DecidableEq, Repr
 
 /-- 4×4 matrix over `Gq` as four rows — the two-qubit gate arena. -/
 structure M4 where
-  r0 r1 r2 r3 : V4
+  (r0 r1 r2 r3 : V4)
 deriving DecidableEq, Repr
 
 namespace M4

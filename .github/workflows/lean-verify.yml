@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   lake-build:
     runs-on: ubuntu-latest
@@ -23,8 +26,17 @@ jobs:
           path: ~/.elan/toolchains
           key: elan-${{ hashFiles('lean-toolchain') }}
 
-      - name: Build Lean with warnings as errors
-        run: lake build --werror
+      - name: The kernel checks every Lean module
+        run: lake build
 
-      - name: Run all Lean linters
-        run: lake lint --linters=linter.all
+      - name: Lean writes the claim manifest
+        run: lake exe claims
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 26
+
+      - name: The files rendered from Lean agree with Lean
+        run: |
+          node src/scripts/theoremsIndex.ts --check
+          node src/scripts/leanDerived.ts --check

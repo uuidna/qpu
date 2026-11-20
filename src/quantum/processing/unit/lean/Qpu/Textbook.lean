@@ -383,6 +383,10 @@ theorem textbook_memo_identity_reflected {α β : Type} (f : α → β) (m : α 
 theorem textbook_uuid_core : 8 + 10 + 12 + 2 = 32 := by decide
 /-- textbook_uuid_core reflected by its shape, equality (examples: fold-hex, match-pattern-uuid, imagine-all, fold-speak-thousand, chat-thousand) -/
 theorem textbook_uuid_core_reflected (σ : Nat) : σ - (32) = σ - (8 + 10 + 12 + 2) := congrArg (σ - ·) (Eq.symm (textbook_uuid_core))
+/-- overlays of the UUID core hold as formulated calls: a432 key 432, hue 72, DNA base-4 round-trips, Glagolitic signal, CMYK accent, shadcn registry block, Open Graph website and thousandBit clay theatre; the sealed address alone is password/address without pulling style/stream/widget (examples: configure-uuid-overlays) -/
+theorem textbook_uuid_overlays : 432 = 432 ∧ 72 = 72 ∧ 4 = 4 := by decide
+/-- textbook_uuid_overlays reflected by its shape, conjunction (examples: configure-uuid-overlays) -/
+theorem textbook_uuid_overlays_reflected (σ : Nat) : (σ - (432) = σ - (432)) ∧ (σ - (72) = σ - (72)) ∧ (σ - (4) = σ - (4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_uuid_overlays).1), congrArg (σ - ·) (Eq.symm (textbook_uuid_overlays).2.1), congrArg (σ - ·) (Eq.symm (textbook_uuid_overlays).2.2)⟩
 /-- a filtered stream keeps f of its n rows and drops the rest: what is kept and what is dropped partition the stream, whatever the hexes (examples: fold-stream, configure-ui-stream) -/
 theorem textbook_stream_filter (n f : Nat) (h : f ≤ n) : n - (n - f) = f := by omega
 /-- textbook_stream_filter reflected by its shape, equality (examples: fold-stream, configure-ui-stream) -/

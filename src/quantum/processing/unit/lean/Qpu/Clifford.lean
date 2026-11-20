@@ -39,7 +39,7 @@ theorem cliffordOrder_pos (n : Nat) : 0 < cliffordOrder n :=
 /-- The symplectic product never shrinks across a factor, for every j. -/
 theorem sympProd_grows (j : Nat) : sympProd j ≤ sympProd (j + 1) := by
   rw [sympProd_step]
-  exact Nat.le_mul_of_pos_left _ (Nat.succ_pos _)
+  exact Nat.le_mul_of_pos_left _ (by have h := sympFactor_ge_two j; omega)
 
 /-- The textbook spot values, decided by the kernel as controls on the general laws. -/
 theorem clifford_all : symplectic 1 = 6 ∧ symplectic 2 = 720 ∧ symplectic 3 = 1451520 ∧ cliffordOrder 2 = 11520 := ⟨rfl, rfl, rfl, rfl⟩

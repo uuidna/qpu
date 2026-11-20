@@ -69,3 +69,4 @@ playwright-report/index.html
 !.env.example
 public/media
 /legacy/.next/
+.lake/

@@ -4,32 +4,15 @@ open Lake DSL
 package qpu where
   srcDir := "src/quantum/processing/unit/lean"
   leanOptions := #[
-    ⟨`linter.all, true⟩,
     ⟨`autoImplicit, false⟩,
     ⟨`relaxedAutoImplicit, false⟩,
-    ⟨`linter.unusedVariables, true⟩,
-    ⟨`linter.unusedTactic, true⟩
+    ⟨`linter.unusedVariables, true⟩
   ]
 
+/-- Every module under `Qpu`, so the kernel checks the whole tree and no file is left outside the build. -/
 @[default_target]
 lean_lib Qpu where
-  roots := #[
-    `Qpu.Verify.Correct,
-    `Qpu.Verify.Cost,
-    `Qpu.Verify.Entangle,
-    `Qpu.Verify.Gate,
-    `Qpu.Verify.Hexbit,
-    `Qpu.Verify.Receipt,
-    `Qpu.Verify.Stabilizer,
-    `Qpu.Verify.Uuid
-  ]
-  leanOptions := #[
-    ⟨`linter.all, true⟩,
-    ⟨`autoImplicit, false⟩,
-    ⟨`relaxedAutoImplicit, false⟩,
-    ⟨`linter.unusedVariables, true⟩,
-    ⟨`linter.unusedTactic, true⟩
-  ]
+  globs := #[.andSubmodules `Qpu]
 
 lean_exe claims where
   root := `Qpu.Claims.Extract

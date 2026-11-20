@@ -24,8 +24,9 @@ theorem isingFusion_pos (m : Nat) : 0 < isingFusion m := mintOf_pos _
     doubling is exact, from mintOf_succ. -/
 theorem isingFusion_succ (m : Nat) (h : 0 < m) : isingFusion (m + 1) = 2 * isingFusion m := by
   rw [isingFusion, isingFusion]
-  rw [Nat.add_sub_cancel, seed_eq]
-  rw [show m = m - 1 + 1 from by omega, mintOf_succ]
+  rw [seed_eq, Nat.add_sub_cancel]
+  have e : m = m - 1 + 1 := by omega
+  rw [e, mintOf_succ, Nat.add_sub_cancel]
   omega
 
 /-- Ising growth is strict at every nonempty count: a pair genuinely doubles. -/

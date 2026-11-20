@@ -61,6 +61,7 @@ import { echoProbability } from './echo.ts'
 import { WILLOW, isBelowThreshold, toDevice } from './processor.ts'
 import { codePoint, textbookLogicalError } from './qec.ts'
 import { coins, faces, mint, plane, rays, recomputeClay } from './clay-register.ts'
+import { CLAY_RELATIONS } from './clay-statements.ts'
 import { checkWitnesses, mergeWitnesses } from './witnesses.ts'
 import { CATALOGUE, accountCoins, balance, combinationVariants, createLedger, fuseCall, mintWitnessCoins } from './toolboxes/billing.ts'
 import { THEOREMS } from './theorems-index.ts'
@@ -507,7 +508,7 @@ export const verifyIsoQuantumEquivalence = () => {
   const stdValidation = validateStandards(6)
   const g3Holds =
     clay.holding === clay.total &&
-    clay.total === 55 &&
+    clay.total === CLAY_RELATIONS.length &&
     THEOREMS.length >= 1439 &&
     TEXTBOOK_THEOREMS.length >= 376 &&
     stdValidation.uncovered === 0 &&
@@ -562,7 +563,7 @@ export const verifyIsoQuantumEquivalence = () => {
     {
       id: 'kernel_and_standards_closure',
       isoClause: 'ISO 9001; ISO/IEC 4879:2024',
-      guard: 'All 55 Clay-register relations hold as recomputed identities; Lean 4 accepts the textbook surface with 0 sorry (kernel evidence, not an ISO standard); every STANDARDS slice validates with 0 uncovered',
+      guard: `All ${CLAY_RELATIONS.length} Clay-register relations hold as recomputed identities; Lean 4 accepts the textbook surface with 0 sorry (kernel evidence, not an ISO standard); every STANDARDS slice validates with 0 uncovered`,
       module: 'clay-register.ts, standards.ts, Qpu/Textbook.lean',
       holds: g3Holds,
       evidence: {
