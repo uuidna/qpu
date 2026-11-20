@@ -1,0 +1,89 @@
+import Mathlib.Data.Nat.Choose.Basic
+import Mathlib.Data.Nat.Factorial.Basic
+import Mathlib.Data.Nat.Fib.Basic
+import Mathlib.Data.Nat.GCD.Basic
+import Qpu.General.Mint
+import Qpu.General.Combinatorics
+import Qpu.Application.Shor
+import Qpu.Processing.Anyon
+import Qpu.Processing.Qft
+
+/-! # Qpu.General.Meaning
+
+Mathlib names the notions. The tree computes on its own recursive definitions so the kernel can decide every
+statement by evaluation; this module proves each of those definitions equal to the Mathlib notion it is, for every
+argument. A reader who knows Mathlib reads `mint` as `2 ^ k`, `choose` as `Nat.choose`, `gcd` as `Nat.gcd`,
+`powMod` as `a ^ e % m`, `fibFusion` as `Nat.fib` and `qftGates` as `Nat.choose (q + 1) 2`, and each reading is
+a theorem. The names follow Mathlib's convention: `definition_eq_notion`. -/
+
+/-- `mint` is the power of two. -/
+theorem mint_eq_two_pow (k : Nat) : mint k = 2 ^ k := by
+  induction k with
+  | zero => rfl
+  | succ k ih => rw [mintOf_succ, ih, pow_succ]; omega
+
+/-- `factorial` is `Nat.factorial`. -/
+theorem factorial_eq_nat_factorial (n : Nat) : factorial n = n.factorial := by
+  induction n with
+  | zero => rfl
+  | succ n ih => rw [factorial, ih, Nat.factorial_succ]
+
+/-- `choose` is the binomial coefficient `Nat.choose`. -/
+theorem choose_eq_nat_choose (n k : Nat) : choose n k = n.choose k := by
+  induction n generalizing k with
+  | zero => cases k <;> rfl
+  | succ n ih =>
+    cases k with
+    | zero => rfl
+    | succ k => rw [choose, ih, ih, Nat.choose_succ_succ, Nat.add_comm]
+
+/-- The fuelled Euclid loop is `Nat.gcd` once the fuel covers the second argument. -/
+theorem gcdAux_eq_nat_gcd (fuel a b : Nat) (h : b ≤ fuel) : gcdAux fuel a b = Nat.gcd a b := by
+  induction fuel generalizing a b with
+  | zero =>
+    have hb : b = 0 := by omega
+    subst hb
+    simp [gcdAux]
+  | succ fuel ih =>
+    by_cases hb : b = 0
+    · subst hb
+      simp [gcdAux]
+    · have hlt : a % b < b := Nat.mod_lt a (Nat.pos_of_ne_zero hb)
+      rw [gcdAux, if_neg hb, ih b (a % b) (by omega), Nat.gcd_comm a b, Nat.gcd_rec b a, Nat.gcd_comm]
+
+/-- `gcd` is `Nat.gcd`. -/
+theorem gcd_eq_nat_gcd (a b : Nat) : gcd a b = Nat.gcd a b :=
+  gcdAux_eq_nat_gcd (a + b) a b (Nat.le_add_left b a)
+
+/-- The modular-power loop multiplies its accumulator by `a ^ k`, reduced mod `m`. -/
+theorem powModAux_eq (k a m acc : Nat) : powModAux k a m (acc % m) = acc * a ^ k % m := by
+  induction k generalizing acc with
+  | zero => simp [powModAux]
+  | succ k ih =>
+    rw [powModAux, ih, pow_succ, Nat.mul_assoc, Nat.mod_mul_mod]
+    congr 1
+    ring
+
+/-- `powMod` is modular exponentiation, `a ^ e % m`. -/
+theorem powMod_eq_pow_mod (a e m : Nat) : powMod a e m = a ^ e % m := by
+  rw [powMod, powModAux_eq, Nat.one_mul]
+
+/-- The Fibonacci loop started at consecutive Fibonacci numbers advances the index by its fuel. -/
+theorem fibAux_eq_nat_fib (k i : Nat) : fibAux k (Nat.fib i) (Nat.fib (i + 1)) = Nat.fib (i + k) := by
+  induction k generalizing i with
+  | zero => rfl
+  | succ k ih =>
+    rw [fibAux, ← Nat.fib_add_two, ih (i + 1)]
+    congr 1
+    omega
+
+/-- `fibFusion` is the Fibonacci sequence `Nat.fib`: the fusion-space dimension of τ anyons. -/
+theorem fibFusion_eq_nat_fib (n : Nat) : fibFusion n = Nat.fib n := by
+  have h := fibAux_eq_nat_fib n 0
+  rw [Nat.fib_zero, Nat.fib_one, Nat.zero_add] at h
+  rw [fibFusion, seed_eq]
+  exact h
+
+/-- `qftGates` is the binomial coefficient `Nat.choose (q + 1) 2`: one gate per unordered pair, diagonal included. -/
+theorem qftGates_eq_nat_choose (q : Nat) : qftGates q = (q + 1).choose 2 := by
+  rw [qftGates, Nat.choose_two_right, Nat.add_sub_cancel, Nat.mul_comm]

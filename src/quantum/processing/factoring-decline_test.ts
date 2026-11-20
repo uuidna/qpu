@@ -13,7 +13,7 @@ test('the five-bit comparison is a theorem, and the kernel states every Shor doo
   assert.match(reduction!.lean, /by decide/, 'the reduction theorem closes by decide')
   assert.match(bound!.lean, /2 \^ 4 < 21 ∧ 21 < 2 \^ 5/, 'the comparison states that 21 sits between 16 and 32')
   assert.match(bound!.lean, /by decide/, 'the comparison closes by decide')
-  const kernel = readFileSync('src/quantum/processing/unit/lean/Qpu/Shor.lean', 'utf8')
+  const kernel = readFileSync('src/quantum/processing/unit/lean/Qpu/Application/Shor.lean', 'utf8')
   assert.match(kernel, /theorem shor_cases/, 'the kernel states the doors')
   assert.match(kernel, /2048 = 2 \^ 11/)
   assert.match(kernel, /period 2 35 = 12/)

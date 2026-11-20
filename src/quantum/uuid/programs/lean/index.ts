@@ -57,7 +57,7 @@ export const leanPrograms = () => {
   })
   const names = new Set(rows.map((row) => row.module))
   const addresses = new Set(rows.map((row) => row.address))
-  const holds = text.includes('import Qpu.Shor') && rows.length > 1 && names.size === rows.length && rows.every((row) => row.holds && row.links.every((link) => addresses.has(link)))
+  const holds = text.includes('import Qpu.Application.Shor') && rows.length > 1 && names.size === rows.length && rows.every((row) => row.holds && row.links.every((link) => addresses.has(link)))
   return {
     phase: 'programs' as const,
     via: 'lean' as const,

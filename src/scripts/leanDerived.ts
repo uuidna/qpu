@@ -15,7 +15,7 @@ const lean = Object.fromEntries(walk(root).map((file) => [file.slice(root.length
 const check = process.argv.includes('--check')
 const doors = [
   scripts({ blueprint: { lean } }) as unknown as Door,
-  scripts({ clay: { lean: lean['Qpu/Clay.lean'] } }) as unknown as Door,
+  scripts({ clay: { lean: lean['Qpu/General/Clay.lean'] } }) as unknown as Door,
 ]
 let drift = 0
 for (const door of doors) {

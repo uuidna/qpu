@@ -35,7 +35,7 @@ export const VERIFIERS: readonly Verifier[] = [
   { id: 'cern-opendata', name: 'CERN Open Data portal API', kind: 'api', free: true, docs: 'https://opendata.cern.ch/docs/cod-search-tips', contract: 'https://opendata.cern.ch/api/records/?size=1', verifies: ['doi', 'dataset'], only: (f) => f.kind === 'dataset' || /^10\.7483\//.test(f.value),
     request: (f) => ({ url: f.kind === 'dataset' ? `https://opendata.cern.ch/api/records/${encodeURIComponent(f.value)}` : `https://opendata.cern.ch/api/records/?q=doi:%22${encodeURIComponent(f.value)}%22`, accept: 'application/json', check: 'the record exists and its title matches the reference' }) },
   { id: 'nist-codata', name: 'NIST CODATA fundamental physical constants', kind: 'api', free: true, docs: 'https://physics.nist.gov/cuu/Constants/', verifies: ['constant'],
-    request: (f) => ({ url: `https://physics.nist.gov/cgi-bin/cuu/Value?${encodeURIComponent(f.value)}`, accept: 'text/html', check: `the CODATA value of ${f.value} agrees with Qpu.Physics to the precision the Lean file states` }) },
+    request: (f) => ({ url: `https://physics.nist.gov/cgi-bin/cuu/Value?${encodeURIComponent(f.value)}`, accept: 'text/html', check: `the CODATA value of ${f.value} agrees with Qpu.Physics.EnergyGap to the precision the Lean file states` }) },
   { id: 'cloudflare-docs', name: 'Cloudflare documentation over MCP (docs.mcp.cloudflare.com)', kind: 'mcp', free: true, docs: 'https://developers.cloudflare.com/agents/model-context-protocol/mcp-servers-for-cloudflare/', contract: 'https://docs.mcp.cloudflare.com/mcp', verifies: ['page'], only: (f) => /developers\.cloudflare\.com/.test(f.value),
     request: (f) => ({ url: 'https://docs.mcp.cloudflare.com/mcp', method: 'POST', body: { jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'search_cloudflare_documentation', arguments: { query: new URL(f.value).pathname.split('/').filter(Boolean).join(' ').replace(/-/g, ' ') || 'cloudflare' } } }, accept: 'application/json, text/event-stream', check: `the documentation search answers results for ${new URL(f.value).pathname}` }) },
   { id: 'wikipedia', name: 'Wikipedia REST summary', kind: 'api', free: true, docs: 'https://en.wikipedia.org/api/rest_v1/', contract: 'https://en.wikipedia.org/api/rest_v1/?spec', verifies: ['integer', 'repository', 'preprint', 'sequence'],
@@ -60,5 +60,5 @@ export const extractFacts = (lead: Lead): Fact[] => {
   return facts
 }
 
-/** Facts the tree itself carries beyond its leads: the physics constants Qpu.Physics names, and the DOIs its metadata cites. */
+/** Facts the tree itself carries beyond its leads: the physics constants Qpu.Physics.EnergyGap names, and the DOIs its metadata cites. */
 export const TREE_FACTS = TABLES.TREE_FACTS as readonly Fact[]

@@ -564,7 +564,7 @@ export const verifyIsoQuantumEquivalence = () => {
       id: 'kernel_and_standards_closure',
       isoClause: 'ISO 9001; ISO/IEC 4879:2024',
       guard: `All ${CLAY_RELATIONS.length} Clay-register relations hold as recomputed identities; Lean 4 accepts the textbook surface with 0 sorry (kernel evidence, not an ISO standard); every STANDARDS slice validates with 0 uncovered`,
-      module: 'clay-register.ts, standards.ts, Qpu/Textbook.lean',
+      module: 'clay-register.ts, standards.ts, Qpu/General/Textbook.lean',
       holds: g3Holds,
       evidence: {
         clayRelationsHolding: `${clay.holding}/${clay.total}`,
