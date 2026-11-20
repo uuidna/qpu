@@ -3,6 +3,13 @@ open Lake DSL
 
 package qpu where
   srcDir := "src/quantum/processing/unit/lean"
+  leanOptions := #[
+    ⟨`linter.all, true⟩,
+    ⟨`autoImplicit, false⟩,
+    ⟨`relaxedAutoImplicit, false⟩,
+    ⟨`linter.unusedVariables, true⟩,
+    ⟨`linter.unusedTactic, true⟩
+  ]
 
 @[default_target]
 lean_lib Qpu where
@@ -15,4 +22,11 @@ lean_lib Qpu where
     `Qpu.Verify.Receipt,
     `Qpu.Verify.Stabilizer,
     `Qpu.Verify.Uuid
+  ]
+  leanOptions := #[
+    ⟨`linter.all, true⟩,
+    ⟨`autoImplicit, false⟩,
+    ⟨`relaxedAutoImplicit, false⟩,
+    ⟨`linter.unusedVariables, true⟩,
+    ⟨`linter.unusedTactic, true⟩
   ]
