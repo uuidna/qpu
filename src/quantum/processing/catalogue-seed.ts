@@ -2,7 +2,8 @@
 // writes. A clause is a page; a module is a page nested under its clause and a category; a theorem is a product of
 // that category; each example the theorem names is a variant of the product, an option of the one variant type.
 // Pure: the plan is data, and src/scripts/seedCatalogue.ts writes it through Payload's local API.
-import { NESTED } from './nested-index.ts'
+import { NESTED, NESTED_COUNTS } from './nested-index.ts'
+import { PROSE, proseFill } from './prose-index.ts'
 import { MODULE_DOCS, THEOREMS } from './theorems-index.ts'
 import { TENANTS } from './unit/tenants.ts'
 
@@ -11,6 +12,9 @@ export const slugOf = (name: string) => name.replace(/[^A-Za-z0-9]+/g, '-').repl
 const paragraph = (text: string) => ({ type: 'paragraph' as const, version: 1, format: '' as const, indent: 0, direction: 'ltr' as const, textFormat: 0, textStyle: '', children: [{ type: 'text' as const, version: 1, text, format: 0, mode: 'normal' as const, style: '', detail: 0 }] })
 /** Lexical rich text of the lines given, one paragraph each. */
 export const richText = (lines: readonly string[]) => ({ root: { type: 'root' as const, version: 1, direction: 'ltr' as const, format: '' as const, indent: 0, children: lines.filter((line) => line.trim().length > 0).map(paragraph) } })
+
+/** Lexical rich text that opens on a heading, then the lines. */
+export const headedText = (heading: string, lines: readonly string[]) => { const body = richText(lines); return { root: { ...body.root, children: [{ type: 'heading' as const, tag: 'h1' as const, version: 1, format: '' as const, indent: 0, direction: 'ltr' as const, children: [{ type: 'text' as const, version: 1, text: heading, format: 0, mode: 'normal' as const, style: '', detail: 0 }] }, ...body.root.children] } } }
 
 /** The prose of a module doc: its title line and any frontmatter left out. */
 const proseOf = (doc: string | undefined) => {
@@ -37,5 +41,12 @@ export const planCatalogue = (only?: readonly string[]) => {
     return { title: product.theorem, slug: slugOf(product.theorem), category: slugOf(page.module), description: [theorem?.doc ?? '', theorem?.statement ?? ''], variants: [...product.variants] }
   }))
   const options = [...new Set(products.flatMap((product) => product.variants))].sort()
-  return { tenant: { name: tenant, slug: tenant, domain }, variantType: VARIANT_TYPE, options, pages, categories, products, counts: { pages: pages.length, categories: categories.length, products: products.length, variants: products.reduce((n, p) => n + p.variants.length, 0), options: options.length } }
+  // the home page: what the shop is, in Lean's own counts, and the products themselves; three with variants come first
+  const featured = [...products.filter((product) => product.variants.length > 0), ...products].slice(0, 3).map((product) => product.slug)
+  const home = {
+    title: PROSE.quantumProcessingCatalogueSeed_home1, slug: 'home', featured,
+    lead: proseFill(PROSE.quantumProcessingCatalogueSeed_home2, NESTED_COUNTS.products, NESTED_COUNTS.textbooks, new Set(NESTED.map((page) => page.clause)).size, NESTED_COUNTS.variants),
+    text: [PROSE.quantumProcessingCatalogueSeed_home3, PROSE.quantumProcessingCatalogueSeed_home4],
+  }
+  return { tenant: { name: tenant, slug: tenant, domain }, variantType: VARIANT_TYPE, options, home, pages, categories, products, counts: { pages: pages.length, categories: categories.length, products: products.length, variants: products.reduce((n, p) => n + p.variants.length, 0), options: options.length } }
 }

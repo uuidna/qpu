@@ -1,10 +1,10 @@
 // Payload holds the Lean catalogue. This writes the plan (catalogue-seed.ts) through Payload's local API: the tenant,
-// the clause and module pages, the categories, the one variant type with an option for each example, a product for
-// each theorem and a variant for each of its examples. The seed runs with no user, so each call overrides access, as
+// the clause and module pages, the categories, a product for each theorem with its own variant type, whose options
+// are the examples that theorem names, and a variant for each of them. The seed runs with no user, so each call overrides access, as
 // Payload's local API asks of a script. Every write finds its document first, so a second run changes
 // nothing that already agrees. SEED_CHECK=1 writes nothing and fails when a document is missing. SEED_MODULES names
 // the modules to seed, comma separated; without it the whole catalogue is seeded.
-import { planCatalogue, richText } from '../quantum/processing/catalogue-seed.ts'
+import { headedText, planCatalogue, richText } from '../quantum/processing/catalogue-seed.ts'
 
 const check = process.env.SEED_CHECK === '1'
 const only = (process.env.SEED_MODULES ?? '').split(',').map((name) => name.trim()).filter(Boolean)
@@ -28,9 +28,6 @@ const idOf = (doc: Doc | null) => doc?.id ?? null
 const refersTo = (value: unknown, id: unknown) => (typeof value === 'object' && value !== null ? (value as Doc).id : value) === id
 
 const tenant = await hold('tenants', { slug: { equals: plan.tenant.slug } }, plan.tenant)
-const type = await hold('variantTypes', { name: { equals: plan.variantType.name } }, plan.variantType)
-const options = new Map<string, Doc | null>()
-for (const value of plan.options) options.set(value, await hold('variantOptions', { and: [{ value: { equals: value } }, { variantType: { equals: idOf(type) } }] }, { label: value, value, variantType: idOf(type) }))
 const pages = new Map<string, Doc | null>()
 for (const page of plan.pages) {
   const parent = page.parent ? idOf(pages.get(page.parent) ?? null) : null
@@ -40,16 +37,33 @@ for (const page of plan.pages) {
 const categories = new Map<string, Doc | null>()
 for (const category of plan.categories) categories.set(category.slug, await hold('categories', { slug: { equals: category.slug } }, category, (doc) => doc.title === category.title))
 let variants = 0
+const held = new Map<string, Doc | null>()
 for (const product of plan.products) {
   const category = idOf(categories.get(product.category) ?? null)
-  const data = { title: product.title, slug: product.slug, tenant: idOf(tenant), description: richText(product.description), categories: category === null ? [] : [category], enableVariants: product.variants.length > 0, variantTypes: product.variants.length > 0 ? [idOf(type)] : [], _status: 'published' }
-  const held = await hold('products', { slug: { equals: product.slug } }, data, (doc) => doc.title === product.title && doc._status === 'published' && Boolean(doc.enableVariants) === product.variants.length > 0)
-  for (const example of product.variants) {
-    const option = idOf(options.get(example) ?? null)
-    await hold('variants', { and: [{ product: { equals: idOf(held) } }, { options: { in: [option] } }] }, { title: `${product.title} / ${example}`, product: idOf(held), options: [option], _status: 'published' })
-    variants += 1
+  const base = { title: product.title, slug: product.slug, tenant: idOf(tenant), description: richText(product.description), categories: category === null ? [] : [category], _status: 'published' }
+  let made = await hold('products', { slug: { equals: product.slug } }, { ...base, enableVariants: false, variantTypes: [] }, (doc) => doc.title === product.title && doc._status === 'published')
+  if (product.variants.length > 0 && made) {
+    // the product's own variant type: its options are the examples this theorem names, and no other theorem's
+    const own = Array.isArray(made.variantTypes) ? made.variantTypes[0] : undefined
+    const ownId = typeof own === 'object' && own !== null ? (own as Doc).id : own
+    const type = ownId !== undefined && ownId !== null ? ({ id: ownId } as Doc) : await hold('variantTypes', { id: { equals: -1 } }, plan.variantType)
+    if (type && !refersTo(own, type.id)) made = await hold('products', { slug: { equals: product.slug } }, { ...base, enableVariants: true, variantTypes: [type.id] }, () => false)
+    for (const example of product.variants) {
+      const option = idOf(await hold('variantOptions', { and: [{ value: { equals: example } }, { variantType: { equals: idOf(type) } }] }, { label: example, value: example, variantType: idOf(type) }))
+      await hold('variants', { and: [{ product: { equals: idOf(made) } }, { options: { in: [option] } }] }, { title: `${product.title} / ${example}`, product: idOf(made), options: [option], _status: 'published' })
+      variants += 1
+    }
   }
+  held.set(product.slug, made)
 }
+// the home page: the lead in the hero, the text, three products side by side and the rest in a carousel
+const featured = plan.home.featured.map((slug) => idOf(held.get(slug) ?? null)).filter((id) => id !== null)
+const homeLayout = [
+  { blockType: 'content', columns: [{ size: 'full', richText: richText(plan.home.text) }] },
+  ...(featured.length === 3 ? [{ blockType: 'threeItemGrid', products: featured }] : []),
+  { blockType: 'carousel', populateBy: 'collection', relationTo: 'products', limit: 12 },
+]
+await hold('pages', { slug: { equals: plan.home.slug } }, { title: plan.home.title, slug: plan.home.slug, tenant: idOf(tenant), hero: { type: 'lowImpact', richText: headedText(plan.home.title, [plan.home.lead]) }, layout: homeLayout, _status: 'published' }, (doc) => doc.title === plan.home.title && doc._status === 'published' && Array.isArray(doc.layout) && doc.layout.length === homeLayout.length && JSON.stringify((doc.hero as { richText?: unknown } | undefined)?.richText ?? null).includes(plan.home.lead))
 console.log(JSON.stringify({ check, modules: only.length || 'all', ...plan.counts, variantsHeld: variants, written, missing, allowsDeploy: check ? missing === 0 : true }))
 if (check && missing > 0) process.exit(1)
 process.exit(0)

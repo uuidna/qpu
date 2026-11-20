@@ -1,17 +1,19 @@
 import type { CollectionAfterReadHook, Endpoint } from 'payload'
 
-import { fallbackGallery, qrPng } from '../quantum/processing/qr'
+import { fallbackGallery, fallbackImage, qrPng } from '../quantum/processing/qr'
 import { getServerSideURL } from '../utilities/getURL'
 
 /**
  * A product with no image is shown by the QR code of its own address, and each of its variations by the code of that
- * variation's URL. The gallery is added only when the shop reads the product through the local API, never for the
+ * variation's URL; grids and carousels list it by the product's code. The images are added only when the shop reads the product through the local API, never for the
  * admin or REST, so nothing synthetic is ever shown in an edit form or saved. A product that has images keeps them.
  */
 export const qrGalleryFallback: CollectionAfterReadHook = ({ doc, req }) => {
   if (req.payloadAPI !== 'local' || !doc || typeof doc !== 'object') return doc
-  const gallery = fallbackGallery(doc, getServerSideURL())
-  return gallery ? { ...doc, gallery } : doc
+  const origin = getServerSideURL()
+  const gallery = fallbackGallery(doc, origin), image = fallbackImage(doc, origin)
+  if (!gallery && !image) return doc
+  return { ...doc, ...(gallery ? { gallery } : {}), ...(image ? { meta: { ...(doc.meta ?? {}), image } } : {}) }
 }
 
 /**

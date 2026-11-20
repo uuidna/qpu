@@ -3,7 +3,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import jsQR from 'jsqr'
 import { PNG } from 'pngjs'
-import { fallbackGallery, qrImageUrl, qrPng, variationPath } from './qr.ts'
+import { fallbackGallery, fallbackImage, qrImageUrl, qrPng, variationPath } from './qr.ts'
 
 const ORIGIN = 'https://qpu.uuidna.com'
 const scan = (bytes: Uint8Array) => { const image = PNG.sync.read(Buffer.from(bytes)); return jsQR(new Uint8ClampedArray(image.data), image.width, image.height)?.data ?? null }
@@ -40,4 +40,15 @@ test('a product with no image gets its own code and one for each variation, and 
   }
   assert.equal(fallbackGallery({ ...product, gallery: [{ image: 1 }] }, ORIGIN), null)
   assert.equal(fallbackGallery({ ...product, slug: null }, ORIGIN), null)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: an option that names its type by id is read from the product's own types, and a list shows the product's code. */
+test("an option that names its type by id is read from the product's own types, and a list shows the product's code", () => {
+  const product = { slug: 'textbook-fibonacci', title: 'textbook_fibonacci', gallery: [], meta: { image: null }, variantTypes: [{ id: 114, name: 'example' }], variants: { docs: [{ id: 7, options: [{ id: 176, variantType: 114 }] }] } }
+  const gallery = fallbackGallery(product, ORIGIN)!
+  assert.deepEqual(gallery.map((item) => item.variation), [undefined, '/products/textbook-fibonacci?example=176&variant=7'])
+  const image = fallbackImage(product, ORIGIN)!
+  assert.equal(image.url, qrImageUrl('/products/textbook-fibonacci'))
+  assert.equal(scan(qrPng(`${ORIGIN}/products/textbook-fibonacci`).png), `${ORIGIN}/products/textbook-fibonacci`)
+  assert.equal(fallbackImage({ ...product, meta: { image: 5 } }, ORIGIN), null)
 })

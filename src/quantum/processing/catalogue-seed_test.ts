@@ -23,3 +23,13 @@ test('a plan of one module holds that module alone', () => {
   assert.deepEqual(plan.pages.map((page) => page.slug), ['processing', 'qpu-processing-qft'])
   assert.equal(plan.products.length, NESTED.find((page) => page.module === 'Qpu.Processing.Qft')!.products.length)
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the home page states Lean's counts and features three products the plan holds. */
+test("the home page states Lean's counts and features three products the plan holds", () => {
+  const plan = planCatalogue()
+  assert.equal(plan.home.slug, 'home')
+  assert.equal(plan.pages.some((page) => page.slug === 'home'), false)
+  for (const count of [NESTED_COUNTS.products, NESTED_COUNTS.textbooks, NESTED_COUNTS.variants]) assert.equal(plan.home.lead.includes(String(count)), true)
+  assert.equal(plan.home.featured.length, 3)
+  assert.equal(plan.home.featured.every((slug) => plan.products.some((product) => product.slug === slug && product.variants.length > 0)), true)
+})
