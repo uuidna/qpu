@@ -4,6 +4,7 @@
 // textbook (the textbook_payload_* theorems: the key names the dimension, its statement says the meaning) and every count computed
 // here from PAYLOAD_SURFACE and decided through the MCP's own theorems (the match tool serves the theorem the kernel accepted; a
 // count the theorem does not state is a lead, never a rewrite). The sources are re-read by the textbook step; drift is a lead.
+import { PROSE, proseFill } from '../prose-index.ts'
 import type { Context } from '../toolbox.ts'
 import { PAYLOAD_SURFACE } from '../payload-surface.ts'
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.ts'
@@ -89,13 +90,13 @@ const getGraphql = (slug: string, fields: readonly PayloadFieldConfig[]): string
     const many = f.type === 'array' || f.type === 'blocks' || f.hasMany
     return [`  ${f.name}: ${many ? `[${scalar}!]` : scalar}${f.required ? '!' : ''}`]
   })
-  return `type ${Type} {\n  id: String!\n${lines.join('\n')}\n  createdAt: DateTime!\n  updatedAt: DateTime!\n}`
+  return proseFill(PROSE.quantumProcessingToolboxesPayloadSchemas_s1, Type, lines.join('\n'))
 }
 
 /** The MCP tools the plugin exposes for a collection (its config keys over the plugin's tool names), each with the input schema computed here. */
 const listMcpTools = (slug: string, fields: readonly PayloadFieldConfig[]) => {
   const data = toJsonSchema(fields)
-  const where = { type: 'object', description: `Where: { [path]: { [operator]: value }, and?, or? } over ${PAYLOAD_SURFACE.whereOperators.length} operators (${PAYLOAD_SURFACE.whereOperators.map((w) => w.operator).join(', ')})` }
+  const where = { type: 'object', description: proseFill(PROSE.quantumProcessingToolboxesPayloadSchemas_description2, PAYLOAD_SURFACE.whereOperators.length, PAYLOAD_SURFACE.whereOperators.map((w) => w.operator).join(', ')) }
   return PAYLOAD_SURFACE.mcp.tools.filter((t) => t.scope === 'collection').map((t) => ({ name: t.name, configKey: t.configKey, does: t.does, inputSchema: { type: 'object', properties: { collection: { const: slug }, ...(t.configKey === 'find' || t.configKey === 'count' || t.configKey === 'findDistinct' ? { where, limit: { type: 'integer' }, page: { type: 'integer' }, sort: { type: 'string' }, depth: { type: 'integer' } } : {}), ...(t.configKey === 'update' || t.configKey === 'delete' || t.configKey === 'duplicate' || t.configKey === 'findVersionByID' || t.configKey === 'restoreVersion' ? { id: { type: 'string' } } : {}), ...(t.configKey === 'create' || t.configKey === 'update' ? { data } : {}) } } }))
 }
 
@@ -107,13 +108,13 @@ const createOpenapiPaths = (slug: string, fields: readonly PayloadFieldConfig[])
     const rest = o.rest && 'path' in o.rest && typeof (o.rest as { path?: unknown }).path === 'string' ? (o.rest as { method: string; path: string }) : null
     if (o.scope !== 'collection' || !rest) continue
     const path = rest.path.replace('{collection}', slug)
-    paths[path] = { ...(paths[path] ?? {}), [rest.method.toLowerCase()]: { operationId: `${o.name}${o.variant ? `-${o.variant}` : ''}-${slug}`, ...(rest.method === 'POST' || rest.method === 'PATCH' ? { requestBody: { content: { 'application/json': { schema } } } } : {}), responses: { 200: { description: `${o.name} on ${slug}` }, 404: { description: 'no document; a block answers the page computed from the id' } }, externalDocs: { url: o.url } } }
+    paths[path] = { ...(paths[path] ?? {}), [rest.method.toLowerCase()]: { operationId: `${o.name}${o.variant ? `-${o.variant}` : ''}-${slug}`, ...(rest.method === 'POST' || rest.method === 'PATCH' ? { requestBody: { content: { 'application/json': { schema } } } } : {}), responses: { 200: { description: `${o.name} on ${slug}` }, 404: { description: PROSE.quantumProcessingToolboxesPayloadSchemas_description3 } }, externalDocs: { url: o.url } } }
   }
   return paths
 }
 
 /** The realtime coordination: every channel over every operation it touches, coordinated by the content address (the collision guard), never a socket of its own. */
-const listCoordination = () => PAYLOAD_SURFACE.realtime.map((r) => ({ channel: r.name, transport: r.transport, mechanism: r.mechanism, operations: PAYLOAD_SURFACE.operations.filter((o) => /autosave|lock|schedule|job/i.test(r.name) ? /update|version|job|lock/i.test(o.name) : /preview/i.test(r.name) ? /find|update/i.test(o.name) : /mcp/i.test(r.name) ? o.scope === 'collection' || o.scope === 'global' : false).map((o) => o.name), coordinatedBy: 'the content address the edit names (If-Match, context.prev, editBase): accepted while the document still folds to it, a collision answered with both addresses', url: r.url }))
+const listCoordination = () => PAYLOAD_SURFACE.realtime.map((r) => ({ channel: r.name, transport: r.transport, mechanism: r.mechanism, operations: PAYLOAD_SURFACE.operations.filter((o) => /autosave|lock|schedule|job/i.test(r.name) ? /update|version|job|lock/i.test(o.name) : /preview/i.test(r.name) ? /find|update/i.test(o.name) : /mcp/i.test(r.name) ? o.scope === 'collection' || o.scope === 'global' : false).map((o) => o.name), coordinatedBy: PROSE.quantumProcessingToolboxesPayloadSchemas_coordinatedBy4, url: r.url }))
 
 /** The surface re-read from its sources (the client fetched them; text by url) and compared to the table: every differing count a lead. */
 const rereadAnswers = (answers: Record<string, string>) => {
@@ -126,11 +127,11 @@ const rereadAnswers = (answers: Record<string, string>) => {
   const restOps = sourceEndpoints?.length ?? null, heldRest = heldEndpoints.length
   const endpointDrift = sourceEndpoints ? { missingInTable: sourceEndpoints.filter((e) => !heldEndpoints.includes(e)), missingInSource: heldEndpoints.filter((e) => !sourceEndpoints.includes(e)) } : null
   const measures = [
-    { measure: 'field types', held: PAYLOAD_SURFACE.fieldTypes.length, read: union?.length ?? null, source: 'packages/payload/src/fields/config/types.ts (the Field union)', detail: union },
-    { measure: 'where operators', held: PAYLOAD_SURFACE.whereOperators.length, read: operators?.length ?? null, source: 'packages/payload/src/types/constants.ts (validOperators)', detail: operators },
-    { measure: 'collection REST endpoints', held: heldRest, read: restOps, source: 'packages/payload/src/collections/endpoints/index.ts (method and path, comments excluded)', detail: endpointDrift },
+    { measure: 'field types', held: PAYLOAD_SURFACE.fieldTypes.length, read: union?.length ?? null, source: PROSE.quantumProcessingToolboxesPayloadSchemas_source5, detail: union },
+    { measure: 'where operators', held: PAYLOAD_SURFACE.whereOperators.length, read: operators?.length ?? null, source: PROSE.quantumProcessingToolboxesPayloadSchemas_source6, detail: operators },
+    { measure: 'collection REST endpoints', held: heldRest, read: restOps, source: PROSE.quantumProcessingToolboxesPayloadSchemas_source7, detail: endpointDrift },
   ]
-  const leads: Lead[] = measures.filter((m) => m.read !== null && m.read !== m.held).map((m) => ({ id: `payload-surface-${m.measure.replace(/\s+/g, '-')}`, statement: `Payload's ${m.measure} read from ${m.source}: ${m.read}; the table holds ${m.held}: the surface moved, the table and its theorems follow`, status: 'open' as const, reason: 'drift between the source and the table: a count the kernel stated no longer matches what the source lists' } as Lead))
+  const leads: Lead[] = measures.filter((m) => m.read !== null && m.read !== m.held).map((m) => ({ id: `payload-surface-${m.measure.replace(/\s+/g, '-')}`, statement: proseFill(PROSE.quantumProcessingToolboxesPayloadSchemas_statement8, m.measure, m.source, m.read, m.held), status: 'open' as const, reason: PROSE.quantumProcessingToolboxesPayloadSchemas_reason9 } as Lead))
   return { answered: Object.keys(answers).length, measures, unread: measures.filter((m) => m.read === null).map((m) => m.measure), agree: measures.filter((m) => m.read !== null).every((m) => m.read === m.held), leads }
 }
 
@@ -139,7 +140,7 @@ export const createSchemas = (ctx: Context, input: { collection?: PayloadCollect
   const dimensions = listDimensions(ctx)
   const schema = { slug: collection.slug, jsonSchema: toJsonSchema(collection.fields), graphql: getGraphql(collection.slug, collection.fields), mcpTools: listMcpTools(collection.slug, collection.fields), openapiPaths: createOpenapiPaths(collection.slug, collection.fields) }
   const standards = PAYLOAD_SURFACE.standards.map((s) => ({ id: s.id, standard: s.standard, canonical: s.canonical, describes: s.describes }))
-  const requestList = PAYLOAD_SURFACE.sources.map((url, i) => ({ id: `payload-source-${i + 1}`, method: 'GET' as const, url, verifier: 'the source text: the Field union, validOperators and the endpoints counted and compared to the table' }))
+  const requestList = PAYLOAD_SURFACE.sources.map((url, i) => ({ id: `payload-source-${i + 1}`, method: 'GET' as const, url, verifier: PROSE.quantumProcessingToolboxesPayloadSchemas_verifier10 }))
   const reread = input.answers ? rereadAnswers(input.answers) : null
   return {
     phase: (reread ? 'reread' : 'plan') as 'reread' | 'plan',
@@ -147,7 +148,7 @@ export const createSchemas = (ctx: Context, input: { collection?: PayloadCollect
     dimensions, agreeing: dimensions.filter((d) => d.agrees).length, served: dimensions.filter((d) => d.decided.served).length,
     schema, standards, coordination: listCoordination(), mcp: { package: PAYLOAD_SURFACE.mcp.package, path: PAYLOAD_SURFACE.mcp.path, transport: PAYLOAD_SURFACE.mcp.transport, auth: PAYLOAD_SURFACE.mcp.auth, tools: PAYLOAD_SURFACE.mcp.tools.length },
     requestList, reread,
-    leads: [...(reread?.leads ?? []), ...dimensions.filter((d) => !d.agrees).map((d) => ({ id: `payload-theorem-${d.dimension}`, statement: `the dimension ${d.dimension} computes ${d.computed.join(', ')} and its theorem ${d.name} states ${d.stated.join(', ') || 'nothing'}: the theorem follows the table`, status: 'open' as const, reason: 'a count the table computes that the kernel has not stated' } as Lead))],
-    says: 'every schema handled programmatically from the table alone (JSON Schema 2020-12, GraphQL, the plugin\'s MCP tools, OpenAPI 3.1 paths), every dimension named and meant by its textbook theorem, every count computed here and decided through the MCP\'s match tool; the sources re-read by the textbook step, drift a lead',
+    leads: [...(reread?.leads ?? []), ...dimensions.filter((d) => !d.agrees).map((d) => ({ id: `payload-theorem-${d.dimension}`, statement: proseFill(PROSE.quantumProcessingToolboxesPayloadSchemas_statement11, d.dimension, d.computed.join(', '), d.name, d.stated.join(', ') || 'nothing'), status: 'open' as const, reason: PROSE.quantumProcessingToolboxesPayloadSchemas_reason12 } as Lead))],
+    says: PROSE.quantumProcessingToolboxesPayloadSchemas_says13,
   }
 }

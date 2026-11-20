@@ -5,6 +5,7 @@
 // at its content address with its SHA-256, the same shape the Worker's docket and the Payload entries address. No shell, no arbitrary
 // command: the one runner (scripts/machine.ts), called by the stdio transport and by the Payload MCP plugin's machine tool, executes only
 // the argument vector a plan returns, streaming its lines as progress to a caller that sent a progress token.
+import { PROSE, proseFill } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
 import { uuid, entryText } from '../uuid/index.ts'
 import { sha256, utf8, hex } from './unit/hmac.ts'
@@ -30,11 +31,11 @@ export type MachineRequest = { action?: string; message?: string; confirm?: bool
 export const planMachine = (r: MachineRequest, decide: Decide) => {
   const a = MACHINE_ACTIONS.find((x) => x.id === r.action)
   const refuse = (rule: string, why: string, evidence: unknown) => ({ allowed: false as const, action: r.action ?? null, refused: why, court: summonCourt({ gate: `machine ${r.action ?? '?'}`, rule, evidence }), theorems: ['textbook_machine_allow_list', 'textbook_cheap_gates'] })
-  if (!a) return refuse('route', `the allow-list names no action ${String(r.action)}: ${MACHINE_ACTIONS.map((x) => x.id).join(', ')}`, { asked: r.action })
-  if (a.needs === 'message' && (typeof r.message !== 'string' || !r.message.trim() || r.message.includes('\u0000'))) return refuse('shape', `${a.id} takes a message: one line at least, no NUL`, { action: a.id })
-  if (a.needs === 'branch' && (typeof r.branch !== 'string' || !BRANCH_RE.test(r.branch) || r.branch.startsWith('-'))) return refuse('shape', `${a.id} takes a branch: letters, digits, . _ / -, up to 200, never starting with a dash`, { action: a.id, branch: r.branch ?? null })
-  if (a.needs === 'confirm' && r.confirm !== true) return refuse('role', `${a.id} leaves the machine: it runs only on the user's explicit confirmation (confirm: true)`, { action: a.id })
-  if (r.worktree !== undefined && !WORKTREE_RE.test(String(r.worktree))) return refuse('shape', `${a.id} runs at the root or in a worktree under .claude/worktrees`, { action: a.id })
+  if (!a) return refuse('route', proseFill(PROSE.quantumProcessingMachine_s1, String(r.action), MACHINE_ACTIONS.map((x) => x.id).join(', ')), { asked: r.action })
+  if (a.needs === 'message' && (typeof r.message !== 'string' || !r.message.trim() || r.message.includes('\u0000'))) return refuse('shape', proseFill(PROSE.quantumProcessingMachine_s2, a.id), { action: a.id })
+  if (a.needs === 'branch' && (typeof r.branch !== 'string' || !BRANCH_RE.test(r.branch) || r.branch.startsWith('-'))) return refuse('shape', proseFill(PROSE.quantumProcessingMachine_s3, a.id), { action: a.id, branch: r.branch ?? null })
+  if (a.needs === 'confirm' && r.confirm !== true) return refuse('role', proseFill(PROSE.quantumProcessingMachine_s4, a.id), { action: a.id })
+  if (r.worktree !== undefined && !WORKTREE_RE.test(String(r.worktree))) return refuse('shape', proseFill(PROSE.quantumProcessingMachine_s5, a.id), { action: a.id })
   // a row's own parameter by its needs: a file after --, a pattern after -e, a patch as the input
   const param = a.needs === 'file' ? (typeof r.file === 'string' && FILE_RE.test(r.file) ? ['--', r.file] : null) : a.needs === 'pattern' ? (typeof r.pattern === 'string' && r.pattern && !r.pattern.includes('\u0000') ? ['-e', r.pattern] : null) : a.needs === 'patch' && typeof r.patch !== 'string' ? null : []
   if (!param) return refuse('shape', `${a.id} takes its ${a.needs}, no NUL`, { action: a.id })
@@ -47,7 +48,7 @@ export const planMachine = (r: MachineRequest, decide: Decide) => {
   }
   if (PARAMETRISED[a.id]) {
     const args = PARAMETRISED[a.id]!()
-    if (!args) return refuse('shape', `${a.id} takes its own parameters only: a worktree under .claude/worktrees, a branch other than main, an archive/ tag at a full commit, or a relative file of a worktree`, { action: a.id })
+    if (!args) return refuse('shape', proseFill(PROSE.quantumProcessingMachine_s6, a.id), { action: a.id })
     return { allowed: true as const, action: a.id, kind: a.kind, command: { cmd: a.cmd, args }, input: null, worktree, decision: null, says: a.says, theorems: ['textbook_machine_allow_list'] }
   }
   const decision = a.workflow ? decide(a.workflow, r.facts ?? {}) : null
@@ -89,7 +90,7 @@ export const forecastTimes = (times: readonly number[], o: { a?: number; q?: num
   let num = BigInt(y[0]!), den = 1n, sq = 0
   for (const v of y.slice(1)) { sq += (v - Number((num * 1000n) / den) / 1000) ** 2; num = a * BigInt(v) * den + (q - a) * num; den *= q }
   const level = Number((2n * num + den) / (2n * den)), point = Math.max(0, level + (index?.[n % m] ?? 0)), half = n > 2 ? Math.round(1.96 * Math.sqrt(sq / (n - 1))) : null
-  return { estimated: true as const, point, interval: half === null ? null : [Math.max(0, point - half), point + half] as [number, number], confidence: 0.95, n, alpha: `${a}/${q}`, level: `${num}/${den}`, seasonal: index ? { period: m, index } : null, method: 'additive decomposition by a moving average (ARIMA_PLUS documents STL), then simple exponential smoothing in exact rationals (ARIMA_PLUS: an ARIMA trend, ETS seasonality, spikes, steps and holidays cleaned)', reference: 'TimesFM (google-research/timesfm), not run' }
+  return { estimated: true as const, point, interval: half === null ? null : [Math.max(0, point - half), point + half] as [number, number], confidence: 0.95, n, alpha: `${a}/${q}`, level: `${num}/${den}`, seasonal: index ? { period: m, index } : null, method: PROSE.quantumProcessingMachine_method7, reference: PROSE.quantumProcessingMachine_reference8 }
 }
 /** The largest gap between consecutive events while work runs, against the heartbeat bound (textbook_stream_no_silence). */
 const getSilence = (events: readonly Pick<StreamEvent, 'at'>[], boundMs = 1000) => {
@@ -143,5 +144,5 @@ export const LONG_ACTIONS: readonly string[] = ['next', 'regenerate', 'precheck'
 /** The waves of next in their order, and the bound on the lanes of each: min(cores, ⌊capacity ÷ heap⌋), the formula the runner applies. */
 export const nextWaves = (steps: readonly NextStep[] = NEXT_STEPS) => {
   const waves = [...new Set(steps.map((s) => s.wave))].sort((a, b) => a - b)
-  return { phase: 'machine-next' as const, runner: MACHINE_RUNNER, steps, waves, lanes: { formula: 'min(cores, floor(0.7 × memory ÷ heap))', heapDefaultMb: 4096 }, long: LONG_ACTIONS, ordered: waves.every((w, i) => i === 0 || waves[i - 1]! < w), budgets: steps.every((s) => s.budgetMs > 0), kinds: { door: steps.filter((s) => s.via === 'door').length, generator: steps.filter((s) => s.via === 'generator').length, process: steps.filter((s) => s.via === 'process').length }, theorems: ['textbook_next_waves_ordered', 'textbook_long_action_queued'], says: `${steps.length} step(s) in ${waves.length} wave(s), run by ${MACHINE_RUNNER} with no shell; ${LONG_ACTIONS.length} action(s) longer than a request are queued as jobs` }
+  return { phase: 'machine-next' as const, runner: MACHINE_RUNNER, steps, waves, lanes: { formula: PROSE.quantumProcessingMachine_formula9, heapDefaultMb: 4096 }, long: LONG_ACTIONS, ordered: waves.every((w, i) => i === 0 || waves[i - 1]! < w), budgets: steps.every((s) => s.budgetMs > 0), kinds: { door: steps.filter((s) => s.via === 'door').length, generator: steps.filter((s) => s.via === 'generator').length, process: steps.filter((s) => s.via === 'process').length }, theorems: ['textbook_next_waves_ordered', 'textbook_long_action_queued'], says: proseFill(PROSE.quantumProcessingMachine_says10, steps.length, waves.length, MACHINE_RUNNER, LONG_ACTIONS.length) }
 }

@@ -1,4 +1,5 @@
 /** Lean coin SoT: REGISTER=uuidQubits(4)=122 (textbook_coin_lean_sot). Capacity 29/232 and forged QPU refused. */
+import { PROSE } from '../prose-index.ts'
 import { channel, neighbours, reflection, uuid, uuidQubits } from '../../uuid/index.ts'
 import { market } from '../toolboxes/billing.ts'
 
@@ -30,7 +31,7 @@ export const price = (qubits: number, m = market()) => {
 
 export const catalog = (cases: readonly { key: string; module: string; uuid: string; qubits?: number }[]) => {
   const coins = pack(cases), m = market()
-  if (!(REGISTER === 122 && m.forged.refused && m.standard === 'ISO 4217')) throw new Error('catalog refused: Lean coin SoT failed')
+  if (!(REGISTER === 122 && m.forged.refused && m.standard === 'ISO 4217')) throw new Error(PROSE.quantumProcessingCatalogIndex_s1)
   return {
     register: REGISTER, market: m, holds: true as const,
     products: coins.map((c) => ({ coin: c.uuid, module: c.module, used: c.used, keys: c.cases.map((x) => x.key), handle: channel(c.uuid).handle, amounts: price(c.used, m) })),

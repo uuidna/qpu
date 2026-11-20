@@ -2,6 +2,7 @@
 // Dec 9, 2024; quantumai.google/static/site-assets/downloads/willow-spec-sheet.pdf). A figure the sheet does not state is
 // not here. Errors are probabilities: 0.035% is 0.00035.
 
+import { PROSE } from './prose-index.ts'
 import { CZ, Device, GridQubit, qubitKey, type Channel, type Qubit } from './cirq.ts'
 import { heldQubits } from '../uuid/index.ts'
 
@@ -34,7 +35,7 @@ export const getAverageConnectivity = (sites: readonly Site[], couplers: readonl
   (2 * couplers.length) / sites.length
 
 /** The errors and coherence common to both chips' reset options, as the spec sheet lists them. */
-const RESET = ['multi-level reset (|1> and above)', 'leakage removal (|2> only)'] as const
+const RESET = [PROSE.quantumProcessingProcessor_s1, 'leakage removal (|2> only)'] as const
 
 /** Chip 1: the quantum error correction chip. */
 const ERROR_CORRECTION_CHIP = {
@@ -120,7 +121,7 @@ export const SYCAMORE = {
   couplers: deriveCouplers(SYCAMORE_SITES),
   statedQubits: 54,
   statedCouplers: 88,
-  layout: 'the printed device diagram on the Google devices page, and the grid in Cirq\'s known_devices source',
+  layout: PROSE.quantumProcessingProcessor_layout2,
 } as const
 
 /** Sycamore23, the 23-qubit subset of Sycamore in Cirq's known_devices source: its grid, and the couplers of its neighbours. */
@@ -133,7 +134,7 @@ export const SYCAMORE23 = {
   qubits: SYCAMORE23_SITES.length,
   sites: SYCAMORE23_SITES,
   couplers: deriveCouplers(SYCAMORE23_SITES),
-  layout: 'the Sycamore23 grid in Cirq\'s known_devices source',
+  layout: PROSE.quantumProcessingProcessor_layout3,
 } as const
 
 /** The noise of a Willow chip, from its spec sheet's medians: a single-qubit depolarizing channel with p = 1.5 × the single-qubit
@@ -161,7 +162,7 @@ const BRISTLECONE = {
   sites: BRISTLECONE_SITES,
   couplers: deriveCouplers(BRISTLECONE_SITES),
   statedQubits: 72,
-  layout: 'the 72-qubit 12-row diamond array in Cirq\'s Bristlecone device specification',
+  layout: PROSE.quantumProcessingProcessor_layout4,
 } as const
 
 /** Foxtail, Google Quantum AI's 22-qubit two-row superconducting test processor (2 × 11 ladder grid, 31 couplers). */
@@ -175,7 +176,7 @@ const FOXTAIL = {
   couplers: deriveCouplers(FOXTAIL_SITES),
   statedQubits: 22,
   statedCouplers: 31,
-  layout: 'the 2 × 11 two-row ladder grid in Cirq\'s Foxtail device specification',
+  layout: PROSE.quantumProcessingProcessor_layout5,
 } as const
 
 /** qpu's register, the formulas of Qpu.Information.Qubit at hexbit width 4: each digit of an address that holds qubits (heldQubits) is a row, in
@@ -189,7 +190,7 @@ const REGISTER = {
   qubits: REGISTER_SITES.length,
   sites: REGISTER_SITES,
   couplers: deriveCouplers(REGISTER_SITES),
-  layout: 'one UUID: a row per hex digit that holds qubits, a column per qubit it holds (Qpu.Information.Qubit)',
+  layout: PROSE.quantumProcessingProcessor_layout6,
 } as const
 
 /** Every processor, Google Quantum AI's five and qpu's register, each a device a circuit is built and checked against. */
@@ -205,18 +206,18 @@ export const DEVICES = ALL_PROCESSORS
 
 /** The stack beside the figures the processor answer serves from WILLOW (chips, errorCorrectionPreprint, magicStateCultivation). */
 export const QUANTUM_HARDWARE_STACK = {
-  modality: 'superconducting transmon qubits with frequency-tunable couplers',
+  modality: PROSE.quantumProcessingProcessor_modality7,
   physics: {
     /** the 105-qubit processor mean, arXiv 2408.13687 section II; its median physical lifetime of 85 µs is a different metric */
     t2CpmgMicroseconds: { mean: 89 },
     twoQubitGates: ['CZ', 'iSWAP-like', 'fSim', 'CNOT', 'SWAP'],
     leakageAndReset: RESET,
-    crosstalkMitigation: 'tunable coupler zero-coupling parking + dynamic decoupling',
+    crosstalkMitigation: PROSE.quantumProcessingProcessor_crosstalkMitigation8,
   },
   /** Sycamore, arXiv 1910.11333 SI III; Google states no stage temperatures or attenuation, and the components are proved in BLUEPRINT.md */
   control: { dacBits: 14, dacSamplesPerSecond: 1e9, adcBits: 8, readoutGroups: 9, qubitsPerReadoutGroup: 6 },
   calibrationAndBenchmarking: {
-    protocols: ['Cross-Entropy Benchmarking (XEB)', 'Randomized Benchmarking (RB)', 'Floquet Periodic Calibration', 'Speckle Purity Drift Tracking', 'Out-of-Time-Order Correlator (OTOC Quantum Echoes)'],
+    protocols: ['Cross-Entropy Benchmarking (XEB)', 'Randomized Benchmarking (RB)', 'Floquet Periodic Calibration', 'Speckle Purity Drift Tracking', PROSE.quantumProcessingProcessor_s9],
     noiseModels: ['willow_error_correction', 'willow_random_circuit_sampling'],
     krausChannels: ['bit_flip', 'phase_flip', 'depolarize', 'asymmetric_depolarize', 'amplitude_damp', 'phase_damp', 'generalized_amplitude_damp', 'reset'],
   },

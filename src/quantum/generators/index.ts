@@ -5,6 +5,7 @@
 // ActiveSupport::Concern: including a concern into a concern records a dependency; including it into a model includes those dependencies on the model, then extends the class methods and runs the included block there.
 // RailsAdmin mounts at /admin. An action is root, collection (the model), or member (one instance). A bulkable collection action is the batch: it reads bulk_ids and runs the member action on each. The two keys differ so both can be registered; they share one authorization key (delete and bulk_delete share destroy; verify and bulk_verify share verify).
 
+import { PROSE, proseFill } from '../processing/prose-index.ts'
 import { verifyIsoOnline } from '../processing/standards.ts'
 import { PAYLOAD_SURFACE } from '../processing/payload-surface.ts'
 
@@ -98,7 +99,7 @@ export const generateModel = (input: { name: string; namespace?: string; forcePl
   let name = input.name
   if (!input.forcePlural && pluralModelName(name)) {
     const singular = singularize(name)
-    warnings.push(`The model name '${name}' was recognized as a plural, using the singular '${singular}' instead. Override with forcePlural.`)
+    warnings.push(proseFill(PROSE.quantumGeneratorsIndex_s1, name, singular))
     name = singular
   }
   const classPath = (input.namespace ?? '').split('/').filter(Boolean)

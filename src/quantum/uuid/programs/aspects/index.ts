@@ -1,5 +1,6 @@
 // Every Payload configuration and every deploy stage is one UUID program.
 // The filesystem places the handle: eight nibble levels, depth 7. A deploy command is named here. This call does not run it and does not write.
+import { PROSE, proseFill } from '../../../processing/prose-index.ts'
 import { seal, uuid } from '../../../password/address.js'
 import { DEPLOY_STAGES } from '../../../payload/deploy.ts'
 import { configKinds } from '../../../processing/payload-vocabulary.ts'
@@ -78,7 +79,7 @@ export const aspectPrograms = () => {
     advantage,
     holds,
     says: holds
-      ? `${rows.length} programs, ${configKinds.length} configurations and ${DEPLOY_STAGES.length} deploy stages, each a Payload plugin (definePlugin) under eight levels, upstream guarded. Verify matches every address. The register holds ${EFFECTIVE} effective qubits, ${HANDLES} handles, capacity ${SCALE}. Nothing is fetched, written or run.`
-      : 'a configuration or deploy program did not verify as an upstream-guarded Payload plugin',
+      ? proseFill(PROSE.quantumUuidProgramsAspectsIndex_s1, rows.length, configKinds.length, DEPLOY_STAGES.length, EFFECTIVE, HANDLES, SCALE)
+      : PROSE.quantumUuidProgramsAspectsIndex_s2,
   }
 }

@@ -3,6 +3,7 @@
 // read into one graph; its cycles found by Tarjan's strongly connected components, iteratively so no depth overflows the stack; the dangling
 // references named. Whatever collides is fused, never refused: every strongly connected component is one node of the condensation, its members
 // in address order, and the condensation is always acyclic, so it always has an order. Pure: the client hands the documents over.
+import { PROSE, proseFill } from './prose-index.ts'
 import { uuid } from '../uuid/index.ts'
 export type RefDoc = { id: string; slug?: string; doc?: unknown; markdown?: string }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -43,7 +44,7 @@ export const createReferenceGraph = (docs: readonly RefDoc[]) => {
   const node = new Map<string, string>(); for (const f of fused) for (const m of f.members) node.set(m, f.id)
   const condensedEdges = [...new Set(edges.map((e) => [node.get(e.from)!, node.get(e.to)!]).filter(([a, b]) => a !== b).map((p) => p.join('→')))].map((p) => { const [from, to] = p.split('→') as [string, string]; return { from, to } })
   const condensation = { nodes: fused, edges: condensedEdges, order: [...fused].reverse().map((f) => f.id), acyclic: true as const }
-  return { nodes: ids.length, edges, cycles, dangling, collisions, acyclic: cycles.length === 0, order: cycles.length ? null : condensation.order, condensation, says: `${ids.length} document(s), ${edges.length} reference(s): ${cycles.length ? `${cycles.length} cycle(s) fused into one node each (${cycles.map((c) => c.join(' ↔ ')).join('; ')})` : 'no cycle'}; the condensation of ${fused.length} node(s) is acyclic and ordered${dangling.length ? `; ${dangling.length} dangling reference(s) noted` : ''}${collisions.length ? `; ${collisions.length} name(s) claimed by two documents, resolved to none` : ''}`, theorem: 'textbook_references_acyclic' }
+  return { nodes: ids.length, edges, cycles, dangling, collisions, acyclic: cycles.length === 0, order: cycles.length ? null : condensation.order, condensation, says: proseFill(PROSE.quantumProcessingReferences_says1, ids.length, edges.length, cycles.length ? proseFill(PROSE.quantumProcessingReferences_s2, cycles.length, cycles.map((c) => c.join(' ↔ ')).join('; ')) : 'no cycle', fused.length, dangling.length ? `; ${dangling.length} dangling reference(s) noted` : '', collisions.length ? proseFill(PROSE.quantumProcessingReferences_s3, collisions.length) : ''), theorem: 'textbook_references_acyclic' }
 }
 
 /** The SEO plugin as another way of referencing, and every reference indexed for the best caching. A document's meta — the title and description its
@@ -66,6 +67,6 @@ export const referenceIndex = (docs: readonly ScopedRefDoc[], seo = true) => {
   const aiHits = aiRefs.length - new Set(aiRefs.map((e) => e.queryHash)).size
   // each cache hit is a 304 served from an existing address with no Worker compute and no AI binding call — the Cloudflare requests and AI calls saved;
   // the index is scoped per tenant (the scope), and read under that tenant's rolify role, so one tenant's cache never serves another's query
-  const savings = { cloudflareRequestsSaved: cacheHits, aiBindingCallsSaved: aiHits, rbac: 'per tenant: the scope is the tenant, read under its rolify role, so a cache entry serves only its own tenant', how: 'a query served from its content address is a 304 with no recompute and no AI binding call — Cloudflare cost minimised' }
-  return { phase: 'reference-index' as const, scopes, byScope, entries: all, total: all.length, links: links.length, seo: seoRefs.length, ai: aiRefs.length, distinctHashes, cacheHits, savings, graph: { nodes: graph.nodes, edges: graph.edges.length, acyclic: graph.acyclic }, theorems: ['textbook_reference_index_cached', 'textbook_cache_saves_cost', 'textbook_references_acyclic'], says: `${all.length} reference(s) across ${scopes.length} tenant scope(s) (${links.length} links, ${seoRefs.length} SEO auto-references via hooks, ${aiRefs.length} AI binding call(s)), indexed by scope and combination and cached by query hash: ${distinctHashes} distinct address(es), ${cacheHits} served from an existing address (the 304 involution, ${aiHits} a saved AI binding call) — Cloudflare cost minimised, each tenant's cache read under its rolify role` }
+  const savings = { cloudflareRequestsSaved: cacheHits, aiBindingCallsSaved: aiHits, rbac: PROSE.quantumProcessingReferences_rbac4, how: PROSE.quantumProcessingReferences_how5 }
+  return { phase: 'reference-index' as const, scopes, byScope, entries: all, total: all.length, links: links.length, seo: seoRefs.length, ai: aiRefs.length, distinctHashes, cacheHits, savings, graph: { nodes: graph.nodes, edges: graph.edges.length, acyclic: graph.acyclic }, theorems: ['textbook_reference_index_cached', 'textbook_cache_saves_cost', 'textbook_references_acyclic'], says: proseFill(PROSE.quantumProcessingReferences_says6, all.length, scopes.length, links.length, seoRefs.length, aiRefs.length, distinctHashes, cacheHits, aiHits) }
 }

@@ -1,6 +1,7 @@
 // Every textbook theorem's Lean statement read back as arithmetic (variables, hypotheses, conjuncts) and evaluated exactly in BigInt with
 // Lean's Nat semantics (truncated subtraction, floored division), so a client calls any theorem as a computation; the prose audit finds the
 // expression each number of a text rests on, or leaves a lead.
+import { PROSE, proseFill } from './prose-index.ts'
 import { div, mod, mul, natSub, pow } from '../apps/index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { routeStatement } from './match.ts'
@@ -86,7 +87,7 @@ export const evaluate = (src: string, env: Env, mode?: { proposition?: boolean; 
     if (!(proposition && peek()?.v === '∀')) return iff()
     take()
     const name = take()
-    const refuse = (): never => { throw new Error('a quantified statement: the arithmetic reads a bounded one, and this one is not') }
+    const refuse = (): never => { throw new Error(PROSE.quantumProcessingExpressions_s1) }
     if (!name || name.t !== 'id') refuse()
     if (peek()?.v === ':') { take(); if (take()?.t !== 'id') refuse() }
     if (take()?.v !== ',') refuse()
@@ -139,13 +140,13 @@ export const evaluateTheorem = (key: string, values: Readonly<Record<string, num
   const needs = s.variables.filter((v) => !(v in env))
   const inputSchema = { type: 'object', properties: Object.fromEntries(s.variables.map((v) => [v, s.bools.includes(v) ? { type: 'boolean' } : { type: 'integer', minimum: 0 }])), required: s.variables }, head = { theorem: key, says: t.says, lean: t.lean, ...s, inputSchema }
   const read = { proposition: true, functions: s.functions }
-  if (s.quantified) return { ...head, evaluable: false, reason: 'a quantified statement: the kernel proves it for all values; evaluate it by its instances', needs }
+  if (s.quantified) return { ...head, evaluable: false, reason: PROSE.quantumProcessingExpressions_reason2, needs }
   if (needs.length) return { ...head, evaluable: true, needs, computed: null }
   try {
     const hyps = s.hypotheses.map((h) => ({ ...h, ...evaluate(h.text, env, read) }))
     const premises = hyps.every((h) => h.value === true)
     const c = evaluate(s.conclusion, env, read)
-    return { ...head, evaluable: true, needs: [], values: Object.fromEntries(Object.entries(env).map(([k, v]) => [k, v.toString()])), hypotheses: hyps.map((h) => ({ name: h.name, text: h.text, holds: h.value === true, parts: h.parts })), premises, conclusion: { text: s.conclusion, holds: c.value === true, parts: c.parts }, holds: !premises || c.value === true, says_now: premises ? (c.value === true ? 'the premises hold and so does the conclusion, as the kernel proved' : 'the premises hold and the conclusion fails: the statement does not match the kernel') : 'a premise fails for these values: the theorem says nothing about them' }
+    return { ...head, evaluable: true, needs: [], values: Object.fromEntries(Object.entries(env).map(([k, v]) => [k, v.toString()])), hypotheses: hyps.map((h) => ({ name: h.name, text: h.text, holds: h.value === true, parts: h.parts })), premises, conclusion: { text: s.conclusion, holds: c.value === true, parts: c.parts }, holds: !premises || c.value === true, says_now: premises ? (c.value === true ? PROSE.quantumProcessingExpressions_s3 : PROSE.quantumProcessingExpressions_s4) : PROSE.quantumProcessingExpressions_s5 }
   } catch (e) { return { ...head, evaluable: false, reason: (e as Error).message, needs: [] } }
 }
 
@@ -216,9 +217,9 @@ export const getProse = (texts: Readonly<Record<string, string>>, examples: read
   const unbacked = rows.filter((r) => !r.expression)
   const id = (kind: string, text: string, sentence: string) => `prose-${kind}-${text.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-${Math.abs([...sentence].reduce((h, c) => (h * 31 + c.charCodeAt(0)) | 0, 7)).toString(36)}`
   const leads: Lead[] = [
-    ...unbacked.map((r) => ({ id: id('number', `${r.text}-${r.number}`, r.sentence), source: r.text, statement: `${r.text} states ${r.number} in "${r.sentence}" and no textbook expression it reaches states it`, status: 'open' as const, reason: 'a number in prose rests on an expression the kernel accepts, or it is a convention to state as one' })),
-    ...verdicts.map((v) => ({ id: id('verdict', v.text, v.sentence), source: v.text, statement: `${v.text} carries a verdict word beside the Clay problems: "${v.sentence}"`, status: 'open' as const, reason: 'the tree states only what the kernel accepts; match and compete decide, never prose' })),
+    ...unbacked.map((r) => ({ id: id('number', `${r.text}-${r.number}`, r.sentence), source: r.text, statement: proseFill(PROSE.quantumProcessingExpressions_statement6, r.text, r.number, r.sentence), status: 'open' as const, reason: PROSE.quantumProcessingExpressions_reason7 })),
+    ...verdicts.map((v) => ({ id: id('verdict', v.text, v.sentence), source: v.text, statement: proseFill(PROSE.quantumProcessingExpressions_statement8, v.text, v.sentence), status: 'open' as const, reason: PROSE.quantumProcessingExpressions_reason9 })),
   ]
   const byText = Object.fromEntries(Object.keys(texts).map((k) => [k, { numbers: rows.filter((r) => r.text === k).length, backed: rows.filter((r) => r.text === k && r.expression).length }]))
-  return { texts: Object.keys(texts).length, sentences, numbers: rows.length, backed: rows.length - unbacked.length, unbacked: unbacked.length, verdicts: verdicts.length, byText, consolidation: rows.filter((r) => r.expression).map((r) => ({ text: r.text, number: r.number, expression: r.expression, call: { tool: 'textbook', arguments: { evaluate: { theorem: r.expression } } } })), leads, theorem: 'textbook_expressions_evaluate', says: `${rows.length} number(s) in ${sentences} sentence(s) of ${Object.keys(texts).length} text(s): ${rows.length - unbacked.length} rest on a textbook expression a client can evaluate, ${unbacked.length} are leads; ${verdicts.length} verdict word(s) beside the Clay problems` }
+  return { texts: Object.keys(texts).length, sentences, numbers: rows.length, backed: rows.length - unbacked.length, unbacked: unbacked.length, verdicts: verdicts.length, byText, consolidation: rows.filter((r) => r.expression).map((r) => ({ text: r.text, number: r.number, expression: r.expression, call: { tool: 'textbook', arguments: { evaluate: { theorem: r.expression } } } })), leads, theorem: 'textbook_expressions_evaluate', says: proseFill(PROSE.quantumProcessingExpressions_says10, rows.length, sentences, Object.keys(texts).length, rows.length - unbacked.length, unbacked.length, verdicts.length) }
 }

@@ -2,6 +2,7 @@
 // before the tree's own record of precedence (2026) that resemble it are its candidates; a closed count of this tree is its own, which no
 // prior publication can state. A search finds resemblance, never the same claim: "recognised" is set only by a confirmation recorded in the
 // docket (a reader who read the work), "unrecognised" when no candidate is found. Pure: the client asks OpenAlex and hands the answers back.
+import { PROSE, proseFill } from './prose-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { getStatement } from './expressions.ts'
 import { LICENSE, PRECEDENCE } from './unit/license.ts'
@@ -41,7 +42,7 @@ export const claimNovelty = (raw: unknown) => {
     const doi = record?.doi ?? ''
     const year = record?.year ?? null
     const verify = doi ? createVerifyRequests({ kind: 'doi', value: doi }) : []
-    const search = statement ? { id: 'openalex-novelty' as const, method: 'GET' as const, url: `https://api.openalex.org/works?search=${encodeURIComponent(statement)}&filter=has_doi:true&per-page=25`, accept: 'application/json' as const, check: 'DOI-registered works that resemble the claim, dated against the author\'s record' } : null
+    const search = statement ? { id: 'openalex-novelty' as const, method: 'GET' as const, url: `https://api.openalex.org/works?search=${encodeURIComponent(statement)}&filter=has_doi:true&per-page=25`, accept: 'application/json' as const, check: PROSE.quantumProcessingClaims_check1 } : null
     const answers = one.answers && typeof one.answers === 'object' ? one.answers as Record<string, unknown> : {}
     const text = (url: string) => (typeof answers[url] === 'string' ? answers[url] : '')
     const verified = doi !== '' && verify.length > 0 && verify.every((request) => { const body = text(request.url); return body.length > 0 && (!request.check.includes(LICENSE.author) || (body.includes(LICENSE.author) && body.includes(LICENSE.orcid))) })
@@ -64,5 +65,5 @@ export const claimNovelty = (raw: unknown) => {
     return { statement, doi: doi || null, year, verified, novel, claimed, prior, requests: [...verify, ...(search ? [search] : [])] }
   })
   const claimed = rows.flatMap((row) => (row.claimed ? [row.claimed] : []))
-  return { phase: 'novelty' as const, standards: ['ISO 690', 'ISO 26324'] as const, source: 'doi' as const, fetched: false as const, author, rows, claimed, says: `${rows.length} claim(s) read against the DOI ecosystem: ${claimed.length} novel and claimed for ${author.name}, ${rows.filter((row) => row.novel === false).length} cited as earlier work` }
+  return { phase: 'novelty' as const, standards: ['ISO 690', 'ISO 26324'] as const, source: 'doi' as const, fetched: false as const, author, rows, claimed, says: proseFill(PROSE.quantumProcessingClaims_says2, rows.length, claimed.length, author.name, rows.filter((row) => row.novel === false).length) }
 }

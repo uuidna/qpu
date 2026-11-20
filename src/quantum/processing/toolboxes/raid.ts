@@ -4,6 +4,7 @@
 // here and lands as a new entry linked to the old, since entries are immutable and addressed by content. Nothing here does
 // I/O: the client reads the docket's rows and writes the entries this toolbox returns. Payload's mongodb adapter interface is
 // the shape this ports to, not Cloudflare's D1.
+import { PROSE, proseFill } from '../prose-index.ts'
 import { TABLES } from '../tables-index.ts'
 import { defineTool, isObj, createChecks, type Toolbox } from '../toolbox.ts'
 import { documentPath } from '../../fs/index.ts'
@@ -114,12 +115,12 @@ const smartHealth = (copies: Readonly<Record<string, Readonly<Record<string, str
   const v = verifyCopies(copies)
   const disks = Object.entries(v.bindings).map(([binding, b]) => { const entries = b.verified + b.missing + b.differ; return { binding, status: b.missing + b.differ > 0 ? 'degraded' : 'healthy', online: b.verified > 0 || entries === 0, attributes: { entries, verified: b.verified, reallocated: b.missing, pending: b.differ }, health: entries ? Math.round((b.verified / entries) * 100) : 100 } })
   const degraded = disks.filter((d) => d.status !== 'healthy'), status = v.refused.length ? 'failed' : degraded.length ? 'degraded' : 'healthy'
-  return { op: 'health', status, disks, entries: v.entries, twoCopies: v.twoCopies, rebuilds: v.rebuild.length, moves: v.moves.length, refused: v.refused, leads: degraded.map((d) => ({ id: `raid-disk-${d.binding}`, statement: `binding ${d.binding} degraded (${d.health}% verified, ${d.attributes.reallocated} missing, ${d.attributes.pending} differing): rebuild it from a verified copy`, status: 'open' as const, tool: 'mongo' })), says: `${disks.length} disk(s)/binding(s) self-monitored against bit 0: ${status}; ${v.twoCopies} entr(y/ies) on two or more copies, ${v.rebuild.length} rebuild(s), ${degraded.length} binding(s) not healthy — the Payload admin lists each disk's SMART attributes and the degraded ones as leads` }
+  return { op: 'health', status, disks, entries: v.entries, twoCopies: v.twoCopies, rebuilds: v.rebuild.length, moves: v.moves.length, refused: v.refused, leads: degraded.map((d) => ({ id: `raid-disk-${d.binding}`, statement: proseFill(PROSE.quantumProcessingToolboxesRaid_statement1, d.binding, d.health, d.attributes.reallocated, d.attributes.pending), status: 'open' as const, tool: 'mongo' })), says: proseFill(PROSE.quantumProcessingToolboxesRaid_says2, disks.length, status, v.twoCopies, v.rebuild.length, degraded.length) }
 }
 const mongo = defineTool('raid', {
   name: 'mongo',
-  description: 'The ported MongoDB over the docket, pure. find: {collection, docs, filter, sort, skip, limit} → the matching documents (Mongo operators, dotted paths, $and/$or/$nor). insert: {collection, docs: [new]} → the entries to write, content-addressed. update: {collection, docs, filter, update} → for each match the new document and the entry that replaces it (linked to the old). delete: {collection, docs, filter} → the ids to delete, if unlinked. mirror: {collection, docs} → binding 0\'s files (hex folders g1/g2/g3/<uuid> by the UUID\'s middle, the R2 and GCS key, and the collection\'s pointer); restore: {collection, files} → the documents read back, each verified by its address; verify: {copies: {binding: files}} → every copy against bit 0, the rebuilds and the moves to the middle-part folders. health: {copies} → SMART self-monitoring, each binding a disk with its attributes (verified, reallocated = missing, pending = differing), the RAID healthy/degraded/failed, the degraded disks as rebuild leads for the Payload admin. The client reads the docket rows and writes what comes back.',
-  inputSchema: { type: 'object', properties: { op: { type: 'string', enum: ['find', 'insert', 'update', 'delete', 'mirror', 'restore', 'verify', 'health', 'associate', 'validate'] }, association: { type: 'object', description: 'the Rails guide Active Record Associations as Payload fields: { type: belongs_to | has_one | has_many | has_many_through | has_one_through | has_and_belongs_to_many | polymorphic | self_join | sti | delegated_type, owner, name, target?, targets?, through?, on?, inverse?, optional?, subtypes?, dependent?, counterCache?, touch? } answered with the fields each side carries and the option hooks' }, validation: { type: 'object', description: 'the Rails guide Active Record Validations as Payload field options or a validate function: { name, helper: absence | acceptance | confirmation | comparison | format | inclusion | exclusion | length | numericality | presence | uniqueness | validates_associated | validates_each | validates_with, options? }' }, files: { type: 'object', description: 'restore: binding 0\'s files as read, path → text' }, copies: { type: 'object', description: 'verify: each binding\'s files, binding → path → text' }, collection: { type: 'string' }, docs: { type: 'array', items: { type: 'object' }, description: 'the collection\'s documents as read from the docket (their bodies)' }, filter: { type: 'object' }, update: { type: 'object' }, sort: { type: 'object' }, skip: { type: 'integer' }, limit: { type: 'integer' }, selftest: { type: 'boolean' } } },
+  description: PROSE.quantumProcessingToolboxesRaid_description3,
+  inputSchema: { type: 'object', properties: { op: { type: 'string', enum: ['find', 'insert', 'update', 'delete', 'mirror', 'restore', 'verify', 'health', 'associate', 'validate'] }, association: { type: 'object', description: PROSE.quantumProcessingToolboxesRaid_description4 }, validation: { type: 'object', description: PROSE.quantumProcessingToolboxesRaid_description5 }, files: { type: 'object', description: PROSE.quantumProcessingToolboxesRaid_description6 }, copies: { type: 'object', description: PROSE.quantumProcessingToolboxesRaid_description7 }, collection: { type: 'string' }, docs: { type: 'array', items: { type: 'object' }, description: PROSE.quantumProcessingToolboxesRaid_description8 }, filter: { type: 'object' }, update: { type: 'object' }, sort: { type: 'object' }, skip: { type: 'integer' }, limit: { type: 'integer' }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     const op = String(args.op ?? 'find'); const collection = String(args.collection ?? 'documents'); const docs = (Array.isArray(args.docs) ? args.docs : []) as Doc[]; const filter = (args.filter ?? {}) as Filter
     if (op === 'find') { const found = listDocs(docs, filter, (args.sort ?? {}) as Record<string, 1 | -1>, Number(args.skip ?? 0), typeof args.limit === 'number' ? args.limit : undefined); return { op, collection, scanned: docs.length, matched: found.length, docs: found } }
@@ -131,8 +132,8 @@ const mongo = defineTool('raid', {
     if (op === 'validate') return { op, ...createValidation(args.validation as Validation) }
     if (op === 'verify') return { op, ...verifyCopies((args.copies ?? {}) as Record<string, Record<string, string>>) }
     if (op === 'health') return smartHealth((args.copies ?? {}) as Record<string, Record<string, string>>)
-    if (op === 'delete') { const ids = listDocs(docs, filter).map((d) => String(d._id ?? '')); return { op, collection, scanned: docs.length, matched: ids.length, ids, note: 'the docket refuses a delete while anything links the entry; a linked document is kept as history' } }
-    throw new Error(`op ${op} is not one of find, insert, update, delete, mirror, restore, verify`)
+    if (op === 'delete') { const ids = listDocs(docs, filter).map((d) => String(d._id ?? '')); return { op, collection, scanned: docs.length, matched: ids.length, ids, note: PROSE.quantumProcessingToolboxesRaid_note9 } }
+    throw new Error(proseFill(PROSE.quantumProcessingToolboxesRaid_s10, op))
   },
   widget: flowWidget,
 })
@@ -141,27 +142,27 @@ const SAMPLE = TABLES.SAMPLE as unknown as Doc[]
 
 export const RAID: Toolbox = {
   name: 'raid',
-  idea: 'the docket as a database: MongoDB\'s query and update language ported as pure functions over content-addressed entries, so any document framework (Payload first) stores on the RAID through its mongodb adapter',
+  idea: PROSE.quantumProcessingToolboxesRaid_idea11,
   tools: [mongo],
   examples: [
-    { id: 'mongo-find', tool: 'mongo', arguments: { op: 'find', collection: 'processors', docs: SAMPLE, filter: { qubits: { $gte: 60 }, tags: 'processor' }, sort: { qubits: -1 } }, shows: 'A Mongo filter over documents read from the docket: operators, array membership, sort; the match is computed here, the storage is the docket.', expect: (s) => (s.matched === 1 && s.docs[0]?._id === 'a' ? null : `${s.matched} matched: ${s.docs.map((d: Doc) => d._id)}`) },
-    { id: 'mongo-update', tool: 'mongo', arguments: { op: 'update', collection: 'processors', docs: SAMPLE, filter: { _id: 'b' }, update: { $set: { 'meta.year': 2020 }, $inc: { qubits: 1 }, $push: { tags: 'updated' } } }, shows: 'An update computed as a new document and a new entry linked to the one it replaces: entries are immutable and content-addressed, so history is kept.', expect: (s) => (s.matched === 1 && s.changes[0]?.to.body.qubits === 55 && s.changes[0]?.to.body.meta.year === 2020 && s.changes[0]?.to.links[0] === 'b' ? null : JSON.stringify(s.changes)) },
+    { id: 'mongo-find', tool: 'mongo', arguments: { op: 'find', collection: 'processors', docs: SAMPLE, filter: { qubits: { $gte: 60 }, tags: 'processor' }, sort: { qubits: -1 } }, shows: PROSE.quantumProcessingToolboxesRaid_shows12, expect: (s) => (s.matched === 1 && s.docs[0]?._id === 'a' ? null : `${s.matched} matched: ${s.docs.map((d: Doc) => d._id)}`) },
+    { id: 'mongo-update', tool: 'mongo', arguments: { op: 'update', collection: 'processors', docs: SAMPLE, filter: { _id: 'b' }, update: { $set: { 'meta.year': 2020 }, $inc: { qubits: 1 }, $push: { tags: 'updated' } } }, shows: PROSE.quantumProcessingToolboxesRaid_shows13, expect: (s) => (s.matched === 1 && s.changes[0]?.to.body.qubits === 55 && s.changes[0]?.to.body.meta.year === 2020 && s.changes[0]?.to.links[0] === 'b' ? null : JSON.stringify(s.changes)) },
   ],
   skill: {
-    instructions: 'A client that is a database adapter (Payload\'s mongodb adapter interface) reads a collection\'s rows from the docket (GET /docket?collection=…, the bodies), calls mongo with the op and the rows, and writes the entries the tool returns (POST /docket, writer role) or deletes the ids (DELETE, admin role; a linked entry is refused and kept). Every query is pure and recomputable; every write is content-addressed and linked to what it replaces.',
-    directions: ['server only: the query language on a sample collection', 'toolbox → toolbox: entries are addressed with the tree\'s uuid and verified by the tree toolbox\'s verify', 'client → server: the rows come from the docket; the entries go back to it'],
+    instructions: PROSE.quantumProcessingToolboxesRaid_instructions14,
+    directions: [PROSE.quantumProcessingToolboxesRaid_s15, PROSE.quantumProcessingToolboxesRaid_s16, PROSE.quantumProcessingToolboxesRaid_s17],
     selftest: () => {
       const { check, done } = createChecks()
-      check('raid:find-ops', listDocs(SAMPLE, { $or: [{ qubits: { $lt: 60 } }, { 'meta.year': 2025 }] }, { title: 1 }).map((d) => d._id).join() === 'c,b' && listDocs(SAMPLE, { title: { $regex: '^Q', $options: 'i' } }).length === 1 && listDocs(SAMPLE, { tags: { $in: ['google'] } })[0]?._id === 'a' && listDocs(SAMPLE, { meta: { $exists: true }, qubits: { $nin: [54] } }).length === 2, 'or sorted by title (Quantum Echoes before Sycamore), dotted path, regex, in, nin, exists')
-      check('raid:find-skip-limit', listDocs(SAMPLE, {}, { qubits: 1 }, 1, 1)[0]?._id === 'c' && listDocs(SAMPLE, {}, {}, 0).length === 3, 'skip and limit only when asked; no cap otherwise')
+      check('raid:find-ops', listDocs(SAMPLE, { $or: [{ qubits: { $lt: 60 } }, { 'meta.year': 2025 }] }, { title: 1 }).map((d) => d._id).join() === 'c,b' && listDocs(SAMPLE, { title: { $regex: '^Q', $options: 'i' } }).length === 1 && listDocs(SAMPLE, { tags: { $in: ['google'] } })[0]?._id === 'a' && listDocs(SAMPLE, { meta: { $exists: true }, qubits: { $nin: [54] } }).length === 2, PROSE.quantumProcessingToolboxesRaid_s18)
+      check('raid:find-skip-limit', listDocs(SAMPLE, {}, { qubits: 1 }, 1, 1)[0]?._id === 'c' && listDocs(SAMPLE, {}, {}, 0).length === 3, PROSE.quantumProcessingToolboxesRaid_s19)
       const u = applyUpdate(SAMPLE[1]!, { $set: { 'meta.year': 2020 }, $inc: { qubits: 1 }, $push: { tags: 'x' }, $unset: { title: '' } })
-      check('raid:update-ops', u.qubits === 55 && (u.meta as Doc).year === 2020 && (u.tags as string[]).includes('x') && !('title' in u) && SAMPLE[1]!.qubits === 54, 'set, inc, push, unset; the source document untouched')
+      check('raid:update-ops', u.qubits === 55 && (u.meta as Doc).year === 2020 && (u.tags as string[]).includes('x') && !('title' in u) && SAMPLE[1]!.qubits === 54, PROSE.quantumProcessingToolboxesRaid_s20)
       const e1 = toEntry('c', { x: 1 }); const e2 = toEntry('c', { x: 1 }); const e3 = toEntry('c', { x: 2 }, e1.id)
-      check('raid:entries-addressed', e1.id === e2.id && e1.id !== e3.id && e3.links[0] === e1.id && e1.body._id === e1.id, 'same content, same address; a replacement links what it replaces')
+      check('raid:entries-addressed', e1.id === e2.id && e1.id !== e3.id && e3.links[0] === e1.id && e1.body._id === e1.id, PROSE.quantumProcessingToolboxesRaid_s21)
       let threw = false; try { listDocs(SAMPLE, { qubits: { $mod: [2, 0] } }) } catch { threw = true }
-      check('raid:unported-refused', threw, 'an operator not ported throws, never guesses')
+      check('raid:unported-refused', threw, PROSE.quantumProcessingToolboxesRaid_s22)
       const eh = toEntry('c', { x: 1 }), h = smartHealth({ filesystem: { [hexPath(eh.id)]: JSON.stringify(eh) }, r2: {} })
-      check('raid:smart-health', h.status === 'degraded' && h.disks.find((d) => d.binding === 'filesystem')?.status === 'healthy' && h.disks.find((d) => d.binding === 'r2')?.attributes.reallocated === 1 && h.disks.find((d) => d.binding === 'r2')?.status === 'degraded' && h.leads.length === 1, 'SMART: each binding a self-monitored disk — filesystem healthy, r2 missing one (degraded, rebuildable), the RAID degraded with one rebuild lead')
+      check('raid:smart-health', h.status === 'degraded' && h.disks.find((d) => d.binding === 'filesystem')?.status === 'healthy' && h.disks.find((d) => d.binding === 'r2')?.attributes.reallocated === 1 && h.disks.find((d) => d.binding === 'r2')?.status === 'degraded' && h.leads.length === 1, PROSE.quantumProcessingToolboxesRaid_s23)
       return done()
     },
   },

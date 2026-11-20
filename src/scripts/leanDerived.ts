@@ -1,6 +1,7 @@
 // The files the payload doors render from the Lean sources and the kernel's theorem index: BLUEPRINT.md and
 // clay-statements.ts. Run after theoremsIndex.ts, which they read. With --check nothing is written and a
 // difference fails: Lean decides, the rendered files follow.
+import { PROSE } from '../quantum/processing/prose-index.ts'
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { scripts } from '../quantum/processing/script-doors.ts'
@@ -25,6 +26,6 @@ for (const door of doors) {
   console.log(JSON.stringify({ check, agrees, written: !agrees && !check, path: door.path, says: door.says }))
 }
 if (drift > 0) {
-  console.error('files rendered from Lean differ from the Lean sources: run lake run index and commit the result')
+  console.error(PROSE.scriptsLeanDerived_s1)
   process.exit(1)
 }

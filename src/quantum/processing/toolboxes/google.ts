@@ -5,6 +5,7 @@
 // Google Roadmap, Google Discovery One-Door & Named Endpoints, Google Workspace Forms/Docs/Drive &
 // 26,244 Institution Sets, Google Cloud MCPs & RBAC Standards, Google Patents/Gemini/XPRIZE/Sitemap)
 // via the pure QPU/Google toolbox doors and exposes content-addressed receipts through Payload API.
+import { PROSE, proseFill } from '../prose-index.ts'
 import { canonicalText, channel, entryText, hexbit, seal, uuid, uuidQubits } from '../../uuid/index.ts'
 import { hex, sha256, utf8 } from '../unit/hmac.ts'
 import { LICENSE } from '../unit/license.ts'
@@ -22,7 +23,7 @@ import { TABLES } from '../tables-index.ts'
 type Call = (name: string, args: unknown) => { result?: { structuredContent?: any }; error?: { message: string } }
 let boundCall: Call | null = null
 export const bindGoogleCall = (c: Call): void => { boundCall = c }
-const call: Call = (name, args) => { if (!boundCall) throw new Error('the MCP handler has not bound call yet: import mcp.ts before the google toolbox runs'); return boundCall(name, args) }
+const call: Call = (name, args) => { if (!boundCall) throw new Error(PROSE.quantumProcessingToolboxesGoogle_s1); return boundCall(name, args) }
 
 export const GOOGLE_CHALLENGE_IDS = [
   'willow-connectivity',
@@ -45,20 +46,20 @@ export type GoogleChallengeId = (typeof GOOGLE_CHALLENGE_IDS)[number]
 
 /** The page each challenge is: the product is its category, the variant is its id. */
 export const GOOGLE_CHALLENGE_PAGE: Record<GoogleChallengeId, { category: GoogleChallengeCategory; title: string }> = {
-  'willow-connectivity': { category: 'quantum-hardware', title: 'Willow 105-Qubit Superconducting Grid, Coupler Connectivity & Code Capacity' },
-  'sycamore-topology': { category: 'quantum-hardware', title: 'Sycamore 54-Qubit & Sycamore23 Known-Device Grid Topology' },
-  'surface-code-qec': { category: 'quantum-error-correction', title: 'Surface Code Below Threshold (Λ = 2.14), Repetition Code & Steane [[7,1,3]] CSS QEC' },
-  'rcs-xeb-beyond-classical': { category: 'quantum-algorithms', title: 'Random Circuit Sampling (RCS) & Cross-Entropy Benchmarking (XEB) Porter–Thomas Speckle' },
-  'quantum-echoes-otoc': { category: 'quantum-algorithms', title: 'Quantum Echoes Out-of-Time-Order Correlator (OTOC) Time-Reversal Protocol on Willow' },
-  'cirq-qvm-simulation': { category: 'quantum-hardware', title: 'Cirq State-Vector, Density-Matrix Kraus Channels & Willow Quantum Virtual Machine' },
-  'recirq-qaoa-shor-algorithms': { category: 'quantum-algorithms', title: 'ReCirq Sycamore QAOA Max-Cut, Shor Order-Finding & Bell CHSH Tsirelson Bound' },
-  'openfermion-chemistry-h2': { category: 'quantum-algorithms', title: 'OpenFermion H₂ STO-3G Molecular Integrals, Pauli Hamiltonian & VQE Ground Energy' },
-  'qualtran-ftqc-magic-state': { category: 'quantum-error-correction', title: 'Qualtran Fault-Tolerant Clifford+T Resource Counts & Willow Magic State Cultivation' },
-  'google-quantum-roadmap-catalog': { category: 'quantum-hardware', title: 'Google Quantum AI 6-Milestone Roadmap to 10⁶ Qubits, Software, Statements & Quantumlib' },
-  'google-discovery-one-door': { category: 'google-apis-discovery', title: 'Google Discovery Service Validation, 7 Named Endpoints, Docs Rewrite & qpu-google-call Job' },
-  'google-workspace-roundtrip-sets': { category: 'google-workspace-cloud', title: 'Google Workspace Forms v1, Docs v1, Drive v3 Bidirectional Round-Trips & 26,244 Institution Sets' },
-  'google-cloud-mcp-bindings-rbac': { category: 'google-workspace-cloud', title: 'Google Cloud Adapter Profile (Cloud Run/SQL/GCS/Gmail), 15 Google MCPs & Standards RBAC' },
-  'google-patents-gemini-xprize-sitemap': { category: 'google-apis-discovery', title: 'Google Patents Hardware Verification, Gemini 3.8 Flash Coil Plan & Google XPRIZE Competitions' },
+  'willow-connectivity': { category: 'quantum-hardware', title: PROSE.quantumProcessingToolboxesGoogle_title2 },
+  'sycamore-topology': { category: 'quantum-hardware', title: PROSE.quantumProcessingToolboxesGoogle_title3 },
+  'surface-code-qec': { category: 'quantum-error-correction', title: PROSE.quantumProcessingToolboxesGoogle_title4 },
+  'rcs-xeb-beyond-classical': { category: 'quantum-algorithms', title: PROSE.quantumProcessingToolboxesGoogle_title5 },
+  'quantum-echoes-otoc': { category: 'quantum-algorithms', title: PROSE.quantumProcessingToolboxesGoogle_title6 },
+  'cirq-qvm-simulation': { category: 'quantum-hardware', title: PROSE.quantumProcessingToolboxesGoogle_title7 },
+  'recirq-qaoa-shor-algorithms': { category: 'quantum-algorithms', title: PROSE.quantumProcessingToolboxesGoogle_title8 },
+  'openfermion-chemistry-h2': { category: 'quantum-algorithms', title: PROSE.quantumProcessingToolboxesGoogle_title9 },
+  'qualtran-ftqc-magic-state': { category: 'quantum-error-correction', title: PROSE.quantumProcessingToolboxesGoogle_title10 },
+  'google-quantum-roadmap-catalog': { category: 'quantum-hardware', title: PROSE.quantumProcessingToolboxesGoogle_title11 },
+  'google-discovery-one-door': { category: 'google-apis-discovery', title: PROSE.quantumProcessingToolboxesGoogle_title12 },
+  'google-workspace-roundtrip-sets': { category: 'google-workspace-cloud', title: PROSE.quantumProcessingToolboxesGoogle_title13 },
+  'google-cloud-mcp-bindings-rbac': { category: 'google-workspace-cloud', title: PROSE.quantumProcessingToolboxesGoogle_title14 },
+  'google-patents-gemini-xprize-sitemap': { category: 'google-apis-discovery', title: PROSE.quantumProcessingToolboxesGoogle_title15 },
 }
 
 type GoogleChallengeCategory =
@@ -197,7 +198,7 @@ const crossCapacity = (handles: number, qubits: number, perHandle: number, regis
   const relation = recomputeClay().relations.find((row) => row.name === 'relation_4294967296')
   const clayHandles = kernelHolds('relation_4294967296') && relation?.holds === true && relation.sides.every((side) => side.value === handles)
   const width = kernelHolds('textbook_clay_register_width') && agrees('2 ^ 32 = 4294967296', handles)
-  const capacity = agrees('amplitudes * bits = 137438953472 ∧ mint bits * bits = 137438953472', qubits) && qubits === handles * perHandle
+  const capacity = agrees(PROSE.quantumProcessingToolboxesGoogle_s16, qubits) && qubits === handles * perHandle
   const shares = agrees('137438953472 * 6 / 16 = 51539607552', 51539607552) && agrees('137438953472 * 5 / 16 = 42949672960', 42949672960) && agrees('51539607552 + 42949672960 + 42949672960 = 137438953472', qubits)
   const prices = agrees('(4294967296 + 999) / 1000 = 4294968', quantity) && agrees('4294968 * 540 = 2319282720', currencies.find((row) => row.currency === 'eur')?.amount ?? -1) && agrees('4294968 * 595 = 2555505960', currencies.find((row) => row.currency === 'usd')?.amount ?? -1) && agrees('4294968 * 1056 = 4535486208', currencies.find((row) => row.currency === 'bgn')?.amount ?? -1)
   const oneRegister = agrees('32 * 4 - 4 - 2 = 122', register)
@@ -252,7 +253,7 @@ const sellQubitCapacity = (challenges: readonly { id: string; category: string; 
     return { trinity: row.trinity, qubits: row.qubits, sold: Number(BigInt(qubits) * BigInt(symbols) / 16n), teleported: row.teleported, classical: row.classical }
   })
   const cross = crossCapacity(handles, qubits, perHandle, register, quantity, currencies)
-  const formula = `${counted.handles.possible} handles × ${perHandle} qubits = ${counted.handles.capacity}. The demand ${demand} sits inside that capacity. ${quantity} × ${unitAmount} = ${amount}`
+  const formula = proseFill(PROSE.quantumProcessingToolboxesGoogle_s17, counted.handles.possible, perHandle, counted.handles.capacity, demand, quantity, unitAmount, amount)
   const address = uuid(formula)
   const ftl = offered.ftl === true && offered.gateway === 2 && offered.law.holds === true && offered.speed.walked === false
   const holds = offered.utilisation.holds && offered.utilisation.left === 0 && offered.zero.temperatureK === 0 && offered.zero.landauer === '0' && ftl && register === 122 && perHandle === 32 && counted.handles.capacity === '137438953472' && counted.handles.possible === '4294967296' && handles === 4294967296 && qubits === 137438953472 && covered && balanced && amount === quantity * unitAmount && quantum.every((row) => row.holds) && offers.every((row) => row.holds && row.covered) && currencies.every((row) => row.amount === row.quantity * row.unitAmount) && trinities.length === 3 && trinities.reduce((sum, row) => sum + row.qubits, 0) === register && trinities.reduce((sum, row) => sum + row.sold, 0) === qubits && seal(address).valid && seal(proof).valid && cross.holds
@@ -357,8 +358,8 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'willow-connectivity',
       category: 'quantum-hardware',
-      title: 'Willow 105-Qubit Superconducting Grid, Coupler Connectivity & Code Capacity',
-      googleApi: 'Google Quantum AI Willow Spec Sheet & cirq.GridQubit / processor',
+      title: PROSE.quantumProcessingToolboxesGoogle_title2,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi18,
       door,
       theorem: 'textbook_willow_connectivity',
       relatedTheorems: ['textbook_willow_connectivity', 'textbook_willow_holds_codes', 'textbook_willow_distance_seven'],
@@ -392,8 +393,8 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'sycamore-topology',
       category: 'quantum-hardware',
-      title: 'Sycamore 54-Qubit & Sycamore23 Known-Device Grid Topology',
-      googleApi: 'cirq_google.Sycamore & cirq_google.Sycamore23 (cirq.google.known_devices)',
+      title: PROSE.quantumProcessingToolboxesGoogle_title3,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi19,
       door,
       theorem: 'textbook_sycamore_couplers',
       formula: '2 * 88 = 176 ∧ 176 ≤ 4 * 54 ∧ qubits(Sycamore23) = 23',
@@ -425,8 +426,8 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'surface-code-qec',
       category: 'quantum-error-correction',
-      title: 'Surface Code Below Threshold (Λ = 2.14), Repetition Code & Steane [[7,1,3]] CSS QEC',
-      googleApi: 'Google Quantum AI Surface Code (arXiv:2408.13687), Stim & Cirq DensityMatrixSimulator',
+      title: PROSE.quantumProcessingToolboxesGoogle_title4,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi20,
       door,
       theorem: 'textbook_bit_flip_purity',
       relatedTheorems: ['textbook_bit_flip_purity', 'textbook_steane', 'surfacecode_all', 'textbook_toric_torus_code'],
@@ -461,8 +462,8 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'rcs-xeb-beyond-classical',
       category: 'quantum-algorithms',
-      title: 'Random Circuit Sampling (RCS) & Cross-Entropy Benchmarking (XEB) Porter–Thomas Speckle',
-      googleApi: 'Google Quantum AI RCS / XEB Benchmark & Cirq Random Circuit Simulator',
+      title: PROSE.quantumProcessingToolboxesGoogle_title5,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi21,
       door,
       theorem: 'textbook_xeb',
       formula: 'Σ p_k² > 1/D ∧ 2/(D+1) > 1/D (2 * 16 > 16 + 1 ∧ 16 + 1 > 16)',
@@ -498,8 +499,8 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'quantum-echoes-otoc',
       category: 'quantum-algorithms',
-      title: 'Quantum Echoes Out-of-Time-Order Correlator (OTOC) Time-Reversal Protocol on Willow',
-      googleApi: 'Google Quantum AI Quantum Echoes (OTOC U† B U) & Cirq Adjoint Evolution',
+      title: PROSE.quantumProcessingToolboxesGoogle_title6,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi22,
       door,
       theorem: 'textbook_echo_qubits_within_willow',
       relatedTheorems: ['textbook_echo_qubits_within_willow', 'interfere'],
@@ -551,8 +552,8 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'cirq-qvm-simulation',
       category: 'quantum-hardware',
-      title: 'Cirq State-Vector, Density-Matrix Kraus Channels & Willow Quantum Virtual Machine',
-      googleApi: 'cirq.Simulator, cirq.DensityMatrixSimulator, QuantumVirtualMachine & quantumlib/Cirq',
+      title: PROSE.quantumProcessingToolboxesGoogle_title7,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi23,
       door,
       theorem: 'textbook_cirq_exports',
       formula: 'Tr(ρ) = 1 ∧ Tr(ρ²) = 0.1² + 0.9² = 0.82 ∧ Cirq_exports = 28 ∧ emulated = 15/15',
@@ -587,12 +588,12 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'recirq-qaoa-shor-algorithms',
       category: 'quantum-algorithms',
-      title: 'ReCirq Sycamore QAOA Max-Cut, Shor Order-Finding & Bell CHSH Tsirelson Bound',
-      googleApi: 'quantumlib/ReCirq QAOA on Sycamore & Cirq Textbook Algorithms (Shor, QFT, Grover, CHSH)',
+      title: PROSE.quantumProcessingToolboxesGoogle_title8,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi24,
       door,
       theorem: 'textbook_shor_fifteen_order',
       relatedTheorems: ['textbook_shor_fifteen_order', 'qaoa_all', 'textbook_tsirelson', 'textbook_order_finding'],
-      formula: '7^4 ≡ 1 (mod 15) ∧ gcd(7² ± 1, 15) = (3, 5) ∧ E_QAOA(α*, β*) > E_random ∧ S_CHSH = 2√2 > 2',
+      formula: PROSE.quantumProcessingToolboxesGoogle_formula25,
       value: {
         shorN: 15,
         shorA: 7,
@@ -627,11 +628,11 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'openfermion-chemistry-h2',
       category: 'quantum-algorithms',
-      title: 'OpenFermion H₂ STO-3G Molecular Integrals, Pauli Hamiltonian & VQE Ground Energy',
-      googleApi: 'quantumlib/OpenFermion MolecularData & Jordan–Wigner VQE on Cirq DensityMatrixSimulator',
+      title: PROSE.quantumProcessingToolboxesGoogle_title9,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi26,
       door,
       theorem: 'textbook_h2_below_hartree_fock',
-      formula: 'E_VQE(θ*) = min_θ ⟨00|exp(iθ Y⊗X) H exp(−iθ Y⊗X)|00⟩ = E_FCI = −1.137284 Ha < E_HF = −1.116759 Ha',
+      formula: PROSE.quantumProcessingToolboxesGoogle_formula27,
       value: {
         bondLengthAngstrom: chem.molecule.bondLength,
         hartreeFockHa: Number(hf.toFixed(6)),
@@ -663,8 +664,8 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'qualtran-ftqc-magic-state',
       category: 'quantum-error-correction',
-      title: 'Qualtran Fault-Tolerant Clifford+T Resource Counts & Willow Magic State Cultivation',
-      googleApi: 'quantumlib/Qualtran Clifford+T Resource Counter & Willow Magic State Cultivation',
+      title: PROSE.quantumProcessingToolboxesGoogle_title10,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi28,
       door,
       theorem: 'surfacecode_all',
       formula: 'T(Toffoli) = 7 ∧ T(CS) = 3 ∧ T(T) = 1 ∧ T(Grover) = 7 ∧ T(QEC) = 21 ∧ F_T(Willow) = 99.99%',
@@ -699,8 +700,8 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'google-quantum-roadmap-catalog',
       category: 'quantum-hardware',
-      title: 'Google Quantum AI 6-Milestone Roadmap to 10⁶ Qubits, Software, Statements & Quantumlib',
-      googleApi: 'Google Quantum AI Roadmap, Software Suite, Statements & github.com/quantumlib',
+      title: PROSE.quantumProcessingToolboxesGoogle_title11,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi29,
       door,
       theorem: 'textbook_software_cirq_implemented',
       relatedTheorems: ['textbook_software_cirq_implemented', 'textbook_statements_one_topic', 'textbook_repositories_by_language'],
@@ -789,12 +790,12 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'google-discovery-one-door',
       category: 'google-apis-discovery',
-      title: 'Google Discovery Service Validation, 7 Named Endpoints, Docs Rewrite & qpu-google-call Job',
-      googleApi: 'Google Discovery API (discovery/v1), Google Docs v1 batchUpdate, Search Console & reCAPTCHA',
+      title: PROSE.quantumProcessingToolboxesGoogle_title12,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi30,
       door,
       theorem: 'textbook_google_one_door',
       relatedTheorems: ['textbook_google_one_door', 'textbook_google_call_schema', 'textbook_google_api_surfaces', 'textbook_google_measured'],
-      formula: 'unknown + missing + broken = 0 ↔ allowed = true ∧ direct = 0 ∧ a + r = n',
+      formula: PROSE.quantumProcessingToolboxesGoogle_formula31,
       value: {
         validatedMethod: validCall.method,
         validatedAllowed: validCall.allowed,
@@ -846,8 +847,8 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'google-workspace-roundtrip-sets',
       category: 'google-workspace-cloud',
-      title: 'Google Workspace Forms v1, Docs v1, Drive v3 Bidirectional Round-Trips & 26,244 Institution Sets',
-      googleApi: 'Google Forms v1, Google Docs v1, Google Drive v3, Google Classroom v1 & 9 Workspace MCP Servers',
+      title: PROSE.quantumProcessingToolboxesGoogle_title13,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi32,
       door,
       theorem: 'textbook_workspace_sets',
       relatedTheorems: [
@@ -858,7 +859,7 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
         'textbook_workspace_drive',
         'textbook_institution_bill',
       ],
-      formula: '3 * 3^7 * 2^2 = 26244 ∧ Forms(14/14) ∧ f(g(f(g(b)))) = b ∧ Docs(lost = 0) ∧ Drive(same = true)',
+      formula: PROSE.quantumProcessingToolboxesGoogle_formula33,
       value: {
         formsCoverage: `${cov.coverage.forms.live}/${cov.coverage.forms.of}`,
         docsCoverage: `${cov.coverage.docs.live}/${cov.coverage.docs.of}`,
@@ -923,12 +924,12 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'google-cloud-mcp-bindings-rbac',
       category: 'google-workspace-cloud',
-      title: 'Google Cloud Adapter Profile (Cloud Run/SQL/GCS/Gmail), 15 Google MCPs & Standards RBAC',
-      googleApi: 'Google Cloud MCPs (*.googleapis.com/mcp), Admin SDK Directory API & CanCanCan/Rolify RBAC',
+      title: PROSE.quantumProcessingToolboxesGoogle_title14,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi34,
       door,
       theorem: 'textbook_bindings_used_google',
       relatedTheorems: ['textbook_bindings_used_google', 'textbook_google_mcps', 'textbook_abilities_merge', 'textbook_cannot_binds'],
-      formula: 'used + idle = 5 ∧ idle = 0 ∧ paired = 5 ∧ google_mcps = 15 + 3 = 18 ∧ cannot_waive_main = true',
+      formula: PROSE.quantumProcessingToolboxesGoogle_formula35,
       value: {
         profile: adapters.config.chosen.profile,
         database: adapters.config.chosen.database,
@@ -947,7 +948,7 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     const door = { tool: 'patents', arguments: { op: 'plan', query: 'superconducting qubit surface code', count: 10 } }
     const patPlan = getToolResult(door.tool, door.arguments)
     const gemini = getToolResult('extend', {
-      gemini: { prompt: 'Verify Willow 105-qubit surface code threshold Λ = 2.14 via QPU.' },
+      gemini: { prompt: PROSE.quantumProcessingToolboxesGoogle_prompt36 },
     })
     const comp = getToolResult('compete', {})
     const googleComps = (comp.competitions ?? []).filter((c: { id: string }) =>
@@ -963,8 +964,8 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     return createReceipt({
       id: 'google-patents-gemini-xprize-sitemap',
       category: 'google-apis-discovery',
-      title: 'Google Patents Hardware Verification, Gemini 3.8 Flash Coil Plan & Google XPRIZE Competitions',
-      googleApi: 'Google Patents API, Gemini API (generativelanguage.googleapis.com) & XPRIZE Quantum Applications',
+      title: PROSE.quantumProcessingToolboxesGoogle_title15,
+      googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi37,
       door,
       theorem: 'textbook_patent_dates_ordered',
       relatedTheorems: [
@@ -975,7 +976,7 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
         'textbook_prizes_computable',
         'textbook_sitemap_leads',
       ],
-      formula: 'priority ≤ filing ≤ publication ∧ filing ≤ grant < filing + 20y ∧ header = x-goog-api-key ∧ google_competitions = 4',
+      formula: PROSE.quantumProcessingToolboxesGoogle_formula38,
       value: {
         openPatentApis: patPlan.open,
         patentTheorems: patPlan.theorems,
@@ -1051,8 +1052,8 @@ export const googleChallenges = (
     challenges,
     sale,
     says: teleported
-      ? `${holding} of ${challenges.length} Google challenge(s) teleported via hexbit + 2 gateway bits (ftl, combination space unwalked; bundle ${address}, SHA-256 ${digest})`
-      : `${holding} of ${challenges.length} Google challenge(s) solved and verified via Google APIs and the Payload API (bundle ${address}, SHA-256 ${digest})`,
+      ? proseFill(PROSE.quantumProcessingToolboxesGoogle_s39, holding, challenges.length, address, digest)
+      : proseFill(PROSE.quantumProcessingToolboxesGoogle_s40, holding, challenges.length, address, digest),
   }
 
   if (!wanted) cachedAll = report

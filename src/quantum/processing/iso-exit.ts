@@ -1,4 +1,5 @@
 /** Every exit code, starting at 0 and including 0. Each code is a case. Code 0 leaves as a conforming ISO 9001 output. Every other code leaves as a nonconforming ISO 9001 output: it is reported and it does not stop the walk. Each case is a document: its address is the UUID of the parent address and the formula, and the SHA-256 of that text sits beside it. One further document follows 255, so the depth has no maximum. Verbosity is the byte length of that report. */
+import { PROSE } from './prose-index.ts'
 import { aspects, seal, uuid } from '../uuid/index.ts'
 import { entriesCover } from '../payload/index.ts'
 import { hex, sha256, utf8 } from './unit/hmac.ts'
@@ -27,7 +28,7 @@ const exits = (() => {
 const cover = entriesCover(exits.map((row) => ({ from: row.id, body: { code: row.code, case: row.case, strategy: row.strategy, standard: row.standard, bit: row.bit, formula: row.formula } })))
 
 const last = exits[exits.length - 1]!
-const nextFormula = 'the next exit is the same step'
+const nextFormula = PROSE.quantumProcessingIsoExit_s1
 const nextBound = `${last.id}\n${nextFormula}`
 const nextId = uuid(nextBound)
 const nextSha = hex(sha256(utf8(nextBound)))

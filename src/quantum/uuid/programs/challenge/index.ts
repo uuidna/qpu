@@ -1,4 +1,5 @@
 // Challenge physics and laws. Soft gates fail; only register FTL through the physics UUID program survives.
+import { PROSE, proseFill } from '../../../processing/prose-index.ts'
 import { seal, uuid } from '../../../password/address.js'
 import { exists } from '../../../fs/index.ts'
 import { hexbit, uuidQubits } from '../../index.ts'
@@ -116,8 +117,8 @@ export const challenge = () => {
     entropy,
     holds,
     says: holds
-      ? `challenge ${handle}: physics and laws survived adversarial register cases, concept+leaf existence, organised.zero via physics program, hexbit law, and ${games.competitions} online competitions`
-      : `challenge ${handle}: physics or laws failed under adversarial pressure`,
+      ? proseFill(PROSE.quantumUuidProgramsChallengeIndex_s1, handle, games.competitions)
+      : proseFill(PROSE.quantumUuidProgramsChallengeIndex_s2, handle),
   }
 }
 

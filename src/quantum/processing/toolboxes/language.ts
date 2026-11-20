@@ -2,6 +2,7 @@
 // lead; the vocabulary measured against every term the surface emits, so the tables are updated from measurement; and
 // programmable prose: a tool's result and its toolbox's skill rendered as sentences in any locale, backed by the toolset
 // (the numbers are the tool's) and the skillset (the words are the vocabulary's). Pure.
+import { PROSE, proseFill } from '../prose-index.ts'
 import { TABLES as PAYLOAD_TABLES } from '../tables-index.ts'
 import { defineTool, createChecks, listTools, unlimited, type Toolbox, type Context } from '../toolbox.ts'
 import { LOCALES, TABLES, translate as vocabulary, listNumerals } from '../i18n.ts'
@@ -28,14 +29,14 @@ const writeProse = (toolbox: { name: string; idea: string; instructions: string 
   if (toolbox) say(`the ${toolbox.name} toolbox: ${toolbox.idea}.`)
   const fields = structured && typeof structured === 'object' ? Object.entries(structured as Record<string, unknown>).filter(([, v]) => typeof v === 'number' || typeof v === 'boolean' || (typeof v === 'string' && v.length <= 80 && !v.includes('\n'))) : []
   if (fields.length) say(`the ${tool} tool answered: ${fields.map(([k, v]) => `${splitWords(k)} ${typeof v === 'boolean' ? (v ? 'yes' : 'no') : String(v)}`).join(', ')}.`)
-  else say(`the ${tool} tool answered with no scalar fields.`)
+  else say(proseFill(PROSE.quantumProcessingToolboxesLanguage_s1, tool))
   if (toolbox) say(`how to use it: ${toolbox.instructions}`)
   return { text: sentences.join(' '), sentences, untranslated: [...untranslated].filter((w) => !/^\d/.test(w)) }
 }
 
 const translate = defineTool('language', {
   name: 'translate',
-  description: 'Translation by vocabulary, offline, both ways: text, from, to. A word no table knows stays as it is and is reported, never guessed; Glagolitic numerals are read as integers. Without text: the vocabulary measured — for every locale, the surface terms with no entry (the leads of the tables).',
+  description: PROSE.quantumProcessingToolboxesLanguage_description2,
   inputSchema: { type: 'object', properties: { text: { type: 'string' }, from: { type: 'string', enum: Object.keys(LOCALES) }, to: { type: 'string', enum: Object.keys(LOCALES) }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     if (typeof args.text !== 'string') { const coverage = getLocaleCoverage(); return { phase: 'coverage' as const, terms: SURFACE_TERMS.length, locales: coverage.length, filled: coverage.filter((c) => c.filled).length, missingTotal: coverage.reduce((n, c) => n + c.missing.length, 0), coverage } }
@@ -49,8 +50,8 @@ const translate = defineTool('language', {
 
 const prose = defineTool('language', {
   name: 'prose',
-  description: 'Programmable prose: call a tool with its arguments and render its result as sentences in a locale — the toolbox\'s idea, the tool\'s scalar answers, the toolbox\'s instructions — every word from the vocabulary, every number from the tool, every unknown word reported.',
-  inputSchema: { type: 'object', properties: { tool: { type: 'string', description: 'the tool whose result is rendered, a param. Omit every param and the prose is unlimited at 432 Hz' }, arguments: { type: 'object' }, locale: { type: 'string', enum: Object.keys(LOCALES) }, selftest: { type: 'boolean' } } },
+  description: PROSE.quantumProcessingToolboxesLanguage_description3,
+  inputSchema: { type: 'object', properties: { tool: { type: 'string', description: PROSE.quantumProcessingToolboxesLanguage_description4 }, arguments: { type: 'object' }, locale: { type: 'string', enum: Object.keys(LOCALES) }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     if (typeof args.tool !== 'string') return unlimited()
     const tool = args.tool; const locale = typeof args.locale === 'string' ? args.locale : 'en'
@@ -68,15 +69,15 @@ const prose = defineTool('language', {
 
 export const LANGUAGE: Toolbox = {
   name: 'language',
-  idea: 'any language and dialect, offline and token-free: translation by vocabulary both ways, the vocabulary measured against every term the surface emits, and prose programmed from a tool\'s result and its toolbox\'s skill',
+  idea: PROSE.quantumProcessingToolboxesLanguage_idea5,
   tools: [translate, prose],
   examples: [
-    { id: 'translate-bg', tool: 'translate', arguments: { text: 'The lead is served; the verdict is unknown', from: 'en', to: 'bg' }, shows: 'English to Bulgarian by vocabulary: the labels and verdicts translate; a word with no entry stays and is reported.', expect: (s) => (s.phase === 'translated' && /следата|следа/.test(s.text) && /обслужена/.test(s.text) && /неизвестно/.test(s.text) ? null : `${s.text} (${s.untranslatedWords})`) },
-    { id: 'translate-coverage', tool: 'translate', arguments: {}, shows: 'The vocabulary measured: for every locale, which surface terms have no entry — the leads of the tables, updated from measurement.', expect: (s) => (s.phase === 'coverage' && s.terms === SURFACE_TERMS.length && s.coverage.find((c: { locale: string }) => c.locale === 'bg')?.filled === true ? null : `${s.phase}: ${s.terms} terms, ${s.filled} filled`) },
+    { id: 'translate-bg', tool: 'translate', arguments: { text: PROSE.quantumProcessingToolboxesLanguage_text6, from: 'en', to: 'bg' }, shows: PROSE.quantumProcessingToolboxesLanguage_shows7, expect: (s) => (s.phase === 'translated' && /следата|следа/.test(s.text) && /обслужена/.test(s.text) && /неизвестно/.test(s.text) ? null : `${s.text} (${s.untranslatedWords})`) },
+    { id: 'translate-coverage', tool: 'translate', arguments: {}, shows: PROSE.quantumProcessingToolboxesLanguage_shows8, expect: (s) => (s.phase === 'coverage' && s.terms === SURFACE_TERMS.length && s.coverage.find((c: { locale: string }) => c.locale === 'bg')?.filled === true ? null : `${s.phase}: ${s.terms} terms, ${s.filled} filled`) },
   ],
   skill: {
-    instructions: 'translate takes text, from and to and answers by vocabulary; call it without text to measure the tables and get the missing terms per locale, which are the leads to fill (from the unit\'s vocabulary door where discovery finds one, or by a person).',
-    directions: ['server only: every table reads both ways (en→locale→en returns the term)', 'toolbox → toolbox: numerals read by the match toolbox\'s reader', 'client → server: the coverage phase hands the client the missing terms to fill'],
+    instructions: PROSE.quantumProcessingToolboxesLanguage_instructions9,
+    directions: [PROSE.quantumProcessingToolboxesLanguage_s10, PROSE.quantumProcessingToolboxesLanguage_s11, PROSE.quantumProcessingToolboxesLanguage_s12],
     selftest: (ctx: Context) => {
       const { check, done } = createChecks()
       for (const [code, table] of Object.entries(TABLES)) {

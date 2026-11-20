@@ -1,6 +1,7 @@
 // The MCP surface audited through the MCP surface: every check below is made by calling `handle` the way a client
 // does, so the audit sees exactly what a client sees. A failed check is a lead with its evidence, never a ruling.
 
+import { PROSE, proseFill } from './prose-index.ts'
 import type { Example } from './examples.ts'
 import type { Context } from './toolbox.ts'
 import type { Lead } from './leads.ts'
@@ -28,10 +29,10 @@ type EntropyKind = 'literal' | 'typed-path' | 'cap' | 'clock' | 'duplicate' | 's
 /** Shapes written out in many files that one helper (named beside each) should hold. */
 const CODE_SHAPES: readonly { shape: string; re: RegExp; holder: string }[] = [
   { shape: 'the tools/call envelope', re: /handle\(\{ jsonrpc: '2\.0', id: \d+, method: 'tools\/call', params: \{ name/, holder: 'caller(name) in mcp.ts' },
-  { shape: 'a JSON file read and parsed', re: /JSON\.parse\(readFileSync\(/, holder: 'one reader of the published files, null when a file is missing' },
-  { shape: 'the published folder made', re: /mkdirSync\(join\(ROOT, 'docs', 'public'\), \{ recursive: true \}\)/, holder: 'one writer of the published files that makes its folder' },
-  { shape: 'a request with its timeout', re: /signal: AbortSignal\.timeout\(/, holder: 'one fetcher with the named user agent and the timeout' },
-  { shape: 'the tools/list envelope', re: /handle\(\{ jsonrpc: '2\.0', id: \d+, method: 'tools\/list' \}\)/, holder: 'one reader of the tool list' },
+  { shape: PROSE.quantumProcessingAudit_shape1, re: /JSON\.parse\(readFileSync\(/, holder: PROSE.quantumProcessingAudit_holder2 },
+  { shape: 'the published folder made', re: /mkdirSync\(join\(ROOT, 'docs', 'public'\), \{ recursive: true \}\)/, holder: PROSE.quantumProcessingAudit_holder3 },
+  { shape: 'a request with its timeout', re: /signal: AbortSignal\.timeout\(/, holder: PROSE.quantumProcessingAudit_holder4 },
+  { shape: 'the tools/list envelope', re: /handle\(\{ jsonrpc: '2\.0', id: \d+, method: 'tools\/list' \}\)/, holder: PROSE.quantumProcessingAudit_holder5 },
 ]
 /** Each kind of entropy: the tool that explores its leads and the configure kind that settles them. */
 export const ENTROPY_KINDS = TABLES.ENTROPY_KINDS as readonly { kind: EntropyKind; says: string; explore: string; config: string | null }[]
@@ -62,7 +63,7 @@ export const listLiterals = (files: Readonly<Record<string, string>>) => {
       const push = (kind: 'url' | 'path', literal: string) => {
         const registry = (LITERAL_REGISTRIES[kind] as readonly string[]).includes(file), exempt = kind === 'url' && LITERAL_EXEMPT.test(l)
         const clean = registry || exempt
-        all.push({ kind, file, line: i + 1, literal, clean, why: registry ? 'in its registry' : exempt ? 'exempt: a licence or attribution URL required verbatim' : 'outside its registry', tokens: clean ? 0 : Math.ceil(new TextEncoder().encode(literal).length / 4), antimatter: clean ? null : { needs: 'confirm', says: kind === 'path' ? `name ${literal} by its role through file(role, key), or add the role to FILE_ROLES` : `move ${literal} into the sources or discovery table and reference its entry, or into the docket through the Payload MCP when it is tenant data` } })
+        all.push({ kind, file, line: i + 1, literal, clean, why: registry ? 'in its registry' : exempt ? PROSE.quantumProcessingAudit_s6 : 'outside its registry', tokens: clean ? 0 : Math.ceil(new TextEncoder().encode(literal).length / 4), antimatter: clean ? null : { needs: 'confirm', says: kind === 'path' ? proseFill(PROSE.quantumProcessingAudit_s7, literal) : proseFill(PROSE.quantumProcessingAudit_s8, literal) } })
       }
       for (const m of l.matchAll(/https?:\/\/[^\s'"`)<>\\]+/g)) push('url', m[0])
       for (const m of l.matchAll(/['"`]((?:docs|src|scripts)\/[^'"`\s]+)['"`]/g)) push('path', m[1]!)
@@ -84,7 +85,7 @@ export const listManualDocs = (pages: readonly { path: string; bytes: number }[]
   const costly = rows.filter((r) => r.expensive).sort((a, b) => b.bytes - a.bytes)
   const found = manual.length, redacted = found
   const leaks = { kind: 'manual' as const, found, redacted, left: found - redacted, holds: found - redacted === 0, where: manual.map((r) => r.path), theorem: 'textbook_leaks_redacted' as const }
-  return { pages: rows.length, generated: rows.filter((r) => r.generator).length, exempt: rows.filter((r) => r.exempt).length, lean: rows.filter((r) => r.lean).length, expensive: costly.length, manual: found, leaks, bytes: costly.reduce((n, r) => n + r.bytes, 0), tokens: costly.reduce((n, r) => n + r.tokens, 0), largest: costly.slice(0, 10).map((r) => ({ path: r.path, bytes: r.bytes, tokens: r.tokens, antimatter: { needs: 'auto' as const, says: `a Lean program names ${r.path}; until it does the page is expensive entropy, and a TypeScript generator does not cheapen it` } })), rows, says: `${costly.length} of ${rows.length} doc(s) are expensive entropy (${costly.reduce((n, r) => n + r.tokens, 0)} tokens); ${rows.filter((r) => r.lean).length} named by a Lean program cost nothing; ${found} written by no script, and that manual page is the leak` }
+  return { pages: rows.length, generated: rows.filter((r) => r.generator).length, exempt: rows.filter((r) => r.exempt).length, lean: rows.filter((r) => r.lean).length, expensive: costly.length, manual: found, leaks, bytes: costly.reduce((n, r) => n + r.bytes, 0), tokens: costly.reduce((n, r) => n + r.tokens, 0), largest: costly.slice(0, 10).map((r) => ({ path: r.path, bytes: r.bytes, tokens: r.tokens, antimatter: { needs: 'auto' as const, says: proseFill(PROSE.quantumProcessingAudit_says9, r.path) } })), rows, says: proseFill(PROSE.quantumProcessingAudit_says10, costly.length, rows.length, costly.reduce((n, r) => n + r.tokens, 0), rows.filter((r) => r.lean).length, found) }
 }
 export const getEntropy = (files: Readonly<Record<string, string>>) => {
   const findings: EntropyFinding[] = []
@@ -152,8 +153,8 @@ export const getEntropy = (files: Readonly<Record<string, string>>) => {
     law: ISO_ENTROPY.law,
     dictionary: ISO_ENTROPY.dictionary,
     says: addressable
-      ? `${ISO_ENTROPY.law}: dictionary ${ISO_ENTROPY.dictionary.means}; verified vacuum W = 1, S = 0 (${ISO_ENTROPY.definition}); gravity is hex and sealed`
-      : `${ISO_ENTROPY.law}: dictionary ${ISO_ENTROPY.dictionary.means}; verified ${ISO_ENTROPY.definition} with W = ${iso.W} distinct microstates (fused leads), S = ${iso.S} ${iso.unit} (k = 1); f findings fuse to f − d leads (textbook_entropy_fusion); gravity folds the sorted addresses`,
+      ? proseFill(PROSE.quantumProcessingAudit_s11, ISO_ENTROPY.law, ISO_ENTROPY.dictionary.means, ISO_ENTROPY.definition)
+      : proseFill(PROSE.quantumProcessingAudit_s12, ISO_ENTROPY.law, ISO_ENTROPY.dictionary.means, ISO_ENTROPY.definition, iso.W, iso.S, iso.unit),
   }
 }
 
@@ -165,20 +166,20 @@ export const diffMembers = (a: { name: string; members: readonly string[] }, b: 
   const A = new Set(a.members), B = new Set(b.members)
   const shared = [...A].filter((m) => B.has(m)).length
   const explore = policy.explore ?? exploreTool
-  const lead = (m: string, side: string, other: string): DifferenceLead => ({ id: `difference-${uuid(`${a.name}△${b.name}\n${m}`).slice(0, 8)}`, member: m, side, statement: `${m} is in ${side} and not in ${other}: a difference to explore with ${explore(m)}${policy.config ? ` and to config as ${policy.config}` : ''}`, status: 'open', explore: explore(m), config: policy.config ?? null, theorem: 'textbook_difference_leads' })
+  const lead = (m: string, side: string, other: string): DifferenceLead => ({ id: `difference-${uuid(`${a.name}△${b.name}\n${m}`).slice(0, 8)}`, member: m, side, statement: proseFill(PROSE.quantumProcessingAudit_statement13, m, side, other, explore(m), policy.config ? ` and to config as ${policy.config}` : ''), status: 'open', explore: explore(m), config: policy.config ?? null, theorem: 'textbook_difference_leads' })
   const onlyA = [...A].filter((m) => !B.has(m)).map((m) => lead(m, a.name, b.name))
   const onlyB = [...B].filter((m) => !A.has(m)).map((m) => lead(m, b.name, a.name))
   const leads = [...onlyA, ...onlyB]
-  return { a: a.name, b: b.name, sizes: { a: A.size, b: B.size, shared, onlyA: onlyA.length, onlyB: onlyB.length }, leads, proven: leads.length === (A.size - shared) + (B.size - shared), theorem: 'textbook_difference_leads', toExplore: Object.fromEntries([...new Set(leads.map((l) => l.explore))].map((t) => [t, leads.filter((l) => l.explore === t).length])), agnostic: 'members compared as the strings they are, whatever they name; the sides are named by the caller, the config kind by its policy' }
+  return { a: a.name, b: b.name, sizes: { a: A.size, b: B.size, shared, onlyA: onlyA.length, onlyB: onlyB.length }, leads, proven: leads.length === (A.size - shared) + (B.size - shared), theorem: 'textbook_difference_leads', toExplore: Object.fromEntries([...new Set(leads.map((l) => l.explore))].map((t) => [t, leads.filter((l) => l.explore === t).length])), agnostic: PROSE.quantumProcessingAudit_agnostic14 }
 }
 
 /** Remedies manual work taught, by signature: every error text answered with its remedy, one without a lead that teaches the next row
  *  (textbook_error_remedies: the remedied and the unremedied make the errors). */
 export const ERROR_REMEDIES = TABLES.ERROR_REMEDIES as readonly { signature: string; learned: string; remedy: string; automated: boolean }[]
 export const listRemedies = (errors: readonly string[]) => {
-  const leads = errors.map((text) => { const row = ERROR_REMEDIES.find((r) => new RegExp(r.signature).test(text)); const address = uuid(`error\n${text.trim()}`); return { id: `error-${address.slice(0, 8)}`, address, signature: row?.signature ?? null, remedy: row?.remedy ?? null, automated: row?.automated ?? false, learned: row?.learned ?? null, statement: row ? `${text.trim().split('\n')[0]} — remedy: ${row.remedy}` : `${text.trim().split('\n')[0]} — no remedy learned yet: a lead that teaches the next row`, status: 'open' as const } })
+  const leads = errors.map((text) => { const row = ERROR_REMEDIES.find((r) => new RegExp(r.signature).test(text)); const address = uuid(`error\n${text.trim()}`); return { id: `error-${address.slice(0, 8)}`, address, signature: row?.signature ?? null, remedy: row?.remedy ?? null, automated: row?.automated ?? false, learned: row?.learned ?? null, statement: row ? `${text.trim().split('\n')[0]} — remedy: ${row.remedy}` : proseFill(PROSE.quantumProcessingAudit_s15, text.trim().split('\n')[0]), status: 'open' as const } })
   const remedied = leads.filter((l) => l.remedy).length
-  return { errors: errors.length, remedied, unremedied: errors.length - remedied, leads, table: ERROR_REMEDIES.length, gravity: uuid(leads.map((l) => l.address).sort().join('\n')), vacuum: errors.length === 0, says: 'every error matched against what manual work taught; the remedied and the unremedied make the errors; in an error-free environment the table is dormant and the gravity is the vacuum' }
+  return { errors: errors.length, remedied, unremedied: errors.length - remedied, leads, table: ERROR_REMEDIES.length, gravity: uuid(leads.map((l) => l.address).sort().join('\n')), vacuum: errors.length === 0, says: PROSE.quantumProcessingAudit_says16 }
 }
 /** The repair of a vulnerable system from the advisories a client reads (npm audit --json, an NVD/CVE feed): a patched version yields its override,
  *  one with no patch a lead, never a false upgrade (textbook_repair_partitions: the repaired and the unrepairable make the advisories). Pure. */
@@ -192,13 +193,13 @@ export const repair = (advisories: readonly { module: string; severity?: string;
   const ordered = [...advisories].sort((x, y) => rank(y) - rank(x))
   const fixable = ordered.filter((a) => has(a.patched)), overrides: Record<string, string> = {}, livepatch: { module: string; cve: string | null; to: string }[] = []
   for (const a of fixable) { const p = a.patched!.trim(), to = /^[<>=~^]/.test(p) ? p : `>=${p}`; if (kind(a) !== 'npm') livepatch.push({ module: a.module, cve: a.cve ?? null, to }); else overrides[`${a.module}@${a.vulnerable ?? '*'}`] = to }
-  const leads = ordered.filter((a) => !has(a.patched)).map((a) => ({ id: `repair-${uuid(`repair\n${a.module}\n${a.cve ?? a.title ?? ''}`).slice(0, 8)}`, module: a.module, severity: a.severity ?? 'unknown', kind: kind(a), status: 'open' as const, statement: `${a.module} (${a.severity ?? '?'}): ${a.title ?? a.cve ?? 'vulnerable'} has no published patch — repair by pinning away from the range, replacing the dependency, or isolating it`, reason: 'no patched version to override to: an upgrade would be a false fix, so the repair is a lead, not a silent bump' }))
+  const leads = ordered.filter((a) => !has(a.patched)).map((a) => ({ id: `repair-${uuid(`repair\n${a.module}\n${a.cve ?? a.title ?? ''}`).slice(0, 8)}`, module: a.module, severity: a.severity ?? 'unknown', kind: kind(a), status: 'open' as const, statement: proseFill(PROSE.quantumProcessingAudit_statement17, a.module, a.severity ?? '?', a.title ?? a.cve ?? 'vulnerable'), reason: PROSE.quantumProcessingAudit_reason18 }))
   const severityCounts = advisories.reduce((o, a) => { const s = a.severity ?? 'info'; o[s] = (o[s] ?? 0) + 1; return o }, {} as Record<string, number>)
   const topPriority = ordered.filter((a) => kind(a) !== 'npm').map((a) => ({ module: a.module, cve: a.cve ?? null, severity: a.severity ?? 'unknown', kind: kind(a) }))
   // live: the patched version is verified beside the running one, then cut over by address (textbook_binding_zero_hex_path)
-  const sla = { uptime: '100%', downtime: 0, how: 'a package: install and verify the patched version beside the running one, then cut over by content address (blob then head); the kernel: live-patch the running kernel (kpatch / Ubuntu Livepatch), no reboot — every request is served throughout, none fails during the repair' }
-  const commands = [...(livepatch.length ? ['live-patch the running kernel to the fixed version (kpatch / Ubuntu Livepatch) — no reboot, SLA 100%'] : []), ...(Object.keys(overrides).length ? ['add the overrides under pnpm.overrides in package.json (or to the lockfile)', 'pnpm install / npm install (the patched version resolves beside the running one)'] : []), ...(fixable.length ? ['re-run the audit to confirm zero'] : [])]
-  return { phase: 'repair' as const, advisories: advisories.length, fixable: fixable.length, unfixable: leads.length, topPriority, livepatch, overrides, commands, severityCounts, sla, leads, theorems: ['textbook_repair_partitions', 'textbook_repair_live_sla', 'textbook_repair_kernel_top'], says: `${fixable.length} of ${advisories.length} advisor${advisories.length === 1 ? 'y' : 'ies'} repaired, kernel first (${topPriority.length} kernel/OS, live-patched with no reboot) then packages by severity, applied live so the SLA stays 100%; ${leads.length} have no patch and stay leads (pin away, replace, isolate); a client applies them through qpu.uuidna.com and re-audits to zero` }
+  const sla = { uptime: '100%', downtime: 0, how: PROSE.quantumProcessingAudit_how19 }
+  const commands = [...(livepatch.length ? [PROSE.quantumProcessingAudit_s20] : []), ...(Object.keys(overrides).length ? [PROSE.quantumProcessingAudit_s21, 'pnpm install / npm install (the patched version resolves beside the running one)'] : []), ...(fixable.length ? [PROSE.quantumProcessingAudit_s22] : [])]
+  return { phase: 'repair' as const, advisories: advisories.length, fixable: fixable.length, unfixable: leads.length, topPriority, livepatch, overrides, commands, severityCounts, sla, leads, theorems: ['textbook_repair_partitions', 'textbook_repair_live_sla', 'textbook_repair_kernel_top'], says: proseFill(PROSE.quantumProcessingAudit_says23, fixable.length, advisories.length, advisories.length === 1 ? 'y' : 'ies', topPriority.length, leads.length) }
 }
 /** The fallbacks: correction and handling fall back to each other (σ∘σ = id), and every adapter names the one it falls back to. */
 export const FALLBACKS = TABLES.FALLBACKS as readonly { failure: string; correction: string; handling: string; involution: string }[]
@@ -216,9 +217,9 @@ export const handleOrCorrect = (errors: readonly string[], majority: boolean, mo
     if (m === 'correction') { if (majority) { steps.push({ mode: m, result: 'corrected by majority' }); return stop(swap) } steps.push({ mode: m, result: 'no majority: the correction errors' }); m = flipMode(m); continue }
     const r = listRemedies(errors)
     if (r.remedied > 0 || errors.length === 0) { steps.push({ mode: m, result: errors.length ? `${r.remedied} of ${r.errors} remedied` : 'nothing to handle' }); return stop(swap, { remedies: r }) }
-    steps.push({ mode: m, result: 'no remedy learned: the lead teaches the next row' }); m = flipMode(m)
+    steps.push({ mode: m, result: PROSE.quantumProcessingAudit_result24 }); m = flipMode(m)
   }
-  return stop(2, { says: 'σ applied twice is the identity: the fallback returned to where it started, and the lead is a Payload create' })
+  return stop(2, { says: PROSE.quantumProcessingAudit_says25 })
 }
 /** The security audit as one list from the client's perspective (headers, CORS, write tokens, the surface) and the developer's (dependencies,
  *  leaks, access, hooks, signing), each check named by its perspective (textbook_security_perspectives). */
@@ -229,27 +230,27 @@ export const auditSecurity = (client: SecurityClient, developer: SecurityDevelop
   const c = (id: string, perspective: 'client' | 'developer' | 'both', passed: boolean, evidence: string, remedy?: string) => checks.push({ id, perspective, passed, evidence, ...(remedy ? { remedy } : {}) })
   for (const h of client.hosts) {
     const acao = h.headers['access-control-allow-origin'] ?? ''; const acah = h.headers['access-control-allow-headers'] ?? ''
-    c(`cors:${h.host}`, 'client', acao === '*' && /authorization/i.test(acah), `allow-origin ${acao || 'none'}, allow-headers ${acah || 'none'}`, 'reads answer every origin; writes carry Authorization')
-    c(`hsts:${h.host}`, 'client', Boolean(h.headers['strict-transport-security']), h.headers['strict-transport-security'] ? `HSTS ${h.headers['strict-transport-security']}` : 'no Strict-Transport-Security header', 'enable HSTS on the zone (Cloudflare SSL/TLS, Edge Certificates): the tenant\'s act')
-    c(`no-sniff:${h.host}`, 'client', /nosniff/i.test(h.headers['x-content-type-options'] ?? ''), h.headers['x-content-type-options'] ?? 'no X-Content-Type-Options header', 'the Worker answers X-Content-Type-Options: nosniff on every reply')
-    if (h.writeWithoutToken !== undefined) c(`write-needs-token:${h.host}`, 'client', h.writeWithoutToken >= 400 && h.writeWithoutToken < 500, `POST /entries without a token answers ${h.writeWithoutToken}`, 'a write without Authorization is refused with 401 or 403')
-    if (h.audit) c(`surface-audit:${h.host}`, 'client', h.audit.failed === 0, `${h.audit.total - h.audit.failed}/${h.audit.total} checks pass over MCP`, 'every failed check is a lead with its evidence')
+    c(`cors:${h.host}`, 'client', acao === '*' && /authorization/i.test(acah), `allow-origin ${acao || 'none'}, allow-headers ${acah || 'none'}`, PROSE.quantumProcessingAudit_s26)
+    c(`hsts:${h.host}`, 'client', Boolean(h.headers['strict-transport-security']), h.headers['strict-transport-security'] ? `HSTS ${h.headers['strict-transport-security']}` : 'no Strict-Transport-Security header', PROSE.quantumProcessingAudit_s27)
+    c(`no-sniff:${h.host}`, 'client', /nosniff/i.test(h.headers['x-content-type-options'] ?? ''), h.headers['x-content-type-options'] ?? 'no X-Content-Type-Options header', PROSE.quantumProcessingAudit_s28)
+    if (h.writeWithoutToken !== undefined) c(`write-needs-token:${h.host}`, 'client', h.writeWithoutToken >= 400 && h.writeWithoutToken < 500, proseFill(PROSE.quantumProcessingAudit_s29, h.writeWithoutToken), PROSE.quantumProcessingAudit_s30)
+    if (h.audit) c(`surface-audit:${h.host}`, 'client', h.audit.failed === 0, `${h.audit.total - h.audit.failed}/${h.audit.total} checks pass over MCP`, PROSE.quantumProcessingAudit_s31)
   }
   const u = client.payloadMcp?.unauthenticated ?? null
-  c('payload-mcp-key', 'client', u === null || u === 401 || u === 403, u === null ? 'the app is not deployed: the plugin requires Authorization: <users> API-Key (measured locally), pending online' : `/api/mcp without a key answers ${u}`, 'the Payload MCP plugin refuses a request without a user\'s API key')
+  c('payload-mcp-key', 'client', u === null || u === 401 || u === 403, u === null ? PROSE.quantumProcessingAudit_s32 : proseFill(PROSE.quantumProcessingAudit_s33, u), PROSE.quantumProcessingAudit_s34)
   const severe = (v: Record<string, number>) => (v.critical ?? 0) + (v.high ?? 0)
   for (const [tree, v] of Object.entries(developer.vulnerabilities)) c(`dependencies:${tree}`, 'developer', severe(v) === 0, Object.keys(v).length ? Object.entries(v).map(([k, n]) => `${k} ${n}`).join(', ') : 'no vulnerabilities reported', 'npm audit fix or a pinned fixed version; a finding is a lead')
-  c('no-leaks', 'developer', developer.leaks === 0, `${developer.leaks} address(es) in the tree`, 'contacts are URLs; the account email is read at deploy')
-  c('no-autologin', 'developer', developer.autoLogin !== true, developer.autoLogin ? 'admin.autoLogin in the hand-held Payload config: anyone opens the admin' : 'no auto-login in the Payload config', 'remove admin.autoLogin from src/payload.config.ts: the first user comes from the deployer\'s account, its password by reset')
-  c('env-named-not-valued', 'developer', developer.envExampleValueless, developer.envExampleValueless ? 'the environment example names every variable and holds no value' : 'a value in the environment example', 'values never travel: names only')
-  c('access-rules', 'developer', /no one/.test(String(developer.access.entries?.update ?? '')) && /super admin/.test(String(developer.access.tenants?.write ?? '')), `entries.update: ${developer.access.entries?.update ?? 'unset'}; tenants.write: ${developer.access.tenants?.write ?? 'unset'}`, 'an entry is its content address (no update); tenants are a super admin\'s')
-  c('hooks-guarded', 'developer', ['collisionGuard', 'firstUserBootstrap', 'appRequest'].every((h) => developer.hooks.includes(h)), `hooks: ${developer.hooks.join(', ') || 'none'}`, 'the plugin adds the collision guard, the first-user bootstrap and the validated app request')
-  c('signing-at-edge', 'developer', /ML-DSA|webcrypto_modern_algorithms/.test(developer.signing), developer.signing, 'the Worker signs with ML-DSA under the Web Crypto flag')
-  c('rest-rbac-both-ways', 'both', true, 'two directions under three tenant roles on every adapter dimension (textbook_rest_rbac)')
+  c('no-leaks', 'developer', developer.leaks === 0, `${developer.leaks} address(es) in the tree`, PROSE.quantumProcessingAudit_s35)
+  c('no-autologin', 'developer', developer.autoLogin !== true, developer.autoLogin ? PROSE.quantumProcessingAudit_s36 : PROSE.quantumProcessingAudit_s37, PROSE.quantumProcessingAudit_s38)
+  c('env-named-not-valued', 'developer', developer.envExampleValueless, developer.envExampleValueless ? PROSE.quantumProcessingAudit_s39 : 'a value in the environment example', PROSE.quantumProcessingAudit_s40)
+  c('access-rules', 'developer', /no one/.test(String(developer.access.entries?.update ?? '')) && /super admin/.test(String(developer.access.tenants?.write ?? '')), `entries.update: ${developer.access.entries?.update ?? 'unset'}; tenants.write: ${developer.access.tenants?.write ?? 'unset'}`, PROSE.quantumProcessingAudit_s41)
+  c('hooks-guarded', 'developer', ['collisionGuard', 'firstUserBootstrap', 'appRequest'].every((h) => developer.hooks.includes(h)), `hooks: ${developer.hooks.join(', ') || 'none'}`, PROSE.quantumProcessingAudit_s42)
+  c('signing-at-edge', 'developer', /ML-DSA|webcrypto_modern_algorithms/.test(developer.signing), developer.signing, PROSE.quantumProcessingAudit_s43)
+  c('rest-rbac-both-ways', 'both', true, PROSE.quantumProcessingAudit_s44)
   c('theorems-sealed', 'both', developer.theorems > 0, `${developer.theorems} kernel-accepted theorems`, 'the textbook is the proof')
   const failed = checks.filter((x) => !x.passed)
   const perspectives = { client: checks.filter((x) => x.perspective === 'client').length, developer: checks.filter((x) => x.perspective === 'developer').length, both: checks.filter((x) => x.perspective === 'both').length }
-  return { checks, total: checks.length, passed: checks.length - failed.length, failed: failed.length, perspectives, merged: 'one list: each check from the client, the developer, or both; the same count from either side', leads: failed.map((f) => ({ id: `security-${f.id.replace(/[^a-z0-9]+/gi, '-')}`, statement: `${f.id} (${f.perspective}): ${f.evidence}`, status: 'open' as const, remedy: f.remedy ?? null, tool: 'audit' })), verdict: failed.length === 0 ? 'clean' : `${failed.length} finding(s), each a lead with its remedy`, says: 'the security audit performed by MCP from both perspectives merged as one; every finding a lead with the remedy manual work taught' }
+  return { checks, total: checks.length, passed: checks.length - failed.length, failed: failed.length, perspectives, merged: PROSE.quantumProcessingAudit_merged45, leads: failed.map((f) => ({ id: `security-${f.id.replace(/[^a-z0-9]+/gi, '-')}`, statement: `${f.id} (${f.perspective}): ${f.evidence}`, status: 'open' as const, remedy: f.remedy ?? null, tool: 'audit' })), verdict: failed.length === 0 ? 'clean' : proseFill(PROSE.quantumProcessingAudit_s46, failed.length), says: PROSE.quantumProcessingAudit_says47 }
 }
 
 /** The quantum advantage of a gate run from its counts alone: copies proven by hash over copies recomputed, unbounded when every copy is an
@@ -257,7 +258,7 @@ export const auditSecurity = (client: SecurityClient, developer: SecurityDevelop
 export const getAdvantage = (copies: number, verified: number) => {
   if (!copies) return null
   const recomputed = copies - verified
-  return { copies, verified, recomputed, ratio: recomputed ? Number((copies / recomputed).toFixed(2)) : null, unbounded: recomputed === 0, interaction: 'none: computed from the run\'s own counts, no token, no approval, no bound', basis: 'verify beats recompute by magnitude: copies over copies recomputed; the unit bills the same counts (advantageByUnit)' }
+  return { copies, verified, recomputed, ratio: recomputed ? Number((copies / recomputed).toFixed(2)) : null, unbounded: recomputed === 0, interaction: PROSE.quantumProcessingAudit_interaction48, basis: PROSE.quantumProcessingAudit_basis49 }
 }
 
 /** The leads addressed by the theorems: the theorem sharing the most stems (two at least) with a lead addresses it, its example naming the tool
@@ -274,7 +275,7 @@ export const getAddressedByTheorem = (leads: readonly { id: string; statement: s
   })
   const addressed = rows.filter((r) => r.theorem)
   const byTheorem: Record<string, number> = {}; for (const r of addressed) byTheorem[r.theorem!] = (byTheorem[r.theorem!] ?? 0) + 1
-  return { leads: rows.map((r) => ({ id: r.id, status: r.status, ...(r.tool ? { tool: r.tool } : {}), statement: `${r.theorem ?? 'open: no theorem reaches it yet'} (${r.shared} shared stems) at ${r.address}` })), counts: byTheorem, total: leads.length, addressed: addressed.length, unaddressed: leads.length - addressed.length, byTheorem, rows, says: 'every lead addressed by the theorem sharing its words, that theorem\'s example naming the tool; nothing assigned in advance; the unaddressed stay open until a theorem reaches them' }
+  return { leads: rows.map((r) => ({ id: r.id, status: r.status, ...(r.tool ? { tool: r.tool } : {}), statement: `${r.theorem ?? 'open: no theorem reaches it yet'} (${r.shared} shared stems) at ${r.address}` })), counts: byTheorem, total: leads.length, addressed: addressed.length, unaddressed: leads.length - addressed.length, byTheorem, rows, says: PROSE.quantumProcessingAudit_says50 }
 }
 
 /** The usage bill: tokens, bits moved and their Landauer cost (k_B T ln 2 a bit), time, coins, and the joules as kWh at a tenant's tariff
@@ -289,10 +290,10 @@ export const getBill = (u: { tokens?: number; bits?: number; ms?: number; temper
   const kWh = joules / JOULES_PER_KWH, kWhSaved = joulesSaved / JOULES_PER_KWH
   return {
     tokens, bits, ms, coins: minted, temperatureK, landauerJoulesPerBit, joules, kWh, saved: { tokens: u.saved?.tokens ?? 0, bits: u.saved?.bits ?? 0, ms: u.saved?.ms ?? 0, joules: joulesSaved, kWh: kWhSaved },
-    energy: { kWh, tariffEurPerKwh: u.tariffEurPerKwh ?? null, costEur: u.tariffEurPerKwh != null ? kWh * u.tariffEurPerKwh : null, tariffVar: 'ENERGY_TARIFF_EUR_PER_KWH_<TENANT>', sector: 'the tariff the tenant names (never valued here); the energy gates (ENTSO-E, EIA) the tenant opens with its key answer the market price' },
-    iot: { devices: u.devices ?? 0, says: 'every reading a docket entry of kind reading, immutable at its content address, billed by this bill per device: bits moved, joules at the device\'s temperature, time, coins' },
+    energy: { kWh, tariffEurPerKwh: u.tariffEurPerKwh ?? null, costEur: u.tariffEurPerKwh != null ? kWh * u.tariffEurPerKwh : null, tariffVar: 'ENERGY_TARIFF_EUR_PER_KWH_<TENANT>', sector: PROSE.quantumProcessingAudit_sector51 },
+    iot: { devices: u.devices ?? 0, says: PROSE.quantumProcessingAudit_says52 },
     accounts: ['tokens', 'bits', 'time', 'coins'], complete: true,
-    says: 'the bill complete: tokens, bits at their thermodynamic cost at the temperature, time, coins; what the involution saved accounted beside; linked with the energy sector by the kilowatt-hour and the tariff, with the IoT sector by the reading per device',
+    says: PROSE.quantumProcessingAudit_says53,
   }
 }
 
@@ -327,20 +328,20 @@ export const linkAxioms = (examples: readonly Example[], textbook: readonly { ke
   const dangling = textbook.flatMap((t) => t.examples.filter((e) => !ids.has(e)).map((e) => ({ theorem: textbookRename(t.key), example: e })))
   const linked = rows.length - axioms.length
   const renamed = rows.flatMap((r) => r.renamed.map((n) => ({ example: r.example, ...n })))
-  return { examples: rows.length, linked, axioms, broken, dangling, renamed, complete: axioms.length === 0 && broken.length === 0 && dangling.length === 0, byTool: Object.fromEntries([...new Set(rows.map((r) => r.tool))].map((tool) => [tool, rows.filter((r) => r.tool === tool && r.theorems.length > 0).length + '/' + rows.filter((r) => r.tool === tool).length])), theorem: 'textbook_axioms_linked', says: axioms.length || broken.length || dangling.length ? `${axioms.length} example(s) with no theorem, ${broken.length} linked to a theorem the kernel does not accept, ${dangling.length} theorem link(s) to a missing example` : `all ${rows.length} examples rest on kernel-accepted theorems: no axiom left in the textbook${renamed.length ? `; ${renamed.length} renamed to the textbook's scientific name` : ''}` }
+  return { examples: rows.length, linked, axioms, broken, dangling, renamed, complete: axioms.length === 0 && broken.length === 0 && dangling.length === 0, byTool: Object.fromEntries([...new Set(rows.map((r) => r.tool))].map((tool) => [tool, rows.filter((r) => r.tool === tool && r.theorems.length > 0).length + '/' + rows.filter((r) => r.tool === tool).length])), theorem: 'textbook_axioms_linked', says: axioms.length || broken.length || dangling.length ? proseFill(PROSE.quantumProcessingAudit_s54, axioms.length, broken.length, dangling.length) : proseFill(PROSE.quantumProcessingAudit_s55, rows.length, renamed.length ? proseFill(PROSE.quantumProcessingAudit_s56, renamed.length) : '') }
 }
 
 /** Leaks found before publishing: e-mail addresses, keys and tokens, local paths, private addresses, and any use of Python, the tree's own
  *  notations set aside; a finding is redacted (kind and place, never value), a lead with its remedy and the court's case. */
-const PYTHON_REMEDY = 'manual agent work: the tokens of that work, its bytes over four, are the coins of this leak, and the program does not stay in the text'
+const PYTHON_REMEDY = PROSE.quantumProcessingAudit_s57
 export const LEAK_PATTERNS: readonly { kind: string; re: RegExp; remedy: string }[] = [
-  { kind: 'email', re: /[A-Za-z0-9._%+-]{1,64}@(?:[A-Za-z0-9-]{1,63}\.)+[A-Za-z]{2,24}/g, remedy: 'a contact is a URL; an address never enters the tree (purify)' },
-  { kind: 'stripe-secret', re: /\b(?:sk|rk)_(?:live|test)_[A-Za-z0-9]{8,}|\bwhsec_[A-Za-z0-9]{8,}/g, remedy: 'rotate the key at Stripe; the tenant\'s secret lives in the Worker\'s secrets only' },
-  { kind: 'token', re: /\b(?:ghp|gho|ghs|ghu|github_pat)_[A-Za-z0-9_]{20,}|\bnpm_[A-Za-z0-9]{30,}|\bsk-ant-[A-Za-z0-9_-]{10,}|\bAKIA[0-9A-Z]{16}\b|\bAIza[0-9A-Za-z_-]{35}\b/g, remedy: 'revoke the token where it was issued and issue a new one into the secrets' },
-  { kind: 'jwt', re: /(?<![A-Za-z0-9_])eyJ(?:[A-Za-z0-9_]|-(?!eyJ)){10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g, remedy: 'a session or key token: expire it and keep it out of logs' },
-  { kind: 'private-key', re: /-----BEGIN [A-Z ]*PRIVATE KEY-----/g, remedy: 'replace the key pair; a private key lives in the secrets alone' },
-  { kind: 'local-path', re: /\/Users\/[A-Za-z0-9._-]+|\/home\/[a-z][a-z0-9_-]+(?=\/)|[A-Z]:\\Users\\[A-Za-z0-9._-]+|\/private\/(?:tmp|var)\/[^\s'"`)]+|\/var\/folders\/[^\s'"`)]+|-Users-[A-Za-z0-9._]+-/g, remedy: 'paths relative to the repository root before a stack or an error is written into a lead or a receipt' },
-  { kind: 'private-ip', re: /\b(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})\b/g, remedy: 'a host by its public name; a private address says the network' },
+  { kind: 'email', re: /[A-Za-z0-9._%+-]{1,64}@(?:[A-Za-z0-9-]{1,63}\.)+[A-Za-z]{2,24}/g, remedy: PROSE.quantumProcessingAudit_remedy58 },
+  { kind: 'stripe-secret', re: /\b(?:sk|rk)_(?:live|test)_[A-Za-z0-9]{8,}|\bwhsec_[A-Za-z0-9]{8,}/g, remedy: PROSE.quantumProcessingAudit_remedy59 },
+  { kind: 'token', re: /\b(?:ghp|gho|ghs|ghu|github_pat)_[A-Za-z0-9_]{20,}|\bnpm_[A-Za-z0-9]{30,}|\bsk-ant-[A-Za-z0-9_-]{10,}|\bAKIA[0-9A-Z]{16}\b|\bAIza[0-9A-Za-z_-]{35}\b/g, remedy: PROSE.quantumProcessingAudit_remedy60 },
+  { kind: 'jwt', re: /(?<![A-Za-z0-9_])eyJ(?:[A-Za-z0-9_]|-(?!eyJ)){10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g, remedy: PROSE.quantumProcessingAudit_remedy61 },
+  { kind: 'private-key', re: /-----BEGIN [A-Z ]*PRIVATE KEY-----/g, remedy: PROSE.quantumProcessingAudit_remedy62 },
+  { kind: 'local-path', re: /\/Users\/[A-Za-z0-9._-]+|\/home\/[a-z][a-z0-9_-]+(?=\/)|[A-Z]:\\Users\\[A-Za-z0-9._-]+|\/private\/(?:tmp|var)\/[^\s'"`)]+|\/var\/folders\/[^\s'"`)]+|-Users-[A-Za-z0-9._]+-/g, remedy: PROSE.quantumProcessingAudit_remedy63 },
+  { kind: 'private-ip', re: /\b(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})\b/g, remedy: PROSE.quantumProcessingAudit_remedy64 },
   { kind: 'python', re: /(?:^|[\s'"`(=:])(?:python(?:2|3)?|pip3?)\s+(?:-[A-Za-z]|install\b|[\w./-]+\.pyw?\b)|#!.*\bpython|(?:^|[\s'"`=:(])([\w./\\-]+\.pyw?)\b/gi, remedy: PYTHON_REMEDY },
 ]
 // set aside: an allowed domain, a block address, a package version (react@18.3.1), the reserved test domains, the placeholders
@@ -360,7 +361,7 @@ export const listDeclarations = (files: Readonly<Record<string, string>>) => {
       const next = (to === 'create' ? 'create' : /(?<!s)s$|ies$/.test(noun) ? 'list' : 'get') + noun
       if (names.has(next)) { kept.push(`${file}:${name}→${next}`); continue } names.add(next); renames.push([file, name, next]) } }
   const customs = Object.values(custom).reduce((n, l) => n + l.length, 0)
-  return { declarations, standard, renames, custom, kept, theorem: 'textbook_shared_verbs', says: `${declarations} function declarations: ${standard} named by a standard verb, ${renames.length} readers and builders mapped onto one, ${kept.length} kept (the name is taken), ${customs} under ${Object.keys(custom).length} other leading words, each to convert or to tie to the rosetta` }
+  return { declarations, standard, renames, custom, kept, theorem: 'textbook_shared_verbs', says: proseFill(PROSE.quantumProcessingAudit_says65, declarations, standard, renames.length, kept.length, customs, Object.keys(custom).length) }
 }
 /** The line where the statement opened on line `i` closes its brackets, strings and comments and the next line does not continue it */
 const statementEnd = (lines: readonly string[], i: number) => {
@@ -391,9 +392,9 @@ export const auditPrograms = (paths: unknown, files?: Readonly<Record<string, st
     const program = path.startsWith('src/quantum/uuid/programs/') || path.endsWith('.lean') || (/\bprogram\(/.test(t) && t.includes('programs/index')) || /^\/\/ generated by |(automatically|generated) by payload|generated by configure \{/im.test(t.slice(0, 800))
     return { path, program, iso: terms.map((x) => ({ ...x, n: low.split(x.name).length - 1 })).filter((x) => x.n).sort((a, b) => b.n - a.n).slice(0, 3) }
   })
-  const leads = rows.filter((r) => !r.program).map((r) => ({ id: `program-${r.path.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`, source: 'audit { programs }', status: 'open' as const, tool: 'audit', reason: 'not yet placed as a UUID program by program(handle)',
-    statement: `${r.path} is not a UUID program: ${r.iso.length ? `consolidate it under ISO/IEC 4879 ${r.iso.map((x) => `${x.clause} ${x.name}`).join(', ')} as a UUID program` : 'it names no ISO/IEC 4879 term, so it belongs outside the quantum tree or needs its term'}` }))
-  return { phase: 'programs' as const, files: rows.length, programs: rows.length - leads.length, leads, theorem: 'textbook_programs_partition', says: `${rows.length - leads.length} of ${rows.length} file(s) are UUID programs; ${leads.length} lead(s), each named with the ISO/IEC 4879 terms it consolidates under` }
+  const leads = rows.filter((r) => !r.program).map((r) => ({ id: `program-${r.path.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`, source: 'audit { programs }', status: 'open' as const, tool: 'audit', reason: PROSE.quantumProcessingAudit_reason66,
+    statement: `${r.path} is not a UUID program: ${r.iso.length ? proseFill(PROSE.quantumProcessingAudit_s67, r.iso.map((x) => `${x.clause} ${x.name}`).join(', ')) : PROSE.quantumProcessingAudit_s68}` }))
+  return { phase: 'programs' as const, files: rows.length, programs: rows.length - leads.length, leads, theorem: 'textbook_programs_partition', says: proseFill(PROSE.quantumProcessingAudit_says69, rows.length - leads.length, rows.length, leads.length) }
 }
 /** tsc --noUnusedLocals read as leads; with the files it names, those files without their unused imports and top-level declarations */
 export const removeDead = (output: string, files?: Readonly<Record<string, string>>) => {
@@ -427,7 +428,7 @@ export const removeDead = (output: string, files?: Readonly<Record<string, strin
     const next = lines.filter((x): x is string => x !== null).join('\n')
     if (next !== text) out.push({ path, text: next })
   }
-  return { phase: 'dead' as const, findings: found.length, fixed, left: found.length - fixed, leads, files: out, theorem: 'textbook_dead_removed', says: `${fixed} of ${found.length} never read removed; ${found.length - fixed} left as leads` }
+  return { phase: 'dead' as const, findings: found.length, fixed, left: found.length - fixed, leads, files: out, theorem: 'textbook_dead_removed', says: proseFill(PROSE.quantumProcessingAudit_says70, fixed, found.length, found.length - fixed) }
 }
 /** The one table's hits in a text, the notations set aside marked: every scanner reads the table through this */
 const leakHits = (text: string) => LEAK_PATTERNS.flatMap((p) => [...text.matchAll(p.re)].map((m) => ({ kind: p.kind, aside: NOT_A_LEAK(p.kind, m[0]) })))
@@ -443,9 +444,9 @@ export const listLeaks = (texts: Readonly<Record<string, string>>, served: reado
   const byKind = Object.fromEntries(LEAK_PATTERNS.map((p) => [p.kind, findings.filter((f) => f.kind === p.kind).reduce((n, f) => n + f.count, 0)]))
   const tokens = pyBytes === 0 ? 0 : Math.ceil(pyBytes / 4)
   const python = { kind: 'python' as const, found: byKind.python ?? 0, redacted: byKind.python ?? 0, left: 0, holds: (byKind.python ?? 0) - (byKind.python ?? 0) === 0 && tokens <= pyBytes && tokens === (pyBytes === 0 ? 0 : Math.ceil(pyBytes / 4)), bytes: pyBytes, tokens, coins: tokens, via: 'tokens' as const, manual: (byKind.python ?? 0) > 0, coin: { debit: 'coins:agent' as const, credit: 'coins:author' as const, amount: 0 as const, count: tokens }, theorem: 'textbook_penalty_tokens_bound' as const }
-  const leads = findings.map((f) => ({ id: `leak-${f.kind}-${f.where.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`, source: f.where, statement: `${f.count} ${f.kind} finding(s) in ${f.where}${f.served ? ', served publicly' : ''}: ${f.remedy}`, status: 'open' as const, reason: f.served ? 'published: remove it at the source and from what is served' : 'not served yet: remove it at the source before it is' }))
-  const coin = python.coins ? `; ${python.coins} coin(s) from ${python.tokens} token(s) of manual agent work` : ''
-  return { texts: Object.keys(texts).length, findings, byKind, total: findings.reduce((n, f) => n + f.count, 0), served: findings.filter((f) => f.served).length, setAside, clean: findings.length === 0, leads, python, theorem: 'textbook_leaks_redacted', says: findings.length ? `${findings.reduce((n, f) => n + f.count, 0)} finding(s) in ${new Set(findings.map((f) => f.where)).size} text(s), ${findings.filter((f) => f.served).length} served publicly; values redacted, ${setAside} notation(s) set aside${coin}` : `${Object.keys(texts).length} text(s) clean; ${setAside} notation(s) set aside (block addresses, test domains)` }
+  const leads = findings.map((f) => ({ id: `leak-${f.kind}-${f.where.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`, source: f.where, statement: `${f.count} ${f.kind} finding(s) in ${f.where}${f.served ? ', served publicly' : ''}: ${f.remedy}`, status: 'open' as const, reason: f.served ? PROSE.quantumProcessingAudit_s71 : PROSE.quantumProcessingAudit_s72 }))
+  const coin = python.coins ? proseFill(PROSE.quantumProcessingAudit_s73, python.coins, python.tokens) : ''
+  return { texts: Object.keys(texts).length, findings, byKind, total: findings.reduce((n, f) => n + f.count, 0), served: findings.filter((f) => f.served).length, setAside, clean: findings.length === 0, leads, python, theorem: 'textbook_leaks_redacted', says: findings.length ? proseFill(PROSE.quantumProcessingAudit_s74, findings.reduce((n, f) => n + f.count, 0), new Set(findings.map((f) => f.where)).size, findings.filter((f) => f.served).length, setAside, coin) : proseFill(PROSE.quantumProcessingAudit_s75, Object.keys(texts).length, setAside) }
 }
 /** Credential tokens as they leave a published text, including inside a percent-encoded argument. A word boundary is not required: an encoded quote ends on a hex digit, which would hide the token from the scanner's boundary. */
 const SEAL_PATTERNS: readonly { kind: string; re: RegExp }[] = [
@@ -501,7 +502,7 @@ export const runAudit = (handle: (m: Rpc) => any, examples: readonly Example[], 
 
   const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })
   checkOnce('initialize', 'result' in init && typeof init.result?.serverInfo?.version === 'string' && init.result.serverInfo.name === 'qpu', JSON.stringify(init.result?.serverInfo ?? init.error))
-  checkOnce('license:initialize', 'result' in init && init.result?.serverInfo?.license === 'CC-BY-NC-ND-4.0' && typeof init.result?.instructions === 'string' && init.result.instructions.includes('CC-BY-NC-ND-4.0'), 'serverInfo.license and instructions carry the licence')
+  checkOnce('license:initialize', 'result' in init && init.result?.serverInfo?.license === 'CC-BY-NC-ND-4.0' && typeof init.result?.instructions === 'string' && init.result.instructions.includes('CC-BY-NC-ND-4.0'), PROSE.quantumProcessingAudit_s76)
 
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } })
   const tools: ToolSpec[] = 'result' in list ? list.result.tools : []
@@ -522,23 +523,23 @@ export const runAudit = (handle: (m: Rpc) => any, examples: readonly Example[], 
     if (!names.has(e.tool)) continue
     if (e.tool === 'audit') continue // the self example is evaluated by the caller: it would recurse here
     const sealKey = uuid(`${e.id}|${JSON.stringify(e.arguments)}|${e.expect.toString()}|${e.shows}`)
-    if (sealed && e.theorem && THEOREM_KEYS.has(e.theorem) && known[sealKey]) { for (const k of ['license', 'css-vars', 'accessibility', 'example']) check(`${k}:${e.id}`, true, `sealed under code ${code!.slice(0, 12)} by theorem ${e.theorem}: not recomputed`); integers[sealKey] = known[sealKey]!; bySeal++; continue }
+    if (sealed && e.theorem && THEOREM_KEYS.has(e.theorem) && known[sealKey]) { for (const k of ['license', 'css-vars', 'accessibility', 'example']) check(`${k}:${e.id}`, true, proseFill(PROSE.quantumProcessingAudit_s77, code!.slice(0, 12), e.theorem)); integers[sealKey] = known[sealKey]!; bySeal++; continue }
     const reply = call(e.tool, e.arguments)
     if ('error' in reply) { check(`example:${e.id}`, false, `${reply.error.code} ${reply.error.message}`); continue }
     const r = reply.result
     const key = uuid(`${e.id}|${JSON.stringify(e.arguments)}|${e.expect.toString()}|${e.shows}`)
     // the theorem decides: equal integers from a deterministic check have an equal verdict (textbook_integers_first)
     const integer = `${e.theorem ?? ''}:${r._meta?.integrity?.sha256 ?? ''}:${uuid(r._meta?.widget ?? '')}`
-    if (e.theorem && THEOREM_KEYS.has(e.theorem) && known[key] === integer) { for (const k of ['license', 'css-vars', 'accessibility', 'example']) check(`${k}:${e.id}`, true, `decided by theorem ${e.theorem}: the answer and its widget fold to the integers its confirmed pass recorded`); integers[key] = integer; byInteger++; continue }
+    if (e.theorem && THEOREM_KEYS.has(e.theorem) && known[key] === integer) { for (const k of ['license', 'css-vars', 'accessibility', 'example']) check(`${k}:${e.id}`, true, proseFill(PROSE.quantumProcessingAudit_s78, e.theorem)); integers[key] = integer; byInteger++; continue }
     const before = checks.length
     const shape = Array.isArray(r.content) && r.content[0]?.type === 'text' && 'structuredContent' in r && typeof r._meta?.widget === 'string' && r._meta.widget.length > 0
-    check(`license:${e.id}`, r._meta?.license?.spdx === 'CC-BY-NC-ND-4.0' && r._meta.widget.includes('data-license="CC-BY-NC-ND-4.0"') && r._meta?.block?.license === 'CC-BY-NC-ND-4.0', r._meta?.license ? 'result, widget and block carry the licence' : 'no licence on the result')
+    check(`license:${e.id}`, r._meta?.license?.spdx === 'CC-BY-NC-ND-4.0' && r._meta.widget.includes('data-license="CC-BY-NC-ND-4.0"') && r._meta?.block?.license === 'CC-BY-NC-ND-4.0', r._meta?.license ? PROSE.quantumProcessingAudit_s79 : 'no licence on the result')
     const w: string = r._meta?.widget ?? ''
-    check(`css-vars:${e.id}`, w.includes('class="qpu-block"') && w.includes('--qpu-accent:') && w.includes('--qpu-angle:') && w.includes('--qpu-period:') && !/style="[^"]*#[0-9a-f]{3,6}\b/i.test(w), 'the block root carries its UUID\'s custom properties and no hex colour; the stylesheet draws it')
+    check(`css-vars:${e.id}`, w.includes('class="qpu-block"') && w.includes('--qpu-accent:') && w.includes('--qpu-angle:') && w.includes('--qpu-period:') && !/style="[^"]*#[0-9a-f]{3,6}\b/i.test(w), PROSE.quantumProcessingAudit_s80)
     const a11y = checkAccessibility(w)
-    check(`accessibility:${e.id}`, a11y.length === 0, a11y.length ? a11y.join('; ') : 'images named, tables headed, links worded, a heading present')
+    check(`accessibility:${e.id}`, a11y.length === 0, a11y.length ? a11y.join('; ') : PROSE.quantumProcessingAudit_s81)
     let why: string | null; try { why = e.expect(r.structuredContent) } catch (err) { why = err instanceof Error ? err.message : String(err) }
-    check(`example:${e.id}`, shape && why === null, why ?? (shape ? e.shows : 'result lacks content, structuredContent or a widget'))
+    check(`example:${e.id}`, shape && why === null, why ?? (shape ? e.shows : PROSE.quantumProcessingAudit_s82))
     byText++
     if (checks.slice(before).every((c) => c.passed)) integers[key] = integer
   }
@@ -554,22 +555,22 @@ export const runAudit = (handle: (m: Rpc) => any, examples: readonly Example[], 
   const backed = examples.filter((e) => e.theorem)
   // a textbook theorem enters the kernel index one run after the lean step checks it (purify), so the table counts as declared
   const declared = (key: string) => THEOREM_KEYS.has(key) || TEXTBOOK_THEOREMS.some((t) => t.key === key)
-  for (const e of backed) if (mine(examples.indexOf(e))) check(`theorem-exists:${e.id}`, declared(e.theorem!), THEOREM_KEYS.has(e.theorem!) ? `${e.theorem} is kernel-accepted (${THEOREMS.find((t) => t.key === e.theorem)?.statement})` : TEXTBOOK_THEOREMS.some((t) => t.key === e.theorem) ? `${e.theorem} is declared in the textbook table (${TEXTBOOK_THEOREMS.find((t) => t.key === e.theorem)!.says}); the kernel index records it after this run's lean step` : `${e.theorem} is not among the ${THEOREMS.length} hand-written theorems the kernel accepted: a fabricated citation`)
-  checkOnce('examples-backed-by-theorems', true, `${backed.length} of ${examples.length} examples name the theorem that makes them true (${backed.map((e) => `${e.id}→${e.theorem}`).join(', ') || 'none'}); the rest are the textbook, respected, each a lead for a theorem`)
+  for (const e of backed) if (mine(examples.indexOf(e))) check(`theorem-exists:${e.id}`, declared(e.theorem!), THEOREM_KEYS.has(e.theorem!) ? `${e.theorem} is kernel-accepted (${THEOREMS.find((t) => t.key === e.theorem)?.statement})` : TEXTBOOK_THEOREMS.some((t) => t.key === e.theorem) ? proseFill(PROSE.quantumProcessingAudit_s83, e.theorem, TEXTBOOK_THEOREMS.find((t) => t.key === e.theorem)!.says) : proseFill(PROSE.quantumProcessingAudit_s84, e.theorem, THEOREMS.length))
+  checkOnce('examples-backed-by-theorems', true, proseFill(PROSE.quantumProcessingAudit_s85, backed.length, examples.length, backed.map((e) => `${e.id}→${e.theorem}`).join(', ') || 'none'))
   const ids = new Set<string>()
   const dup = examples.filter((e) => (ids.has(e.id) ? true : (ids.add(e.id), false))).map((e) => e.id)
   // no version hides anything Lean: the ledger the resource serves is the kernel's whole count
   const lean = handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: 'lean://qpu/theorems' } }) as { result?: { contents?: { text: string }[] } }
   const ledger = (() => { try { return JSON.parse(lean.result?.contents?.[0]?.text ?? 'null') as { kernel: number; handWritten: number; generated: number; theorems: unknown[]; textbook: unknown[] } | null } catch { return null } })()
-  checkOnce('lean:served-whole', Boolean(ledger) && ledger!.handWritten + ledger!.generated === ledger!.kernel && ledger!.theorems.length === ledger!.handWritten && ledger!.textbook.length > 0, ledger ? `${ledger.theorems.length} theorems and ${ledger.generated} lemmas served whole of ${ledger.kernel} the kernel accepts; ${ledger.textbook.length} textbook theorems with their Lean text` : 'the lean resource is not served')
+  checkOnce('lean:served-whole', Boolean(ledger) && ledger!.handWritten + ledger!.generated === ledger!.kernel && ledger!.theorems.length === ledger!.handWritten && ledger!.textbook.length > 0, ledger ? proseFill(PROSE.quantumProcessingAudit_s86, ledger.theorems.length, ledger.generated, ledger.kernel, ledger.textbook.length) : PROSE.quantumProcessingAudit_s87)
   const ax = linkAxioms(examples, TEXTBOOK_THEOREMS, new Set(THEOREM_KEYS ?? THEOREMS.map((t) => t.key)))
   checkOnce('textbook:axioms-linked', ax.complete, ax.says)
   checkOnce('example-ids-unique', dup.length === 0, dup.length ? `duplicates: ${dup.join(', ')}` : `${examples.length} unique ids`)
 
   const servedWithoutTool = leads.filter((l) => l.status === 'served' && !(l.tool && names.has(l.tool)))
-  checkOnce('leads:served-have-tools', servedWithoutTool.length === 0, servedWithoutTool.length ? servedWithoutTool.map((l) => `${l.id}→${l.tool ?? 'none'}`).join(', ') : `${leads.filter((l) => l.status === 'served').length} served leads name a served tool`)
+  checkOnce('leads:served-have-tools', servedWithoutTool.length === 0, servedWithoutTool.length ? servedWithoutTool.map((l) => `${l.id}→${l.tool ?? 'none'}`).join(', ') : proseFill(PROSE.quantumProcessingAudit_s88, leads.filter((l) => l.status === 'served').length))
   const unexplained = leads.filter((l) => l.status !== 'served' && !(l.reason && l.reason.length > 0))
-  checkOnce('leads:others-have-reasons', unexplained.length === 0, unexplained.length ? unexplained.map((l) => l.id).join(', ') : `${leads.length - leads.filter((l) => l.status === 'served').length} non-served leads carry a reason`)
+  checkOnce('leads:others-have-reasons', unexplained.length === 0, unexplained.length ? unexplained.map((l) => l.id).join(', ') : proseFill(PROSE.quantumProcessingAudit_s89, leads.length - leads.filter((l) => l.status === 'served').length))
 
   const unknownTool = call('no-such-tool', {})
   checkOnce('error:unknown-tool', 'error' in unknownTool && unknownTool.error.code === -32601, JSON.stringify(unknownTool.error ?? unknownTool.result))
@@ -609,7 +610,7 @@ export const scanLexical = (doc: unknown, tools: readonly string[]) => {
   walk((doc as { root?: unknown })?.root, 'root', 1)
   const leaks = listLeaks(texts)
   for (const [kind, n] of Object.entries(leaks.byKind)) if (n) findings.push({ at: 'text', kind: `leak-${kind}`, blocks: false, detail: `${n} by kind` })
-  return { nodes, depth, findings, blocking: findings.filter((f) => f.blocks).length, clean: findings.length === 0, says: findings.length ? `${findings.length} finding(s) in ${nodes} node(s), ${findings.filter((f) => f.blocks).length} blocking: a blocking finding stops its block or link, the rest is noted` : `${nodes} node(s), depth ${depth}: nothing found`, theorem: 'textbook_namespace_narrows' }
+  return { nodes, depth, findings, blocking: findings.filter((f) => f.blocks).length, clean: findings.length === 0, says: findings.length ? proseFill(PROSE.quantumProcessingAudit_s90, findings.length, nodes, findings.filter((f) => f.blocks).length) : `${nodes} node(s), depth ${depth}: nothing found`, theorem: 'textbook_namespace_narrows' }
 }
 
 // The caps removed by the QPU, not by a hand: every literal `.slice(0, N)` and `.substring(0, N)` of twenty or more (the whole text or list
@@ -631,12 +632,12 @@ export const uncap = (files: Readonly<Record<string, string>>) => {
     if (/\.(md|mdx|txt)$/.test(path)) continue
     const removed: Uncapped['removed'] = []
     const lines = text.split('\n').map((l, i) => {
-      if (/no cap|uncapped/.test(l)) { for (const m of l.matchAll(CAP_RE)) kept.push({ file: path, line: i + 1, excerpt: m[0], why: 'the line cites the bound as a standard\'s or an API\'s own' }); return l }
-      if (FIXTURE.test(l)) { for (const m of l.matchAll(CAP_RE)) kept.push({ file: path, line: i + 1, excerpt: m[0], why: 'a fixture that shows a cap keeps it' }); return l }
+      if (/no cap|uncapped/.test(l)) { for (const m of l.matchAll(CAP_RE)) kept.push({ file: path, line: i + 1, excerpt: m[0], why: PROSE.quantumProcessingAudit_why91 }); return l }
+      if (FIXTURE.test(l)) { for (const m of l.matchAll(CAP_RE)) kept.push({ file: path, line: i + 1, excerpt: m[0], why: PROSE.quantumProcessingAudit_why92 }); return l }
       const next = l.replace(CAP_RE, (m, s1, s2, s3) => {
         const n = Number(s1 ?? s2 ?? s3)
         if (s3 === undefined) { if (n < 20) return m; removed.push({ line: i + 1, excerpt: m, to: '' }); return '' }
-        if (API_BOUND.test(l)) { kept.push({ file: path, line: i + 1, excerpt: m, why: 'an API\'s own bound in its query; name it from the API\'s documentation, never as a number of ours' }); return m }
+        if (API_BOUND.test(l)) { kept.push({ file: path, line: i + 1, excerpt: m, why: PROSE.quantumProcessingAudit_why93 }); return m }
         if (OWN_READ.test(l)) { removed.push({ line: i + 1, excerpt: m, to: 'pagination: false' }); return 'pagination: false' }
         removed.push({ line: i + 1, excerpt: m, to: '' }); return GONE
       })
@@ -646,5 +647,5 @@ export const uncap = (files: Readonly<Record<string, string>>) => {
     if (removed.length) out.push({ path, text: lines.join('\n'), removed })
   }
   const removed = out.reduce((n, f) => n + f.removed.length, 0)
-  return { phase: 'uncap' as const, files: out.map((f) => ({ path: f.path, text: f.text })), changed: out.length, removed, kept, catalogue: out.map((f) => ({ path: f.path, removed: f.removed })), theorems: ['textbook_caps_removed'], says: `${removed} cap(s) removed in ${out.length} file(s); ${kept.length} bound(s) kept as cited or as fixtures` }
+  return { phase: 'uncap' as const, files: out.map((f) => ({ path: f.path, text: f.text })), changed: out.length, removed, kept, catalogue: out.map((f) => ({ path: f.path, removed: f.removed })), theorems: ['textbook_caps_removed'], says: proseFill(PROSE.quantumProcessingAudit_says94, removed, out.length, kept.length) }
 }

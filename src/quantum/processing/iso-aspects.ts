@@ -1,6 +1,7 @@
 // Every ISO purpose, on every Payload aspect, through the nine official plugins.
 // The plugin subsets stay a mixed-radix space. The product variants compute the domain combinations.
 // Nothing is fetched and nothing is written.
+import { PROSE, proseFill } from './prose-index.ts'
 import { AXIOMS } from './clay-register.ts'
 import { ISO_DIMENSIONS, ISO_OPEN_DEFINITIONS } from './iso-deliverables.ts'
 import { CATALOGUE } from './toolboxes/billing.ts'
@@ -201,7 +202,7 @@ const computeIsoOne = () => {
     },
     ends: { zero, full: last },
     holds,
-    says: holds ? `${purposes.length} ISO purposes, each witnessed on ${space.names.length} aspects by all ${OFFICIAL_PLUGINS.length} official plugins. ${combinations.length} domain combinations of the product variants serve any of them. GET /api/products. The ${possible} plugin aspects stay unwalked.` : 'the official plugins did not implement the ISO aspects',
+    says: holds ? proseFill(PROSE.quantumProcessingIsoAspects_s1, purposes.length, space.names.length, OFFICIAL_PLUGINS.length, combinations.length, possible) : PROSE.quantumProcessingIsoAspects_s2,
   }
 }
 

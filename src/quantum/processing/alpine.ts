@@ -1,6 +1,7 @@
 // Alpine directives, magics, globals and first-party plugins. The OS is imported from its source.
 // A name that does not run is an exit, and an entries row covers that exit. Nothing here fetches the upstream.
 
+import { PROSE, proseFill } from './prose-index.ts'
 import os from '../os/alpine/index.ts'
 import { portPackages, type PackageAsk } from '../os/alpine/packages.ts'
 import type { EslintFinding } from '../os/eslint.ts'
@@ -33,25 +34,25 @@ const PORTED = new Set<string>(['x-data', 'x-init', 'x-show', 'x-bind', 'x-on', 
 const PARTIAL = new Set<string>(['x-effect', 'Alpine.effect', 'Alpine.reactive'])
 
 const WHY: Record<string, string> = {
-  'x-html': 'inserts markup into the document; this handler admits no markup',
-  'x-modelable': 'binds two components through the document',
+  'x-html': PROSE.quantumProcessingAlpine_s1,
+  'x-modelable': PROSE.quantumProcessingAlpine_s2,
   'x-transition': 'animates an element in the document',
-  'x-effect': 'runs once here; nothing re-runs it when the scope changes',
+  'x-effect': PROSE.quantumProcessingAlpine_s3,
   'x-ref': 'names an element in the document',
-  'x-cloak': 'hides an element until the document starts',
+  'x-cloak': PROSE.quantumProcessingAlpine_s4,
   'x-teleport': 'moves an element in the document',
   '$el': 'the element itself',
   '$refs': 'the named elements',
   '$watch': 're-runs when a value changes',
   '$dispatch': 'fires an event on the document',
-  '$nextTick': 'waits for the document to paint',
+  '$nextTick': PROSE.quantumProcessingAlpine_s5,
   '$root': 'the component\'s root element',
-  'Alpine.start': 'walks the document; this handler has no document',
-  'Alpine.plugin': 'loads a plugin into the document runtime',
-  'Alpine.directive': 'registers a directive the document walks',
-  'Alpine.magic': 'registers a magic the document evaluates',
-  'Alpine.effect': 'runs once here; the dependency reactor is not ported',
-  'Alpine.reactive': 'the object is kept; the proxy that tracks dependencies is not ported',
+  'Alpine.start': PROSE.quantumProcessingAlpine_s6,
+  'Alpine.plugin': PROSE.quantumProcessingAlpine_s7,
+  'Alpine.directive': PROSE.quantumProcessingAlpine_s8,
+  'Alpine.magic': PROSE.quantumProcessingAlpine_s9,
+  'Alpine.effect': PROSE.quantumProcessingAlpine_s10,
+  'Alpine.reactive': PROSE.quantumProcessingAlpine_s11,
   'Alpine.addScopeToNode': 'attaches a scope to a document node',
   'Alpine.deferInit': 'defers the document\'s start',
   'Alpine.interceptInit': 'hooks the document\'s start',
@@ -109,7 +110,7 @@ export const listAlpine = () => {
     cover,
     holds: ported + partial + gaps === total && leads.length === partial + gaps && cover.holds && cover.exits === leads.length && cover.uncovered === 0,
     os: { ...os, complete },
-    says: `${total} Alpine names on ${os.name}. ${ported} run here, ${partial} run once, ${gaps} do not. ${cover.entries.length} entries cover ${cover.exits} exits.`,
+    says: proseFill(PROSE.quantumProcessingAlpine_says12, total, os.name, ported, partial, gaps, cover.entries.length, cover.exits),
   }
 }
 
@@ -131,7 +132,7 @@ const read = (root: Val, parts: readonly string[]): Val => {
 }
 
 const write = (scope: Scope, parts: readonly string[], value: Val): Scope => {
-  if (parts.length === 0 || parts.some((p) => banned.has(p) || p.startsWith('$'))) throw new Gap('that assignment is not a scope path')
+  if (parts.length === 0 || parts.some((p) => banned.has(p) || p.startsWith('$'))) throw new Gap(PROSE.quantumProcessingAlpine_s13)
   const next: Scope = { ...scope }
   if (parts.length === 1) { next[parts[0]!] = value; return next }
   const head = parts[0]!
@@ -185,7 +186,7 @@ const evaluate = (source: string, frame: Frame): { value: Val; scope: Scope } =>
   let i = 0
   const skip = () => { while (s[i] === ' ') i++ }
   const gap: (why: string) => never = (why) => { throw new Gap(why) }
-  if (!os.lint) gap('ESLint is not installed in this host, so no expression runs')
+  if (!os.lint) gap(PROSE.quantumProcessingAlpine_s14)
   const lint = os.lint(s, Object.keys(frame.scope))
   frame.os.eslint.checked += 1
   if (!lint.clean) { frame.os.eslint.findings.push(...lint.findings); gap(lint.findings.map((finding) => finding.message).join(' ')) }
@@ -237,14 +238,14 @@ const evaluate = (source: string, frame: Frame): { value: Val; scope: Scope } =>
       if (head === '$nextTick' && parts.length === 1) { const xs = args(); if (typeof xs[0] !== 'string') gap('$nextTick takes an expression'); frame.os.tick.push(xs[0]); return null }
       if (head === '$watch' && parts.length === 1) { const xs = args(); if (typeof xs[0] !== 'string') gap('$watch takes a path'); const before = read(frame.scope as unknown as Val, xs[0].split('.')); frame.os.watches.push({ path: xs[0], before }); return before }
       if (head === '$focus' && parts.length === 1) { const xs = args(); const id = typeof xs[0] === 'string' ? xs[0] : frame.os.root; frame.os.focus = id; return id }
-      gap(`${head} calls a function; a function call is not ported`)
+      gap(proseFill(PROSE.quantumProcessingAlpine_s15, head))
     }
     return lookup(parts)
   }
   const unary = (): Val => { skip(); if (s[i] === '!') { i++; return !unary() } if (s[i] === '-' && /[0-9(]/.test(s[i + 1] ?? '') === false && s[i + 1] !== ' ') { i++; const v = unary(); if (typeof v !== 'number') gap('minus takes a number'); return -v } return primary() }
   const mul = (): Val => { let v = unary(); for (;;) { skip(); const op = s[i]; if (op !== '*' && op !== '/') break; i++; const r = unary(); if (typeof v !== 'number' || typeof r !== 'number') gap('arithmetic takes numbers'); v = op === '*' ? v * r : r === 0 ? gap('division by zero') : v / r } return v }
   const add = (): Val => { let v = mul(); for (;;) { skip(); const op = s[i]; if ((op !== '+' && op !== '-') || s[i + 1] === '=') break; i++; const r = mul(); if (typeof v === 'string' || typeof r === 'string') { if (op !== '+') gap('strings only add'); v = String(v) + String(r); continue } if (typeof v !== 'number' || typeof r !== 'number') gap('arithmetic takes numbers'); v = op === '+' ? v + r : v - r } return v }
-  const rel = (): Val => { let v = add(); for (;;) { skip(); const op = s.startsWith('<=', i) ? '<=' : s.startsWith('>=', i) ? '>=' : s[i] === '<' ? '<' : s[i] === '>' ? '>' : ''; if (!op) break; i += op.length; const r = add(); if (typeof v === 'number' && typeof r === 'number') v = op === '<' ? v < r : op === '>' ? v > r : op === '<=' ? v <= r : v >= r; else v = op === '<' || op === '>' ? false : gap('that comparison is not two numbers'); } return v }
+  const rel = (): Val => { let v = add(); for (;;) { skip(); const op = s.startsWith('<=', i) ? '<=' : s.startsWith('>=', i) ? '>=' : s[i] === '<' ? '<' : s[i] === '>' ? '>' : ''; if (!op) break; i += op.length; const r = add(); if (typeof v === 'number' && typeof r === 'number') v = op === '<' ? v < r : op === '>' ? v > r : op === '<=' ? v <= r : v >= r; else v = op === '<' || op === '>' ? false : gap(PROSE.quantumProcessingAlpine_s16); } return v }
   const eq = (): Val => { let v = rel(); for (;;) { skip(); const op = s.startsWith('===', i) || s.startsWith('!==', i) ? gap('use == and !=') : s.startsWith('==', i) ? '==' : s.startsWith('!=', i) ? '!=' : ''; if (!op) break; i += 2; const r = rel(); v = op === '==' ? v === r : v !== r } return v }
   const and = (): Val => { let v = eq(); for (;;) { skip(); if (!s.startsWith('&&', i)) break; i += 2; const r = eq(); v = Boolean(v) && Boolean(r) } return v }
   const or = (): Val => { let v = and(); for (;;) { skip(); if (s.startsWith('||', i)) { i += 2; const r = and(); v = Boolean(v) || Boolean(r); continue } if (s[i] === '?') { i++; const yes = or(); skip(); if (s[i] !== ':') gap('a ternary needs a colon'); i++; const no = or(); v = v ? yes : no; continue } break } return v }
@@ -254,7 +255,7 @@ const evaluate = (source: string, frame: Frame): { value: Val; scope: Scope } =>
     if (/[A-Za-z_]/.test(s[i] ?? '')) {
       const parts = pathOf()
       skip()
-      if (s[i] === '=' && s[i + 1] !== '=') { i++; const value = or(); skip(); if (i !== s.length) gap('the expression did not end'); return { value, scope: write(frame.scope, parts, value) } }
+      if (s[i] === '=' && s[i + 1] !== '=') { i++; const value = or(); skip(); if (i !== s.length) gap(PROSE.quantumProcessingAlpine_s17); return { value, scope: write(frame.scope, parts, value) } }
       i = mark
     }
     const value = or()
@@ -295,7 +296,7 @@ const runAlpine = (raw: Run, depth = 0) => {
   const settle = (name: string, expr: string) => {
     let prev = JSON.stringify(scope)
     for (let n = 0; n < 8; n++) { runExpr(name, expr); const now = JSON.stringify(scope); if (now === prev) return; prev = now }
-    note(name, 'the effect did not settle')
+    note(name, PROSE.quantumProcessingAlpine_s18)
   }
   const dirs = raw.directives ?? {}
   const keys = Object.keys(dirs)
@@ -303,7 +304,7 @@ const runAlpine = (raw: Run, depth = 0) => {
   if (dataKey) {
     const text = String(dirs[dataKey])
     try { const parsed = JSON.parse(text) as unknown; if (!isObj(parsed)) throw new Error('not an object'); scope = parsed as Scope; ran.push('x-data') }
-    catch { const named = registry[text.trim()]; if (isObj(named)) { scope = { ...named }; ran.push('Alpine.data') } else note('x-data', 'x-data is a JSON object or a name Alpine.data registered; a JavaScript object literal is not ported') }
+    catch { const named = registry[text.trim()]; if (isObj(named)) { scope = { ...named }; ran.push('Alpine.data') } else note('x-data', PROSE.quantumProcessingAlpine_s19) }
   }
   const ignore = keys.some((k) => base(k) === 'x-ignore')
   if (ignore) ran.push('x-ignore')
@@ -319,7 +320,7 @@ const runAlpine = (raw: Run, depth = 0) => {
       if (name === 'Alpine.magic') { if (expr.trim()) browser.magics.push(expr.trim()); ran.push(name); continue }
       if (name === 'Alpine.deferInit') { browser.defer = true; ran.push(name); continue }
       if (name === 'Alpine.interceptInit') { runExpr(name, expr); continue }
-      if (name === 'Alpine.reactive') { try { const parsed = JSON.parse(expr) as unknown; if (isObj(parsed)) scope = { ...scope, ...parsed }; ran.push(name) } catch { note(name, 'Alpine.reactive takes a JSON object') } continue }
+      if (name === 'Alpine.reactive') { try { const parsed = JSON.parse(expr) as unknown; if (isObj(parsed)) scope = { ...scope, ...parsed }; ran.push(name) } catch { note(name, PROSE.quantumProcessingAlpine_s20) } continue }
       if (name === 'Alpine.start' || (name === 'x-init' && raw.start === true)) { browser.started = true; browser.defer = false; ran.push(name === 'Alpine.start' ? 'Alpine.start' : name); if (name === 'Alpine.start') continue }
       if (name === 'x-init' || name === 'x-on') { runExpr(name, expr); continue }
       if (name === 'x-effect' || name === 'Alpine.effect') { settle(name, expr); continue }
@@ -355,7 +356,7 @@ const runAlpine = (raw: Run, depth = 0) => {
       if (browser.directives.includes(name) && expr) runExpr(name, expr)
       else note(name, WHY[name] ?? `${name} is not on the browser os`)
     }
-    if (raw.model !== undefined && !keys.some((k) => base(k) === 'x-model' || base(k) === 'x-modelable')) note('x-model', 'a model value was handed with no x-model path')
+    if (raw.model !== undefined && !keys.some((k) => base(k) === 'x-model' || base(k) === 'x-modelable')) note('x-model', PROSE.quantumProcessingAlpine_s21)
     const queued = [...browser.tick]; browser.tick = []; for (const expr of queued) runExpr('$nextTick', expr)
     if (Array.isArray(raw.tree) && browser.started && !browser.defer && depth < 8) for (const child of raw.tree) if (isObj(child)) { const sub = runAlpine(child as Run, depth + 1); browser.nodes.push(...sub.document.nodes); browser.events.push(...sub.document.events) }
   } else if (Array.isArray(raw.children) && raw.children.length > 0) {
@@ -368,7 +369,7 @@ const runAlpine = (raw: Run, depth = 0) => {
   const eslint = { via: os.eslint?.via ?? null, version: os.eslint?.version ?? null, checked: browser.eslint.checked, clean: browser.eslint.findings.length === 0, findings: browser.eslint.findings }
   return {
     phase: 'alpine' as const, data: scope, stores, ...out, ran, leads, next: leads.map((l) => l.run), document, eslint, os: { ...os, complete: leads.length === 0 }, cover,
-    says: leads.length === 0 ? `${ran.length} Alpine directive(s) ran on the qpu browser quantum os. ESLint ${eslint.version} checked ${eslint.checked}.` : `${ran.length} Alpine directive(s) ran on the qpu browser quantum os. ${cover.entries.length} entries cover ${cover.exits} exits. ESLint ${eslint.version} checked ${eslint.checked}.`,
+    says: leads.length === 0 ? proseFill(PROSE.quantumProcessingAlpine_s22, ran.length, eslint.version, eslint.checked) : proseFill(PROSE.quantumProcessingAlpine_s23, ran.length, cover.entries.length, cover.exits, eslint.version, eslint.checked),
   }
 }
 

@@ -5,6 +5,7 @@
 // The same stream is the device's randomness: the phase at which an interaction lands is one of 3888 milliseconds (eleven bits a sample,
 // textbook_phase_bits), folded with the device's own crypto nonce into a seed the seal tool takes (entropy). Used in the Open Graph
 // image of every block (an animated SVG: a scraper shows one frame, a stream reads the link) and in the shadcn items (the CSS of the stream).
+import { PROSE, proseFill } from './prose-index.ts'
 import { uuid, seal } from '../uuid/index.ts'
 import { SCAN, KEY, coilColour } from './unit/theme.ts'
 import { orderUsage } from './toolboxes/billing.ts'
@@ -15,7 +16,7 @@ import { orderUsage } from './toolboxes/billing.ts'
 const priceScan = (samples: number, currency = 'eur') => {
   const calls = Math.ceil(samples / SCAN.frames), free = Math.min(1, calls), coils = calls - free
   const colour = coilColour()
-  return { samples, links: Math.max(samples - 1, 0), linksPerPeriod: SCAN.frames - 1, calls, free, coils, bits: 32 * 4, chains: '16^32 = 2^128', fused: coils > 0, colour: coils > 0 ? colour.coil : colour.coin, order: orderUsage(calls, currency, undefined, { free, coils }), theorems: ['textbook_scan_links', 'textbook_chain_bits', 'textbook_free_or_coil'], says: `${samples} sample(s): ${Math.max(samples - 1, 0)} link(s), ${calls} call(s): ${free} coin, ${coils} coil(s)${coils > 0 ? ' (fused: green)' : ''}` }
+  return { samples, links: Math.max(samples - 1, 0), linksPerPeriod: SCAN.frames - 1, calls, free, coils, bits: 32 * 4, chains: '16^32 = 2^128', fused: coils > 0, colour: coils > 0 ? colour.coil : colour.coin, order: orderUsage(calls, currency, undefined, { free, coils }), theorems: ['textbook_scan_links', 'textbook_chain_bits', 'textbook_free_or_coil'], says: proseFill(PROSE.quantumProcessingScan_says1, samples, Math.max(samples - 1, 0), calls, free, coils, coils > 0 ? ' (fused: green)' : '') }
 }
 
 type EntropySample = { phase: number; t: number; nonce?: number; x?: number; y?: number }
@@ -37,10 +38,10 @@ export const getScan = (samples: readonly ScanSample[]) => {
   const linked = !!(stamp && stamp.valid)
   const checks = [
     { check: 'frames', passed: complete, evidence: `${read} of ${SCAN.frames} frames sampled` },
-    { check: 'dashes', passed: complete ? dashesInPlace : null, evidence: complete ? (dashesInPlace ? 'the four dashes in place' : 'the dashes out of place: not a UUID') : 'undecided until every frame is read' },
+    { check: 'dashes', passed: complete ? dashesInPlace : null, evidence: complete ? (dashesInPlace ? 'the four dashes in place' : PROSE.quantumProcessingScan_s2) : PROSE.quantumProcessingScan_s3 },
     { check: 'seal', passed: uuid ? (stamp?.valid ?? false) : null, evidence: uuid ? (stamp?.valid ? 'the seal holds' : 'the seal fails') : 'no address read' },
   ]
-  return { samples: samples.length, framesRead: read, of: SCAN.frames, text, uuid: uuid ?? text, read: uuid, rate: priceScan(samples.length), linked, valid: linked, decided: checks.filter((c) => c.passed !== null).length, checks, cost: 'one pass over the samples (a vote per frame), one modular power for the seal', seal: stamp, impossibleFromOne: read < SCAN.frames, says: uuid ? (stamp?.valid ? 'the stream read the address and its seal holds: linked' : 'the stream read 36 characters but the seal fails: not an address') : `${read} of ${SCAN.frames} frames read: a stream links only when every frame was sampled` }
+  return { samples: samples.length, framesRead: read, of: SCAN.frames, text, uuid: uuid ?? text, read: uuid, rate: priceScan(samples.length), linked, valid: linked, decided: checks.filter((c) => c.passed !== null).length, checks, cost: PROSE.quantumProcessingScan_cost4, seal: stamp, impossibleFromOne: read < SCAN.frames, says: uuid ? (stamp?.valid ? PROSE.quantumProcessingScan_s5 : PROSE.quantumProcessingScan_s6) : proseFill(PROSE.quantumProcessingScan_s7, read, SCAN.frames) }
 }
 
 /** The device's randomness: the phase of the animation at each interaction (eleven bits a sample within the 3888 ms period) and the device's own
@@ -50,5 +51,5 @@ export const foldEntropy = (samples: readonly EntropySample[]) => {
   const bits = samples.reduce((n, s) => n + phaseBits + (typeof s.nonce === 'number' ? 32 : 0), 0)
   const seed = uuid(JSON.stringify(samples.map((s) => [Math.floor(((s.phase % SCAN.periodMs) + SCAN.periodMs) % SCAN.periodMs), Math.floor(s.t), s.nonce ?? 0, s.x ?? 0, s.y ?? 0])))
   const phase = samples.length ? Math.floor(((samples[samples.length - 1]!.phase % SCAN.periodMs) + SCAN.periodMs) % SCAN.periodMs) : 0
-  return { samples: samples.length, periodMs: SCAN.periodMs, phaseBits, bits, seed, phase, rate: priceScan(samples.length), angle: Math.round((phase / SCAN.periodMs) * 360), frame: Math.floor(phase / SCAN.frameMs), key: KEY, theorem: 'textbook_phase_bits', says: `${samples.length} interaction(s) with the stream: ${bits} bits (${phaseBits} a phase, 32 a nonce), folded to the seed ${seed}; the last phase ${phase} ms is the frame ${Math.floor(phase / SCAN.frameMs)} and the angle ${Math.round((phase / SCAN.periodMs) * 360)}°` }
+  return { samples: samples.length, periodMs: SCAN.periodMs, phaseBits, bits, seed, phase, rate: priceScan(samples.length), angle: Math.round((phase / SCAN.periodMs) * 360), frame: Math.floor(phase / SCAN.frameMs), key: KEY, theorem: 'textbook_phase_bits', says: proseFill(PROSE.quantumProcessingScan_says8, samples.length, bits, phaseBits, seed, phase, Math.floor(phase / SCAN.frameMs), Math.round((phase / SCAN.periodMs) * 360)) }
 }
