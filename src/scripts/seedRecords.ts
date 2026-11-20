@@ -1,10 +1,8 @@
 // Seeds the website pages through Payload's local API, then reads them back.
 // A check reads only. Deploy is allowed when every current record agrees with its seed.
-import { seeds } from '../quantum/engine/index.ts'
-import { linkSeedParents, mcpPages, openPages, seedsSynced, syncSeeds, seedWaves } from '../quantum/payload/index.ts'
-import { mcpHostList } from '../quantum/processing/discovery.ts'
-import { TOOLBOXES } from '../quantum/processing/mcp.ts'
+import { linkSeedParents, openPages, seedsSynced, syncSeeds } from '../quantum/payload/index.ts'
 import { seoFrom } from '../plugins/websiteClient.ts'
+import { allSeedWaves } from './seedWaves.ts'
 
 /** The public site reads published pages, and beforeValidate rewrites meta from the page text. */
 const live = <T extends { meta: { title: string; description: string } }>(page: T) => {
@@ -12,12 +10,7 @@ const live = <T extends { meta: { title: string; description: string } }>(page: 
   const seo = seoFrom(data)
   return { ...data, meta: { ...data.meta, title: seo.title, description: seo.description } }
 }
-const mcp = mcpPages(TOOLBOXES.flatMap((box) => box.tools.map((tool) => ({ name: tool.name, toolbox: box.name, description: tool.description }))), mcpHostList())
-const waves = [
-  { name: 'games', pages: seeds().map((seed) => live(seed.page)), nest: [] as { id: string; parentId: string | null }[] },
-  ...seedWaves().map((wave) => ({ ...wave, pages: wave.pages.map((page) => live(page)), nest: [] as { id: string; parentId: string | null }[] })),
-  { name: mcp.name, pages: mcp.pages.map((page) => live(page)), nest: [] as { id: string; parentId: string | null }[] },
-]
+const waves = allSeedWaves().map((wave) => ({ name: wave.name, pages: wave.pages.map((page) => live(page)), nest: [] as { id: string; parentId: string | null }[] }))
 const only = process.env.SEED_WAVE
 const chosen = only ? waves.filter((wave) => wave.name === only) : waves
 if (only && chosen.length === 0) {

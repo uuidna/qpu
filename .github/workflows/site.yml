@@ -1,0 +1,43 @@
+# The VitePress site: the same seeds Payload writes, and the draft applications Lean writes. It builds without
+# Payload, its database or any secret, so the pages and the MCP catalogue stay available when Payload fails.
+name: site
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.elan/toolchains
+          key: elan-${{ hashFiles('lean-toolchain') }}
+      - uses: actions/cache@v4
+        with:
+          path: .lake/packages
+          key: lake-packages-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}
+      - run: lake exe cache get
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.9
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 26
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Seeds and Lean write the pages, VitePress builds them
+        run: pnpm run site:build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: site/.vitepress/dist

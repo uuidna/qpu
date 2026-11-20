@@ -8,9 +8,9 @@
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `QuantumCommunication.superdense_exact` | Qpu.Communication.QuantumCommunication | `∀ (m : Nat), m < 4 → ∀ (r : Nat), r < 4 → (QuantumCommunication.superdense m r ≠ 0 ↔ r = m)` |
-| `QuantumCommunication.teleport_exact` | Qpu.Communication.QuantumCommunication | `∀ (b : Nat), b < 2 → ∀ (r : Nat), r < 8 → QuantumCommunication.teleport b r = if r % 2 = b then 1 else 0` |
-| `QuantumCommunication.teleport_no_signalling` | Qpu.Communication.QuantumCommunication | `∀ (s : Nat), s < 6 → QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 1 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 0 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 0 = QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 1` |
+| `QuantumCommunication.superdense_exact` | Qpu.Communication.QuantumCommunication | `∀ m < 4, ∀ r < 4, QuantumCommunication.superdense m r ≠ 0 ↔ r = m` |
+| `QuantumCommunication.teleport_exact` | Qpu.Communication.QuantumCommunication | `∀ b < 2, ∀ r < 8, QuantumCommunication.teleport b r = if r % 2 = b then 1 else 0` |
+| `QuantumCommunication.teleport_no_signalling` | Qpu.Communication.QuantumCommunication | `∀ s < 6, QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 1 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 0 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 0 = QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 1` |
 | `QuantumCommunication.two_coins_one_qubit` | Qpu.Communication.QuantumCommunication | `QuantumCommunication.TwoCoins` |
 
 ## flux-bias coil (IEC 60050-151 coil; Krantz et al. 2019, doi:10.1063/1.5089550)
@@ -19,7 +19,7 @@
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `Coil.periodic` | Qpu.Information.PhysicalQubit.Coil | `∀ (M I k : Nat), (Coil.flux M I + k * (PhysicalConstant.hNum * 10 ^ 10)) % (PhysicalConstant.hNum * 10 ^ 10) = Coil.flux M I % (PhysicalConstant.hNum * 10 ^ 10)` |
+| `Coil.periodic` | Qpu.Information.PhysicalQubit.Coil | `∀ (M I k : ℕ), (Coil.flux M I + k * (PhysicalConstant.hNum * 10 ^ 10)) % (PhysicalConstant.hNum * 10 ^ 10) = Coil.flux M I % (PhysicalConstant.hNum * 10 ^ 10)` |
 
 ## physical qubit: Josephson junction (ISO/IEC 4879:2024 3.3.5; IEC 60050-815)
 
@@ -38,7 +38,7 @@
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `Transmon.frequency_at_fifty` | Qpu.Information.PhysicalQubit.Transmon | `∀ (EC : Nat), (19 * EC + EC) * (19 * EC + EC) = 8 * (50 * EC) * EC` |
+| `Transmon.frequency_at_fifty` | Qpu.Information.PhysicalQubit.Transmon | `∀ (EC : ℕ), (19 * EC + EC) * (19 * EC + EC) = 8 * (50 * EC) * EC` |
 | `Transmon.sycamore` | Qpu.Information.PhysicalQubit.Transmon | `Transmon.charging 93100 208 ∧ Transmon.frequency 30569 208 6924 ∧ 50 * 208 < 30569` |
 
 ## quantum information (ISO/IEC 4879:2024 3.3.1)
@@ -47,7 +47,7 @@
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `QuantumInformation.no_cloning` | Qpu.Information.QuantumInformation | `∀ (u : Operator.Mat), (∀ (r : Nat), r < 4 → Operator.ap 4 u (HilbertSpace.basis 0) r = HilbertSpace.basis 0 r) → (∀ (r : Nat), r < 4 → Operator.ap 4 u (HilbertSpace.basis 2) r = HilbertSpace.basis 3 r) → Operator.ap 4 u (fun r => HilbertSpace.basis 0 r + HilbertSpace.basis 2 r) 1 ≠ 1` |
+| `QuantumInformation.no_cloning` | Qpu.Information.QuantumInformation | `∀ (u : Operator.Mat), (∀ r < 4, Operator.ap 4 u (HilbertSpace.basis 0) r = HilbertSpace.basis 0 r) → (∀ r < 4, Operator.ap 4 u (HilbertSpace.basis 2) r = HilbertSpace.basis 3 r) → Operator.ap 4 u (fun r => HilbertSpace.basis 0 r + HilbertSpace.basis 2 r) 1 ≠ 1` |
 
 ## qubit (ISO/IEC 4879:2024 3.3.3)
 
@@ -55,16 +55,16 @@
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `Qubit.chains` | Qpu.Information.Qubit | `∀ (k w : Nat), (List.replicate k (Qubit.effective w)).sum = k * Qubit.effective w` |
+| `Qubit.chains` | Qpu.Information.Qubit | `∀ (k w : ℕ), (List.replicate k (Qubit.effective w)).sum = k * Qubit.effective w` |
 | `Qubit.coins_two` | Qpu.Information.Qubit | `coins = 2` |
-| `Qubit.couplers_formula` | Qpu.Information.Qubit | `∀ (w : Nat), Qubit.gateway + 1 ≤ w → Qubit.couplers w = (Qubit.digits - coins) * (w - 1) + (w - Qubit.gateway - 1) + (Qubit.digits - coins - coins) * w + coins * (w - Qubit.gateway)` |
+| `Qubit.couplers_formula` | Qpu.Information.Qubit | `∀ (w : ℕ), Qubit.gateway + 1 ≤ w → Qubit.couplers w = (Qubit.digits - coins) * (w - 1) + (w - Qubit.gateway - 1) + (Qubit.digits - coins - coins) * w + coins * (w - Qubit.gateway)` |
 | `Qubit.digits_held` | Qpu.Information.Qubit | `List.filter (fun x => decide (x ≠ Qubit.versionAt)) (List.range Qubit.digits) = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]` |
 | `Qubit.digits_thirtytwo` | Qpu.Information.Qubit | `Qubit.digits = 32` |
-| `Qubit.effective_formula` | Qpu.Information.Qubit | `∀ (w : Nat), Qubit.gateway ≤ w → Qubit.effective w = Qubit.digits * w - w - Qubit.gateway` |
+| `Qubit.effective_formula` | Qpu.Information.Qubit | `∀ (w : ℕ), Qubit.gateway ≤ w → Qubit.effective w = Qubit.digits * w - w - Qubit.gateway` |
 | `Qubit.gateway_two` | Qpu.Information.Qubit | `Qubit.gateway = 2` |
 | `Qubit.hexbit_four` | Qpu.Information.Qubit | `hexbit = 4` |
-| `Qubit.holding_formula` | Qpu.Information.Qubit | `∀ (w : Nat), Qubit.gateway + 1 ≤ w → Qubit.holding w = List.filter (fun x => decide (x ≠ Qubit.versionAt)) (List.range Qubit.digits)` |
-| `Qubit.unbounded` | Qpu.Information.Qubit | `∀ (N : Nat), ∃ k, N < k * Qubit.effective hexbit` |
+| `Qubit.holding_formula` | Qpu.Information.Qubit | `∀ (w : ℕ), Qubit.gateway + 1 ≤ w → Qubit.holding w = List.filter (fun x => decide (x ≠ Qubit.versionAt)) (List.range Qubit.digits)` |
+| `Qubit.unbounded` | Qpu.Information.Qubit | `∀ (N : ℕ), ∃ k, N < k * Qubit.effective hexbit` |
 
 ## Hilbert space (ISO/IEC 4879:2024 3.2.1)
 
@@ -96,10 +96,10 @@
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `QuantumEntanglement.bell_state` | Qpu.Physics.QuantumEntanglement | `(∀ (r : Nat), r < 4 → (QuantumEntanglement.bell r ≠ 0 ↔ r = 0 ∨ r = 3)) ∧ (QuantumEntanglement.bell 0).normSq = (QuantumEntanglement.bell 3).normSq` |
+| `QuantumEntanglement.bell_state` | Qpu.Physics.QuantumEntanglement | `(∀ r < 4, QuantumEntanglement.bell r ≠ 0 ↔ r = 0 ∨ r = 3) ∧ (QuantumEntanglement.bell 0).normSq = (QuantumEntanglement.bell 3).normSq` |
 | `QuantumEntanglement.chsh_classical_bound` | Qpu.Physics.QuantumEntanglement | `∀ (a0 a1 b0 b1 : Bool), QuantumEntanglement.chshClassical a0 a1 b0 b1 = 2 ∨ QuantumEntanglement.chshClassical a0 a1 b0 b1 = -2` |
 | `QuantumEntanglement.chsh_quantum_value` | Qpu.Physics.QuantumEntanglement | `QuantumEntanglement.chshBell = 8 ∧ 8 ^ 2 = 8 * (2 ^ 2 * 2) ∧ 2 ^ 2 < 8` |
-| `QuantumEntanglement.ghz_state` | Qpu.Physics.QuantumEntanglement | `(∀ (r : Nat), r < 8 → (QuantumEntanglement.ghz r ≠ 0 ↔ r = 0 ∨ r = 7)) ∧ (QuantumEntanglement.ghz 0).normSq = (QuantumEntanglement.ghz 7).normSq` |
+| `QuantumEntanglement.ghz_state` | Qpu.Physics.QuantumEntanglement | `(∀ r < 8, QuantumEntanglement.ghz r ≠ 0 ↔ r = 0 ∨ r = 7) ∧ (QuantumEntanglement.ghz 0).normSq = (QuantumEntanglement.ghz 7).normSq` |
 
 ## circuit-based quantum computing (ISO/IEC 4879:2024 3.4.13)
 
@@ -117,10 +117,10 @@
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `QuantumAlgorithm.deutsch_jozsa` | Qpu.Processing.QuantumAlgorithm | `∀ (f : Nat), f < 16 → (QuantumAlgorithm.constant f = true → (QuantumAlgorithm.dj f 0).normSq = 16) ∧ (QuantumAlgorithm.balanced f = true → QuantumAlgorithm.dj f 0 = 0)` |
-| `QuantumAlgorithm.grover_search` | Qpu.Processing.QuantumAlgorithm | `∀ (m : Nat), m < 4 → ∀ (r : Nat), r < 4 → (QuantumAlgorithm.grover m r ≠ 0 ↔ r = m)` |
-| `QuantumAlgorithm.phase_estimation_exact` | Qpu.Processing.QuantumAlgorithm | `∀ (k : Nat), k < 8 → ∀ (r : Nat), r < 8 → (QuantumAlgorithm.sum8 fun j => QuantumAlgorithm.iqft r j * QuantumAlgorithm.wPow (j * k)) = if r = k then 8 else 0` |
-| `QuantumAlgorithm.qft_unitary` | Qpu.Processing.QuantumAlgorithm | `∀ (j : Nat), j < 8 → ∀ (k : Nat), k < 8 → (QuantumAlgorithm.sum8 fun i => QuantumAlgorithm.qft j i * QuantumAlgorithm.iqft i k) = if j = k then 8 else 0` |
+| `QuantumAlgorithm.deutsch_jozsa` | Qpu.Processing.QuantumAlgorithm | `∀ f < 16, (QuantumAlgorithm.constant f = true → (QuantumAlgorithm.dj f 0).normSq = 16) ∧ (QuantumAlgorithm.balanced f = true → QuantumAlgorithm.dj f 0 = 0)` |
+| `QuantumAlgorithm.grover_search` | Qpu.Processing.QuantumAlgorithm | `∀ m < 4, ∀ r < 4, QuantumAlgorithm.grover m r ≠ 0 ↔ r = m` |
+| `QuantumAlgorithm.phase_estimation_exact` | Qpu.Processing.QuantumAlgorithm | `∀ k < 8, ∀ r < 8, (QuantumAlgorithm.sum8 fun j => QuantumAlgorithm.iqft r j * QuantumAlgorithm.wPow (j * k)) = if r = k then 8 else 0` |
+| `QuantumAlgorithm.qft_unitary` | Qpu.Processing.QuantumAlgorithm | `∀ j < 8, ∀ k < 8, (QuantumAlgorithm.sum8 fun i => QuantumAlgorithm.qft j i * QuantumAlgorithm.iqft i k) = if j = k then 8 else 0` |
 | `textbook_shor_sigma_root` | Qpu.Textbook | `64 ^ 2 % 91 = 1 ∧ 64 ≠ 1 ∧ 64 ≠ 90 ∧ (64 - 1) * (64 + 1) % 91 = 0 ∧ (64 - 1).gcd 91 = 7 ∧ (64 + 1).gcd 91 = 13 ∧ 7 * 13 = 91` |
 
 ## quantum circuit (ISO/IEC 4879:2024 3.4.5)
@@ -130,7 +130,7 @@
 | Theorem | Module | Statement |
 |---|---|---|
 | `QuantumCircuit.needs_routing` | Qpu.Processing.QuantumCircuit | `(0, 0) ∈ QuantumProcessor.sites hexbit ∧ (0, 2) ∈ QuantumProcessor.sites hexbit ∧ QuantumProcessor.coupled (0, 0) (0, 1) = true ∧ QuantumProcessor.coupled (0, 1) (0, 2) = true ∧ QuantumProcessor.coupled (0, 0) (0, 2) = false` |
-| `QuantumCircuit.routed_depth` | Qpu.Processing.QuantumCircuit | `∀ (d : Nat), 1 ≤ d → QuantumCircuit.routedGates d = 2 * d - 1 ∧ QuantumCircuit.routedGates 2 = 3` |
+| `QuantumCircuit.routed_depth` | Qpu.Processing.QuantumCircuit | `∀ (d : ℕ), 1 ≤ d → QuantumCircuit.routedGates d = 2 * d - 1 ∧ QuantumCircuit.routedGates 2 = 3` |
 | `QuantumCircuit.swap_routing` | Qpu.Processing.QuantumCircuit | `Operator.Same 8 (Operator.mm 8 (Operator.mm 8 QuantumCircuit.swap01 QuantumCircuit.cnot12) QuantumCircuit.swap01) QuantumCircuit.cnot02` |
 
 ## quantum computer: dilution refrigerator (ISO/IEC 4879:2024 3.4.10; SI 2019 kelvin)
@@ -140,7 +140,7 @@
 | Theorem | Module | Statement |
 |---|---|---|
 | `Cryostat.qubit_cold_at_ten_millikelvin` | Qpu.Processing.QuantumComputer.Cryostat | `Cryostat.coldEnough 5000000000 10000 19` |
-| `Cryostat.qubit_cold_below` | Qpu.Processing.QuantumComputer.Cryostat | `∀ (f T : Nat), 5000000000 ≤ f → T ≤ 10000 → Cryostat.coldEnough f T 19` |
+| `Cryostat.qubit_cold_below` | Qpu.Processing.QuantumComputer.Cryostat | `∀ (f T : ℕ), 5000000000 ≤ f → T ≤ 10000 → Cryostat.coldEnough f T 19` |
 | `Cryostat.qubit_hot_at_room_temperature` | Qpu.Processing.QuantumComputer.Cryostat | `¬Cryostat.coldEnough 5000000000 300000000 1` |
 
 ## control wiring (IEC 60050-131 attenuator; Krinner et al. 2019, doi:10.1140/epjqt/s40507-019-0072-0)
@@ -149,7 +149,7 @@
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `Wiring.stage_floor` | Qpu.Processing.QuantumComputer.Wiring | `∀ (Tin Ts A : Nat), 0 < A → Ts ≤ Tin → Ts ≤ Wiring.through Tin Ts A` |
+| `Wiring.stage_floor` | Qpu.Processing.QuantumComputer.Wiring | `∀ (Tin Ts A : ℕ), 0 < A → Ts ≤ Tin → Ts ≤ Wiring.through Tin Ts A` |
 
 ## quantum computer design (ISO/IEC 4879:2024 3.4.10)
 
@@ -162,11 +162,11 @@
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `QuantumErrorCorrection.distance_corrects` | Qpu.Processing.QuantumErrorCorrection | `∀ (d t e₁ e₂ : Nat), 2 * t + 1 ≤ d → e₁ ≤ t → e₂ ≤ t → e₁ + e₂ < d` |
-| `QuantumErrorCorrection.repetition_corrects` | Qpu.Processing.QuantumErrorCorrection | `∀ (b : Bool) (e : Nat), e < 4 → QuantumErrorCorrection.decode (QuantumErrorCorrection.flip e (QuantumErrorCorrection.encode b)) = b` |
-| `QuantumErrorCorrection.shor_nine` | Qpu.Processing.QuantumErrorCorrection | `(∀ (a : Nat), a < 9 → QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks a ≠ QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks 9 ∧ ∀ (b : Nat), b < 9 → QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks a = QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks b → a = b) ∧ ∀ (a : Nat), a < 9 → QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks a ≠ QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks 9 ∧ ∀ (b : Nat), b < 9 → (QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks a = QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks b ↔ a / 3 = b / 3)` |
-| `QuantumErrorCorrection.steane_corrects` | Qpu.Processing.QuantumErrorCorrection | `∀ (i : Nat), i < 7 → QuantumErrorCorrection.syndrome i = i + 1` |
-| `QuantumErrorCorrection.steane_css` | Qpu.Processing.QuantumErrorCorrection | `∀ (a : Nat), a < 3 → ∀ (b : Nat), b < 3 → (List.filter (fun i => QuantumErrorCorrection.hamming a i && QuantumErrorCorrection.hamming b i) (List.range 7)).length % 2 = 0` |
+| `QuantumErrorCorrection.distance_corrects` | Qpu.Processing.QuantumErrorCorrection | `∀ (d t e₁ e₂ : ℕ), 2 * t + 1 ≤ d → e₁ ≤ t → e₂ ≤ t → e₁ + e₂ < d` |
+| `QuantumErrorCorrection.repetition_corrects` | Qpu.Processing.QuantumErrorCorrection | `∀ (b : Bool), ∀ e < 4, QuantumErrorCorrection.decode (QuantumErrorCorrection.flip e (QuantumErrorCorrection.encode b)) = b` |
+| `QuantumErrorCorrection.shor_nine` | Qpu.Processing.QuantumErrorCorrection | `(∀ a < 9, QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks a ≠ QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks 9 ∧ ∀ b < 9, QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks a = QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks b → a = b) ∧ ∀ a < 9, QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks a ≠ QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks 9 ∧ ∀ b < 9, QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks a = QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks b ↔ a / 3 = b / 3` |
+| `QuantumErrorCorrection.steane_corrects` | Qpu.Processing.QuantumErrorCorrection | `∀ i < 7, QuantumErrorCorrection.syndrome i = i + 1` |
+| `QuantumErrorCorrection.steane_css` | Qpu.Processing.QuantumErrorCorrection | `∀ a < 3, ∀ b < 3, (List.filter (fun i => QuantumErrorCorrection.hamming a i && QuantumErrorCorrection.hamming b i) (List.range 7)).length % 2 = 0` |
 
 ## quantum gate (ISO/IEC 4879:2024 3.4.2, 3.4.3 unitary gate)
 
@@ -190,7 +190,7 @@
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `Coupler.off` | Qpu.Processing.QuantumProcessor.Coupler | `∀ (g₁ g₂ g₁₂ Δ : Nat), g₁₂ * Δ = g₁ * g₂ → g₁ * g₂ - g₁₂ * Δ = 0` |
+| `Coupler.off` | Qpu.Processing.QuantumProcessor.Coupler | `∀ (g₁ g₂ g₁₂ Δ : ℕ), g₁₂ * Δ = g₁ * g₂ → g₁ * g₂ - g₁₂ * Δ = 0` |
 | `Coupler.willow` | Qpu.Processing.QuantumProcessor.Coupler | `Coupler.cz 42 84 ∧ Coupler.cz 37 95` |
 
 ## quantum processor, parallel layers (ISO/IEC 4879:2024 3.4.8)
@@ -199,10 +199,10 @@
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `QuantumProcessor.Layers.layers_bipartite` | Qpu.Processing.QuantumProcessor.Layers | `∀ (e : (Nat × Nat) × Nat × Nat), e ∈ QuantumProcessor.Layers.edges hexbit → QuantumProcessor.Layers.colour e.fst ≠ QuantumProcessor.Layers.colour e.snd` |
+| `QuantumProcessor.Layers.layers_bipartite` | Qpu.Processing.QuantumProcessor.Layers | `∀ e ∈ QuantumProcessor.Layers.edges hexbit, QuantumProcessor.Layers.colour e.1 ≠ QuantumProcessor.Layers.colour e.2` |
 | `QuantumProcessor.Layers.layers_count` | Qpu.Processing.QuantumProcessor.Layers | `(QuantumProcessor.Layers.edges hexbit).length = Qubit.couplers hexbit` |
-| `QuantumProcessor.Layers.layers_four` | Qpu.Processing.QuantumProcessor.Layers | `(∀ (e : (Nat × Nat) × Nat × Nat), e ∈ QuantumProcessor.Layers.edges hexbit → QuantumProcessor.Layers.layer e < 4) ∧ ∀ (x : Nat × Nat), x ∈ QuantumProcessor.sites hexbit → ∀ (l : Nat), l < 4 → QuantumProcessor.Layers.touching hexbit l x ≤ 1` |
-| `Qubit.couplers_formula` | Qpu.Information.Qubit | `∀ (w : Nat), Qubit.gateway + 1 ≤ w → Qubit.couplers w = (Qubit.digits - coins) * (w - 1) + (w - Qubit.gateway - 1) + (Qubit.digits - coins - coins) * w + coins * (w - Qubit.gateway)` |
+| `QuantumProcessor.Layers.layers_four` | Qpu.Processing.QuantumProcessor.Layers | `(∀ e ∈ QuantumProcessor.Layers.edges hexbit, QuantumProcessor.Layers.layer e < 4) ∧ ∀ x ∈ QuantumProcessor.sites hexbit, ∀ l < 4, QuantumProcessor.Layers.touching hexbit l x ≤ 1` |
+| `Qubit.couplers_formula` | Qpu.Information.Qubit | `∀ (w : ℕ), Qubit.gateway + 1 ≤ w → Qubit.couplers w = (Qubit.digits - coins) * (w - 1) + (w - Qubit.gateway - 1) + (Qubit.digits - coins - coins) * w + coins * (w - Qubit.gateway)` |
 
 ## readout resonator (ISO/IEC 4879:2024 3.3.15 measurement; Koch et al. 2007, doi:10.1103/PhysRevA.76.042319)
 
@@ -218,7 +218,7 @@
 
 | Theorem | Module | Statement |
 |---|---|---|
-| `QuantumProcessor.connected` | Qpu.Processing.QuantumProcessor | `∀ (x : Nat × Nat), x ∈ QuantumProcessor.sites hexbit → x ∈ QuantumProcessor.reach hexbit ((Qubit.rows hexbit).length + 4)` |
-| `QuantumProcessor.degree_bounds` | Qpu.Processing.QuantumProcessor | `∀ (x : Nat × Nat), x ∈ QuantumProcessor.sites hexbit → 2 ≤ QuantumProcessor.degree hexbit x ∧ QuantumProcessor.degree hexbit x ≤ 4` |
+| `QuantumProcessor.connected` | Qpu.Processing.QuantumProcessor | `∀ x ∈ QuantumProcessor.sites hexbit, x ∈ QuantumProcessor.reach hexbit ((Qubit.rows hexbit).length + 4)` |
+| `QuantumProcessor.degree_bounds` | Qpu.Processing.QuantumProcessor | `∀ x ∈ QuantumProcessor.sites hexbit, 2 ≤ QuantumProcessor.degree hexbit x ∧ QuantumProcessor.degree hexbit x ≤ 4` |
 | `QuantumProcessor.sites_count` | Qpu.Processing.QuantumProcessor | `(QuantumProcessor.sites hexbit).length = Qubit.effective hexbit` |
-| `Qubit.couplers_formula` | Qpu.Information.Qubit | `∀ (w : Nat), Qubit.gateway + 1 ≤ w → Qubit.couplers w = (Qubit.digits - coins) * (w - 1) + (w - Qubit.gateway - 1) + (Qubit.digits - coins - coins) * w + coins * (w - Qubit.gateway)` |
+| `Qubit.couplers_formula` | Qpu.Information.Qubit | `∀ (w : ℕ), Qubit.gateway + 1 ≤ w → Qubit.couplers w = (Qubit.digits - coins) * (w - 1) + (w - Qubit.gateway - 1) + (Qubit.digits - coins - coins) * w + coins * (w - Qubit.gateway)` |

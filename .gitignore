@@ -70,3 +70,8 @@ playwright-report/index.html
 public/media
 /legacy/.next/
 .lake/
+# the VitePress site is rendered from the seeds and from Lean (pnpm run site:seed); only its config is kept
+site/*
+!site/.vitepress/
+site/.vitepress/*
+!site/.vitepress/config.ts
