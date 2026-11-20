@@ -138,6 +138,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      modules:
+        description: Lean modules to seed and check, comma separated. Empty seeds the whole catalogue.
+        type: string
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -155,6 +160,8 @@ jobs:
       PAYLOAD_SECRET: \${{ secrets.PAYLOAD_SECRET }}
       QPU_ADMIN_EMAIL: \${{ secrets.QPU_ADMIN_EMAIL }}
       QPU_ADMIN_PASSWORD: \${{ secrets.QPU_ADMIN_PASSWORD }}
+      # a deploy started by hand may seed and check only the modules it names; a push seeds the whole catalogue
+      SEED_MODULES: \${{ inputs.modules }}
     steps:
       - uses: ${CHECKOUT}
       - uses: ${PNPM}
