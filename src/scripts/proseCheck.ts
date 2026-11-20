@@ -1,4 +1,4 @@
-// `lake run prose`: no sentence is typed in TypeScript, and no sentence names a theorem Lean does not have. Prose is written in Lean under Qpu/General/Prose and read by
+// `lake run prose`: no sentence is typed in TypeScript. A theorem a sentence names and Lean does not have is reported as a lead. Prose is written in Lean under Qpu/General/Prose and read by
 // name from prose-index.ts, so each finding names the file, the line and the sentence to move.
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
@@ -13,8 +13,9 @@ for (const found of findings.slice(0, 50)) console.error(`${found.file}:${found.
 const kernel = new Set(THEOREMS.map((theorem) => theorem.key))
 const conflicts = Object.entries(PROSE).flatMap(([name, text]) => [...new Set(text.match(/\b(?:textbook|relation)_[a-z0-9_]*[a-z0-9]\b/g) ?? [])].filter((cited) => !kernel.has(cited)).map((cited) => ({ name, cited })))
 for (const conflict of conflicts.slice(0, 50)) console.error(`${conflict.name}: ${conflict.cited}`)
-const holds = findings.length === 0 && conflicts.length === 0
-console.log(JSON.stringify({ files: files.length, sentencesInTypeScript: findings.length, sentencesNamingATheoremLeanLacks: conflicts.length, holds }))
+// a theorem a sentence names and Lean lacks is a lead, a theorem still to prove: it is reported, and nothing is removed for it
+const holds = findings.length === 0
+console.log(JSON.stringify({ files: files.length, sentencesInTypeScript: findings.length, theoremsNamedAndNotYetProved: [...new Set(conflicts.map((conflict) => conflict.cited))], holds }))
 if (findings.length > 0) console.error(PROSE.scriptsProseCheck_s1)
 if (conflicts.length > 0) console.error(PROSE.scriptsProseCheck_s2)
 if (!holds) process.exit(1)

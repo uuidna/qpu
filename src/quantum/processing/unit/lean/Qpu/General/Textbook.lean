@@ -1875,17 +1875,17 @@ theorem textbook_legal_plan_calls_reflected (claims : Nat) (σ : Nat) : σ - (2)
 theorem textbook_repository_watch_leads : 3 + 3 + 3 + 2 + 1 + 1 + 1 = 14 := by decide
 /-- textbook_repository_watch_leads reflected by its shape, equality (examples: repository-watch) -/
 theorem textbook_repository_watch_leads_reflected (σ : Nat) : σ - (14) = σ - (3 + 3 + 3 + 2 + 1 + 1 + 1) := congrArg (σ - ·) (Eq.symm (textbook_repository_watch_leads))
-/-- an ORCID is sixteen digits in four groups of four with three dashes: nineteen characters, the author's @id the block carries (examples: none yet) -/
+/-- an ORCID is sixteen digits in four groups of four with three dashes: nineteen characters, the author's @id the block carries (examples: jsonld-block) -/
 theorem textbook_orcid_digits : 4 * 4 + 3 = 19 := by decide
-/-- textbook_orcid_digits reflected by its shape, equality (examples: none yet) -/
+/-- textbook_orcid_digits reflected by its shape, equality (examples: jsonld-block) -/
 theorem textbook_orcid_digits_reflected (σ : Nat) : σ - (19) = σ - (4 * 4 + 3) := congrArg (σ - ·) (Eq.symm (textbook_orcid_digits))
-/-- one-off, yearly, monthly and metered offers partition the catalogue's 9 offers Payload holds (examples: none yet) -/
+/-- one-off, yearly, monthly and metered offers partition the catalogue's 9 offers Payload holds (examples: jsonld-catalogue) -/
 theorem textbook_catalogue_offers : 1 + 3 + 2 + 3 = 9 := by decide
-/-- textbook_catalogue_offers reflected by its shape, equality (examples: none yet) -/
+/-- textbook_catalogue_offers reflected by its shape, equality (examples: jsonld-catalogue) -/
 theorem textbook_catalogue_offers_reflected (σ : Nat) : σ - (9) = σ - (1 + 3 + 2 + 3) := congrArg (σ - ·) (Eq.symm (textbook_catalogue_offers))
-/-- English and the locales the vocabulary translates into are the 11 locales the codes tool validates (examples: none yet) -/
+/-- English and the locales the vocabulary translates into are the 11 locales the codes tool validates (examples: codes-plan) -/
 theorem textbook_codes_locales : 1 + 10 = 11 := by decide
-/-- textbook_codes_locales reflected by its shape, equality (examples: none yet) -/
+/-- textbook_codes_locales reflected by its shape, equality (examples: codes-plan) -/
 theorem textbook_codes_locales_reflected (σ : Nat) : σ - (11) = σ - (1 + 10) := congrArg (σ - ·) (Eq.symm (textbook_codes_locales))
 /-- three tenants over four scoped collections are twelve tenant scopes, and three tenant roles beside three docket roles are six roles (examples: configure-scopes) -/
 theorem textbook_scopes_tenants_collections : 3 * 4 = 12 ∧ 3 + 3 = 6 := by decide
@@ -2681,16 +2681,16 @@ theorem textbook_build_fresh_reflected (built source : Nat) (h : source ≤ buil
 theorem textbook_build_fresh_contrapositive (built source : Nat) : ¬ (built - source + source = built) → ¬ ((source ≤ built)) := fun hc hh => hc (textbook_build_fresh built source hh)
 /-- the converse of textbook_build_fresh, proved (examples: repository-predeploy) -/
 theorem textbook_build_fresh_converse (built source : Nat) : (built - source + source = built) → (source ≤ built) := fun hc => by omega
-/-- every binding the adapters need is declared and every resource it names exists in the account: when none is missing, the declared are the needed, however many the adapters bind (examples: repository-predeploy) -/
+/-- every binding the adapters need is declared and every resource it names exists in the account: when none is missing, the declared are the needed, however many the adapters bind (examples: repository-predeploy, configure-cloudflare-adapters) -/
 theorem textbook_bindings_bound (needed declared missing : Nat) (h : declared + missing = needed) (h0 : missing = 0) : declared = needed := by omega
 example := textbook_bindings_bound (needed := 0) (declared := 0) (missing := 0) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
 example := textbook_bindings_bound (needed := 1) (declared := 1) (missing := 0) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
 example := textbook_bindings_bound (needed := 2) (declared := 2) (missing := 0) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
-/-- textbook_bindings_bound reflected by its shape, equality (examples: repository-predeploy) -/
+/-- textbook_bindings_bound reflected by its shape, equality (examples: repository-predeploy, configure-cloudflare-adapters) -/
 theorem textbook_bindings_bound_reflected (needed declared missing : Nat) (h : declared + missing = needed) (h0 : missing = 0) (σ : Nat) : σ - (needed) = σ - (declared) := congrArg (σ - ·) (Eq.symm (textbook_bindings_bound needed declared missing h h0))
-/-- the contrapositive of textbook_bindings_bound (examples: repository-predeploy) -/
+/-- the contrapositive of textbook_bindings_bound (examples: repository-predeploy, configure-cloudflare-adapters) -/
 theorem textbook_bindings_bound_contrapositive (needed declared missing : Nat) : ¬ (declared = needed) → ¬ ((declared + missing = needed) ∧ (missing = 0)) := fun hc hh => hc (textbook_bindings_bound needed declared missing hh.1 hh.2)
-/-- the converse of textbook_bindings_bound, refuted by a counterexample the kernel decides (examples: repository-predeploy) -/
+/-- the converse of textbook_bindings_bound, refuted by a counterexample the kernel decides (examples: repository-predeploy, configure-cloudflare-adapters) -/
 theorem textbook_bindings_bound_converse_refuted : ¬ ∀ (needed declared missing : Nat), (declared = needed) → (declared + missing = needed) ∧ (missing = 0) := fun h => absurd (h 0 0 1 (by decide)) (by decide)
 /-- every Cloudflare binding is used and usable the Google way: the roles — compute, database, object store, key-value, email — partition the bindings with none idle (used + idle = total, idle = 0), and each Cloudflare binding is paired one-to-one with its google-cloud equivalent (Worker↔Cloud Run, D1/DOCKET↔Cloud SQL, R2↔Cloud Storage, KV↔Firestore, Email↔Gmail) through the adapters profile, so the same app the Payload admin drives runs on either; the RAID db qpuRaidDb uses the data, object and key-value bindings, the Worker the compute, the email adapter the mail (examples: configure-bindings-google) -/
 theorem textbook_bindings_used_google (used idle total paired : Nat) (h : used + idle = total) (h0 : idle = 0) (hp : paired = total) : used = total ∧ paired = used := ⟨by omega, by omega⟩

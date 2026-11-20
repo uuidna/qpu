@@ -423,6 +423,7 @@ const ALL_CLAIM_STATEMENTS = [
   { id: 'claim-willow-cirq-is-standard', statement: PROSE.quantumProcessingToolboxesPayload_statement48, against: 'isoDimensions' as const },
   { id: 'claim-clay-millennium-rules-is-standard', statement: PROSE.quantumProcessingToolboxesPayload_statement49, against: 'isoDimensions' as const },
   { id: 'claim-hexbit-clay-axiom-is-4879', statement: PROSE.quantumProcessingToolboxesPayload_statement50, against: 'uuidRegister' as const },
+  { id: 'claim-54-of-54-clay', statement: PROSE.quantumProcessingToolboxesPayload_statement51, against: 'clayRegister' as const },
   { id: 'claim-prize-won-by-booking', statement: PROSE.quantumProcessingToolboxesPayload_statement52, against: 'competeHonest' as const },
   { id: 'claim-os-complete-unbounded', statement: PROSE.quantumProcessingToolboxesPayload_statement53, against: 'uuidRegister' as const },
 ] as const
