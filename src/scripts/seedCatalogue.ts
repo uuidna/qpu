@@ -3,7 +3,9 @@
 // are the examples that theorem names, and a variant for each of them. The seed runs with no user, so each call overrides access, as
 // Payload's local API asks of a script. Every write finds its document first, so a second run changes
 // nothing that already agrees. SEED_CHECK=1 writes nothing and fails when a document is missing. SEED_MODULES names
-// the modules to seed, comma separated; without it the whole catalogue is seeded.
+// the modules to seed, comma separated; without it the whole catalogue is seeded. Documents that do not depend on one
+// another are written together, SEED_TOGETHER at a time (COIN_QUBIT_SPACE when unset): a page waits only for its parent.
+import { COIN_QUBIT_SPACE } from '../quantum/processing/config-index.ts'
 import { headedText, planCatalogue, richText } from '../quantum/processing/catalogue-seed.ts'
 
 const check = process.env.SEED_CHECK === '1'
@@ -14,6 +16,12 @@ const { getPayload } = await import('payload')
 const payload = await getPayload({ config })
 const context = { disableRevalidate: true, disableRelease: true }
 let written = 0, missing = 0
+const width = Math.max(1, Number(process.env.SEED_TOGETHER) || COIN_QUBIT_SPACE)
+/** Every item handled, at most `width` at a time; the first failure ends the seed. */
+const together = async <T>(items: readonly T[], each: (item: T) => Promise<void>): Promise<void> => {
+  let next = 0
+  await Promise.all(Array.from({ length: Math.min(width, items.length) }, async () => { while (next < items.length) await each(items[next++]!) }))
+}
 
 type Doc = { id: number | string } & Record<string, unknown>
 /** Find one document, and create or update it when it is absent or differs in a field the plan states. */
@@ -29,16 +37,22 @@ const refersTo = (value: unknown, id: unknown) => (typeof value === 'object' && 
 
 const tenant = await hold('tenants', { slug: { equals: plan.tenant.slug } }, plan.tenant)
 const pages = new Map<string, Doc | null>()
-for (const page of plan.pages) {
-  const parent = page.parent ? idOf(pages.get(page.parent) ?? null) : null
-  const layout = [{ blockType: 'content', columns: [{ size: 'full', richText: richText(page.text) }] }]
-  pages.set(page.slug, await hold('pages', { slug: { equals: page.slug } }, { title: page.title, slug: page.slug, tenant: idOf(tenant), parent, hero: { type: 'lowImpact' }, layout, _status: 'published' }, (doc) => doc.title === page.title && doc._status === 'published' && refersTo(doc.parent ?? null, parent)))
+// a page is written once its parent is held, so the pages go wave by wave: the roots, then their children
+for (let waiting = [...plan.pages]; waiting.length > 0;) {
+  const ready = waiting.filter((page) => !page.parent || pages.has(page.parent))
+  if (ready.length === 0) throw new Error(`no parent is planned for ${waiting.map((page) => page.slug).join(', ')}`)
+  await together(ready, async (page) => {
+    const parent = page.parent ? idOf(pages.get(page.parent) ?? null) : null
+    const layout = [{ blockType: 'content', columns: [{ size: 'full', richText: richText(page.text) }] }]
+    pages.set(page.slug, await hold('pages', { slug: { equals: page.slug } }, { title: page.title, slug: page.slug, tenant: idOf(tenant), parent, hero: { type: 'lowImpact' }, layout, _status: 'published' }, (doc) => doc.title === page.title && doc._status === 'published' && refersTo(doc.parent ?? null, parent)))
+  })
+  waiting = waiting.filter((page) => !ready.includes(page))
 }
 const categories = new Map<string, Doc | null>()
-for (const category of plan.categories) categories.set(category.slug, await hold('categories', { slug: { equals: category.slug } }, category, (doc) => doc.title === category.title))
+await together(plan.categories, async (category) => void categories.set(category.slug, await hold('categories', { slug: { equals: category.slug } }, category, (doc) => doc.title === category.title)))
 let variants = 0
 const held = new Map<string, Doc | null>()
-for (const product of plan.products) {
+await together(plan.products, async (product) => {
   const category = idOf(categories.get(product.category) ?? null)
   const base = { title: product.title, slug: product.slug, tenant: idOf(tenant), description: richText(product.description), categories: category === null ? [] : [category], _status: 'published' }
   let made = await hold('products', { slug: { equals: product.slug } }, { ...base, enableVariants: false, variantTypes: [] }, (doc) => doc.title === product.title && doc._status === 'published')
@@ -55,7 +69,7 @@ for (const product of plan.products) {
     }
   }
   held.set(product.slug, made)
-}
+})
 // the home page: the lead in the hero, the text, three products side by side and the rest in a carousel
 const featured = plan.home.featured.map((slug) => idOf(held.get(slug) ?? null)).filter((id) => id !== null)
 const homeLayout = [
