@@ -4,7 +4,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1761 products, 2 under a declared claim context and 1759 as the author's own statement, with 1469 variants (the examples a theorem names).
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1764 products, 2 under a declared claim context and 1762 as the author's own statement, with 1469 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 This catalogue records authorship and the date of each release. It is a publication, not a patent application: publishing a statement discloses it, and what is filed as a patent, and when, is for a patent attorney to decide before it is published.
 
@@ -12615,6 +12615,33 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (σ : ℕ), 2 * 16 ≤ σ → 16 + 1 ≤ σ → σ - 2 * 16 < σ - (16 + 1) ∧ σ - (16 + 1) < σ - 16
 ```
 
+## Qpu.General.Thousand
+
+### `Thousand.meaning_sound`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {n : ℕ} {family name : String} {k : ℕ},
+  (family, name, k) ∈ Thousand.meaning n → ∃ F ∈ Thousand.formulas, F.family = family ∧ F.name = name ∧ F.f k = n
+```
+
+### `Thousand.reflect_add`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {x : ℕ}, x ≤ Thousand.bound → Thousand.reflect x + x = Thousand.bound
+```
+
+### `Thousand.reflect_reflect`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {x : ℕ}, x ≤ Thousand.bound → Thousand.reflect (Thousand.reflect x) = x
+```
+
 ## Qpu.Information.PhysicalQubit.Coil
 
 ### `Coil.periodic`
@@ -15042,3 +15069,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```lean
 Qpu.Verify.Uuid.decode (Qpu.Verify.Uuid.encode 65535 42) = (65535, 42)
 ```
+
+## Named and not yet proved
+
+2 theorem(s) are named by a sentence of the tree and are not theorems the kernel has. Each is listed here as a claim still open, a theorem to prove, exactly as an accepted theorem is listed as a claim made: an overclaim is exposed like an underclaim, and nothing is hidden or removed.
+
+### `textbook_carry_release` (open)
+
+Named by `Prose.quantumProcessingMcp_says190`, `Prose.quantumProcessingToolboxesPayload_approval471`. Not accepted by the kernel: no theorem of this name exists.
+
+### `textbook_refuse_is_refuse` (open)
+
+Named by `Prose.quantumProcessingAlgorithms_s13`. Not accepted by the kernel: no theorem of this name exists.
