@@ -1146,7 +1146,8 @@ const ideaSeed = (raw: unknown) => {
   const audit = isoAudit(data)
   const next = saveNext(audit)
   const change = planChange(audit, next)
-  const create = audit.holds ? { ...write, data } : null
+  // the audit reads the documentation beside the page; the write carries only what the pages collection declares
+  const create = audit.holds ? write : null
   return { phase: 'seed' as const, via: WEBSITE_REPO, collection: 'pages' as const, schema: 'pages' as const, slot: 'content' as const, page, find, create, audit, next, change, saved: audit.holds, dry, says: next.holds && audit.holds && change.holds ? proseFill(PROSE.quantumProcessingToolboxesPayload_s109, page.title, page.slug, page.sku) : PROSE.quantumProcessingToolboxesPayload_s110 }
 }
 const MCP_ASPECTS = ['initialize', 'tools/list', 'tools/call', 'resources/list', 'resources/templates/list', 'resources/read'] as const
@@ -3596,9 +3597,10 @@ const isoVariants = (input: unknown, clay: { products?: { product: string; proof
     const page = chain.variants[index % chain.variants.length]!
     const formula = `${tool.toolbox}/${tool.name} serves ${page.product} ${page.variant} as mcp`
     const served = improveMcp(formula, page.product, page.variant)
-    return { tool: tool.name, toolbox: tool.toolbox, product: page.product, variant: page.variant, path: page.path, served: 'mcp' as const, kind: 'mcp' as const, autonomous: true as const, improved: served.finished, end: served.end, iso: served.improved.iso, docs: served.improved.docs, via: served.improved.via, formula }
+    // a tool served over MCP is a variant of the product mcp; the textbook product it serves is named beside it
+    return { tool: tool.name, toolbox: tool.toolbox, product: 'mcp' as const, serves: page.product, variant: page.variant, path: page.path, served: 'mcp' as const, kind: 'mcp' as const, autonomous: true as const, improved: served.finished, end: served.end, iso: served.improved.iso, docs: served.improved.docs, via: served.improved.via, formula }
   })
-  const products = [...catalogue, ...combinations, ...textbooks]
+  const products = [...catalogue, ...combinations, ...textbooks, ...mcp]
   const managed = mcp.filter((p) => p.iso.documented).length
   const complete = mcp.filter((p) => p.improved && p.end?.complete === true && p.end.decision === 'accept' && p.end.monitor === 'ISO 9001:2015, 9.1').length
   const locales = Object.keys(LOCALES).length

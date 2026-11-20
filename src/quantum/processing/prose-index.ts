@@ -3817,6 +3817,8 @@ const SENTENCES = {
   scriptsSite_s2: "description: \"The QPU pages and MCP catalogue, served statically from the same seeds Payload writes\"",
   scriptsSite_s3: "This site is built from the same seeds the Payload site writes, so it serves every page when Payload or its database is down.",
   scriptsSite_says1: "what tools/list answers, served statically; a static site answers no tools/call",
+  scriptsStdio_probe: "No Payload app answers at ⟦1⟧: start the local app with scripts/site-local.sh start, or name a deployed app's endpoint in QPU_APP_MCP, and list the tools again.",
+  scriptsStdio_unreached: "No Payload app answered the call to ⟦1⟧: name a deployed app's endpoint in QPU_APP_MCP or start the local app, then call again.",
   scriptsTextbookIndex_s1: "⟦0⟧ differs from the Lean file: run lake run index and commit the result",
   scriptsTheoremsIndex_s1: "⟦0⟧ differs from the Lean environment: run lake run index and commit the result",
 }
