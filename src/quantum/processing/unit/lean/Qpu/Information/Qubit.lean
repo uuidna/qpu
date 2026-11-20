@@ -1,4 +1,5 @@
 import Qpu.Lattice
+import Qpu.Claims.Claim
 
 /-! # Qpu.Information.Qubit
 ---
@@ -98,5 +99,26 @@ theorem chains (k w : Nat) : (List.replicate k (effective w)).sum = k * effectiv
 /-- the register holds more than any count `N`: enough coins, each an address at width `hexbit`, exceed it -/
 theorem unbounded (N : Nat) : ∃ k, N < k * effective hexbit :=
   ⟨N + 1, by rw [show effective hexbit = 122 by decide]; omega⟩
+
+/-- The qubit-layout claim, proved by `effective_formula` and `couplers_formula`. -/
+def qubitLayoutClaim : Claim :=
+  { theorem := "Qubit.couplers_formula"
+    source := "src/quantum/processing/unit/lean/Qpu/Information/Qubit.lean"
+    wave := "3.3"
+    context :=
+      { title := "Address-defined qubit register layout"
+        subject := "quantum register architecture"
+        problem :=
+          "A quantum register needs a deterministic qubit layout with bounded local connectivity."
+        solution :=
+          "Arrange qubits in address-defined rows, couple adjacent qubits within each row, and couple corresponding qubits between consecutive rows."
+        technicalEffect :=
+          "The register has computable qubit and coupler counts for every supported width."
+        assertion :=
+          "The register's qubit and coupler counts are determined by its address-defined row structure."
+        evidence := ["Qubit.effective_formula", "Qubit.couplers_formula"]
+        dependsOn := []
+        kind := .patent
+        hardware := true } }
 
 end Qubit
