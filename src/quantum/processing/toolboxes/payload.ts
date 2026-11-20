@@ -488,7 +488,7 @@ const claimsFalseByReceipt = (raw: unknown = true) => {
     const proofAddress = uuid(canonicalText({ tool: proof.tool, arguments: proof.arguments, result: proof.result }))
     const claimSealed = seal(claimAddress).valid
     const proofSealed = seal(proofAddress).valid
-    const proofHolds = against === 'clayRegister' ? clay.holding === clay.total && clay.total === 55
+    const proofHolds = against === 'clayRegister' ? clay.holding === clay.total && clay.total === CLAY_RELATIONS.length
       : against === 'isoDimensions' ? microdata.holds === true && microdata.asked === ISO_DIMENSIONS.length
       : against === 'competeHonest' ? proofs.competeHonest.result.prizeWon === false && proofs.competeHonest.result.problemSolved === false
       : counted.receipt.holds === true && counted.effective === 122

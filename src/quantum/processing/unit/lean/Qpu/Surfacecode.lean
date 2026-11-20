@@ -16,7 +16,8 @@ private theorem sq_ge (d : Nat) : d ≤ d ^ 2 := by
   induction d with
   | zero => exact Nat.zero_le _
   | succ d ih =>
-    have e : (d + 1) ^ 2 = d ^ 2 + 2 * d + 1 := by ring
+    have e : (d + 1) ^ 2 = d ^ 2 + 2 * d + 1 := by
+      rw [Nat.pow_two, Nat.pow_two, Nat.add_mul d 1 (d + 1), Nat.mul_add d d 1]; omega
     rw [e]
     exact Nat.le_trans (Nat.succ_le_succ ih) (by omega)
 

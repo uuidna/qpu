@@ -52,7 +52,11 @@ def applySignedSdg (v : Signed) : Signed :=
 /-- The T gate is unitary, has order 8, and does not commute with Hadamard.
     This exact result is proved over ℤ[ω] in `QuantumGate`. -/
 theorem stabilizer_t_gate :
-    QuantumGate.t_gate := QuantumGate.t_gate
+    QuantumGate.SameW (QuantumGate.mmW QuantumGate.TW (QuantumGate.dagW QuantumGate.TW)) QuantumGate.idW ∧
+    QuantumGate.SameW (QuantumGate.powW QuantumGate.TW 8) QuantumGate.idW ∧
+    ¬ QuantumGate.SameW (QuantumGate.powW QuantumGate.TW 4) QuantumGate.idW ∧
+    ¬ QuantumGate.SameW (QuantumGate.mmW QuantumGate.HW QuantumGate.TW)
+      (QuantumGate.mmW QuantumGate.TW QuantumGate.HW) := QuantumGate.t_gate
 
 /-- Positive control: T has order 8. -/
 theorem test_t_order_is_eight :
@@ -88,7 +92,8 @@ def conjSwap (ct : P1 × P1) : P1 × P1 :=
 /-- SWAP is an involution on every two-qubit Pauli pair. -/
 theorem stabilizer_swap_involution (ct : P1 × P1) :
     conjSwap (conjSwap ct) = ct := by
-  cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
+  rcases ct with ⟨⟨a, b⟩, ⟨c, d⟩⟩
+  cases a <;> cases b <;> cases c <;> cases d <;> decide
 
 /-- SWAP exchanges the two qubits' Pauli factors. -/
 theorem stabilizer_swap_exchanges_factors (ct : P1 × P1) :
@@ -129,25 +134,29 @@ def applySignedCz : Signed2 → Signed2 :=
 
 /-- CZ is an involution on every signed two-qubit Pauli pair. -/
 theorem stabilizer_cz_involution (ct : P1 × P1) :
-    conjCz (conjCz ct) = (false, ct.1, ct.2) := by
-  cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
+    applySignedCz (conjCz ct) = (false, ct.1, ct.2) := by
+  rcases ct with ⟨⟨a, b⟩, ⟨c, d⟩⟩
+  cases a <;> cases b <;> cases c <;> cases d <;> decide
 
 /-- CZ preserves the X supports of both qubits. -/
 theorem stabilizer_cz_x_support_rule (ct : P1 × P1) :
     (conjCz ct).2.1.x = ct.1.x ∧
     (conjCz ct).2.2.x = ct.2.x := by
-  cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
+  rcases ct with ⟨⟨a, b⟩, ⟨c, d⟩⟩
+  cases a <;> cases b <;> cases c <;> cases d <;> decide
 
 /-- CZ updates each Z bit by XORing in the other qubit's X bit. -/
 theorem stabilizer_cz_z_support_rule (ct : P1 × P1) :
     (conjCz ct).2.1.z = (ct.1.z ^^ ct.2.x) ∧
     (conjCz ct).2.2.z = (ct.2.z ^^ ct.1.x) := by
-  cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
+  rcases ct with ⟨⟨a, b⟩, ⟨c, d⟩⟩
+  cases a <;> cases b <;> cases c <;> cases d <;> decide
 
 /-- CZ flips the sign exactly when both qubits have X support. -/
 theorem stabilizer_cz_sign_rule (ct : P1 × P1) :
     (conjCz ct).1 = (ct.1.x && ct.2.x) := by
-  cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
+  rcases ct with ⟨⟨a, b⟩, ⟨c, d⟩⟩
+  cases a <;> cases b <;> cases c <;> cases d <;> decide
 
 /-- CZ sends X⊗I to +X⊗Z. -/
 theorem stabilizer_cz_xi :
@@ -224,12 +233,13 @@ theorem stabilizer_cz_zz :
     conjCz (pz, pz) = (false, pz, pz) := by
   decide
 
-/-- CZ commutes with a two-qubit Pauli exactly when at least one qubit has
-    no X support. -/
+/-- CZ fixes a two-qubit Pauli exactly when neither qubit has X support:
+    an X on either qubit puts a Z on the other (CZ·(I⊗X)·CZ = Z⊗X). -/
 theorem stabilizer_cz_commutation_rule (ct : P1 × P1) :
     (conjCz ct = (false, ct.1, ct.2)) ↔
-      (ct.1.x = false ∨ ct.2.x = false) := by
-  cases ct.1.x <;> cases ct.1.z <;> cases ct.2.x <;> cases ct.2.z <;> decide
+      (ct.1.x = false ∧ ct.2.x = false) := by
+  rcases ct with ⟨⟨a, b⟩, ⟨c, d⟩⟩
+  cases a <;> cases b <;> cases c <;> cases d <;> decide
 
 /-- H·X·H = +Z. -/
 theorem stabilizer_hadamard_x : conjH px = (false, pz) := by decide
@@ -290,9 +300,9 @@ theorem test_signed_cnot_all_cases
       (sign ^^ (pc.x && pt.z && (pt.x == pc.z)),
        ⟨pc.x, pc.z ^^ pt.z⟩,
        ⟨pc.x ^^ pt.x, pt.z⟩) := by
-  cases sign <;>
-  cases pc.x <;> cases pc.z <;>
-  cases pt.x <;> cases pt.z <;> decide
+  rcases pc with ⟨a, b⟩
+  rcases pt with ⟨c, d⟩
+  cases sign <;> cases a <;> cases b <;> cases c <;> cases d <;> decide
 
 /-- The signed CNOT rule agrees with the phase-aware matrix-level rule:
     same phase parity and same Pauli-bit updates. -/
@@ -301,7 +311,9 @@ theorem conjCnotSigned_agrees_with_ruleCNOT (k : Nat) (ct : P1 × P1) :
       ⟨k, ct.1.x, ct.1.z, ct.2.x, ct.2.z⟩ =
       ⟨(k + if (ct.1.x && ct.2.z && (ct.2.x == ct.1.z)) then 2 else 0) % 4,
        ct.1.x, ct.1.z ^^ ct.2.z,
-       ct.1.x ^^ ct.2.x, ct.2.z⟩ := rfl
+       ct.1.x ^^ ct.2.x, ct.2.z⟩ := by
+  rcases ct with ⟨⟨a, b⟩, ⟨c, d⟩⟩
+  cases a <;> cases b <;> cases c <;> cases d <;> rfl
 
 /-- The signed CNOT rule is exactly the rule appearing in the proved
     `Exact CNOT` proposition, with its Boolean phase encoding the parity of
@@ -310,8 +322,10 @@ theorem conjCnotSigned_matches_ruleCNOT (k : Nat) (ct : P1 × P1) :
     CircuitBasedQuantumComputing.ruleCNOT
       ⟨k, ct.1.x, ct.1.z, ct.2.x, ct.2.z⟩ =
       ⟨(k + if (conjCnotSigned ct).1 then 2 else 0) % 4,
-       (conjCnotSigned ct).2.1,
-       (conjCnotSigned ct).2.2⟩ := rfl
+       (conjCnotSigned ct).2.1.x, (conjCnotSigned ct).2.1.z,
+       (conjCnotSigned ct).2.2.x, (conjCnotSigned ct).2.2.z⟩ := by
+  rcases ct with ⟨⟨a, b⟩, ⟨c, d⟩⟩
+  cases a <;> cases b <;> cases c <;> cases d <;> rfl
 
 /-!
 ## Signed single-qubit conjugation regression tests
@@ -325,14 +339,16 @@ for both `applySignedH` and `applySignedS`.
 theorem test_signed_hadamard_all_cases (sign : Bool) (p : P1) :
     applySignedH (sign, p) =
       (sign ^^ (p.x && p.z), ⟨p.z, p.x⟩) := by
-  cases sign <;> cases p.x <;> cases p.z <;> decide
+  rcases p with ⟨a, b⟩
+  cases sign <;> cases a <;> cases b <;> decide
 
 /-- Signed phase gate preserves or flips the incoming sign exactly as the
     unsigned S rule requires, for every signed Pauli input. -/
 theorem test_signed_phase_all_cases (sign : Bool) (p : P1) :
     applySignedS (sign, p) =
       (sign ^^ (p.x && p.z), ⟨p.x, p.x ^^ p.z⟩) := by
-  cases sign <;> cases p.x <;> cases p.z <;> decide
+  rcases p with ⟨a, b⟩
+  cases sign <;> cases a <;> cases b <;> decide
 
 /-- Signed Hadamard sends +X to +Z. -/
 theorem test_signed_hadamard_plus_x :
@@ -418,9 +434,9 @@ theorem test_signed_cz_all_cases
       (sign ^^ (pc.x && pt.x),
        ⟨pc.x, pc.z ^^ pt.x⟩,
        ⟨pt.x, pt.z ^^ pc.x⟩) := by
-  cases sign <;>
-  cases pc.x <;> cases pc.z <;>
-  cases pt.x <;> cases pt.z <;> decide
+  rcases pc with ⟨a, b⟩
+  rcases pt with ⟨c, d⟩
+  cases sign <;> cases a <;> cases b <;> cases c <;> cases d <;> decide
 
 /-- Signed CZ sends +X⊗I to +X⊗Z. -/
 theorem test_signed_cz_plus_xi :

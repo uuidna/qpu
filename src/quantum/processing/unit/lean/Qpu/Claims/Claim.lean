@@ -1,4 +1,4 @@
-import Lean.Json
+import Lean.Data.Json
 
 /-! # Qpu.Claims.Claim
 
@@ -33,7 +33,7 @@ structure Qpu.ClaimContext where
 
 /-- A Lean theorem and its claim context. -/
 structure Qpu.Claim where
-  theorem : String
+  theoremName : String
   source : String
   wave : String
   context : Qpu.ClaimContext
@@ -53,23 +53,23 @@ def ClaimKind.toString : ClaimKind → String
 
 /-- The canonical JSON projection of a claim context. -/
 def ClaimContext.toJson (context : ClaimContext) : Lean.Json :=
-  .obj
+  Lean.Json.mkObj
     [ ("title", .str context.title)
     , ("subject", .str context.subject)
     , ("problem", .str context.problem)
     , ("solution", .str context.solution)
     , ("technicalEffect", .str context.technicalEffect)
     , ("assertion", .str context.assertion)
-    , ("evidence", .arr (context.evidence.map .str))
-    , ("dependsOn", .arr (context.dependsOn.map .str))
+    , ("evidence", .arr (context.evidence.map Lean.Json.str).toArray)
+    , ("dependsOn", .arr (context.dependsOn.map Lean.Json.str).toArray)
     , ("kind", .str context.kind.toString)
     , ("hardware", .bool context.hardware)
     ]
 
 /-- The canonical JSON projection of a claim. -/
 def Claim.toJson (claim : Claim) : Lean.Json :=
-  .obj
-    [ ("theorem", .str claim.theorem)
+  Lean.Json.mkObj
+    [ ("theorem", .str claim.theoremName)
     , ("source", .str claim.source)
     , ("wave", .str claim.wave)
     , ("context", claim.context.toJson)
