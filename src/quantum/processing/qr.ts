@@ -55,7 +55,8 @@ const sizeOf = (origin: string, path: string) => qrPng(`${origin.replace(/\/$/, 
 
 type GalleryOption = { id: number | string; variantType?: { name?: string | null } | number | string | null }
 type GalleryVariant = { id: number | string; options?: readonly (GalleryOption | number | string)[] | null }
-export type ProductForGallery = { slug?: string | null; title?: string | null; gallery?: readonly unknown[] | null; variants?: { docs?: readonly (GalleryVariant | number | string)[] | null } | null }
+type GalleryType = { id: number | string; name?: string | null }
+export type ProductForGallery = { slug?: string | null; title?: string | null; gallery?: readonly unknown[] | null; meta?: { image?: unknown } | null; variantTypes?: readonly (GalleryType | number | string)[] | null; variants?: { docs?: readonly (GalleryVariant | number | string)[] | null } | null }
 
 /** The gallery of a product that has no image: first the code of the product itself, then one code for each variation
  *  whose options are known, attached to the variation's option so the template's gallery shows it when that option is
@@ -68,10 +69,19 @@ export const fallbackGallery = (product: ProductForGallery, origin: string) => {
   for (const variant of product.variants?.docs ?? []) {
     if (typeof variant !== 'object' || !variant.options?.length) continue
     const options = variant.options.filter((option): option is GalleryOption => typeof option === 'object' && option !== null)
-    const named = options.map((option) => ({ id: option.id, type: typeof option.variantType === 'object' && option.variantType ? option.variantType.name ?? '' : '' }))
+    // an option names its type by the type itself, or by its id among the types the product holds
+    const typeName = (of: GalleryOption['variantType']) => (typeof of === 'object' && of ? of.name : (product.variantTypes ?? []).find((type): type is GalleryType => typeof type === 'object' && type !== null && type.id === of)?.name) ?? ''
+    const named = options.map((option) => ({ id: option.id, type: typeName(option.variantType) }))
     if (named.length !== variant.options.length || named.some((option) => !option.type)) continue
     const path = variationPath(product.slug, { id: variant.id, options: named })
     items.push({ image: media(path, `${title} ${named.map((option) => `${option.type} ${option.id}`).join(' ')}`), variantOption: options.at(-1)!, variation: path })
   }
   return items
+}
+
+/** The image a product is listed by when it has none: the code of the product itself. Grids and carousels read it. */
+export const fallbackImage = (product: ProductForGallery, origin: string) => {
+  if (product.meta?.image || product.gallery?.length || !product.slug) return null
+  const path = variationPath(product.slug), size = sizeOf(origin, path)
+  return { id: 0, alt: `QR: ${product.title ?? product.slug}`, url: qrImageUrl(path), width: size, height: size, filename: 'qr.png', mimeType: 'image/png', updatedAt: '1970-01-01T00:00:00.000Z', createdAt: '1970-01-01T00:00:00.000Z' }
 }

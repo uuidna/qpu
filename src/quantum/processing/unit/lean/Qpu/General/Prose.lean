@@ -13,6 +13,7 @@ import Qpu.General.Prose.QuantumProcessingAlgorithms
 import Qpu.General.Prose.QuantumProcessingAlpine
 import Qpu.General.Prose.QuantumProcessingAudit
 import Qpu.General.Prose.QuantumProcessingCatalogIndex
+import Qpu.General.Prose.QuantumProcessingCatalogueSeed
 import Qpu.General.Prose.QuantumProcessingChemistry
 import Qpu.General.Prose.QuantumProcessingCirq
 import Qpu.General.Prose.QuantumProcessingClaims
