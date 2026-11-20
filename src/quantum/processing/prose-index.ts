@@ -1386,6 +1386,8 @@ const SENTENCES = {
   quantumProcessingMcp_mix4: "Three module names make a trinity: every product of each varies with every product of the other two, each in its own ISO and scientific context.",
   quantumProcessingMcp_mix5: "the trinity of ⟦0⟧, ⟦1⟧ and ⟦2⟧ has ⟦3⟧ product variations; ⟦4⟧ are listed from ⟦5⟧; Lean counts ⟦6⟧ trinities of ⟦7⟧ textbooks and ⟦8⟧ trinity variations in all",
   quantumProcessingMcp_mix6: "⟦0⟧ textbooks mix three at a time into ⟦1⟧ trinities with ⟦2⟧ variations, counted by Lean",
+  quantumProcessingMcp_mix7: "a trinity is two pairs interacting as one: the pairs ⟦0⟧ with ⟦1⟧ and ⟦1⟧ with ⟦2⟧ share ⟦1⟧, and each variation holds one product of the shared textbook for both pairs",
+  quantumProcessingMcp_mix8: "⟦0⟧ textbooks form ⟦1⟧ trinities of two pairs sharing one textbook, three for every three textbooks, with ⟦2⟧ variations, counted by Lean",
   quantumProcessingMcp_model224: "code-capacity: the channel acts once on each data qubit; encoding, syndrome extraction, Toffoli correction and decoding are noiseless; every error is Tr of the simulated density matrix on the decoded qubit",
   quantumProcessingMcp_mostSearched362: "the queries searched most, read by Search Console",
   quantumProcessingMcp_nested1: "true: the nested catalogue Lean writes, one page per module under its clause, with its counts of products and variants. A module name: that page with every theorem as a product and every textbook example as a variant.",

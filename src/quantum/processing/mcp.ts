@@ -2092,6 +2092,8 @@ const mixTextbooks = (asked: unknown[], pageAsked: unknown) => {
   const names = books.map((book) => book!.module)
   return {
     phase: 'mix' as const, found: true, textbooks: names, trinity: names.length === 3, variations, total, page, pages: Math.ceil(total / size), counts: NESTED_COUNTS,
+    // a trinity is two pairs interacting as one: the middle textbook is the one the two pairs share
+    ...(names.length === 3 ? { shared: names[1], pairs: [[names[0], names[1]], [names[1], names[2]]], interacting: proseFill(PROSE.quantumProcessingMcp_mix7, names[0], names[1], names[2]) } : {}),
     says: names.length === 3
       ? proseFill(PROSE.quantumProcessingMcp_mix5, names[0], names[1], names[2], total, variations.length, from, NESTED_COUNTS.trinities, NESTED_COUNTS.textbooks, NESTED_COUNTS.trinityVariations)
       : proseFill(PROSE.quantumProcessingMcp_mix2, names[0], names[1], total, variations.length, from, NESTED_COUNTS.mixes, NESTED_COUNTS.textbooks, NESTED_COUNTS.mixedVariations),
@@ -2112,6 +2114,7 @@ const nestedCatalogue = (asked: true | string) => {
       pages: NESTED_CATALOGUE.map((p) => ({ title: p.module, slug: slug(p.module), parent: slug(p.clause), ...count([p]) })),
       ...total, counts: NESTED_COUNTS, mixes: proseFill(PROSE.quantumProcessingMcp_nested5, NESTED_COUNTS.textbooks, NESTED_COUNTS.mixes, NESTED_COUNTS.variations, NESTED_COUNTS.mixedVariations),
       trinities: proseFill(PROSE.quantumProcessingMcp_mix6, NESTED_COUNTS.textbooks, NESTED_COUNTS.trinities, NESTED_COUNTS.trinityVariations),
+      pairedTrinities: proseFill(PROSE.quantumProcessingMcp_mix8, NESTED_COUNTS.textbooks, NESTED_COUNTS.pairedTrinities, NESTED_COUNTS.pairedVariations),
       says: proseFill(PROSE.quantumProcessingMcp_nested2, NESTED_CATALOGUE.length, clauses.length, total.productCount, total.variantCount),
     }
   }
