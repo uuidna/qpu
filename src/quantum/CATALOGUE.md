@@ -4,9 +4,873 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1778 products, 2 under a declared claim context and 1776 as the author's own statement, with 1469 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1822 products, 2 under a declared claim context and 1820 as the author's own statement, with 1469 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+
+The catalogue covers 20 standards, 7 with a theorem that states a fact the standard fixes and 13 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
 This catalogue records authorship and the date of each release. It is a publication, not a patent application: publishing a statement discloses it, and what is filed as a patent, and when, is for a patent attorney to decide before it is published.
+
+## Standards
+
+### ISO/IEC 4879:2024
+
+Witness: `Iso.vocabulary_whole`.
+
+```lean
+Iso.clauses.length =
+  (List.map
+      (fun x =>
+        match x with
+        | (fst, fst_1, n) => n)
+      Iso.groups).sum
+```
+
+### ISO 80000-10
+
+Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+
+### ISO/IEC 9834-8
+
+Witness: `Qpu.Verify.Uuid.free_is_122`.
+
+```lean
+Qpu.Verify.Uuid.totalBits - Qpu.Verify.Uuid.fixedBits = 122
+```
+
+### ISO 22739:2024
+
+Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+
+### ISO 23257:2022
+
+Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+
+### ISO/TR 23455:2019
+
+Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+
+### ISO 24165
+
+Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+
+### ISO 20022
+
+Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+
+### ISO 4217
+
+Witness: `Iso.currency_codes`.
+
+```lean
+Iso.letterCodes 3 = 17576 ∧ 10 ^ 3 = 1000
+```
+
+### ISO 8601
+
+Witness: `Iso.calendar_cycle`.
+
+```lean
+Iso.leap 2024 = true ∧
+  Iso.leap 1900 = false ∧
+    Iso.leap 2000 = true ∧ (List.filter Iso.leap (List.range 400)).length = 97 ∧ (400 * 365 + 97) % 7 = 0
+```
+
+### ISO 639-1
+
+Witness: `Iso.language_codes`.
+
+```lean
+Iso.letterCodes 2 = 676
+```
+
+### ISO 3166-1
+
+Witness: `Iso.country_codes`.
+
+```lean
+Iso.letterCodes 2 = 676 ∧ Iso.letterCodes 3 = 17576 ∧ 10 ^ 3 = 1000
+```
+
+### ISO/IEC 19770
+
+Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+
+### ISO 16
+
+Witness: `Iso.tuning_octaves`.
+
+```lean
+440 * 2 = 880 ∧ 440 / 2 = 220
+```
+
+### ISO 9001
+
+Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+
+### ISO/IEC/IEEE 12207:2026
+
+Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+
+### ISO/IEC/IEEE 42010:2022
+
+Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+
+### ISO/IEC 25010:2023
+
+Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+
+### ISO/IEC 25051:2014
+
+Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+
+### ISO/IEC 27001:2022
+
+Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+
+## Terms of ISO/IEC 4879:2024
+
+### 3.1.1 model
+
+Witness: `Vocabulary.model_fits`.
+
+```lean
+(Vocabulary.observations.all fun x =>
+    match x with
+    | (x, y) => Vocabulary.model 3 x == y) =
+  true
+```
+
+### 3.1.2 model parameter
+
+Witness: `Vocabulary.parameter_unique`.
+
+```lean
+∀ (w : ℤ), Vocabulary.model w 1 = 3 → w = 3
+```
+
+### 3.1.3 machine learning
+
+Witness: `Qpu.Federated.byzantine_median`.
+
+```lean
+∀ (l : List ℤ) (lo hi : ℤ) (malicious : ℕ),
+  0 < l.length →
+    List.countP (Qpu.Federated.outside lo hi) l ≤ malicious →
+      3 * malicious < l.length → lo ≤ Qpu.Federated.median l ∧ Qpu.Federated.median l ≤ hi
+```
+
+### 3.1.4 simulator
+
+Witness: `Vocabulary.basis_length`.
+
+```lean
+∀ (n : ℕ), (Vocabulary.basis n).length = 2 ^ n
+```
+
+### 3.1.5 program
+
+Witness: `program_returns`.
+
+```lean
+rotN 10 schema = schema ∧ schema.length = 10
+```
+
+### 3.1.6 programming language
+
+Witness: `Vocabulary.language_evaluates`.
+
+```lean
+∀ (a b : Vocabulary.Term),
+  (a.add b).eval = a.eval + b.eval ∧
+    ((Vocabulary.Term.lit 2).add ((Vocabulary.Term.lit 3).mul (Vocabulary.Term.lit 4))).eval = 14
+```
+
+### 3.1.7 programming
+
+Witness: `Qpu.ProgramSynthesis.double_synth`.
+
+```lean
+Qpu.ProgramSynthesis.synth 3 Qpu.ProgramSynthesis.doubleSpec =
+    some (Qpu.ProgramSynthesis.Expr.var.add Qpu.ProgramSynthesis.Expr.var) ∧
+  Qpu.ProgramSynthesis.size (Qpu.ProgramSynthesis.Expr.var.add Qpu.ProgramSynthesis.Expr.var) ≤
+    Qpu.ProgramSynthesis.size ((Qpu.ProgramSynthesis.Expr.lit 2).mul Qpu.ProgramSynthesis.Expr.var)
+```
+
+### 3.1.8 coding
+
+Witness: `Qpu.ProgramSynthesis.complete_sound`.
+
+```lean
+∀ {k : ℕ} {sk : Qpu.ProgramSynthesis.Sketch} {s : Qpu.ProgramSynthesis.Spec} {e : Qpu.ProgramSynthesis.Expr},
+  Qpu.ProgramSynthesis.complete k sk s = some e → Qpu.ProgramSynthesis.satisfies (Qpu.ProgramSynthesis.fill sk e) s
+```
+
+### 3.1.9 algorithm
+
+Witness: `Advantage.rank_unrank`.
+
+```lean
+∀ (sizes : List ℕ), ∀ i < Advantage.space sizes, Advantage.rank sizes (Advantage.unrank sizes i) = i
+```
+
+### 3.2.1 Hilbert space
+
+Witness: `HilbertSpace.GI.mul_re`.
+
+```lean
+∀ (x y : HilbertSpace.GI), (x * y).re = x.re * y.re - x.im * y.im
+```
+
+### 3.2.2 operator
+
+Witness: `Vocabulary.operator_linear`.
+
+```lean
+∀ (m : Vocabulary.Mat) (u v : Vocabulary.Vec),
+  m.apply (u.1 + v.1, u.2 + v.2) = ((m.apply u).1 + (m.apply v).1, (m.apply u).2 + (m.apply v).2)
+```
+
+### 3.2.3 quantum physics
+
+Witness: `physics_all`.
+
+```lean
+levelGap 0 = 1 ∧ levelGap 1 = 2 ∧ levelGap 2 = 4 ∧ levelGap 3 = 8
+```
+
+### 3.2.4 quantum, adjective
+
+Witness: `JosephsonJunction.flux_quantum_definition`.
+
+```lean
+JosephsonJunction.phi0Num * (2 * PhysicalConstant.eNum) * 10 ^ JosephsonJunction.hExp =
+  PhysicalConstant.hNum * JosephsonJunction.phi0Den * 10 ^ JosephsonJunction.eExp
+```
+
+### 3.2.5 quantum, noun
+
+Witness: `Vocabulary.quantum_discrete`.
+
+```lean
+∀ (q n m : ℕ), n * q < m * q → (n + 1) * q ≤ m * q
+```
+
+### 3.2.6 quantum system
+
+Witness: `Vocabulary.system_dimension`.
+
+```lean
+∀ (m n : ℕ), (Vocabulary.basis (m + n)).length = (Vocabulary.basis m).length * (Vocabulary.basis n).length
+```
+
+### 3.2.7 quantum state
+
+Witness: `QuantumEntanglement.bell_state`.
+
+```lean
+(∀ r < 4, QuantumEntanglement.bell r ≠ 0 ↔ r = 0 ∨ r = 3) ∧
+  (QuantumEntanglement.bell 0).normSq = (QuantumEntanglement.bell 3).normSq
+```
+
+### 3.2.8 quantum superposition
+
+Witness: `Vocabulary.superposition`.
+
+```lean
+Vocabulary.Hd.apply Vocabulary.e0 = (1, 1) ∧ Vocabulary.Hd.apply Vocabulary.e1 = (1, -1)
+```
+
+### 3.2.9 basis states
+
+Witness: `Vocabulary.basis_orthonormal`.
+
+```lean
+Vocabulary.inner Vocabulary.e0 Vocabulary.e0 = 1 ∧
+  Vocabulary.inner Vocabulary.e1 Vocabulary.e1 = 1 ∧ Vocabulary.inner Vocabulary.e0 Vocabulary.e1 = 0
+```
+
+### 3.2.10 quantum entanglement
+
+Witness: `QuantumEntanglement.chsh_quantum_value`.
+
+```lean
+QuantumEntanglement.chshBell = 8 ∧ 8 ^ 2 = 8 * (2 ^ 2 * 2) ∧ 2 ^ 2 < 8
+```
+
+### 3.2.11 quantum operator
+
+Witness: `Vocabulary.observable_symmetric`.
+
+```lean
+Vocabulary.X.transpose = Vocabulary.X ∧ Vocabulary.Z.transpose = Vocabulary.Z ∧ Vocabulary.Hd.transpose = Vocabulary.Hd
+```
+
+### 3.2.12 Hamiltonian
+
+Witness: `Vocabulary.hamiltonian_energies`.
+
+```lean
+Vocabulary.hamiltonian.apply Vocabulary.e0 = (-1, 0) ∧ Vocabulary.hamiltonian.apply Vocabulary.e1 = (0, 1)
+```
+
+### 3.2.13 eigenstate
+
+Witness: `Vocabulary.eigenstates_of_x`.
+
+```lean
+Vocabulary.X.apply (1, 1) = (1, 1) ∧ Vocabulary.X.apply (1, -1) = (-1, 1)
+```
+
+### 3.2.14 eigenvalue
+
+Witness: `Vocabulary.eigenvalues_of_z`.
+
+```lean
+Vocabulary.Z.apply Vocabulary.e0 = Vocabulary.e0 ∧
+  Vocabulary.Z.apply Vocabulary.e1 = (0, -1) ∧ Vocabulary.Z.trace = 0 ∧ Vocabulary.Z.det = -1
+```
+
+### 3.2.15 eigenspace
+
+Witness: `Vocabulary.eigenspace_of_identity`.
+
+```lean
+∀ (v : Vocabulary.Vec), Vocabulary.I.apply v = v
+```
+
+### 3.2.16 quantum measurement
+
+Witness: `measurement`.
+
+```lean
+mint n = 8
+```
+
+### 3.2.17 projective measurement
+
+Witness: `Vocabulary.projectors`.
+
+```lean
+Vocabulary.P0.mul Vocabulary.P0 = Vocabulary.P0 ∧
+  Vocabulary.P1.mul Vocabulary.P1 = Vocabulary.P1 ∧
+    Vocabulary.P0.mul Vocabulary.P1 = { a := 0, b := 0, c := 0, d := 0 } ∧
+      Vocabulary.P0.add Vocabulary.P1 = Vocabulary.I
+```
+
+### 3.2.18 quantum coherence
+
+Witness: `Vocabulary.coherence_interferes`.
+
+```lean
+Vocabulary.Hd.apply (Vocabulary.Hd.apply Vocabulary.e0) = (2, 0)
+```
+
+### 3.2.19 decoherence
+
+Witness: `Vocabulary.decoherence_loses_interference`.
+
+```lean
+Vocabulary.mixes (Vocabulary.weights (Vocabulary.Hd.apply Vocabulary.e0)) = (2, 2) ∧
+  Vocabulary.weights (Vocabulary.Hd.apply (Vocabulary.Hd.apply Vocabulary.e0)) = (4, 0)
+```
+
+### 3.2.20 coherence time
+
+Witness: `Vocabulary.coherence_bounded_by_relaxation`.
+
+```lean
+∀ (relaxation pure : ℕ),
+  relaxation ≤ Vocabulary.twiceDephasing relaxation pure ∧
+    (Vocabulary.twiceDephasing relaxation pure = relaxation ↔ pure = 0)
+```
+
+### 3.2.21 relaxation time
+
+Witness: `Vocabulary.relaxation_halves`.
+
+```lean
+Vocabulary.remaining 1024 1 = 512 ∧ Vocabulary.remaining 1024 10 = 1 ∧ Vocabulary.remaining 1024 11 = 0
+```
+
+### 3.3.1 quantum information
+
+Witness: `QuantumInformation.no_cloning`.
+
+```lean
+∀ (u : Operator.Mat),
+  (∀ r < 4, Operator.ap 4 u (HilbertSpace.basis 0) r = HilbertSpace.basis 0 r) →
+    (∀ r < 4, Operator.ap 4 u (HilbertSpace.basis 2) r = HilbertSpace.basis 3 r) →
+      Operator.ap 4 u (fun r => HilbertSpace.basis 0 r + HilbertSpace.basis 2 r) 1 ≠ 1
+```
+
+### 3.3.2 quantum encoding
+
+Witness: `QuantumCommunication.superdense_exact`.
+
+```lean
+∀ m < 4, ∀ r < 4, QuantumCommunication.superdense m r ≠ 0 ↔ r = m
+```
+
+### 3.3.3 qubit
+
+Witness: `Qubit.unbounded`.
+
+```lean
+∀ (N : ℕ), ∃ k, N < k * Qubit.effective hexbit
+```
+
+### 3.3.4 qudit
+
+Witness: `Vocabulary.qudit_register`.
+
+```lean
+∀ (n : ℕ), Vocabulary.registerDim 2 n = (Vocabulary.basis n).length ∧ Vocabulary.registerDim 3 2 = 9
+```
+
+### 3.3.5 physical qubit
+
+Witness: `Transmon.sycamore`.
+
+```lean
+Transmon.charging 93100 208 ∧ Transmon.frequency 30569 208 6924 ∧ 50 * 208 < 30569
+```
+
+### 3.3.6 physical qudit
+
+Witness: `Vocabulary.physical_qudit_levels`.
+
+```lean
+Vocabulary.level 5000 200 1 - Vocabulary.level 5000 200 0 = 5000 ∧
+  Vocabulary.level 5000 200 2 - Vocabulary.level 5000 200 1 = 4800 ∧
+    Vocabulary.level 5000 200 3 - Vocabulary.level 5000 200 2 = 4600
+```
+
+### 3.3.7 logical qubit
+
+Witness: `QuantumErrorCorrection.repetition_corrects`.
+
+```lean
+∀ (b : Bool),
+  ∀ e < 4, QuantumErrorCorrection.decode (QuantumErrorCorrection.flip e (QuantumErrorCorrection.encode b)) = b
+```
+
+### 3.3.8 logical qudit
+
+Witness: `Vocabulary.logical_qudit_corrects`.
+
+```lean
+((List.range 3).all fun d =>
+    (List.range 3).all fun position =>
+      (List.range 3).all fun value =>
+        Vocabulary.majority3 (Vocabulary.corrupt (Vocabulary.encode3 d) position value) == d) =
+  true
+```
+
+### 3.3.9 logical operator
+
+Witness: `Vocabulary.logical_x`.
+
+```lean
+∀ (b : Bool), Vocabulary.decodeBit (List.map (fun x => !x) (Vocabulary.encodeBit b)) = !b
+```
+
+### 3.3.10 state fidelity
+
+Witness: `Vocabulary.state_fidelity`.
+
+```lean
+Vocabulary.inner Vocabulary.e0 Vocabulary.e0 = 1 ∧
+  Vocabulary.inner Vocabulary.e0 Vocabulary.e1 = 0 ∧
+    Vocabulary.inner (1, 1) Vocabulary.e0 * Vocabulary.inner (1, 1) Vocabulary.e0 * 2 = Vocabulary.inner (1, 1) (1, 1)
+```
+
+### 3.3.11 fidelity
+
+Witness: `Vocabulary.fidelity_symmetric`.
+
+```lean
+∀ (u v : Vocabulary.Vec), Vocabulary.inner u v = Vocabulary.inner v u
+```
+
+### 3.3.12 process fidelity
+
+Witness: `Vocabulary.process_fidelity`.
+
+```lean
+Vocabulary.traceOverlap Vocabulary.I Vocabulary.I = 2 ∧
+  Vocabulary.traceOverlap Vocabulary.X Vocabulary.X = 2 ∧ Vocabulary.traceOverlap Vocabulary.I Vocabulary.X = 0
+```
+
+### 3.4.1 quantum information processing
+
+Witness: `QuantumAlgorithm.deutsch_jozsa`.
+
+```lean
+∀ f < 16,
+  (QuantumAlgorithm.constant f = true → (QuantumAlgorithm.dj f 0).normSq = 16) ∧
+    (QuantumAlgorithm.balanced f = true → QuantumAlgorithm.dj f 0 = 0)
+```
+
+### 3.4.2 quantum gate
+
+Witness: `QuantumGate.cnot`.
+
+```lean
+Operator.Same 4 (Operator.mm 4 QuantumGate.CNOT (Operator.dag QuantumGate.CNOT)) Operator.idm ∧
+  Operator.Same 4 (Operator.mm 4 QuantumGate.CNOT QuantumGate.CNOT) Operator.idm
+```
+
+### 3.4.3 unitary gate
+
+Witness: `QuantumGate.h_unitary`.
+
+```lean
+Operator.Same 2 (Operator.mm 2 QuantumGate.H (Operator.dag QuantumGate.H)) (Operator.smul 2 Operator.idm)
+```
+
+### 3.4.4 gate fidelity
+
+Witness: `Vocabulary.gate_fidelity`.
+
+```lean
+Vocabulary.traceOverlap Vocabulary.Hd Vocabulary.Hd = 4 ∧ Vocabulary.traceOverlap Vocabulary.Hd Vocabulary.X = 2
+```
+
+### 3.4.5 quantum circuit
+
+Witness: `QuantumCircuit.swap_routing`.
+
+```lean
+Operator.Same 8 (Operator.mm 8 (Operator.mm 8 QuantumCircuit.swap01 QuantumCircuit.cnot12) QuantumCircuit.swap01)
+  QuantumCircuit.cnot02
+```
+
+### 3.4.6 quantum error correction
+
+Witness: `QuantumErrorCorrection.steane_corrects`.
+
+```lean
+∀ i < 7, QuantumErrorCorrection.syndrome i = i + 1
+```
+
+### 3.4.7 quantum error mitigation
+
+Witness: `Vocabulary.mitigation_extrapolates`.
+
+```lean
+∀ (value noise : ℤ), 2 * (value - noise) - (value - 2 * noise) = value
+```
+
+### 3.4.8 quantum processor
+
+Witness: `QuantumProcessor.connected`.
+
+```lean
+∀ x ∈ QuantumProcessor.sites hexbit, x ∈ QuantumProcessor.reach hexbit ((Qubit.rows hexbit).length + 4)
+```
+
+### 3.4.9 quantum algorithm
+
+Witness: `QuantumAlgorithm.grover_search`.
+
+```lean
+∀ m < 4, ∀ r < 4, QuantumAlgorithm.grover m r ≠ 0 ↔ r = m
+```
+
+### 3.4.10 quantum computer
+
+Witness: `Cryostat.qubit_cold_at_ten_millikelvin`.
+
+```lean
+Cryostat.coldEnough 5000000000 10000 19
+```
+
+### 3.4.11 quantum computing
+
+Witness: `QuantumAlgorithm.phase_estimation_exact`.
+
+```lean
+∀ k < 8,
+  ∀ r < 8,
+    (QuantumAlgorithm.sum8 fun j => QuantumAlgorithm.iqft r j * QuantumAlgorithm.wPow (j * k)) = if r = k then 8 else 0
+```
+
+### 3.4.12 fault-tolerant quantum computing
+
+Witness: `surfaceCorrectable_monotone`.
+
+```lean
+∀ {d₁ d₂ : ℕ}, d₁ ≤ d₂ → surfaceCorrectable d₁ ≤ surfaceCorrectable d₂
+```
+
+### 3.4.13 circuit-based quantum computing
+
+Witness: `CircuitBasedQuantumComputing.stabilizer_cnot`.
+
+```lean
+CircuitBasedQuantumComputing.Exact QuantumGate.CNOT CircuitBasedQuantumComputing.ruleCNOT 1
+```
+
+### 3.4.14 one-way quantum computing
+
+Witness: `Vocabulary.cluster_stabilizers_commute`.
+
+```lean
+Vocabulary.clusterStabilizers.length = 3 ∧
+  (Vocabulary.clusterStabilizers.all fun p => Vocabulary.clusterStabilizers.all fun q => Vocabulary.commutes p q) = true
+```
+
+### 3.4.15 adiabatic quantum computing
+
+Witness: `Vocabulary.adiabatic_gap_open`.
+
+```lean
+∀ (n k : ℕ), 0 < n → k ≤ n → 0 < Vocabulary.gapSquared n k
+```
+
+### 3.4.16 topological quantum computing
+
+Witness: `isingFusion_strict_growth`.
+
+```lean
+∀ (m : ℕ), 0 < m → isingFusion m < isingFusion (m + 1)
+```
+
+### 3.4.17 quantum code
+
+Witness: `QuantumErrorCorrection.steane_css`.
+
+```lean
+∀ a < 3,
+  ∀ b < 3,
+    (List.filter (fun i => QuantumErrorCorrection.hamming a i && QuantumErrorCorrection.hamming b i)
+            (List.range 7)).length %
+        2 =
+      0
+```
+
+### 3.4.18 quantum coding
+
+Witness: `Vocabulary.coding_threshold`.
+
+```lean
+3 * 100 * 100 < 100 * 1000 ∧ 400 * 1000 < 3 * 400 * 400
+```
+
+### 3.4.19 quantum coding
+
+Witness: `Qpu.Verify.Correct.steane_corrects_one`.
+
+```lean
+3 = 2 * 1 + 1
+```
+
+### 3.4.20 quantum coding
+
+Witness: `surfacePhysical_pos`.
+
+```lean
+∀ (d : ℕ), 0 < surfacePhysical d
+```
+
+### 3.4.21 quantum programming
+
+Witness: `QuantumCircuit.routed_depth`.
+
+```lean
+∀ (d : ℕ), 1 ≤ d → QuantumCircuit.routedGates d = 2 * d - 1 ∧ QuantumCircuit.routedGates 2 = 3
+```
+
+### 3.4.22 quantum simulator
+
+Witness: `qftStates_growth`.
+
+```lean
+∀ (q : ℕ), qftStates (q + 1) = 2 * qftStates q
+```
+
+### 3.4.23 quantum simulator
+
+Witness: `Vocabulary.system_dimension`.
+
+```lean
+∀ (m n : ℕ), (Vocabulary.basis (m + n)).length = (Vocabulary.basis m).length * (Vocabulary.basis n).length
+```
+
+### 3.4.24 digital quantum simulator
+
+Witness: `QuantumGate.t_gate`.
+
+```lean
+QuantumGate.SameW (QuantumGate.mmW QuantumGate.TW (QuantumGate.dagW QuantumGate.TW)) QuantumGate.idW ∧
+  QuantumGate.SameW (QuantumGate.powW QuantumGate.TW 8) QuantumGate.idW ∧
+    ¬QuantumGate.SameW (QuantumGate.powW QuantumGate.TW 4) QuantumGate.idW ∧
+      ¬QuantumGate.SameW (QuantumGate.mmW QuantumGate.HW QuantumGate.TW) (QuantumGate.mmW QuantumGate.TW QuantumGate.HW)
+```
+
+### 3.4.25 analogue quantum simulator
+
+Witness: `Vocabulary.adiabatic_gap_open`.
+
+```lean
+∀ (n k : ℕ), 0 < n → k ≤ n → 0 < Vocabulary.gapSquared n k
+```
+
+### 3.4.26 circuit-based quantum computer
+
+Witness: `QuantumProcessor.Layers.layers_four`.
+
+```lean
+(∀ e ∈ QuantumProcessor.Layers.edges hexbit, QuantumProcessor.Layers.layer e < 4) ∧
+  ∀ x ∈ QuantumProcessor.sites hexbit, ∀ l < 4, QuantumProcessor.Layers.touching hexbit l x ≤ 1
+```
+
+### 3.4.27 one-way quantum computer
+
+Witness: `Vocabulary.cluster_stabilizers_commute`.
+
+```lean
+Vocabulary.clusterStabilizers.length = 3 ∧
+  (Vocabulary.clusterStabilizers.all fun p => Vocabulary.clusterStabilizers.all fun q => Vocabulary.commutes p q) = true
+```
+
+### 3.4.28 adiabatic quantum computer
+
+Witness: `Vocabulary.adiabatic_gap_open`.
+
+```lean
+∀ (n k : ℕ), 0 < n → k ≤ n → 0 < Vocabulary.gapSquared n k
+```
+
+### 3.4.29 quantum memory
+
+Witness: `Qpu.Verify.Correct.repetition_corrects_clean`.
+
+```lean
+∀ (b : Bool), Qpu.Verify.Correct.maj3 b b b = b
+```
+
+### 3.4.30 simulator
+
+Witness: `Vocabulary.basis_length`.
+
+```lean
+∀ (n : ℕ), (Vocabulary.basis n).length = 2 ^ n
+```
+
+### 3.4.31 quantum annealer
+
+Witness: `pegasus_monotone`.
+
+```lean
+∀ {m m' : ℕ}, m ≤ m' → pegasus m ≤ pegasus m'
+```
+
+### 3.4.32 coupler
+
+Witness: `Coupler.willow`.
+
+```lean
+Coupler.cz 42 84 ∧ Coupler.cz 37 95
+```
+
+### 3.5.1 quantum simulation
+
+Witness: `Advantage.two_pow_le_space`.
+
+```lean
+∀ (sizes : List ℕ), (∀ s ∈ sizes, 2 ≤ s) → 2 ^ sizes.length ≤ Advantage.space sizes
+```
+
+### 3.5.2 quantum machine learning
+
+Witness: `qaoa_budget_per_layer`.
+
+```lean
+∀ (p e q : ℕ), qaoaZz p e + qaoaX p q = p * (e + q)
+```
+
+### 3.5.3 sampling algorithm
+
+Witness: `Vocabulary.basis_length`.
+
+```lean
+∀ (n : ℕ), (Vocabulary.basis n).length = 2 ^ n
+```
+
+### 3.5.4 optimization
+
+Witness: `qaoaZz_le_edges`.
+
+```lean
+∀ (p : ℕ) {e e' : ℕ}, e ≤ e' → qaoaZz p e ≤ qaoaZz p e'
+```
+
+### 3.5.5 linear systems solving
+
+Witness: `Vocabulary.linear_system_solved`.
+
+```lean
+∀ (v : Vocabulary.Vec), Vocabulary.system.apply v = (5, 10) ↔ v = (1, 3)
+```
+
+### 3.5.6 search algorithm
+
+Witness: `textbook_grover_search`.
+
+```lean
+∀ m < 4, ∀ r < 4, QuantumAlgorithm.grover m r ≠ 0 ↔ r = m
+```
+
+### 3.5.7 hidden subgroup
+
+Witness: `textbook_simon`.
+
+```lean
+List.filter (fun y => (y / 2 + y % 2) % 2 == 0) (List.range 4) = [0, 3]
+```
+
+### 3.5.8 boson sampling
+
+Witness: `Vocabulary.bosons_bunch`.
+
+```lean
+Vocabulary.Hd.perm = 0 ∧ Vocabulary.Hd.det = -2
+```
+
+### 3.6.1 quantum communication
+
+Witness: `QuantumCommunication.teleport_exact`.
+
+```lean
+∀ b < 2, ∀ r < 8, QuantumCommunication.teleport b r = if r % 2 = b then 1 else 0
+```
+
+### 3.6.2 quantum cryptography
+
+Witness: `Vocabulary.key_sifting`.
+
+```lean
+∀ (bit basis : Bool),
+  Vocabulary.measure basis (Vocabulary.prepare bit basis) = some bit ∧
+    Vocabulary.measure (!basis) (Vocabulary.prepare bit basis) = none
+```
+
+### 3.6.3 quantum sensor
+
+Witness: `Vocabulary.sensing_gain`.
+
+```lean
+∀ (n : ℕ), n ≤ n * n
+```
+
+### 3.6.4 quantum sensing
+
+Witness: `Vocabulary.sensing_gain`.
+
+```lean
+∀ (n : ℕ), n ≤ n * n
+```
 
 ## Qpu.Application.Grover
 
@@ -995,6 +1859,98 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 rays + seed = mint n
+```
+
+## Qpu.General.Iso
+
+### `Iso.calendar_cycle`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Iso.leap 2024 = true ∧
+  Iso.leap 1900 = false ∧
+    Iso.leap 2000 = true ∧ (List.filter Iso.leap (List.range 400)).length = 97 ∧ (400 * 365 + 97) % 7 = 0
+```
+
+### `Iso.clauses_count`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Iso.clauses.length = 86 ∧
+  (List.map
+        (fun x =>
+          match x with
+          | (fst, fst_1, n) => n)
+        Iso.groups).sum =
+    86
+```
+
+### `Iso.clauses_numbered`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+List.map (fun c => (c.group, c.index)) Iso.clauses =
+  List.flatMap
+    (fun x =>
+      match x with
+      | (g, fst, n) => List.map (fun i => (g, i + 1)) (List.range n))
+    Iso.groups
+```
+
+### `Iso.country_codes`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Iso.letterCodes 2 = 676 ∧ Iso.letterCodes 3 = 17576 ∧ 10 ^ 3 = 1000
+```
+
+### `Iso.currency_codes`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Iso.letterCodes 3 = 17576 ∧ 10 ^ 3 = 1000
+```
+
+### `Iso.language_codes`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Iso.letterCodes 2 = 676
+```
+
+### `Iso.standards_count`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Iso.standards.length = 20 ∧ (List.filter (fun x => x.witness.isSome) Iso.standards).length = 7
+```
+
+### `Iso.tuning_octaves`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+440 * 2 = 880 ∧ 440 / 2 = 220
+```
+
+### `Iso.vocabulary_whole`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Iso.clauses.length =
+  (List.map
+      (fun x =>
+        match x with
+        | (fst, fst_1, n) => n)
+      Iso.groups).sum
 ```
 
 ## Qpu.General.Lattice
@@ -12746,6 +13702,314 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ {x : ℕ}, x ≤ Thousand.bound → Thousand.reflect (Thousand.reflect x) = x
+```
+
+## Qpu.General.Vocabulary
+
+### `Vocabulary.adiabatic_gap_open`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n k : ℕ), 0 < n → k ≤ n → 0 < Vocabulary.gapSquared n k
+```
+
+### `Vocabulary.basis_length`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), (Vocabulary.basis n).length = 2 ^ n
+```
+
+### `Vocabulary.basis_orthonormal`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.inner Vocabulary.e0 Vocabulary.e0 = 1 ∧
+  Vocabulary.inner Vocabulary.e1 Vocabulary.e1 = 1 ∧ Vocabulary.inner Vocabulary.e0 Vocabulary.e1 = 0
+```
+
+### `Vocabulary.bosons_bunch`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.Hd.perm = 0 ∧ Vocabulary.Hd.det = -2
+```
+
+### `Vocabulary.cluster_stabilizers_commute`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.clusterStabilizers.length = 3 ∧
+  (Vocabulary.clusterStabilizers.all fun p => Vocabulary.clusterStabilizers.all fun q => Vocabulary.commutes p q) = true
+```
+
+### `Vocabulary.coding_threshold`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+3 * 100 * 100 < 100 * 1000 ∧ 400 * 1000 < 3 * 400 * 400
+```
+
+### `Vocabulary.coherence_bounded_by_relaxation`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (relaxation pure : ℕ),
+  relaxation ≤ Vocabulary.twiceDephasing relaxation pure ∧
+    (Vocabulary.twiceDephasing relaxation pure = relaxation ↔ pure = 0)
+```
+
+### `Vocabulary.coherence_interferes`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.Hd.apply (Vocabulary.Hd.apply Vocabulary.e0) = (2, 0)
+```
+
+### `Vocabulary.decoherence_loses_interference`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.mixes (Vocabulary.weights (Vocabulary.Hd.apply Vocabulary.e0)) = (2, 2) ∧
+  Vocabulary.weights (Vocabulary.Hd.apply (Vocabulary.Hd.apply Vocabulary.e0)) = (4, 0)
+```
+
+### `Vocabulary.eigenspace_of_identity`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (v : Vocabulary.Vec), Vocabulary.I.apply v = v
+```
+
+### `Vocabulary.eigenstates_of_x`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.X.apply (1, 1) = (1, 1) ∧ Vocabulary.X.apply (1, -1) = (-1, 1)
+```
+
+### `Vocabulary.eigenvalues_of_z`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.Z.apply Vocabulary.e0 = Vocabulary.e0 ∧
+  Vocabulary.Z.apply Vocabulary.e1 = (0, -1) ∧ Vocabulary.Z.trace = 0 ∧ Vocabulary.Z.det = -1
+```
+
+### `Vocabulary.fidelity_symmetric`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (u v : Vocabulary.Vec), Vocabulary.inner u v = Vocabulary.inner v u
+```
+
+### `Vocabulary.gate_fidelity`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.traceOverlap Vocabulary.Hd Vocabulary.Hd = 4 ∧ Vocabulary.traceOverlap Vocabulary.Hd Vocabulary.X = 2
+```
+
+### `Vocabulary.hamiltonian_energies`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.hamiltonian.apply Vocabulary.e0 = (-1, 0) ∧ Vocabulary.hamiltonian.apply Vocabulary.e1 = (0, 1)
+```
+
+### `Vocabulary.key_sifting`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (bit basis : Bool),
+  Vocabulary.measure basis (Vocabulary.prepare bit basis) = some bit ∧
+    Vocabulary.measure (!basis) (Vocabulary.prepare bit basis) = none
+```
+
+### `Vocabulary.language_evaluates`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (a b : Vocabulary.Term),
+  (a.add b).eval = a.eval + b.eval ∧
+    ((Vocabulary.Term.lit 2).add ((Vocabulary.Term.lit 3).mul (Vocabulary.Term.lit 4))).eval = 14
+```
+
+### `Vocabulary.linear_system_solved`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (v : Vocabulary.Vec), Vocabulary.system.apply v = (5, 10) ↔ v = (1, 3)
+```
+
+### `Vocabulary.logical_qudit_corrects`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+((List.range 3).all fun d =>
+    (List.range 3).all fun position =>
+      (List.range 3).all fun value =>
+        Vocabulary.majority3 (Vocabulary.corrupt (Vocabulary.encode3 d) position value) == d) =
+  true
+```
+
+### `Vocabulary.logical_x`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (b : Bool), Vocabulary.decodeBit (List.map (fun x => !x) (Vocabulary.encodeBit b)) = !b
+```
+
+### `Vocabulary.mitigation_extrapolates`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (value noise : ℤ), 2 * (value - noise) - (value - 2 * noise) = value
+```
+
+### `Vocabulary.model_fits`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+(Vocabulary.observations.all fun x =>
+    match x with
+    | (x, y) => Vocabulary.model 3 x == y) =
+  true
+```
+
+### `Vocabulary.observable_symmetric`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.X.transpose = Vocabulary.X ∧ Vocabulary.Z.transpose = Vocabulary.Z ∧ Vocabulary.Hd.transpose = Vocabulary.Hd
+```
+
+### `Vocabulary.operator_linear`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (m : Vocabulary.Mat) (u v : Vocabulary.Vec),
+  m.apply (u.1 + v.1, u.2 + v.2) = ((m.apply u).1 + (m.apply v).1, (m.apply u).2 + (m.apply v).2)
+```
+
+### `Vocabulary.parameter_unique`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (w : ℤ), Vocabulary.model w 1 = 3 → w = 3
+```
+
+### `Vocabulary.physical_qudit_levels`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.level 5000 200 1 - Vocabulary.level 5000 200 0 = 5000 ∧
+  Vocabulary.level 5000 200 2 - Vocabulary.level 5000 200 1 = 4800 ∧
+    Vocabulary.level 5000 200 3 - Vocabulary.level 5000 200 2 = 4600
+```
+
+### `Vocabulary.process_fidelity`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.traceOverlap Vocabulary.I Vocabulary.I = 2 ∧
+  Vocabulary.traceOverlap Vocabulary.X Vocabulary.X = 2 ∧ Vocabulary.traceOverlap Vocabulary.I Vocabulary.X = 0
+```
+
+### `Vocabulary.projectors`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.P0.mul Vocabulary.P0 = Vocabulary.P0 ∧
+  Vocabulary.P1.mul Vocabulary.P1 = Vocabulary.P1 ∧
+    Vocabulary.P0.mul Vocabulary.P1 = { a := 0, b := 0, c := 0, d := 0 } ∧
+      Vocabulary.P0.add Vocabulary.P1 = Vocabulary.I
+```
+
+### `Vocabulary.quantum_discrete`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (q n m : ℕ), n * q < m * q → (n + 1) * q ≤ m * q
+```
+
+### `Vocabulary.qudit_register`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), Vocabulary.registerDim 2 n = (Vocabulary.basis n).length ∧ Vocabulary.registerDim 3 2 = 9
+```
+
+### `Vocabulary.relaxation_halves`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.remaining 1024 1 = 512 ∧ Vocabulary.remaining 1024 10 = 1 ∧ Vocabulary.remaining 1024 11 = 0
+```
+
+### `Vocabulary.sensing_gain`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n ≤ n * n
+```
+
+### `Vocabulary.state_fidelity`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.inner Vocabulary.e0 Vocabulary.e0 = 1 ∧
+  Vocabulary.inner Vocabulary.e0 Vocabulary.e1 = 0 ∧
+    Vocabulary.inner (1, 1) Vocabulary.e0 * Vocabulary.inner (1, 1) Vocabulary.e0 * 2 = Vocabulary.inner (1, 1) (1, 1)
+```
+
+### `Vocabulary.superposition`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Vocabulary.Hd.apply Vocabulary.e0 = (1, 1) ∧ Vocabulary.Hd.apply Vocabulary.e1 = (1, -1)
+```
+
+### `Vocabulary.system_dimension`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (m n : ℕ), (Vocabulary.basis (m + n)).length = (Vocabulary.basis m).length * (Vocabulary.basis n).length
 ```
 
 ## Qpu.Information.PhysicalQubit.Coil

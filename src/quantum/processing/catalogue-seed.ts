@@ -1,7 +1,10 @@
 // What Payload holds of the Lean catalogue: the pages, categories, products and variants, planned from the indexes Lean
 // writes. A clause is a page; a module is a page nested under its clause and a category; a theorem is a product of
 // that category; each example the theorem names is a variant of the product, an option of the one variant type.
+// The standards are pages too: one for the register, one for each standard under it, and one for each term of the
+// vocabulary standard under that standard, each with the theorem Lean names as its witness.
 // Pure: the plan is data, and src/scripts/seedCatalogue.ts writes it through Payload's local API.
+import { ISO_CLAUSES, ISO_SAYS, ISO_STANDARDS, ISO_VOCABULARY } from './iso-index.ts'
 import { NESTED, NESTED_COUNTS } from './nested-index.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 import { MODULE_DOCS, THEOREMS } from './theorems-index.ts'
@@ -23,6 +26,10 @@ const proseOf = (doc: string | undefined) => {
   return body.join(' ').replace(/\s+/g, ' ').trim()
 }
 
+/** The Lean module that holds the register of standards, and the title of its page. */
+export const ISO_MODULE = 'Qpu.General.Iso'
+export const ISO_ROOT = 'Standards'
+
 export const VARIANT_TYPE = { name: 'example', label: 'Example' } as const
 
 /** The whole plan, or the plan of the modules named. */
@@ -35,6 +42,12 @@ export const planCatalogue = (only?: readonly string[]) => {
     ...clauses.map((clause) => ({ title: clause, slug: slugOf(clause), parent: null as string | null, text: [clause] })),
     ...modules.map((page) => ({ title: page.module, slug: slugOf(page.module), parent: slugOf(page.clause), text: [proseOf(MODULE_DOCS[page.module]) || page.module] })),
   ]
+  if (!only?.length || only.includes(ISO_MODULE)) {
+    const root = slugOf(ISO_ROOT)
+    pages.push({ title: ISO_ROOT, slug: root, parent: null, text: [ISO_SAYS] })
+    for (const standard of ISO_STANDARDS) pages.push({ title: standard.reference, slug: slugOf(standard.reference), parent: root, text: [standard.says, standard.statement ?? ''] })
+    for (const term of ISO_CLAUSES) pages.push({ title: `${term.clause} ${term.name}`, slug: slugOf(`${ISO_VOCABULARY} ${term.clause}`), parent: slugOf(ISO_VOCABULARY), text: [term.says, term.statement] })
+  }
   const categories = modules.filter((page) => page.products.length > 0).map((page) => ({ title: page.module, slug: slugOf(page.module) }))
   const products = modules.flatMap((page) => page.products.map((product) => {
     const theorem = stated.get(product.theorem)

@@ -3,30 +3,10 @@
 
 import { PROSE, proseFill } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
+import { ISO_DIMENSIONS } from './iso-index.ts'
 
-/** The ISO dimensions this tree already names. Quantum purity is gated on each of them. */
-export const ISO_DIMENSIONS = [
-  'ISO/IEC 4879:2024',
-  'ISO 80000-10',
-  'ISO/IEC 9834-8',
-  'ISO 22739:2024',
-  'ISO 23257:2022',
-  'ISO/TR 23455:2019',
-  'ISO 24165',
-  'ISO 20022',
-  'ISO 4217',
-  'ISO 8601',
-  'ISO 639-1',
-  'ISO 3166-1',
-  'ISO/IEC 19770',
-  'ISO 16',
-  'ISO 9001',
-  'ISO/IEC/IEEE 12207:2026',
-  'ISO/IEC/IEEE 42010:2022',
-  'ISO/IEC 25010:2023',
-  'ISO/IEC 25051:2014',
-  'ISO/IEC 27001:2022',
-] as const
+/** The ISO dimensions this tree names, as Lean lists them in Qpu.General.Iso. Quantum purity is gated on each of them. */
+export { ISO_DIMENSIONS }
 
 /**
  * Entropy: dictionary first, then the meaning is verified (ISO 80000-5).

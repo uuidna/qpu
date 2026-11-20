@@ -67,3 +67,5 @@ import Qpu.Processing.QuantumProcessor.ReadoutResonator
 import Qpu.General.Advantage
 import Qpu.Claims.Declared
 import Qpu.Claims.Reflection
+import Qpu.General.Vocabulary
+import Qpu.General.Iso
