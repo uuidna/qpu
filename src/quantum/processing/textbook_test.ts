@@ -113,7 +113,7 @@ test('the Lean file is the author of the textbook, and the index is that file re
   const { parseTextbook } = await import('./textbook-parse.ts')
   const written = parseTextbook(readFileSync(join(process.cwd(), TEXTBOOK_LEAN_PATH), 'utf8'))
   assert.ok(written.length > 0)
-  assert.deepEqual(TEXTBOOK_THEOREMS, written, 'textbook-index.ts differs from the Lean file: run pnpm run lean:index')
+  assert.deepEqual(TEXTBOOK_THEOREMS, written, 'textbook-index.ts differs from the Lean file: run lake run index')
   assert.equal(new Set(written.map((t) => t.key)).size, written.length, 'every textbook theorem is written once')
 })
 

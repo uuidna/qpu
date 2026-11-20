@@ -10,6 +10,6 @@ const agrees = existsSync(door.path) && readFileSync(door.path, 'utf8') === door
 if (!agrees && !check) writeFileSync(door.path, door.text)
 console.log(JSON.stringify({ check, agrees, written: !agrees && !check, path: door.path, says: door.says }))
 if (!agrees && check) {
-  console.error(`${door.path} differs from the Lean file: run pnpm run lean:index and commit the result`)
+  console.error(`${door.path} differs from the Lean file: run lake run index and commit the result`)
   process.exit(1)
 }

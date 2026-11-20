@@ -35,21 +35,10 @@ jobs:
       - name: Fetch the Mathlib build cache
         run: lake exe cache get
 
-      - name: The kernel checks every Lean module
-        run: lake build
-
-      - name: Lean writes the draft applications
-        run: lake env lean src/quantum/processing/unit/lean/tools/Applications.lean
-
-      - name: Lean writes the claim manifest
-        run: lake exe claims
-
       - uses: actions/setup-node@v5
         with:
           node-version: 26
 
-      - name: The files rendered from Lean agree with Lean
-        run: |
-          node src/scripts/textbookIndex.ts --check
-          node src/scripts/theoremsIndex.ts --check
-          node src/scripts/leanDerived.ts --check
+      - name: Lake verifies everything
+        # the build, the claim manifest, the files rendered from Lean, and the draft applications
+        run: lake run verify

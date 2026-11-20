@@ -23,7 +23,7 @@ const agrees = committed === answer.text
 if (check) {
   console.log(JSON.stringify({ check, agrees, path: answer.path, says: answer.says }))
   if (!agrees) {
-    console.error(`${answer.path} differs from the Lean environment: run pnpm run lean:index and commit the result`)
+    console.error(`${answer.path} differs from the Lean environment: run lake run index and commit the result`)
     process.exit(1)
   }
 } else {
