@@ -249,7 +249,7 @@ const partsRoundTrip = (id: string) => {
 
 /**
  * Neighbours reflect and test each other: on each axis the + and − steps are partners.
- * σ of each neighbour mirrors; reflecting twice restores the parts (Qpu.Sigma).
+ * σ of each neighbour mirrors; reflecting twice restores the parts (Qpu.General.Sigma).
  */
 export const reflectProgramNeighbours = (handle: string) => {
   const around = quantumNeighbours(handle)

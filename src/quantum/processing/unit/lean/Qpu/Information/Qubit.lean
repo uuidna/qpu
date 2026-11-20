@@ -1,4 +1,4 @@
-import Qpu.Lattice
+import Qpu.General.Lattice
 import Qpu.Claims.Claim
 
 /-! # Qpu.Information.Qubit

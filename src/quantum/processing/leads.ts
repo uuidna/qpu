@@ -131,7 +131,7 @@ export const sitemapLeads = (urls: readonly { loc: string; lastmod?: string }[])
 }
 
 /** Every relation of the Clay register as a lead served by the clay tool, its integers facts for the wave. */
-const CLAY_LEADS: readonly Lead[] = recomputeClay().relations.map((r) => ({ id: `clay-${r.name}`, source: `src/quantum/processing/unit/lean/Qpu/Clay.lean ${r.name}`, statement: `${r.name}: ${r.statement} = ${r.sides[0]!.value} (${r.bits} bits, seed ${1 + ((r.sides[0]!.value - 1) % 9)})`, status: 'served', tool: 'clay' }))
+const CLAY_LEADS: readonly Lead[] = recomputeClay().relations.map((r) => ({ id: `clay-${r.name}`, source: `src/quantum/processing/unit/lean/Qpu/General/Clay.lean ${r.name}`, statement: `${r.name}: ${r.statement} = ${r.sides[0]!.value} (${r.bits} bits, seed ${1 + ((r.sides[0]!.value - 1) % 9)})`, status: 'served', tool: 'clay' }))
 const STANDARD_LEADS: readonly Lead[] = quantumStandardLeads().map(({ id, source, statement, status, tool, reason, run }) => ({ id, source, statement, status, tool, ...(reason ? { reason } : {}), ...(run ? { run } : {}) }))
 
 // every lead Payload holds, the ones this module computes taking their place: Payload is the source, the generated index its copy

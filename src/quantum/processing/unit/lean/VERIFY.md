@@ -1,23 +1,23 @@
 # Qpu.Verify - zero-dependency kernel-decided bridge for Cirq/Qualtran
 
 Companion proof suite to the erpax Cirq/Qualtran RFC. Every module lives under
-`Qpu/Verify/` and proves its claims with the Lean kernel alone (`by decide` or
+`Qpu/Processing/Verify/` and proves its claims with the Lean kernel alone (`by decide` or
 exhaustive `cases`) and imports no package; the project pins `leanprover/lean4:v4.33.0`.
-Mathlib (`v4.33.0`) is the project's one dependency, imported only by `Qpu/Meaning.lean`,
+Mathlib (`v4.33.0`) is the project's one dependency, imported only by `Qpu/General/Meaning.lean`,
 which proves the tree's own definitions equal to the Mathlib notions they are.
 
 ## Modules
 
 | Module | Scope |
 |---|---|
-| `Qpu/Verify/Gate.lean` | Scaled Gaussian-integer gate matrices; unitarity, H·Z·H = X, CNOT/SWAP involutions |
-| `Qpu/Verify/Stabilizer.lean` | H / S / CNOT Pauli conjugation on symplectic bits, sign-correct |
-| `Qpu/Verify/Entangle.lean` | CHSH and GHZ/Mermin finite game bounds; classical ceilings by exhaustive decision, quantum 4/4 tables |
-| `Qpu/Verify/Correct.lean` | Repetition + nested Shor majority decoding; Steane [[7,1,3]] syndrome decode with failure controls |
-| `Qpu/Verify/Cost.lean` | NIST PQC-ladder margin arithmetic (see scope note below) |
-| `Qpu/Verify/Receipt.lean` | Break-even economics of content-addressed caching (~30x reference bundle, self-reported) |
-| `Qpu/Verify/Hexbit.lean` | Nibble/hex round-trips, 32-bit routing prefixes |
-| `Qpu/Verify/Uuid.lean` | 128-bit handle banding: 6 fixed + 122 free = 16 program + 106 message |
+| `Qpu/Processing/Verify/Gate.lean` | Scaled Gaussian-integer gate matrices; unitarity, H·Z·H = X, CNOT/SWAP involutions |
+| `Qpu/Processing/Verify/Stabilizer.lean` | H / S / CNOT Pauli conjugation on symplectic bits, sign-correct |
+| `Qpu/Processing/Verify/Entangle.lean` | CHSH and GHZ/Mermin finite game bounds; classical ceilings by exhaustive decision, quantum 4/4 tables |
+| `Qpu/Processing/Verify/Correct.lean` | Repetition + nested Shor majority decoding; Steane [[7,1,3]] syndrome decode with failure controls |
+| `Qpu/Processing/Verify/Cost.lean` | NIST PQC-ladder margin arithmetic (see scope note below) |
+| `Qpu/Processing/Verify/Receipt.lean` | Break-even economics of content-addressed caching (~30x reference bundle, self-reported) |
+| `Qpu/Processing/Verify/Hexbit.lean` | Nibble/hex round-trips, 32-bit routing prefixes |
+| `Qpu/Processing/Verify/Uuid.lean` | 128-bit handle banding: 6 fixed + 122 free = 16 program + 106 message |
 
 ## Method
 
@@ -32,7 +32,7 @@ From the repo root:
 lake build
 ```
 
-The library root `Qpu.lean` imports every `Qpu/Verify/*` module, so a plain
+The library root `Qpu.lean` imports every `Qpu/Processing/Verify/*` module, so a plain
 `lake build` kernel-checks the whole corpus. CI does the same via
 `.github/workflows/lean-verify.yml` on every push and pull request.
 

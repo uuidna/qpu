@@ -72,7 +72,7 @@ type Candidate = { kind: 'tool' | 'example' | 'lead' | 'theorem'; id: string; sc
 type Reflection = {
   /** the statement's integers factored by the Shor tool within its bound; beyond it, the bound is the answer */
   factors: { n: number; factors?: string; order?: string; by: string }[]
-  /** each number against the nearest schema bound d: its σ-reflection d − x (Qpu.Sigma) and the QFT angle 2πx/d */
+  /** each number against the nearest schema bound d: its σ-reflection d − x (Qpu.General.Sigma) and the QFT angle 2πx/d */
   angles: { x: number; property: string; d: number; sigma: number; angle: number }[]
   /** the statement in its mirror forms (reflectStatement) */
   queries: string[]
@@ -375,7 +375,7 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
   const mirror = { source: `reflection of: ${statement}`, status: 'open' as const }
   const reflectionLeads: Lead[] = [
     ...factors.filter((f) => f.factors).map((f) => ({ id: `factors-${f.n}`, ...mirror, statement: `${f.n} = ${f.factors} (order ${f.order}) by ${f.by}`, tool: 'algorithm', reason: 'a hidden factor found in the reflection; verify it across the integer adaptors' })),
-    ...angles.map((a) => ({ id: `angle-${a.property}-${a.x}`, ...mirror, statement: `σ_${a.d}(${a.x}) = ${a.sigma} on ${a.property}; QFT angle ${a.angle.toFixed(6)} rad`, reason: 'an angle in the reflection; Qpu.Sigma proves σ_d(σ_d(x)) = x' })),
+    ...angles.map((a) => ({ id: `angle-${a.property}-${a.x}`, ...mirror, statement: `σ_${a.d}(${a.x}) = ${a.sigma} on ${a.property}; QFT angle ${a.angle.toFixed(6)} rad`, reason: 'an angle in the reflection; Qpu.General.Sigma proves σ_d(σ_d(x)) = x' })),
     ...found.map((c) => ({ id: `mirror-${c.id}`, ...mirror, statement: c.text, tool: c.kind === 'tool' ? c.id : examples.find((e) => e.id === c.id)?.tool, reason: 'found only in the mirror form of the statement' })),
   ]
   const verify: VerifyRequest[] = [...new Map([...matchedLeads, ...reflectionLeads].flatMap((l) => extractFacts(l).flatMap(createVerifyRequests)).map((r) => [r.url + JSON.stringify(r.body), r])).values()]
