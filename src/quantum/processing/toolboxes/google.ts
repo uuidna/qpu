@@ -503,7 +503,7 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
       googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi22,
       door,
       theorem: 'textbook_echo_qubits_within_willow',
-      relatedTheorems: ['textbook_echo_qubits_within_willow', 'interfere'],
+      relatedTheorems: ['textbook_echo_qubits_within_willow', 'Qpu.Verify.Gate.h_z_h_is_two_x'],
       formula: 'P(U† U |0⟩ = |0⟩) = 1 ∧ P(H† Z H |0⟩ = |0⟩) = 0 ∧ 65 ≤ 103 ≤ 105',
       value: {
         unperturbedReturnProbability: Number(unperturbed.probability.toFixed(6)),

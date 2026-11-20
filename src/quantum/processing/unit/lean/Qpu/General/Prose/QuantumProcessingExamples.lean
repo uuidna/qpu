@@ -526,4 +526,6 @@ def quantumProcessingExamples_showsCodesPlan : String := "The codes tool with no
 
 def quantumProcessingExamples_showsCloudflareAdapters : String := "The adapters configuration names, for each adapter, the Cloudflare bindings it needs: the declared are the needed when none is missing (textbook_bindings_bound)."
 
+def quantumProcessingExamples_showsClayRelation14 : String := "The relation at 14 by name: the faces of the lattice are the coil and the parameters of a QAOA circuit of seven layers, two for each layer (textbook_qaoa_params)."
+
 end Prose
