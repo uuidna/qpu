@@ -2322,3 +2322,16 @@ theorem textbook_qaoa_params (p : Nat) : 2 * (p + 1) = 2 * p + 2 ∧ 2 * 7 = 14 
 @[reflection] theorem textbook_doi_related_reflected (σ : Nat) : σ - (2) = σ - (4 - 2) := congrArg (σ - ·) (Eq.symm (textbook_doi_related))
 /-- textbook_qaoa_params reflected by its shape, conjunction (examples: clay-relation-14) -/
 @[reflection] theorem textbook_qaoa_params_reflected (p : Nat) (σ : Nat) : (σ - (2 * p + 2) = σ - (2 * (p + 1))) ∧ (σ - (14) = σ - (2 * 7)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_qaoa_params p).1), congrArg (σ - ·) (Eq.symm (textbook_qaoa_params p).2)⟩
+/-- an odd order refuses and the refusal is only a refusal: 4 has the order 3 modulo 21, which is odd and yields no factor, so another base is tried; 2 has the order 6, which is even, and its half power 8 splits 21 into 7 and 3 (examples: algorithm-shor-odd-order) -/
+theorem textbook_refuse_is_refuse : 4 ^ 3 % 21 = 1 ∧ 3 % 2 = 1 ∧ 2 ^ 6 % 21 = 1 ∧ 6 % 2 = 0 ∧ Nat.gcd (2 ^ 3 - 1) 21 = 7 ∧ Nat.gcd (2 ^ 3 + 1) 21 = 3 := by decide
+/-- the leads cost what the tree carries: when nothing is carried, the release is published as the next sequential version and no further (examples: repository-workflow) -/
+theorem textbook_carry_release (version carried : Nat) (h : carried = 0) : version + 1 + carried = version + 1 := by omega
+
+/-- textbook_refuse_is_refuse reflected by its shape, conjunction (examples: algorithm-shor-odd-order) -/
+@[reflection] theorem textbook_refuse_is_refuse_reflected (σ : Nat) : (σ - (1) = σ - (4 ^ 3 % 21)) ∧ (σ - (1) = σ - (3 % 2)) ∧ (σ - (1) = σ - (2 ^ 6 % 21)) ∧ (σ - (0) = σ - (6 % 2)) ∧ (σ - (7) = σ - (Nat.gcd (2 ^ 3 - 1) 21)) ∧ (σ - (3) = σ - (Nat.gcd (2 ^ 3 + 1) 21)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_refuse_is_refuse).1), congrArg (σ - ·) (Eq.symm (textbook_refuse_is_refuse).2.1), congrArg (σ - ·) (Eq.symm (textbook_refuse_is_refuse).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_refuse_is_refuse).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_refuse_is_refuse).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_refuse_is_refuse).2.2.2.2.2)⟩
+/-- textbook_carry_release reflected by its shape, equality (examples: repository-workflow) -/
+@[reflection] theorem textbook_carry_release_reflected (version carried : Nat) (h : carried = 0) (σ : Nat) : σ - (version + 1) = σ - (version + 1 + carried) := congrArg (σ - ·) (Eq.symm (textbook_carry_release version carried h))
+/-- the contrapositive of textbook_carry_release (examples: repository-workflow) -/
+@[reflection] theorem textbook_carry_release_contrapositive (version carried : Nat) : ¬ (version + 1 + carried = version + 1) → ¬ ((carried = 0)) := fun hc hh => hc (textbook_carry_release version carried hh)
+/-- the converse of textbook_carry_release, proved (examples: repository-workflow) -/
+@[reflection] theorem textbook_carry_release_converse (version carried : Nat) : (version + 1 + carried = version + 1) → (carried = 0) := fun hc => by omega

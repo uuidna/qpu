@@ -528,4 +528,6 @@ def quantumProcessingExamples_showsCloudflareAdapters : String := "The adapters 
 
 def quantumProcessingExamples_showsClayRelation14 : String := "The relation at 14 by name: the faces of the lattice are the coil and the parameters of a QAOA circuit of seven layers, two for each layer (textbook_qaoa_params)."
 
+def quantumProcessingExamples_showsShorOddOrder : String := "Order-finding where the order is odd: 4 has the order 3 modulo 21, so this base yields no factor and another base is tried (textbook_refuse_is_refuse)."
+
 end Prose

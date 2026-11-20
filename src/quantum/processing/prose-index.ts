@@ -894,6 +894,7 @@ const SENTENCES = {
   quantumProcessingExamples_showsCodesPlan: "The codes tool with no lists given plans the three CLDR requests and names the eleven locales it will validate (textbook_codes_locales).",
   quantumProcessingExamples_showsJsonldBlock: "The block as JSON-LD: the author is a Person whose @id is the ORCID, sixteen digits in four groups with three dashes, nineteen characters (textbook_orcid_digits).",
   quantumProcessingExamples_showsJsonldCatalogue: "The catalogue as JSON-LD: an OfferCatalog whose offers are the nine the catalogue holds (textbook_catalogue_offers).",
+  quantumProcessingExamples_showsShorOddOrder: "Order-finding where the order is odd: 4 has the order 3 modulo 21, so this base yields no factor and another base is tried (textbook_refuse_is_refuse).",
   quantumProcessingExamples_signing409: "ML-DSA under webcrypto_modern_algorithms",
   quantumProcessingExamples_statement107: "how many qubits has Willow",
   quantumProcessingExamples_statement114: "price a nonprofit with 40 users on business standard",
