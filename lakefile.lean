@@ -82,6 +82,9 @@ def renderByLean (file : String) (built index : System.FilePath) (check : Bool) 
 /-- The Lean file that writes the catalogue of claims. -/
 def catalogueFile : String := "src/quantum/processing/unit/lean/tools/Catalogue.lean"
 
+/-- The Lean file that writes the connector's configuration. -/
+def configFile : String := "src/quantum/processing/unit/lean/tools/Config.lean"
+
 /-- The Lean file that writes the register of standards. -/
 def isoFile : String := "src/quantum/processing/unit/lean/tools/Iso.lean"
 
@@ -113,7 +116,9 @@ def renderProse (check : Bool) : IO UInt32 := do
   if claimed != 0 then return claimed
   let counted ← renderByLean thousandFile (".lake" / "build" / "thousand-index.ts") ("src" / "quantum" / "processing" / "thousand-index.ts") check
   if counted != 0 then return counted
-  renderByLean isoFile (".lake" / "build" / "iso-index.ts") ("src" / "quantum" / "processing" / "iso-index.ts") check
+  let listed ← renderByLean isoFile (".lake" / "build" / "iso-index.ts") ("src" / "quantum" / "processing" / "iso-index.ts") check
+  if listed != 0 then return listed
+  renderByLean configFile (".lake" / "build" / "config-index.ts") ("src" / "quantum" / "processing" / "config-index.ts") check
 
 /-- `lake run index`: build, then Lean writes every file that follows it (prose index, theorem index, textbook index,
 blueprint, nested catalogue, catalogue of claims, thousand-bit table, register of standards). The Clay statements keep their own generator,
@@ -142,7 +147,7 @@ script applications do
   steps [("lake", #["build"]), ("lake", #["env", "lean", applicationsFile])]
 
 /-- The Lean files that write rendered output; `lake run verify` runs each of them. -/
-def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile]
+def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile, configFile]
 
 /-- `lake run leanfiles`: no Lean file is skipped. Every `.lean` file the repository tracks is this lakefile, a module
 the build compiles, a tool `lake run verify` runs, or evidence kept under `lean/`, which is named and never removed. -/
