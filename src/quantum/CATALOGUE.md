@@ -4,7 +4,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1844 products, 2 under a declared claim context and 1842 as the author's own statement, with 1494 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1845 products, 2 under a declared claim context and 1843 as the author's own statement, with 1495 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 7 with a theorem that states a fact the standard fixes and 13 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -10979,6 +10979,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (σ : ℕ), σ - 3 = σ - (2 + 1)
+```
+
+### `textbook_qaoa_params`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-relation-14.
+
+```lean
+∀ (p : ℕ), 2 * (p + 1) = 2 * p + 2 ∧ 2 * 7 = 14
 ```
 
 ### `textbook_qaoa_random_cut`

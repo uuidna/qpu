@@ -3758,3 +3758,5 @@ theorem textbook_particles_classes : 6 * 4 = 24 ∧ 6 * 4 ≠ 25 := by decide
 theorem textbook_deposit_paid (coins price : Nat) (h : price ≤ coins) : coins - price + price = coins := Nat.sub_add_cancel h
 /-- of the 4 collections that may name a DOI, 2 verify it and 2 leads remain (examples: payload-doi-related) -/
 theorem textbook_doi_related : 4 - 2 = 2 := by decide
+/-- a QAOA circuit has 2 parameters for each layer, its two angles: one more layer is 2 more parameters, and 7 layers have 14, the faces of the coil (examples: clay-relation-14) -/
+theorem textbook_qaoa_params (p : Nat) : 2 * (p + 1) = 2 * p + 2 ∧ 2 * 7 = 14 := ⟨by omega, by decide⟩
