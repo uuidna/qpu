@@ -19,15 +19,6 @@ open Lean Meta
 /-- Where the rendered catalogue is written. -/
 def catalogueOut : System.FilePath := ".lake" / "build" / "CATALOGUE.md"
 
-/-- A lemma the compiler writes for a definition is no product. -/
-def compilerWritten (name : Name) : Bool :=
-  match name with
-  | .str before last =>
-    last.startsWith "eq_" || last.startsWith "match_" || last.startsWith "proof_" || last.startsWith "_"
-      || ["inj", "injEq", "sizeOf_spec", "noConfusion", "ctorIdx", "eq_def"].contains last
-      || (last == "eq" && (match before with | .str _ recursor => ["brecOn", "binductionOn", "below"].contains recursor | _ => false))
-  | _ => true
-
 /-- The examples a theorem's inline doc names. -/
 def examplesOf (doc : String) : List String :=
   match doc.splitOn "(examples: " with
@@ -38,25 +29,23 @@ def examplesOf (doc : String) : List String :=
 
 #eval show MetaM Unit from do
   let env ← getEnv
-  let declared := Qpu.Claims.Extract.claims
+  let declared ← Qpu.declaredTheorems
+  let claims := Qpu.Claims.Extract.claims
   let modules := (env.header.moduleNames.filter fun m => (`Qpu).isPrefixOf m && m != `Qpu).qsort (fun a b => a.toString < b.toString)
   let mut body : Array String := #[]
   let mut products := 0
   let mut byContext := 0
   let mut variants := 0
   for module in modules do
-    let some idx := env.getModuleIdx? module | continue
-    let mut names : Array Name := #[]
-    for (name, info) in env.constants.map₁.toList do
-      if let .thmInfo _ := info then
-        if env.getModuleIdxFor? name == some idx && !name.isInternal && !compilerWritten name then names := names.push name
+    -- a product is a theorem the author declared: Lean decides, by the place the theorem has in a source
+    let names := (declared.filter fun (_, from_) => from_ == module).map (·.1)
     if names.isEmpty then continue
     body := body.push s!"## {module}" |>.push ""
-    for name in names.qsort (fun a b => a.toString < b.toString) do
+    for name in names do
       let info ← getConstInfo name
       let statement ← ppExpr info.type
       let examples := examplesOf ((← findDocString? env name).getD "")
-      let context := declared.find? fun claim => claim.theoremName == name.toString || claim.context.evidence.contains name.toString
+      let context := claims.find? fun claim => claim.theoremName == name.toString || claim.context.evidence.contains name.toString
       let claim := match context with
         | some c => s!"Claimed under the declared {c.context.kind.toString} claim \"{c.context.title}\"."
         | none => s!"Claimed by {Qpu.author} as the author's own statement, by this name and as stated."

@@ -31,29 +31,18 @@ def examplesOf (doc : String) : List String :=
 def reflects (name : String) : Bool :=
   ["_reflected", "_contrapositive", "_converse", "_converse_refuted"].any fun ending => name.endsWith ending
 
-/-- A lemma the compiler writes for a definition (its equations, matchers, injectivity) is no product. -/
-def compilerWritten (name : Name) : Bool :=
-  match name with
-  | .str before last =>
-    last.startsWith "eq_" || last.startsWith "match_" || last.startsWith "proof_" || last.startsWith "_"
-      || ["inj", "injEq", "sizeOf_spec", "noConfusion", "ctorIdx", "eq_def"].contains last
-      || (last == "eq" && (match before with | .str _ recursor => ["brecOn", "binductionOn", "below"].contains recursor | _ => false))
-  | _ => true
-
 #eval show MetaM Unit from do
   let env ← getEnv
+  let declared ← Qpu.declaredTheorems
   let modules := (env.header.moduleNames.filter fun m => (`Qpu).isPrefixOf m && m != `Qpu).qsort (fun a b => a.toString < b.toString)
   let mut rows : Array Json := #[]
   let mut products := 0
   let mut variants := 0
   for module in modules do
-    let some idx := env.getModuleIdx? module | continue
-    let mut names : Array Name := #[]
-    for (name, info) in env.constants.map₁.toList do
-      if let .thmInfo _ := info then
-        if env.getModuleIdxFor? name == some idx && !name.isInternal && !compilerWritten name && !reflects name.toString then names := names.push name
+    -- a product is a theorem the author declared; the theorems that reflect it are its own, not products
+    let names := (declared.filter fun (name, from_) => from_ == module && !reflects name.toString).map (·.1)
     let mut items : Array Json := #[]
-    for name in names.qsort (fun a b => a.toString < b.toString) do
+    for name in names do
       let examples := examplesOf ((← findDocString? env name).getD "")
       products := products + 1
       variants := variants + examples.length

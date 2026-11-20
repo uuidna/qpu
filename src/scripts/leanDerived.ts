@@ -1,5 +1,5 @@
 // The files the payload doors render from the Lean sources and the kernel's theorem index: BLUEPRINT.md and
-// clay-statements.ts. Run after theoremsIndex.ts, which they read. With --check nothing is written and a
+// clay-statements.ts. Run after Lean has written the theorem index, which they read. With --check nothing is written and a
 // difference fails: Lean decides, the rendered files follow.
 import { PROSE } from '../quantum/processing/prose-index.ts'
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs'

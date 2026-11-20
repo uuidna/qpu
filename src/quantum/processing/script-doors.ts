@@ -8,7 +8,7 @@ import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { QUANTUM_TERMS, quantumVocabulary } from './quantum-vocabulary.ts'
 import { canonicalText, seal, uuid, uuidQubits } from '../uuid/index.ts'
 import { TOOLBOXES } from './mcp.ts'
-import { THEOREMS } from './theorems-index.ts'
+import { GENERATED_LEMMAS, KERNEL_THEOREMS, THEOREMS } from './theorems-index.ts'
 
 /** Qpu/General/Textbook.lean is written in Lean. This door renders nothing: it names the file and counts what the index read from it. */
 const textbookLean = () => {
@@ -35,23 +35,11 @@ const blueprint = (lean: Readonly<Record<string, string>>) => {
   return { phase: 'scripts-blueprint' as const, path, text, modules: modules.length, theorems, says: proseFill(PROSE.quantumProcessingScriptDoors_says2, theorems, modules.length) }
 }
 
-/** The Lean script that prints every kernel-accepted theorem of the Qpu modules as JSON lines (key, module, statement, axioms, doc), then every Qpu module doc (module, moduleDoc): run as lake env lean <file>. Formerly scripts/theorems.lean. */
-export const THEOREMS_LEAN = "-- Every kernel-accepted theorem of the Qpu modules with its statement, axioms and doc, and every Qpu module doc, as JSON lines: what the tree deposits with the unit.\nimport Lean\nimport Qpu\nopen Lean Meta in\n#eval show MetaM Unit from do\n  let env ← getEnv\n  let mut rows : Array (Name × Name) := #[]\n  for (name, ci) in env.constants.map₁.toList do\n    if let .thmInfo _ := ci then\n      if let some idx := env.getModuleIdxFor? name then\n        let m := env.header.moduleNames[idx.toNat]!\n        if (`Qpu).isPrefixOf m then rows := rows.push (name, m)\n  let sorted := rows.qsort (fun a b => a.1.toString < b.1.toString)\n  for (name, m) in sorted do\n    let ci ← getConstInfo name\n    let ty ← ppExpr ci.type\n    let axs ← collectAxioms name\n    let doc := (← findDocString? env name).getD \"\"\n    let esc := fun (s : String) => s.replace \"\\\\\" \"\\\\\\\\\" |>.replace \"\\\"\" \"\\\\\\\"\" |>.replace \"\\n\" \" \"\n    IO.println s!\"\\{\\\"key\\\":\\\"{name}\\\",\\\"module\\\":\\\"{m}\\\",\\\"statement\\\":\\\"{esc (toString ty)}\\\",\\\"axioms\\\":[{\",\".intercalate (axs.toList.map (fun a => s!\"\\\"{a}\\\"\"))}],\\\"doc\\\":\\\"{esc doc}\\\"}\"\n  for m in env.header.moduleNames do\n    if (`Qpu).isPrefixOf m then\n      if let some docs := getModuleDoc? env m then\n        let esc := fun (s : String) => s.replace \"\\\\\" \"\\\\\\\\\" |>.replace \"\\\"\" \"\\\\\\\"\" |>.replace \"\\n\" \"\\\\n\"\n        IO.println s!\"\\{\\\"module\\\":\\\"{m}\\\",\\\"moduleDoc\\\":\\\"{esc (\"\\n\".intercalate (docs.toList.map (·.doc)))}\\\"}\"\n"
-/** The compiler's own names: equation lemmas, match splitters, the _proof_N and _simp_N auxiliaries, structure and recursor boilerplate.
- *  A recursor is `rec`, `recOn` or `rec_N` exactly: a theorem whose own name opens on rec (receipt_exact) is a theorem, never dropped. */
-const GENERATED_LEMMA = /\.(eq_\d+|eq_def|match_\d+|proof_\d+|_proof(?:_\d+)+|_simp(?:_\d+)+|_sunfold|_unfold|inj|injEq|sizeOf_spec|noConfusion\w*|casesOn\w*|rec(?:On)?(?:_\d+)?|below\w*|brecOn\w*|brecOn\.eq|ibelow\w*|binductionOn\w*)$/
-type TheoremRow = { key: string; module: string; statement: string; axioms: string[]; doc?: string }
-type ModuleRow = { module: string; moduleDoc: string }
-/** theorems-index.ts from the kernel's own environment: without output, the Lean script to run; with the script's output, the index text. Formerly scripts/purify.ts (its index half). */
-const theoremsIndex = (output?: string) => {
-  const path = 'src/quantum/processing/theorems-index.ts'
-  if (typeof output !== 'string') return { phase: 'scripts-theorems-index' as const, path, lean: THEOREMS_LEAN, run: ['lake', 'env', 'lean', '<the lean script written to a file>'], says: PROSE.quantumProcessingScriptDoors_says3 }
-  const parsed = output.split('\n').filter((l) => l.startsWith('{')).flatMap((l) => { try { return [JSON.parse(l) as TheoremRow | ModuleRow] } catch { return [] } })
-  const ledger = parsed.filter((r): r is TheoremRow => 'key' in r), moduleDocs = parsed.filter((r): r is ModuleRow => 'moduleDoc' in r)
-  const handWritten = ledger.filter((r) => !r.key.startsWith('_private.') && !GENERATED_LEMMA.test(r.key)), generated = ledger.length - handWritten.length
-  const sorried = ledger.filter((r) => r.axioms.includes('sorryAx')).length
-  const text = [PROSE.quantumProcessingScriptDoors_s4, `export const KERNEL_THEOREMS = ${ledger.length}`, `export const GENERATED_LEMMAS = ${generated}`, PROSE.quantumProcessingScriptDoors_s5, 'export const THEOREMS: readonly { key: string; module: string; statement: string; axioms: readonly string[]; doc?: string }[] = [', ...handWritten.map((r) => `  ${JSON.stringify({ key: r.key, module: r.module, statement: r.statement, axioms: r.axioms, ...(r.doc?.trim() ? { doc: r.doc.trim() } : {}) })},`), ']', 'export const THEOREM_KEYS: ReadonlySet<string> = new Set(THEOREMS.map((t) => t.key))', PROSE.quantumProcessingScriptDoors_s6, `export const MODULE_DOCS: Readonly<Record<string, string>> = ${JSON.stringify(Object.fromEntries(moduleDocs.map((r) => [r.module, r.moduleDoc])), null, 2)}`, ''].join('\n')
-  return { phase: 'scripts-theorems-index' as const, path, text: ledger.length ? text : undefined, kernel: ledger.length, handWritten: handWritten.length, generated, sorry: sorried, holds: ledger.length > 0 && sorried === 0, says: ledger.length ? proseFill(PROSE.quantumProcessingScriptDoors_s7, ledger.length, handWritten.length, generated, sorried) : PROSE.quantumProcessingScriptDoors_s8 }
+/** theorems-index.ts is written by Lean (tools/Theorems.lean, run by `lake run index`): Lean decides which theorems the author
+ *  declared, by the place each has in a source. This door filters nothing and renders nothing: it names the file and the command. */
+const theoremsIndex = () => {
+  const path = 'src/quantum/processing/theorems-index.ts', tool = 'src/quantum/processing/unit/lean/tools/Theorems.lean'
+  return { phase: 'scripts-theorems-index' as const, path, tool, run: ['lake', 'run', 'index'], kernel: KERNEL_THEOREMS, declared: THEOREMS.length, generated: GENERATED_LEMMAS, holds: THEOREMS.length > 0 && KERNEL_THEOREMS === THEOREMS.length + GENERATED_LEMMAS }
 }
 
 
@@ -305,7 +293,7 @@ export const scripts = (args: ScriptsArgs, ctx?: { examples?: readonly { id: str
   if (args.textbookLean === true) return textbookLean()
   if (args.blueprint?.lean) return blueprint(args.blueprint.lean)
   if (args.skills === true) return qpuSkills(TOOLBOXES, QUANTUM_TERMS, ctx?.examples ?? [])
-  if (args.theoremsIndex && typeof args.theoremsIndex === 'object') return theoremsIndex(args.theoremsIndex.output)
+  if (args.theoremsIndex && typeof args.theoremsIndex === 'object') return theoremsIndex()
   if (args.leadsIndex && Array.isArray(args.leadsIndex.rows)) return leadsIndex(args.leadsIndex.rows)
   if (args.tablesIndex && args.tablesIndex.tables && typeof args.tablesIndex.tables === 'object') {
     return tablesIndex(args.tablesIndex.tables, args.tablesIndex.prior ?? {}, args.tablesIndex.dry === true)
