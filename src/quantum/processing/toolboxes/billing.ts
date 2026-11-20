@@ -1,6 +1,7 @@
 // The billing toolbox: Stripe per tenant, pure, each op as the stripe tool's description states it. Every scenario between tenants is an entry
 // and a rule, never a special case: the same licence at another domain, a refund after a grant, a dispute, a renewal, a replayed event, a wrong
 // tenant's signature.
+import { UUID_SHAPE } from '../config-index.ts'
 import { PROSE, proseFill } from '../prose-index.ts'
 import { defineTool, isObj, createChecks, unlimited, type Toolbox } from '../toolbox.ts'
 import { hmacSha256, utf8, hex, sameHex, sha256 } from '../unit/hmac.ts'
@@ -417,7 +418,7 @@ const runReactor = (bodies: readonly GapBody[]) => {
 /** A leaked UUID, wherever the text sits, is a coin credited to the burn account, and the bytes that are not that UUID are the coils of the same burn.
  *  Coins and coils cluster by the trinity of their digital root and are booked together in the fusion reactor. “Quantum knowledge plasma” names that
  *  burn only. The literature (OpenAlex) and the scientific table (NIST CODATA) are asked online; nothing here fetches, and the tree makes no physics claim. */
-const PLASMA_UUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi
+const PLASMA_UUID = new RegExp(UUID_SHAPE, 'gi')
 const PLASMA_LITERARY = `https://api.openalex.org/works?search=${encodeURIComponent('quantum knowledge plasma')}&filter=has_doi:true&per-page=5`
 const PLASMA_SCIENTIFIC = 'https://physics.nist.gov/cuu/Constants/Table/allascii.txt'
 export const plasma = (texts: Readonly<Record<string, string>>, answers?: readonly { url?: string; status?: number; ok?: boolean }[]) => {

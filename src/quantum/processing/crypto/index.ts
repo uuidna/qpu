@@ -2,7 +2,7 @@
 // Pure cryptographic surfaces: the proven 1000-bit surface, UUID superpositions, NIST/CERN scenarios, AEAD/Merkle/PBKDF2/X25519, and attest theorem reads. No MCP, no fetch.
 import { PROSE, proseFill } from '../prose-index.ts'
 import { createImpossible, decodeImpossible, testPrimality, listFactors, shorReduction, orderFinding, sqrtBig, pasteInteger } from '../algorithms.ts'
-import { dnaToHex, hexToDna, dnaStream, uuid, seal, seal as uuidSeal, canonicalText, stream, neighbours, next, navigate, compositions, composition, compositionIndex, rosetta, harmonicDefaults, uuidQubits, hexbit, organiseQubits, coins, channel } from '../../uuid/index.ts'
+import { dnaToHex, hexToDna, dnaStream, uuid, seal, seal as uuidSeal, canonicalText, stream, neighbours, next, navigate, compositions, composition, compositionIndex, rosetta, harmonicDefaults, uuidQubits, hexbit, organiseQubits, coins, channel, isUuid } from '../../uuid/index.ts'
 import { coins as clayCoins, rays, faces, plane, recomputeClay, AXIOMS } from '../clay-register.ts'
 import { CLAY_RELATIONS } from '../clay-statements.ts'
 import { speakThousand } from '../i18n.ts'
@@ -585,7 +585,7 @@ export const aead = (raw: unknown) => {
  * secret and the referer alone. The referer is public, so it adds no entropy: every bit comes from the secret; it binds the seed to its chain. */
 export const deriveRefererSeeds = (referer: unknown, key: unknown) => {
   const { address, chunks = 1 } = (isObj(referer) ? referer : { address: referer }) as { address?: unknown; chunks?: unknown }
-  if (typeof address !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(address)) throw new Error(PROSE.quantumProcessingCryptoIndex_s40)
+  if (typeof address !== 'string' || !isUuid(address)) throw new Error(PROSE.quantumProcessingCryptoIndex_s40)
   if (!Number.isInteger(chunks) || (chunks as number) < 1) throw new Error(PROSE.quantumProcessingCryptoIndex_s41)
   const salt = Uint8Array.from((address.split('-').join('').match(/../g) ?? []).map((h) => parseInt(h, 16))), infos = Array.from({ length: chunks as number }, (_, i) => 'qpu referer seed ' + i)
   const ikm = typeof key === 'string' ? utf8(key) : null, secretBits = ikm ? Math.min(256, ikm.length * 8) : 256
