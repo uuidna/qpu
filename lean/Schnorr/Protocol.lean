@@ -1,1 +1,0 @@
-<full literal Protocol.lean — commit, respond, verify, dlog, completeness, simulate, simulate_verifies, transcript_eq, perfect_zk, schnorr_zk, ~65 lines>
