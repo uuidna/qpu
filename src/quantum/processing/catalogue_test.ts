@@ -10,8 +10,7 @@ test('no accepted theorem is left without a claim, and no claim is of a theorem 
   const [made, open = ''] = readFileSync('src/quantum/CATALOGUE.md', 'utf8').split('\n## Named and not yet proved\n')
   const sections = made!.split('\n### `').slice(1)
   const claimed = new Map(sections.map((section) => [section.slice(0, section.indexOf('`')), section]))
-  // a name with a segment opening on _ is the compiler's own auxiliary lemma, never a product
-  const kernel = new Set(THEOREMS.map((t) => t.key).filter((key) => !/(^|\.)_/.test(key)))
+  const kernel = new Set(THEOREMS.map((t) => t.key))
   assert.deepEqual([...kernel].filter((key) => !claimed.has(key)), [], 'an accepted theorem without a claim')
   assert.deepEqual([...claimed.keys()].filter((key) => !kernel.has(key)), [], 'a claim of a theorem the kernel lacks')
   assert.equal(claimed.size, sections.length, 'each product is listed once')

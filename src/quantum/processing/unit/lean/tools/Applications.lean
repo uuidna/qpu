@@ -107,6 +107,7 @@ def page (use : Use) (claim : Option Qpu.Claim) (rows : Array Row) : String :=
 /-- Write every page and the index that lists them. -/
 def write : MetaM Unit := do
   let env ← getEnv
+  let declared ← Qpu.declaredTheorems
   IO.FS.createDirAll outDir
   let mut index : Array (String × String × Nat) := #[]
   let modules := env.header.moduleNames.qsort (fun a b => a.toString < b.toString)
@@ -115,12 +116,9 @@ def write : MetaM Unit := do
     let some docs := getModuleDoc? env module | continue
     let some use := parse module ("\n".intercalate (docs.toList.map (·.doc))) | continue
     let some idx := env.getModuleIdx? module | continue
-    let mut names : Array Name := #[]
-    for (name, info) in env.constants.map₁.toList do
-      if let .thmInfo _ := info then
-        if env.getModuleIdxFor? name == some idx && !name.isInternal then names := names.push name
+    let names := (declared.filter fun (_, from_) => from_ == module).map (·.1)
     let mut rows : Array Row := #[]
-    for name in names.qsort (fun a b => a.toString < b.toString) do
+    for name in names do
       let info ← getConstInfo name
       let statement ← ppExpr info.type
       let doc := (← findDocString? env name).getD ""

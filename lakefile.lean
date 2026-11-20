@@ -49,7 +49,7 @@ def applicationsFile : String := "src/quantum/processing/unit/lean/tools/Applica
 
 /-- The scripts that render files from Lean, in the order they depend on each other. -/
 def renderers : List String :=
-  ["src/scripts/textbookIndex.ts", "src/scripts/theoremsIndex.ts", "src/scripts/leanDerived.ts"]
+  ["src/scripts/textbookIndex.ts", "src/scripts/leanDerived.ts"]
 
 /-- The Lean file that writes the prose index, where it writes it, and where the TypeScript reads it. -/
 def proseFile : String := "src/quantum/processing/unit/lean/tools/Prose.lean"
@@ -85,10 +85,15 @@ def catalogueFile : String := "src/quantum/processing/unit/lean/tools/Catalogue.
 /-- The Lean file that writes the thousand-bit table. -/
 def thousandFile : String := "src/quantum/processing/unit/lean/tools/Thousand.lean"
 
-/-- Lean writes the prose index, the nested catalogue, the catalogue of claims and the thousand-bit table. -/
+/-- The Lean file that writes the theorem index. -/
+def theoremsFile : String := "src/quantum/processing/unit/lean/tools/Theorems.lean"
+
+/-- Lean writes the prose index, the theorem index, the nested catalogue, the catalogue of claims and the thousand-bit table. -/
 def renderProse (check : Bool) : IO UInt32 := do
   let said ← renderByLean proseFile proseBuilt proseIndex check
   if said != 0 then return said
+  let stated ← renderByLean theoremsFile (".lake" / "build" / "theorems-index.ts") ("src" / "quantum" / "processing" / "theorems-index.ts") check
+  if stated != 0 then return stated
   let nested ← renderByLean nestedFile nestedBuilt nestedIndex check
   if nested != 0 then return nested
   let claimed ← renderByLean catalogueFile (".lake" / "build" / "CATALOGUE.md") ("src" / "quantum" / "CATALOGUE.md") check
@@ -121,7 +126,7 @@ script applications do
   steps [("lake", #["build"]), ("lake", #["env", "lean", applicationsFile])]
 
 /-- The Lean files that write rendered output; `lake run verify` runs each of them. -/
-def leanTools : List String := [applicationsFile, proseFile, nestedFile, catalogueFile, thousandFile]
+def leanTools : List String := [applicationsFile, proseFile, theoremsFile, nestedFile, catalogueFile, thousandFile]
 
 /-- `lake run leanfiles`: no Lean file is skipped. Every `.lean` file the repository tracks is this lakefile, a module
 the build compiles, a tool `lake run verify` runs, or evidence kept under `lean/`, which is named and never removed. -/

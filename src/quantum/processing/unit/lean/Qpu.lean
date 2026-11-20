@@ -65,3 +65,4 @@ import Qpu.Processing.QuantumProcessor.Coupler
 import Qpu.Processing.QuantumProcessor.Layers
 import Qpu.Processing.QuantumProcessor.ReadoutResonator
 import Qpu.General.Advantage
+import Qpu.Claims.Declared
