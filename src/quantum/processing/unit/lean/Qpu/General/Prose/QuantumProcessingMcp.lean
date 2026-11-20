@@ -443,5 +443,8 @@ def quantumProcessingMcp_mix1 : String := "Two module names: the mix of those tw
 def quantumProcessingMcp_mix2 : String := "the mix of ⟦0⟧ and ⟦1⟧ has ⟦2⟧ product variations; ⟦3⟧ are listed from ⟦4⟧; Lean counts ⟦5⟧ mixes of ⟦6⟧ textbooks and ⟦7⟧ mixed variations in all"
 def quantumProcessingMcp_mix3 : String := "a mix takes the names of two different textbooks of the nested catalogue Lean writes"
 def quantumProcessingMcp_nested5 : String := "⟦0⟧ textbooks mix two at a time into ⟦1⟧ mixes; a product alone has ⟦2⟧ variations and the mixes have ⟦3⟧, counted by Lean"
+def quantumProcessingMcp_thousand1 : String := "true: every family formula below the thousand-bit bound, with how many examples it has, its first and its last with the reflection at 2 ^ 1000, and the numbers more than one family reaches. A family name: that family alone."
+def quantumProcessingMcp_thousand2 : String := "⟦0⟧ family formulas in ⟦1⟧ families, each with its examples below 2 ^ 1000 counted by Lean; ⟦2⟧ numbers are reached by more than one formula. The meaning of any other number is computed by lake exe meaning."
+def quantumProcessingMcp_thousand3 : String := "no family of that name has a formula in the thousand-bit table Lean writes"
 
 end Prose
