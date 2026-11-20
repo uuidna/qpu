@@ -108,13 +108,15 @@ test('every theorem sentence is a Lean doc comment that opens and closes once, w
   assert.equal(escapeLeanDoc('a -/ b /- c'), 'a - / b / - c')
 })
 
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: the Lean file is the author of the textbook, and the index is that file read. */
-test('the Lean file is the author of the textbook, and the index is that file read', async () => {
-  const { parseTextbook } = await import('./textbook-parse.ts')
-  const written = parseTextbook(readFileSync(join(process.cwd(), TEXTBOOK_LEAN_PATH), 'utf8'))
-  assert.ok(written.length > 0)
-  assert.deepEqual(TEXTBOOK_THEOREMS, written, 'textbook-index.ts differs from the Lean file: run lake run index')
-  assert.equal(new Set(written.map((t) => t.key)).size, written.length, 'every textbook theorem is written once')
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the Lean file is the author of the textbook, and the index is what Lean read from it. */
+test('the Lean file is the author of the textbook, and the index is what Lean read from it', () => {
+  const source = readFileSync(join(process.cwd(), TEXTBOOK_LEAN_PATH), 'utf8')
+  const kernel = new Set(THEOREMS.map((t) => t.key))
+  assert.ok(TEXTBOOK_THEOREMS.length > 0)
+  assert.equal(new Set(TEXTBOOK_THEOREMS.map((t) => t.key)).size, TEXTBOOK_THEOREMS.length, 'every textbook theorem is written once')
+  // each row is a theorem the kernel accepted, and its text stands in the source as the row states it
+  assert.deepEqual(TEXTBOOK_THEOREMS.filter((t) => !kernel.has(t.key) || !source.includes(t.lean)).map((t) => t.key), [])
+  assert.deepEqual(TEXTBOOK_THEOREMS.filter((t) => t.example && !t.example.split('\n').every((line) => source.includes(line))).map((t) => t.key), [])
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the numbers Lean states are the numbers the data hold. */

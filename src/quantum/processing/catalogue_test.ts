@@ -33,7 +33,7 @@ test('every theorem a Lean source declares is in the kernel index and in the cat
   const root = 'src/quantum/processing/unit/lean/Qpu'
   const walk = (dir: string): string[] => readdirSync(dir, { withFileTypes: true }).flatMap((entry) => (entry.isDirectory() ? walk(join(dir, entry.name)) : entry.name.endsWith('.lean') ? [join(dir, entry.name)] : []))
   // the name each `theorem` keyword declares, with `private` in front or not; the namespace is not needed to find it
-  const declared = walk(root).flatMap((file) => [...readFileSync(file, 'utf8').matchAll(/^[ \t]*(?:private[ \t]+|protected[ \t]+)?theorem[ \t]+([^\s:({\[]+)/gm)].map((m) => ({ file, name: m[1]! })))
+  const declared = walk(root).flatMap((file) => [...readFileSync(file, 'utf8').matchAll(/^[ \t]*(?:@\[[^\]]*\][ \t]*)?(?:private[ \t]+|protected[ \t]+)?theorem[ \t]+([^\s:({\[]+)/gm)].map((m) => ({ file, name: m[1]! })))
   assert.ok(declared.length > 1000)
   const indexed = THEOREMS.map((t) => t.key)
   const claimed = [...readFileSync('src/quantum/CATALOGUE.md', 'utf8').matchAll(/^### `([^`]+)`$/gm)].map((m) => m[1]!)

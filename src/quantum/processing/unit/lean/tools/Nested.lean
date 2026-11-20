@@ -27,10 +27,6 @@ def examplesOf (doc : String) : List String :=
     if named == "none yet" then [] else named.splitOn ", "
   | _ => []
 
-/-- A theorem that reflects another (its `_reflected`, `_contrapositive` or `_converse` form) is that product's own, not a product. -/
-def reflects (name : String) : Bool :=
-  ["_reflected", "_contrapositive", "_converse", "_converse_refuted"].any fun ending => name.endsWith ending
-
 #eval show MetaM Unit from do
   let env ← getEnv
   let declared ← Qpu.declaredTheorems
@@ -39,8 +35,8 @@ def reflects (name : String) : Bool :=
   let mut products := 0
   let mut variants := 0
   for module in modules do
-    -- a product is a theorem the author declared; the theorems that reflect it are its own, not products
-    let names := (declared.filter fun (name, from_) => from_ == module && !reflects name.toString).map (·.1)
+    -- a product is a theorem the author declared; a theorem marked @[reflection] belongs to the one it follows
+    let names := (declared.filter fun (name, from_) => from_ == module && !Qpu.isReflection env name).map (·.1)
     let mut items : Array Json := #[]
     for name in names do
       let examples := examplesOf ((← findDocString? env name).getD "")
