@@ -4,7 +4,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1873 products, 2 under a declared claim context and 1871 as the author's own statement, with 1528 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1875 products, 2 under a declared claim context and 1873 as the author's own statement, with 1528 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 7 with a theorem that states a fact the standard fixes and 13 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -4712,12 +4712,28 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (a b : ℕ), gcd a b = a.gcd b
 ```
 
+### `hexbit_paired_completely`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+hexbit = 4 ∧ choose hexbit 2 = 6 ∧ choose hexbit 3 = 4 ∧ choose hexbit 3 * choose 3 2 = 2 * choose hexbit 2
+```
+
 ### `mint_eq_two_pow`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
 ∀ (k : ℕ), mint k = 2 ^ k
+```
+
+### `pair_in_trinities`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (t : ℕ), 3 * t.choose 3 = (t - 2) * t.choose 2
 ```
 
 ### `powModAux_eq`
