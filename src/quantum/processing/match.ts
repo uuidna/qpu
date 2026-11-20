@@ -176,7 +176,9 @@ export const stem = (t: string): string => t.replace(/(ing|ed|es|s)$/, '')
  *  words naming it: the keys on its path and the labels beside and above it (says names nothing). */
 const stems = (text: string) => tokens(text.replace(/([a-z])([A-Z])/g, (_, a: string, b: string) => `${a} ${b}`).replace(NEGATION, () => ' ')).filter((t) => /^[a-z]/.test(t) && !BRAND.has(t)).map(stem)
 const values = (v: unknown, at = '', words: readonly string[] = []): { n: string; at: string; words: Set<string> }[] => {
-  const o = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>, n = 'mantissa' in o ? `${o.mantissa}e${o.exponent}` : String(v), labels = Object.entries(o).flatMap(([k, x]) => (k !== 'says' && typeof x === 'string' && !dec(x) ? stems(x) : []))
+  const o = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>, n = 'mantissa' in o ? `${o.mantissa}e${o.exponent}` : String(v)
+  // a row's own texts label its values (an order of 4); the result's own top-level texts name the call, not each value in it
+  const labels = at === '' ? [] : Object.entries(o).flatMap(([k, x]) => (k !== 'says' && typeof x === 'string' && !dec(x) ? stems(x) : []))
   return (typeof v !== 'object' || 'mantissa' in o) ? (dec(n) ? [{ n, at, words: new Set(words) }] : []) : Object.entries(o).flatMap(([k, x]) => values(x, Array.isArray(v) ? `${at}[${k}]` : at ? `${at}.${k}` : k, [...words, ...labels, ...(Array.isArray(v) ? [] : stems(k))]))
 }
 /** The values a text claims, each with its subject (the words before it in its clause, and its unit), after a verb or anywhere when bare; a
@@ -444,7 +446,10 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
     const witnessed = [...((found.length || stated.length) && served && m.result !== undefined ? values(m.result).map((v) => ({ ...v, by: `${m.example ?? m.tool} at ${v.at}` })) : []), ...(proven && theorem ? labelled(`theorem ${theorem.key} : ${theorem.statement}`, theorem.key, own) : []), ...(computed ? labelled(computed.lean, computed.theorem, near, computed.values) : [])]
     for (const c of found) {
       const all = witnessed.map((v) => ({ ...v, full: c.subject.every((x) => v.words.has(x)), named: 'label' in v && v.label.length > 0 && v.label.every((x) => c.subject.includes(x)), agrees: agree(c.n, v.n) })), full = all.filter((v) => v.full)
-      const decisive = full.some((v) => v.named) ? full.filter((v) => v.named || !('label' in v)) : full
+      // when no value's place names the whole subject, the values whose place names part of it decide (a factor is
+      // looked for among the factors), before any agreeing value anywhere in the result is taken as a witness
+      const partial = full.length ? full : all.filter((v) => c.subject.some((x) => v.words.has(x)))
+      const decisive = full.some((v) => v.named) ? full.filter((v) => v.named || !('label' in v)) : partial
       const ok = decisive.length ? decisive.some((v) => v.agrees) : all.some((v) => v.agrees) || null, shown = (decisive.length ? decisive : all).filter((v) => (ok ? v.agrees : ok === false))
       put(ok === null ? null : ok !== negated, `${c.shown} (${c.subject.join(' ')}): ${[...new Set(shown.map((v) => v.by))].map((b) => `${b} states ${shown.filter((v) => v.by === b).map((v) => v.n).join(', ')}`).join('; ') || 'no witness states it'}`)
     }
