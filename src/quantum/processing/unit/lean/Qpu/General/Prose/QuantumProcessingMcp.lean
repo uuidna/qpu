@@ -451,5 +451,9 @@ def quantumProcessingMcp_mix5 : String := "the trinity of ⟦0⟧, ⟦1⟧ and �
 def quantumProcessingMcp_mix6 : String := "⟦0⟧ textbooks mix three at a time into ⟦1⟧ trinities with ⟦2⟧ variations, counted by Lean"
 def quantumProcessingMcp_mix7 : String := "a trinity is two pairs interacting as one: the pairs ⟦0⟧ with ⟦1⟧ and ⟦1⟧ with ⟦2⟧ share ⟦1⟧, and each variation holds one product of the shared textbook for both pairs"
 def quantumProcessingMcp_mix8 : String := "⟦0⟧ textbooks form ⟦1⟧ trinities of two pairs sharing one textbook, three for every three textbooks, with ⟦2⟧ variations, counted by Lean"
+def quantumProcessingMcp_receipt1 : String := "A receipt to check for the mix named: its index and its digits, one for each textbook. The answer says whether the digits lead back to exactly that index, in one step for each textbook and without listing the space."
+def quantumProcessingMcp_receipt2 : String := "the receipt holds: its ⟦0⟧ digits lead back to exactly index ⟦1⟧ of ⟦2⟧ variations, checked in ⟦0⟧ steps where a walk takes ⟦3⟧"
+def quantumProcessingMcp_receipt3 : String := "the receipt does not hold: its digits do not lead back to its index in this space"
+def quantumProcessingMcp_receipt4 : String := "each variation is read by its address in ⟦0⟧ reads from a space of ⟦1⟧; a walk to the last one takes ⟦1⟧ steps. The kernel proves the address is recovered exactly, the reads are fewer than the space, and the gap has no bound"
 
 end Prose

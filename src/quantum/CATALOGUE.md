@@ -4,7 +4,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1770 products, 2 under a declared claim context and 1768 as the author's own statement, with 1469 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1777 products, 2 under a declared claim context and 1775 as the author's own statement, with 1469 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 This catalogue records authorship and the date of each release. It is a publication, not a patent application: publishing a statement discloses it, and what is filed as a patent, and when, is for a patent attorney to decide before it is published.
 
@@ -264,6 +264,64 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 QuantumCommunication.TwoCoins
+```
+
+## Qpu.General.Advantage
+
+### `Advantage.advantage_unbounded`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), (List.replicate k 2).length = k ∧ 2 ^ k ≤ Advantage.space (List.replicate k 2)
+```
+
+### `Advantage.rank_unrank`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (sizes : List ℕ), ∀ i < Advantage.space sizes, Advantage.rank sizes (Advantage.unrank sizes i) = i
+```
+
+### `Advantage.reads_lt_space`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (sizes : List ℕ), (∀ s ∈ sizes, 2 ≤ s) → sizes.length < Advantage.space sizes
+```
+
+### `Advantage.receipt_exact`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (r : Advantage.Receipt), r.holds = true → Advantage.rank r.sizes r.digits = r.index
+```
+
+### `Advantage.receipt_reads`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (r : Advantage.Receipt), r.holds = true → r.digits.length = r.reads
+```
+
+### `Advantage.two_pow_le_space`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (sizes : List ℕ), (∀ s ∈ sizes, 2 ≤ s) → 2 ^ sizes.length ≤ Advantage.space sizes
+```
+
+### `Advantage.unrank_length`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (sizes : List ℕ) (i : ℕ), (Advantage.unrank sizes i).length = sizes.length
 ```
 
 ## Qpu.General.Cern
