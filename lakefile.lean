@@ -120,6 +120,26 @@ def renderProse (check : Bool) : IO UInt32 := do
   if listed != 0 then return listed
   renderByLean configFile (".lake" / "build" / "config-index.ts") ("src" / "quantum" / "processing" / "config-index.ts") check
 
+/-- The git hooks Lean writes, compared with or installed into `.githooks`. -/
+def renderHooks (check : Bool) : IO UInt32 := do
+  let built : System.FilePath := ".lake" / "build" / "githooks"
+  let hooksDir : System.FilePath := ".githooks"
+  let mut code : UInt32 := 0
+  for entry in (← built.readDir) do
+    let written ← IO.FS.readFile entry.path
+    let at_ := hooksDir / entry.fileName
+    let committed ← if ← at_.pathExists then IO.FS.readFile at_ else pure ""
+    if written == committed then continue
+    if check then
+      IO.eprintln s!"{at_} differs from what Lean writes: run lake run index and commit the result"
+      code := 1
+    else
+      IO.FS.createDirAll hooksDir
+      IO.FS.writeFile at_ written
+      IO.setAccessRights at_ { user := { read := true, write := true, execution := true }, group := { read := true, execution := true }, other := { read := true, execution := true } }
+      IO.println s!"wrote {at_}"
+  return code
+
 /-- `lake run index`: build, then Lean writes every file that follows it (prose index, theorem index, textbook index,
 blueprint, nested catalogue, catalogue of claims, thousand-bit table, register of standards). The Clay statements keep their own generator,
 which runs last. The prose index comes first: every other renderer reads its sentences from it. -/
@@ -128,6 +148,8 @@ script index do
   if built != 0 then return built
   let said ← renderProse false
   if said != 0 then return said
+  let hooked ← renderHooks false
+  if hooked != 0 then return hooked
   steps (renderers.map fun file => ("node", #[file]))
 
 /-- `lake run check`: build, then fail when a rendered file differs from Lean. Nothing is written. -/
@@ -136,7 +158,18 @@ script check do
   if built != 0 then return built
   let said ← renderProse true
   if said != 0 then return said
+  let hooked ← renderHooks true
+  if hooked != 0 then return hooked
   steps (renderers.map fun file => ("node", #[file, "--check"]))
+
+/-- `lake run hooks`: Lean writes the git hooks and git is told to use them. Each hook is the client of the workflow of
+its name, served by the repository tool, so a commit and a push run the same process the tree runs everywhere. -/
+script hooks do
+  let built ← step "lake" #["env", "lean", configFile]
+  if built != 0 then return built
+  let written ← renderHooks false
+  if written != 0 then return written
+  step "git" #["config", "core.hooksPath", ".githooks"]
 
 /-- `lake run prose`: fail when a sentence is typed in TypeScript instead of written in Lean. -/
 script prose do

@@ -72,4 +72,15 @@ def coinQubitSpace : Nat := mint hexbit
 /-- The coins are 2, the hexbit they mint is 4 qubits, and those span 16 states. -/
 theorem coin_qubit_space : coins = 2 ∧ hexbit = 4 ∧ coinQubitSpace = 16 := ⟨coins_two, rfl, rfl⟩
 
+/-- The workflows the repository tool serves: the points at which the tree checks itself. -/
+def workflows : List String := ["pre-commit", "commit-msg", "pre-push", "post-commit", "prepare-commit-msg", "ci", "pre-deploy"]
+
+/-- The workflows git itself starts, each from the hook of the same name. The others are started by CI and by the deploy. -/
+def gitHooks : List String := ["pre-commit", "commit-msg", "pre-push", "post-commit", "prepare-commit-msg"]
+
+/-- Every git hook is a workflow, and every workflow that is not a git hook is one CI or the deploy starts. -/
+theorem git_hooks_are_workflows :
+    (gitHooks.all fun hook => workflows.contains hook) = true ∧ (workflows.filter fun w => !gitHooks.contains w) = ["ci", "pre-deploy"] := by
+  decide
+
 end Config

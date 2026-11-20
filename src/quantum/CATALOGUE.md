@@ -4,7 +4,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1885 products, 2 under a declared claim context and 1883 as the author's own statement, with 1534 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1886 products, 2 under a declared claim context and 1884 as the author's own statement, with 1534 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 10 with a theorem that states a fact the standard fixes and 10 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -1741,6 +1741,15 @@ Config.officialPlugins.length = 9 ∧
   Config.officialPlugins.eraseDups.length = 9 ∧
     Config.clayFirst.length = 3 ∧
       Config.insertStrategies.contains Config.insertDefault = true ∧ Config.formulas.length = 3
+```
+
+### `Config.git_hooks_are_workflows`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+(Config.gitHooks.all fun hook => Config.workflows.contains hook) = true ∧
+  List.filter (fun w => !Config.gitHooks.contains w) Config.workflows = ["ci", "pre-deploy"]
 ```
 
 ### `Config.nibble_primes`

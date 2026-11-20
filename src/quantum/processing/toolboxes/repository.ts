@@ -4,6 +4,7 @@
 // for the concept DOI, each checked against the contract discovery found. Phase two reads the answers into agreement and
 // leads: a local branch with no remote, a remote branch not here, a tag here and not there or there and not here, a release
 // without its tag, a package version with no tag, a Zenodo version with no release. Nothing here runs git or fetches.
+import { WORKFLOWS } from '../config-index.ts'
 import { PROSE, proseFill } from '../prose-index.ts'
 import { getAnswer } from './extension.ts'
 import { defineTool, isObj, createChecks, unlimited, type Toolbox } from '../toolbox.ts'
@@ -43,7 +44,6 @@ const wayEvidence = (e2e?: E2eOutcomes) => {
 /** The git hooks and the CI as client MCP workflows: one door answers the steps of each (a command of next, the e2e gate, an imprint, the
  *  trailers, the unit's signature over the hosted door), the hook client walks them (machine-run.ts hook <name>, from .githooks) and decides nothing itself; the CI
  *  workflow is the same flow on a runner, measured against the file the hand holds. Four hooks and the CI: five workflows (textbook_hook_workflows). */
-const WORKFLOWS = ['pre-commit', 'commit-msg', 'pre-push', 'post-commit', 'prepare-commit-msg', 'ci', 'pre-deploy'] as const
 /** what the Payload app over OpenNext needs bound: the adapters' bindings (D1, R2, KV), the static assets, the QPU Worker as a service, Workers AI */
 const NEEDED_BINDINGS = ['ASSETS', 'D1', 'R2', 'KV', 'QPU', 'AI'] as const
 const NEEDED_FLAGS = ['nodejs_compat', 'webcrypto_modern_algorithms'] as const
