@@ -30,3 +30,7 @@ lean_lib Qpu where
     ⟨`linter.unusedVariables, true⟩,
     ⟨`linter.unusedTactic, true⟩
   ]
+
+lean_exe claims where
+  root := `Qpu.Claims.Extract
+  supportInterpreter := true
