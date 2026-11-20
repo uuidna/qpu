@@ -133,6 +133,16 @@ script leanfiles do
   -- `lean/` is kept as evidence: its files are named here on every run, and nothing is removed for the kernel's sake
   let evidence := unchecked.filter (·.startsWith "lean/")
   let skipped := unchecked.filter (!·.startsWith "lean/")
+  -- the root imports every module that states theorems, so the index, the catalogue and the claims see all of them;
+  -- the prose modules hold sentences, and the two modules with a `main` are roots of their own
+  let root ← IO.FS.readFile "src/quantum/processing/unit/lean/Qpu.lean"
+  let imported := (root.splitOn "\n").filterMap fun line => if line.startsWith "import " then some (line.drop 7).trimAscii.toString else none
+  let unseen := files.filter fun file =>
+    file.startsWith "src/quantum/processing/unit/lean/Qpu/" && !file.startsWith "src/quantum/processing/unit/lean/Qpu/General/Prose"
+      && !["Qpu.Claims.Extract", "Qpu.General.ThousandMain"].contains (((file.drop "src/quantum/processing/unit/lean/".length).dropEnd 5).toString.replace "/" ".")
+      && !imported.contains (((file.drop "src/quantum/processing/unit/lean/".length).dropEnd 5).toString.replace "/" ".")
+  for file in unseen do IO.eprintln s!"{file}: the root Qpu.lean does not import this module, so its theorems are in no index and no claim"
+  if !unseen.isEmpty then return 1
   for file in evidence do IO.println s!"{file}: kept as evidence, not checked by the kernel"
   for file in skipped do IO.eprintln s!"{file}: no build and no script checks this Lean file"
   IO.println s!"{files.length} Lean file(s), {evidence.length} kept as evidence and not checked, {skipped.length} skipped"
