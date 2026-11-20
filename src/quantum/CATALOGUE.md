@@ -4,7 +4,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1875 products, 2 under a declared claim context and 1873 as the author's own statement, with 1528 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1881 products, 2 under a declared claim context and 1879 as the author's own statement, with 1534 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 7 with a theorem that states a fact the standard fixes and 13 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -6306,6 +6306,38 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
   removed + kept = caps → kept ≤ caps → ∀ (σ : ℕ), σ - kept = σ - (caps - removed) ∧ σ - caps ≤ σ - removed
 ```
 
+### `textbook_carry_release`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-workflow.
+
+```lean
+∀ (version carried : ℕ), carried = 0 → version + 1 + carried = version + 1
+```
+
+### `textbook_carry_release_contrapositive`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-workflow.
+
+```lean
+∀ (version carried : ℕ), ¬version + 1 + carried = version + 1 → ¬carried = 0
+```
+
+### `textbook_carry_release_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-workflow.
+
+```lean
+∀ (version carried : ℕ), version + 1 + carried = version + 1 → carried = 0
+```
+
+### `textbook_carry_release_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-workflow.
+
+```lean
+∀ (version carried : ℕ), carried = 0 → ∀ (σ : ℕ), σ - (version + 1) = σ - (version + 1 + carried)
+```
+
 ### `textbook_catalogue_offers`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: jsonld-catalogue.
@@ -11693,6 +11725,25 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ s ≤ 10, ∀ (σ : ℕ), σ - 10 = σ - (s + (10 - s))
 ```
 
+### `textbook_refuse_is_refuse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-shor-odd-order.
+
+```lean
+4 ^ 3 % 21 = 1 ∧ 3 % 2 = 1 ∧ 2 ^ 6 % 21 = 1 ∧ 6 % 2 = 0 ∧ (2 ^ 3 - 1).gcd 21 = 7 ∧ (2 ^ 3 + 1).gcd 21 = 3
+```
+
+### `textbook_refuse_is_refuse_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-shor-odd-order.
+
+```lean
+∀ (σ : ℕ),
+  σ - 1 = σ - 4 ^ 3 % 21 ∧
+    σ - 1 = σ - 3 % 2 ∧
+      σ - 1 = σ - 2 ^ 6 % 21 ∧ σ - 0 = σ - 6 % 2 ∧ σ - 7 = σ - (2 ^ 3 - 1).gcd 21 ∧ σ - 3 = σ - (2 ^ 3 + 1).gcd 21
+```
+
 ### `textbook_register_held`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: processor-register.
@@ -16880,12 +16931,4 @@ Qpu.Verify.Uuid.decode (Qpu.Verify.Uuid.encode 65535 42) = (65535, 42)
 
 ## Named and not yet proved
 
-2 theorem(s) are named by a sentence of the tree and are not theorems the kernel has. Each is listed here as a claim still open, a theorem to prove, exactly as an accepted theorem is listed as a claim made: an overclaim is exposed like an underclaim, and nothing is hidden or removed.
-
-### `textbook_carry_release` (open)
-
-Named by `Prose.quantumProcessingMcp_says190`, `Prose.quantumProcessingToolboxesPayload_approval471`. Not accepted by the kernel: no theorem of this name exists.
-
-### `textbook_refuse_is_refuse` (open)
-
-Named by `Prose.quantumProcessingAlgorithms_s13`. Not accepted by the kernel: no theorem of this name exists.
+0 theorem(s) are named by a sentence of the tree and are not theorems the kernel has. Each is listed here as a claim still open, a theorem to prove, exactly as an accepted theorem is listed as a claim made: an overclaim is exposed like an underclaim, and nothing is hidden or removed.
