@@ -2,6 +2,7 @@
 // The tail is the params. The ten program nibbles are the expected schema.
 // The reflection both ways, the six neighbour steps and the nine schemas are the cross-encryption.
 // The SHA-256 of the bound record is the receipt: a collision is 2^128 and a second preimage is 2^256.
+import { PROSE, proseFill } from '../../../processing/prose-index.ts'
 import { exists, read as readFile, write } from '../../../fs/index.ts'
 import { driftWaves } from '../../../processing/lead-wave.ts'
 import { checkWitnesses } from '../../../processing/witnesses.ts'
@@ -20,12 +21,12 @@ const SQUARES = 6
 const TRIANGLES = 8
 const FACES = SQUARES + TRIANGLES
 
-/** The Lean fold. programHandle in Qpu.Program is this mix of the schema, the family, 432 Hz, the next index, and the witness partition. */
+/** The Lean fold. programHandle in Qpu.General.Program is this mix of the schema, the family, 432 Hz, the next index, and the witness partition. */
 const programHandle = (integers: readonly number[]) => integers.reduce((acc, digit) => (acc * 16n + BigInt(digit)) % SPAN, 0n).toString(16).padStart(8, '0')
 
 const turn = (program: readonly number[], places: number) => program.map((_, index) => program[(index + places) % program.length]!)
 
-/** Lean is Qpu.Program only when every witnessing superposition cross-verifies the integers in this same UUID. A square is the Lean rotation. A triangle is one σ. Each one maps back here. */
+/** Lean is Qpu.General.Program only when every witnessing superposition cross-verifies the integers in this same UUID. A square is the Lean rotation. A triangle is one σ. Each one maps back here. */
 const crossLean = (address: string, integers: readonly number[], expect: { family: number; hz: number; next: number }) => {
   const origin = channel(address)
   const witnessed = checkWitnesses(address)
@@ -42,7 +43,7 @@ const crossLean = (address: string, integers: readonly number[], expect: { famil
   const same = witnessed.canonical === address && origin.handle === handle && origin.program.join() === [...CODES].join() && origin.params[0] === expect.family && origin.params[1] === expect.hz && origin.params[2] === expect.next
   const verified = faces.filter((face) => face.verified).length
   const lean = same && faces.length === FACES && verified === FACES && witnessed.squares === SQUARES && witnessed.triangles === TRIANGLES && witnessed.exact === true
-  return { lean, module: lean ? 'Qpu.Program' as const : null, uuid: address, superpositions: faces.length, verified, squares: witnessed.squares, triangles: witnessed.triangles, same }
+  return { lean, module: lean ? 'Qpu.General.Program' as const : null, uuid: address, superpositions: faces.length, verified, squares: witnessed.squares, triangles: witnessed.triangles, same }
 }
 
 const WAVE = 432
@@ -178,10 +179,10 @@ export const driftPrograms = (waves: ReturnType<typeof driftWaves> = driftWaves(
   const closeHandles = new Set(closed.map((row) => row.handle))
   const close = { phase: 'close' as const, via: 'uuid' as const, open: false as const, closed: true as const, solved: false as const, programs: closed.length, rows: closed, holds: closed.length === FOLDERS.length && closeHandles.size === closed.length && closed.every((row) => row.holds) }
   const written = rows.every((row) => row.file) && close.holds
-  const lean = rows.every((row) => row.cross.lean && row.cross.uuid === row.address && row.cross.verified === FACES) && close.rows.every((row) => row.cross.lean && row.cross.uuid === row.address && row.cross.verified === FACES) ? 'Qpu.Program' as const : null
-  const holds = waves.holds && rows.length === waves.families && handles.size === rows.length && rows.every((row) => row.holds && row.open === false && row.closed === true && row.coin.drift === 8 && row.witnesses.exact) && written && lean === 'Qpu.Program'
+  const lean = rows.every((row) => row.cross.lean && row.cross.uuid === row.address && row.cross.verified === FACES) && close.rows.every((row) => row.cross.lean && row.cross.uuid === row.address && row.cross.verified === FACES) ? 'Qpu.General.Program' as const : null
+  const holds = waves.holds && rows.length === waves.families && handles.size === rows.length && rows.every((row) => row.holds && row.open === false && row.closed === true && row.coin.drift === 8 && row.witnesses.exact) && written && lean === 'Qpu.General.Program'
   const says = holds
-    ? `${rows.length} family programs and ${closed.length} folder programs are closed. Lean is Qpu.Program because all ${FACES} witnessing superpositions cross-verify each program in its own UUID. The next place of a closed program rotates it one step. The handle, 432 Hz and the closed mark stay, and ten places return the program. The coin drift is 8. A family is not marked solved.`
-    : 'a program was not cross-verified as Lean in its own UUID'
+    ? proseFill(PROSE.quantumUuidProgramsDriftIndex_s1, rows.length, closed.length, FACES)
+    : PROSE.quantumUuidProgramsDriftIndex_s2
   return { phase: 'programs' as const, via: 'uuid' as const, lean, theorems: ['step_keeps', 'program_rotates', 'program_returns', 'uuid_families', 'uuid_programs', 'uuid_drift', 'uuid_cross', 'families_closed', 'close_returns', 'cross_lean', 'uuid_program_all', 'witnesses_partition', 'program_handles'] as const, families: rows.length, relationCount: waves.relationCount, hz: waves.hz, rows, close, holds, fetched: false as const, written, executed: false as const, says }
 }

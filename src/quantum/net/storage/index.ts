@@ -1,5 +1,6 @@
 // The storage adapters. The order is the port order.
 
+import { PROSE } from '../../processing/prose-index.ts'
 export type StorageAdapter = {
   pkg: string
   fn: string
@@ -39,7 +40,7 @@ export const STORAGE: readonly StorageAdapter[] = [
       },
       "steps": [
         "the R2 bucket created",
-        "every object copied through the app (listed from Vercel Blob, put into R2)",
+        PROSE.quantumNetStorageIndex_s1,
         "r2Storage({ bucket: env.R2 })"
       ],
       "mcp": [
@@ -51,12 +52,12 @@ export const STORAGE: readonly StorageAdapter[] = [
         {
           "tool": "r2_bucket_create",
           "write": true,
-          "says": "the bucket created (the user approves)"
+          "says": PROSE.quantumNetStorageIndex_s2
         }
       ],
       "plan": "free",
       "missing": [
-        "moving Vercel Blob into R2: no Cloudflare migration tool reads Vercel Blob, so the copy is the app's own"
+        PROSE.quantumNetStorageIndex_s3
       ],
       "docs": [
         "https://developers.cloudflare.com/r2/data-migration/"
@@ -94,7 +95,7 @@ export const STORAGE: readonly StorageAdapter[] = [
         {
           "tool": "r2_bucket_create",
           "write": true,
-          "says": "the bucket created (the user approves)"
+          "says": PROSE.quantumNetStorageIndex_s2
         }
       ],
       "plan": "free",
@@ -127,7 +128,7 @@ export const STORAGE: readonly StorageAdapter[] = [
       },
       "steps": [
         "the R2 bucket created",
-        "the objects moved by Super Slurper (in bulk) or Sippy (on demand)",
+        PROSE.quantumNetStorageIndex_s4,
         "r2Storage({ bucket: env.R2 })"
       ],
       "mcp": [
@@ -139,12 +140,12 @@ export const STORAGE: readonly StorageAdapter[] = [
         {
           "tool": "r2_bucket_create",
           "write": true,
-          "says": "the bucket created (the user approves)"
+          "says": PROSE.quantumNetStorageIndex_s2
         }
       ],
       "plan": "free",
       "missing": [
-        "starting Super Slurper or Sippy: no Cloudflare MCP tool names them; the dashboard or wrangler r2 bucket sippy enable does"
+        PROSE.quantumNetStorageIndex_s5
       ],
       "docs": [
         "https://developers.cloudflare.com/r2/data-migration/super-slurper/",
@@ -173,7 +174,7 @@ export const STORAGE: readonly StorageAdapter[] = [
       },
       "steps": [
         "the R2 bucket created",
-        "the objects moved by Super Slurper (in bulk) or Sippy (on demand) from Google Cloud Storage",
+        PROSE.quantumNetStorageIndex_s6,
         "r2Storage({ bucket: env.R2 })"
       ],
       "mcp": [
@@ -185,12 +186,12 @@ export const STORAGE: readonly StorageAdapter[] = [
         {
           "tool": "r2_bucket_create",
           "write": true,
-          "says": "the bucket created (the user approves)"
+          "says": PROSE.quantumNetStorageIndex_s2
         }
       ],
       "plan": "free",
       "missing": [
-        "starting Super Slurper or Sippy: no Cloudflare MCP tool names them; the dashboard or wrangler r2 bucket sippy enable does"
+        PROSE.quantumNetStorageIndex_s5
       ],
       "docs": [
         "https://developers.cloudflare.com/r2/data-migration/sippy/"
@@ -218,7 +219,7 @@ export const STORAGE: readonly StorageAdapter[] = [
       },
       "steps": [
         "the R2 bucket created",
-        "the objects moved by Sippy on demand from Azure Blob Storage",
+        PROSE.quantumNetStorageIndex_s7,
         "r2Storage({ bucket: env.R2 })"
       ],
       "mcp": [
@@ -230,12 +231,12 @@ export const STORAGE: readonly StorageAdapter[] = [
         {
           "tool": "r2_bucket_create",
           "write": true,
-          "says": "the bucket created (the user approves)"
+          "says": PROSE.quantumNetStorageIndex_s2
         }
       ],
       "plan": "free",
       "missing": [
-        "starting Sippy: no Cloudflare MCP tool names it; the dashboard or wrangler r2 bucket sippy enable does"
+        PROSE.quantumNetStorageIndex_s8
       ],
       "docs": [
         "https://developers.cloudflare.com/r2/data-migration/sippy/"

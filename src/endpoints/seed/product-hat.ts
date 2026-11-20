@@ -2,8 +2,6 @@ import type { Category, Product, VariantOption, VariantType } from '@/payload-ty
 import type { Media } from '@/payload-types'
 import { RequiredDataFromCollectionSlug } from 'payload'
 
-import { prices } from '@/currencies'
-
 type ProductArgs = {
   galleryImage: Media
   metaImage: Media
@@ -63,7 +61,8 @@ export const productHatData: (args: ProductArgs) => RequiredDataFromCollectionSl
     gallery: [{ image: galleryImage }],
     title: 'Hat',
     slug: 'hat',
-    ...prices({ usd: 2500 }),
+    priceInUSDEnabled: true,
+    priceInUSD: 2500,
     relatedProducts: relatedProducts,
   }
 }

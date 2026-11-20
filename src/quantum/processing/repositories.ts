@@ -2,6 +2,7 @@
 // repository's own one-line description; the language is the primary language the list shows. Cirq, qsim, Qualtran and the
 // OpenFermion family are the quantumlib ones this repository implements or names elsewhere; PAYLOADCMS_REPOSITORIES consolidates
 // every QPU surface around its canonical github.com/payloadcms/* repository, monorepo package, and QPU plugin counterpart.
+import { PROSE, proseFill } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
 import { skill, skills as skillCalls } from './skill/index.ts'
 import { canonicalText, seal, uuid } from '../uuid/index.ts'
@@ -95,7 +96,7 @@ export const PAYLOADCMS_REPOSITORIES: readonly PayloadcmsRepoMapping[] = [
     licence: 'MIT',
     language: 'TypeScript',
     localClone: 'src',
-    role: 'This full-stack repo develops in src/ against payloadcms/website (12 collections, 30 blocks, 5 globals, 10 fields). Upstream github.com/payloadcms/website is the layout standard; qpuPlugin / qpuMcpPlugin mount feeds and MCP on /api/qpu/feeds and /api/mcp',
+    role: PROSE.quantumProcessingRepositories_role1,
     qpuExports: [
       'qpuWebsitePlugins',
       'websiteTemplatePlugins',
@@ -126,7 +127,7 @@ export const PAYLOADCMS_REPOSITORIES: readonly PayloadcmsRepoMapping[] = [
     licence: 'MIT',
     language: 'TypeScript',
     localClone: 'node_modules/payload',
-    role: 'Payload CMS monorepo (45 packages under packages/* and official templates under templates/*): every plugin, database adapter, storage adapter, email adapter and lexical feature QPU mounts is a package from this monorepo',
+    role: PROSE.quantumProcessingRepositories_role2,
     qpuExports: [
       'qpuPlugin',
       'qpuCore',
@@ -170,10 +171,10 @@ export const PAYLOADCMS_REPOSITORIES: readonly PayloadcmsRepoMapping[] = [
     id: 'skills',
     repo: 'payloadcms/skills',
     url: `${PAYLOADCMS_ORIGIN}/skills`,
-    licence: 'facts-only (names, paths, sizes)',
+    licence: PROSE.quantumProcessingRepositories_licence3,
     language: 'Markdown',
     localClone: '.agents/skills',
-    role: 'skill(name) MCP tools/call',
+    role: PROSE.quantumProcessingRepositories_role4,
     qpuExports: ['qpuMcpPlugin', 'qpuPlugin'],
     endpoints: ['/api/mcp', '/api/qpu/repos'],
     door: { tool: 'payload', arguments: { skills: true } },
@@ -195,16 +196,16 @@ export const PAYLOADCMS_WORKSPACE_ALIGNMENT = {
     upstreamRepo: 'payloadcms/website' as const,
     payloadVersion: '4.0.0-beta.7',
     consumes: '@payloadcms/* from payloadcms/payload',
-    role: 'Develop in src/ to the payloadcms/website standard; configure { kind: "fullstack" } refreshes overlay files in this tree, not a second .qpu-app fork',
+    role: PROSE.quantumProcessingRepositories_role5,
   },
   siblingPayload: {
     name: 'uuidna-payload',
     path: '../payload',
     remote: 'github.com/uuidna/payload',
-    upstreamTemplate: 'payloadcms/payload/templates/website (Cloudflare D1 + R2)',
+    upstreamTemplate: PROSE.quantumProcessingRepositories_upstreamTemplate6,
     payloadVersion: '4.0.0-canary.37',
-    consumes: '@uuidna/qpu + @uuidna/uuidna + @uuidna/school',
-    role: 'Cloudflare Workers D1+R2 multi-tenant deployment consuming @uuidna/qpu lattice/db/zone primitives alongside official @payloadcms/* plugins (nested-docs, seo, redirects, search, form-builder, mcp, import-export, storage-r2, db-d1-sqlite)',
+    consumes: PROSE.quantumProcessingRepositories_consumes7,
+    role: PROSE.quantumProcessingRepositories_role8,
   },
 } as const
 
@@ -277,6 +278,6 @@ export const payloadcmsRepos = (opts: { repo?: string; role?: PayloadcmsPackageR
       'textbook_skills_documents',
       'textbook_fullstack_files_by_role',
     ] as const,
-    says: `All QPU surfaces consolidated around ${PAYLOADCMS_REPOSITORIES.length} github.com/payloadcms/* repositories (payloadcms/website, payloadcms/payload, payloadcms/skills): ${PAYLOADCMS_MONOREPO_PACKAGES.length} of ${TABLES.PAYLOAD_PACKAGES.names.length} monorepo packages mounted and mapped to QPU plugins/adapters, ${skillEntries.length} agent skill references enacted, sealed at ${address}`,
+    says: proseFill(PROSE.quantumProcessingRepositories_says9, PAYLOADCMS_REPOSITORIES.length, PAYLOADCMS_MONOREPO_PACKAGES.length, TABLES.PAYLOAD_PACKAGES.names.length, skillEntries.length, address),
   }
 }

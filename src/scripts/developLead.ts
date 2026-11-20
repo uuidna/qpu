@@ -1,3 +1,4 @@
+import { PROSE, proseFill } from '../quantum/processing/prose-index.ts'
 import { getPayload } from 'payload'
 
 import config from '@payload-config'
@@ -11,11 +12,11 @@ const email = process.env.LEGACY_ADMIN_EMAIL || 'legacy-leads@qpu.localhost'
 const payload = await getPayload({ config })
 
 const admin = (await payload.find({ collection: 'users', limit: 1, overrideAccess: true, where: { email: { equals: email } } })).docs[0]
-if (!admin?.roles?.includes('admin')) throw new Error(`${email} is not an admin here: run queueLegacyLeads first or name one`)
+if (!admin?.roles?.includes('admin')) throw new Error(proseFill(PROSE.scriptsDevelopLead_s1, email))
 const user = { ...admin, collection: 'users' as const }
 
 const lead = (await payload.find({ collection: 'pages', draft: true, limit: 1, user, where: { 'lead.path': { equals: leadPath } } })).docs[0]
-if (!lead) throw new Error(`no lead page for ${leadPath}: queue it with LEGACY_PATHS=${leadPath}`)
+if (!lead) throw new Error(proseFill(PROSE.scriptsDevelopLead_s2, leadPath, leadPath))
 const tenant = typeof lead.tenant === 'object' ? lead.tenant?.id : lead.tenant
 
 const text = (t: string) => ({
@@ -54,7 +55,7 @@ const post = await payload.create({
   data: {
     title: `${product.title}: developed from ${leadPath}`,
     slug: `${product.slug}-developed`,
-    content: text(`${product.title} is now a product. It was developed from the lead ${leadPath}, which entered this installation through the uuidna trial door.`),
+    content: text(proseFill(PROSE.scriptsDevelopLead_s3, product.title, leadPath)),
     developedFrom: lead.id,
     _status: 'published',
   },

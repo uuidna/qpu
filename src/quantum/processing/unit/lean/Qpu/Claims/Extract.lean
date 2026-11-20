@@ -1,4 +1,4 @@
-import Lean.Json
+import Lean.Data.Json
 import Qpu.Claims.Claim
 
 import Qpu.Information.Qubit
@@ -21,7 +21,7 @@ def claims : List Claim :=
 
 /-- The canonical Lean claim manifest. -/
 def manifest : Json :=
-  .arr (claims.map Claim.toJson)
+  .arr (claims.map Claim.toJson).toArray
 
 /-- The manifest output path, relative to the repository root. -/
 def outputPath : System.FilePath := ".lake" / "build" / "claims.json"

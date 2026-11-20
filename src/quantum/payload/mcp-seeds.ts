@@ -1,6 +1,7 @@
 // The MCP is the website. Nested docs covers the URL. The page holds the content.
 // SEO, search, redirects, import-export, the form builder, Stripe, and the MCP plugin read those pages.
 // Nothing is written here.
+import { PROSE } from '../processing/prose-index.ts'
 import { WEBSITE_MCP_COLLECTIONS, WEBSITE_MCP_GLOBALS } from '../../plugins/websiteCatalogue.ts'
 import { formatSlug, nestedUrl, pageSeed } from '../processing/page-seed.ts'
 import { canonicalText, uuid } from '../uuid/index.ts'
@@ -29,7 +30,7 @@ const chainOf = (page: SeedPage, byId: Map<string, SeedPage>): SeedPage[] => {
 }
 
 export const mcpPages = (tools: readonly McpToolSeed[], hosts: readonly McpHostSeed[] = []) => {
-  const root = pageSeed('mcp', `The website serves this MCP at /api/mcp. Nested docs covers each URL below. The 1000-bit cofactor stays open. No prime factor is written.`)
+  const root = pageSeed('mcp', PROSE.quantumPayloadMcpSeeds_s1)
   const pages: SeedPage[] = [{ ...root, _status: 'published' as const, parentId: null, parentSlug: null, depth: 1, kind: 'mcp', url: '', addressed: true }]
   const add = (title: string, text: string, parent: SeedPage, kind: SeedPage['kind']) => {
     const page = pageSeed(title, text, uuid(canonicalText({ title, text, parent: parent.id, kind })))

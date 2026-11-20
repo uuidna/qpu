@@ -29,21 +29,21 @@ const slugOf = (path: string) => path.toLowerCase().replace(/[^a-z0-9]+/g, '-').
  *  module becomes a page under the last of them. The Pages beforeChange hook sends the module to the uuidna trial door
  *  first, so a lead is stored only with its verdict and receipt. */
 export const legacyLeadTask: TaskConfig<{
-  input: { address: string; exports: string; path: string; tenant: number }
-  output: { page: number }
+  input: { address: string; exports: string; path: string; tenant: string }
+  output: { page: string }
 }> = {
   slug: 'legacyLead',
   inputSchema: [
     { name: 'path', type: 'text', required: true },
     { name: 'exports', type: 'text' },
     { name: 'address', type: 'text', required: true },
-    { name: 'tenant', type: 'number', required: true },
+    { name: 'tenant', type: 'text', required: true },
   ],
-  outputSchema: [{ name: 'page', type: 'number', required: true }],
+  outputSchema: [{ name: 'page', type: 'text', required: true }],
   handler: async ({ input, req }) => {
     const { payload } = req
     const context = { disableRevalidate: true }
-    const leadPage = async (path: string, parent: number | undefined, kind: 'directory' | 'module') => {
+    const leadPage = async (path: string, parent: string | undefined, kind: 'directory' | 'module') => {
       const found = await payload.find({ collection: 'pages', depth: 0, limit: 1, req, where: { 'lead.path': { equals: path } } })
       if (found.docs[0]) return found.docs[0].id
       const created = await payload.create({
@@ -68,7 +68,7 @@ export const legacyLeadTask: TaskConfig<{
       return created.id
     }
     const parts = input.path.split('/')
-    let parent: number | undefined
+    let parent: string | undefined
     for (let i = 1; i < parts.length; i++) parent = await leadPage(parts.slice(0, i).join('/'), parent, 'directory')
     return { output: { page: await leadPage(input.path, parent, 'module') } }
   },

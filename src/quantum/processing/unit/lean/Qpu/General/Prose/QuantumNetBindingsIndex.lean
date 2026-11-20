@@ -1,0 +1,46 @@
+/-! # Qpu.General.Prose.QuantumNetBindingsIndex
+The prose of `src/quantum/net/bindings/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+`⟦n⟧` marks where the nth computed value goes. -/
+
+namespace Prose
+
+def quantumNetBindingsIndex_s1 : String := "DOCKET (the Durable Object docket, the RAID)"
+def quantumNetBindingsIndex_s2 : String := "QPU (the Worker, a service binding)"
+def quantumNetBindingsIndex_role3 : String := "the Worker and the docket (until the gate decodes the Payload app beside them)"
+def quantumNetBindingsIndex_s4 : String := "compatibility_flags [webcrypto_modern_algorithms]"
+def quantumNetBindingsIndex_freeTier5 : String := "100k requests a day, static assets free"
+def quantumNetBindingsIndex_paidFor6 : String := "requests beyond the tier, Durable Object requests and storage"
+def quantumNetBindingsIndex_keptFree7 : String := "ETag involutions answer 304 without a body; a block computed once is teleported, never recomputed"
+def quantumNetBindingsIndex_role8 : String := "the app on Cloud Run with Cloud SQL, Cloud Storage and Gmail (the adapters profile google), reached through Google's own MCP servers (run, sqladmin, monitoring)"
+def quantumNetBindingsIndex_freeTier9 : String := "Cloud Run 2 million requests a month, Cloud Storage 5 GB, Gmail 500 mails a day; Cloud SQL has no free tier"
+def quantumNetBindingsIndex_paidFor10 : String := "the Cloud SQL instance, egress, requests beyond the free tier"
+def quantumNetBindingsIndex_keptFree11 : String := "reads by address through the docket; the involutions answer 304 before Cloud Run runs"
+def quantumNetBindingsIndex_role12 : String := "the public news APIs as adapters of the DOI research: the open ones need no name; the keyed ones the tenant names, never values"
+def quantumNetBindingsIndex_s13 : String := "the news gates (open and keyed)"
+def quantumNetBindingsIndex_freeTier14 : String := "GDELT, Hacker News, Crossref Event Data and Wikipedia free without a key; NewsAPI, The Guardian and The New York Times free developer keys"
+def quantumNetBindingsIndex_keptFree15 : String := "the open four answer every run; a keyed one answers when named"
+def quantumNetBindingsIndex_role16 : String := "the energy and IoT sectors the bill links to: the tariff per kilowatt-hour the tenant names, the market-price gates it opens with its key (ENTSO-E transparency platform, the EIA open data), every IoT reading a docket entry billed per device"
+def quantumNetBindingsIndex_s17 : String := "the docket entries of kind reading (IoT)"
+def quantumNetBindingsIndex_freeTier18 : String := "ENTSO-E and EIA free with a registered key; the tariff is a number the tenant names"
+def quantumNetBindingsIndex_paidFor19 : String := "nothing: the bill prices the joules the computations moved at the tariff"
+def quantumNetBindingsIndex_keptFree20 : String := "the involutions move no bits: a 304 costs no joule"
+def quantumNetBindingsIndex_role21 : String := "the QPU as a Cloudflare connector and an AI connector at once, over the one /mcp endpoint: OAuth 2.1 for the docket roles (the protected-resource metadata of RFC 9728 at /.well-known/oauth-protected-resource, dynamic client registration), the MCP registry entry (server.json from configure { kind: mcp }), the directories; every binding a name a tenant admin selects in Payload (tenants.bindings), never a value"
+def quantumNetBindingsIndex_s22 : String := "OAUTH_KV (KV namespace: the OAuth provider's clients, grants and tokens)"
+def quantumNetBindingsIndex_s23 : String := "the /.well-known/oauth-protected-resource document, served by the Worker from the names"
+def quantumNetBindingsIndex_freeTier24 : String := "KV 100k reads and 1k writes a day; the registry and the directories free"
+def quantumNetBindingsIndex_keptFree25 : String := "the pure tools need no token, so no OAuth round trip precedes them; only the docket roles are scoped, and a 304 by involution needs no scope at all"
+def quantumNetBindingsIndex_role26 : String := "the database behind Payload (the docket over the mongo language)"
+def quantumNetBindingsIndex_keptFree27 : String := "content-addressed entries are written once; reads come from the app's cache by tag"
+def quantumNetBindingsIndex_role28 : String := "the Payload app (Next.js) and blob storage"
+def quantumNetBindingsIndex_s29 : String := "BLOB_READ_WRITE_TOKEN (vercelBlobStorage)"
+def quantumNetBindingsIndex_freeTier30 : String := "hobby: serverless functions, 100 GB bandwidth, blob 1 GB"
+def quantumNetBindingsIndex_paidFor31 : String := "function invocations and bandwidth beyond hobby"
+def quantumNetBindingsIndex_keptFree32 : String := "tags revalidate one page per change; UUID pages are immutable and cached forever"
+def quantumNetBindingsIndex_role33 : String := "the licence checkout per tenant (the Worker) and the ecommerce plugin's payment (the app)"
+def quantumNetBindingsIndex_keptFree34 : String := "a plan is computed here; Stripe is asked only at checkout"
+def quantumNetBindingsIndex_role35 : String := "the handler's tools served by @payloadcms/plugin-mcp"
+def quantumNetBindingsIndex_keptFree36 : String := "tools/call is pure: the same arguments answer the same address"
+def quantumNetBindingsIndex_role37 : String := "the operator agent that mounts the QPU through the MCP connector (only when named)"
+def quantumNetBindingsIndex_keptFree38 : String := "never called by the tree; the registration is computed, the request is the operator's"
+
+end Prose

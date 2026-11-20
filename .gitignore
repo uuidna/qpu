@@ -69,3 +69,9 @@ playwright-report/index.html
 !.env.example
 public/media
 /legacy/.next/
+.lake/
+# the VitePress site is rendered from the seeds and from Lean (lake run seed); only its config is kept
+site/*
+!site/.vitepress/
+site/.vitepress/*
+!site/.vitepress/config.ts

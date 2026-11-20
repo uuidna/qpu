@@ -1,8 +1,6 @@
 import type { Category, Media, Product, VariantOption, VariantType } from '@/payload-types'
 import { RequiredDataFromCollectionSlug } from 'payload'
 
-import { prices } from '@/currencies'
-
 type ProductArgs = {
   galleryImages: NonNullable<Product['gallery']>
   metaImage: Media
@@ -1171,7 +1169,8 @@ export const productTshirtData: (
     gallery: galleryImages,
     title: 'Tshirt',
     slug: 'tshirt',
-    ...prices({ usd: 4999 }),
+    priceInUSDEnabled: true,
+    priceInUSD: 4999,
     relatedProducts: relatedProducts,
   }
 }
@@ -1195,7 +1194,8 @@ export const productTshirtVariant: (
     product: product,
     options: variantOptions,
     inventory,
-    ...prices({ usd: priceInUSD }),
+    priceInUSDEnabled: true,
+    priceInUSD,
     _status: 'published',
   }
 }

@@ -1,6 +1,7 @@
 // Readiness as a pure toolbox: every lead judged by measurement into served, refuted or trial; the border plan (which
 // discovered doors to offer a theorem to, with what arguments) and the border read (what they answered); the unit plan (the
 // calls the client makes to the unit) and the page. The client fetches and asks; nothing here does I/O.
+import { PROSE, proseFill } from './prose-index.ts'
 import { listCleanupSubjects, type Lead } from './leads.ts'
 import type { Discovery } from './discovery.ts'
 import type { WaveResult } from './wave.ts'
@@ -39,9 +40,9 @@ export const judgeLead = (l: Lead, pages: ReadonlyMap<string, Page>, present: Re
   if (page?.title) {
     const m = match(page.rawTitle ?? page.title)
     // served only by a match that is not weak: a serve on common words alone (coverage below the bar) is too little to claim the page
-    if (m.verdict === 'served' && !m.weak) return j('served', `the match tool serves the page's title "${page.title}" by ${m.tool}`)
+    if (m.verdict === 'served' && !m.weak) return j('served', proseFill(PROSE.quantumProcessingReadiness_s1, page.title, m.tool))
     const coverage = m.coverage !== undefined ? Math.round(m.coverage * 100) : Number(/covers (\d+)%/.exec(m.evidence[0] ?? '')?.[1] ?? 0)
-    return j('refuted', `measured not served: the surface covers ${coverage}% of the page's title "${page.title}" (HTTP ${page.status})${l.status === 'out_of_scope' ? `; declared out of scope: ${l.reason}` : ''}`)
+    return j('refuted', proseFill(PROSE.quantumProcessingReadiness_s2, coverage, page.title, page.status, l.status === 'out_of_scope' ? `; declared out of scope: ${l.reason}` : ''))
   }
   if (l.status === 'out_of_scope') return j('refuted', `declared out of scope: ${l.reason ?? 'no reason recorded'}`)
   return j('trial', l.reason ?? l.status)
@@ -78,7 +79,7 @@ export const planBorder = (discovery: Pick<Discovery, 'doors' | 'capabilities'> 
       else if (p === 'theorems') args[p] = [probe.key]
       else if (d.required.includes(p)) ok = false
     }
-    if (ok) calls.push({ door: d.name, host: d.host, arguments: args }); else unfillable.push({ door: d.name, host: d.host, args: [], verdict: null, receipt: null, sealed: false, note: `requires ${d.required.join(', ')}: not fillable from a theorem`, refusal: null })
+    if (ok) calls.push({ door: d.name, host: d.host, arguments: args }); else unfillable.push({ door: d.name, host: d.host, args: [], verdict: null, receipt: null, sealed: false, note: proseFill(PROSE.quantumProcessingReadiness_note3, d.required.join(', ')), refusal: null })
   }
   return { calls, unfillable }
 }
@@ -100,7 +101,7 @@ const getVortex = (unit: { reflection?: { forward?: number[]; reflected?: number
   const sameSet = (a: number[] | undefined, b: number[]) => !!a && a.length === b.length && [...a].sort().join() === [...b].sort().join()
   const agree = !!r && sameSet(r.forward, TREE_VORTEX.forward) && sameSet(r.reflected, TREE_VORTEX.reflected) && r.involution === true && r.pairsSumTen === true && (r.reflected ?? []).every((x, i) => x + (r.forward ?? [])[i]! === 10)
   const triadOneSided = Array.isArray(unit.triad) && unit.triad.join() === '3,6,9'
-  return { agree, why: !r ? 'the unit\'s reflection door was not reached' : agree ? 'the unit\'s forward and reflected vortex are the tree\'s, an involution with pairs summing to 10' : `the unit\'s vortex differs: forward ${r.forward?.join(',')}, reflected ${r.reflected?.join(',')}`, triadOneSided, forward: r?.forward ?? null, reflected: r?.reflected ?? null, doubleTorusRoot: unit.doubleTorus?.root ?? null, dims: unit.doubleTorus?.dims?.length ?? 0 }
+  return { agree, why: !r ? PROSE.quantumProcessingReadiness_s4 : agree ? PROSE.quantumProcessingReadiness_s5 : proseFill(PROSE.quantumProcessingReadiness_s6, r.forward?.join(','), r.reflected?.join(',')), triadOneSided, forward: r?.forward ?? null, reflected: r?.reflected ?? null, doubleTorusRoot: unit.doubleTorus?.root ?? null, dims: unit.doubleTorus?.dims?.length ?? 0 }
 }
 export type UnitAnswers = { vortex?: { reflection?: unknown; triad?: number[] | null; doubleTorus?: { dims?: string[]; root?: string } | null } | null; readiness: { ready: boolean; why: string; settled: number; asked: number; answered: number; receipt: string }; auras: Record<string, { example: string; hue?: number; hsl?: string; cmyk?: number[]; error?: string }>; rights: { receipt?: string; imprint?: string; licenseAddress?: string; drift: string[] }; address: { probe: string; here: string; unit: string | null; agree: boolean; note: string } }
 
@@ -109,19 +110,19 @@ export type UnitAnswers = { vortex?: { reflection?: unknown; triad?: number[] | 
 export const getReadinessPage = (p: { unit: string; date: string; measured: string | null; discovered: string | null; probe: { key: string; statement: string | null }; judged: Judged[]; classes: { served: number; refuted: number; trial: number }; sources: Source[]; border: Border[]; sealedBy: string[]; answers: UnitAnswers }): string => {
   const { answers: a } = p
   return ['---', 'title: Readiness', 'order: 53', '---', '', '# The unit judges the tree', '',
-    `Asked of the uuidna MCP at ${p.unit} by \`npm run next\` on ${p.date} through the \`readiness\` tool. The verdicts are the unit's; this tree only carries them.`, '',
-    `## Release readiness: **${a.readiness.ready ? 'ready' : 'not ready'}**`, '', `${a.readiness.why}`, '', `Settled ${a.readiness.settled}; sources asked ${a.readiness.asked}, answered ${a.readiness.answered}; receipt \`${a.readiness.receipt}\`.`, '',
+    proseFill(PROSE.quantumProcessingReadiness_s7, p.unit, p.date), '',
+    `## Release readiness: **${a.readiness.ready ? 'ready' : 'not ready'}**`, '', `${a.readiness.why}`, '', proseFill(PROSE.quantumProcessingReadiness_s8, a.readiness.settled, a.readiness.asked, a.readiness.answered, a.readiness.receipt), '',
     '## Every lead judged by measurement', '',
-    `Served ${p.classes.served}, refuted ${p.classes.refuted}, in trial ${p.classes.trial} of ${p.judged.length}. Served: a tool of this surface serves it, or the match tool serves the page's fetched title. Refuted: measured not served — the page is gone, a cleanup's subject stays absent, the surface covers too little of the page's own title to claim it, or the lead is declared out of scope. Trial: still owed. Page measurements from the verify step of ${p.measured?.slice(0, 10) ?? 'no run yet'}.`, '',
+    proseFill(PROSE.quantumProcessingReadiness_s9, p.classes.served, p.classes.refuted, p.classes.trial, p.judged.length, p.measured?.slice(0, 10) ?? 'no run yet'), '',
     '| Lead in trial | Status | Owes |', '|---|---|---|', ...p.judged.filter((x) => x.class === 'trial').map((x) => `| ${cell(x.lead)} | ${cell(x.status)} | ${cell(x.by.replace(/\|/g, '\\|'))} |`), '',
     '<details><summary>The refuted, by measurement</summary>', '', '| Lead | Status | By |', '|---|---|---|', ...p.judged.filter((x) => x.class === 'refuted').map((x) => `| ${cell(x.lead)} | ${cell(x.status)} | ${cell(x.by.replace(/\|/g, '\\|'))} |`), '', '</details>', '',
     '| Source | Settled | Open |', '|---|---:|---:|', ...p.sources.map((s) => `| ${cell(s.source)} | ${cell(s.settled)} | ${cell(s.open.reduce((n, o) => n + Number(/^(\d+) lead/.exec(o.what)?.[1] ?? 1), 0))} |`), '',
-    '## Auras', '', "The A432-tuned colour the unit folds from each example block's content address (hue steps by 432/12 = 36°; artistic, not physics, in the unit's own words).", '',
-    '| Block | Example | Hue | HSL | CMYK |', '|---|---|---:|---|---|', ...Object.entries(a.auras).map(([id, x]) => `| ${cell(id)} | ${cell(x.example)} | ${cell(x.hue ?? '—')} | ${cell(x.hsl ?? x.error ?? '')} | ${cell(x.cmyk ? x.cmyk.join(', ') : '')} |`), '',
+    '## Auras', '', PROSE.quantumProcessingReadiness_s10, '',
+    PROSE.quantumProcessingReadiness_s11, '|---|---|---:|---|---|', ...Object.entries(a.auras).map(([id, x]) => `| ${cell(id)} | ${cell(x.example)} | ${cell(x.hue ?? '—')} | ${cell(x.hsl ?? x.error ?? '')} | ${cell(x.cmyk ? x.cmyk.join(', ') : '')} |`), '',
     '## Address agreement', '', `Probe \`${a.address.probe}\`: here ${a.address.here}, unit ${a.address.unit ?? 'no answer'} — ${a.address.agree ? 'agree' : 'disagree'}. ${a.address.note}`, '',
-    '## The border', '', `\`${p.probe.key}\` (${p.probe.statement ?? 'statement not in the ledger yet'}) offered to every door discovery found that takes a statement and answers a verdict (${p.border.length} door(s), discovered ${p.discovered?.slice(0, 10) ?? 'never'}). ${p.sealedBy.length ? `Sealed or verified by: ${p.sealedBy.join(', ')}.` : "No door sealed or verified it: qpu's proofs are not citable at the border; lead gap-theorems-unsealed stays blocked on the unit's doors."}`, '',
-    '| Door | Asked with | Verdict | Receipt | Note or refusal |', '|---|---|---|---|---|', ...p.border.map((b) => `| ${cell(b.door)} | ${cell(b.args.join(', ') || '—')} | ${cell(b.verdict ?? '—')} | ${cell(b.receipt ?? '—')} | ${cell((b.note ?? b.refusal ?? '').replace(/\|/g, '\\|'))} |`), '',
-    '## The vortex, cross-checked with the unit', '', (() => { const v = getVortex((a.vortex ?? {}) as Parameters<typeof getVortex>[0]); return `${v.why}. ${v.triadOneSided ? 'The unit\'s triad door answers 3, 6, 9 alone; this tree carries 7, 4, 1 beside it (triad_reflect).' : ''} ${v.doubleTorusRoot ? `The tree\'s ${v.dims} block addresses folded on the unit\'s double torus: root \`${v.doubleTorusRoot}\`.` : 'The double torus was not reached.'}` })(), '',
-    '## Rights', '', a.rights.drift.length ? `Drift between the unit's rights and this tree's licence module: ${a.rights.drift.join('; ')}` : `This tree's licence module matches the unit's rights (address ${a.rights.licenseAddress}, imprint ${a.rights.imprint}, receipt ${a.rights.receipt}).`, ''].join('\n')
+    '## The border', '', proseFill(PROSE.quantumProcessingReadiness_s12, p.probe.key, p.probe.statement ?? PROSE.quantumProcessingReadiness_s13, p.border.length, p.discovered?.slice(0, 10) ?? 'never', p.sealedBy.length ? `Sealed or verified by: ${p.sealedBy.join(', ')}.` : PROSE.quantumProcessingReadiness_s14), '',
+    PROSE.quantumProcessingReadiness_s15, '|---|---|---|---|---|', ...p.border.map((b) => `| ${cell(b.door)} | ${cell(b.args.join(', ') || '—')} | ${cell(b.verdict ?? '—')} | ${cell(b.receipt ?? '—')} | ${cell((b.note ?? b.refusal ?? '').replace(/\|/g, '\\|'))} |`), '',
+    '## The vortex, cross-checked with the unit', '', (() => { const v = getVortex((a.vortex ?? {}) as Parameters<typeof getVortex>[0]); return `${v.why}. ${v.triadOneSided ? PROSE.quantumProcessingReadiness_s16 : ''} ${v.doubleTorusRoot ? proseFill(PROSE.quantumProcessingReadiness_s17, v.dims, v.doubleTorusRoot) : PROSE.quantumProcessingReadiness_s18}` })(), '',
+    '## Rights', '', a.rights.drift.length ? proseFill(PROSE.quantumProcessingReadiness_s19, a.rights.drift.join('; ')) : proseFill(PROSE.quantumProcessingReadiness_s20, a.rights.licenseAddress, a.rights.imprint, a.rights.receipt), ''].join('\n')
 }
 export { TAKES }

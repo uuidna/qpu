@@ -1,6 +1,7 @@
 // Google Workspace in Payload, in the shapes the Discovery documents define: a form ↔ a Forms Form, Lexical ↔ a Docs Document, a document
 // ↔ a Drive File (calls in the Drive MCP's shapes), each checked against its schema, the coverage as exact pairs. No Sites API is listed,
 // so a Sites page is covered as what it is made of. Pure: discover fetches the documents; the Drive MCP answers behind a QPU door.
+import { PROSE, proseFill } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
 import { GOOGLE_DOCUMENTS, DRIVE_FILE_URL } from './discovery.ts'
 import { WORKSPACE_MCP } from './institutions.ts'
@@ -90,7 +91,7 @@ const HELD: J = { forms: Object.values(FORM_KINDS).flat().filter((k) => typeof k
 const listKinds = (d: J) => ({ forms: ['Item', 'Question'].flatMap((t) => Object.keys(d.forms?.schemas?.[t]?.properties ?? {}).filter((k) => k.endsWith(t))), docs: ['StructuralElement', 'ParagraphElement'].flatMap((t) => Object.keys(d.docs?.schemas?.[t]?.properties ?? {}).filter((k) => !/Index$/.test(k))), drive: Object.keys(d.drive?.schemas?.File?.properties ?? {}), sites: d.list ? (d.list.items ?? []).filter((i: J) => i.name === 'sites').map((i: J) => i.id) : null })
 const getWorkspaceCoverage = (k: J) => {
   const apis = Object.fromEntries(['forms', 'docs', 'drive'].map((a) => { const of = [...new Set<string>(k[a] ?? [])], held = of.filter((x) => HELD[a].includes(x)); return [a, { live: held.length, of: of.length, held, missing: of.filter((x) => !held.includes(x)) }] }))
-  const leads = [...Object.entries(apis).flatMap(([a, c]) => c.missing.map((m: string) => ({ id: `workspace-${a}-${m}`, statement: `${m} of the ${a} API has no Payload counterpart yet`, evidence: (GOOGLE_DOCUMENTS as J)[a], status: 'open' }))), ...(!k.sites || k.sites.length ? [] : [{ id: 'probe-workspace-sites-api', statement: 'Google Discovery lists no Sites API: a Sites page is covered as the forms, documents and files it is made of', evidence: GOOGLE_DOCUMENTS.list, status: 'open' }])]
+  const leads = [...Object.entries(apis).flatMap(([a, c]) => c.missing.map((m: string) => ({ id: `workspace-${a}-${m}`, statement: proseFill(PROSE.quantumProcessingWorkspace_statement1, m, a), evidence: (GOOGLE_DOCUMENTS as J)[a], status: 'open' }))), ...(!k.sites || k.sites.length ? [] : [{ id: 'probe-workspace-sites-api', statement: PROSE.quantumProcessingWorkspace_statement2, evidence: GOOGLE_DOCUMENTS.list, status: 'open' }])]
   return { ...apis, sites: { listed: k.sites ?? null }, leads }
 }
 /** The workspace door: each of discovery, kinds, form, forms, response, lexical, document, doc, file, answers given, answered both ways */

@@ -3,6 +3,7 @@
 // one row addressed by its UUID (uuid(provider\nmethod server/path)), sealed, so the admin, the endpoint and the stream read one index.
 // The Cloudflare meters are priced from Cloudflare's published tables; the cost is the fold Σ max(0, used − included) × rate, zero inside the
 // allowances (textbook_bill_covered). Nothing is fetched here: the readings come in, the contracts come in, the rows come out.
+import { PROSE, proseFill } from '../../../processing/prose-index.ts'
 import { seal, uuid } from '../../index.ts'
 import { TABLES } from '../../../processing/tables-index.ts'
 import { SHADCN_COMPONENTS, SHADCN_MCP } from '../shadcn/index.ts'
@@ -14,24 +15,24 @@ export type ApiRow = ApiDoor & { address: string; sealed: boolean }
 
 /** Cloudflare's MCP servers, as https://github.com/cloudflare/mcp-server-cloudflare lists them (read 2026-11-08): the API server first (recommended), then the domain servers; each mapped to what it is for the Payload plugin. */
 export const CLOUDFLARE_MCP: readonly ApiDoor[] = [
-  { provider: 'cloudflare', kind: 'mcp', name: 'api', url: 'https://mcp.cloudflare.com/mcp', about: 'the Cloudflare API MCP server: broad access across the APIs through code execution', maps: 'the qpu-cloudflare-call job: every call planned against the held OpenAPI operations, the token the tenant bindings name' },
-  { provider: 'cloudflare', kind: 'mcp', name: 'observability', url: 'https://observability.mcp.cloudflare.com/mcp', about: 'Workers logs and analytics', maps: 'the qpu-cloudflare-observe job: requests, CPU time, D1 rows, R2 operations, log events read into the qpu global' },
-  { provider: 'cloudflare', kind: 'mcp', name: 'graphql', url: 'https://graphql.mcp.cloudflare.com/mcp', about: 'analytics through the GraphQL Analytics API', maps: 'the observe job\'s datasets: workersInvocationsAdaptive, d1AnalyticsAdaptiveGroups, r2OperationsAdaptiveGroups' },
-  { provider: 'cloudflare', kind: 'mcp', name: 'bindings', url: 'https://bindings.mcp.cloudflare.com/mcp', about: 'Workers bindings: storage, AI, compute', maps: 'the adapters profile cloudflare: D1, R2, KV, Durable Objects as the app\'s wrangler bindings' },
-  { provider: 'cloudflare', kind: 'mcp', name: 'builds', url: 'https://builds.mcp.cloudflare.com/mcp', about: 'Workers Builds insight and management', maps: 'the machine\'s dispatch of deploy.yml: a build read back as its receipt' },
-  { provider: 'cloudflare', kind: 'mcp', name: 'logpush', url: 'https://logs.mcp.cloudflare.com/mcp', about: 'Logpush job health', maps: 'a paid route the observe job names only when logs exceed the included events' },
-  { provider: 'cloudflare', kind: 'mcp', name: 'auditlogs', url: 'https://auditlogs.mcp.cloudflare.com/mcp', about: 'audit logs and reports', maps: 'the docket: every account change an entry beside the app\'s own calls' },
-  { provider: 'cloudflare', kind: 'mcp', name: 'docs', url: 'https://docs.mcp.cloudflare.com/mcp', about: 'up-to-date Cloudflare reference', maps: 'the leads: a remedy cites its page' },
-  { provider: 'cloudflare', kind: 'mcp', name: 'radar', url: 'https://radar.mcp.cloudflare.com/mcp', about: 'Cloudflare Radar internet insights', maps: 'the match tool\'s news and search sources' },
-  { provider: 'cloudflare', kind: 'mcp', name: 'ai-gateway', url: 'https://ai-gateway.mcp.cloudflare.com/mcp', about: 'AI Gateway logs, prompts and responses', maps: 'free AI by hooks: Gemini first, every route logged through the gateway' },
-  { provider: 'cloudflare', kind: 'openapi', name: 'openapi', url: 'https://raw.githubusercontent.com/cloudflare/api-schemas/main/openapi.json', about: 'the Cloudflare API contract (OpenAPI 3, 27.8 MB on 2026-11-08)', maps: 'entries of kind openapi-operation held in Payload: the call job allows a path only when an operation names it' },
-  { provider: 'cloudflare', kind: 'graphql', name: 'analytics', url: 'https://api.cloudflare.com/client/v4/graphql', about: 'the GraphQL Analytics API endpoint', maps: 'the observe job posts its one query here with the Account Analytics Read token' },
+  { provider: 'cloudflare', kind: 'mcp', name: 'api', url: 'https://mcp.cloudflare.com/mcp', about: PROSE.quantumUuidProgramsApisIndex_about1, maps: PROSE.quantumUuidProgramsApisIndex_maps2 },
+  { provider: 'cloudflare', kind: 'mcp', name: 'observability', url: 'https://observability.mcp.cloudflare.com/mcp', about: 'Workers logs and analytics', maps: PROSE.quantumUuidProgramsApisIndex_maps3 },
+  { provider: 'cloudflare', kind: 'mcp', name: 'graphql', url: 'https://graphql.mcp.cloudflare.com/mcp', about: PROSE.quantumUuidProgramsApisIndex_about4, maps: PROSE.quantumUuidProgramsApisIndex_maps5 },
+  { provider: 'cloudflare', kind: 'mcp', name: 'bindings', url: 'https://bindings.mcp.cloudflare.com/mcp', about: 'Workers bindings: storage, AI, compute', maps: PROSE.quantumUuidProgramsApisIndex_maps6 },
+  { provider: 'cloudflare', kind: 'mcp', name: 'builds', url: 'https://builds.mcp.cloudflare.com/mcp', about: PROSE.quantumUuidProgramsApisIndex_about7, maps: PROSE.quantumUuidProgramsApisIndex_maps8 },
+  { provider: 'cloudflare', kind: 'mcp', name: 'logpush', url: 'https://logs.mcp.cloudflare.com/mcp', about: 'Logpush job health', maps: PROSE.quantumUuidProgramsApisIndex_maps9 },
+  { provider: 'cloudflare', kind: 'mcp', name: 'auditlogs', url: 'https://auditlogs.mcp.cloudflare.com/mcp', about: 'audit logs and reports', maps: PROSE.quantumUuidProgramsApisIndex_maps10 },
+  { provider: 'cloudflare', kind: 'mcp', name: 'docs', url: 'https://docs.mcp.cloudflare.com/mcp', about: 'up-to-date Cloudflare reference', maps: PROSE.quantumUuidProgramsApisIndex_maps11 },
+  { provider: 'cloudflare', kind: 'mcp', name: 'radar', url: 'https://radar.mcp.cloudflare.com/mcp', about: 'Cloudflare Radar internet insights', maps: PROSE.quantumUuidProgramsApisIndex_maps12 },
+  { provider: 'cloudflare', kind: 'mcp', name: 'ai-gateway', url: 'https://ai-gateway.mcp.cloudflare.com/mcp', about: PROSE.quantumUuidProgramsApisIndex_about13, maps: PROSE.quantumUuidProgramsApisIndex_maps14 },
+  { provider: 'cloudflare', kind: 'openapi', name: 'openapi', url: 'https://raw.githubusercontent.com/cloudflare/api-schemas/main/openapi.json', about: PROSE.quantumUuidProgramsApisIndex_about15, maps: PROSE.quantumUuidProgramsApisIndex_maps16 },
+  { provider: 'cloudflare', kind: 'graphql', name: 'analytics', url: 'https://api.cloudflare.com/client/v4/graphql', about: PROSE.quantumUuidProgramsApisIndex_about17, maps: PROSE.quantumUuidProgramsApisIndex_maps18 },
 ]
 /** Payload's own doors of the app: its REST, GraphQL and MCP under the app's origin. */
 export const payloadDoors = (origin: string): readonly ApiDoor[] => [
-  { provider: 'payload', kind: 'rest', name: 'rest', url: `${origin}/api`, about: 'Payload\'s REST API: every collection and global', maps: 'the merged index: one operation row per collection verb and per global' },
-  { provider: 'payload', kind: 'graphql', name: 'graphql', url: `${origin}/api/graphql`, about: 'Payload\'s GraphQL API', maps: 'the same collections and globals as one schema' },
-  { provider: 'payload', kind: 'mcp', name: 'mcp', url: `${origin}/api/mcp`, about: 'the Payload MCP plugin serving the QPU\'s tools', maps: 'the door every other door is reached through' },
+  { provider: 'payload', kind: 'rest', name: 'rest', url: `${origin}/api`, about: PROSE.quantumUuidProgramsApisIndex_about19, maps: PROSE.quantumUuidProgramsApisIndex_maps20 },
+  { provider: 'payload', kind: 'graphql', name: 'graphql', url: `${origin}/api/graphql`, about: 'Payload\'s GraphQL API', maps: PROSE.quantumUuidProgramsApisIndex_maps21 },
+  { provider: 'payload', kind: 'mcp', name: 'mcp', url: `${origin}/api/mcp`, about: PROSE.quantumUuidProgramsApisIndex_about22, maps: PROSE.quantumUuidProgramsApisIndex_maps23 },
 ]
 /** Google's MCP servers from the table Payload holds, as doors of this program. */
 export const googleDoors = (): readonly ApiDoor[] => (TABLES.GOOGLE_MCP as readonly { host: string; url: string; about: string; maps: string }[]).map((g) => ({ provider: 'google', kind: 'mcp', name: g.host.replace(/\.googleapis\.com$/, ''), url: g.url, about: g.about, maps: g.maps }))
@@ -39,9 +40,9 @@ export const googleDoors = (): readonly ApiDoor[] => (TABLES.GOOGLE_MCP as reado
 /** shadcn as a door of the QPU, not a second server: its MCP (npx shadcn@latest mcp) answers from the public registry, so the registry index is the
  *  contract and every tool of that MCP is served here from it (textbook: the shadcn program already gives each item its UUID). */
 export const SHADCN_DOORS: readonly ApiDoor[] = [
-  { provider: 'shadcn', kind: 'registry', name: 'registry', url: SHADCN_MCP.registry, about: 'the shadcn registry index: every registry:ui item, the contract the shadcn MCP reads', maps: 'apis { shadcn }: list, search, view and the add command answered from this index; each item one UUID program (shadcnPrograms)' },
-  { provider: 'shadcn', kind: 'mcp', name: 'mcp', url: 'https://ui.shadcn.com/docs/mcp', about: `the shadcn MCP server (${SHADCN_MCP.command} ${SHADCN_MCP.args.join(' ')}): registries, items, examples, add commands, an audit checklist`, maps: 'folded into the QPU: the same seven tools reached through qpu, so no second server is declared in .mcp.json' },
-  { provider: 'shadcn', kind: 'rest', name: 'create', url: SHADCN_MCP.create, about: 'the shadcn create page: a preset of components, styled from a URL', maps: 'the shadcn program\'s shadcnCreatePreset: a preset addressed by UUID' },
+  { provider: 'shadcn', kind: 'registry', name: 'registry', url: SHADCN_MCP.registry, about: PROSE.quantumUuidProgramsApisIndex_about24, maps: PROSE.quantumUuidProgramsApisIndex_maps25 },
+  { provider: 'shadcn', kind: 'mcp', name: 'mcp', url: 'https://ui.shadcn.com/docs/mcp', about: proseFill(PROSE.quantumUuidProgramsApisIndex_about26, SHADCN_MCP.command, SHADCN_MCP.args.join(' ')), maps: PROSE.quantumUuidProgramsApisIndex_maps27 },
+  { provider: 'shadcn', kind: 'rest', name: 'create', url: SHADCN_MCP.create, about: PROSE.quantumUuidProgramsApisIndex_about28, maps: PROSE.quantumUuidProgramsApisIndex_maps29 },
 ]
 /** The shadcn MCP's tools (https://ui.shadcn.com/docs/mcp) as operations of this program, each served by apis { shadcn } from the registry contract. */
 export const SHADCN_TOOLS = ['get_project_registries', 'list_items_in_registries', 'search_items_in_registries', 'view_items_in_registries', 'get_item_examples_from_registries', 'get_add_command_for_items', 'get_audit_checklist'] as const
@@ -77,16 +78,16 @@ export const apisDoors = (origin = 'https://qpu.uuidna.com') => {
 /** Cloudflare's meters on the Workers Paid plan, from its pricing pages (read 2026-11-08): the included allowance a month, the rate past it in micro-dollars per unit (the same number as USD per million units), the remedy that lowers the meter. Workers Logs moves to Observability pricing on 2026-12-01 (50 GB ingested and 10 GB-month included). */
 export type Meter = { meter: string; unit: string; included: number; perMillionUsd: number; source: string; remedy: string }
 export const CLOUDFLARE_PRICING: readonly Meter[] = [
-  { meter: 'workers.requests', unit: 'requests', included: 10_000_000, perMillionUsd: 0.30, source: 'https://developers.cloudflare.com/workers/platform/pricing/', remedy: 'cache-control on the public reads (the feeds, the discovery document, the registry); static assets served by the ASSETS binding, never by the Worker' },
-  { meter: 'workers.cpuMs', unit: 'CPU milliseconds', included: 30_000_000, perMillionUsd: 0.02, source: 'https://developers.cloudflare.com/workers/platform/pricing/', remedy: 'answer from the content address before recomputing; keep the heavy recompute in jobs on AC (battery: zero compute)' },
-  { meter: 'd1.rowsRead', unit: 'rows read', included: 25_000_000_000, perMillionUsd: 0.001, source: 'https://developers.cloudflare.com/d1/platform/pricing/', remedy: 'an index on every column a where filters on; wrangler d1 insights names the queries that scan' },
-  { meter: 'd1.rowsWritten', unit: 'rows written', included: 50_000_000, perMillionUsd: 1.00, source: 'https://developers.cloudflare.com/d1/platform/pricing/', remedy: 'no row per page view (events are log lines); one entry per call, never per retry' },
-  { meter: 'r2.classA', unit: 'class A operations', included: 1_000_000, perMillionUsd: 4.50, source: 'https://developers.cloudflare.com/r2/pricing/', remedy: 'write media once by content address; list with prefixes, never whole buckets' },
-  { meter: 'r2.classB', unit: 'class B operations', included: 10_000_000, perMillionUsd: 0.36, source: 'https://developers.cloudflare.com/r2/pricing/', remedy: 'cache media at the edge (cache-control, immutable by address)' },
-  { meter: 'logs.events', unit: 'log events', included: 20_000_000, perMillionUsd: 0.60, source: 'https://developers.cloudflare.com/workers/observability/logs/workers-logs/#pricing', remedy: 'observability.logs.head_sampling_rate below 1 in wrangler.jsonc; one structured line per event, no per-request chatter' },
+  { meter: 'workers.requests', unit: 'requests', included: 10_000_000, perMillionUsd: 0.30, source: 'https://developers.cloudflare.com/workers/platform/pricing/', remedy: PROSE.quantumUuidProgramsApisIndex_remedy30 },
+  { meter: 'workers.cpuMs', unit: 'CPU milliseconds', included: 30_000_000, perMillionUsd: 0.02, source: 'https://developers.cloudflare.com/workers/platform/pricing/', remedy: PROSE.quantumUuidProgramsApisIndex_remedy31 },
+  { meter: 'd1.rowsRead', unit: 'rows read', included: 25_000_000_000, perMillionUsd: 0.001, source: 'https://developers.cloudflare.com/d1/platform/pricing/', remedy: PROSE.quantumUuidProgramsApisIndex_remedy32 },
+  { meter: 'd1.rowsWritten', unit: 'rows written', included: 50_000_000, perMillionUsd: 1.00, source: 'https://developers.cloudflare.com/d1/platform/pricing/', remedy: PROSE.quantumUuidProgramsApisIndex_remedy33 },
+  { meter: 'r2.classA', unit: 'class A operations', included: 1_000_000, perMillionUsd: 4.50, source: 'https://developers.cloudflare.com/r2/pricing/', remedy: PROSE.quantumUuidProgramsApisIndex_remedy34 },
+  { meter: 'r2.classB', unit: 'class B operations', included: 10_000_000, perMillionUsd: 0.36, source: 'https://developers.cloudflare.com/r2/pricing/', remedy: PROSE.quantumUuidProgramsApisIndex_remedy35 },
+  { meter: 'logs.events', unit: 'log events', included: 20_000_000, perMillionUsd: 0.60, source: 'https://developers.cloudflare.com/workers/observability/logs/workers-logs/#pricing', remedy: PROSE.quantumUuidProgramsApisIndex_remedy36 },
   // storage is billed per GB-month, so its dollar price per unit stands in the per-million column times a million: D1 "First 5 GB included + $0.75 / GB-mo" (the sum of all databases in the account), R2 Standard "10 GB-month / month" free then "$0.015 / GB-month", usage rounded up to the next billing unit (both pages read 2026-11-08)
-  { meter: 'd1.storage', unit: 'GB-month', included: 5, perMillionUsd: 750_000, source: 'https://developers.cloudflare.com/d1/platform/pricing/', remedy: 'bodies by content address in R2, one row per entry in D1; wrangler d1 info names the database size; drop the versions no document names' },
-  { meter: 'r2.storage', unit: 'GB-month', included: 10, perMillionUsd: 15_000, source: 'https://developers.cloudflare.com/r2/pricing/', remedy: 'one object per content address (a repeated upload stores nothing new); a lifecycle rule expiring the uploads no entry names' },
+  { meter: 'd1.storage', unit: 'GB-month', included: 5, perMillionUsd: 750_000, source: 'https://developers.cloudflare.com/d1/platform/pricing/', remedy: PROSE.quantumUuidProgramsApisIndex_remedy37 },
+  { meter: 'r2.storage', unit: 'GB-month', included: 10, perMillionUsd: 15_000, source: 'https://developers.cloudflare.com/r2/pricing/', remedy: PROSE.quantumUuidProgramsApisIndex_remedy38 },
 ]
 export type Readings = Partial<Record<string, number>>
 /** The Workers Logs sampling an operator sets (observability.logs.head_sampling_rate in wrangler.jsonc, 0 to 1, default 1), given as that fraction or in permille; nothing given is 1000‰, the full stream. */
@@ -141,15 +142,7 @@ export const apisIndex = (ops: readonly Operation[]) => {
   return { phase: 'index' as const, rows, byProvider, byTag, total: rows.length, distinct, holds: distinct === rows.length && rows.every((r) => r.sealed && r.address.length === 36), theorem: 'textbook_uuid_is_36' as const }
 }
 /** The one GraphQL query of the observe job: month-to-date requests, errors, CPU quantiles, D1 rows and storage, R2 operations and storage for the account; the datasets as D1's and R2's metrics pages name them (https://developers.cloudflare.com/d1/observability/metrics-analytics/, https://developers.cloudflare.com/r2/platform/metrics-analytics/, read 2026-11-08). */
-export const OBSERVE_QUERY = `query QpuObserve($accountTag: string!, $since: Time!, $until: Time!) {
-  viewer { accounts(filter: { accountTag: $accountTag }) {
-    workersInvocationsAdaptive(limit: ${GRAPHQL_ROWS}, filter: { datetime_geq: $since, datetime_leq: $until }) { sum { requests errors } quantiles { cpuTimeP50 cpuTimeP99 } }
-    d1AnalyticsAdaptiveGroups(limit: ${GRAPHQL_ROWS}, filter: { datetime_geq: $since, datetime_leq: $until }) { sum { readQueries writeQueries rowsRead rowsWritten } }
-    r2OperationsAdaptiveGroups(limit: ${GRAPHQL_ROWS}, filter: { datetime_geq: $since, datetime_leq: $until }) { dimensions { actionType } sum { requests } }
-    d1StorageAdaptiveGroups(limit: ${GRAPHQL_ROWS}, filter: { datetime_geq: $since, datetime_leq: $until }) { dimensions { databaseId } max { databaseSizeBytes } }
-    r2StorageAdaptiveGroups(limit: ${GRAPHQL_ROWS}, filter: { datetime_geq: $since, datetime_leq: $until }) { dimensions { bucketName } max { payloadSize metadataSize } }
-  } }
-}`
+export const OBSERVE_QUERY = proseFill(PROSE.quantumUuidProgramsApisIndex_s39, GRAPHQL_ROWS, GRAPHQL_ROWS, GRAPHQL_ROWS, GRAPHQL_ROWS, GRAPHQL_ROWS)
 const R2_CLASS_A = new Set(['PutObject', 'CopyObject', 'ListObjects', 'CreateMultipartUpload', 'UploadPart', 'CompleteMultipartUpload', 'ListParts', 'PutBucket', 'ListBuckets', 'PutBucketEncryption', 'PutBucketCors', 'PutBucketLifecycleConfiguration', 'LifecycleStorageTierTransition', 'PutObjectRetention'])
 /** Bytes stored as billing units: GB-month, the usage rounded up to the next unit as R2's pricing page says it bills (read 2026-11-08), a GB taken as 10⁹ bytes. */
 const GB = 1_000_000_000
@@ -167,11 +160,7 @@ export const readingsOf = (answer: { data?: { viewer?: { accounts?: { workersInv
 export const OBSERVE_ZONE_DIMENSIONS = ['cacheStatus', 'edgeResponseStatus', 'clientRequestPath', 'userAgent', 'clientIP'] as const
 export type ZoneDimension = (typeof OBSERVE_ZONE_DIMENSIONS)[number]
 /** The zone query: month-to-date HTTP requests of one zone counted per value of each dimension, one httpRequestsAdaptiveGroups group per dimension (aliased by its name) so the counts never cross-multiply, most requests first; 10000 is the API's own page, every row it returns is kept (https://developers.cloudflare.com/analytics/graphql-api/, the dataset's fields as the http_requests dataset names them, read 2026-11-08). */
-export const OBSERVE_ZONE_QUERY = `query QpuObserveZone($zoneTag: string!, $since: Time!, $until: Time!) {
-  viewer { zones(filter: { zoneTag: $zoneTag }) {
-${OBSERVE_ZONE_DIMENSIONS.map((d) => `    ${d}: httpRequestsAdaptiveGroups(limit: ${GRAPHQL_ROWS}, filter: { datetime_geq: $since, datetime_leq: $until }, orderBy: [count_DESC]) { count dimensions { ${d} } }`).join('\n')}
-  } }
-}`
+export const OBSERVE_ZONE_QUERY = proseFill(PROSE.quantumUuidProgramsApisIndex_s40, OBSERVE_ZONE_DIMENSIONS.map((d) => proseFill(PROSE.quantumUuidProgramsApisIndex_s41, d, GRAPHQL_ROWS, d)).join('\n'))
 export type ZoneGroup = { count?: number; dimensions?: Partial<Record<ZoneDimension, string | number>> }
 export type ZoneAnswer = { data?: { viewer?: { zones?: Partial<Record<ZoneDimension, ZoneGroup[]>>[] } }; errors?: { message: string }[] }
 /** The zone answer read into request counts per dimension value: for each dimension every value with its count, most requests first (ties by value), none dropped;
@@ -211,6 +200,6 @@ export const apisCoverage = (mounted: readonly string[], templateOf = 'website',
   ].map((r) => { const address = uuid(`payload\n${r.kind} ${r.name}`); return { ...r, address, sealed: seal(address).valid } }).sort((a, b) => (a.address < b.address ? -1 : 1))
   const gaps = rows.filter((r) => !r.covered), first = gaps[0] ?? null
   const register = uuidQubits(4)
-  const nextStep = first ? { ...first, qubits: { effective: register.effective, hexbit: hexbit(first.address) }, turn: turnNext(first.address), step: first.kind === 'package' ? `pnpm add ${first.name}` : first.kind === 'plugin' ? `mount @payloadcms/plugin-${first.name} in payload.config.ts (plugins by capability)` : first.kind === 'template' ? `read templates/${first.name} of payloadcms/payload for the conventions this fork lacks` : `read examples/${first.name} of payloadcms/payload and serve its capability as a tool` } : null
+  const nextStep = first ? { ...first, qubits: { effective: register.effective, hexbit: hexbit(first.address) }, turn: turnNext(first.address), step: first.kind === 'package' ? `pnpm add ${first.name}` : first.kind === 'plugin' ? proseFill(PROSE.quantumUuidProgramsApisIndex_s42, first.name) : first.kind === 'template' ? proseFill(PROSE.quantumUuidProgramsApisIndex_s43, first.name) : proseFill(PROSE.quantumUuidProgramsApisIndex_s44, first.name) } : null
   return { phase: 'coverage' as const, rows, total: rows.length, covered: rows.length - gaps.length, gaps: gaps.length, byKind: Object.fromEntries((['package', 'plugin', 'template', 'example'] as const).map((k) => [k, { total: rows.filter((r) => r.kind === k).length, covered: rows.filter((r) => r.kind === k && r.covered).length }])), next: nextStep, holds: gaps.length === 0, sealed: rows.every((r) => r.sealed && r.address.length === 36), theorem: 'textbook_uuid_is_36' as const }
 }

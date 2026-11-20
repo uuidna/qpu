@@ -1,6 +1,7 @@
 // Any statement matched against the tools, their schemas, the examples and the leads, then decided by its witnesses: served when all are
 // present, impossible when one is contradicted, unknown (a new lead) when one is missing. Deterministic: no randomness, no network.
 
+import { PROSE, proseFill } from './prose-index.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 import type { Rpc } from './audit.ts'
@@ -37,7 +38,7 @@ export const routeStatement = (statement: string, examples: readonly Example[], 
   const ranked = routeIndex.map(row).filter((r) => r.t.says === statement || ((r.shared.length >= 2 || r.subject.length >= 1) && r.weight >= ROUTE_THRESHOLD)).sort((a, b) => Number(b.t.says === statement) - Number(a.t.says === statement) || b.weight - a.weight || a.t.key.localeCompare(b.t.key)).slice(0, top ?? Infinity) // top undefined: every theorem past the threshold, used at once (no cap — both sides, however many)
   const byId = new Map(examples.map((e) => [e.id, e]))
   const theorems = ranked.map((r) => ({ theorem: r.t.key, lean: r.t.lean, says: r.t.says, shared: r.shared, subject: r.subject, weight: Math.round(r.weight * 100) / 100, routes: r.t.examples.map((id) => byId.get(id)).filter((e): e is Example => !!e).map((e) => ({ example: e.id, call: { name: e.tool, arguments: e.arguments } })) }))
-  return { routed: theorems.length > 0, theorems, threshold: ROUTE_THRESHOLD, theorem: 'textbook_route_or_lead', says: theorems.length ? `routed to ${theorems.map((t) => t.theorem).join(', ')} by the weight of the words the prompt shares with them` : 'no theorem reached by its subject or two specific words: the prompt is a lead' }
+  return { routed: theorems.length > 0, theorems, threshold: ROUTE_THRESHOLD, theorem: 'textbook_route_or_lead', says: theorems.length ? proseFill(PROSE.quantumProcessingMatch_s1, theorems.map((t) => t.theorem).join(', ')) : PROSE.quantumProcessingMatch_s2 }
 }
 /** a route needs the weight of a word only one or two theorems use plus another: ln(n / 2) for the rarest is about four and a half */
 const ROUTE_THRESHOLD = 5
@@ -72,7 +73,7 @@ type Candidate = { kind: 'tool' | 'example' | 'lead' | 'theorem'; id: string; sc
 type Reflection = {
   /** the statement's integers factored by the Shor tool within its bound; beyond it, the bound is the answer */
   factors: { n: number; factors?: string; order?: string; by: string }[]
-  /** each number against the nearest schema bound d: its σ-reflection d − x (Qpu.Sigma) and the QFT angle 2πx/d */
+  /** each number against the nearest schema bound d: its σ-reflection d − x (Qpu.General.Sigma) and the QFT angle 2πx/d */
   angles: { x: number; property: string; d: number; sigma: number; angle: number }[]
   /** the statement in its mirror forms (reflectStatement) */
   queries: string[]
@@ -221,26 +222,26 @@ const indexOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads
 /** The shapes a statement can carry and the door each opens, recognised before the token match. */
 type Pattern = { name: string; test: RegExp; tool: string; args: (m: RegExpMatchArray, statement: string) => Record<string, unknown>; shows: string }
 export const PATTERNS: readonly Pattern[] = [
-  { name: 'uuid', test: /\b([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\b/i, tool: 'verify', args: (m) => ({ uuid: m[1]!.toLowerCase() }), shows: 'a UUID: its seal, channel, vortex and reflection' },
-  { name: 'oeis', test: /\b(A\d{6})\b/, tool: 'leads', args: () => ({}), shows: 'an OEIS sequence number: a sequence fact for the wave' },
+  { name: 'uuid', test: /\b([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\b/i, tool: 'verify', args: (m) => ({ uuid: m[1]!.toLowerCase() }), shows: PROSE.quantumProcessingMatch_shows3 },
+  { name: 'oeis', test: /\b(A\d{6})\b/, tool: 'leads', args: () => ({}), shows: PROSE.quantumProcessingMatch_shows4 },
   { name: 'relation', test: /\b(relation_\d+)\b/, tool: 'clay', args: (m) => ({ name: m[1] }), shows: 'a Clay relation by name: recomputed' },
-  { name: 'clay-technique', test: /\b(clay|register)\b.*\b(reflect|reflection|vortex|trinit)/i, tool: 'clay', args: () => ({ technique: 'reflection' }), shows: 'the register read by the reflection technique' },
+  { name: 'clay-technique', test: /\b(clay|register)\b.*\b(reflect|reflection|vortex|trinit)/i, tool: 'clay', args: () => ({ technique: 'reflection' }), shows: PROSE.quantumProcessingMatch_shows5 },
   { name: 'dashboard', test: /\b(?:dashboard|lay out|layout|combinations?|all (?:the )?(?:options|values)) (?:of |for )?([a-z_-]+)/i, tool: 'dashboard', args: (m) => ({ tool: m[1]!.toLowerCase() }), shows: 'a tool laid out whole' },
   { name: 'clone', test: /\bclone (?:the )?([a-z-]+)(?: toolbox)?(?: as ([a-z0-9-]+))?/i, tool: 'clone', args: (m) => ({ toolbox: m[1]!.toLowerCase(), ...(m[2] ? { as: m[2].toLowerCase() } : {}) }), shows: 'a toolbox cloned whole' },
   { name: 'translate', test: /\btranslate\b\s*(?:"([^"]+)"|'([^']+)'|(.+?))\s+(?:to|into)\s+([a-z]{2})\b/i, tool: 'translate', args: (m) => ({ text: m[1] ?? m[2] ?? m[3] ?? '', from: 'en', to: m[4]!.toLowerCase() }), shows: 'a text translated by vocabulary' },
   { name: 'css-of', test: /\b(?:css|stylesheet|colou?rs?|aura) (?:of |for )?([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\b/i, tool: 'css', args: (m) => ({ uuid: m[1]!.toLowerCase() }), shows: 'the CSS variables of a UUID' },
-  { name: 'scan', test: /\bscan\b[^[]*(\[[\s\S]*\])/i, tool: 'verify', args: (m) => { try { return { scan: JSON.parse(m[1]!) } } catch { return { scan: [] } } }, shows: 'a stream of frames (time, hue) a device sampled, read back to the address it links, by majority per frame' },
+  { name: 'scan', test: /\bscan\b[^[]*(\[[\s\S]*\])/i, tool: 'verify', args: (m) => { try { return { scan: JSON.parse(m[1]!) } } catch { return { scan: [] } } }, shows: PROSE.quantumProcessingMatch_shows6 },
   { name: 'metrics', test: /\b(metrics|how many (?:tools|examples|theorems|leads)|coins paid)\b/i, tool: 'metrics', args: () => ({}), shows: 'the tree\'s metrics now' },
   { name: 'textbook', test: /\b(?:reuse|replay) (?:example )?([a-z0-9-]+)/i, tool: 'textbook', args: (m) => ({ reuse: m[1]!.toLowerCase() }), shows: 'an example reused by id' },
-  { name: 'first-user', test: /\badmin\b[\s/-]*create[\s/-]*first[\s/-]*user\b/i, tool: 'configure', args: () => ({ kind: 'hooks' }), shows: 'the admin create-first-user form: the first user created is the super admin, and the request host is that user\'s tenant when the collection carries one' },
-  { name: 'shor', test: /\bfactor(?:ise|ize)?\s+(\d+)\b/i, tool: 'algorithm', args: (m) => ({ name: 'factor', integer: m[1]! }), shows: 'an integer factored on a register of any width: trial, the σ-reflection, and order-finding' },
-  { name: 'prime', test: /\bis\s+(\d+)\s+(?:a\s+)?prime\b/i, tool: 'algorithm', args: (m) => ({ name: 'factor', integer: m[1]! }), shows: 'an integer of any size decided prime or composite (Miller–Rabin) and factored within its budget' },
+  { name: 'first-user', test: /\badmin\b[\s/-]*create[\s/-]*first[\s/-]*user\b/i, tool: 'configure', args: () => ({ kind: 'hooks' }), shows: PROSE.quantumProcessingMatch_shows7 },
+  { name: 'shor', test: /\bfactor(?:ise|ize)?\s+(\d+)\b/i, tool: 'algorithm', args: (m) => ({ name: 'factor', integer: m[1]! }), shows: PROSE.quantumProcessingMatch_shows8 },
+  { name: 'prime', test: /\bis\s+(\d+)\s+(?:a\s+)?prime\b/i, tool: 'algorithm', args: (m) => ({ name: 'factor', integer: m[1]! }), shows: PROSE.quantumProcessingMatch_shows9 },
   // an exploit is re-fused to patching: a hack, vulnerability, breach or CVE opens audit { repair } (a live patch, or a remediation lead), never a denial
-  { name: 'repair', test: /\b(?:hack(?:ed|ing)?|exploit(?:ed|s|ing)?|vulnerab(?:le|ility|ilities)|breach(?:ed|es)?|compromis(?:e|ed)|malware|ransomware|CVE-\d{4}-\d{1,7})\b/i, tool: 'audit', args: (m, statement) => { const cve = /\bCVE-\d{4}-\d{1,7}\b/i.exec(statement)?.[0]; const mod = /\b(?:in|package|module|library|dependency|the)\s+([a-z0-9@._/-]{2,})/i.exec(statement)?.[1] ?? /\b(linux|kernel|openssl|openssh|glibc|systemd|sudo|log4j|node)\b/i.exec(statement)?.[1]; return { repair: [{ module: (mod ?? 'reported').toLowerCase(), severity: 'critical', ...(cve ? { cve } : {}), title: statement }] } }, shows: 'an exploit re-fused to the patching tool: audit { repair } ranks the kernel first, live-patches with no reboot (SLA 100%), turns an unpatched advisory into a remediation lead — the attack becomes a patch, never a denial' },
+  { name: 'repair', test: /\b(?:hack(?:ed|ing)?|exploit(?:ed|s|ing)?|vulnerab(?:le|ility|ilities)|breach(?:ed|es)?|compromis(?:e|ed)|malware|ransomware|CVE-\d{4}-\d{1,7})\b/i, tool: 'audit', args: (m, statement) => { const cve = /\bCVE-\d{4}-\d{1,7}\b/i.exec(statement)?.[0]; const mod = /\b(?:in|package|module|library|dependency|the)\s+([a-z0-9@._/-]{2,})/i.exec(statement)?.[1] ?? /\b(linux|kernel|openssl|openssh|glibc|systemd|sudo|log4j|node)\b/i.exec(statement)?.[1]; return { repair: [{ module: (mod ?? 'reported').toLowerCase(), severity: 'critical', ...(cve ? { cve } : {}), title: statement }] } }, shows: PROSE.quantumProcessingMatch_shows10 },
   // splitting under a bound (bytes): the quoted text, or the statement itself
-  { name: 'fold', test: /\b(?:split|fold|shard)\b[^"'\n]*?(?:"([^"]+)"|'([^']+)')?[^"'\n]*?\b(?:under|into pieces of|by|bound(?: of)?)\s+(\d+)\s*(?:bytes?|b)?\b/i, tool: 'fold', args: (m, statement) => ({ text: m[1] ?? m[2] ?? statement, bound: Number(m[3]) }), shows: 'a text folded into pieces under a bound: each piece addressed, the whole by its root, the bound a reflective boundary' },
+  { name: 'fold', test: /\b(?:split|fold|shard)\b[^"'\n]*?(?:"([^"]+)"|'([^']+)')?[^"'\n]*?\b(?:under|into pieces of|by|bound(?: of)?)\s+(\d+)\s*(?:bytes?|b)?\b/i, tool: 'fold', args: (m, statement) => ({ text: m[1] ?? m[2] ?? statement, bound: Number(m[3]) }), shows: PROSE.quantumProcessingMatch_shows11 },
   // sealing: a text named by its SHA-256, its fold address and, with a key, its HMAC
-  { name: 'seal', test: /\b(?:seal|sha-?256|hmac|hash)\b\s*(?:of\s+|:\s*)?(?:"([^"]+)"|'([^']+)')?(?:.*?\bwith (?:the )?key\s+(?:"([^"]+)"|'([^']+)'|(\S+)))?/i, tool: 'seal', args: (m, statement) => ({ text: m[1] ?? m[2] ?? statement, ...(m[3] ?? m[4] ?? m[5] ? { key: m[3] ?? m[4] ?? m[5] } : {}) }), shows: 'a text sealed: SHA-256, the fold address, and the HMAC under the key named' },
+  { name: 'seal', test: /\b(?:seal|sha-?256|hmac|hash)\b\s*(?:of\s+|:\s*)?(?:"([^"]+)"|'([^']+)')?(?:.*?\bwith (?:the )?key\s+(?:"([^"]+)"|'([^']+)'|(\S+)))?/i, tool: 'seal', args: (m, statement) => ({ text: m[1] ?? m[2] ?? statement, ...(m[3] ?? m[4] ?? m[5] ? { key: m[3] ?? m[4] ?? m[5] } : {}) }), shows: PROSE.quantumProcessingMatch_shows12 },
 ]
 /** The pattern a statement carries, if any, and the call it makes; the first pattern that matches wins, in the order above. */
 export const getPattern = (statement: string): { pattern: Pattern; call: { name: string; arguments: Record<string, unknown> }; sealed: string } | null => {
@@ -295,7 +296,7 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
   /** each bound a statement names and the schema bounds it exceeds */
   const exceeded = (statement: string) => numbersNear(statement).map(({ property, value, phrase }) => {
     const bounded = tools.some((t) => typeof t.inputSchema.properties?.[property]?.maximum === 'number')
-    return { property, phrase, text: /\d+(?:\.\d+)?/.exec(phrase)![0], bounded, exceeded: tools.flatMap((t) => { const p = t.inputSchema.properties?.[property]; return p && typeof p.maximum === 'number' && (value > p.maximum || (typeof p.minimum === 'number' && value < p.minimum)) ? [`${t.name}.${property} is bounded to [${p.minimum ?? '…'}, ${p.maximum}] by its schema; the statement asks for ${phrase}${p.description ? ` (${p.description})` : ''}`] : [] }) }
+    return { property, phrase, text: /\d+(?:\.\d+)?/.exec(phrase)![0], bounded, exceeded: tools.flatMap((t) => { const p = t.inputSchema.properties?.[property]; return p && typeof p.maximum === 'number' && (value > p.maximum || (typeof p.minimum === 'number' && value < p.minimum)) ? [proseFill(PROSE.quantumProcessingMatch_s13, t.name, property, p.minimum ?? '…', p.maximum, phrase, p.description ? ` (${p.description})` : '')] : [] }) }
   })
 
   const match = (statement: string): Match => {
@@ -315,7 +316,7 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
       // the next steps: the other theorems of its module, ranked by the words shared
       const module = THEOREMS.find((t) => t.key === best!.key)?.module
       const cluster: Candidate[] = THEOREMS.map((t, i) => ({ t, i })).filter(({ t }) => t.module === module && t.key !== best!.key).map(({ t, i }) => ({ kind: 'theorem' as const, id: t.key, score: overlap(q, theoremTok[i]!), hits: overlap(q, theoremTok[i]!), text: t.statement })).sort((a, b) => b.score - a.score)
-      return { statement, verdict: 'served', theorem: best.key, evidence: [`proven by the kernel: theorem ${best.key}: ${best.statement}`, `next steps in the textbook: ${cluster.length} theorem(s) of ${module}`], candidates: [{ kind: 'theorem', id: best.key, score: best.hits, hits: best.hits, text: best.statement }], cluster, verify: [], reflection: { factors: [], angles: [], queries: [], leads: [], found: [] }, lead: { id: slug(statement), source: 'statement', statement, status: 'served', tool: 'clay', reason: `theorem ${best.key}` } }
+      return { statement, verdict: 'served', theorem: best.key, evidence: [`proven by the kernel: theorem ${best.key}: ${best.statement}`, proseFill(PROSE.quantumProcessingMatch_s14, cluster.length, module)], candidates: [{ kind: 'theorem', id: best.key, score: best.hits, hits: best.hits, text: best.statement }], cluster, verify: [], reflection: { factors: [], angles: [], queries: [], leads: [], found: [] }, lead: { id: slug(statement), source: 'statement', statement, status: 'served', tool: 'clay', reason: `theorem ${best.key}` } }
     }
   }
   const candidates: Candidate[] = []
@@ -349,7 +350,7 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
         const rows: unknown[][] = reply.result.structuredContent?.summary ?? []
         const f = rows.find((r) => r[0] === 'Factors')?.[1] as string | undefined
         const o = rows.find((r) => r[0] === 'Order of a mod N')?.[1] as string | undefined
-        if (f && f !== 'not found') return { n, factors: f, order: o, by: `the register of ${3 * width} qubits, Shor's circuit` }
+        if (f && f !== 'not found') return { n, factors: f, order: o, by: proseFill(PROSE.quantumProcessingMatch_by15, 3 * width) }
       }
     }
     const done = listFactors(BigInt(n), 1n << 12n)
@@ -374,9 +375,9 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
   found.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id))
   const mirror = { source: `reflection of: ${statement}`, status: 'open' as const }
   const reflectionLeads: Lead[] = [
-    ...factors.filter((f) => f.factors).map((f) => ({ id: `factors-${f.n}`, ...mirror, statement: `${f.n} = ${f.factors} (order ${f.order}) by ${f.by}`, tool: 'algorithm', reason: 'a hidden factor found in the reflection; verify it across the integer adaptors' })),
-    ...angles.map((a) => ({ id: `angle-${a.property}-${a.x}`, ...mirror, statement: `σ_${a.d}(${a.x}) = ${a.sigma} on ${a.property}; QFT angle ${a.angle.toFixed(6)} rad`, reason: 'an angle in the reflection; Qpu.Sigma proves σ_d(σ_d(x)) = x' })),
-    ...found.map((c) => ({ id: `mirror-${c.id}`, ...mirror, statement: c.text, tool: c.kind === 'tool' ? c.id : examples.find((e) => e.id === c.id)?.tool, reason: 'found only in the mirror form of the statement' })),
+    ...factors.filter((f) => f.factors).map((f) => ({ id: `factors-${f.n}`, ...mirror, statement: `${f.n} = ${f.factors} (order ${f.order}) by ${f.by}`, tool: 'algorithm', reason: PROSE.quantumProcessingMatch_reason16 })),
+    ...angles.map((a) => ({ id: `angle-${a.property}-${a.x}`, ...mirror, statement: `σ_${a.d}(${a.x}) = ${a.sigma} on ${a.property}; QFT angle ${a.angle.toFixed(6)} rad`, reason: PROSE.quantumProcessingMatch_reason17 })),
+    ...found.map((c) => ({ id: `mirror-${c.id}`, ...mirror, statement: c.text, tool: c.kind === 'tool' ? c.id : examples.find((e) => e.id === c.id)?.tool, reason: PROSE.quantumProcessingMatch_reason18 })),
   ]
   const verify: VerifyRequest[] = [...new Map([...matchedLeads, ...reflectionLeads].flatMap((l) => extractFacts(l).flatMap(createVerifyRequests)).map((r) => [r.url + JSON.stringify(r.body), r])).values()]
   const possibilities = navigate(uuid(statement), { execute: true })
@@ -389,14 +390,14 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
     if ('result' in reply && share >= 0.7 && (!example || example.expect(reply.result.structuredContent) === null)) return { statement, verdict: 'served', evidence: [`found in the reflection: ${f.text}`], tool, call, result: reply.result.structuredContent, example: example?.id, coverage: share, ...around, cluster: [f, ...cluster], lead: { ...asLead, status: 'served', tool } }
   }
   const coverage = top ? top.hits / Math.max(1, substantive.length) : 0
-  const reason = top && top.hits >= 2 && coverage < 0.5 && found.length === 0 ? `the best match covers ${Math.round(coverage * 100)}% of the statement's words (${top.kind} ${top.id}); too little to serve it honestly; proposed as a new lead to develop`
-    : !top || top.hits < 2 ? 'no tool, example or lead matches the statement, nor its reflections; proposed as a new lead to develop' : null
+  const reason = top && top.hits >= 2 && coverage < 0.5 && found.length === 0 ? proseFill(PROSE.quantumProcessingMatch_s19, Math.round(coverage * 100), top.kind, top.id)
+    : !top || top.hits < 2 ? PROSE.quantumProcessingMatch_s20 : null
   if (reason || !top) return { statement, verdict: 'unknown', evidence: [reason!], ...around, lead: { ...asLead, status: 'blocked', reason: reason! } }
   if (top.kind === 'lead') {
     const lead = leads.find((l) => l.id === top.id)!
     // a lead's status is the docket's record, never a witness recomputed now: served by a door the matcher does not call (calling imagine or
     // audit here would replay every lead), its call is the witness missing
-    if (lead.status === 'served' && lead.tool && !callable.has(lead.tool)) return { statement, verdict: 'unknown', evidence: [`lead ${lead.id} is served by ${lead.tool}, a tool the matcher does not call to serve (it fetches, judges or lays out): the call that witnesses it is not made here`], tool: lead.tool, ...around, lead: { ...asLead, status: 'open', tool: lead.tool, reason: `the call to ${lead.tool} is its witness` } }
+    if (lead.status === 'served' && lead.tool && !callable.has(lead.tool)) return { statement, verdict: 'unknown', evidence: [proseFill(PROSE.quantumProcessingMatch_s21, lead.id, lead.tool)], tool: lead.tool, ...around, lead: { ...asLead, status: 'open', tool: lead.tool, reason: `the call to ${lead.tool} is its witness` } }
     if (lead.status === 'served' && lead.tool) {
       const { call, reply } = replay({ kind: 'tool', id: lead.tool, score: 0, hits: 0, text: '' })
       if ('result' in reply) return { statement, verdict: 'served', evidence: [`lead ${lead.id} is served by ${lead.tool}; called it`], tool: lead.tool, call, result: reply.result.structuredContent, ...around, lead: { ...lead, statement } }
@@ -408,7 +409,7 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
   if ('result' in reply) {
     const why = example ? example.expect(reply.result.structuredContent) : null
     // only the proven is admitted (legal_only_the_proven_is_admitted): a weak or unreplayed match is unknown, a discovery lead, never a false "served"
-    if (coverage < 0.7 || (example && why !== null)) return { statement, verdict: 'unknown', evidence: [`honesty hooked to the court (legal_only_the_proven_is_admitted — only the proven is admitted): the best match ${example ? `example ${example.id}` : `tool ${tool}`} ${why !== null ? `does not replay as documented (${why})` : `covers only ${Math.round(coverage * 100)}% of the statement`} — not admitted as served; the overclaim is processed as an underclaim (textbook_claim_prove_involution: a claim never exceeds the proven) and routed towards discovery for verified online research`], tool: 'discover', coverage, ...around, lead: { ...asLead, status: 'open', tool: 'discover', reason: `overclaim processed as underclaim (${Math.round(coverage * 100)}% coverage); the court admits only the proven — discover and verify online, then it is a lead or a served proof` } }
+    if (coverage < 0.7 || (example && why !== null)) return { statement, verdict: 'unknown', evidence: [proseFill(PROSE.quantumProcessingMatch_s22, example ? `example ${example.id}` : `tool ${tool}`, why !== null ? `does not replay as documented (${why})` : `covers only ${Math.round(coverage * 100)}% of the statement`)], tool: 'discover', coverage, ...around, lead: { ...asLead, status: 'open', tool: 'discover', reason: proseFill(PROSE.quantumProcessingMatch_reason23, Math.round(coverage * 100)) } }
     return { statement, verdict: 'served', evidence: [example ? `example ${example.id}: ${why ?? 'as documented'}` : `tool ${tool} answered the call`], tool, call, result: reply.result.structuredContent, example: example?.id, coverage, weak: coverage < 0.7, ...around, lead: { ...asLead, status: 'served', tool } }
   }
   return { statement, verdict: 'impossible', evidence: [`tool ${tool} refused: ${reply.error.message}`], tool, call, ...around, lead: { ...asLead, status: 'blocked', reason: reply.error.message } }
@@ -434,7 +435,7 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
     // a named theorem witnesses only its own words (sigma reflect proves P equals NP)
     const words = (key = '', text = '') => new Set(stems(`${key.replace(/[_.]/g, () => ' ')} ${text} ${TEXTBOOK_THEOREMS.find((t) => t.key === key)?.says ?? ''}`)), own = words(m.theorem, `${theorem?.statement} ${theorem?.module}`), near = words(computed?.theorem)
     const uncovered = proven ? [...new Set(stems(plain))].filter((x) => !own.has(x)) : []
-    if (uncovered.length) put(null, `the words ${uncovered.join(', ')}: ${m.theorem} states none of them`)
+    if (uncovered.length) put(null, proseFill(PROSE.quantumProcessingMatch_s24, uncovered.join(', '), m.theorem))
     // a claim is decided by the values its subject names in full, else passed by any agreeing value, else missing
     const taken = [...inputs, ...relations.flatMap(numbers), ...held.map((b) => b.text)]
     const found = claims(plain, proven, taken), stated = numbers(plain).filter((n) => !has(taken, n) && !found.some((c) => c.shown === n || c.shown === `${n}%`))
@@ -463,7 +464,7 @@ export const matchStatement = (statement: string, handle: (m: Rpc) => any, allEx
 export const matchNews = (items: readonly { title: string; source?: string; url?: string }[], handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[], locale?: string) => {
   const problems = items.map((it) => { const m = matchStatement(String(it.title ?? ''), handle, allExamples, leads, locale); return { source: it.source ?? null, url: it.url ?? null, problem: String(it.title ?? ''), verdict: m.verdict, solution: m.verdict === 'served' ? (m.call ?? null) : null, result: m.verdict === 'served' ? ((m as { result?: unknown }).result ?? null) : null, lead: m.verdict === 'served' ? null : (m.lead ?? { id: slug(String(it.title ?? '')), statement: String(it.title ?? ''), status: 'open' as const }) } })
   const by = (v: Verdict) => problems.filter((p) => p.verdict === v).length
-  return { phase: 'news' as const, items: items.length, served: by('served'), impossible: by('impossible'), unknown: by('unknown'), problems, leads: problems.filter((p) => p.lead).map((p) => p.lead), theorems: ['textbook_news_problems'], says: `${items.length} news item(s) read as problems: ${by('served')} with a solution the surface serves, ${by('impossible')} proven out of reach, ${by('unknown')} new leads to develop — the news define the problems every day, the QPU provides the solutions` }
+  return { phase: 'news' as const, items: items.length, served: by('served'), impossible: by('impossible'), unknown: by('unknown'), problems, leads: problems.filter((p) => p.lead).map((p) => p.lead), theorems: ['textbook_news_problems'], says: proseFill(PROSE.quantumProcessingMatch_says25, items.length, by('served'), by('impossible'), by('unknown')) }
 }
 /** The day's news solved (matchNews) into a tenant's blog: each served problem a draft post (Payload publishing, the tenant's editor publishes
  *  it) bodied by its solution, the unknowns the backlog; the posts and the backlog make the items (textbook_editorial_posts). Pure. */
@@ -471,8 +472,8 @@ export const editorial = (items: readonly { title: string; source?: string; url?
   const news = matchNews(items, handle, allExamples, leads, locale)
   // the post body: a blogMarkdown block holding the served call and its result
   const body = (p: { problem: string; source: string | null; solution: { name: string } | null; result: unknown }) => `## ${p.problem}\n\nSolved by \`${p.solution?.name ?? 'the surface'}\`${p.source ? ` — from ${p.source}` : ''}.\n\n\`\`\`json\n${JSON.stringify(p.result ?? p.solution ?? {}, null, 2)}\n\`\`\``
-  const drafts = news.problems.filter((p) => p.verdict === 'served').map((p) => ({ collection: 'posts', tenant, _status: 'draft' as const, title: p.problem, slug: slug(p.problem), source: p.source, url: p.url, content: [{ blockType: 'blogMarkdown', blogMarkdownFields: { markdown: body(p) } }], solution: p.solution, result: p.result, address: uuid(`post\n${tenant}\n${p.problem}`), monetisation: `priced by ${tenant}'s own catalogue (its variants and currency), sold through the tenant's ecommerce` }))
+  const drafts = news.problems.filter((p) => p.verdict === 'served').map((p) => ({ collection: 'posts', tenant, _status: 'draft' as const, title: p.problem, slug: slug(p.problem), source: p.source, url: p.url, content: [{ blockType: 'blogMarkdown', blogMarkdownFields: { markdown: body(p) } }], solution: p.solution, result: p.result, address: uuid(`post\n${tenant}\n${p.problem}`), monetisation: proseFill(PROSE.quantumProcessingMatch_monetisation26, tenant) }))
   // every unknown lead becomes its own tenant app at <slug>.uuidna.com, sold through its own catalogue
-  const apps = news.problems.filter((p) => p.verdict !== 'served').map((p) => { const s = slug(p.problem); return { lead: p.lead!, slug: s, host: `${s}.uuidna.com`, app: { name: s, host: `${s}.uuidna.com` }, monetisation: `a tenant app of its own at ${s}.uuidna.com, priced by its catalogue and sold through its ecommerce`, says: `the lead "${p.problem}" implemented as the tenant app ${s}.uuidna.com` } })
-  return { phase: 'editorial' as const, tenant, items: items.length, posts: drafts.length, backlog: apps.length, drafts, apps, leads: apps.map((a) => a.lead), theorems: ['textbook_editorial_posts', 'textbook_news_problems'], says: `${tenant}: ${drafts.length} solved news item(s) written as draft blog posts (the solution the body), ${apps.length} unknown ones split into tenant apps at <slug>.uuidna.com — each monetised on its own catalogue; the posts and the apps make the items, run daily as the qpu-news-solve Payload job, never auto-deployed` }
+  const apps = news.problems.filter((p) => p.verdict !== 'served').map((p) => { const s = slug(p.problem); return { lead: p.lead!, slug: s, host: `${s}.uuidna.com`, app: { name: s, host: `${s}.uuidna.com` }, monetisation: proseFill(PROSE.quantumProcessingMatch_monetisation27, s), says: proseFill(PROSE.quantumProcessingMatch_says28, p.problem, s) } })
+  return { phase: 'editorial' as const, tenant, items: items.length, posts: drafts.length, backlog: apps.length, drafts, apps, leads: apps.map((a) => a.lead), theorems: ['textbook_editorial_posts', 'textbook_news_problems'], says: proseFill(PROSE.quantumProcessingMatch_says29, tenant, drafts.length, apps.length) }
 }

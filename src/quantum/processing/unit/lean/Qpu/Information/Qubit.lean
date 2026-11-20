@@ -1,4 +1,4 @@
-import Qpu.Lattice
+import Qpu.General.Lattice
 import Qpu.Claims.Claim
 
 /-! # Qpu.Information.Qubit
@@ -101,8 +101,8 @@ theorem unbounded (N : Nat) : ∃ k, N < k * effective hexbit :=
   ⟨N + 1, by rw [show effective hexbit = 122 by decide]; omega⟩
 
 /-- The qubit-layout claim, proved by `effective_formula` and `couplers_formula`. -/
-def qubitLayoutClaim : Claim :=
-  { theorem := "Qubit.couplers_formula"
+def qubitLayoutClaim : Qpu.Claim :=
+  { theoremName := "Qubit.couplers_formula"
     source := "src/quantum/processing/unit/lean/Qpu/Information/Qubit.lean"
     wave := "3.3"
     context :=

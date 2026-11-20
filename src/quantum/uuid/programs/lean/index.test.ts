@@ -10,7 +10,7 @@ test('every quantum lean module is one uuid program and the next step rotates it
   assert.equal(programs.executed, false)
   assert.equal(programs.via, 'lean')
   const names = programs.rows.map((row) => row.module)
-  for (const module of ['Qpu', 'Qpu.Shor', 'Qpu.Textbook', 'Qpu.Leads.ProgramSynthesis']) assert.equal(names.includes(module), true)
+  for (const module of ['Qpu', 'Qpu.Application.Shor', 'Qpu.General.Textbook', 'Qpu.General.MachineLearning.ProgramSynthesis']) assert.equal(names.includes(module), true)
   assert.equal(new Set(names).size, programs.modules)
   for (const row of programs.rows) {
     assert.equal(row.present, true)

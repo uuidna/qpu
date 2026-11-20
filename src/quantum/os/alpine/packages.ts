@@ -2,6 +2,7 @@
 // The client device fetches the index, then the apk, and runs that binary in the browser.
 // Nothing is fetched here and nothing is executed here.
 
+import { PROSE, proseFill } from '../../processing/prose-index.ts'
 import { canonicalText, uuid, uuidQubits } from '../../uuid/index.ts'
 
 const ORIGIN = 'https://dl-cdn.alpinelinux.org/alpine'
@@ -40,13 +41,13 @@ export type PackageAsk = { package?: unknown; packages?: unknown; branch?: unkno
 /** One or more Alpine packages. Without the index text, the answer is the index request. With it, the answer is the apk address. The client device fetches and runs it. */
 export const portPackages = (asked: PackageAsk) => {
   const names = asked.packages !== undefined ? asked.packages : asked.package !== undefined ? [asked.package] : []
-  if (!Array.isArray(names) || names.length === 0 || names.some((name) => typeof name !== 'string' || !nameOk(name))) throw new Error('alpine package is a name such as busybox, or { packages: [names] }')
+  if (!Array.isArray(names) || names.length === 0 || names.some((name) => typeof name !== 'string' || !nameOk(name))) throw new Error(PROSE.quantumOsAlpinePackages_s1)
   const branch = typeof asked.branch === 'string' ? asked.branch : 'latest-stable'
-  if (!branchOk(branch)) throw new Error('alpine branch is latest-stable, edge, or v<major>.<minor>')
+  if (!branchOk(branch)) throw new Error(PROSE.quantumOsAlpinePackages_s2)
   const arch = (typeof asked.arch === 'string' ? asked.arch : 'x86_64') as Arch
   if (!(ARCHES as readonly string[]).includes(arch)) throw new Error(`alpine arch is one of ${ARCHES.join(', ')}`)
   const repo = typeof asked.repo === 'string' ? asked.repo as Repo : null
-  if (repo && !(REPOS as readonly string[]).includes(repo)) throw new Error('alpine repo is main, community, or testing')
+  if (repo && !(REPOS as readonly string[]).includes(repo)) throw new Error(PROSE.quantumOsAlpinePackages_s3)
   const repos: Repo[] = repo ? [repo] : ['main', 'community']
   const indexes = asked.indexes && typeof asked.indexes === 'object' ? asked.indexes as Record<string, unknown> : null
   const single = typeof asked.index === 'string' ? asked.index : null
@@ -79,7 +80,7 @@ export const portPackages = (asked: PackageAsk) => {
     packages,
     requests: handed ? [] : requests,
     says: handed
-      ? `${packages.filter((row) => row.found).length} of ${packages.length} package(s) name an apk. The client device fetches that binary and runs it in the browser. Nothing is fetched here and nothing is executed here.`
-      : `${packages.length} package(s) asked. The client device fetches the Alpine index, then the apk, and runs that binary in the browser. Nothing is fetched here and nothing is executed here.`,
+      ? proseFill(PROSE.quantumOsAlpinePackages_s4, packages.filter((row) => row.found).length, packages.length)
+      : proseFill(PROSE.quantumOsAlpinePackages_s5, packages.length),
   }
 }

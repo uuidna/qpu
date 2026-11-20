@@ -2,6 +2,7 @@
 // The browser, the worker, and Node each already have fetch. This uses that one.
 // No host binary and no local browser.
 
+import { PROSE } from '../processing/prose-index.ts'
 type OnlinePage = { url: string; status: number; text: string }
 
 const readOne = async (url: string): Promise<OnlinePage> => {
@@ -12,7 +13,7 @@ const readOne = async (url: string): Promise<OnlinePage> => {
       signal: AbortSignal.timeout(12000),
       headers: {
         accept: 'text/html,application/json,application/x-ndjson,*/*',
-        'user-agent': 'Mozilla/5.0 (compatible; QPUResearch/1.0; +https://qpu.uuidna.com)',
+        'user-agent': PROSE.quantumOsFetch_s1,
       },
     })
     return { url, status: res.status, text: (await res.text()) }
