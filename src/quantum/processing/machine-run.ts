@@ -5,6 +5,8 @@
 // file (`step <tool> <json>`) calling the handler as a library (the same code the door serves), each generator writing the path and text its
 // door answers, each process step the command the table names; a step past its budget is killed with its process group and recorded red; the
 // red steps are retried once after the generators ran; the receipt is the last line, `RECEIPT {json}`, the body of the machine's entry.
+import { AFTER_HOOKS } from './config-index.ts'
+import { doorEndpoints, forward } from './door.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -250,10 +252,24 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
     const dir = join(cwd, 'src/quantum'), pkg = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')), packed = JSON.parse((await spawnRun('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], { cwd: dir })).stdout || '[]')[0]?.files?.map((f: { path: string }) => `./${f.path}`) ?? null
     facts.npm = { name: pkg.name, version: pkg.version, license: pkg.license, description: pkg.description, exports: pkg.exports, packed }
   }
-  const d = ask({ workflow: name, facts }).decision as { allowed: boolean; says?: string; rules: { rule: string; holds: boolean | null; evidence: string }[] }
+  type Decision = { allowed: boolean; says?: string; rules: { rule: string; holds: boolean | null; evidence: string }[] }
+  // a workflow after the act reports it: the commit, and for a push every remote-tracking ref that moved (old, new, ref, as git hands them over).
+  // The report goes to the Payload app through its MCP door, which answers the decision; with no door in reach the decision is computed here.
+  const after = (AFTER_HOOKS as readonly string[]).includes(name)
+  let d: Decision | null = null, source = 'here'
+  if (after) {
+    facts.commit = { head: await git('rev-parse', 'HEAD'), subject: await git('log', '-1', '--format=%s') }
+    if (name === 'post-push') facts.pushed = Array.from({ length: Math.floor(rest.length / 3) }, (_, i) => ({ from: rest[3 * i]!, to: rest[3 * i + 1]!, ref: rest[3 * i + 2]! }))
+    const door = w.steps.find((s) => s.id === 'report') as { tool?: string; url?: string } | undefined
+    const reached = door?.tool ? await forward({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: door.tool, arguments: { workflow: name, facts } } }, { budgetMs: 5000, endpoints: doorEndpoints(process.env.QPU_APP_MCP ?? door.url) }) : null
+    const answered = (reached?.reply?.result as { structuredContent?: { decision?: Decision } } | undefined)?.structuredContent?.decision
+    if (answered && Array.isArray(answered.rules)) { d = answered; source = reached!.source }
+  }
+  d ??= ask({ workflow: name, facts }).decision as Decision
   for (const r of d.rules) console.log(`${r.holds === true ? '✓' : r.holds === false ? '✗' : '?'} ${r.rule}: ${r.evidence}`)
-  console.log(`hook ${name}: ${d.allowed && !red ? 'allowed' : 'refused'}${d.says ? `: ${d.says}` : ''}`)
-  return red || !d.allowed ? 1 : 0
+  console.log(`hook ${name}: ${after ? `reported (${source})` : d.allowed && !red ? 'allowed' : 'refused'}${d.says ? `: ${d.says}` : ''}`)
+  // the act has already happened: a workflow after it reports and never refuses
+  return !after && (red || !d.allowed) ? 1 : 0
 }
 
 // the runner from the command line: `step <tool> <json> [--write]` (the child of a door step), `next [--offline] [--fast]`, or any allowed action
