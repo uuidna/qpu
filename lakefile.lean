@@ -193,10 +193,9 @@ script seed do
 script site do
   steps [("lake", #["run", "seed"]), ("pnpm", #["exec", "vitepress", "build", "site"])]
 
-/-- `lake run test`: the TypeScript tests of the quantum tree, which read the files rendered from Lean. Three test
-files walk the whole register and need more than Node's default heap, so the heap is set here. -/
+/-- `lake run test`: the TypeScript tests of the quantum tree, which read the files rendered from Lean. -/
 script test do
-  steps [("node", #["--max-old-space-size=6144", "--test", "src/quantum/**/*_test.ts", "src/quantum/**/*.test.ts"])]
+  steps [("node", #["--test", "src/quantum/**/*_test.ts", "src/quantum/**/*.test.ts"])]
 
 /-- `lake run deploy`: the Payload deploy stages (database, seed, check, app), as package.json states them. -/
 script deploy do
