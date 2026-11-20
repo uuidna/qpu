@@ -82,6 +82,9 @@ def renderByLean (file : String) (built index : System.FilePath) (check : Bool) 
 /-- The Lean file that writes the catalogue of claims. -/
 def catalogueFile : String := "src/quantum/processing/unit/lean/tools/Catalogue.lean"
 
+/-- The Lean file that writes the register of standards. -/
+def isoFile : String := "src/quantum/processing/unit/lean/tools/Iso.lean"
+
 /-- The Lean file that writes the thousand-bit table. -/
 def thousandFile : String := "src/quantum/processing/unit/lean/tools/Thousand.lean"
 
@@ -94,7 +97,7 @@ def textbookFile : String := "src/quantum/processing/unit/lean/tools/Textbook.le
 /-- The Lean file that writes the theorem index. -/
 def theoremsFile : String := "src/quantum/processing/unit/lean/tools/Theorems.lean"
 
-/-- Lean writes the prose index, the theorem index, the nested catalogue, the catalogue of claims and the thousand-bit table. -/
+/-- Lean writes the prose index, the theorem index, the nested catalogue, the catalogue of claims, the thousand-bit table and the register of standards. -/
 def renderProse (check : Bool) : IO UInt32 := do
   let said ← renderByLean proseFile proseBuilt proseIndex check
   if said != 0 then return said
@@ -108,10 +111,12 @@ def renderProse (check : Bool) : IO UInt32 := do
   if nested != 0 then return nested
   let claimed ← renderByLean catalogueFile (".lake" / "build" / "CATALOGUE.md") ("src" / "quantum" / "CATALOGUE.md") check
   if claimed != 0 then return claimed
-  renderByLean thousandFile (".lake" / "build" / "thousand-index.ts") ("src" / "quantum" / "processing" / "thousand-index.ts") check
+  let counted ← renderByLean thousandFile (".lake" / "build" / "thousand-index.ts") ("src" / "quantum" / "processing" / "thousand-index.ts") check
+  if counted != 0 then return counted
+  renderByLean isoFile (".lake" / "build" / "iso-index.ts") ("src" / "quantum" / "processing" / "iso-index.ts") check
 
 /-- `lake run index`: build, then Lean writes every file that follows it (prose index, theorem index, textbook index,
-blueprint, nested catalogue, catalogue of claims, thousand-bit table). The Clay statements keep their own generator,
+blueprint, nested catalogue, catalogue of claims, thousand-bit table, register of standards). The Clay statements keep their own generator,
 which runs last. The prose index comes first: every other renderer reads its sentences from it. -/
 script index do
   let built ← step "lake" #["build"]
@@ -137,7 +142,7 @@ script applications do
   steps [("lake", #["build"]), ("lake", #["env", "lean", applicationsFile])]
 
 /-- The Lean files that write rendered output; `lake run verify` runs each of them. -/
-def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile]
+def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile]
 
 /-- `lake run leanfiles`: no Lean file is skipped. Every `.lean` file the repository tracks is this lakefile, a module
 the build compiles, a tool `lake run verify` runs, or evidence kept under `lean/`, which is named and never removed. -/
