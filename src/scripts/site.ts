@@ -3,7 +3,7 @@
 // database is down, this site still serves every page and the catalogue. A static site answers no tools/call:
 // mcp.json is what tools/list answers, and the live door stays POST /api/mcp.
 import { PROSE } from '../quantum/processing/prose-index.ts'
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { TOOLBOXES } from '../quantum/processing/mcp.ts'
 import { allSeedWaves } from './seedWaves.ts'
@@ -45,6 +45,8 @@ for (const wave of waves) {
   sidebar.push({ text: wave.name, collapsed: true, items })
 }
 
+// the catalogue of claims Lean writes, as a page of the site
+write(join(out, 'catalogue.md'), ['---', 'title: "Catalogue of claims"', '---', '', readFileSync('src/quantum/CATALOGUE.md', 'utf8')].join('\n'))
 const tools = TOOLBOXES.flatMap((box) => box.tools.map((tool) => ({ name: tool.name, toolbox: box.name, description: tool.description, inputSchema: tool.inputSchema })))
 write(join(out, 'public', 'mcp.json'), JSON.stringify({ live: 'POST /api/mcp', says: PROSE.scriptsSite_says1, tools }, null, 2))
 write(join(out, '.vitepress', 'sidebar.json'), JSON.stringify(sidebar))
@@ -54,6 +56,7 @@ write(join(out, 'index.md'), [
   PROSE.scriptsSite_s3, '',
   `- ${seen.size} pages in ${waves.length} waves, listed in the sidebar`,
   `- [The MCP catalogue](/mcp.json): ${tools.length} tools in ${TOOLBOXES.length} toolboxes, as \`tools/list\` answers them. Calls go to \`POST /api/mcp\` on the live site.`,
+  '- [Catalogue of claims](/catalogue): every theorem the kernel accepted, as a product claimed by its author',
   '- [Draft applications](/patents/): one draft per theoretical use, written by Lean from its inline docs and frontmatter',
   '- [Prose](/prose/): every sentence, by the Lean definition that states it; [prose.json](/prose.json) is the same list for a client', '',
 ].join('\n'))

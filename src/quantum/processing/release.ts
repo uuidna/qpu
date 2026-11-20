@@ -2,6 +2,7 @@
 // release of the repository as a new version under the unit's concept DOI, so the DOI always resolves to the latest
 // publication. This module plans the release from the post and sends it through the fetch it is given: it holds no
 // token, reads no environment, and a caller without a token sends nothing.
+import { NESTED } from './nested-index.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 
 export const RELEASE_REPOSITORY = 'uuidna/qpu'
@@ -32,7 +33,9 @@ export const publishesNow = (post: PublishedPost) => post.status === 'published'
 /** The release request for a post: the tag, the name and the notes. Pure. */
 export const planRelease = (post: PublishedPost, known: readonly unknown[], origin: string) => {
   const tag = nextTag(known), page = `${origin.replace(/\/$/, '')}/posts/${post.slug}`
-  const notes = [post.description?.trim(), proseFill(PROSE.quantumProcessingRelease_says5, page, UNIT_CONCEPT_DOI)].filter(Boolean).join('\n\n')
+  const catalogue = `https://github.com/${RELEASE_REPOSITORY}/blob/${tag}/src/quantum/CATALOGUE.md`
+  const products = NESTED.reduce((n, p) => n + p.products.length, 0), variants = NESTED.reduce((n, p) => n + p.products.reduce((m, q) => m + q.variants.length, 0), 0)
+  const notes = [post.description?.trim(), proseFill(PROSE.quantumProcessingRelease_says5, page, UNIT_CONCEPT_DOI), proseFill(PROSE.quantumProcessingRelease_says6, products, variants, catalogue)].filter(Boolean).join('\n\n')
   return { tag, page, request: { method: 'POST' as const, url: `${GITHUB}/releases`, body: { tag_name: tag, target_commitish: 'main', name: post.title, body: notes, draft: false, prerelease: false } } }
 }
 

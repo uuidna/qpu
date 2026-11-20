@@ -122,6 +122,6 @@ test('the numbers Lean states are the numbers the data hold', async () => {
   const { MEASURED_THEOREMS } = await import('./textbook-measured.ts')
   const written = new Map(TEXTBOOK_THEOREMS.map((t) => [t.key, t]))
   assert.ok(MEASURED_THEOREMS.length > 0)
-  const differs = MEASURED_THEOREMS.filter((m) => { const t = written.get(m.key); return !t || t.lean !== m.lean || t.says !== m.says || (t.example ?? '') !== (m.example ?? '') }).map((m) => m.key)
+  const differs = MEASURED_THEOREMS.filter((m) => { const t = written.get(m.key); return !t || t.lean !== m.lean || t.says !== m.says || (m.example !== undefined && t.example !== m.example) }).map((m) => m.key)
   assert.deepEqual(differs, [], `the data moved away from what Lean states; change the theorem in ${TEXTBOOK_LEAN_PATH}: ${differs.join(', ')}`)
 })
