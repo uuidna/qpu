@@ -132,7 +132,7 @@ export const seedWaves = (examples: readonly string[] = []) => {
 /** The GitHub workflow, as the Payload stages name it. The pins stay. The seed is one session. */
 export const deployWorkflow = (waves = seedWaves()) => `# Deploy Worker qpu from main, or when started by hand. Payload names the stages. The runner decides nothing.
 # Waves, one session: games, ${waves.map((wave) => wave.name).join(', ')}. Each wave improves the next, and cicd improves home.
-# Secrets, by name only: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, PAYLOAD_SECRET.
+# Secrets, by name only: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, PAYLOAD_SECRET, and for the first admin QPU_ADMIN_EMAIL, QPU_ADMIN_PASSWORD.
 name: deploy
 on:
   push:
@@ -153,6 +153,8 @@ jobs:
       CLOUDFLARE_API_TOKEN: \${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: \${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       PAYLOAD_SECRET: \${{ secrets.PAYLOAD_SECRET }}
+      QPU_ADMIN_EMAIL: \${{ secrets.QPU_ADMIN_EMAIL }}
+      QPU_ADMIN_PASSWORD: \${{ secrets.QPU_ADMIN_PASSWORD }}
     steps:
       - uses: ${CHECKOUT}
       - uses: ${PNPM}
