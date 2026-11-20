@@ -25,8 +25,8 @@ OBS_STATUS="$status" python3 -c 'import json,os,sys; status=os.environ["OBS_STAT
 
 export const DEPLOY_STAGES: readonly DeployStage[] = [
   { id: 'database', run: 'pnpm run deploy:database', says: 'Payload migrate, then the D1 optimize' },
-  { id: 'seed', run: 'cross-env NODE_ENV=production pnpm run seed', says: 'Payload writes one wave, then the next, in one session' },
-  { id: 'check', run: 'cross-env NODE_ENV=production pnpm run seed:check', says: 'Payload reads the pages back and deploy is allowed when they agree' },
+  { id: 'seed', run: 'pnpm exec cross-env NODE_ENV=production pnpm run seed', says: 'Payload writes one wave, then the next, in one session' },
+  { id: 'check', run: 'pnpm exec cross-env NODE_ENV=production pnpm run seed:check', says: 'Payload reads the pages back and deploy is allowed when they agree' },
   { id: 'app', run: 'pnpm run deploy:app', says: 'OpenNext builds the Payload app and deploys the Worker' },
   { id: 'smoke', run: smoke, says: 'smoke the admin on both hostnames', block: true },
   { id: 'logs', run: logs, says: 'query Worker logs', block: true },
