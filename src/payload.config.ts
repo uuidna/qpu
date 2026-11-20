@@ -29,6 +29,7 @@ import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
 import { legacyLeadTask } from './jobs/legacyLead'
 import { plugins } from './plugins'
+import { qrEndpoint } from '@/hooks/qrGalleryFallback'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -134,7 +135,7 @@ export default buildConfig({
     },
   }),
   //email: nodemailerAdapter(),
-  endpoints: [],
+  endpoints: [qrEndpoint],
   globals: [Header, Footer],
   jobs: {
     tasks: [legacyLeadTask],
