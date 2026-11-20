@@ -12,7 +12,7 @@ def surfaceCorrectable (d : Nat) : Nat := (d - seed) / coins
 def surfaceLogical : Nat := coins
 
 /-- Squaring never shrinks the distance, for every d. -/
-private theorem sq_ge (d : Nat) : d ≤ d ^ 2 := by
+theorem sq_ge (d : Nat) : d ≤ d ^ 2 := by
   induction d with
   | zero => exact Nat.zero_le _
   | succ d ih =>
