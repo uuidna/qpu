@@ -128,3 +128,19 @@ theorem six_mul_choose_three_eq_trinities (t : Nat) : 6 * choose t 3 = t * (t - 
 for every `t`. Pairs and trinities are one ladder. -/
 theorem choose_three_succ (t : Nat) : choose (t + 1) 3 = choose t 3 + choose t 2 := by
   rw [choose_eq_nat_choose, choose_eq_nat_choose, choose_eq_nat_choose, Nat.choose_succ_succ, Nat.add_comm]
+
+/-- A trinity is formed by two pairs interacting as one: the two pairs share one member, and through it they are one.
+Among `t` things, choose the member the pairs share and then the pair of the other two: `t * choose (t - 1) 2`
+trinities. Every three things form three of them, one for each member the two pairs can share, so the trinities are
+three times the triples, for every `t`. -/
+theorem trinities_of_pairs (t : Nat) : t * choose (t - 1) 2 = 3 * choose t 3 := by
+  rw [choose_eq_nat_choose, choose_eq_nat_choose]
+  cases t with
+  | zero => rfl
+  | succ m => rw [Nat.add_sub_cancel, Nat.add_one_mul_choose_eq m 2, Nat.mul_comm]
+
+/-- The two pairs of a trinity are two of the pairs there are, and they are different pairs: a trinity on `a`, the
+shared `b`, and `c` is the pairs `{a, b}` and `{b, c}`, which differ exactly when `a` and `c` do. -/
+theorem trinity_pairs_differ (a b c : Nat) (h : a ≠ c) : (a, b) ≠ (c, b) := by
+  intro e
+  exact h (congrArg Prod.fst e)

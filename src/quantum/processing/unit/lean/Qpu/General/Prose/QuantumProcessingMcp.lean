@@ -449,5 +449,7 @@ def quantumProcessingMcp_thousand3 : String := "no family of that name has a for
 def quantumProcessingMcp_mix4 : String := "Three module names make a trinity: every product of each varies with every product of the other two, each in its own ISO and scientific context."
 def quantumProcessingMcp_mix5 : String := "the trinity of ⟦0⟧, ⟦1⟧ and ⟦2⟧ has ⟦3⟧ product variations; ⟦4⟧ are listed from ⟦5⟧; Lean counts ⟦6⟧ trinities of ⟦7⟧ textbooks and ⟦8⟧ trinity variations in all"
 def quantumProcessingMcp_mix6 : String := "⟦0⟧ textbooks mix three at a time into ⟦1⟧ trinities with ⟦2⟧ variations, counted by Lean"
+def quantumProcessingMcp_mix7 : String := "a trinity is two pairs interacting as one: the pairs ⟦0⟧ with ⟦1⟧ and ⟦1⟧ with ⟦2⟧ share ⟦1⟧, and each variation holds one product of the shared textbook for both pairs"
+def quantumProcessingMcp_mix8 : String := "⟦0⟧ textbooks form ⟦1⟧ trinities of two pairs sharing one textbook, three for every three textbooks, with ⟦2⟧ variations, counted by Lean"
 
 end Prose

@@ -95,3 +95,21 @@ test('a trinity lists every product of each textbook with every product of the o
   assert.equal(call('textbook', { mix: [names[0], names[1], names[0]] }).result!.structuredContent.found, false)
   assert.equal(call('textbook', { mix: [...names, 'Qpu.General.Mint'] }).result!.structuredContent.found, false)
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a trinity is two pairs sharing one textbook, three for every three textbooks. */
+test('a trinity is two pairs sharing one textbook, three for every three textbooks', () => {
+  const t = NESTED.length
+  // every pair of different pairs of textbooks that share exactly one textbook
+  let formed = 0
+  for (let shared = 0; shared < t; shared++) for (let a = 0; a < t; a++) for (let c = a + 1; c < t; c++) if (a !== shared && c !== shared) formed += 1
+  assert.equal(NESTED_COUNTS.pairedTrinities, formed)
+  assert.equal(NESTED_COUNTS.pairedTrinities, 3 * NESTED_COUNTS.trinities)
+  assert.equal(NESTED_COUNTS.pairedVariations, (3n * BigInt(NESTED_COUNTS.trinityVariations)).toString())
+  const names = ['Qpu.Processing.Qft', 'Qpu.Application.Shor', 'Qpu.Application.Grover']
+  const answer = call('textbook', { mix: names }).result!.structuredContent
+  assert.equal(answer.shared, names[1])
+  assert.deepEqual(answer.pairs, [[names[0], names[1]], [names[1], names[2]]])
+  // the shared textbook gives one product to both pairs: it appears once in each variation
+  assert.equal(answer.variations.every((v: { products: { context: { scientific: string } }[] }) => v.products.filter((p) => p.context.scientific === names[1]).length === 1), true)
+  assert.equal(call('textbook', { mix: names.slice(0, 2) }).result!.structuredContent.shared, undefined)
+})
