@@ -16,7 +16,7 @@ import { billCloudflare, pricePenalty, countPenalties, getCapacity, plasma, type
 import { CLAIMS } from '../claims-index.ts'
 import { listLiterals, listManualDocs, ERROR_REMEDIES, FALLBACKS, ENTROPY_KINDS } from '../audit.ts'
 import { uuid } from '../../uuid/index.ts'
-import { GOOGLE_HOST } from '../discovery.ts'
+import { GOOGLE_HOST, QPU_MCP } from '../discovery.ts'
 import { checkAccess, type Ability, type ScopedRole } from './payload.ts'
 import { PAYLOADCMS_WORKSPACE_ALIGNMENT } from '../repositories.ts'
 import { LICENSE } from '../unit/license.ts'
@@ -43,7 +43,7 @@ const wayEvidence = (e2e?: E2eOutcomes) => {
 
 /** The git hooks and the CI as client MCP workflows: one door answers the steps of each (a command of next, the e2e gate, an imprint, the
  *  trailers, the unit's signature over the hosted door), the hook client walks them (machine-run.ts hook <name>, from .githooks) and decides nothing itself; the CI
- *  workflow is the same flow on a runner, measured against the file the hand holds. Four hooks and the CI: five workflows (textbook_hook_workflows). */
+ *  workflow is the same flow on a runner, measured against the file the hand holds. Six workflows git starts, the CI and the deploy pre-check: eight workflows (textbook_hook_workflows). */
 /** what the Payload app over OpenNext needs bound: the adapters' bindings (D1, R2, KV), the static assets, the QPU Worker as a service, Workers AI */
 const NEEDED_BINDINGS = ['ASSETS', 'D1', 'R2', 'KV', 'QPU', 'AI'] as const
 const NEEDED_FLAGS = ['nodejs_compat', 'webcrypto_modern_algorithms'] as const
@@ -203,11 +203,14 @@ const getWorkflow = (name: WorkflowName, o: { offline?: boolean } = {}) => {
     args: [MACHINE_RUNNER, 'next', ...flags.filter((x) => x !== '--strict')],
     says: proseFill(PROSE.quantumProcessingToolboxesRepository_says53, MACHINE_RUNNER, flags.length ? ` (${flags.filter((x) => x !== '--strict').join(' ')})` : ''),
   })
+  // the act reported through the Payload app's MCP door: the same tool, asked there, answers the decision the app holds
+  const report = (workflow: WorkflowName) => ({ id: 'report', kind: 'mcp' as const, tool: 'repository', url: QPU_MCP, arguments: { workflow }, says: PROSE.quantumProcessingToolboxesRepository_report })
   const by: Record<WorkflowName, { says: string; steps: { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' | 'stage'; strict?: boolean; detach?: boolean; cmd?: string; args?: string[]; tool?: string; arguments?: Record<string, unknown>; url?: string; auth?: string; files?: string[]; says: string }[] }> = {
     'pre-commit': { says: PROSE.quantumProcessingToolboxesRepository_says54, steps: [next(['--offline', '--fast', '--strict']), { id: 'stage', kind: 'stage', files: ['docs/public/mcp.json', 'docs/mcp.md', 'docs/.vitepress/config.mts', 'src/quantum/processing/clay-statements.ts', 'README.md', 'docs/public/manifest.webmanifest', 'docs/public/configs.json'], says: PROSE.quantumProcessingToolboxesRepository_says55 }] },
     'commit-msg': { says: PROSE.quantumProcessingToolboxesRepository_says56, steps: [] },
     'pre-push': { says: PROSE.quantumProcessingToolboxesRepository_says57, steps: [next(['--offline', '--fast', '--strict']), { id: 'e2e', kind: 'run', strict: true, cmd: 'node', args: ['--max-old-space-size=16384', MACHINE_RUNNER, 'step', 'e2e', JSON.stringify({ hosts: ['http://localhost:3000/api/mcp'] })], says: PROSE.quantumProcessingToolboxesRepository_says58 }] },
-    'post-commit': { says: PROSE.quantumProcessingToolboxesRepository_says59, steps: [{ id: 'imprint', kind: 'imprint', says: PROSE.quantumProcessingToolboxesRepository_says60 }, { id: 'trunk', kind: 'run', cmd: 'node', args: ['scripts/trunk.ts'], says: PROSE.quantumProcessingToolboxesRepository_says61 }, { id: 'idle', kind: 'run', detach: true, cmd: 'node', args: ['scripts/idle.ts'], says: PROSE.quantumProcessingToolboxesRepository_says62 }] },
+    'post-commit': { says: PROSE.quantumProcessingToolboxesRepository_says59, steps: [{ id: 'imprint', kind: 'imprint', says: PROSE.quantumProcessingToolboxesRepository_says60 }, report('post-commit')] },
+    'post-push': { says: PROSE.quantumProcessingToolboxesRepository_postPush, steps: [report('post-push')] },
     'prepare-commit-msg': { says: PROSE.quantumProcessingToolboxesRepository_says63, steps: [{ id: 'sign', kind: 'mcp', tool: 'sign_commit', url: 'https://uuidna.com/mcp', arguments: { theorems: ['sealed_theorem_not_forged', 'honesty_gate_is_theorem_not_oracle'] }, says: PROSE.quantumProcessingToolboxesRepository_says64 }, { id: 'trailers', kind: 'trailers', says: PROSE.quantumProcessingToolboxesRepository_says65 }] },
     'pre-deploy': { says: PROSE.quantumProcessingToolboxesRepository_says66, steps: [{ id: 'build', kind: 'run', strict: true, cmd: 'scripts/site-local.sh', args: ['exec', 'opennextjs-cloudflare', 'build'], says: 'the OpenNext bundle' }, { id: 'dry-run', kind: 'run', strict: true, cmd: 'scripts/site-local.sh', args: ['exec', 'wrangler', 'deploy', '--dry-run'], says: PROSE.quantumProcessingToolboxesRepository_says67 }, { id: 'docket', kind: 'raid', tool: 'findEntries', url: 'http://localhost:3000/api/mcp', auth: 'payload-mcp-api-keys', arguments: { where: JSON.stringify({ kind: { equals: 'document' } }), pagination: false }, says: PROSE.quantumProcessingToolboxesRepository_says68 }] },
     ci: { says: PROSE.quantumProcessingToolboxesRepository_says69, steps: [{ id: 'checkout', kind: 'run', cmd: 'actions/checkout@v5', says: 'the tree' }, { id: 'node', kind: 'run', cmd: 'actions/setup-node@v5', args: ['node-version=26', 'cache=npm'], says: 'node 26' }, { id: 'install', kind: 'run', cmd: 'npm', args: ['ci'], says: 'the dependencies' }, { id: 'elan', kind: 'run', cmd: 'elan-init', args: ['-y', '--default-toolchain', 'none'], says: PROSE.quantumProcessingToolboxesRepository_says70 }, { ...next([]), strict: true }, { id: 'deliver', kind: 'run', cmd: 'node', args: ['scripts/ci.ts'], says: PROSE.quantumProcessingToolboxesRepository_says71 }, { id: 'receipt', kind: 'run', cmd: 'actions/upload-artifact@v4', args: ['docs/public/receipt.json', 'docs/public/verification.json', 'docs/public/ci.json', 'docs/.vitepress/dist'], says: 'the receipt uploaded' }] },

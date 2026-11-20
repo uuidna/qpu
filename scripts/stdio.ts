@@ -3,48 +3,10 @@
 // QPU_APP_MCP names one, else to the local app, and the answer is written back as one line.
 // The key is read from the keychain alone and travels only in the Authorization header: it is never printed,
 // and a key in the environment is not used.
-import { execFileSync } from 'node:child_process'
 import { createInterface } from 'node:readline'
 
+import { DOOR_ENDPOINTS as ENDPOINTS, forward, type DoorMessage as Message } from '../src/quantum/processing/door.ts'
 import { PROSE, proseFill } from '../src/quantum/processing/prose-index.ts'
-
-type Message = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
-
-const ENDPOINTS = [
-  { source: 'app', url: process.env.QPU_APP_MCP ?? '' },
-  { source: 'local', url: process.env.QPU_LOCAL_MCP ?? 'http://127.0.0.1:3000/api/mcp' },
-].filter((endpoint) => endpoint.url.length > 0)
-
-/** The API key, from the keychain; empty when the keychain holds none. */
-const keychain = (): string => {
-  try {
-    return execFileSync('security', ['find-generic-password', '-s', 'qpu', '-w'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim()
-  } catch {
-    return ''
-  }
-}
-const KEY = keychain()
-
-/** The message sent to the first endpoint that answers, with where the answer came from; null when none answers. */
-const forward = async (message: Message): Promise<{ source: string; reply: { result?: unknown; error?: unknown } | null } | null> => {
-  for (const { source, url } of ENDPOINTS) {
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { accept: 'application/json, text/event-stream', 'content-type': 'application/json', ...(KEY ? { authorization: `users API-Key ${KEY}` } : {}) },
-        body: JSON.stringify(message),
-        signal: AbortSignal.timeout(30000),
-      })
-      const text = await response.text()
-      // a notification has no answer; an event stream carries the answer on its last data line
-      const body = text.trimStart().startsWith('{') ? text : (text.split('\n').filter((line) => line.startsWith('data:')).pop()?.slice(5) ?? '')
-      return { source, reply: body.trim() ? (JSON.parse(body) as { result?: unknown; error?: unknown }) : null }
-    } catch {
-      // this endpoint does not answer: the next one is asked
-    }
-  }
-  return null
-}
 
 const asked = ENDPOINTS.map((endpoint) => endpoint.url).join(', ')
 const write = (id: Message['id'], body: { result: unknown } | { error: unknown }) => process.stdout.write(JSON.stringify({ jsonrpc: '2.0', id, ...body }) + '\n')

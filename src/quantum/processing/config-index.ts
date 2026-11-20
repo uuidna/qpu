@@ -18,9 +18,11 @@ export const INSERT_SCHEMA = { enum: ["EARLIEST","NEW","INLINE","NEW_THEN_INLINE
 /** The coin qubit space, from Config.coinQubitSpace: the most remembered results a computation keeps at once. */
 export const COIN_QUBIT_SPACE = 16
 /** The workflows the repository tool serves, from Config.workflows. */
-export const WORKFLOWS = ["pre-commit","commit-msg","pre-push","post-commit","prepare-commit-msg","ci","pre-deploy"] as const
-/** The workflows git starts from the hook of the same name, from Config.gitHooks. */
-export const GIT_HOOKS = ["pre-commit","commit-msg","pre-push","post-commit","prepare-commit-msg"] as const
+export const WORKFLOWS = ["pre-commit","commit-msg","pre-push","post-commit","post-push","prepare-commit-msg","ci","pre-deploy"] as const
+/** The workflows git starts, from Config.gitHooks. */
+export const GIT_HOOKS = ["pre-commit","commit-msg","pre-push","post-commit","post-push","prepare-commit-msg"] as const
+/** The workflows that run after the act and cannot refuse it, from Config.afterHooks. */
+export const AFTER_HOOKS = ["post-commit","post-push"] as const
 /** The groups of a UUID as it is written, from Advantage.uuidGroups: the hexadecimal digits between its dashes. */
 export const UUID_GROUPS = [8,4,4,4,12] as const
 /** The shape of a UUID as a pattern, built from its groups; every check of a UUID in the code reads this one. */

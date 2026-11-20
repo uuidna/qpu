@@ -142,5 +142,7 @@ def quantumProcessingToolboxesRepository_s135 : String := "without answers only 
 def quantumProcessingToolboxesRepository_s136 : String := "a refused request is recorded, never read as agreement"
 def quantumProcessingToolboxesRepository_s137 : String := "the page renders the tags row"
 def quantumProcessingToolboxesRepository_s138 : String := "three doors (⟦0⟧), their event-stream answers read into ⟦1⟧ branches, ⟦2⟧ tags, ⟦3⟧ release(s)"
+def quantumProcessingToolboxesRepository_postPush : String := "after push is the report of what left the machine: every remote-tracking ref that moved and the commit it now names; it cannot refuse, and a push to main is deployed by the deploy workflow"
+def quantumProcessingToolboxesRepository_report : String := "the act reported to the Payload app through its MCP door, which answers the decision; with no door in reach the decision is computed here"
 
 end Prose

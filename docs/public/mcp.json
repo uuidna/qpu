@@ -3810,7 +3810,7 @@
               "mcp"
             ],
             "description": "mcp",
-            "default": "mcp"
+            "default": "rest"
           },
           "local": {
             "type": "object",
@@ -3836,12 +3836,13 @@
               "commit-msg",
               "pre-push",
               "post-commit",
+              "post-push",
               "prepare-commit-msg",
               "ci",
               "pre-deploy"
             ],
             "description": "the git hook or the CI as a client MCP workflow",
-            "default": "ci"
+            "default": "pre-commit"
           },
           "offline": {
             "type": "boolean",
@@ -3856,8 +3857,8 @@
           }
         },
         "x-harmonic": {
-          "combinations": "14",
-          "index": "12",
+          "combinations": "16",
+          "index": "0",
           "from": "a432"
         }
       },
