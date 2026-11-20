@@ -8,6 +8,11 @@ on:
 permissions:
   contents: read
 
+# a newer push to the same pull request makes the run of the older head useless: it is cancelled; runs on main are kept
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   lake-build:
     runs-on: ubuntu-latest
@@ -34,6 +39,15 @@ jobs:
 
       - name: Fetch the Mathlib build cache
         run: lake exe cache get
+
+      # the tree's own compiled modules: Lake rebuilds only the modules whose sources changed since the cached build
+      - name: Cache the tree's Lean build
+        uses: actions/cache@v4
+        with:
+          path: .lake/build
+          key: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ hashFiles('lakefile.lean', 'src/quantum/processing/unit/lean/**/*.lean') }}
+          restore-keys: |
+            lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
 
       - uses: actions/setup-node@v5
         with:

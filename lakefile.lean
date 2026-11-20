@@ -65,20 +65,6 @@ def nestedBuilt : System.FilePath := ".lake" / "build" / "nested-index.ts"
 /-- the catalogue the TypeScript reads -/
 def nestedIndex : System.FilePath := "src" / "quantum" / "processing" / "nested-index.ts"
 
-/-- Lean writes an index; then it is installed, or with `check` compared with the committed one. -/
-def renderByLean (file : String) (built index : System.FilePath) (check : Bool) : IO UInt32 := do
-  let code ← step "lake" #["env", "lean", file]
-  if code != 0 then return code
-  let written ← IO.FS.readFile built
-  let committed ← if ← index.pathExists then IO.FS.readFile index else pure ""
-  if written == committed then return 0
-  if check then
-    IO.eprintln s!"{index} differs from what Lean writes: run lake run index and commit the result"
-    return 1
-  IO.FS.writeFile index written
-  IO.println s!"wrote {index}"
-  return 0
-
 /-- The Lean file that writes the catalogue of claims. -/
 def catalogueFile : String := "src/quantum/processing/unit/lean/tools/Catalogue.lean"
 
@@ -100,25 +86,49 @@ def textbookFile : String := "src/quantum/processing/unit/lean/tools/Textbook.le
 /-- The Lean file that writes the theorem index. -/
 def theoremsFile : String := "src/quantum/processing/unit/lean/tools/Theorems.lean"
 
-/-- Lean writes the prose index, the theorem index, the nested catalogue, the catalogue of claims, the thousand-bit table and the register of standards. -/
+/-- Compare what a Lean tool wrote with the committed file, or install it. -/
+def settle (built index : System.FilePath) (check : Bool) : IO UInt32 := do
+  let written ← IO.FS.readFile built
+  let committed ← if ← index.pathExists then IO.FS.readFile index else pure ""
+  if written == committed then return 0
+  if check then
+    IO.eprintln s!"{index} differs from what Lean writes: run lake run index and commit the result"
+    return 1
+  IO.FS.writeFile index written
+  IO.println s!"wrote {index}"
+  return 0
+
+/-- Each Lean tool with the file it writes and the committed file that follows it. -/
+def rendered : List (String × System.FilePath × System.FilePath) :=
+  [ (proseFile, proseBuilt, proseIndex)
+  , (theoremsFile, ".lake" / "build" / "theorems-index.ts", "src" / "quantum" / "processing" / "theorems-index.ts")
+  , (textbookFile, ".lake" / "build" / "textbook-index.ts", "src" / "quantum" / "processing" / "textbook-index.ts")
+  , (blueprintFile, ".lake" / "build" / "BLUEPRINT.md", "src" / "quantum" / "BLUEPRINT.md")
+  , (nestedFile, nestedBuilt, nestedIndex)
+  , (catalogueFile, ".lake" / "build" / "CATALOGUE.md", "src" / "quantum" / "CATALOGUE.md")
+  , (thousandFile, ".lake" / "build" / "thousand-index.ts", "src" / "quantum" / "processing" / "thousand-index.ts")
+  , (isoFile, ".lake" / "build" / "iso-index.ts", "src" / "quantum" / "processing" / "iso-index.ts")
+  , (configFile, ".lake" / "build" / "config-index.ts", "src" / "quantum" / "processing" / "config-index.ts") ]
+
+/-- Lean writes the prose index, the theorem index, the textbook index, the blueprint, the nested catalogue, the
+catalogue of claims, the thousand-bit table, the register of standards and the configuration. The tools read the same
+built tree and each writes its own file, so they run at the same time; the files are then settled in order. -/
 def renderProse (check : Bool) : IO UInt32 := do
-  let said ← renderByLean proseFile proseBuilt proseIndex check
-  if said != 0 then return said
-  let stated ← renderByLean theoremsFile (".lake" / "build" / "theorems-index.ts") ("src" / "quantum" / "processing" / "theorems-index.ts") check
-  if stated != 0 then return stated
-  let taught ← renderByLean textbookFile (".lake" / "build" / "textbook-index.ts") ("src" / "quantum" / "processing" / "textbook-index.ts") check
-  if taught != 0 then return taught
-  let drawn ← renderByLean blueprintFile (".lake" / "build" / "BLUEPRINT.md") ("src" / "quantum" / "BLUEPRINT.md") check
-  if drawn != 0 then return drawn
-  let nested ← renderByLean nestedFile nestedBuilt nestedIndex check
-  if nested != 0 then return nested
-  let claimed ← renderByLean catalogueFile (".lake" / "build" / "CATALOGUE.md") ("src" / "quantum" / "CATALOGUE.md") check
-  if claimed != 0 then return claimed
-  let counted ← renderByLean thousandFile (".lake" / "build" / "thousand-index.ts") ("src" / "quantum" / "processing" / "thousand-index.ts") check
-  if counted != 0 then return counted
-  let listed ← renderByLean isoFile (".lake" / "build" / "iso-index.ts") ("src" / "quantum" / "processing" / "iso-index.ts") check
-  if listed != 0 then return listed
-  renderByLean configFile (".lake" / "build" / "config-index.ts") ("src" / "quantum" / "processing" / "config-index.ts") check
+  let tasks ← rendered.mapM fun (file, _, _) => IO.asTask (step "lake" #["env", "lean", file])
+  let mut failed : UInt32 := 0
+  for ((file, built, index), task) in rendered.zip tasks do
+    match task.get with
+    | .error e =>
+      IO.eprintln s!"{file}: {e}"
+      failed := 1
+    | .ok code =>
+      if code != 0 then
+        IO.eprintln s!"{file}: Lean stopped with code {code}"
+        failed := code
+      else
+        let settled ← settle built index check
+        if settled != 0 then failed := settled
+  return failed
 
 /-- The git hooks Lean writes, compared with or installed into `.githooks`. -/
 def renderHooks (check : Bool) : IO UInt32 := do
