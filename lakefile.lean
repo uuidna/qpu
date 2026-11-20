@@ -54,19 +54,32 @@ def proseBuilt : System.FilePath := ".lake" / "build" / "prose-index.ts"
 /-- the index the TypeScript reads -/
 def proseIndex : System.FilePath := "src" / "quantum" / "processing" / "prose-index.ts"
 
-/-- Lean writes the prose index; then it is installed, or with `check` compared with the committed one. -/
-def renderProse (check : Bool) : IO UInt32 := do
-  let code ← step "lake" #["env", "lean", proseFile]
+/-- The Lean file that writes the nested catalogue, where it writes it, and where the TypeScript reads it. -/
+def nestedFile : String := "src/quantum/processing/unit/lean/tools/Nested.lean"
+/-- the catalogue as Lean wrote it -/
+def nestedBuilt : System.FilePath := ".lake" / "build" / "nested-index.ts"
+/-- the catalogue the TypeScript reads -/
+def nestedIndex : System.FilePath := "src" / "quantum" / "processing" / "nested-index.ts"
+
+/-- Lean writes an index; then it is installed, or with `check` compared with the committed one. -/
+def renderByLean (file : String) (built index : System.FilePath) (check : Bool) : IO UInt32 := do
+  let code ← step "lake" #["env", "lean", file]
   if code != 0 then return code
-  let built ← IO.FS.readFile proseBuilt
-  let committed ← if ← proseIndex.pathExists then IO.FS.readFile proseIndex else pure ""
-  if built == committed then return 0
+  let written ← IO.FS.readFile built
+  let committed ← if ← index.pathExists then IO.FS.readFile index else pure ""
+  if written == committed then return 0
   if check then
-    IO.eprintln s!"{proseIndex} differs from the Lean definitions under Qpu/General/Prose: run lake run index and commit the result"
+    IO.eprintln s!"{index} differs from what Lean writes: run lake run index and commit the result"
     return 1
-  IO.FS.writeFile proseIndex built
-  IO.println s!"wrote {proseIndex}"
+  IO.FS.writeFile index written
+  IO.println s!"wrote {index}"
   return 0
+
+/-- Lean writes the prose index and the nested catalogue. -/
+def renderProse (check : Bool) : IO UInt32 := do
+  let said ← renderByLean proseFile proseBuilt proseIndex check
+  if said != 0 then return said
+  renderByLean nestedFile nestedBuilt nestedIndex check
 
 /-- `lake run index`: build, then render every file that follows Lean (prose index, textbook index, theorem index,
 blueprint, Clay statements). The prose index comes first: every other renderer reads its sentences from it. -/

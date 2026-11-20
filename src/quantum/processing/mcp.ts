@@ -10,6 +10,7 @@ import { EXAMPLES } from './examples.ts'
 import { TABLES } from './tables-index.ts'
 import { listDeclarations, removeDead, auditPrograms, scanLexical, runAudit, getEntropy, uncap, diffMembers, auditSecurity, listRemedies, repair, getAdvantage, getAddressedByTheorem, getBill, FALLBACKS, FALLBACK_ADAPTERS, handleOrCorrect, linkAxioms, listLeaks, sealJson, sealTokenLeaks } from './audit.ts'
 import { TEXTBOOK_THEOREMS, getReflections, searchTextbookPrograms } from './textbook-theorems.ts'
+import { NESTED as NESTED_CATALOGUE } from './nested-index.ts'
 import { updateTheoremSources } from './textbook-measured.ts'
 import { builders, accessAudit, auditedSave, build, crossVerifiedFormula, websiteGate, developFindings, developViaHooks, serveViaHooks } from './toolboxes/payload.ts'
 import { ISO_QUANTUM_AI, MCP_API_KEY, isOnlineVerify } from '../../plugins/websiteClient.ts'
@@ -2059,11 +2060,41 @@ const apis = defineTool('tree', {
 })
 const metrics = defineTool('tree', { name: 'metrics', description: PROSE.quantumProcessingMcp_description337, inputSchema: { type: 'object', properties: { artefacts: { type: 'object', description: PROSE.quantumProcessingMcp_description338 } } }, run: (args) => treeMetrics((args.artefacts ?? {}) as RunArtefacts), widget: flowWidget })
 
+/** The nested catalogue as Payload holds it: a clause is a page, a module a page nested under it, a theorem a product of
+ *  that page and each textbook example a variant of that product. Lean writes the tree (nested-index.ts); this joins each
+ *  product with its accepted statement and each variant with the call that runs its example. Pure. */
+const nestedCatalogue = (asked: true | string) => {
+  const slug = (name: string) => name.replace(/\./g, '-').toLowerCase()
+  const count = (pages: typeof NESTED_CATALOGUE) => ({ productCount: pages.reduce((n, p) => n + p.products.length, 0), variantCount: pages.reduce((n, p) => n + p.products.reduce((m, q) => m + q.variants.length, 0), 0) })
+  if (asked === true) {
+    const clauses = [...new Set(NESTED_CATALOGUE.map((p) => p.clause))]
+    const total = count(NESTED_CATALOGUE)
+    return {
+      phase: 'nested' as const, clauses: clauses.map((clause) => ({ title: clause, slug: slug(clause), pages: NESTED_CATALOGUE.filter((p) => p.clause === clause).length })),
+      pages: NESTED_CATALOGUE.map((p) => ({ title: p.module, slug: slug(p.module), parent: slug(p.clause), ...count([p]) })),
+      ...total, says: proseFill(PROSE.quantumProcessingMcp_nested2, NESTED_CATALOGUE.length, clauses.length, total.productCount, total.variantCount),
+    }
+  }
+  const page = NESTED_CATALOGUE.find((p) => p.module === asked || slug(p.module) === asked)
+  if (!page) return { phase: 'nested' as const, found: false, asked, says: PROSE.quantumProcessingMcp_nested4 }
+  const stated = new Map(THEOREMS.map((t) => [t.key, t]))
+  const total = count([page])
+  return {
+    phase: 'nested' as const, found: true, page: { title: page.module, slug: slug(page.module), parent: slug(page.clause) },
+    products: page.products.map((product) => ({
+      title: product.theorem, slug: slug(product.theorem), statement: stated.get(product.theorem)?.statement ?? null, says: stated.get(product.theorem)?.doc ?? null,
+      variants: product.variants.map((id) => { const example = EXAMPLES.find((e) => e.id === id); return { title: id, call: example ? { name: example.tool, arguments: example.arguments } : null } }),
+    })),
+    ...total, says: proseFill(PROSE.quantumProcessingMcp_nested3, page.module, page.clause, total.productCount, total.variantCount),
+  }
+}
+
 const textbook = defineTool('tree', {
   name: 'textbook',
   description: PROSE.quantumProcessingMcp_description339,
-  inputSchema: { type: 'object', properties: { particles: { description: PROSE.quantumProcessingMcp_description340 }, search: { type: 'string', description: PROSE.quantumProcessingMcp_description341 }, google: { description: PROSE.quantumProcessingMcp_description342 }, reflect: { description: PROSE.quantumProcessingMcp_description343 }, claims: { description: PROSE.quantumProcessingMcp_description344 }, theorem: { type: 'string', description: PROSE.quantumProcessingMcp_description345 }, institution: { type: 'object', description: PROSE.quantumProcessingMcp_description346 }, quality: { type: 'boolean', description: PROSE.quantumProcessingMcp_description347 }, verify: { type: 'boolean', description: PROSE.quantumProcessingMcp_description348 }, example: { type: 'string', description: PROSE.quantumProcessingMcp_description349 }, results: { type: 'array', items: { type: 'object' }, description: PROSE.quantumProcessingMcp_description350 }, reuse: { type: 'string', description: 'an example id to replay' }, evaluate: { type: 'object', description: PROSE.quantumProcessingMcp_description351 }, prose: { type: 'object', description: '{ texts: { name: text } }: the prose audited around the textbook — every number a text states resting on an expression a client can evaluate, or a lead; verdict words beside the Clay problems flagged' }, seo: { description: PROSE.quantumProcessingMcp_description352 }, gaps: { type: 'boolean', description: PROSE.quantumProcessingMcp_description353 }, axioms: { type: 'boolean', description: PROSE.quantumProcessingMcp_description354 }, chat: { description: PROSE.quantumProcessingMcp_description355 }, theorems: { type: 'boolean', description: PROSE.quantumProcessingMcp_description356 }, category: { type: 'string', enum: ['toolbox', 'tool', 'theorem', 'module'], description: PROSE.quantumProcessingMcp_description357 } } },
+  inputSchema: { type: 'object', properties: { nested: { description: PROSE.quantumProcessingMcp_nested1 }, particles: { description: PROSE.quantumProcessingMcp_description340 }, search: { type: 'string', description: PROSE.quantumProcessingMcp_description341 }, google: { description: PROSE.quantumProcessingMcp_description342 }, reflect: { description: PROSE.quantumProcessingMcp_description343 }, claims: { description: PROSE.quantumProcessingMcp_description344 }, theorem: { type: 'string', description: PROSE.quantumProcessingMcp_description345 }, institution: { type: 'object', description: PROSE.quantumProcessingMcp_description346 }, quality: { type: 'boolean', description: PROSE.quantumProcessingMcp_description347 }, verify: { type: 'boolean', description: PROSE.quantumProcessingMcp_description348 }, example: { type: 'string', description: PROSE.quantumProcessingMcp_description349 }, results: { type: 'array', items: { type: 'object' }, description: PROSE.quantumProcessingMcp_description350 }, reuse: { type: 'string', description: 'an example id to replay' }, evaluate: { type: 'object', description: PROSE.quantumProcessingMcp_description351 }, prose: { type: 'object', description: '{ texts: { name: text } }: the prose audited around the textbook — every number a text states resting on an expression a client can evaluate, or a lead; verdict words beside the Clay problems flagged' }, seo: { description: PROSE.quantumProcessingMcp_description352 }, gaps: { type: 'boolean', description: PROSE.quantumProcessingMcp_description353 }, axioms: { type: 'boolean', description: PROSE.quantumProcessingMcp_description354 }, chat: { description: PROSE.quantumProcessingMcp_description355 }, theorems: { type: 'boolean', description: PROSE.quantumProcessingMcp_description356 }, category: { type: 'string', enum: ['toolbox', 'tool', 'theorem', 'module'], description: PROSE.quantumProcessingMcp_description357 } } },
   run: (args) => {
+    if (args.nested === true || typeof args.nested === 'string') return nestedCatalogue(args.nested) as never
     if (typeof args.search === 'string') return searchTextbookPrograms(args.search, EXAMPLES) as never
     if (isObj(args.evaluate)) { const e = args.evaluate as { theorem?: string; values?: Record<string, number | string> }; if (typeof e.theorem !== 'string') return listExpressions(); return evaluateTheorem(e.theorem, e.values ?? {}) }
     if (args.chat === true || isObj(args.chat)) return chatCoverage(args.chat)

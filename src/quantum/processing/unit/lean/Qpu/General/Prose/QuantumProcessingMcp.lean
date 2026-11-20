@@ -435,5 +435,9 @@ def quantumProcessingMcp_description428 : String := "the app shell of any tool o
 def quantumProcessingMcp_s429 : String := "no resource ⟦0⟧; the resources are ui://qpu/<view> for ⟦1⟧"
 def quantumProcessingMcp_check430 : String := "seal { tamper: { text, address, sha256 } }"
 def quantumProcessingMcp_says431 : String := "the address is the fast fold of the same text, so an untouched result reads authentic and a change is caught; the SHA-256 is what a forger cannot match (a second preimage, 2^256 work); the edge adds an ML-DSA signature with seal { sign }"
+def quantumProcessingMcp_nested1 : String := "true: the nested catalogue Lean writes, one page per module under its clause, with its counts of products and variants. A module name: that page with every theorem as a product and every textbook example as a variant."
+def quantumProcessingMcp_nested2 : String := "⟦0⟧ module pages under ⟦1⟧ clause pages; ⟦2⟧ theorems are products and ⟦3⟧ textbook examples are variants, all read from the Lean environment"
+def quantumProcessingMcp_nested3 : String := "the page ⟦0⟧ nests under ⟦1⟧; its ⟦2⟧ theorems are products and its ⟦3⟧ textbook examples are variants"
+def quantumProcessingMcp_nested4 : String := "no module of that name is in the nested catalogue Lean writes"
 
 end Prose
