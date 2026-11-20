@@ -984,9 +984,9 @@ example := @textbook_actions_pinned
 /-- the converse of textbook_actions_pinned, proved (examples: repository-actions-tag-pinned, repository-actions-sha-pinned) -/
 @[reflection] theorem textbook_actions_pinned_converse (u p : Nat) : (u + p = 0) → (u = 0) ∧ (p = 0) := fun hc => ⟨by omega, by omega⟩
 /-- five git hooks (pre-commit, commit-msg, pre-push, post-commit, prepare-commit-msg), the CI and the strict pre-deploy check are seven client MCP workflows of one door; the hook script walks the steps and decides nothing (examples: repository-workflow, repository-probes, repository-ci) -/
-theorem textbook_hook_workflows : 5 + 1 + 1 = 7 := by decide
+theorem textbook_hook_workflows : 6 + 1 + 1 = 8 := by decide
 /-- textbook_hook_workflows reflected by its shape, equality (examples: repository-workflow, repository-probes, repository-ci) -/
-@[reflection] theorem textbook_hook_workflows_reflected (σ : Nat) : σ - (7) = σ - (5 + 1 + 1) := congrArg (σ - ·) (Eq.symm (textbook_hook_workflows))
+@[reflection] theorem textbook_hook_workflows_reflected (σ : Nat) : σ - (8) = σ - (6 + 1 + 1) := congrArg (σ - ·) (Eq.symm (textbook_hook_workflows))
 /-- when to commit: the flow is green — the steps of the receipt are green and skipped and no red, so adding the red (zero) changes nothing; one red step refuses the commit (examples: repository-refuse-commit) -/
 theorem textbook_commit_green (green skipped : Nat) : green + skipped + 0 = green + skipped := Nat.add_zero (green + skipped)
 example := @textbook_commit_green

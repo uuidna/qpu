@@ -73,14 +73,26 @@ def coinQubitSpace : Nat := mint hexbit
 theorem coin_qubit_space : coins = 2 ∧ hexbit = 4 ∧ coinQubitSpace = 16 := ⟨coins_two, rfl, rfl⟩
 
 /-- The workflows the repository tool serves: the points at which the tree checks itself. -/
-def workflows : List String := ["pre-commit", "commit-msg", "pre-push", "post-commit", "prepare-commit-msg", "ci", "pre-deploy"]
+def workflows : List String := ["pre-commit", "commit-msg", "pre-push", "post-commit", "post-push", "prepare-commit-msg", "ci", "pre-deploy"]
 
-/-- The workflows git itself starts, each from the hook of the same name. The others are started by CI and by the deploy. -/
-def gitHooks : List String := ["pre-commit", "commit-msg", "pre-push", "post-commit", "prepare-commit-msg"]
+/-- The workflows git itself starts. The others are started by CI and by the deploy. -/
+def gitHooks : List String := ["pre-commit", "commit-msg", "pre-push", "post-commit", "post-push", "prepare-commit-msg"]
+
+/-- The workflows that run after the act: they report it and cannot refuse it. -/
+def afterHooks : List String := ["post-commit", "post-push"]
+
+/-- The hook file git reads for a workflow. Git has no hook after a push, so post-push rides `reference-transaction`,
+    which git runs once the remote-tracking ref has moved; every other workflow has the hook of its own name. -/
+def hookFile (workflow : String) : String := if workflow == "post-push" then "reference-transaction" else workflow
 
 /-- Every git hook is a workflow, and every workflow that is not a git hook is one CI or the deploy starts. -/
 theorem git_hooks_are_workflows :
     (gitHooks.all fun hook => workflows.contains hook) = true ∧ (workflows.filter fun w => !gitHooks.contains w) = ["ci", "pre-deploy"] := by
+  decide
+
+/-- Every workflow git starts has its own hook file, and the workflows after the act are among those git starts. -/
+theorem hook_files_distinct :
+    (gitHooks.map hookFile).eraseDups.length = gitHooks.length ∧ (afterHooks.all fun hook => gitHooks.contains hook) = true := by
   decide
 
 end Config

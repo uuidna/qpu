@@ -1,6 +1,7 @@
 // Payload seeds, one ISO wave and then the next. A quantum wave is a clause of ISO/IEC 4879:2024.
 // Each wave discovers its own pages and improves the following wave. CI and CD are pages of the last wave.
 // A program is the ZFS object of its handle: eight nibble levels, depth 7.
+import { WORKFLOWS } from '../processing/config-index.ts'
 import { PROSE, proseFill } from '../processing/prose-index.ts'
 import { place } from '../fs/index.ts'
 import { leadResearch } from '../processing/discovery.ts'
@@ -15,8 +16,8 @@ export { DEPLOY_STAGES }
 
 export const STANDARD_HZ = 440
 
-/** The seven workflows the repository door already names. */
-const CI_WORKFLOWS = ['pre-commit', 'commit-msg', 'pre-push', 'post-commit', 'prepare-commit-msg', 'ci', 'pre-deploy'] as const
+/** The workflows the repository door names, from Lean. */
+const CI_WORKFLOWS = WORKFLOWS
 
 const CHECKOUT = 'actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5'
 const PNPM = PROSE.quantumPayloadWaves_s1
