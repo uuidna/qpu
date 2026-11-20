@@ -4,9 +4,9 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1887 products, 2 under a declared claim context and 1885 as the author's own statement, with 1534 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1889 products, 2 under a declared claim context and 1887 as the author's own statement, with 1534 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
-The catalogue covers 20 standards, 10 with a theorem that states a fact the standard fixes and 10 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
+The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
 This catalogue records authorship and the date of each release. It is a publication, not a patent application: publishing a statement discloses it, and what is filed as a patent, and when, is for a patent attorney to decide before it is published.
 
@@ -51,11 +51,19 @@ Open: the tree names this standard and no theorem states a fact it fixes yet. It
 
 ### ISO 24165
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Witness: `Iso.token_identifier`.
+
+```lean
+8 + 1 = 9 ∧ "4H95J0R2X".length = 9
+```
 
 ### ISO 20022
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Witness: `Iso.message_identifier`.
+
+```lean
+4 + 3 + 3 + 2 = 12 ∧ "pacs.008.001.08".length = 12 + 3
+```
 
 ### ISO 4217
 
@@ -2001,6 +2009,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Iso.letterCodes 2 = 676
 ```
 
+### `Iso.message_identifier`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+4 + 3 + 3 + 2 = 12 ∧ "pacs.008.001.08".length = 12 + 3
+```
+
 ### `Iso.quality_characteristics`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -2030,7 +2046,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-Iso.standards.length = 20 ∧ (List.filter (fun x => x.witness.isSome) Iso.standards).length = 10
+Iso.standards.length = 20 ∧ (List.filter (fun x => x.witness.isSome) Iso.standards).length = 12
+```
+
+### `Iso.token_identifier`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+8 + 1 = 9 ∧ "4H95J0R2X".length = 9
 ```
 
 ### `Iso.tuning_octaves`
