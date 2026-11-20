@@ -69,3 +69,4 @@ import Qpu.Claims.Declared
 import Qpu.Claims.Reflection
 import Qpu.General.Vocabulary
 import Qpu.General.Iso
+import Qpu.General.Config

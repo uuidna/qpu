@@ -2,6 +2,7 @@
 // call. The handler does no I/O and imports nothing from Node, so the same code runs in a browser OS, where a caller
 // compiles whatever it needs by calling a tool. Tool names and figures follow Google Quantum AI (quantumai.google).
 
+import { CHAT_SHARE, CLAY_FIRST, FORMULA, INSERT_SCHEMA, LEAN_RESOURCE, NIBBLE_PRIMES, OFFICIAL_PLUGINS, PROTOCOL_VERSION } from './config-index.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 import { GOOGLE_MCPS, QPU_MCP, mcpHostList } from './discovery.ts'
 import { bindGoogleCall } from './toolboxes/google.ts'
@@ -162,7 +163,6 @@ const OBSERVABLE_SCHEMA = {
   description: PROSE.quantumProcessingMcp_description4,
   additionalProperties: { enum: ['X', 'Y', 'Z'] },
 }
-const INSERT_SCHEMA = { enum: ['EARLIEST', 'NEW', 'INLINE', 'NEW_THEN_INLINE'], default: 'EARLIEST' }
 
 const complex = ([re, im]: [number, number]) => ({ re, im })
 
@@ -228,7 +228,6 @@ const hybridDecode = (args: Record<string, unknown>) => {
     says: proseFill(PROSE.quantumProcessingMcp_says16, d.decoded ? proseFill(PROSE.quantumProcessingMcp_s17, witness, r.bits, r.factors.join(' × ')) : proseFill(PROSE.quantumProcessingMcp_s18, witness, r.bits), addressVerified === null ? PROSE.quantumProcessingMcp_s19 : proseFill(PROSE.quantumProcessingMcp_s20, addressVerified), r.receipt, r.sha256),
     summary: [['Bits', String(r.bits)], ['Reflections searched', d.searched.toString()], ['Decoded', d.decoded ? 'yes' : 'no'], ['Product checked', d.verified ? 'yes' : 'no'], ['Address verified', addressVerified === null ? 'missing' : addressVerified ? 'yes' : 'no'], ['Receipt SHA-256', r.sha256]] }
 }
-const FORMULA = { order: { theorem: 'textbook_order_finding', params: ['N', 'a'] }, shor: { theorem: 'textbook_shor_reduction', params: ['N', 'a', 'order'] }, factor: { theorem: 'textbook_factors_divide', params: ['integer', 'a'] } } as const
 
 const openDoors = (args: Record<string, unknown>): ('order' | 'shor' | 'factor')[] => {
   const doors: ('order' | 'shor' | 'factor')[] = []
@@ -312,7 +311,6 @@ const coverLeftovers = (left: readonly bigint[]) => {
     developed: developed.map((row) => ({ from: row.from, bits: row.width, formula: row.formula, documented: row.documented, entry: auditedSave({ collection: 'products', override: false, data: { title: row.served.title, product: row.served.product, variant: row.served.variant, iso: row.served.iso, docs: row.served.docs } }) })),
   }
 }
-const NIBBLE_PRIMES = [2, 3, 5, 7, 11, 13] as const
 const nibblePrimes = (id: string) => {
   const nibbles = [...id.replace(/-/g, '')].map((c) => parseInt(c, 16))
   return NIBBLE_PRIMES.filter((p) => nibbles.includes(p))
@@ -713,7 +711,6 @@ const relationNames = (r: { name: string; statement: string; theorems?: readonly
   return [...books.entries()].sort((a, b) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0).map(([textbook, set]) => ({ textbook, names: [...set].sort() }))
 }
 
-const OFFICIAL_PLUGINS = ['@payloadcms/plugin-ecommerce', '@payloadcms/plugin-mcp', '@payloadcms/plugin-multi-tenant', '@payloadcms/plugin-search', '@payloadcms/plugin-import-export', '@payloadcms/plugin-form-builder', '@payloadcms/plugin-seo', '@payloadcms/plugin-nested-docs', '@payloadcms/plugin-redirects'] as const
 const collectionSlug = (raw: string) => raw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'page'
 
 const walked = (id: string) => {
@@ -2003,7 +2000,6 @@ const coverage = (a: RunArtefacts): Record<string, unknown> => {
   }
 }
 
-const LEAN_RESOURCE = 'lean://qpu/theorems'
 const leanLedger = () => {
   const modules: Record<string, number> = {}; for (const t of THEOREMS) modules[t.module] = (modules[t.module] ?? 0) + 1
   return { kernel: KERNEL_THEOREMS, handWritten: THEOREMS.length, generated: GENERATED_LEMMAS, whole: THEOREMS.length + GENERATED_LEMMAS === KERNEL_THEOREMS, modules, theorems: THEOREMS, textbook: TEXTBOOK_THEOREMS.map((t) => ({ key: t.key, lean: t.lean, says: t.says, examples: t.examples })), axioms: PROSE.quantumProcessingMcp_axioms324, sources: PROSE.quantumProcessingMcp_sources325, says: PROSE.quantumProcessingMcp_says326 }
@@ -2481,7 +2477,6 @@ const toolboxLean = (box: Toolbox) => {
 const NAMES = TOOLS.map((t) => t.name), VIEWS = [...NAMES, 'chat'] // the MCP Apps views: every tool's and the chat's
 const CONTRACTS = TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema }))
 /** The order the tools are served in: the Clay set first (the register, the decider, the verifier), every other tool after them in its order; initialize builds its version over the same order, so the version names what is served. */
-const CLAY_FIRST = ['clay', 'match', 'verify']
 const SERVED: Tool[] = [...TOOLS].sort((a, b) => { const i = CLAY_FIRST.indexOf(a.name), j = CLAY_FIRST.indexOf(b.name); return (i < 0 ? CLAY_FIRST.length : i) - (j < 0 ? CLAY_FIRST.length : j) })
 /** The chat as the one door an MCP client needs: a statement (or a call) answered under the caller's role, never an error thrown back.
  *  The call is the one the match serves, else the example of the first theorem the route names (a theorem-based answer); every enum value
@@ -2560,7 +2555,6 @@ const chatInner = (statement: string, c: Ask) => {
 }
 /** The chat coverage sweep, sealed: the plan names every kernel textbook sentence, a share puts at most twelve of them to the chat by their own
  *  sentence, and the join checks each share's content address before sealing the census in textbook order (textbook_chat_call_or_question). */
-const CHAT_SHARE = 12
 type ChatRow = { theorem: string; by: string; kind: 'computed' | 'served' | 'example' | 'other'; ownFirst: boolean }
 const chatPlan = () => { const kernel = new Set(THEOREMS.map((t) => t.key)); return TEXTBOOK_THEOREMS.filter((t) => kernel.has(t.key)) }
 const chatKindOf = (theorem: string, by: string): ChatRow['kind'] => by.includes('computed') && by.includes(theorem) ? 'computed' : by === PROSE.quantumProcessingMcp_s183 ? 'served' : by.includes('its example') && by.includes(theorem) ? 'example' : 'other'
@@ -2670,7 +2664,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       if (!asked.access) return { jsonrpc: '2.0', id, error: { code: INVALID_PARAMS, message: proseFill(PROSE.quantumProcessingMcp_message421, asked.role, asked.action), data: { rbac: asked } } }
       askedFirst = { server: asked.server, one: asked.one, first: asked.first, asked: asked.asked, tool: asked.tool }
     }
-    if (message.method === 'initialize') return ok({ protocolVersion: '2025-06-18', capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online], law: MCP_API_KEY.law, auth: MCP_API_KEY }, website: { collection: 'pages', path: websiteGate('gates', 'root').rootPath }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
+    if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online], law: MCP_API_KEY.law, auth: MCP_API_KEY }, website: { collection: 'pages', path: websiteGate('gates', 'root').rootPath }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
     // every tool declares its UI resource (MCP Apps, _meta.ui.resourceUri): a host that negotiates the extension renders the tool's result through it
     // every tool listed widget-skilled: its UI resource (the widget) and its toolbox's skill (the instructions a client follows, the directions it tests in)
     if (message.method === 'tools/list') {
