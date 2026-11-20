@@ -2,7 +2,7 @@
 /** The vocabulary standard whose terms the register holds. */
 export const ISO_VOCABULARY = "ISO/IEC 4879:2024" as const
 /** What the register holds, in Lean's own counts. */
-export const ISO_SAYS = "The tree names 20 standards: 10 have a theorem that states a fact the standard fixes, and 10 are open. Each of the 86 terms of ISO/IEC 4879:2024 has a theorem the kernel accepted."
+export const ISO_SAYS = "The tree names 20 standards: 12 have a theorem that states a fact the standard fixes, and 8 are open. Each of the 86 terms of ISO/IEC 4879:2024 has a theorem the kernel accepted."
 /** The groups of the vocabulary standard, each with the number of its terms. */
 export const ISO_GROUPS: readonly { group: string; title: string; terms: number }[] = [{"group":"3.1","terms":9,"title":"General terms"},{"group":"3.2","terms":21,"title":"Quantum physics"},{"group":"3.3","terms":12,"title":"Quantum information"},{"group":"3.4","terms":32,"title":"Quantum information processing"},{"group":"3.5","terms":8,"title":"Applications"},{"group":"3.6","terms":4,"title":"Communication and sensing"}]
 /** Every term of the vocabulary standard: its clause, its name, the check the processor runs for it, and the theorem that witnesses it with its statement. */
@@ -104,8 +104,8 @@ export const ISO_STANDARDS: readonly { reference: string; says: string; witness:
   {"reference":"ISO 22739:2024","says":"ISO 22739:2024 is named by the tree and no theorem states a fact it fixes yet: it is open, a theorem still to prove.","witness":null},
   {"reference":"ISO 23257:2022","says":"ISO 23257:2022 is named by the tree and no theorem states a fact it fixes yet: it is open, a theorem still to prove.","witness":null},
   {"reference":"ISO/TR 23455:2019","says":"ISO/TR 23455:2019 is named by the tree and no theorem states a fact it fixes yet: it is open, a theorem still to prove.","witness":null},
-  {"reference":"ISO 24165","says":"ISO 24165 is named by the tree and no theorem states a fact it fixes yet: it is open, a theorem still to prove.","witness":null},
-  {"reference":"ISO 20022","says":"ISO 20022 is named by the tree and no theorem states a fact it fixes yet: it is open, a theorem still to prove.","witness":null},
+  {"module":"Qpu.General.Iso","reference":"ISO 24165","says":"ISO 24165 is witnessed by the theorem Iso.token_identifier, which states a fact the standard fixes and which the kernel accepted.","statement":"8 + 1 = 9 ∧ \"4H95J0R2X\".length = 9","witness":"Iso.token_identifier"},
+  {"module":"Qpu.General.Iso","reference":"ISO 20022","says":"ISO 20022 is witnessed by the theorem Iso.message_identifier, which states a fact the standard fixes and which the kernel accepted.","statement":"4 + 3 + 3 + 2 = 12 ∧ \"pacs.008.001.08\".length = 12 + 3","witness":"Iso.message_identifier"},
   {"module":"Qpu.General.Iso","reference":"ISO 4217","says":"ISO 4217 is witnessed by the theorem Iso.currency_codes, which states a fact the standard fixes and which the kernel accepted.","statement":"letterCodes 3 = 17576 ∧ 10 ^ 3 = 1000","witness":"Iso.currency_codes"},
   {"module":"Qpu.General.Iso","reference":"ISO 8601","says":"ISO 8601 is witnessed by the theorem Iso.calendar_cycle, which states a fact the standard fixes and which the kernel accepted.","statement":"leap 2024 = true ∧\n  leap 1900 = false ∧ leap 2000 = true ∧ (List.filter leap (List.range 400)).length = 97 ∧ (400 * 365 + 97) % 7 = 0","witness":"Iso.calendar_cycle"},
   {"module":"Qpu.General.Iso","reference":"ISO 639-1","says":"ISO 639-1 is witnessed by the theorem Iso.language_codes, which states a fact the standard fixes and which the kernel accepted.","statement":"letterCodes 2 = 676","witness":"Iso.language_codes"},

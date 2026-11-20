@@ -200,6 +200,14 @@ theorem security_controls : 37 + 8 + 14 + 34 = 93 := by decide
 /-- ISO 9001:2015: of its 10 clauses the first 3 set no requirement, so 7 clauses carry the requirements. -/
 theorem quality_clauses : 10 - 3 = 7 := by decide
 
+/-- ISO 20022: a message is named by four letters for its business area, three digits for the message, three for the
+    variant and two for the version, as in `pacs.008.001.08`: twelve characters between the dots. -/
+theorem message_identifier : 4 + 3 + 3 + 2 = 12 ∧ "pacs.008.001.08".length = 12 + 3 := by decide
+
+/-- ISO 24165: a digital token identifier is nine characters, eight of the base number and one check character, as
+    in `4H95J0R2X`. -/
+theorem token_identifier : 8 + 1 = 9 ∧ "4H95J0R2X".length = 9 := by decide
+
 /-- ISO/IEC 25010:2023: the product quality model has 9 characteristics, one more than the 8 of the edition before. -/
 theorem quality_characteristics : 8 + 1 = 9 := by decide
 
@@ -221,8 +229,8 @@ def standards : List Standard :=
   , ⟨"ISO 22739:2024", none⟩
   , ⟨"ISO 23257:2022", none⟩
   , ⟨"ISO/TR 23455:2019", none⟩
-  , ⟨"ISO 24165", none⟩
-  , ⟨"ISO 20022", none⟩
+  , ⟨"ISO 24165", some ``token_identifier⟩
+  , ⟨"ISO 20022", some ``message_identifier⟩
   , ⟨"ISO 4217", some ``currency_codes⟩
   , ⟨"ISO 8601", some ``calendar_cycle⟩
   , ⟨"ISO 639-1", some ``language_codes⟩
@@ -236,8 +244,8 @@ def standards : List Standard :=
   , ⟨"ISO/IEC 25051:2014", none⟩
   , ⟨"ISO/IEC 27001:2022", some ``security_controls⟩ ]
 
-/-- The register names twenty standards, and ten of them have a witness. -/
+/-- The register names twenty standards, and twelve of them have a witness. -/
 theorem standards_count :
-    standards.length = 20 ∧ (standards.filter (·.witness.isSome)).length = 10 := by decide
+    standards.length = 20 ∧ (standards.filter (·.witness.isSome)).length = 12 := by decide
 
 end Iso
