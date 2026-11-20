@@ -16,5 +16,9 @@ def quantumProcessingToolboxesLanguage_instructions9 : String := "translate take
 def quantumProcessingToolboxesLanguage_s10 : String := "server only: every table reads both ways (en→locale→en returns the term)"
 def quantumProcessingToolboxesLanguage_s11 : String := "toolbox → toolbox: numerals read by the match toolbox's reader"
 def quantumProcessingToolboxesLanguage_s12 : String := "client → server: the coverage phase hands the client the missing terms to fill"
+def quantumProcessingToolboxesLanguage_verify1 : String := "A sentence to verify: its name in the prose index, or the sentence itself. The answer names the Lean definition that states it and the kernel theorems it cites."
+def quantumProcessingToolboxesLanguage_verify2 : String := "no Lean definition under Qpu/General/Prose states this sentence, so the tree did not say it"
+def quantumProcessingToolboxesLanguage_verify3 : String := "the sentence is the Lean definition ⟦0⟧ in ⟦1⟧; it cites ⟦2⟧ kernel theorem(s), ⟦3⟧ of them through Mathlib's meaning"
+def quantumProcessingToolboxesLanguage_verify4 : String := "the sentence is the Lean definition ⟦0⟧ in ⟦1⟧; it cites no kernel theorem, so Lean states it and the kernel does not check it"
 
 end Prose

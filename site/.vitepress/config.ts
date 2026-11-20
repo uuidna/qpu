@@ -11,6 +11,7 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Draft applications', link: '/patents/' },
+      { text: 'Prose', link: '/prose/' },
       { text: 'MCP catalogue', link: '/mcp.json', target: '_blank' },
     ],
     sidebar,

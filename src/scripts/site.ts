@@ -54,6 +54,7 @@ write(join(out, 'index.md'), [
   PROSE.scriptsSite_s3, '',
   `- ${seen.size} pages in ${waves.length} waves, listed in the sidebar`,
   `- [The MCP catalogue](/mcp.json): ${tools.length} tools in ${TOOLBOXES.length} toolboxes, as \`tools/list\` answers them. Calls go to \`POST /api/mcp\` on the live site.`,
-  '- [Draft applications](/patents/): one draft per theoretical use, written by Lean from its inline docs and frontmatter', '',
+  '- [Draft applications](/patents/): one draft per theoretical use, written by Lean from its inline docs and frontmatter',
+  '- [Prose](/prose/): every sentence, by the Lean definition that states it; [prose.json](/prose.json) is the same list for a client', '',
 ].join('\n'))
 console.log(JSON.stringify({ pages: seen.size, waves: waves.length, tools: tools.length, out }))
