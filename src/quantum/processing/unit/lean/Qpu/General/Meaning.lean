@@ -96,3 +96,35 @@ theorem choose_two_eq_mixes (t : Nat) : choose t 2 = t * (t - 1) / 2 := by
 /-- One more textbook mixes with every textbook already there: `choose (t + 1) 2 = choose t 2 + t`, for every `t`. -/
 theorem choose_two_succ (t : Nat) : choose (t + 1) 2 = choose t 2 + t := by
   rw [choose_eq_nat_choose, choose_eq_nat_choose, Nat.choose_succ_succ, Nat.choose_one_right, Nat.add_comm]
+
+/-- Twice the pairs of `t` things is `t * (t - 1)`, for every `t`: no division. -/
+theorem two_mul_nat_choose_two (t : Nat) : 2 * t.choose 2 = t * (t - 1) := by
+  cases t with
+  | zero => rfl
+  | succ m =>
+    have h := Nat.add_one_mul_choose_eq m 1
+    rw [Nat.choose_one_right] at h
+    rw [Nat.add_sub_cancel, Nat.mul_comm 2, ← h]
+
+/-- Six times the trinities of `t` things is `t * (t - 1) * (t - 2)`, for every `t`: no division. -/
+theorem six_mul_nat_choose_three (t : Nat) : 6 * t.choose 3 = t * (t - 1) * (t - 2) := by
+  cases t with
+  | zero => rfl
+  | succ m =>
+    have h := Nat.add_one_mul_choose_eq m 2
+    have h2 := two_mul_nat_choose_two m
+    calc 6 * (m + 1).choose 3 = 2 * ((m + 1).choose 3 * 3) := by ring
+      _ = 2 * ((m + 1) * m.choose 2) := by rw [← h]
+      _ = (m + 1) * (2 * m.choose 2) := by ring
+      _ = (m + 1) * (m * (m - 1)) := by rw [h2]
+      _ = (m + 1) * (m + 1 - 1) * (m + 1 - 2) := by rw [Nat.add_sub_cancel, show m + 1 - 2 = m - 1 by omega]; ring
+
+/-- Mixing textbooks in trinities, three at a time: six times the trinities of `t` textbooks is `t * (t - 1) * (t - 2)`,
+for every `t`. The count the nested catalogue states for its textbooks is this law at their number. -/
+theorem six_mul_choose_three_eq_trinities (t : Nat) : 6 * choose t 3 = t * (t - 1) * (t - 2) := by
+  rw [choose_eq_nat_choose, six_mul_nat_choose_three]
+
+/-- One more textbook joins every pair already there into a new trinity: `choose (t + 1) 3 = choose t 3 + choose t 2`,
+for every `t`. Pairs and trinities are one ladder. -/
+theorem choose_three_succ (t : Nat) : choose (t + 1) 3 = choose t 3 + choose t 2 := by
+  rw [choose_eq_nat_choose, choose_eq_nat_choose, choose_eq_nat_choose, Nat.choose_succ_succ, Nat.add_comm]
