@@ -26,8 +26,20 @@ jobs:
           path: ~/.elan/toolchains
           key: elan-${{ hashFiles('lean-toolchain') }}
 
+      - name: Cache Lake packages
+        uses: actions/cache@v4
+        with:
+          path: .lake/packages
+          key: lake-packages-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}
+
+      - name: Fetch the Mathlib build cache
+        run: lake exe cache get
+
       - name: The kernel checks every Lean module
         run: lake build
+
+      - name: Lean writes the draft applications
+        run: lake env lean src/quantum/processing/unit/lean/tools/Applications.lean
 
       - name: Lean writes the claim manifest
         run: lake exe claims

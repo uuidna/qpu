@@ -2,8 +2,9 @@
 
 Companion proof suite to the erpax Cirq/Qualtran RFC. Every module lives under
 `Qpu/Verify/` and proves its claims with the Lean kernel alone (`by decide` or
-exhaustive `cases`); the project pins `leanprover/lean4:v4.33.0` and has no
-external package dependencies (`lake-manifest.json` is empty of packages).
+exhaustive `cases`) and imports no package; the project pins `leanprover/lean4:v4.33.0`.
+Mathlib (`v4.33.0`) is the project's one dependency, imported only by `Qpu/Meaning.lean`,
+which proves the tree's own definitions equal to the Mathlib notions they are.
 
 ## Modules
 
