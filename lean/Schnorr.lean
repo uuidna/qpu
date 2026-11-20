@@ -1,0 +1,1 @@
+<full literal root Schnorr.lean — imports Basic, Inv, Pow, Protocol, Soundness, ~10 lines>
