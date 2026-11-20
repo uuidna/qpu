@@ -1143,6 +1143,7 @@ const SENTENCES = {
   quantumProcessingMachine_s5: "⟦0⟧ runs at the root or in a worktree under .claude/worktrees",
   quantumProcessingMachine_s6: "⟦0⟧ takes its own parameters only: a worktree under .claude/worktrees, a branch other than main, an archive/ tag at a full commit, or a relative file of a worktree",
   quantumProcessingMachine_says10: "⟦0⟧ step(s) in ⟦1⟧ wave(s), run by ⟦2⟧ with no shell; ⟦3⟧ action(s) longer than a request are queued as jobs",
+  quantumProcessingMatch_answeredFor: "⟦1⟧: the call ⟦2⟧ answered for ⟦3⟧ ⟦4⟧, not ⟦5⟧",
   quantumProcessingMatch_by15: "the register of ⟦0⟧ qubits, Shor's circuit",
   quantumProcessingMatch_monetisation26: "priced by ⟦0⟧'s own catalogue (its variants and currency), sold through the tenant's ecommerce",
   quantumProcessingMatch_monetisation27: "a tenant app of its own at ⟦0⟧.uuidna.com, priced by its catalogue and sold through its ecommerce",
