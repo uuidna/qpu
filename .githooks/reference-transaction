@@ -1,0 +1,6 @@
+#!/bin/sh
+# reference-transaction is the client of the workflow post-push: the machine runner asks repository { workflow: 'post-push' }, walks its steps, hands back the facts and obeys the decision.
+[ "$1" = committed ] || exit 0
+moved=$(grep ' refs/remotes/' || true)
+[ -n "$moved" ] || exit 0
+exec node src/quantum/processing/machine-run.ts hook post-push $moved

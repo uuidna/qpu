@@ -4,7 +4,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1886 products, 2 under a declared claim context and 1884 as the author's own statement, with 1534 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1887 products, 2 under a declared claim context and 1885 as the author's own statement, with 1534 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 10 with a theorem that states a fact the standard fixes and 10 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -1750,6 +1750,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```lean
 (Config.gitHooks.all fun hook => Config.workflows.contains hook) = true ∧
   List.filter (fun w => !Config.gitHooks.contains w) Config.workflows = ["ci", "pre-deploy"]
+```
+
+### `Config.hook_files_distinct`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+(List.map Config.hookFile Config.gitHooks).eraseDups.length = Config.gitHooks.length ∧
+  (Config.afterHooks.all fun hook => Config.gitHooks.contains hook) = true
 ```
 
 ### `Config.nibble_primes`
@@ -8832,7 +8841,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-workflow, repository-probes, repository-ci.
 
 ```lean
-5 + 1 + 1 = 7
+6 + 1 + 1 = 8
 ```
 
 ### `textbook_hook_workflows_reflected`
@@ -8840,7 +8849,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-workflow, repository-probes, repository-ci.
 
 ```lean
-∀ (σ : ℕ), σ - 7 = σ - (5 + 1 + 1)
+∀ (σ : ℕ), σ - 8 = σ - (6 + 1 + 1)
 ```
 
 ### `textbook_hue_shift`

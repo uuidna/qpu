@@ -3419,6 +3419,8 @@ const SENTENCES = {
   quantumProcessingToolboxesRepository_evidence50: "the staged literals were not read",
   quantumProcessingToolboxesRepository_idea124: "the repository watched: every workspace, branch, tag and release here compared with the remote and the archive online, every disagreement a lead",
   quantumProcessingToolboxesRepository_instructions126: "The client gathers with git: the remote url, HEAD, the branch, package.json's version, worktree list, every branch with its upstream and head, every tag with its commit, and the concept DOI from .zenodo.json's related identifiers; calls repository for the requests; fetches them (GitHub needs no token for public reads); calls again with the answers; writes repository.json and the page; its leads join the next-leads docket. Offline, the local facts alone are written.",
+  quantumProcessingToolboxesRepository_postPush: "after push is the report of what left the machine: every remote-tracking ref that moved and the commit it now names; it cannot refuse, and a push to main is deployed by the deploy workflow",
+  quantumProcessingToolboxesRepository_report: "the act reported to the Payload app through its MCP door, which answers the decision; with no door in reach the decision is computed here",
   quantumProcessingToolboxesRepository_s10: "⟦0⟧@⟦1⟧ is complete (⟦2⟧ of ⟦3⟧ exports packed) and ISO verified (ISO/IEC 19770, ISO 9001): the release may be tagged and pushed",
   quantumProcessingToolboxesRepository_s100: "the setting is the user's; the hooks enforce the rules meanwhile",
   quantumProcessingToolboxesRepository_s101: "a second workspace holds work the main one does not see; merge or record it",
