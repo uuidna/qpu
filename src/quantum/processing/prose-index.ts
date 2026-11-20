@@ -405,7 +405,7 @@ const SENTENCES = {
   quantumProcessingE2e_statement7: "⟦0⟧: ⟦1⟧ flip(s), ⟦2⟧ erasure(s), ⟦3⟧ refusal(s) over ⟦4⟧ copies; the syndrome names it",
   quantumProcessingE2e_value4: "HTTP 304 unverified: the hash or the address the host echoed is not the one held here",
   quantumProcessingExamples_description473: "see https://example.com/note",
-  quantumProcessingExamples_diff225: "+++ b/site/src/app/(payload)/admin/importMap.js\n+import { A as A_1 } from '@payloadcms/ui'\n+++ b/site/src/payload-types.ts\n+export type A = string\n",
+  quantumProcessingExamples_diff225: "+++ b/src/app/(payload)/admin/importMap.js\n+import { A as A_1 } from '@payloadcms/ui'\n+++ b/src/payload-types.ts\n+export type A = string\n",
   quantumProcessingExamples_diff235: "+++ b/src/quantum/x.ts\n+export const grow = 1\n+const y = 2\n",
   quantumProcessingExamples_fullTitle56: "Gates > google toolbox gates > tools/call processor",
   quantumProcessingExamples_log241: "the same coin ⟦0⟧ written elsewhere",
