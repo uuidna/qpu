@@ -75,11 +75,16 @@ def renderByLean (file : String) (built index : System.FilePath) (check : Bool) 
   IO.println s!"wrote {index}"
   return 0
 
-/-- Lean writes the prose index and the nested catalogue. -/
+/-- The Lean file that writes the catalogue of claims. -/
+def catalogueFile : String := "src/quantum/processing/unit/lean/tools/Catalogue.lean"
+
+/-- Lean writes the prose index, the nested catalogue and the catalogue of claims. -/
 def renderProse (check : Bool) : IO UInt32 := do
   let said ← renderByLean proseFile proseBuilt proseIndex check
   if said != 0 then return said
-  renderByLean nestedFile nestedBuilt nestedIndex check
+  let nested ← renderByLean nestedFile nestedBuilt nestedIndex check
+  if nested != 0 then return nested
+  renderByLean catalogueFile (".lake" / "build" / "CATALOGUE.md") ("src" / "quantum" / "CATALOGUE.md") check
 
 /-- `lake run index`: build, then render every file that follows Lean (prose index, textbook index, theorem index,
 blueprint, Clay statements). The prose index comes first: every other renderer reads its sentences from it. -/
@@ -106,12 +111,27 @@ script prose do
 script applications do
   steps [("lake", #["build"]), ("lake", #["env", "lean", applicationsFile])]
 
+/-- The Lean files that write rendered output; `lake run verify` runs each of them. -/
+def leanTools : List String := [applicationsFile, proseFile, nestedFile, catalogueFile]
+
+/-- `lake run leanfiles`: no Lean file is skipped. Every `.lean` file the repository tracks is this lakefile, a module
+the build compiles, or a tool `lake run verify` runs; any other file holds Lean the kernel never sees. -/
+script leanfiles do
+  let listed ← IO.Process.output { cmd := "git", args := #["ls-files", "*.lean"] }
+  let files := (listed.stdout.splitOn "\n").filter (· != "")
+  let skipped := files.filter fun file =>
+    !(file == "lakefile.lean" || file.startsWith "src/quantum/processing/unit/lean/Qpu/" || file == "src/quantum/processing/unit/lean/Qpu.lean" || leanTools.contains file)
+  for file in skipped do IO.eprintln s!"{file}: no build and no script checks this Lean file"
+  IO.println s!"{files.length} Lean file(s), {skipped.length} skipped"
+  return if skipped.isEmpty then 0 else 1
+
 /-- `lake run verify`: everything the kernel and the rendered files must satisfy — the build, the claim manifest,
-the rendered-file check and the draft applications. This is what CI runs. -/
+that no Lean file is skipped, the rendered-file check and the draft applications. This is what CI runs. -/
 script verify do
   steps
     [ ("lake", #["build"])
     , ("lake", #["exe", "claims"])
+    , ("lake", #["run", "leanfiles"])
     , ("lake", #["run", "check"])
     , ("lake", #["env", "lean", applicationsFile]) ]
 

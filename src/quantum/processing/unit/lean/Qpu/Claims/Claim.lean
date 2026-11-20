@@ -75,4 +75,16 @@ def Claim.toJson (claim : Claim) : Lean.Json :=
     , ("context", claim.context.toJson)
     ]
 
+/-- The author whose work every theorem of this tree is. -/
+def author : String := "Tsvetan Rouschev"
+
+/-- The author's ORCID iD. -/
+def authorOrcid : String := "0009-0000-7312-9778"
+
+/-- The concept DOI every release of the tree is a version of (ISO 26324). -/
+def conceptDoi : String := "10.5281/zenodo.22700098"
+
+/-- The licence the tree is published under. -/
+def licence : String := "CC BY-NC-ND 4.0"
+
 end Qpu

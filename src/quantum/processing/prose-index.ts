@@ -1652,6 +1652,7 @@ const SENTENCES = {
   quantumProcessingRelease_says3: "release ⟦0⟧ is posted for the published post; Zenodo archives it as a new version under the concept DOI ⟦1⟧",
   quantumProcessingRelease_says4: "the release was refused with status ⟦0⟧, so the DOI is not refreshed; the post stays published",
   quantumProcessingRelease_says5: "Published with the post ⟦0⟧. Zenodo archives this release as a new version under the concept DOI ⟦1⟧.",
+  quantumProcessingRelease_says6: "The catalogue of claims in this release lists ⟦0⟧ products and ⟦1⟧ variants, each claimed by its author: ⟦2⟧",
   quantumProcessingRepositories_consumes7: "@uuidna/qpu + @uuidna/uuidna + @uuidna/school",
   quantumProcessingRepositories_licence3: "facts-only (names, paths, sizes)",
   quantumProcessingRepositories_role1: "This full-stack repo develops in src/ against payloadcms/website (12 collections, 30 blocks, 5 globals, 10 fields). Upstream github.com/payloadcms/website is the layout standard; qpuPlugin / qpuMcpPlugin mount feeds and MCP on /api/qpu/feeds and /api/mcp",

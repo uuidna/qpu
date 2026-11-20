@@ -9,5 +9,6 @@ def quantumProcessingRelease_says2 : String := "no release token is configured, 
 def quantumProcessingRelease_says3 : String := "release ⟦0⟧ is posted for the published post; Zenodo archives it as a new version under the concept DOI ⟦1⟧"
 def quantumProcessingRelease_says4 : String := "the release was refused with status ⟦0⟧, so the DOI is not refreshed; the post stays published"
 def quantumProcessingRelease_says5 : String := "Published with the post ⟦0⟧. Zenodo archives this release as a new version under the concept DOI ⟦1⟧."
+def quantumProcessingRelease_says6 : String := "The catalogue of claims in this release lists ⟦0⟧ products and ⟦1⟧ variants, each claimed by its author: ⟦2⟧"
 
 end Prose

@@ -10,6 +10,7 @@ export default defineConfig({
   cleanUrls: true,
   themeConfig: {
     nav: [
+      { text: 'Catalogue', link: '/catalogue' },
       { text: 'Draft applications', link: '/patents/' },
       { text: 'Prose', link: '/prose/' },
       { text: 'MCP catalogue', link: '/mcp.json', target: '_blank' },
