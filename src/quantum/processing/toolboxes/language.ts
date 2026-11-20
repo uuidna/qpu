@@ -2,6 +2,7 @@
 // lead; the vocabulary measured against every term the surface emits, so the tables are updated from measurement; and
 // programmable prose: a tool's result and its toolbox's skill rendered as sentences in any locale, backed by the toolset
 // (the numbers are the tool's) and the skillset (the words are the vocabulary's). Pure.
+import { THEOREMS } from '../theorems-index.ts'
 import { PROSE, proseFill } from '../prose-index.ts'
 import { TABLES as PAYLOAD_TABLES } from '../tables-index.ts'
 import { defineTool, createChecks, listTools, unlimited, type Toolbox, type Context } from '../toolbox.ts'
@@ -48,11 +49,30 @@ const translate = defineTool('language', {
   widget: flowWidget,
 })
 
+/** Where a sentence comes from. Every sentence the tree says is a Lean definition under Qpu/General/Prose; this answers
+ *  which one, in which module and file, and which kernel-accepted theorems the sentence cites by name. A cited theorem of
+ *  Qpu.General.Meaning is one whose notion Mathlib names. Pure: the prose index and the theorem index, no file, no fetch. */
+export const verifyProse = (asked: string) => {
+  const names = Object.keys(PROSE) as (keyof typeof PROSE)[]
+  const name = names.find((n) => n === asked) ?? names.find((n) => PROSE[n] === asked)
+  if (!name) return { phase: 'prose-verify' as const, found: false, asked, sentences: names.length, grounded: false, says: PROSE.quantumProcessingToolboxesLanguage_verify2 }
+  const text = PROSE[name], stem = name.slice(0, name.lastIndexOf('_')), unit = `${stem[0]!.toUpperCase()}${stem.slice(1)}`
+  const module = `Qpu.General.Prose.${unit}`, file = `src/quantum/processing/unit/lean/Qpu/General/Prose/${unit}.lean`
+  const words = new Set(text.match(/[A-Za-z_][\w.]*/g) ?? [])
+  const theorems = THEOREMS.filter((t) => /[_.]/.test(t.key) && words.has(t.key)).map((t) => ({ theorem: t.key, module: t.module, statement: t.statement, mathlib: t.module === 'Qpu.General.Meaning' }))
+  const mathlib = theorems.filter((t) => t.mathlib).length
+  return {
+    phase: 'prose-verify' as const, found: true, name, module, file, text, sentences: names.length, theorems, grounded: theorems.length > 0, mathlib: mathlib > 0,
+    says: theorems.length ? proseFill(PROSE.quantumProcessingToolboxesLanguage_verify3, name, module, theorems.length, mathlib) : proseFill(PROSE.quantumProcessingToolboxesLanguage_verify4, name, module),
+  }
+}
+
 const prose = defineTool('language', {
   name: 'prose',
   description: PROSE.quantumProcessingToolboxesLanguage_description3,
-  inputSchema: { type: 'object', properties: { tool: { type: 'string', description: PROSE.quantumProcessingToolboxesLanguage_description4 }, arguments: { type: 'object' }, locale: { type: 'string', enum: Object.keys(LOCALES) }, selftest: { type: 'boolean' } } },
+  inputSchema: { type: 'object', properties: { tool: { type: 'string', description: PROSE.quantumProcessingToolboxesLanguage_description4 }, arguments: { type: 'object' }, locale: { type: 'string', enum: Object.keys(LOCALES) }, verify: { type: 'string', description: PROSE.quantumProcessingToolboxesLanguage_verify1 }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
+    if (typeof args.verify === 'string') return verifyProse(args.verify)
     if (typeof args.tool !== 'string') return unlimited()
     const tool = args.tool; const locale = typeof args.locale === 'string' ? args.locale : 'en'
     const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: tool, arguments: args.arguments ?? {} } })

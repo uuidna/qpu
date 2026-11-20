@@ -102,9 +102,10 @@ script verify do
     , ("lake", #["run", "check"])
     , ("lake", #["env", "lean", applicationsFile]) ]
 
-/-- `lake run seed`: write the VitePress pages from the seeds Payload writes, and the draft applications from Lean. -/
+/-- `lake run seed`: write the VitePress pages from the seeds Payload writes, and the draft applications and the
+prose pages from Lean. -/
 script seed do
-  steps [("node", #["src/scripts/site.ts"]), ("lake", #["run", "applications"])]
+  steps [("node", #["src/scripts/site.ts"]), ("lake", #["run", "applications"]), ("lake", #["env", "lean", proseFile])]
 
 /-- `lake run site`: write the pages, then build the VitePress site. -/
 script site do

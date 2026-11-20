@@ -8,7 +8,8 @@ reads a sentence from that index and types none of its own. `⟦n⟧` in a sente
 `proseFill` puts the values in.
 
 Run from the repository root: `lake env lean src/quantum/processing/unit/lean/tools/Prose.lean`.
-The index is written to `.lake/build/prose-index.ts`; `lake run index` installs it and `lake run check` compares it. -/
+The index is written to `.lake/build/prose-index.ts`; `lake run index` installs it and `lake run check` compares it.
+The same sentences are written for the site: `site/prose/` and `site/public/prose.json`. -/
 
 open Lean
 
@@ -37,3 +38,31 @@ def proseOut : System.FilePath := ".lake" / "build" / "prose-index.ts"
   IO.FS.createDirAll (".lake" / "build")
   IO.FS.writeFile proseOut text
   IO.println s!"wrote {sorted.size} sentence(s) to {proseOut}"
+  -- the same sentences for the site: one page per Lean module, and prose.json, which a client reads with no server
+  let unitOf := fun (key : String) =>
+    let stem := "_".intercalate ((key.splitOn "_").dropLast)
+    String.ofList (match stem.toList with | [] => [] | first :: rest => first.toUpper :: rest)
+  let site : System.FilePath := "site"
+  IO.FS.createDirAll (site / "prose")
+  IO.FS.createDirAll (site / "public")
+  let entries := sorted.toList.map fun (key, text) =>
+    Json.mkObj [("name", .str key), ("module", .str s!"Qpu.General.Prose.{unitOf key}"), ("text", .str text)]
+  IO.FS.writeFile (site / "public" / "prose.json") (Json.arr entries.toArray).compress
+  let units := (sorted.toList.map (unitOf ·.1)).eraseDups
+  for unit in units do
+    let mine := sorted.toList.filter (unitOf ·.1 == unit)
+    let page :=
+      [ "---", s!"title: \"Qpu.General.Prose.{unit}\"", s!"description: \"{mine.length} sentence(s) written in Lean\"", "---", ""
+      , s!"# Qpu.General.Prose.{unit}", ""
+      , s!"Written in `src/quantum/processing/unit/lean/Qpu/General/Prose/{unit}.lean`. Each sentence is one Lean definition; `⟦n⟧` is where the nth computed value goes.", "" ]
+      ++ mine.flatMap (fun (key, text) => [ s!"## {key}", "", "````text", text, "````", "" ])
+    IO.FS.writeFile (site / "prose" / s!"{unit}.md") ("\n".intercalate page)
+  let index :=
+    [ "---", "title: \"Prose\"", "description: \"Every sentence the tree says, by the Lean definition that states it\"", "---", ""
+    , "# Prose", ""
+    , s!"Every sentence the tree says is a Lean definition: {sorted.size} sentences in {units.length} modules. To verify a sentence, find it here, in [prose.json](/prose.json), or ask the MCP tool `prose` with `verify` set to the sentence or its name.", ""
+    , "| Module | Sentences |", "|---|---:|" ]
+    ++ units.map (fun unit => s!"| [Qpu.General.Prose.{unit}](./{unit}.md) | {(sorted.toList.filter (unitOf ·.1 == unit)).length} |")
+    ++ [ "" ]
+  IO.FS.writeFile (site / "prose" / "index.md") ("\n".intercalate index)
+  IO.println s!"wrote {units.length} prose page(s) and prose.json to {site}"
