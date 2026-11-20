@@ -19,10 +19,6 @@ import {
 } from '@payloadcms/richtext-lexical'
 import { DefaultDocumentIDType, Where } from 'payload'
 
-import { quantumField, runQuantumProgram } from '@/fields/quantum'
-import { developedFromField, markLeadDeveloped } from '@/hooks/markLeadDeveloped'
-import { qrGalleryFallback } from '@/hooks/qrGalleryFallback'
-
 export const ProductsCollection: CollectionOverride = ({ defaultCollection }) => ({
   ...defaultCollection,
   admin: {
@@ -52,9 +48,7 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
     variants: true,
     enableVariants: true,
     gallery: true,
-    priceInEUR: true,
     priceInUSD: true,
-    priceInBGN: true,
     inventory: true,
     meta: true,
   },
@@ -217,13 +211,5 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
       type: 'slug',
       useAsSlug: 'title',
     },
-    developedFromField,
-    quantumField,
   ],
-  hooks: {
-    ...defaultCollection?.hooks,
-    beforeChange: [...(defaultCollection?.hooks?.beforeChange ?? []), runQuantumProgram],
-    afterChange: [...(defaultCollection?.hooks?.afterChange ?? []), markLeadDeveloped('products')],
-    afterRead: [...(defaultCollection?.hooks?.afterRead ?? []), qrGalleryFallback],
-  },
 })

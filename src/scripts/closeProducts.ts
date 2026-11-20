@@ -74,7 +74,7 @@ const list = (items: ReturnType<typeof text>[][]) => ({
 const item = (label: string, ...parts: string[]) => [text(`${label}: `, true), ...parts.map((p, i) => text(p, i % 2 === 1))]
 
 const findOrCreate = async (collection: 'variantOptions' | 'variantTypes', where: Record<string, unknown>, data: Record<string, unknown>) =>
-  ((await payload.find({ collection, depth: 0, limit: 1, user, where: where as never })).docs[0] ?? (await payload.create({ collection, data: data as never, user }))) as { id: number; name?: string }
+  ((await payload.find({ collection, depth: 0, limit: 1, user, where: where as never })).docs[0] ?? (await payload.create({ collection, data: data as never, user }))) as unknown as { id: string; name?: string }
 
 for (const claim of PRODUCT_CLAIMS) {
   // the product's own variant types first, so its existing variants are the ones updated
@@ -82,7 +82,7 @@ for (const claim of PRODUCT_CLAIMS) {
   const own = (found?.variantTypes ?? []).flatMap((t) => (typeof t === 'object' ? [t] : []))
   const typeOf = async (name: string, label: string) => own.find((t) => t.name === name) ?? (await findOrCreate('variantTypes', { name: { equals: name } }, { label, name }))
   const [qubitsType, shotsType] = [await typeOf('qubits', 'Qubits'), await typeOf('shots', 'Shots')]
-  const option = async (type: number, value: string, label: string) =>
+  const option = async (type: string, value: string, label: string) =>
     (await findOrCreate('variantOptions', { and: [{ variantType: { equals: type } }, { value: { equals: value } }] }, { label, value, variantType: type })).id
 
   const cited: Record<string, Theorem> = {}
