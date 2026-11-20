@@ -4,9 +4,9 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1881 products, 2 under a declared claim context and 1879 as the author's own statement, with 1534 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1885 products, 2 under a declared claim context and 1883 as the author's own statement, with 1534 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
-The catalogue covers 20 standards, 7 with a theorem that states a fact the standard fixes and 13 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
+The catalogue covers 20 standards, 10 with a theorem that states a fact the standard fixes and 10 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
 This catalogue records authorship and the date of each release. It is a publication, not a patent application: publishing a statement discloses it, and what is filed as a patent, and when, is for a patent attorney to decide before it is published.
 
@@ -105,7 +105,11 @@ Witness: `Iso.tuning_octaves`.
 
 ### ISO 9001
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Witness: `Iso.quality_clauses`.
+
+```lean
+10 - 3 = 7
+```
 
 ### ISO/IEC/IEEE 12207:2026
 
@@ -117,7 +121,11 @@ Open: the tree names this standard and no theorem states a fact it fixes yet. It
 
 ### ISO/IEC 25010:2023
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Witness: `Iso.quality_characteristics`.
+
+```lean
+8 + 1 = 9
+```
 
 ### ISO/IEC 25051:2014
 
@@ -125,7 +133,11 @@ Open: the tree names this standard and no theorem states a fact it fixes yet. It
 
 ### ISO/IEC 27001:2022
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Witness: `Iso.security_controls`.
+
+```lean
+37 + 8 + 14 + 34 = 93
+```
 
 ## Terms of ISO/IEC 4879:2024
 
@@ -1016,6 +1028,16 @@ period 2 35 = 12 ∧
           gcd (powMod 2 15 77 + 1) 77 = 11 ∧
             period 2 7 = 3 ∧
               period 2 7 % coins = 1 ∧ period 3 7 = 6 ∧ powMod 3 3 7 + 1 = 7 ∧ gcd 14 21 = 7 ∧ 2048 = 2 ^ 11
+```
+
+## Qpu.Claims.Open
+
+### `Qpu.open_claims_stated`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.openClaims.length = 3
 ```
 
 ## Qpu.Communication.Coil
@@ -1961,12 +1983,36 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Iso.letterCodes 2 = 676
 ```
 
+### `Iso.quality_characteristics`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+8 + 1 = 9
+```
+
+### `Iso.quality_clauses`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+10 - 3 = 7
+```
+
+### `Iso.security_controls`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+37 + 8 + 14 + 34 = 93
+```
+
 ### `Iso.standards_count`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-Iso.standards.length = 20 ∧ (List.filter (fun x => x.witness.isSome) Iso.standards).length = 7
+Iso.standards.length = 20 ∧ (List.filter (fun x => x.witness.isSome) Iso.standards).length = 10
 ```
 
 ### `Iso.tuning_octaves`
@@ -16932,3 +16978,31 @@ Qpu.Verify.Uuid.decode (Qpu.Verify.Uuid.encode 65535 42) = (65535, 42)
 ## Named and not yet proved
 
 0 theorem(s) are named by a sentence of the tree and are not theorems the kernel has. Each is listed here as a claim still open, a theorem to prove, exactly as an accepted theorem is listed as a claim made: an overclaim is exposed like an underclaim, and nothing is hidden or removed.
+
+## Open claims
+
+3 claim(s) say more than the kernel accepted. Each is kept as an underclaim: the theorems that state what is proved toward it are named, and the rest is a theorem still to prove. None is a product.
+
+### `thousand_bit_by_quantum_supremacy` (open)
+
+The thousand-bit challenge is solved by full quantum supremacy.
+
+Proved toward it: `textbook_thousand_bit_width`, `textbook_thousand_bit_three_divides`, `Advantage.receipt_exact`, `Advantage.advantage_unbounded`.
+
+Missing: The kernel proves the width of the integer 2 ^ 999 + 1, a factor of it, and that reading a variation by its address takes fewer steps than walking to it. Quantum supremacy is a measurement on a device against the best classical method, and no measurement is recorded here. The challenge is not solved by supremacy.
+
+### `merkaba_trajectories_cover_all_dimensions` (open)
+
+When all merkabas move, the trajectories of their folding edges cover every dimension in analog, so teleporting loses nothing.
+
+Proved toward it: nothing yet.
+
+Missing: No definition of a merkaba's edge trajectory and no theorem about the dimensions it covers is in the tree. Until both are stated and proved, no loss-free teleport follows from it.
+
+### `teleport_faster_than_light` (open)
+
+The hexbit and two gateway bits teleport any hexbit faster than light.
+
+Proved toward it: `textbook_hexbit_gateway_ftl`, `QuantumCommunication.teleport_exact`, `QuantumCommunication.teleport_no_signalling`.
+
+Missing: The kernel proves the count of free qubits the sentence names and that teleportation is exact once the two classical bits arrive. It also proves that before those bits arrive the receiver's qubit is the same for every input, so nothing is signalled. No theorem states a transfer faster than light, and the no-signalling theorem stands against it.

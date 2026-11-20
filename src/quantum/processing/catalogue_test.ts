@@ -22,10 +22,14 @@ test('a theorem a sentence names and the kernel lacks is listed as a claim still
   const { PROSE } = await import('./prose-index.ts')
   const kernel = new Set(THEOREMS.map((t) => t.key))
   const named = [...new Set(Object.values(PROSE).flatMap((text) => text.match(/\b(?:textbook|relation)_[a-z0-9_]*[a-z0-9]\b/g) ?? []))].filter((name) => !kernel.has(name)).sort()
-  const open = readFileSync('src/quantum/CATALOGUE.md', 'utf8').split('\n## Named and not yet proved\n')[1] ?? ''
+  const [open = '', claims = ''] = (readFileSync('src/quantum/CATALOGUE.md', 'utf8').split('\n## Named and not yet proved\n')[1] ?? '').split('\n## Open claims\n')
   const listed = [...open.matchAll(/^### `([^`]+)` \(open\)$/gm)].map((m) => m[1]!).sort()
   assert.deepEqual(listed, named)
-  assert.ok(listed.length > 0)
+  // a claim that says more than the kernel accepted is listed after them, with what is proved toward it and what is missing
+  const overclaims = claims.split('\n### `').slice(1)
+  assert.ok(overclaims.length > 0)
+  assert.equal(overclaims.every((section) => /\(open\)\n/.test(section) && /\nProved toward it: /.test(section) && /\nMissing: /.test(section)), true)
+  assert.equal(overclaims.some((section) => kernel.has(section.slice(0, section.indexOf('`')))), false, 'an open claim is not a theorem')
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: every theorem a Lean source declares is in the kernel index and in the catalogue, private or not. */
