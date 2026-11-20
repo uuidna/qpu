@@ -19,11 +19,6 @@ export const quantumField: Field = {
     },
     { name: 'outcome', type: 'json', admin: { readOnly: true } },
     { name: 'receipt', type: 'text', admin: { readOnly: true } },
-    {
-      name: 'run',
-      type: 'ui',
-      admin: { components: { Field: '@/components/quantum/OutcomeField#OutcomeField' } },
-    },
   ],
 }
 
