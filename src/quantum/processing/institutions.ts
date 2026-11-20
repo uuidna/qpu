@@ -4,6 +4,7 @@
 // (read 2026-10-26, sources beside each row); a price Google does not publish is null and says so. The textbook is the education tool:
 // every closed equation the kernel accepted becomes a Classroom question whose answer the kernel decided, and an answer is graded by
 // recomputing the equation, never by a key typed by hand. Pure: the client (the institution's MCP session) performs every call.
+import { PROSE, proseFill } from './prose-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { uuid, canonicalText, seal, compositions, composition, compositionIndex, presentation } from '../uuid/index.ts'
 import { TABLES } from './tables-index.ts'
@@ -37,31 +38,31 @@ type InstitutionRequest = { /** the tenant (its id) every page and entry is assi
  *  acts that are the institution's own. */
 export const planInstitution = (r: InstitutionRequest) => {
   const e = EDITIONS.find((x) => x.id === r.edition)
-  if (!e) return { editions: EDITIONS.map((x) => ({ id: x.id, family: x.family, name: x.name, perUserMonth: x.cents === null ? null : x.cents / 100, currency: x.currency, cap: x.cap, source: x.source })), families: [...new Set(EDITIONS.map((x) => x.family))], doors: WORKSPACE_MCP.length, says: 'name an edition: every edition Google states for education, nonprofits and Workspace, priced per user per month where Google publishes a price', theorem: 'textbook_institution_bill' }
+  if (!e) return { editions: EDITIONS.map((x) => ({ id: x.id, family: x.family, name: x.name, perUserMonth: x.cents === null ? null : x.cents / 100, currency: x.currency, cap: x.cap, source: x.source })), families: [...new Set(EDITIONS.map((x) => x.family))], doors: WORKSPACE_MCP.length, says: PROSE.quantumProcessingInstitutions_says1, theorem: 'textbook_institution_bill' }
   const users = Math.max(1, Math.floor(r.users ?? 1))
   const within = e.cap === null || users <= e.cap
   const bill = e.cents === null ? null : { perMonth: (users * e.cents) / 100, perYear: (users * e.cents * 12) / 100, atCap: e.cap === null ? null : (e.cap * e.cents) / 100, currency: e.currency, flexiblePerMonth: e.flexibleCents ? (users * e.flexibleCents) / 100 : null, introductoryPerMonth: e.introCents ? (Math.min(users, 20) * e.introCents + Math.max(0, users - 20) * e.cents) / 100 : null }
   const all = listQuestions(); const chosen = r.theorems?.length ? all.filter((q) => r.theorems!.includes(q.theorem)) : all
   const course = r.course ?? '{courseId}'
   const coursework = chosen.map((q) => { const body = { title: q.theorem.replace(/^textbook_/, '').replace(/_/g, ' '), description: `${q.says}\n\n${q.ask}`, workType: 'SHORT_ANSWER_QUESTION', state: 'DRAFT', maxPoints: 1 }; return { theorem: q.theorem, ask: q.ask, rest: { method: 'POST', url: `https://classroom.googleapis.com/v1/courses/${course}/courseWork`, body }, entry: createCreateCall('entries', { kind: 'document', from: 'classroom', body: { kind: 'coursework', theorem: q.theorem, ask: q.ask, course } }) } })
-  const graded = (r.answers ?? []).map((a) => { const q = all.find((x) => x.theorem === a.theorem); const given = Number(a.answer); return { theorem: a.theorem, given: a.answer, correct: q ? given === q.answer && q.answer === q.recomputed : null, by: q ? 'recomputed from the kernel-accepted equation' : 'no closed equation of that name' } })
+  const graded = (r.answers ?? []).map((a) => { const q = all.find((x) => x.theorem === a.theorem); const given = Number(a.answer); return { theorem: a.theorem, given: a.answer, correct: q ? given === q.answer && q.answer === q.recomputed : null, by: q ? PROSE.quantumProcessingInstitutions_s2 : 'no closed equation of that name' } })
   const doors = WORKSPACE_MCP.map((d) => ({ product: d.product, url: d.url, enable: d.enable, scopes: d.scopes.map((s) => WORKSPACE_SCOPE_PREFIX + s), renders: d.renders, lands: createCreateCall('entries', { kind: 'document', from: d.product.toLowerCase(), body: '<the record the door answered>' }) }))
   const acts = [
     ...(e.needs ? [`${e.needs} (${e.source})`] : []),
-    'join the Google Workspace Developer Preview Program: every Workspace MCP server is in Developer Preview',
-    'create a Web application OAuth client marked for an AI-powered agent, with the MCP client\'s redirect URI; access_type=offline for a refresh token',
-    'enable each MCP service and its base API in the Google Cloud project, and allow them under Security > API Controls in the Admin console',
-    'publish the coursework drafts in Classroom: a teacher\'s act',
+    PROSE.quantumProcessingInstitutions_s3,
+    PROSE.quantumProcessingInstitutions_s4,
+    PROSE.quantumProcessingInstitutions_s5,
+    PROSE.quantumProcessingInstitutions_s6,
   ]
   const content = JSON.stringify({ edition: e.id, users, coursework: coursework.map((c) => c.theorem) })
-  return { id: uuid(content), edition: { id: e.id, family: e.family, name: e.name, needs: e.needs ?? null, adds: e.adds, source: e.source }, users, within, cap: e.cap, bill, doors, coursework, questions: all.length, graded, tenant: { settings: { institution: { edition: e.id, users } } }, acts, payloadMcp: 'every door\'s records and every coursework land through the Payload MCP plugin as createEntries calls (the docket, the RAID); the plugin serves this door as the textbook tool', says: `${e.name} for ${users} user(s): ${within ? 'within' : 'beyond'} the cap${e.cap === null ? ' (none)' : ` of ${e.cap}`}; ${bill ? `${bill.perMonth} ${bill.currency} a month` : 'no published price'}; ${doors.length} Workspace doors; ${coursework.length} textbook question(s) as Classroom coursework`, theorems: ['textbook_institution_bill', 'textbook_integrations_are_thirty_five'] }
+  return { id: uuid(content), edition: { id: e.id, family: e.family, name: e.name, needs: e.needs ?? null, adds: e.adds, source: e.source }, users, within, cap: e.cap, bill, doors, coursework, questions: all.length, graded, tenant: { settings: { institution: { edition: e.id, users } } }, acts, payloadMcp: PROSE.quantumProcessingInstitutions_payloadMcp7, says: proseFill(PROSE.quantumProcessingInstitutions_says8, e.name, users, within ? 'within' : 'beyond', e.cap === null ? ' (none)' : ` of ${e.cap}`, bill ? `${bill.perMonth} ${bill.currency} a month` : 'no published price', doors.length, coursework.length), theorems: ['textbook_institution_bill', 'textbook_integrations_are_thirty_five'] }
 }
 
 /** The requirement to prove a theorem under ISO 21001:2025, strict. 8.3.4.4: the learning outcome is a scientific name the textbook states. The summative assessment is the Lean cross formula: both sides evaluate to one value, the axioms that formula names develop to that same value, and the kernel has accepted the theorem. 8.7: a name that fails either check is not proved and is removed from the Lean theorem category; a relation is filed under the scientific name. */
 const EDUCATION_CLAUSES = [
-  { clause: '8.3.4.4', title: 'Summative assessment design and development controls' },
+  { clause: '8.3.4.4', title: PROSE.quantumProcessingInstitutions_title9 },
   { clause: '8.3.5', title: 'Design and development outputs' },
-  { clause: '8.7', title: 'Control of the educational nonconforming outputs' },
+  { clause: '8.7', title: PROSE.quantumProcessingInstitutions_title10 },
   { clause: '9.1.5', title: 'Analysis and evaluation' },
   { clause: '10.2', title: 'Nonconformity and corrective action' },
 ] as const
@@ -76,7 +77,7 @@ export const assessEducation = (proof: { scientific: readonly string[]; proved: 
     requirement: { clause: '8.3.4.4' as const, name: 'a scientific name the textbook states' as const, cross: 'Lean cross formula: the sides evaluate to one value, the axioms it names develop to that value, and the kernel has accepted the theorem' as const, category: '8.7: fail either check and the name is removed from the Lean theorem category; a relation is filed under the scientific name' as const },
     scientific: proof.scientific, proved, provedCount: proved.length, relations: proof.proved, removed: proof.removed, removedCount: proof.removed.length, category: proof.category, holds,
     address, traced: seal(address).valid,
-    says: `${proved.length} theorems proved under ISO 21001:2025; ${proof.removed.length} removed from the Lean theorem category`,
+    says: proseFill(PROSE.quantumProcessingInstitutions_says11, proved.length, proof.removed.length),
   }
 }
 
@@ -116,5 +117,5 @@ export const createFamilySet = (p: { index?: number | string; family?: string; d
 /** The space and its named singles: every family with one door in one mode. */
 export const listFamilySets = () => {
   const singles = SET_FAMILIES.flatMap((family) => WORKSPACE_MCP.flatMap((d) => listModes(d).filter((m) => m !== 'off').map((m) => createFamilySet({ family, doors: { [d.product]: m } }))))
-  return { space: SET_SPACE.toString(), radices: SET_RADICES, perFamily: (SET_SPACE / BigInt(SET_FAMILIES.length)).toString(), families: SET_FAMILIES, singles, says: `every family by every door off, read or write: ${SET_SPACE} sets, each addressable by its index; ${singles.length} named singles`, theorem: 'textbook_workspace_sets' }
+  return { space: SET_SPACE.toString(), radices: SET_RADICES, perFamily: (SET_SPACE / BigInt(SET_FAMILIES.length)).toString(), families: SET_FAMILIES, singles, says: proseFill(PROSE.quantumProcessingInstitutions_says12, SET_SPACE, singles.length), theorem: 'textbook_workspace_sets' }
 }

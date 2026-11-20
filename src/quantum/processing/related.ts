@@ -2,6 +2,7 @@
 // A DOI's answer is parsed for related publications, and each one is a lead that is developed at once.
 // The handler does not fetch.
 
+import { PROSE, proseFill } from './prose-index.ts'
 import { LICENSE } from './unit/license.ts'
 import { createVerifyRequests, type VerifyRequest } from './verifiers.ts'
 
@@ -79,7 +80,7 @@ export const relatedWork = (raw: unknown, develop: Develop) => {
   const body = (url: string) => (typeof answers[url] === 'string' ? answers[url] : '')
   const dois = [...new Set(rows.map((row) => row.doi).filter((doi) => doi.length > 0))]
   const verify = dois.flatMap((doi) => createVerifyRequests({ kind: 'doi', value: doi }))
-  const related = dois.map((doi) => ({ id: `openalex-cites:${doi}`, method: 'GET' as const, url: citesUrl(doi), accept: 'application/json', check: 'works that cite the DOI, each with its title, year and creators' }))
+  const related = dois.map((doi) => ({ id: `openalex-cites:${doi}`, method: 'GET' as const, url: citesUrl(doi), accept: 'application/json', check: PROSE.quantumProcessingRelated_check1 }))
   const pages = [...new Set(rows.flatMap((row) => linksIn(row.text)))]
   const links = pages.map((url) => ({ id: `link:${url}`, method: 'GET' as const, url, accept: 'text/html', check: 'the page is reachable' }))
   const requests = [...verify, ...related, ...links]
@@ -102,9 +103,9 @@ export const relatedWork = (raw: unknown, develop: Develop) => {
     const variant = work.doi.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()
     const run = { tool: 'payload' as const, arguments: { develop: { formula: detail, product: collection, variant, title: work.title || work.doi } } }
     const developed = develop(run.arguments.develop)
-    return { id: `related-${variant}`, source: `https://doi.org/${work.doi}`, statement: detail, status: 'open' as const, tool: 'payload' as const, reason: 'a related publication parsed from the DOI, developed at once', citation, run, developed }
+    return { id: `related-${variant}`, source: `https://doi.org/${work.doi}`, statement: detail, status: 'open' as const, tool: 'payload' as const, reason: PROSE.quantumProcessingRelated_reason2, citation, run, developed }
   })
   const documented = leads.filter((lead) => lead.developed.iso?.documented === true).length
   const upgrade = { via: 'doi' as const, collections: COLLECTIONS, instances: instances.length, verified: instances.filter((instance) => instance.verified).length, links: linkRows.length, linksVerified: linkRows.filter((link) => link.verified).length, leads: leads.length, developed: documented }
-  return { phase: 'related' as const, fetched: false as const, collections: COLLECTIONS, instances, links: linkRows, requests: unique, leads, upgrade, says: `${upgrade.instances} instance(s) of posts, pages, products and variants, ${upgrade.verified} verified against a DOI, ${upgrade.links} link(s) asked online, ${upgrade.leads} related publication(s) parsed into leads and developed: the website is upgraded by those leads` }
+  return { phase: 'related' as const, fetched: false as const, collections: COLLECTIONS, instances, links: linkRows, requests: unique, leads, upgrade, says: proseFill(PROSE.quantumProcessingRelated_says3, upgrade.instances, upgrade.verified, upgrade.links, upgrade.leads) }
 }

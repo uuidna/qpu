@@ -6,6 +6,7 @@
 // energies at bond lengths 0.7 and 0.8 Å from OpenFermion's data, and the integrals here are checked against those printed
 // figures in the tests and in the tool's output. Every energy a VQE sweep returns is an expectation value of a simulated state.
 
+import { PROSE } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
 import { Circuit, DensityMatrixSimulator, LineQubit, applied, exponentiateGate, getExpectation, pauliProduct } from './cirq.ts'
 
@@ -15,7 +16,7 @@ import { Circuit, DensityMatrixSimulator, LineQubit, applied, exponentiateGate, 
 export const STO3G_H = {
   exponents: [3.42525091, 0.62391373, 0.1688554],
   coefficients: [0.15432897, 0.53532814, 0.44463454],
-  source: 'Hehre, Stewart, Pople, J. Chem. Phys. 51, 2657 (1969); STO-3G hydrogen as distributed',
+  source: PROSE.quantumProcessingChemistry_source1,
 } as const
 
 /** The Bohr radius OpenFermion's data used, in ångström, recovered from the tutorial's printed nuclear repulsion at 0.7 Å
@@ -116,7 +117,7 @@ type Hydrogen = {
 }
 
 export const hydrogen = (bondLength: number = TUTORIAL_ENERGIES.bondLengthDefault): Hydrogen => {
-  if (!(bondLength > 0)) throw new Error('the bond length is a positive distance in ångström')
+  if (!(bondLength > 0)) throw new Error(PROSE.quantumProcessingChemistry_s2)
   const R = bondLength / BOHR_ANGSTROM
   const A: Vec = [0, 0, 0]
   const B: Vec = [0, 0, R]
@@ -196,7 +197,7 @@ export const hydrogenHamiltonian = (molecule: Hydrogen): PauliTerm[] => {
       re += (a0 * a1 - b0 * b1) * H[i]![j]!
       im += (a0 * b1 + b0 * a1) * H[i]![j]!
     }
-    if (Math.abs(im) > 1e-12) throw new Error('the Hamiltonian is Hermitian, so every Pauli coefficient is real')
+    if (Math.abs(im) > 1e-12) throw new Error(PROSE.quantumProcessingChemistry_s3)
     const coefficient = re / 4
     if (Math.abs(coefficient) < 1e-12) continue
     const paulis: Record<string, 'X' | 'Y' | 'Z'> = {}
@@ -223,7 +224,7 @@ export const energyAt = (terms: readonly PauliTerm[], theta: number): number => 
 /** The VQE sweep: θ over a grid of [−π/2, π/2), each energy from the simulator, then a golden-section search between the
  *  neighbours of the best grid point, also by simulated energies, to the tolerance given. */
 export const vqeSweep = (terms: readonly PauliTerm[], steps = 180, tolerance = 1e-12): { grid: { theta: number; energy: number }[]; best: { theta: number; energy: number }; evaluations: number } => {
-  if (!Number.isInteger(steps) || steps < 4) throw new Error('the sweep needs at least 4 steps')
+  if (!Number.isInteger(steps) || steps < 4) throw new Error(PROSE.quantumProcessingChemistry_s4)
   let evaluations = 0
   const at = (theta: number): number => {
     evaluations += 1
@@ -301,7 +302,7 @@ const mulStrings = (left: PauliString, right: PauliString): PauliString => {
 
 /** One ladder, a_j or a†_j, as the two Pauli strings (X ± iY)/2 with a Z on every lower mode. */
 const ladderStrings = (ladder: Ladder): PauliString[] => {
-  if (!Number.isInteger(ladder.mode) || ladder.mode < 0) throw new Error('a Jordan–Wigner mode is an integer of at least 0')
+  if (!Number.isInteger(ladder.mode) || ladder.mode < 0) throw new Error(PROSE.quantumProcessingChemistry_s5)
   const z = new Map<number, PauliName>()
   for (let i = 0; i < ladder.mode; i++) z.set(i, 'Z')
   const x = new Map(z)
@@ -321,7 +322,7 @@ export const jordanWigner = (term: { coefficient: number; operators: readonly La
   if (!Number.isFinite(term.coefficient)) throw new Error('a Jordan–Wigner coefficient is finite')
   let rows: PauliString[] = [{ re: term.coefficient, im: 0, ops: new Map() }]
   for (const ladder of term.operators) {
-    if (typeof ladder.dagger !== 'boolean') throw new Error('a Jordan–Wigner ladder names dagger')
+    if (typeof ladder.dagger !== 'boolean') throw new Error(PROSE.quantumProcessingChemistry_s6)
     const pieces = ladderStrings(ladder)
     rows = rows.flatMap((left) => pieces.map((right) => mulStrings(left, right)))
   }

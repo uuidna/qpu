@@ -2,6 +2,7 @@
 // carries a SKU (the handle of uuid(piece)). ISO references and sealed UUIDs are structured; anything else
 // splits on tokens then characters. Pure: equal text → equal tree.
 
+import { PROSE, proseFill } from './prose-index.ts'
 import { LICENSE } from './unit/license.ts'
 import { channel, seal, uuid } from '../uuid/index.ts'
 
@@ -188,7 +189,7 @@ export const parseToMicrodata = (text: string): MicrodataDoc & { tree: MicroNode
     leaves,
     holds,
     theorem: 'textbook_parse_microdata_deep',
-    says: `parsed to depth ${depth} with ${leaves} SKU leaf(ves); root sku ${tree.sku}`,
+    says: proseFill(PROSE.quantumProcessingMicrodata_says1, depth, leaves, tree.sku),
     tree,
   }
 }
@@ -210,7 +211,7 @@ export const parseIsoDimensionsMicrodata = (dimensions: readonly string[]) => {
     rows,
     theorem: 'textbook_parse_microdata_deep' as const,
     says: holds
-      ? `${rows.length} ISO dimension(s) split to microdata at depth ≥ 3; each leaf a SKU`
-      : 'an ISO dimension failed deep microdata parse',
+      ? proseFill(PROSE.quantumProcessingMicrodata_s2, rows.length)
+      : PROSE.quantumProcessingMicrodata_s3,
   }
 }

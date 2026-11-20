@@ -1,4 +1,5 @@
 // Tenant crypto config assembled for Payload MCP (qpuMcpPlugin). Thin module: no toolbox, no mcp — safe for processor/crypto doors.
+import { PROSE, proseFill } from '../prose-index.ts'
 import { TABLES } from '../tables-index.ts'
 import { TENANTS } from '../unit/tenants.ts'
 import { ALL_PROCESSORS, DEVICES, QUANTUM_HARDWARE_STACK } from '../processor.ts'
@@ -31,9 +32,9 @@ export const cryptoConfig = (via: CryptoConfig['via'] = 'qpuMcpPlugin'): CryptoC
   const codataUrl = String(attestApis.find((a) => a.id === 'nist-codata')?.url ?? '')
   const allowed = Object.keys(ALL_PROCESSORS) as CryptoProcessorName[]
   const vocabulary = ISO_OPEN_DEFINITIONS.find((row) => row.reference === 'ISO/IEC 4879:2024')
-  if (!vocabulary) throw new Error('ISO/IEC 4879:2024 missing from ISO_OPEN_DEFINITIONS')
+  if (!vocabulary) throw new Error(PROSE.quantumProcessingCryptoConfig_s1)
   const hexbitAxiom = AXIOMS.find((row) => row.name === 'hexbit')
-  if (!hexbitAxiom || !Number.isInteger(hexbitAxiom.value) || hexbitAxiom.value < 1) throw new Error('register parameter hexbit missing: tenant UUID qubit register cannot seal (ISO/IEC 4879 width uses this parameter; hexbit is not ISO vocabulary)')
+  if (!hexbitAxiom || !Number.isInteger(hexbitAxiom.value) || hexbitAxiom.value < 1) throw new Error(PROSE.quantumProcessingCryptoConfig_s2)
   const counted = uuidQubits(hexbitAxiom.value)
   const register: CryptoUuidRegister = {
     standard: 'ISO/IEC 4879:2024',
@@ -55,7 +56,7 @@ export const cryptoConfig = (via: CryptoConfig['via'] = 'qpuMcpPlugin'): CryptoC
     ],
     doors: { fold: 'qubits', via: 'qpuMcpPlugin' },
   }
-  if (!register.delivery.holds) throw new Error(`UUID hexbit register does not hold under ISO/IEC 4879: effective ${register.effective}, formula ${register.formula}`)
+  if (!register.delivery.holds) throw new Error(proseFill(PROSE.quantumProcessingCryptoConfig_s3, register.effective, register.formula))
   const quantumComputer: CryptoConfig['iso']['quantumComputer'] = {
     standard: 'ISO/IEC 4879:2024',
     vocabulary: {
@@ -94,6 +95,6 @@ export const cryptoConfig = (via: CryptoConfig['via'] = 'qpuMcpPlugin'): CryptoC
     webcryptoFlag: postQuantum.workers.flag,
     fetched: false as const,
     written: false as const,
-    says: `crypto config via ${via ?? 'qpuMcpPlugin'}: ${hosts.length} tenant host(s), ${attestApis.length} attest API(s), flag ${postQuantum.workers.flag}, ISO/IEC 4879 quantum computer ${allowed.length} processor(s) default ${quantumComputer.processors.default}, UUID register hexbit ${register.hexbit} effective ${register.effective}; merge into tenants.settings.arguments or hand back as config`,
+    says: proseFill(PROSE.quantumProcessingCryptoConfig_says4, via ?? 'qpuMcpPlugin', hosts.length, attestApis.length, postQuantum.workers.flag, allowed.length, quantumComputer.processors.default, register.hexbit, register.effective),
   }
 }

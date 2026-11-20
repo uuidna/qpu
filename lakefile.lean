@@ -47,14 +47,47 @@ def applicationsFile : String := "src/quantum/processing/unit/lean/tools/Applica
 def renderers : List String :=
   ["src/scripts/textbookIndex.ts", "src/scripts/theoremsIndex.ts", "src/scripts/leanDerived.ts"]
 
-/-- `lake run index`: build, then render every file that follows Lean (textbook index, theorem index, blueprint,
-Clay statements). -/
+/-- The Lean file that writes the prose index, where it writes it, and where the TypeScript reads it. -/
+def proseFile : String := "src/quantum/processing/unit/lean/tools/Prose.lean"
+/-- the index as Lean wrote it -/
+def proseBuilt : System.FilePath := ".lake" / "build" / "prose-index.ts"
+/-- the index the TypeScript reads -/
+def proseIndex : System.FilePath := "src" / "quantum" / "processing" / "prose-index.ts"
+
+/-- Lean writes the prose index; then it is installed, or with `check` compared with the committed one. -/
+def renderProse (check : Bool) : IO UInt32 := do
+  let code ← step "lake" #["env", "lean", proseFile]
+  if code != 0 then return code
+  let built ← IO.FS.readFile proseBuilt
+  let committed ← if ← proseIndex.pathExists then IO.FS.readFile proseIndex else pure ""
+  if built == committed then return 0
+  if check then
+    IO.eprintln s!"{proseIndex} differs from the Lean definitions under Qpu/General/Prose: run lake run index and commit the result"
+    return 1
+  IO.FS.writeFile proseIndex built
+  IO.println s!"wrote {proseIndex}"
+  return 0
+
+/-- `lake run index`: build, then render every file that follows Lean (prose index, textbook index, theorem index,
+blueprint, Clay statements). The prose index comes first: every other renderer reads its sentences from it. -/
 script index do
-  steps (("lake", #["build"]) :: renderers.map fun file => ("node", #[file]))
+  let built ← step "lake" #["build"]
+  if built != 0 then return built
+  let said ← renderProse false
+  if said != 0 then return said
+  steps (renderers.map fun file => ("node", #[file]))
 
 /-- `lake run check`: build, then fail when a rendered file differs from Lean. Nothing is written. -/
 script check do
-  steps (("lake", #["build"]) :: renderers.map fun file => ("node", #[file, "--check"]))
+  let built ← step "lake" #["build"]
+  if built != 0 then return built
+  let said ← renderProse true
+  if said != 0 then return said
+  steps (renderers.map fun file => ("node", #[file, "--check"]))
+
+/-- `lake run prose`: fail when a sentence is typed in TypeScript instead of written in Lean. -/
+script prose do
+  steps [("node", #["src/scripts/proseCheck.ts"])]
 
 /-- `lake run applications`: Lean writes one draft application per theoretical use into `site/patents`. -/
 script applications do

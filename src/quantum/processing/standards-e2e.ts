@@ -1,5 +1,6 @@
 // Every quantum standard against every other, as website pages seeds.
 // One equivalence check supplies the rows. Each unordered pair is one pages document.
+import { PROSE, proseFill } from './prose-index.ts'
 import { verifyIsoQuantumEquivalence } from './standards.ts'
 import { pageSeed } from './page-seed.ts'
 import { uuid } from '../uuid/index.ts'
@@ -16,7 +17,7 @@ const rows = (eq: ReturnType<typeof verifyIsoQuantumEquivalence>): Row[] => {
     seen.add(key)
     rows.push({ id: key, name: name.trim() || key, holds })
   }
-  add('ISO/IEC 4879:2024', 'ISO/IEC 4879:2024 quantum simulator vocabulary', eq.bijective)
+  add('ISO/IEC 4879:2024', PROSE.quantumProcessingStandardsE2e_s1, eq.bijective)
   for (const p of eq.noLessPostulates) add(p.id, p.isoClause, p.holds)
   for (const g of eq.noMoreGuards) add(g.id, g.isoClause, g.holds)
   for (const l of eq.isoBlockchainLayers) add(l.standard, `${l.standard}. ${l.title}`, l.holds)
@@ -68,6 +69,6 @@ export const standardsSeeds = () => {
     docs,
     leads: leads.map((l, i) => ({ id: l.id, status: l.status, tool: l.tool, statement: l.statement, slug: leadDocs[i]!.slug, url: `/${leadDocs[i]!.slug}` })),
     leadDocs,
-    says: `${leads.length} quantum standard leads, each a pages seed, and ${docs.length} pairwise comparisons`,
+    says: proseFill(PROSE.quantumProcessingStandardsE2e_says2, leads.length, docs.length),
   }
 }

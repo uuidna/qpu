@@ -2,6 +2,7 @@
 // The tail is the params. The ten program nibbles are the expected schema.
 // The reflection both ways, the six neighbour steps and the nine schemas are the cross-encryption.
 // The SHA-256 of the bound record is the receipt: a collision is 2^128 and a second preimage is 2^256.
+import { PROSE, proseFill } from '../../../processing/prose-index.ts'
 import { exists, read as readFile, write } from '../../../fs/index.ts'
 import { driftWaves } from '../../../processing/lead-wave.ts'
 import { checkWitnesses } from '../../../processing/witnesses.ts'
@@ -181,7 +182,7 @@ export const driftPrograms = (waves: ReturnType<typeof driftWaves> = driftWaves(
   const lean = rows.every((row) => row.cross.lean && row.cross.uuid === row.address && row.cross.verified === FACES) && close.rows.every((row) => row.cross.lean && row.cross.uuid === row.address && row.cross.verified === FACES) ? 'Qpu.General.Program' as const : null
   const holds = waves.holds && rows.length === waves.families && handles.size === rows.length && rows.every((row) => row.holds && row.open === false && row.closed === true && row.coin.drift === 8 && row.witnesses.exact) && written && lean === 'Qpu.General.Program'
   const says = holds
-    ? `${rows.length} family programs and ${closed.length} folder programs are closed. Lean is Qpu.General.Program because all ${FACES} witnessing superpositions cross-verify each program in its own UUID. The next place of a closed program rotates it one step. The handle, 432 Hz and the closed mark stay, and ten places return the program. The coin drift is 8. A family is not marked solved.`
-    : 'a program was not cross-verified as Lean in its own UUID'
+    ? proseFill(PROSE.quantumUuidProgramsDriftIndex_s1, rows.length, closed.length, FACES)
+    : PROSE.quantumUuidProgramsDriftIndex_s2
   return { phase: 'programs' as const, via: 'uuid' as const, lean, theorems: ['step_keeps', 'program_rotates', 'program_returns', 'uuid_families', 'uuid_programs', 'uuid_drift', 'uuid_cross', 'families_closed', 'close_returns', 'cross_lean', 'uuid_program_all', 'witnesses_partition', 'program_handles'] as const, families: rows.length, relationCount: waves.relationCount, hz: waves.hz, rows, close, holds, fetched: false as const, written, executed: false as const, says }
 }

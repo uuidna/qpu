@@ -1,6 +1,7 @@
 // The shadcn registry, saved. Each component is one UUID program.
 // The handle is the hex colour. The program and the three params build the UI. The tail verifies it.
 // An I Ching rosetta (eight trigrams by eight) opens a component. Nothing is fetched and nothing is written.
+import { PROSE, proseFill } from '../../../processing/prose-index.ts'
 import { channel, composition, compositionIndex, hexbit, rosetta, seal, style, uuid, uuidQubits } from '../../index.ts'
 import { program } from '../index.ts'
 
@@ -54,7 +55,7 @@ const paint = (address: string, content: string, name: string) => {
   })
   const caught = uuid(content) !== movedTail(address)
   const verified = color === `#${ch.handle}` && ch.handle.length === 8 && written === ch.tail && ch.params.length === 3 && ch.program.length === 10 && ch.validation.holds && uuid(content) === address && seal(address).valid && caught
-  const css = `--qpu-hex: ${color}; color: var(--qpu-hex); border-left: 3px solid var(--qpu-hex)`
+  const css = proseFill(PROSE.quantumUuidProgramsShadcnIndex_s1, color)
   const slots = parts.map((part) => `<span data-shadcn="${part.name}" data-trigram="${part.trigram}" data-nibble="${part.nibble}"></span>`).join('')
   const html = `<div data-create="${SHADCN_MCP.create}" data-component="${name}" data-built="${root}" data-handle="${ch.handle}" data-tail="${ch.tail}" data-verified="${verified}" style="${css}">${slots}</div>`
   return {
@@ -188,7 +189,7 @@ export const shadcnPrograms = (index?: string) => {
     opened,
     holds,
     says: holds
-      ? `${rows.length} shadcn components, each a UUID program. The handle is the hex colour. The program and the params build the UI. The tail verifies it. The register is full (${capacity.used} of ${capacity.effective}), the space is not walked, and at ${capacity.temperatureK} K the Landauer cost is ${capacity.landauer}.`
-      : 'a shadcn program did not verify',
+      ? proseFill(PROSE.quantumUuidProgramsShadcnIndex_s2, rows.length, capacity.used, capacity.effective, capacity.temperatureK, capacity.landauer)
+      : PROSE.quantumUuidProgramsShadcnIndex_s3,
   }
 }

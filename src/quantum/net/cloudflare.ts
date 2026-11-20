@@ -1,6 +1,7 @@
 // Every Cloudflare binding that is available today, as a QPU adapter.
 // The list is the one on https://developers.cloudflare.com/workers/runtime-apis/bindings/
 // Each adapter is the one connector. Names only. Values never travel.
+import { PROSE, proseFill } from '../processing/prose-index.ts'
 import { QPU_CONNECTOR } from '../../plugins/websiteClient.ts'
 
 const CLOUDFLARE_BINDINGS_SOURCE = 'https://developers.cloudflare.com/workers/runtime-apis/bindings/' as const
@@ -76,7 +77,7 @@ export const cloudflareAdapters = () => {
     rows,
     holds,
     says: holds
-      ? `${rows.length} Cloudflare bindings, each a QPU adapter of qpuMcpPlugin. The declared are the needed. Values are none.`
-      : 'a Cloudflare binding was not built as a QPU adapter',
+      ? proseFill(PROSE.quantumNetCloudflare_s1, rows.length)
+      : PROSE.quantumNetCloudflare_s2,
   }
 }

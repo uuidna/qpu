@@ -1,6 +1,7 @@
 // The quantum core. One UUID (ISO/IEC 9834-8): thirty-two nibbles, a handle, a program, a tail, and the two stamp
 // nibbles. Every result is that address. Style, presentation, and stream read it. Pure: equal calls give equal blocks.
 
+import { PROSE, proseFill } from '../processing/prose-index.ts'
 export type BlockTests = {
   passed: boolean
   count: number
@@ -68,7 +69,7 @@ export const uuid = (text: string): string => {
 /** A UUID reassembled from its parts: handle (8 hex), ten program nibbles, tail (12 hex); the variant nibble is 8 and the version is
  *  decided by the stamp, so the result is a valid, sealed address whose channel reads back the same handle, program and tail. */
 export const uuidFromParts = (handle: string, program: readonly number[], tail: string): string => {
-  if (!/^[0-9a-f]{8}$/.test(handle) || program.length !== 10 || program.some((n) => !Number.isInteger(n) || n < 0 || n > 15) || !/^[0-9a-f]{12}$/.test(tail)) throw new Error('a handle is 8 hex, a program ten nibbles 0..15, a tail 12 hex')
+  if (!/^[0-9a-f]{8}$/.test(handle) || program.length !== 10 || program.some((n) => !Number.isInteger(n) || n < 0 || n > 15) || !/^[0-9a-f]{12}$/.test(tail)) throw new Error(PROSE.quantumUuidIndex_s1)
   const p = program.map((n) => n.toString(16))
   const middle = `${p.slice(0, 4).join('')}0${p.slice(4, 7).join('')}8${p.slice(7, 10).join('')}` // version slot filled by the stamp
   return stamp(`${handle}${middle}${tail}`)
@@ -84,7 +85,7 @@ export const neighbours = (uuid: string) => {
     for (let i = e! - 1, r = v; i >= s!; i--, r = Math.floor(r / 16)) p[i] = r % 16
     const id = uuidFromParts(ch.handle, p, ch.tail)
     return { axis: `g${g + 1}`, step, uuid: id, program: hexOfProgram(p), colour: accentOfUuid(id), sealed: seal(id).valid }
-  })), says: 'one step on g1, g2 or g3 either way, modulo the group\'s program bits; the handle and the tail kept, the stamp decided again' }
+  })), says: PROSE.quantumUuidIndex_says2 }
 }
 export const navigate = (uuid: string, q: Parameters<typeof stream>[1] = {}) => {
   const here = neighbours(uuid)
@@ -172,7 +173,7 @@ export const hexbit = (address: string, width = 4) => {
     return { trinity: [...trinity], reflected, arrives, glyphs: whole?.glyphs ?? '', places: rows.map((row) => row.at), qubits, teleported: tele, classical: qubits - tele, fingerprint, combination, tail, uuid: whole?.uuid ?? '', holds }
   })
   const trinityHolds = laid !== null && trinities.length === 3 && trinities.every((row) => row.holds) && trinities.reduce((sum, row) => sum + row.qubits, 0) === counted.effective && trinities.reduce((sum, row) => sum + row.teleported, 0) === teleported && trinities.reduce((sum, row) => sum + row.classical, 0) === idle && trinities.reduce((sum, row) => sum + row.combination.reads, 0) === 10 && trinities.reduce((sum, row) => sum + row.fingerprint.qubits, 0) === 8 * width && trinities.reduce((sum, row) => sum + row.combination.qubits, 0) === 10 * width && trinities.reduce((sum, row) => sum + row.tail.qubits, 0) === 12 * width
-  const zero = { temperatureK: 0 as const, landauer: '0' as const, says: 'at zero temperature the Landauer cost of a signalled bit is zero, so the classical bits arrive with the teleport. 3·6·9 signals inside itself. 7·4·1 and 2·5·8 signal each other.' }
+  const zero = { temperatureK: 0 as const, landauer: '0' as const, says: PROSE.quantumUuidIndex_says3 }
   const combinatorics = laid === null ? null : { fingerprint: laid.fingerprint.count, programs, addressable, index: index.toString(), digits: laid.combination.digits, qubits: laid.combination.qubits, reads: laid.combination.digits, walked: false as const, roundTrip, table: false as const, trinities: trinities.map((row) => row.combination) }
   const utilisation = { register: counted.effective, teleported, classical: classicalBits, signal: signalQubits, used, left: counted.effective - used, fractal: counted.handles.capacity, programs, addressable, table: false as const, holds: conserved && used === counted.effective && classicalBits === idle && roundTrip && laid?.holds === true && trinityHolds }
   const speed = { temperatureK: 0 as const, landauer: '0' as const, teleport: 1 as const, trinities: trinities.length, signal: classicalBits, beside: steps, reads: combinatorics?.reads ?? 0, space: programs, walked: false as const }
@@ -182,7 +183,7 @@ export const hexbit = (address: string, width = 4) => {
   const partsBack = back.handle === origin.handle && back.tail === origin.tail && back.program.length === origin.program.length && back.program.every((n, i) => n === origin.program[i])
   const reflectionOf = { of: address, mirror: fwd.mirror, handle: fwd.handle, program: fwd.program, tail: fwd.tail, roundTrip: partsBack, sealed: seal(fwd.mirror).valid, holds: partsBack && seal(fwd.mirror).valid && seal(address).valid }
   const ftl = gateway === 2 && speed.walked === false && (combinatorics === null || combinatorics.walked === false) && programHex.length > 0 && roundTrip
-  if (!physicsOf) throw new Error('physics is only a UUID program: bindPhysics before hexbit')
+  if (!physicsOf) throw new Error(PROSE.quantumUuidIndex_s4)
   const decided = physicsOf({ ftl, gateway, walked: speed.walked })
   const law = {
     qubit: 'base' as const,
@@ -268,7 +269,7 @@ export const verify = (address: string, content?: string, prev?: { id: string; c
     { check: 'next', ...by('next', next?.id, next?.content, next?.prev === address, next ? `next.prev ${next.prev ?? 'none'} vs ${address}; ` : '') },
   ]
   const decided = checks.filter((c) => c.passed !== null)
-  return { uuid: address, channel: channel(address), reflection: reflection(address), radar: quantumRadar(address), valid: decided.every((c) => c.passed), checks, decided: decided.length, cost: 'one modular power for the seal, one fold for the content and for each neighbour content handed', bound: 'the fold is tamper-evident and separates content; it is not collision-resistant against an adversary who searches for one. The docket and the receipts carry a SHA-256 beside it for that case.' }
+  return { uuid: address, channel: channel(address), reflection: reflection(address), radar: quantumRadar(address), valid: decided.every((c) => c.passed), checks, decided: decided.length, cost: PROSE.quantumUuidIndex_cost5, bound: PROSE.quantumUuidIndex_bound6 }
 }
 
 /** The tail read every way at once — the program's step decides which reading it means. */
@@ -311,7 +312,7 @@ const handleFractal = (hexbit: number) => {
   const full = scales[digits - 1]!
   return {
     digits, radix, perHandle: full.qubits, possible: full.handles, capacity: full.capacity, fractal, scales,
-    says: `${digits} hex digits, each the same shape of ${radix} choices and ${hexbit} qubits. ${full.handles} handles, ${full.qubits} qubits on each, capacity ${full.capacity}.`,
+    says: proseFill(PROSE.quantumUuidIndex_says7, digits, radix, hexbit, full.handles, full.qubits, full.capacity),
   }
 }
 
@@ -378,7 +379,7 @@ const countQubits = (width: number) => {
   const receipt = {
     id: coin, coin, kind: 'iso-quantum' as const,
     isoClause: 'ISO/IEC 4879:2024, 3.3.3 qubit' as const,
-    postulate: 'hexbit is the next dimension of qubit: hexbit qubits sit on each of the 32 hex digits. The version nibble and the two gateway bits (variant) are not free. hexbit + 2 gateway bits teleport any hexbit faster than light — the program index arrives in one step and the combination space is not walked.',
+    postulate: PROSE.quantumUuidIndex_postulate8,
     module: 'uuid' as const, process: 'ISO 9001' as const, documented: formula.length > 0, formula,
     standards: ['ISO/IEC 4879:2024', 'ISO/IEC 9834-8', 'ISO 9001'] as const,
     line, debits: line.amount, credits: line.amount, balanced, sealed: stamped.valid, holds,
@@ -406,7 +407,7 @@ const countQubits = (width: number) => {
     program: decided?.handle ?? null,
     law: decided?.law ?? null,
   }
-  return { digits, hexbit: width, gateway, hex, version, variant, effective, handles, organised: { hexbit: width, gateway, fingerprint: { digits: 8, qubits: 8 * width, combinations: (16n ** 8n).toString() }, combination: { digits: 10, qubits: 10 * width, combinations: (16n ** 10n).toString() }, trinities: byTrinity, zero, says: 'hexbit is the next dimension of qubit. Each of eight handle digits holds the hexbit in one trinity. The two gateway bits plus hexbit teleport any hexbit faster than light: the program index is received in one step and the combination space is not walked. Leftover qubits signal classical bits at zero temperature.' }, receipt, delivery: deliverCapacity(coin, effective) }
+  return { digits, hexbit: width, gateway, hex, version, variant, effective, handles, organised: { hexbit: width, gateway, fingerprint: { digits: 8, qubits: 8 * width, combinations: (16n ** 8n).toString() }, combination: { digits: 10, qubits: 10 * width, combinations: (16n ** 10n).toString() }, trinities: byTrinity, zero, says: PROSE.quantumUuidIndex_says9 }, receipt, delivery: deliverCapacity(coin, effective) }
 }
 
 /** A hex digit's vortex seed and the trinity that seed belongs to. 0 sits with 3, 6, 9. a–f reduce by 9, so the sixteen hex symbols fill the three trinities. */
@@ -466,7 +467,7 @@ const quantumRadar = (address: string) => {
     idler: address, kept: true as const, signal: sent.mirror, echo: echo.mirror, parts,
     digits, way, found, of: way.length, all: found === way.length, chain, iso, ledger,
     receipt: { id: coin, coin, sealed: seal(coin).valid, holds },
-    says: holds ? 'each digit is a serial on the chain. it names all six neighbours. each signal debits that serial and credits the chain one coin at no currency, and the journal nets to zero.' : 'the chain did not balance',
+    says: holds ? PROSE.quantumUuidIndex_s10 : PROSE.quantumUuidIndex_s11,
   }
 }
 const mintedTrinity = new Map<string, string>()
@@ -484,7 +485,7 @@ export const organiseQubits = (address: string, hexbit = 4) => {
 }
 const layQubits = (address: string, hexbit: number) => {
   const hex = address.toLowerCase().replace(/-/g, '')
-  if (!/^[0-9a-f]{32}$/.test(hex) || !Number.isInteger(hexbit) || hexbit < 1) throw new Error('a UUID is 32 hex digits and the hexbit is a positive integer')
+  if (!/^[0-9a-f]{32}$/.test(hex) || !Number.isInteger(hexbit) || hexbit < 1) throw new Error(PROSE.quantumUuidIndex_s12)
   const places = [...hex].map((glyph, at) => {
     const digit = parseInt(glyph, 16)
     const { seed, trinity } = hexTrinity(digit)
@@ -557,7 +558,7 @@ export const reflection = (uuid: string) => {
   const program = ch.program.map((n) => 15 - n)
   const tail = complement(ch.tail)
   const mirror = uuidFromParts(handle, program, tail)
-  return { of: uuid, mirror, handle, program, tail, readings: tailReadings(tail), fixed: ch.program.filter((n) => n === 15 - n).length, note: 'σ_15 on nibbles has no fixed point; the pair is two states held at once' }
+  return { of: uuid, mirror, handle, program, tail, readings: tailReadings(tail), fixed: ch.program.filter((n) => n === 15 - n).length, note: PROSE.quantumUuidIndex_note13 }
 }
 
 export const sequenceUuid = () => {
@@ -577,7 +578,7 @@ export const sequenceUuid = () => {
   const entangled = court.map((d, i) => ({ court: d, partner: reflection[at + i]!, sum: d + reflection[at + i]! }))
   const law = forward.every((d, i) => forward[forward.length - 1 - i] === sigma(d))
   const holds = law && at === 7 && hex(circle) === '012487536901' && hex(reflection) === '098623574109' && hex(reversed) === '901475326890' && reading.tail === hex(circle) && `${reading.handle}${reading.program.slice(0, 4).map((n) => n.toString(16)).join('')}` === hex(reversed) && reading.program.slice(4).join() === center.join() && reading.sku === reading.handle && entangled.every((e, i) => e.partner === partner[i] && (e.court === 0 ? e.sum === 0 : e.sum === 10)) && seal(uuid).valid
-  return { circuit, court, partner, circle, sequence: hex(circle), reflection, reflected: hex(reflection), reversed: hex(reversed), entangled, uuid, handle: reading.handle, sku: reading.sku, program: reading.program, tail: reading.tail, sealed: seal(uuid).valid, holds, theorem: 'textbook_reflection_sums_to_ten' as const, says: `${hex(circle)} is 124875 bouncing in 3690. The reflection is reverse-encoded in this one UUID, and 3690 is entangled with 7410` }
+  return { circuit, court, partner, circle, sequence: hex(circle), reflection, reflected: hex(reflection), reversed: hex(reversed), entangled, uuid, handle: reading.handle, sku: reading.sku, program: reading.program, tail: reading.tail, sealed: seal(uuid).valid, holds, theorem: 'textbook_reflection_sums_to_ten' as const, says: proseFill(PROSE.quantumUuidIndex_says14, hex(circle)) }
 }
 
 
@@ -660,7 +661,7 @@ export const block = (tool: string, args: Record<string, unknown>, structured: u
   const createCss = Object.entries(preset.cssVars).map(([name, value]) => `${name}: ${value}`).join('; ')
   const hexColor = `#${ch.handle}`
   const cold = uuidQubits(4).organised.zero
-  const fromUuid = `--qpu-hex: ${hexColor}; --surface-1: var(--qpu-surface); --surface-2: var(--qpu-surface); --text-primary: var(--qpu-ink); --text-secondary: var(--qpu-ink); --text-muted: var(--qpu-ink); --fill-accent: var(--qpu-accent); --radius: var(--qpu-radius); --gap-md: var(--qpu-gap); --gap-sm: var(--qpu-gap); --gap-xs: var(--qpu-gap); --pad-md: var(--qpu-gap); --pad-sm: var(--qpu-gap); --border: var(--qpu-hex); --font-sans: var(--qpu-create-font)`
+  const fromUuid = proseFill(PROSE.quantumUuidIndex_s15, hexColor)
   const wrapped = `<div data-block="${id}" data-create="${create}" data-qpu-hex="${hexColor}" data-qpu-temperature="${cold.temperatureK}" data-qpu-left="${cold.left}" data-qpu-landauer="${cold.landauer}" data-qpu-walked="${cold.walked}" data-qpu-style="${preset.style}" data-qpu-base-color="${preset.baseColor}" data-qpu-font="${preset.font}" data-qpu-icon-library="${preset.iconLibrary}" data-qpu-menu-color="${preset.menuColor}" data-qpu-menu-accent="${preset.menuAccent}" class="qpu-block" data-vortex="${styled.vars['--qpu-vortex']}" style="${styled.css}; ${createCss}; ${fromUuid}; border-left: 3px solid var(--qpu-hex); padding-left: var(--pad-sm, 8px);">${hero + type + heading + html + attributionHtml()}</div>`
   return {
     id,
@@ -703,7 +704,7 @@ export const style = (uuid: string) => {
     '--qpu-tail': `rgb(${[0, 2, 4].map((i) => parseInt(ch.tail.slice(i, i + 2), 16)).join(' ')})`, '--qpu-angle': String(one48 % 360), '--qpu-vortex': String(seed), '--qpu-reflection': String(10 - seed),
     '--qpu-signal': `'${GLAGOLITIC_OF[seed] ?? ''}'`, '--qpu-signal-reflected': `'${GLAGOLITIC_OF[10 - seed] ?? ''}'`, '--qpu-signal-digits': `'${seed} ${10 - seed}'`, '--qpu-trinity': String(trinity[0] ?? 0), '--qpu-period': `${(seed || 9) * KEY}ms`,
   }
-  return { uuid, hue, sat, light, radius, gap, vars, css: Object.entries(vars).map(([k, v]) => `${k}: ${v}`).join('; '), says: 'computed from the address, one value per property: the handle gives the hue, the middle the accent, the program the saturation and lightness, the tail the radius, the gap and the vortex; nothing loaded' }
+  return { uuid, hue, sat, light, radius, gap, vars, css: Object.entries(vars).map(([k, v]) => `${k}: ${v}`).join('; '), says: PROSE.quantumUuidIndex_says16 }
 }
 /** Any hex is presentable as a shadcn combination: each nibble picks one of the eight registry items (the two hosts and the six styled ones)
  *  and one of two variants (solid, outline) — sixteen choices, a nibble (textbook_hex_presentations) — so a UUID, a hash or an address is a
@@ -711,13 +712,13 @@ export const style = (uuid: string) => {
 export const PRESENTABLE_ITEMS = ['qpu-app', 'qpu-block', 'qpu-style', 'qpu-card', 'qpu-badge', 'qpu-table', 'qpu-stream', 'qpu-dashboard'] as const
 export const presentation = (hex: string) => {
   const clean = hex.toLowerCase().replace(/[^0-9a-f]/g, '')
-  if (!clean) throw new Error('a hex string presents itself: give one')
+  if (!clean) throw new Error(PROSE.quantumUuidIndex_s17)
   const nibbles = [...clean].map((c) => parseInt(c, 16))
   const address = /^[0-9a-f]{32}$/.test(clean) ? dashed(clean) : uuid(clean)
   const styled = style(address)
   const parts = nibbles.map((n, i) => ({ at: i, nibble: n.toString(16), item: PRESENTABLE_ITEMS[n % 8]!, variant: n < 8 ? 'solid' : 'outline' }))
   const layout = parts.map((p) => `<${p.item.replace(/^qpu-/, 'Qpu').replace(/^Qpu(.)/, (_m, c: string) => `Qpu${c.toUpperCase()}`)} variant="${p.variant}" uuid="${address}" />`).join('\n')
-  return { hex: clean, uuid: address, nibbles: nibbles.length, choices: 16, items: PRESENTABLE_ITEMS.length, variants: 2, combinations: `16^${nibbles.length}`, style: styled.vars, parts, layout, says: 'each nibble is one of sixteen choices: an item of eight and a variant of two; the whole hex is a layout styled from itself, nothing loaded' }
+  return { hex: clean, uuid: address, nibbles: nibbles.length, choices: 16, items: PRESENTABLE_ITEMS.length, variants: 2, combinations: `16^${nibbles.length}`, style: styled.vars, parts, layout, says: PROSE.quantumUuidIndex_says18 }
 }
 /** A UUID-only stream is queryable, sortable, filterable and executable, like any hex is presentable: every row is the hex itself — its
  *  channel (handle, program, tail), its style, the item and the variant its first nibble picks — so a query names nibbles and handles, a
@@ -732,7 +733,7 @@ export const stream = (hexes: readonly string[], q: StreamQuery = {}) => {
   const key = q.sort ?? 'hex'
   const sorted = [...filtered].sort((a, b) => (key === 'hue' ? a.hue - b.hue : key === 'program' ? a.sum - b.sum : key === 'tail' ? a.tail.localeCompare(b.tail) : a.hex.localeCompare(b.hex)) * (q.descending ? -1 : 1))
   const executed = q.execute ? sorted.map((r) => { const ch = channel(r.uuid); const next = uuidFromParts(ch.handle, [...ch.program.slice(1), ch.program[0]!], ch.tail); return { ...r, next, dashboard: `${origin}/${uuid(`dashboard${JSON.stringify({ uuid: r.uuid })}`)}`, page: `${origin}/${r.uuid}` } }) : sorted
-  return { stream: hexes.length, filtered: filtered.length, rows: executed, ops: { where: w, sort: key, descending: !!q.descending, executed: !!q.execute }, says: 'a stream of hexes alone: queried by handle, nibble, item, variant or hue; sorted by hex, hue, program or tail; executed as the program rotated (the next address) and the page and dashboard the address answers; every row styled from itself' }
+  return { stream: hexes.length, filtered: filtered.length, rows: executed, ops: { where: w, sort: key, descending: !!q.descending, executed: !!q.execute }, says: PROSE.quantumUuidIndex_says19 }
 }
 
 /** DNA as a UUID stream (textbook_dna_base4): two bases a nibble, 64 a UUID, read back exactly with the base count. */
@@ -741,10 +742,10 @@ export const dnaToHex = (seq: string): string => { const s = seq.toUpperCase().r
 export const hexToDna = (hex: string): string => [...hex.toLowerCase().replace(/[^0-9a-f]/g, '')].map((c) => { const n = parseInt(c, 16); return DNA_BASES[(n >> 2) & 3]! + DNA_BASES[n & 3]! }).join('')
 export const dnaStream = (seq: string, q: StreamQuery = {}) => {
   const clean = seq.toUpperCase().replace(/\s/g, ''), bad = /[^ACGT\s]/iu.exec(seq), hex = dnaToHex(clean)
-  if (bad) throw new Error(`dna takes A, C, G and T only (whitespace aside): ${bad[0]} at ${bad.index} is not a base`)
+  if (bad) throw new Error(proseFill(PROSE.quantumUuidIndex_s20, bad[0], bad.index))
   const chunks: string[] = []; for (let i = 0; i < hex.length; i += 32) chunks.push(hex.slice(i, i + 32).padEnd(32, '0'))
   const uuids = chunks.map((c) => dashed(c))
-  return { bases: clean.length, basesPerUuid: 64, hex, uuids, readBack: hexToDna(hex).slice(0, clean.length), roundTrips: hexToDna(hex).slice(0, clean.length) === clean, address: uuid(clean), stream: stream(uuids, q), theorem: 'textbook_dna_base4', says: `${clean.length} base(s) as ${uuids.length} UUID(s) — two bases a nibble, read back one for one — the DNA stream navigable like any UUID stream (uuid dna uuidna)` }
+  return { bases: clean.length, basesPerUuid: 64, hex, uuids, readBack: hexToDna(hex).slice(0, clean.length), roundTrips: hexToDna(hex).slice(0, clean.length) === clean, address: uuid(clean), stream: stream(uuids, q), theorem: 'textbook_dna_base4', says: proseFill(PROSE.quantumUuidIndex_says21, clean.length, uuids.length) }
 }
 
 /** Formulated presentation overlays of the UUID core (DNA/Glagolitic/CMYK/a432/shadcn/OG/thousandBit); sealed address alone at password/address.js. */
@@ -766,7 +767,7 @@ export const overlays = (hex = 'a432') => {
     shadcn: { name: clay.shadcn.name, type: clay.shadcn.type, create: clay.shadcn.create }, openGraph: clay.openGraph, thousandBit,
     style: styled.vars, presentation: { nibbles: presented.nibbles, parts: presented.parts.length, choices: presented.choices },
     theorems: ['textbook_dna_base4', 'textbook_create_hue', 'textbook_hex_presentations', 'textbook_css_one_source', 'textbook_uuid_core'] as const,
-    holds, says: holds ? 'DNA, Glagolitic, CMYK/a432 accent, shadcn, Open Graph and thousandBit clay theatre are formulated calls of the UUID core; the sealed address holds alone at password/address without pulling style/stream/widget' : 'the presentation overlays did not hold as formulated calls of the UUID core' }
+    holds, says: holds ? PROSE.quantumUuidIndex_s22 : PROSE.quantumUuidIndex_s23 }
 }
 
 
@@ -845,7 +846,7 @@ export const harmonicDefaults = (schema: { properties?: Record<string, { enum?: 
 
 /** The hooks Payload 4.0.0-beta.7 declares (its types, read again by the test), paired by phase; one witness each puts the address it sees and the referrer's collapse on the context */
 const NODE = 'beforeValidate beforeChange afterChange afterRead', GLOBAL = 'beforeOperation beforeRead ' + NODE
-const DECLARED = { collection: GLOBAL + ' beforeDelete afterDelete afterOperation afterError beforeLogin afterLogin afterLogout me afterMe refresh afterRefresh afterForgotPassword', global: GLOBAL, field: NODE + ' beforeDuplicate', node: NODE }
+const DECLARED = { collection: GLOBAL + PROSE.quantumUuidIndex_s24, global: GLOBAL, field: NODE + ' beforeDuplicate', node: NODE }
 type Where = keyof typeof DECLARED
 const side = (h: string) => { const m = /^(before|after)(\w)(\w*)$/.exec(h); return { side: (m?.[1] ?? 'before') as 'before' | 'after', phase: m ? m[2]!.toLowerCase() + m[3] : h } }
 const pairs = (w: Where) => { const by: Record<string, { before?: string; after?: string }> = {}; for (const h of DECLARED[w].split(' ')) { const s = side(h); (by[s.phase] ??= {})[s.side] = h } return Object.entries(by).map(([phase, s]) => ({ phase, ...s, paired: !!(s.before && s.after) })) }

@@ -2,6 +2,7 @@
 // client fetches it, and the handler reads what came back into doors and capabilities. No I/O here; the client's own MCP
 // fetches. An MCP host is asked for tools/list and, where it serves one, its catalogue door; an API host for the OpenAPI,
 // index or identify document the verifiers registry names; both domains for /.well-known/qpu.json.
+import { PROSE, proseFill } from './prose-index.ts'
 import type { Verifier } from './verifiers.ts'
 import { ISO_OPEN_DATA, STANDARDS, detectStandard, verifyIsoOnline } from './standards.ts'
 import { stem } from './match.ts'
@@ -40,7 +41,7 @@ export const DRIVE_FILE_URL = 'https://drive.google.com/file/d/'
 export const GOOGLE_MCPS = ['io.github.googleapis/genai-toolbox', 'io.github.googleapis/mcp-toolbox', 'io.github.GoogleCloudPlatform/gemini-cloud-assist-mcp'] as const
 /** GitHub's hosted MCP server: answers 401 until a tenant brings its token (a fine-grained PAT or the OAuth flow); the read-only form beside it. */
 const GITHUB_MCP: readonly { host: string; url: string; about: string }[] = [
-  { host: 'api.githubcopilot.com', url: 'https://api.githubcopilot.com/mcp/', about: 'GitHub: repositories, branches, tags, releases, issues, pull requests, actions of the tenant\'s account' },
+  { host: 'api.githubcopilot.com', url: 'https://api.githubcopilot.com/mcp/', about: PROSE.quantumProcessingDiscovery_about1 },
 ]
 /** The Claude API (platform.claude.com/docs/en/api/overview, read 2026-10-25): one endpoint for messages, the MCP connector that mounts any MCP server into a request, the Models door; every door needs the tenant's key (x-api-key, anthropic-version). */
 /** The Gemini API (ai.google.dev/api/generate-content and /gemini-api/docs/api-key, read 2026-10-27): POST generateContent with the key in the
@@ -226,7 +227,7 @@ export const detect = (r: { status: number; type: string; text: string }): { det
   } catch { /* not json */ }
   if (/^openapi:\s*\d/m.test(t) || /^swagger:/m.test(t)) { const paths = (t.match(/^\s{2}(\/[^:\s]+):/gm) ?? []).map((l) => l.trim().replace(/:$/, '')); return { detected: 'openapi (yaml)', note: `${paths.length} paths, ${t.length.toLocaleString('en-US')} chars`, paths } }
   if (/<OAI-PMH|<Identify>/.test(t)) return { detected: 'oai-pmh identify', note: /<repositoryName>([^<]*)/.exec(t)?.[1] ?? 'identify' }
-  if (/<html/i.test(t)) return { detected: 'html page', note: /<title>([^<]*)/i.exec(t)?.[1]?.trim() ?? 'a page: documentation for humans, no machine contract' }
+  if (/<html/i.test(t)) return { detected: 'html page', note: /<title>([^<]*)/i.exec(t)?.[1]?.trim() ?? PROSE.quantumProcessingDiscovery_s2 }
   return { detected: r.type.split(';')[0] || 'unknown', note: `${t.length.toLocaleString('en-US')} chars` }
 }
 
@@ -238,7 +239,7 @@ export const getDiscovery = (answers: readonly Answer[], verifiers: readonly Ver
     const list = answers.find((a) => a.id === requestId('mcp-list', host))!
     const r = getResult(list)
     const wk = answers.find((a) => a.id === requestId('well-known', host))
-    if (!r.result) { hosts.push({ host, kind: 'mcp', contract: list.url, status: list.status, detected: list.status === 401 ? 'auth required' : 'unreachable', note: list.status === 401 ? `${KNOWN_MCP.find((c) => c.host === host)?.about ?? 'an MCP host'}: answers 401 until the tenant brings its token; once open: ${KNOWN_MCP.find((c) => c.host === host)?.maps ?? 'its doors join the catalogue'}` : r.error ?? 'no answer', doors: [] }); if (wk) hosts.push({ host, kind: 'well-known', contract: wk.url, status: wk.status, ...detect(wk) }); continue }
+    if (!r.result) { hosts.push({ host, kind: 'mcp', contract: list.url, status: list.status, detected: list.status === 401 ? 'auth required' : 'unreachable', note: list.status === 401 ? proseFill(PROSE.quantumProcessingDiscovery_s3, KNOWN_MCP.find((c) => c.host === host)?.about ?? 'an MCP host', KNOWN_MCP.find((c) => c.host === host)?.maps ?? PROSE.quantumProcessingDiscovery_s4) : r.error ?? 'no answer', doors: [] }); if (wk) hosts.push({ host, kind: 'well-known', contract: wk.url, status: wk.status, ...detect(wk) }); continue }
     const doors: Door[] = (r.result.tools as Parameters<typeof toDoor>[0][]).map((t) => toDoor(t, 'tools/list'))
     let note = `${doors.length} tools in tools/list`
     const cat = answers.find((a) => a.id === requestId('catalogue', host))
@@ -253,16 +254,16 @@ export const getDiscovery = (answers: readonly Answer[], verifiers: readonly Ver
         if (c?.result && typeof c.result === 'object') { doors.push(toDoor({ ...(c.result as object), name: t.name, description: t.description }, 'catalogue')); read += 1 }
         else doors.push({ ...toDoor({ name: t.name, description: t.description }, 'catalogue'), description: `${t.description}${c?.error ? ` (contract unread: ${c.error})` : ''}` })
       }
-      note += `; ${names.length} in the catalogue door, ${read} contracts read`
+      note += proseFill(PROSE.quantumProcessingDiscovery_s5, names.length, read)
     } else note += `; catalogue door: ${cr.error}`
     hosts.push({ host, kind: 'mcp', contract: list.url, status: 200, detected: 'mcp tools/list', note, doors })
     if (wk) hosts.push({ host, kind: 'well-known', contract: wk.url, status: wk.status, ...detect(wk) })
   }
-  for (const st of STANDARDS) { const a = answers.find((x) => x.purpose === 'api-contract' && x.name === st.id); hosts.push(a ? { host: a.host, kind: 'api', contract: st.contract, status: a.status, ...detect(a) } : { host: new URL(st.contract).host, kind: 'api', contract: st.contract, status: 0, detected: 'not asked', note: `${st.name}: the client did not fetch this standard` }) }
+  for (const st of STANDARDS) { const a = answers.find((x) => x.purpose === 'api-contract' && x.name === st.id); hosts.push(a ? { host: a.host, kind: 'api', contract: st.contract, status: a.status, ...detect(a) } : { host: new URL(st.contract).host, kind: 'api', contract: st.contract, status: 0, detected: 'not asked', note: proseFill(PROSE.quantumProcessingDiscovery_note6, st.name) }) }
   for (const v of verifiers) {
-    if (!v.contract) { hosts.push({ host: new URL(v.docs).host, kind: 'api', contract: v.docs, status: 0, detected: 'no machine contract named', note: `${v.id}: the registry names documentation for humans only; a lead` }); continue }
+    if (!v.contract) { hosts.push({ host: new URL(v.docs).host, kind: 'api', contract: v.docs, status: 0, detected: 'no machine contract named', note: proseFill(PROSE.quantumProcessingDiscovery_note7, v.id) }); continue }
     const a = answers.find((x) => x.purpose === 'api-contract' && x.name === v.id)
-    hosts.push(a ? { host: a.host, kind: 'api', contract: v.contract, status: a.status, ...detect(a) } : { host: new URL(v.contract).host, kind: 'api', contract: v.contract, status: 0, detected: 'not asked', note: 'the client did not fetch this contract' })
+    hosts.push(a ? { host: a.host, kind: 'api', contract: v.contract, status: a.status, ...detect(a) } : { host: new URL(v.contract).host, kind: 'api', contract: v.contract, status: 0, detected: 'not asked', note: PROSE.quantumProcessingDiscovery_note8 })
   }
   const doors = hosts.flatMap((h) => (h.doors ?? []).map((d) => ({ host: h.host, url: h.contract, ...d })))
   const takesAny = (d: Door, ks: string[]) => d.takes.some((t) => ks.includes(t))
@@ -276,8 +277,8 @@ export const getDiscovery = (answers: readonly Answer[], verifiers: readonly Ver
     metaphysics: doors.filter((d) => /vortex|pentagram|fibonacci|triad|torus|involution|units|digital_root|living_field|gravity|spin|coprime|crt|diamond|sequence/.test(d.name)).map((d) => d.name),
   }
   const leads = [
-    ...hosts.filter((h) => h.kind === 'mcp' && h.detected === 'auth required').map((h) => ({ id: `mcp-auth-${h.host}`, source: h.contract, statement: `${h.host} answers 401 without a token: ${h.note}`, status: 'open' as const, reason: 'tenant configurable: the operator sets QPU_MCP_TOKEN_<HOST> for the tenant and discovery reads the host\'s doors on the next run; nothing is assumed about them' })),
-    ...hosts.filter((h) => h.kind === 'api' && !/^openapi|json index|oai-pmh|json-ld|cldr|graphql/.test(h.detected)).map((h) => ({ id: `contract-${h.host}`, source: h.contract, statement: `${h.host} publishes no machine-readable contract at the address the registry names (${h.detected})`, status: 'open' as const, reason: 'the client is built from documentation read by a person; an OpenAPI or index document would let it be built from the host' })),
+    ...hosts.filter((h) => h.kind === 'mcp' && h.detected === 'auth required').map((h) => ({ id: `mcp-auth-${h.host}`, source: h.contract, statement: `${h.host} answers 401 without a token: ${h.note}`, status: 'open' as const, reason: PROSE.quantumProcessingDiscovery_reason9 })),
+    ...hosts.filter((h) => h.kind === 'api' && !/^openapi|json index|oai-pmh|json-ld|cldr|graphql/.test(h.detected)).map((h) => ({ id: `contract-${h.host}`, source: h.contract, statement: proseFill(PROSE.quantumProcessingDiscovery_statement10, h.host, h.detected), status: 'open' as const, reason: PROSE.quantumProcessingDiscovery_reason11 })),
   ]
   const read = answers.filter((a) => a.purpose === 'sitemap' && a.status === 200)
   const lead = leadDecode()
@@ -287,13 +288,13 @@ export const getDiscovery = (answers: readonly Answer[], verifiers: readonly Ver
 
 /** The discovery page, from the discovery alone. */
 export const getDiscoveryPage = (d: Discovery, date: string): string => ['---', 'title: Discovery', 'order: 46', '---', '', '# Discovery before use', '',
-  `The 1000-bit trapdoor leads, seeded by ${d.lead.seed} and decoded by its witness in ${d.lead.searched} step. The blind climb is ${d.lead.blind} and is not walked. ${d.upgrade.kernel} kernel textbooks: ${d.upgrade.opendata.covered} stated by Open Data, ${d.upgrade.nist.covered} stated by NIST, ${d.upgrade.awaiting} still waiting on those sources, ${d.upgrade.uncovered} not stated by them, ${d.upgrade.novelties} not in the DOI precedence. Asked on ${date}.`, '',
-  `Every host this tree talks to, asked for its contract on ${date} by \`npm run next\` through the \`discover\` tool: MCP hosts for tools/list and their catalogue door, API hosts for the OpenAPI, index or identify document the verifiers registry names, both domains for \`/.well-known/qpu.json\`. The client tools choose their doors from this table by capability, never from a name in code.`, '',
-  '| Host | Kind | Contract | Status | Detected | Note |', '|---|---|---|---:|---|---|', ...d.hosts.map((h) => `| ${h.host} | ${h.kind} | ${h.contract} | ${h.status || '—'} | ${h.detected} | ${h.note.replace(/\|/g, '\\|')} |`), '',
-  '## Capabilities found', '', `Statement → verdict: ${d.capabilities.statementVerdict.join(', ') || 'none'}. Signing: ${d.capabilities.signing.join(', ') || 'none'}. Readiness: ${d.capabilities.readiness.join(', ') || 'none'}. Addressing: ${d.capabilities.addressing.join(', ') || 'none'}. RBAC (a token in, a role out): ${d.capabilities.rbac.join(', ') || 'none: roles come from the tenant secrets until a Payload MCP host is named'}. Metaphysics (the arithmetic mod 9 every tail carries): ${d.capabilities.metaphysics.join(', ') || 'none'}.`, '',
+  proseFill(PROSE.quantumProcessingDiscovery_s12, d.lead.seed, d.lead.searched, d.lead.blind, d.upgrade.kernel, d.upgrade.opendata.covered, d.upgrade.nist.covered, d.upgrade.awaiting, d.upgrade.uncovered, d.upgrade.novelties, date), '',
+  proseFill(PROSE.quantumProcessingDiscovery_s13, date), '',
+  PROSE.quantumProcessingDiscovery_s14, '|---|---|---|---:|---|---|', ...d.hosts.map((h) => `| ${h.host} | ${h.kind} | ${h.contract} | ${h.status || '—'} | ${h.detected} | ${h.note.replace(/\|/g, '\\|')} |`), '',
+  '## Capabilities found', '', proseFill(PROSE.quantumProcessingDiscovery_s15, d.capabilities.statementVerdict.join(', ') || 'none', d.capabilities.signing.join(', ') || 'none', d.capabilities.readiness.join(', ') || 'none', d.capabilities.addressing.join(', ') || 'none', d.capabilities.rbac.join(', ') || PROSE.quantumProcessingDiscovery_s16, d.capabilities.metaphysics.join(', ') || 'none'), '',
   '## Doors', '', `${d.doors.length} doors across ${d.hosts.filter((h) => h.kind === 'mcp').length} MCP host(s).`, '',
-  '| Host | Door | Takes | Required | Answers | Read-only | From |', '|---|---|---|---|---|---|---|', ...d.doors.map((x) => `| ${x.host} | ${x.name} | ${x.takes.join(', ') || '—'} | ${x.required.join(', ') || '—'} | ${x.answers.join(', ') || '—'} | ${x.readOnly === null ? '?' : x.readOnly} | ${x.contract} |`), '',
-  '## Leads', '', ...(d.leads.length ? d.leads.map((l) => `- \`${l.id}\`: ${l.statement}`) : ['none: every API host published a contract']), ''].join('\n')
+  PROSE.quantumProcessingDiscovery_s17, '|---|---|---|---|---|---|---|', ...d.doors.map((x) => `| ${x.host} | ${x.name} | ${x.takes.join(', ') || '—'} | ${x.required.join(', ') || '—'} | ${x.answers.join(', ') || '—'} | ${x.readOnly === null ? '?' : x.readOnly} | ${x.contract} |`), '',
+  '## Leads', '', ...(d.leads.length ? d.leads.map((l) => `- \`${l.id}\`: ${l.statement}`) : [PROSE.quantumProcessingDiscovery_s18]), ''].join('\n')
 
 /** The public MCP registry: a lead's distinctive words asked there first, before any guess about which MCP serves it. */
 export const MCP_REGISTRY = 'https://registry.modelcontextprotocol.io/v0/servers'
@@ -313,7 +314,7 @@ export const createRegistryRequests = (lead: { id: string; statement: string; so
   const words = listRegistryWords(lead, at)
   return [...words.flatMap((word) => MCP_DIRECTORIES.filter((d) => d.read === 'search').map((d) => ({ id: d.id === 'official' ? `registry:${lead.id}:${word}` : `registry:${lead.id}:${word}:${d.id}`, lead: lead.id, word, directory: d.id, method: 'GET' as const, url: d.url + encodeURIComponent(word), accept: 'application/json' }))),
     // a directory that is an MCP server is asked by POST: its search tool called with the word (JSON-RPC tools/call)
-    ...words.flatMap((word) => MCP_DIRECTORIES.filter((d) => d.read === 'mcp' && d.tool).map((d) => ({ id: `registry:${lead.id}:${word}:${d.id}`, lead: lead.id, word, directory: d.id, method: 'POST' as const, url: d.url, accept: 'application/json, text/event-stream', body: rpcBody('tools/call', { name: d.tool, arguments: { q: word, return: 'apis' } }) }))),
+    ...words.flatMap((word) => MCP_DIRECTORIES.filter((d) => d.read === 'mcp' && d.tool).map((d) => ({ id: `registry:${lead.id}:${word}:${d.id}`, lead: lead.id, word, directory: d.id, method: 'POST' as const, url: d.url, accept: PROSE.quantumProcessingDiscovery_accept19, body: rpcBody('tools/call', { name: d.tool, arguments: { q: word, return: 'apis' } }) }))),
     ...MCP_DIRECTORIES.filter((d) => d.read === 'sitemap').flatMap((d) => d.url.split(' ').map((url, i) => ({ id: `registry:${lead.id}:${d.id}:${i}`, lead: lead.id, word: words.join(' '), directory: d.id, method: 'GET' as const, url, accept: 'application/xml' })))]
 }
 type RelatedServer = { name: string; description: string; remotes: string[]; word: string; directory?: string; page?: string }
@@ -338,7 +339,7 @@ export const listRelatedServers = (lead: string, answers: readonly { id: string;
       for (const x of j.servers ?? []) { const srv = x.server ?? x; const name = srv.name ?? (x as { qualifiedName?: string }).qualifiedName ?? ''; if (!name || servers.has(name)) continue; servers.set(name, { name, description: (srv.description ?? ''), remotes: (srv.remotes ?? []).map((r) => r.url).filter((u): u is string => typeof u === 'string' && /^https?:\/\//.test(u)), word: a.word ?? '' }) }
     } catch { /* not the registry's shape: nothing related read from it */ }
   }
-  const extend = [...servers.values()].flatMap((s) => s.remotes.map((url) => ({ id: `extend:${lead}:${s.name}:${new URL(url).host}`, server: s.name, method: 'POST' as const, url, accept: 'application/json, text/event-stream', body: rpcBody('tools/list') })))
+  const extend = [...servers.values()].flatMap((s) => s.remotes.map((url) => ({ id: `extend:${lead}:${s.name}:${new URL(url).host}`, server: s.name, method: 'POST' as const, url, accept: PROSE.quantumProcessingDiscovery_accept19, body: rpcBody('tools/list') })))
   return { lead, asked: answers.length, answered, servers: [...servers.values()], extend }
 }
 
@@ -365,7 +366,7 @@ const MCP_REGISTRY_SERVERS = 'https://registry.modelcontextprotocol.io/v0/server
 /** The registry searched online by the words a user types: one public GET, the limit bounded to the registry's own page of one hundred (textbook_mcp_search_limit). */
 export const createSearchRequest = (query: string, limit = 10) => {
   const q = query.trim().replace(/\s+/g, ' ')
-  if (!q) throw new Error('search takes a query: the words asked of the official MCP registry')
+  if (!q) throw new Error(PROSE.quantumProcessingDiscovery_s20)
   const n = Math.min(Math.max(1, Math.floor(Number.isFinite(limit) ? limit : 10)), 100)
   return { id: `registry:search:${q}`, method: 'GET' as const, url: `${MCP_REGISTRY}?search=${encodeURIComponent(q)}&limit=${n}&version=latest`, accept: 'application/json', query: q, limit: n }
 }
@@ -400,7 +401,7 @@ export const createCoverageRequest = (cursor?: string | null) => ({ url: cursor 
  *  sets that follow — each covered door with each QPU tool at its harmonic default. A ratio over a measured total, never a claim about the internet. */
 export const getCoverage = (doors: number, registryTotal: number, tools: number) => {
   const ratio = registryTotal > 0 ? Math.round((doors / registryTotal) * 1e6) / 1e6 : null
-  return { doors, registryTotal, ratio, percent: ratio === null ? null : Math.floor((doors * 100) / registryTotal), sets: doors * tools, tools, says: registryTotal > 0 ? `${doors} MCP doors in the gates over ${registryTotal} servers the official registry lists: ${(ratio! * 100).toFixed(2)}% covered; ${doors * tools} sets follow (each door with each of the ${tools} QPU tools at its harmonic default)` : 'the registry was not walked: no total, no ratio', theorem: 'textbook_coverage_bounded' }
+  return { doors, registryTotal, ratio, percent: ratio === null ? null : Math.floor((doors * 100) / registryTotal), sets: doors * tools, tools, says: registryTotal > 0 ? proseFill(PROSE.quantumProcessingDiscovery_s21, doors, registryTotal, (ratio! * 100).toFixed(2), doors * tools, tools) : PROSE.quantumProcessingDiscovery_s22, theorem: 'textbook_coverage_bounded' }
 }
 /** The QPU's tools/list against the open servers' as the client measured them: totals and per tool, a ratio above one meaning the server's
  *  is that many times the QPU's; a server not answering is named, never estimated. */
@@ -411,5 +412,5 @@ export const compareToolsLists = (qpu: { bytes: number; tools: number }, answers
   const measured = keepMeasured(rows)
   // the drop from the full list to the short one the QPU serves by default: what a client no longer pays for
   const drop = full ? { full: getToolsListCost(full.bytes, qpu.tools), short: q, savedBytes: full.bytes - qpu.bytes, savedTokens: Math.ceil(full.bytes / 4) - q.tokens, ratio: ratio(full.bytes, qpu.bytes) } : null
-  return { qpu: q, drop, rows, measured: measured.length, says: `${drop ? `the full tools/list is ${drop.full.bytes} bytes and the short one served by default ${q.bytes} (${drop.ratio}× smaller, ${drop.savedTokens} tokens saved); ` : ''}the QPU's tools/list is ${q.bytes} bytes (about ${q.tokens} tokens) for ${q.tools} tools, ${q.perTool} bytes a tool; ${measured.map((r) => `${r.id} ${r.bytes} bytes for ${r.tools} (${r.perTool} a tool, ${r.ratioPerTool}× the QPU's per tool)`).join('; ') || 'no open server measured'}` }
+  return { qpu: q, drop, rows, measured: measured.length, says: proseFill(PROSE.quantumProcessingDiscovery_says23, drop ? `the full tools/list is ${drop.full.bytes} bytes and the short one served by default ${q.bytes} (${drop.ratio}× smaller, ${drop.savedTokens} tokens saved); ` : '', q.bytes, q.tokens, q.tools, q.perTool, measured.map((r) => proseFill(PROSE.quantumProcessingDiscovery_s24, r.id, r.bytes, r.tools, r.perTool, r.ratioPerTool)).join('; ') || 'no open server measured') }
 }

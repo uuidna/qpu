@@ -4,6 +4,7 @@
 // address of its parts (ETag by content, 304 by involution). The fallback for anything, and a billed answer: one coil of the
 // metered variant for the author's coins, and a sublicence at the tenant's own Stripe when the tenant resells it (the licence
 // chain, link by link: textbook_licence_chain). Four kinds of asset, fifteen non-empty combinations (textbook_url_combinations).
+import { PROSE, proseFill } from './prose-index.ts'
 import type { Context } from './toolbox.ts'
 import { uuid, verify, PRESENTABLE_ITEMS } from '../uuid/index.ts'
 import { wordStems } from './audit.ts'
@@ -47,8 +48,8 @@ export const composePage = (path: string, ctx: Context, origin = 'https://qpu.uu
   return {
     path: clean, words: [...words], ext, kinds, combinations: 2 ** ASSET_KINDS.length - 1, theorem: 'textbook_url_combinations',
     count: selected.length, assets: selected.map(({ text: _t, ...a }) => { void _t; return a }), code: code || null, codeBytes: code.length, address, verified,
-    serve: ext && /^(tsx?|jsx?)$/.test(ext) ? 'text/typescript: the code of the combination' : ext === 'json' || !ext ? 'application/json: the combination; text/html: the page' : 'application/json: the combination',
-    bill: { calls: 1, free: 0, coils: 1, colour: coilColour().coil, order, author: { coins: 2, says: 'every response deposits the two coins: the author\'s side of the monetisation, however many levels resell' }, licence },
-    says: selected.length ? `the URL names ${selected.length} cached asset(s) of ${kinds.length} kind(s): computed in real time, each verified at its address, the whole at ${address}` : 'the URL names no cached asset: the decision alone (404 with the match tool\'s verdict)',
+    serve: ext && /^(tsx?|jsx?)$/.test(ext) ? PROSE.quantumProcessingCompose_s1 : ext === 'json' || !ext ? PROSE.quantumProcessingCompose_s2 : 'application/json: the combination',
+    bill: { calls: 1, free: 0, coils: 1, colour: coilColour().coil, order, author: { coins: 2, says: PROSE.quantumProcessingCompose_says3 }, licence },
+    says: selected.length ? proseFill(PROSE.quantumProcessingCompose_s4, selected.length, kinds.length, address) : PROSE.quantumProcessingCompose_s5,
   }
 }

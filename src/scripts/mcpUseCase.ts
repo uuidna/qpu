@@ -1,3 +1,4 @@
+import { PROSE, proseFill } from '../quantum/processing/prose-index.ts'
 import { randomBytes } from 'crypto'
 import { getPayload } from 'payload'
 
@@ -11,7 +12,7 @@ const email = process.env.LEGACY_ADMIN_EMAIL || 'legacy-leads@qpu.localhost'
 const payload = await getPayload({ config })
 
 const admin = (await payload.find({ collection: 'users', limit: 1, overrideAccess: true, where: { email: { equals: email } } })).docs[0]
-if (!admin?.roles?.includes('admin')) throw new Error(`${email} is not an admin here: run queueLegacyLeads first or name one`)
+if (!admin?.roles?.includes('admin')) throw new Error(proseFill(PROSE.scriptsMcpUseCase_s1, email))
 const apiKey = randomBytes(24).toString('hex')
 await payload.update({
   id: admin.id,
@@ -27,7 +28,7 @@ const rpc = async (method: string, params: Record<string, unknown> = {}, anonymo
   const res = await fetch(url, {
     body: JSON.stringify({ id: ++id, jsonrpc: '2.0', method, params }),
     headers: {
-      accept: 'application/json, text/event-stream',
+      accept: PROSE.scriptsMcpUseCase_accept2,
       ...(anonymous ? {} : { authorization: `users API-Key ${apiKey}` }),
       'content-type': 'application/json',
     },
@@ -62,7 +63,7 @@ const agreement = await Promise.all(
   }),
 )
 // an agent orders one run through the MCP door, with its key: the order hook runs the line's program
-const bell = (await payload.find({ collection: 'variants', depth: 0, limit: 1, overrideAccess: true, where: { title: { equals: 'GHZ state, exactly simulated — 2 qubits — exact state vector' } } })).docs[0]
+const bell = (await payload.find({ collection: 'variants', depth: 0, limit: 1, overrideAccess: true, where: { title: { equals: PROSE.scriptsMcpUseCase_equals3 } } })).docs[0]
 const ordered = bell
   ? await rpc('tools/call', {
       arguments: { slug: 'orders', documents: [{ data: { amount: 0, currency: 'USD', customer: admin.id, items: [{ product: bell.product, quantity: 1, variant: bell.id }] } }] },

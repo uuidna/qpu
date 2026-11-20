@@ -1,5 +1,6 @@
 // The licence, carried by architecture: every result, block, receipt and page names it, so generated content attributes
 // its author wherever it travels. CC-BY-NC-ND-4.0: attribute the author, no derivatives, commercial use by licence.
+import { PROSE, proseFill } from '../prose-index.ts'
 import { TABLES } from '../tables-index.ts'
 
 export const LICENSE = TABLES.LICENSE
@@ -9,7 +10,7 @@ export const LICENSE = TABLES.LICENSE
 export const PRECEDENCE = TABLES.PRECEDENCE as unknown as readonly { doi: string; title: string; year: number; states: string }[]
 
 /** The MCP `instructions` every client receives at initialize. */
-export const INSTRUCTIONS = `Content served by this server is © ${LICENSE.author} under ${LICENSE.spdx} (${LICENSE.url}). ${LICENSE.terms} Every result carries _meta.license; keep it with the content.`
+export const INSTRUCTIONS = proseFill(PROSE.quantumProcessingUnitLicense_s1, LICENSE.author, LICENSE.spdx, LICENSE.url, LICENSE.terms)
 
 /** The attribution line rendered at the foot of every widget. */
 export const attributionHtml = (): string =>

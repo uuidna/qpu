@@ -2,6 +2,7 @@
 // skillset (what a client must know to use it, the directions it tests itself in, the examples that are its documentation
 // and its tests, and the selftest that crosses it with the others). It is agnostic of the host: it never imports the
 // handler; the host hands it a context (the handler, the examples, the leads) at call time, so any MCP server can mount it.
+import { PROSE } from './prose-index.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 import type { Rpc, Check } from './audit.ts'
@@ -46,7 +47,7 @@ export const a432Specific = (tool: string) => {
 /** No params were given. The computation is unlimited at 432 Hz. A textbook example such as 440 Hz is a param, and this call did not pass one. A superposition that uses the tool does not pass one either. The quantum toolbox reflects the A432 harmonics on that answer. */
 export const unlimited = () => ({
   phase: 'unlimited' as const, params: false as const, dependent: false as const, hz: 432 as const, example: null, bounded: false as const, unlimited: true as const,
-  says: 'no params: the computation is unlimited at 432 Hz. A textbook example such as 440 Hz is a param this call did not pass. A superposition that uses this tool does not pass one either.',
+  says: PROSE.quantumProcessingToolbox_says1,
 })
 export const defineTool = <T>(toolbox: string, spec: { name: string; description: string; inputSchema: object; run: (args: Record<string, unknown>, ctx: Context) => T; widget: (data: T) => string }): Tool => ({
   name: spec.name, toolbox, description: spec.description, inputSchema: spec.inputSchema,

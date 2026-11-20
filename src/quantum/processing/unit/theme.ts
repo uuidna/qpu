@@ -3,6 +3,7 @@
 // The a432 harmonic default is the program side of the unit, offered for anyone's free benefit under attribution; the QPU
 // framework, over UUID or by any other means, is the other side, licensed for commercial use by the author on request (see README, License).
 
+import { PROSE, proseFill } from '../prose-index.ts'
 import { TABLES } from '../tables-index.ts'
 import { GLAGOLITIC } from '../i18n.ts'
 /** the Glagolitic numeral of a seed (1..9) and of its reflection (10 − seed, 10 among them): the rosetta of the rays, one signal in two scripts */
@@ -40,12 +41,12 @@ export const resonance = (key: number = KEY) => {
   const unlocked = key === KEY && KEY % sum === 0
   const cmyk = unlocked ? { c: channels[0]!.value, m: channels[1]!.value, y: channels[2]!.value, k: channels[3]!.value } : null
   const angle = unlocked ? hue(KEY) + KEY / sum * 4 : null
-  return { key, dimensions: dimensions.length, versions: [...versions], channels, sum, quotient: KEY / sum, unlocked, cmyk, hue: angle, theorem: 'textbook_coil_green' as const, says: unlocked ? `eight UUID versions, eight dimensions, paired into cyan, magenta, yellow and black; the odd pairs are full and the even pairs are empty, and the key ${key} divides their sum ${sum}, so the resonance opens` : `eight UUID versions stay eight dimensions; the key ${key} does not open them` }
+  return { key, dimensions: dimensions.length, versions: [...versions], channels, sum, quotient: KEY / sum, unlocked, cmyk, hue: angle, theorem: 'textbook_coil_green' as const, says: unlocked ? proseFill(PROSE.quantumProcessingUnitTheme_s1, key, sum) : proseFill(PROSE.quantumProcessingUnitTheme_s2, key) }
 }
 export const coilColour = (key: number = KEY) => {
   const coin = hue(key), coil = coin + key / 9
   const rgb = rgbOfHsl(coil, 1, 0.5), cmyk = cmykOfRgb(rgb)
-  return { coin: { hue: coin, css: `hsl(${coin} 62% 44%)`, says: 'the a432 hue: the free, harmonic side' }, coil: { hue: coil, css: `hsl(${coil} 62% 44%)`, rgb, cmyk, cmykCss: `device-cmyk(${cmyk.c} ${cmyk.m} ${cmyk.y} ${cmyk.k})`, chakra: { index: 4, of: 7, name: 'heart' }, says: 'green: the coin\'s hue advanced by a ninth of the key, the heart chakra, cyan and yellow full in CMYK' }, theorem: 'textbook_coil_green', relation: `${key} % 360 + ${key} / 9 = ${coil}` }
+  return { coin: { hue: coin, css: `hsl(${coin} 62% 44%)`, says: PROSE.quantumProcessingUnitTheme_says3 }, coil: { hue: coil, css: `hsl(${coil} 62% 44%)`, rgb, cmyk, cmykCss: `device-cmyk(${cmyk.c} ${cmyk.m} ${cmyk.y} ${cmyk.k})`, chakra: { index: 4, of: 7, name: 'heart' }, says: PROSE.quantumProcessingUnitTheme_says4 }, theorem: 'textbook_coil_green', relation: `${key} % 360 + ${key} / 9 = ${coil}` }
 }
 const rgbOfCmyk = ({ c, m, y, k }: Cmyk): [number, number, number] => [Math.round(255 * (1 - c) * (1 - k)), Math.round(255 * (1 - m) * (1 - k)), Math.round(255 * (1 - y) * (1 - k))]
 export const accentOfUuid = (uuid: string): string => { const [r, g, b] = rgbOfCmyk(cmykOfUuid(uuid)); return `rgb(${r} ${g} ${b})` }
@@ -69,12 +70,12 @@ export const castRays = (uuids: readonly string[]) => {
   const seams = rings.slice(1).map((r, i) => { const prev = rings[i]!; const d = Math.abs(r.first - prev.last); const seam = Math.min(d, 360 - d); return { from: prev.uuid, to: r.uuid, seam, fits: seam > 0 } })
   const identical = rings.flatMap((r, i) => rings.slice(i + 1).filter((o) => o.ring === r.ring).map((o) => ({ a: r.uuid, b: o.uuid })))
   // every collision is a lead an MCP client works through: discover (the neighbours' rays), develop (the next step of the program, whose address has a new tail), optimise (the step with the greatest seam), all with the findings
-  const via = (a: string, b: string) => ({ discover: { tool: 'css', arguments: { uuids: [a, b] } }, develop: { tool: 'wave', arguments: { statement: `next step of ${b}`, uuid: b }, says: 'compile and execute the next step: its address has its own tail, which moves the ring' }, optimise: { tool: 'css', arguments: { uuids: [a, b] }, says: 'among the next steps, keep the one whose seam with its neighbour is greatest; the findings are the seams measured' }, workflow: ['discover', 'develop', 'optimise'] })
+  const via = (a: string, b: string) => ({ discover: { tool: 'css', arguments: { uuids: [a, b] } }, develop: { tool: 'wave', arguments: { statement: `next step of ${b}`, uuid: b }, says: PROSE.quantumProcessingUnitTheme_says5 }, optimise: { tool: 'css', arguments: { uuids: [a, b] }, says: PROSE.quantumProcessingUnitTheme_says6 }, workflow: ['discover', 'develop', 'optimise'] })
   const leads = [
-    ...seams.filter((s) => !s.fits).map((s) => ({ id: `ray-seam-${s.from.slice(0, 8)}-${s.to.slice(0, 8)}`, statement: `the rays of ${s.from} and ${s.to} collide at their seam (the last hue of one is the first of the next): entropy to harmonise`, status: 'open' as const, reason: 'a seam of zero draws two rays as one; the tail of either moves its ring', via: via(s.from, s.to) })),
-    ...identical.map((p) => ({ id: `ray-identical-${p.a.slice(0, 8)}-${p.b.slice(0, 8)}`, statement: `the rings of ${p.a} and ${p.b} are identical (the same program at the same angle): entropy to harmonise`, status: 'open' as const, reason: 'two addresses with one ring are indistinguishable by hue; a lead until the tail tells them apart', via: via(p.a, p.b) })),
+    ...seams.filter((s) => !s.fits).map((s) => ({ id: `ray-seam-${s.from.slice(0, 8)}-${s.to.slice(0, 8)}`, statement: proseFill(PROSE.quantumProcessingUnitTheme_statement7, s.from, s.to), status: 'open' as const, reason: PROSE.quantumProcessingUnitTheme_reason8, via: via(s.from, s.to) })),
+    ...identical.map((p) => ({ id: `ray-identical-${p.a.slice(0, 8)}-${p.b.slice(0, 8)}`, statement: proseFill(PROSE.quantumProcessingUnitTheme_statement9, p.a, p.b), status: 'open' as const, reason: PROSE.quantumProcessingUnitTheme_reason10, via: via(p.a, p.b) })),
   ]
-  return { blocks: rings.length, seams, collisions: leads.length, fits: leads.length === 0, rings: rings.map(({ ring: _r, ...rest }) => { void _r; return rest }), leads, theorems: ['textbook_hue_shift', 'textbook_hue_steps'], says: leads.length ? `${leads.length} collision(s): entropy exposed as leads` : `${rings.length} rays fit seamlessly: every seam above zero, no two rings identical` }
+  return { blocks: rings.length, seams, collisions: leads.length, fits: leads.length === 0, rings: rings.map(({ ring: _r, ...rest }) => { void _r; return rest }), leads, theorems: ['textbook_hue_shift', 'textbook_hue_steps'], says: leads.length ? `${leads.length} collision(s): entropy exposed as leads` : proseFill(PROSE.quantumProcessingUnitTheme_s11, rings.length) }
 }
 /** The stylesheet from the key: custom properties the widgets may use beside the host's own tokens, and the rules that draw
  * every block from its own custom properties — no script, motion only where the device allows it, off-screen blocks at no
@@ -83,25 +84,25 @@ export const castRays = (uuids: readonly string[]) => {
  *  poles as pyramids base to base are the octahedron, whose eight 60-degree faces and four equatorial gateways Euler closes (6 − 12 + 8 = 2). */
 export const ANGLES = TABLES.ANGLES
 export const getCss = (key: number = KEY): string => {
-  const accent = 'var(--qpu-accent, var(--a432-accent))', period = `var(--qpu-period, ${key * 9}ms)`
+  const accent = PROSE.quantumProcessingUnitTheme_s12, period = `var(--qpu-period, ${key * 9}ms)`
   const lines = [`:root {`, `  --a432-key: ${key};`, `  --a432-hue: ${hue(key)};`, ...HARMONICS.map((h, i) => `  --a432-${i + 1}: hsl(${hue(h)} 62% ${44 + i * 8}%);`), `  --a432-accent: hsl(${hue(key)} 62% 44%);`, `  --qpu-coin: hsl(${hue(key)} 62% 44%);`, `  --qpu-coil: hsl(${hue(key) + key / 9} 62% 44%);`, `  --qpu-coil-cmyk: ${(() => { const c = coilColour(key).coil.cmyk; return `${c.c} ${c.m} ${c.y} ${c.k}` })()};`, `}`,
-    `.qpu-block { border-left: 3px solid ${accent}; padding-left: var(--pad-sm, 8px); content-visibility: auto; contain-intrinsic-size: auto 240px; background: linear-gradient(90deg, color-mix(in oklab, ${accent} 6%, transparent), transparent 60%); }`,
-    `.qpu-block::before { content: ''; display: block; height: 3px; margin-bottom: var(--gap-sm, 6px); background: conic-gradient(from calc(var(--qpu-angle, 0) * 1deg) at 50% 120%, ${accent}, var(--qpu-tail, var(--a432-2)), ${accent}); }`,
-    `.qpu-block [data-status] { --qpu-status: var(--a432-3); border-left: 2px solid var(--qpu-status); padding-left: 4px; } .qpu-block [data-status="pass"] { --qpu-status: var(--a432-1); } .qpu-block [data-status="pending"] { --qpu-status: var(--a432-2); } .qpu-block [data-status="fail"] { --qpu-status: var(--a432-5); }`,
-    `@media (prefers-reduced-motion: no-preference) { .qpu-block::before { animation: qpu-vortex ${period} linear infinite; } @keyframes qpu-vortex { to { filter: hue-rotate(360deg); } } .qpu-block :is([data-status="pending"], [data-status="fail"]) { animation: qpu-status ${period} ease-in-out infinite alternate; } .qpu-block [data-status="fail"] { animation-duration: calc(${period} / 2); } @keyframes qpu-status { to { border-left-color: ${accent}; } } }`,
-    `@media (prefers-color-scheme: dark) { .qpu-block { background: linear-gradient(90deg, color-mix(in oklab, ${accent} 12%, transparent), transparent 60%); } }`,
-    `.qpu-hero { display: flex; align-items: flex-end; gap: var(--qpu-gap); height: calc(var(--qpu-gap) * var(--qpu-amps, 1)); } .qpu-amp { flex: 1 1 0; background: var(--qpu-accent); height: calc(var(--qpu-amp, 0) * 100%); } .qpu-type { color: var(--qpu-ink, currentColor); margin-right: var(--qpu-gap); }`,
-    `@media (prefers-reduced-motion: no-preference) { .qpu-amp { animation: qpu-superposition var(--qpu-period) ease-in-out infinite alternate; animation-delay: calc(var(--qpu-amp-at, 0) / var(--qpu-amps, 1) * var(--qpu-period) * -1); } @keyframes qpu-superposition { to { height: calc(var(--qpu-amp-to, 1) * 100%); } } }`,
-    `@media print { .qpu-block::before, .qpu-block [data-status], .qpu-amp { animation: none; } } :root[data-power="battery"] .qpu-block::before, :root[data-power="battery"] .qpu-block [data-status], :root[data-power="battery"] .qpu-amp { animation: none; }`,
-    `.qpu-program { background: var(--qpu-program); border-radius: 50%; aspect-ratio: 1; width: 3em; transform: rotate(calc(var(--qpu-shift, 0) * 1deg)); }`,
-    `.qpu-scan { background-image: var(--qpu-frames); background-size: ${36 * 100}% 100%; background-repeat: no-repeat; animation: qpu-scan ${period} steps(36, end) infinite; min-height: 1.5em; } @keyframes qpu-scan { to { background-position: 100% 0; } }`,
-    `@supports (animation-delay: random(0ms, 1ms)) { .qpu-block::before, .qpu-scan { animation-delay: random(0ms, ${key * 9}ms); } }`,
-    `.qpu-block[data-phase]::before, .qpu-scan[data-phase] { animation-delay: calc(var(--qpu-phase, 0) * -1ms); }`,
-    `.qpu-block[data-coil] { --qpu-accent: var(--qpu-coil) !important; } .qpu-block[data-coin] { --qpu-accent: var(--qpu-coin) !important; }`, // important: the block's own accent is inline, and only an important rule outranks it
+    proseFill(PROSE.quantumProcessingUnitTheme_s13, accent, accent),
+    proseFill(PROSE.quantumProcessingUnitTheme_s14, accent, accent),
+    PROSE.quantumProcessingUnitTheme_s15,
+    proseFill(PROSE.quantumProcessingUnitTheme_s16, period, period, period, accent),
+    proseFill(PROSE.quantumProcessingUnitTheme_s17, accent),
+    PROSE.quantumProcessingUnitTheme_s18,
+    PROSE.quantumProcessingUnitTheme_s19,
+    PROSE.quantumProcessingUnitTheme_s20,
+    PROSE.quantumProcessingUnitTheme_s21,
+    proseFill(PROSE.quantumProcessingUnitTheme_s22, 36 * 100, period),
+    proseFill(PROSE.quantumProcessingUnitTheme_s23, key * 9),
+    PROSE.quantumProcessingUnitTheme_s24,
+    PROSE.quantumProcessingUnitTheme_s25, // important: the block's own accent is inline, and only an important rule outranks it
     // the CSS streams resulting as rays: six rays at the 60-degree angle (collision free) and four gateways at 90 degrees, every one from the block's own hue and angle
-    `.qpu-rays { background: conic-gradient(from calc(var(--qpu-angle, 0) * 1deg), ${Array.from({ length: 360 / ANGLES.streams }, (_, i) => `${accent} ${i * ANGLES.streams}deg ${i * ANGLES.streams + 6}deg, transparent ${i * ANGLES.streams + 6}deg ${(i + 1) * ANGLES.streams}deg`).join(', ')}); }`,
-    `.qpu-rays::after, .qpu-block[data-rays]::after { content: var(--qpu-signal, '') ' ' var(--qpu-signal-reflected, '') ' · ' var(--qpu-signal-digits, ''); font-family: serif; letter-spacing: 0.1em; }`,
-    `.qpu-gateways { background: conic-gradient(from calc(var(--qpu-angle, 0) * 1deg), ${Array.from({ length: 360 / ANGLES.gateways }, (_, i) => `var(--qpu-ink, currentColor) ${i * ANGLES.gateways}deg ${i * ANGLES.gateways + 3}deg, transparent ${i * ANGLES.gateways + 3}deg ${(i + 1) * ANGLES.gateways}deg`).join(', ')}); }`]
+    proseFill(PROSE.quantumProcessingUnitTheme_s26, Array.from({ length: 360 / ANGLES.streams }, (_, i) => proseFill(PROSE.quantumProcessingUnitTheme_s27, accent, i * ANGLES.streams, i * ANGLES.streams + 6, i * ANGLES.streams + 6, (i + 1) * ANGLES.streams)).join(', ')),
+    PROSE.quantumProcessingUnitTheme_s28,
+    proseFill(PROSE.quantumProcessingUnitTheme_s29, Array.from({ length: 360 / ANGLES.gateways }, (_, i) => proseFill(PROSE.quantumProcessingUnitTheme_s30, i * ANGLES.gateways, i * ANGLES.gateways + 3, i * ANGLES.gateways + 3, (i + 1) * ANGLES.gateways)).join(', '))]
   return lines.join('\n') + '\n'
 }
 
@@ -132,14 +133,14 @@ export const createTheme = (key: number = KEY, origin = 'https://qpu.uuidna.com'
     ...Object.fromEntries(hues.map((h, i) => [`chart-${i + 1}`, `hsl(${h} 62% 60%)`])),
   }, 'oklch(0.205 0 0)')
   const block = (sel: string, vars: Record<string, string>) => `${sel} {\n${Object.entries(vars).map(([k, v]) => `  --${k}: ${v};`).join('\n')}\n}`
-  const themeInline = ['--font-sans: var(--font-sans)', '--font-heading: var(--font-sans)', '--font-mono: var(--font-mono)', ...Object.keys(light).filter((k) => k !== 'radius').map((k) => `--color-${k}: var(--${k})`), '--radius-sm: calc(var(--radius) * 0.6)', '--radius-md: calc(var(--radius) * 0.8)', '--radius-lg: var(--radius)', '--radius-xl: calc(var(--radius) * 1.4)', '--radius-2xl: calc(var(--radius) * 1.8)']
-  const globalsCss = [`@import "tailwindcss";`, `@import "tw-animate-css";`, `@import "shadcn/tailwind.css";`, ``, `@custom-variant dark (&:is(.dark *));`, ``, `@theme inline {\n${themeInline.map((l) => `  ${l};`).join('\n')}\n}`, ``, `/* the a432 settings: the theme hue ${angle} (${key} mod 360), the chart colours the harmonics ${HARMONICS.join(', ')} Hz, the radius ${radius} (${key} / 1000) */`, block(':root', light), ``, block('.dark', dark), ``, `@layer base { * { @apply border-border outline-ring/50; } body { @apply bg-background text-foreground; } }`, ``, `/* the a432 stylesheet: every QPU block draws itself from its address */`, getCss(key)].join('\n')
+  const themeInline = [PROSE.quantumProcessingUnitTheme_s31, PROSE.quantumProcessingUnitTheme_s32, PROSE.quantumProcessingUnitTheme_s33, ...Object.keys(light).filter((k) => k !== 'radius').map((k) => `--color-${k}: var(--${k})`), '--radius-sm: calc(var(--radius) * 0.6)', '--radius-md: calc(var(--radius) * 0.8)', '--radius-lg: var(--radius)', '--radius-xl: calc(var(--radius) * 1.4)', '--radius-2xl: calc(var(--radius) * 1.8)']
+  const globalsCss = [`@import "tailwindcss";`, `@import "tw-animate-css";`, `@import "shadcn/tailwind.css";`, ``, `@custom-variant dark (&:is(.dark *));`, ``, `@theme inline {\n${themeInline.map((l) => `  ${l};`).join('\n')}\n}`, ``, proseFill(PROSE.quantumProcessingUnitTheme_s34, angle, key, HARMONICS.join(', '), radius, key), block(':root', light), ``, block('.dark', dark), ``, PROSE.quantumProcessingUnitTheme_s35, ``, PROSE.quantumProcessingUnitTheme_s36, getCss(key)].join('\n')
   const componentsJson = { $schema: 'https://ui.shadcn.com/schema.json', style: 'base-nova', rsc: true, tsx: true, tailwind: { config: '', css: 'app/globals.css', baseColor: 'neutral', cssVariables: true, prefix: '' }, iconLibrary: 'lucide', aliases: { components: '@/components', utils: '@/lib/utils', ui: '@/components/ui', lib: '@/lib', hooks: '@/hooks' }, registries: { '@qpu': `${origin}/r/{name}.json` } }
   const item = {
-    $schema: 'https://ui.shadcn.com/schema/registry-item.json', name: 'qpu-create', type: 'registry:item', title: 'QPU create (a432)', description: `shadcn create decided by the a432 settings: the theme hue ${angle}, the chart colours the harmonics, the radius ${radius}; the project initialised with the QPU registry`,
+    $schema: 'https://ui.shadcn.com/schema/registry-item.json', name: 'qpu-create', type: 'registry:item', title: 'QPU create (a432)', description: proseFill(PROSE.quantumProcessingUnitTheme_description37, angle, radius),
     dependencies: ['lucide-react', 'next-themes', 'class-variance-authority', 'tw-animate-css'],
     registryDependencies: registryItems.map((n) => `${origin}/r/${n}.json`),
-    cssVars: { theme: { 'font-sans': 'Inter, ui-sans-serif, system-ui, sans-serif', radius }, light, dark },
+    cssVars: { theme: { 'font-sans': PROSE.quantumProcessingUnitTheme_s38, radius }, light, dark },
     files: [{ path: 'app/globals.css', type: 'registry:file', target: 'app/globals.css', content: globalsCss }, { path: 'components.json', type: 'registry:file', target: 'components.json', content: JSON.stringify(componentsJson, null, 2) }],
     meta: { create: settings, key, hue: angle, harmonics: HARMONICS, theorem: 'textbook_create_hue' },
   }
@@ -147,7 +148,7 @@ export const createTheme = (key: number = KEY, origin = 'https://qpu.uuidna.com'
     settings, key, hue: angle, chartHues: hues, radius, theorem: 'textbook_create_hue', item,
     url: 'https://ui.shadcn.com/create' as const,
     commands: { init: `npx shadcn@latest init ${origin}/r/qpu-create.json`, add: `npx shadcn@latest add ${origin}/r/qpu-create.json`, v0: `https://v0.dev/chat/api/open?url=${encodeURIComponent(`${origin}/r/qpu-create.json`)}`, page: 'https://ui.shadcn.com/create' as const },
-    says: `shadcn create via the a432 settings and CSS: ten settings decided by the key ${key} (hue ${angle}, harmonics ${hues.join('/')}, radius ${radius}), one registry item that initialises the project with the QPU registry`,
+    says: proseFill(PROSE.quantumProcessingUnitTheme_says39, key, angle, hues.join('/'), radius),
   }
 }
 
@@ -164,7 +165,7 @@ export const keepMeasured = <R extends object>(rows: readonly R[]) => rows.filte
  *  shadow, and reversing that returns the notes, so the shadow verifies them without a second address (textbook_scan_stream). */
 const decodeMedia = (css: string) => {
   const token = css.match(/--qpu-media:\s*([0-9a-f]{8})/)?.[1]
-  if (!token) throw new Error('a media stylesheet carries --qpu-media as eight hex digits')
+  if (!token) throw new Error(PROSE.quantumProcessingUnitTheme_s40)
   const hz = (css.match(/--qpu-audio:\s*([^;]+)/)?.[1] ?? '').match(/(\d+)Hz/g)?.map((s) => parseInt(s, 10)) ?? []
   const notes = (['a', 'b', 'c', 'd'] as const).map((name, i) => {
     const bits = parseInt(css.match(new RegExp(`--qpu-note-${name}:\\s*(\\d+)`))?.[1] ?? '', 10)
@@ -175,7 +176,7 @@ const decodeMedia = (css: string) => {
   return { token, notes, vibrate, agrees: notes.every((n, i) => n.agrees && n.hz === HARMONICS[i]) && vibrate.length === notes.length && vibrate.every((ms, i) => ms === notes[i]!.bits) }
 }
 export const media = (tail: string) => {
-  if (!/^[0-9a-f]{12}$/.test(tail)) throw new Error('the tail is 12 hex: four 8-bit notes and the flags')
+  if (!/^[0-9a-f]{12}$/.test(tail)) throw new Error(PROSE.quantumProcessingUnitTheme_s41)
   const token = tail.slice(0, 8), flags = parseInt(tail.slice(8), 16)
   const witnesses = (['A', 'B', 'C', 'D'] as const).map((name, i) => {
     const hex = token.slice(i * 2, i * 2 + 2), bits = parseInt(hex, 16)
@@ -198,5 +199,5 @@ export const compareCss = (qpu: { bytes: number; gzip: number }, answers: readon
   const ratio = (a: number, b: number) => (b > 0 ? Math.round((a / b) * 100) / 100 : null)
   const rows = CSS_FRAMEWORKS.map((f) => { const a = answers.find((x) => x.id === f.id); return a && a.status === 200 && a.bytes > 0 ? { id: f.id, name: f.name, url: f.url, bytes: a.bytes, gzip: a.gzip, ratio: ratio(a.bytes, qpu.bytes), ratioGzip: ratio(a.gzip, qpu.gzip) } : { id: f.id, name: f.name, url: f.url, missing: a ? `HTTP ${a.status}` : 'not fetched' } })
   const measured = keepMeasured(rows)
-  return { qpu, rows, measured: measured.length, says: measured.length ? `the QPU stylesheet is ${qpu.bytes} bytes (${qpu.gzip} gzipped); ${measured.map((r) => `${r.name} ${r.ratio}× raw, ${r.ratioGzip}× gzipped`).join('; ')}: size only, render time not measured` : 'no framework fetched' }
+  return { qpu, rows, measured: measured.length, says: measured.length ? proseFill(PROSE.quantumProcessingUnitTheme_s42, qpu.bytes, qpu.gzip, measured.map((r) => `${r.name} ${r.ratio}× raw, ${r.ratioGzip}× gzipped`).join('; ')) : 'no framework fetched' }
 }

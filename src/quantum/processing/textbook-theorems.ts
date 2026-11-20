@@ -4,6 +4,7 @@
 // the relation is a Lean theorem the kernel checks, and the example names its theorem. The theorems are written in Lean, in
 // Qpu/General/Textbook.lean: the sentence and the examples are the theorem's inline doc. textbook-index.ts is rendered from
 // that file (lake run index) and this module reads it; nothing here states a theorem.
+import { PROSE, proseFill } from './prose-index.ts'
 import { evaluate } from './expressions.ts'
 import { TEXTBOOK_INDEX } from './textbook-index.ts'
 import type { TextbookRow } from './textbook-parse.ts'
@@ -45,7 +46,7 @@ const reflection = (t: TextbookTheorem): Reflection => {
       const [lo, hi] = op === '≤' || op === '<' ? [a, b] : [b, a]
       if (op === '≤' || op === '≥') return { s: `σ - ${hi} ≤ σ - ${lo}`, p: `Nat.sub_le_sub_left ${proof} σ` }
       const h = `hσ${extra.length}`; extra.push(`(${h} : ${hi} ≤ σ)`)
-      return { s: `σ - ${hi} < σ - ${lo}`, p: `Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le ${proof} ${h}) ${proof}` }
+      return { s: `σ - ${hi} < σ - ${lo}`, p: proseFill(PROSE.quantumProcessingTextbookTheorems_p1, proof, h, proof) }
     }
     return null
   }
@@ -82,7 +83,7 @@ export const getReflections = (kernel: ReadonlySet<string>, books: Readonly<Reco
   const count = (suffix: string) => ({ generated: rows.filter((r) => r.names.includes(r.key + suffix)).length, accepted: rows.filter((r) => kernel.has(r.key + suffix)).length })
   const generated = rows.reduce((n, r) => n + r.names.length, 0), accepted = rows.reduce((n, r) => n + r.names.filter((k) => kernel.has(k)).length, 0)
   const reflected = count('_reflected'), converse = (s: string) => rows.filter((r) => r.converse === s).length, cited = rows.filter((r) => r.books > 0)
-  return { theorems: rows.length, reflected: reflected.accepted, unreflected: rows.filter((r) => !kernel.has(`${r.key}_reflected`)).map((r) => r.key), contrapositives: count('_contrapositive'), converses: { total: rows.filter((r) => r.converse).length, proved: converse('proved'), refuted: converse('refuted'), open: converse('open'), accepted: count('_converse').accepted + count('_converse_refuted').accepted }, generated, accepted, byShape: rows.reduce<Record<string, number>>((a, r) => ({ ...a, [r.shape]: (a[r.shape] ?? 0) + 1 }), {}), books: { cited: cited.length, routed: cited.reduce((n, r) => n + r.books, 0), stated: 0 }, rows: rows.map(({ lean: _, ...r }) => r), theorem: 'textbook_reflection_by_shape', says: `${reflected.accepted} of ${rows.length} textbook theorems with a kernel-accepted reflection by shape; converses ${converse('proved')} proved, ${converse('refuted')} refuted by a counterexample, ${converse('open')} open; ${accepted} of ${generated} generated theorems accepted; ${cited.length} theorems reached by a book of the sealed catalogue, no book's own statements sealed yet` }
+  return { theorems: rows.length, reflected: reflected.accepted, unreflected: rows.filter((r) => !kernel.has(`${r.key}_reflected`)).map((r) => r.key), contrapositives: count('_contrapositive'), converses: { total: rows.filter((r) => r.converse).length, proved: converse('proved'), refuted: converse('refuted'), open: converse('open'), accepted: count('_converse').accepted + count('_converse_refuted').accepted }, generated, accepted, byShape: rows.reduce<Record<string, number>>((a, r) => ({ ...a, [r.shape]: (a[r.shape] ?? 0) + 1 }), {}), books: { cited: cited.length, routed: cited.reduce((n, r) => n + r.books, 0), stated: 0 }, rows: rows.map(({ lean: _, ...r }) => r), theorem: 'textbook_reflection_by_shape', says: proseFill(PROSE.quantumProcessingTextbookTheorems_says2, reflected.accepted, rows.length, converse('proved'), converse('refuted'), converse('open'), accepted, generated, cited.length) }
 }
 /**
  * Full-text search over textbook theorems: each theorem is a real scenario whose `says` uses respected terminology
@@ -139,9 +140,9 @@ export const searchTextbookPrograms = (
     theorem: 'textbook_search_proven' as const,
     says: holds
       ? (hits.length === 0
-        ? `no textbook scenario matches ${JSON.stringify(query)}; terminology search returned no usable program`
-        : `${usable.length} of ${hits.length} matching theorem(s) return ${programs.length} usable program(s); each theorem is a textbook scenario whose respected terminology full-text search finds`)
-      : 'a matching theorem named no replayable example program',
+        ? proseFill(PROSE.quantumProcessingTextbookTheorems_s3, JSON.stringify(query))
+        : proseFill(PROSE.quantumProcessingTextbookTheorems_s4, usable.length, hits.length, programs.length))
+      : PROSE.quantumProcessingTextbookTheorems_s5,
   }
 }
 

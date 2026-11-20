@@ -1,6 +1,7 @@
 // Each RSA case is one UUID program. The case builds its integer from the primes it was created with,
 // factors that integer, and the factors are those primes. The thousand-bit mint is the example. The
 // next step rotates the program one place. The handle and the tail stay. Nothing is written.
+import { PROSE, proseFill } from '../../../processing/prose-index.ts'
 import { birth } from '../../../fs/index.ts'
 import { next, uuid } from '../../index.ts'
 import { createImpossible, decodeImpossible, orderFinding, seededTrapdoor, shorReduction } from '../../../processing/algorithms.ts'
@@ -107,8 +108,8 @@ const compute = () => {
     rows,
     holds,
     says: holds
-      ? `${rows.length} RSA programs. The thousand-bit integer is generated with its primes, factored, and the factors are those primes. Each other case is its own program and checks the same way. The next step rotates the program one place. The handle and the tail stay.`
-      : 'an RSA program did not factor the integer it was created with',
+      ? proseFill(PROSE.quantumUuidProgramsRsaIndex_s1, rows.length)
+      : PROSE.quantumUuidProgramsRsaIndex_s2,
   }
 }
 
@@ -122,5 +123,5 @@ export const rsaDoor = (asked: unknown) => {
   const id = typeof asked === 'string' ? asked : ''
   const row = all.rows.find((item) => item.id === id)
   if (!row) throw new Error(`rsa takes true or one of ${all.rows.map((item) => item.id).join(', ')}`)
-  return { ...all, cases: 1, rows: [row], holds: row.holds, says: row.holds ? `the ${id} program factors the integer it generated, and the factors are the primes it was created with` : 'an RSA program did not factor the integer it was created with' }
+  return { ...all, cases: 1, rows: [row], holds: row.holds, says: row.holds ? proseFill(PROSE.quantumUuidProgramsRsaIndex_s3, id) : PROSE.quantumUuidProgramsRsaIndex_s2 }
 }

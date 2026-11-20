@@ -2,10 +2,11 @@
 // Unix millisecond one, every other version none. The time bits read as an integer and as a date, the space bits as everything else, the
 // version and variant counted apart, and the timeless UUID — the same UUID with its time zeroed, version and variant kept — so the place a
 // UUID names is read apart from the moment it was made. Pure.
+import { PROSE, proseFill } from './prose-index.ts'
 const GREGORIAN_TO_UNIX_100NS = 0x01b21dd213814000n
 export const splitUuid = (uuid: string) => {
   const hex = uuid.toLowerCase().replace(/-/g, '')
-  if (!/^[0-9a-f]{32}$/.test(hex)) throw new Error('split takes a UUID of 32 hex digits')
+  if (!/^[0-9a-f]{32}$/.test(hex)) throw new Error(PROSE.quantumProcessingSplit_s1)
   const version = parseInt(hex[12]!, 16)
   const variantBits = 2
   let time: bigint | null = null, timeBits = 0, zeroed = hex
@@ -17,5 +18,5 @@ export const splitUuid = (uuid: string) => {
   const iso = ms === null || ms < -8640000000000000n || ms > 8640000000000000n ? null : new Date(Number(ms)).toISOString()
   const dash = (h: string) => `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`
   const spaceBits = 128 - timeBits - 4 - variantBits
-  return { uuid: dash(hex), version, timeBits, versionBits: 4, variantBits, spaceBits, time: time === null ? null : time.toString(), iso, timeless: dash(zeroed), timed: timeBits > 0, says: timeBits ? `version ${version}: ${timeBits} bits of time (${iso}), ${spaceBits} of space, 4 of version and ${variantBits} of variant make 128; the timeless UUID is the place without the moment` : `version ${version} carries no time: all ${spaceBits} bits are space, the UUID is already timeless`, theorem: 'textbook_uuid_time_space' }
+  return { uuid: dash(hex), version, timeBits, versionBits: 4, variantBits, spaceBits, time: time === null ? null : time.toString(), iso, timeless: dash(zeroed), timed: timeBits > 0, says: timeBits ? proseFill(PROSE.quantumProcessingSplit_s2, version, timeBits, iso, spaceBits, variantBits) : proseFill(PROSE.quantumProcessingSplit_s3, version, spaceBits), theorem: 'textbook_uuid_time_space' }
 }

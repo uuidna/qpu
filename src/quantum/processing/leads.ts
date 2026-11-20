@@ -1,6 +1,7 @@
 // Every lead on quantumai.google, its PDFs and the quantumlib repositories, with its status and serving tool: served, partial, blocked (the
 // reason dated), out of scope (not technical content) or open; every sitemap page no hand-written lead names is a lead through leads { sitemap }.
 
+import { PROSE, proseFill } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
 import * as cirq from './cirq.ts'
 import { recomputeClay } from './clay-register.ts'
@@ -66,9 +67,9 @@ const CIRQ_EXPORT_ALIASES: Readonly<Record<string, keyof typeof cirq>> = {
   Result: 'Simulator',
 }
 const EXTRA_CIRQ_SYMBOLS: readonly [symbol: string, exported: keyof typeof cirq, note: string][] = [
-  ['QuantumVirtualMachine', 'QuantumVirtualMachine', 'simulated hardware validating device constraints and applying chip noise'],
+  ['QuantumVirtualMachine', 'QuantumVirtualMachine', PROSE.quantumProcessingLeads_s1],
   ['exponentiateGate', 'exponentiateGate', 'exp(−iθG) for every gate'],
-  ['seededRandom', 'seededRandom', 'deterministic mulberry32 PRNG for reproducible sampling'],
+  ['seededRandom', 'seededRandom', PROSE.quantumProcessingLeads_s2],
   ['PhasedXZGate', 'phasedXZGate', 'Z^{−a} X^x Z^{a+z}: every one-qubit unitary'],
 ]
 const CIRQ_IMPLEMENTED = new Map(
@@ -95,8 +96,8 @@ const OTHER_VENDORS = TABLES.OTHER_VENDORS as unknown as Record<string, string>
 /** The lead one page of the sitemap makes, by what the page is and what this repository implements of it. */
 const sitemapLead = (path: string, lastmod: string): Lead => {
   const base = { id: `page:${path || 'home'}`, source: `quantumai.google/${path}`, lastmod }
-  const open = (statement: string): Lead => ({ ...base, statement, status: 'open', reason: `in the sitemap (lastmod ${lastmod}); fetchable; no tool follows this page yet` })
-  if (path.startsWith('?hl=')) return { ...base, statement: `the home page in another language (${path.slice(4)})`, status: 'out_of_scope', reason: 'a language variant of the home page; the English page is the lead' }
+  const open = (statement: string): Lead => ({ ...base, statement, status: 'open', reason: proseFill(PROSE.quantumProcessingLeads_reason3, lastmod) })
+  if (path.startsWith('?hl=')) return { ...base, statement: proseFill(PROSE.quantumProcessingLeads_statement4, path.slice(4)), status: 'out_of_scope', reason: PROSE.quantumProcessingLeads_reason5 }
   if (path === 'robots.txt') return { ...base, statement: 'the crawler rules file', status: 'out_of_scope', reason: 'site plumbing, not content' }
   if (/^google[0-9a-f]+$/.test(path)) return { ...base, statement: 'a site-verification token page', status: 'out_of_scope', reason: 'site plumbing, not content' }
   const reference = /^reference\/(python|cc)\/([^/]+)\/(.+)$/.exec(path)
@@ -104,20 +105,20 @@ const sitemapLead = (path: string, lastmod: string): Lead => {
     const [, , pkg, symbol] = reference as unknown as [string, string, string, string]
     if (pkg === 'cirq') {
       const found = CIRQ_IMPLEMENTED.get(symbol)
-      if (found) return { ...base, statement: `API reference of cirq.${symbol}; implemented here as ${found.exported}${found.note ? ` (${found.note})` : ''}`, status: 'served', tool: 'circuit' }
-      return open(`API reference of cirq.${symbol.replace(/\//g, '.')}, not implemented here`)
+      if (found) return { ...base, statement: proseFill(PROSE.quantumProcessingLeads_statement6, symbol, found.exported, found.note ? ` (${found.note})` : ''), status: 'served', tool: 'circuit' }
+      return open(proseFill(PROSE.quantumProcessingLeads_s7, symbol.replace(/\//g, '.')))
     }
     if (pkg === 'cirq_google') {
-      if (symbol === 'Sycamore' || symbol === 'Sycamore23' || symbol === 'devices/known_devices') return { ...base, statement: `API reference of cirq_google.${symbol.replace(/\//g, '.')}; the device is built here from the same grid`, status: 'served', tool: 'processor' }
-      return open(`API reference of cirq_google.${symbol.replace(/\//g, '.')}, not implemented here`)
+      if (symbol === 'Sycamore' || symbol === 'Sycamore23' || symbol === 'devices/known_devices') return { ...base, statement: proseFill(PROSE.quantumProcessingLeads_statement8, symbol.replace(/\//g, '.')), status: 'served', tool: 'processor' }
+      return open(proseFill(PROSE.quantumProcessingLeads_s9, symbol.replace(/\//g, '.')))
     }
     if (pkg === 'openfermion') {
-      if (symbol === 'transforms/jordan_wigner') return { ...base, statement: 'API reference of openfermion.transforms.jordan_wigner; one fermionic term of ladder operators becomes Pauli strings', status: 'served', tool: 'chemistry-simulation' }
-      if (symbol === 'chem/MolecularData' || symbol === 'ops/QubitOperator') return { ...base, statement: `API reference of openfermion.${symbol.replace(/\//g, '.')}; for H₂ in STO-3G its content (the integrals, the Pauli-term Hamiltonian) is computed here`, status: 'partial', tool: 'chemistry-simulation', reason: 'one molecule in its minimal basis is computed here; the general class is not implemented' }
-      return open(`API reference of openfermion.${symbol.replace(/\//g, '.')}, not implemented here`)
+      if (symbol === 'transforms/jordan_wigner') return { ...base, statement: PROSE.quantumProcessingLeads_statement10, status: 'served', tool: 'chemistry-simulation' }
+      if (symbol === 'chem/MolecularData' || symbol === 'ops/QubitOperator') return { ...base, statement: proseFill(PROSE.quantumProcessingLeads_statement11, symbol.replace(/\//g, '.')), status: 'partial', tool: 'chemistry-simulation', reason: PROSE.quantumProcessingLeads_reason12 }
+      return open(proseFill(PROSE.quantumProcessingLeads_s13, symbol.replace(/\//g, '.')))
     }
     if (pkg in OTHER_VENDORS) return { ...base, statement: `API reference of ${pkg}.${symbol.replace(/\//g, '.')}`, status: 'out_of_scope', reason: `${OTHER_VENDORS[pkg]}, not Google Quantum AI's layer` }
-    return open(`API reference of ${pkg}.${symbol.replace(/\//g, '.')}, not implemented here`)
+    return open(proseFill(PROSE.quantumProcessingLeads_s14, pkg, symbol.replace(/\//g, '.')))
   }
   return open(`the page ${path}`)
 }
@@ -131,7 +132,7 @@ export const sitemapLeads = (urls: readonly { loc: string; lastmod?: string }[])
 }
 
 /** Every relation of the Clay register as a lead served by the clay tool, its integers facts for the wave. */
-const CLAY_LEADS: readonly Lead[] = recomputeClay().relations.map((r) => ({ id: `clay-${r.name}`, source: `src/quantum/processing/unit/lean/Qpu/General/Clay.lean ${r.name}`, statement: `${r.name}: ${r.statement} = ${r.sides[0]!.value} (${r.bits} bits, seed ${1 + ((r.sides[0]!.value - 1) % 9)})`, status: 'served', tool: 'clay' }))
+const CLAY_LEADS: readonly Lead[] = recomputeClay().relations.map((r) => ({ id: `clay-${r.name}`, source: proseFill(PROSE.quantumProcessingLeads_source15, r.name), statement: `${r.name}: ${r.statement} = ${r.sides[0]!.value} (${r.bits} bits, seed ${1 + ((r.sides[0]!.value - 1) % 9)})`, status: 'served', tool: 'clay' }))
 const STANDARD_LEADS: readonly Lead[] = quantumStandardLeads().map(({ id, source, statement, status, tool, reason, run }) => ({ id, source, statement, status, tool, ...(reason ? { reason } : {}), ...(run ? { run } : {}) }))
 
 // every lead Payload holds, the ones this module computes taking their place: Payload is the source, the generated index its copy
@@ -187,19 +188,19 @@ export const combineLeads = (leads: readonly CellLead[], referrer?: string) => {
     radices: [...RADICES], places: PLACES, dimensions: DIMENSIONS.map((d) => [...d]), total: CELLS, placed: leads.length, filled: filled.length, empty: CELLS - filled.length, cells,
     clusters: filled.map((c) => ({ ...c, ids: byCell[c.cell]! })).sort((a, b) => b.count - a.count || a.cell - b.cell),
     default: { cell, from: fromReferrer ? 'referrer' : 'a432', labels: labelsOfCell(cell), count: byCell[cell]!.length },
-    rosetta: { values, grid, plan: values.map((input) => ({ name: 'run_sequence', arguments: { input } })), conventions: { tree: 'the digital root, 1 + (n − 1) mod 9', unit: 'the last decimal digit, n mod 10', both: 'seed + reflection ≡ 0 (mod 10)' } },
+    rosetta: { values, grid, plan: values.map((input) => ({ name: 'run_sequence', arguments: { input } })), conventions: { tree: 'the digital root, 1 + (n − 1) mod 9', unit: PROSE.quantumProcessingLeads_unit16, both: 'seed + reflection ≡ 0 (mod 10)' } },
     theorem: 'textbook_lead_cells',
-    says: `${leads.length} lead(s) in ${filled.length} of ${CELLS} cells (${CELLS - filled.length} empty); default cell ${cell} (${labelsOfCell(cell)}) from ${fromReferrer ? 'the referrer' : 'the a432 key'}`,
+    says: proseFill(PROSE.quantumProcessingLeads_says17, leads.length, filled.length, CELLS, CELLS - filled.length, cell, labelsOfCell(cell), fromReferrer ? 'the referrer' : 'the a432 key'),
   }
 }
 
 // The session door: every user directive of every session decides what is next and how. Pure: the client reads the transcripts and Open work.
 const SESSION_RULES: readonly [string, RegExp][] = [
-  ['raw git commit or push in a shell', /\bgit (commit|push)\b/],
+  [PROSE.quantumProcessingLeads_s18, /\bgit (commit|push)\b/],
   ['--no-verify', /--no-verify/],
   ['killing by name', /\b(pkill|killall)\b/],
   ['raw npm or pnpm install', /\b(npm|pnpm)( --dir \S+)? (install|i|add|update)\b/],
-  ['String.replace with a string on a tree file', /\.replace\([^,]+,\s*['"`][^)]*\$[&'`]/],
+  [PROSE.quantumProcessingLeads_s19, /\.replace\([^,]+,\s*['"`][^)]*\$[&'`]/],
   ['raw createEntries from a script', /createEntries/],
 ]
 /** the standing rules every item inherits as its acceptance, never restated per request */
@@ -207,8 +208,8 @@ const SESSION_RULES: readonly [string, RegExp][] = [
 const QUALITY = /\b(clean\w*|fold\w*|dedup\w*|duplicat\w*|standard\w*|style|lint\w*|speed\w*|fast\w*|slow\w*|perform\w*|simplif\w*|consolidat\w*|entropy|refactor\w*|quality|efficien\w*|defragment\w*|remov\w*)\b/i
 // a proposal states an act when its title opens on a verb, not on a question word, a pronoun or a link, and names three stems at least
 const NOT_AN_ACT = /^(why|how|what|where|when|who|which|is|are|do|does|did|can|could|would|should|shall|will|and|but|or|i|you|we|it|this|that|these|those|there|so|if|then|also|ok|okay|yes|no|now|the|a|an|https?:)\b/i
-const STANDING = ['a textbook theorem and an example with expect per export', 'hooks and validations generated, never hand-held', 'no added collection', 'no caps on reads or walks', 'a Google CL description', 'measured by the gate', 'recorded in Payload Open work']
-const STOP = new Set('this that with from have what when then them they there their will would should could also just into only each every more most some such than very your about after before which while where being been were make made does done need needs want like please sure okay thing things using used here know think even much many well same other another again still because these those over under were what whats dont doesnt isnt cant wont didnt'.split(' '))
+const STANDING = [PROSE.quantumProcessingLeads_s20, PROSE.quantumProcessingLeads_s21, 'no added collection', 'no caps on reads or walks', 'a Google CL description', 'measured by the gate', 'recorded in Payload Open work']
+const STOP = new Set(PROSE.quantumProcessingLeads_s22.split(' '))
 const leadStems = (text: string): Set<string> => new Set(text.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 4 && !STOP.has(w) && !/^\d+$/.test(w)).map((w) => w.replace(/(?:ings|ing|edly|ed|es|s|ly)$/, (m) => (w.length - m.length >= 4 ? '' : m))))
 type Directive = { session: string; at: string; text: string }
 export type SessionInput = {
@@ -271,7 +272,7 @@ export const runSession = (input: SessionInput, route: (statement: string) => { 
     return {
       id: i.id, title: i.title, kind: QUALITY.test(`${i.title} ${i.statement}`) ? 'quality' as const : 'lead' as const, proposed: i.proposed, act: !i.proposed || (!/\?\s*$/.test(i.title) && !NOT_AN_ACT.test(i.title.trim()) && leadStems(i.title).size >= 3), started: i.started, priority, rank: (emphatic ? 3 : 0) + i.folded.length + ageDays / 7, directives: i.folded.length, sessions: new Set(i.folded.map((d) => d.session)).size,
       how: r.call ?? null, by: r.by ?? null, files: files(i.stems), cell, labels: labelsOfCell(cell),
-      blocker: blocked ? { id: `probe-${i.id}`, probe: r.call ?? { name: 'readiness', arguments: {} }, closes: 'when its probe answers without the blocker; never a wait' } : null,
+      blocker: blocked ? { id: `probe-${i.id}`, probe: r.call ?? { name: 'readiness', arguments: {} }, closes: PROSE.quantumProcessingLeads_closes23 } : null,
       acceptance: STANDING,
       evident: [['tests', 'audit'], ['docs page', 'textbook'], ['textbook theorem and example', 'textbook'], ['measure', 'metrics']].map(([what, tool]) => ({ title: `${i.title}: ${what}`, tool })),
     }
@@ -295,6 +296,6 @@ export const runSession = (input: SessionInput, route: (statement: string) => { 
     route: routeLeads(waves, input.forecast),
     next: waves.map((w, k) => ({ wave: k + 1, item: w.items[0]!.title, how: w.items[0]!.how })),
     theorem: 'textbook_session_partition',
-    says: `${said.length} directive(s) from ${new Set(said.map((d) => d.session)).size} session(s): ${folded} folded, ${proposedCount} proposed in ${evident.length} item(s), ${once} acted on where said, ${assents} assent(s); next: ${priced.filter((i) => i.paid).length} item(s) in ${waves.length} parallel wave(s), quality first (${waves.filter((w) => w.kind === 'quality').length} wave(s)); ${priced.filter((i) => !i.paid).length} lead(s) unpaid until a quality wave frees their bytes`,
+    says: proseFill(PROSE.quantumProcessingLeads_says24, said.length, new Set(said.map((d) => d.session)).size, folded, proposedCount, evident.length, once, assents, priced.filter((i) => i.paid).length, waves.length, waves.filter((w) => w.kind === 'quality').length, priced.filter((i) => !i.paid).length),
   }
 }

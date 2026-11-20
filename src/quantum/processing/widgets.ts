@@ -2,6 +2,7 @@
 // so it follows the harness in light and dark mode. Each builder is a pure string function: no I/O, no Node, no colours
 // written out, so the same HTML renders in the harness, in the docs playground, and in any browser OS.
 
+import { PROSE } from './prose-index.ts'
 import type { WILLOW } from './processor.ts'
 import { QUANTUM_ECHOES } from './echo.ts'
 /** A markdown table cell is text, never markup or a link: the characters a table, Vue or a link would read are escaped, and a URL to a
@@ -106,7 +107,7 @@ export const echoBenchmarkWidget = (d: typeof QUANTUM_ECHOES): string =>
     cards([
       ['Processor', d.processor],
       ['Qubits in the array', String(d.qubits)],
-      ['Speedup over the fastest supercomputers', `${d.speedup.toLocaleString('en-US')}×`],
+      [PROSE.quantumProcessingWidgets_s1, `${d.speedup.toLocaleString('en-US')}×`],
       ['Molecules', d.molecules.map((m) => `${m} atoms`).join(', ')],
     ]),
   ])

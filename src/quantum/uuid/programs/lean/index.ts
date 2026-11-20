@@ -1,5 +1,6 @@
 // Every Lean module is one UUID program. The filesystem places the handle.
 // The next step rotates the program one place. The handle and the tail stay. Nothing is written.
+import { PROSE, proseFill } from '../../../processing/prose-index.ts'
 import { birth, exists, read } from '../../../fs/index.ts'
 import { next, uuid } from '../../index.ts'
 import { program } from '../index.ts'
@@ -20,7 +21,7 @@ const modulesOf = (text: string) => {
 /** All quantum UUID Lean programs, and the next step of each. */
 export const leanPrograms = () => {
   const text = read(ROOT)
-  if (text === null) throw new Error('the lean root names the programs')
+  if (text === null) throw new Error(PROSE.quantumUuidProgramsLeanIndex_s1)
   const graph = modulesOf(text)
   const rows = [...graph.keys()].map((module) => {
     const source = sourceOf(module)
@@ -71,7 +72,7 @@ export const leanPrograms = () => {
     rows,
     holds,
     says: holds
-      ? `${rows.length} lean programs. Each is the object of its handle. The next step rotates the program one place. The handle and the tail stay. Nothing is written.`
-      : 'a lean program did not rotate',
+      ? proseFill(PROSE.quantumUuidProgramsLeanIndex_s2, rows.length)
+      : PROSE.quantumUuidProgramsLeanIndex_s3,
   }
 }

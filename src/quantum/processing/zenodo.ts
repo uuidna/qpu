@@ -4,6 +4,7 @@
 // with that personal token. A free account deposits with the application's token.
 // Names only, never values. The handler does not fetch.
 
+import { PROSE, proseFill } from './prose-index.ts'
 import { qpuHooks } from '../uuid/index.ts'
 import { LICENSE } from './unit/license.ts'
 import { TENANTS } from './unit/tenants.ts'
@@ -47,11 +48,11 @@ const doiRelated = (given: readonly RelatedIn[], conceptdoi?: string | null): { 
     const relation = relationId((item.relation ?? '').trim())
     if (!identifier || !relation) continue
     if (relation === 'isIdenticalTo' && ZENODO_VERSION_DOI_RE.test(identifier)) {
-      gaps.push(`isIdenticalTo ${identifier}: a Zenodo version DOI is never identical-to; use isVersionOf → conceptdoi`)
+      gaps.push(proseFill(PROSE.quantumProcessingZenodo_s1, identifier))
       continue
     }
     if (relation === 'isVersionOf' && concept && identifier !== concept && ZENODO_VERSION_DOI_RE.test(identifier)) {
-      gaps.push(`isVersionOf ${identifier}: parent must be the conceptdoi ${concept}, not a version DOI`)
+      gaps.push(proseFill(PROSE.quantumProcessingZenodo_s2, identifier, concept))
       continue
     }
     const scheme = schemeOf(identifier, item.scheme)
@@ -128,28 +129,28 @@ const hookRuns = (where: string, hook: string, result: Outcome, op: 'change' | '
 }
 
 const hookDoes = (where: string, hook: string, result: Outcome) => {
-  const scope = result.oauth?.token?._scopes ?? 'deposit:write deposit:actions user:email'
+  const scope = result.oauth?.token?._scopes ?? PROSE.quantumProcessingZenodo_s3
   const text: Record<string, string> = {
-    beforeOperation: 'the tenant application and the user token are named before the operation',
-    beforeRead: 'the user reads their own deposits',
-    beforeValidate: 'access, communities, the title and the file names are checked before the write',
-    beforeChange: result.why ?? 'a published post with a file may be deposited; a draft is not',
-    afterChange: 'the deposit is created, its file is posted, and then it is published',
-    afterRead: 'the loaded record is served: family and given name, the ORCID, the licence and the access',
-    beforeDelete: 'the owner may delete a draft; a published record is no longer a draft',
-    afterDelete: 'a draft the owner may delete is deleted',
-    afterOperation: 'the operation answers with the status Zenodo gave',
-    afterError: result.why ?? 'a refusal is recorded and not retried',
-    beforeLogin: 'the user token is named before it is bound to the application',
-    afterLogin: 'the token is bound when its client id is the application',
-    beforeLogout: 'the token leaves the operation',
+    beforeOperation: PROSE.quantumProcessingZenodo_beforeOperation4,
+    beforeRead: PROSE.quantumProcessingZenodo_beforeRead5,
+    beforeValidate: PROSE.quantumProcessingZenodo_beforeValidate6,
+    beforeChange: result.why ?? PROSE.quantumProcessingZenodo_s7,
+    afterChange: PROSE.quantumProcessingZenodo_afterChange8,
+    afterRead: PROSE.quantumProcessingZenodo_afterRead9,
+    beforeDelete: PROSE.quantumProcessingZenodo_beforeDelete10,
+    afterDelete: PROSE.quantumProcessingZenodo_afterDelete11,
+    afterOperation: PROSE.quantumProcessingZenodo_afterOperation12,
+    afterError: result.why ?? PROSE.quantumProcessingZenodo_s13,
+    beforeLogin: PROSE.quantumProcessingZenodo_beforeLogin14,
+    afterLogin: PROSE.quantumProcessingZenodo_afterLogin15,
+    beforeLogout: PROSE.quantumProcessingZenodo_beforeLogout16,
     afterLogout: 'an anonymous caller is refused',
-    me: 'the caller is the owner, a user slug',
-    afterMe: 'the owner reads their own deposits',
+    me: PROSE.quantumProcessingZenodo_me17,
+    afterMe: PROSE.quantumProcessingZenodo_afterMe18,
     refresh: 'the refresh token is a name',
-    afterRefresh: 'the access token stays a name',
-    afterForgotPassword: `user:email is a scope id on ${scope}. No address is written`,
-    beforeDuplicate: 'a duplicated post is a draft and is not deposited',
+    afterRefresh: PROSE.quantumProcessingZenodo_afterRefresh19,
+    afterForgotPassword: proseFill(PROSE.quantumProcessingZenodo_afterForgotPassword20, scope),
+    beforeDuplicate: PROSE.quantumProcessingZenodo_beforeDuplicate21,
   }
   const line = text[hook] ?? 'the hook is registered'
   return where === 'global' ? `the tenant application: ${line}` : where === 'field' ? `the deposit fields: ${line}` : where === 'node' ? `the description: ${line}` : line
@@ -362,7 +363,7 @@ const dumpLegacy = (rdm: { title?: string; access?: { files?: string; embargo?: 
   return { submitted: published, state: published ? draft ? 'inprogress' as const : 'done' as const : 'unsubmitted' as const, files: [] as const, metadata: { ...(rdm.title ? { title: rdm.title } : {}), ...(accessRight ? { access_right: accessRight } : {}), ...(upload ? { upload_type: upload } : {}), ...(subtype ? { [`${upload}_type`]: subtype } : {}), ...(grants.length ? { grants } : {}), ...(notes ? { notes } : {}), ...(method ? { method } : {}), ...(rdm.references?.length ? { references: rdm.references.map((item) => item.reference) } : {}), prereserve_doi: { doi: '10.5281/zenodo.<deposit-id>', via: 'hooks' as const, conceptdoi: ZENODO_DOI.unitConcept } } }
 }
 
-const SCOPES = 'deposit:write deposit:actions user:email'
+const SCOPES = PROSE.quantumProcessingZenodo_s3
 
 /** The tenant application and the token that calls as it. user:email is a scope id. The token is bound only when its client_id is the application's. */
 const oauthOf = (app: ReturnType<typeof zenodoApp>, user: string, paid: boolean) => {
@@ -390,7 +391,7 @@ const deposit = (raw: unknown) => {
   const paid = coins >= price
   const collection = typeof given.collection === 'string' && (COLLECTIONS as readonly string[]).includes(given.collection) ? given.collection : 'posts'
   const base = { phase: 'zenodo' as const, collection, may: false, sent: false, tenant: tenant || null, app, author, account: paid ? 'paid' as const : 'free' as const, coins, price, access: DRAFT_ACCESS }
-  if (!app) return { ...base, why: 'a post names its tenant', says: 'a post without a tenant is not deposited' }
+  if (!app) return { ...base, why: 'a post names its tenant', says: PROSE.quantumProcessingZenodo_says22 }
   const act = given.act === 'read' || given.act === 'update' || given.act === 'delete' || given.act === 'newversion' ? given.act : null
   const fileAct = given.act === 'files' || given.act === 'sort-files' || given.act === 'add-file' || given.act === 'delete-file' || given.act === 'rename-file' || given.act === 'read-file' ? given.act : null
   if (fileAct) {
@@ -411,7 +412,7 @@ const deposit = (raw: unknown) => {
     if (given.record !== true) return { phase: 'zenodo' as const, act, may: false, sent: false, status: 404, versions: false, tenant, user, record: false, says: 'a draft has no new version' }
     const conceptdoi = typeof given.conceptdoi === 'string' && ZENODO_VERSION_DOI_RE.test(given.conceptdoi) ? given.conceptdoi : ZENODO_DOI.unitConcept
     const lined = doiRelated(Array.isArray(given.related_identifiers) ? (given.related_identifiers as RelatedIn[]) : [], conceptdoi)
-    return { phase: 'zenodo' as const, act, may: true, sent: true, status: 201, tenant, user, record: true, conceptdoi, doi: null, related_identifiers: lined.related, doiGaps: lined.gaps, request: { method: 'POST' as const, url: `${API}/<pid>/actions/newversion`, scope: 'deposit:actions' as const, status: 201 as const, auth }, draft: { files: files.map((filename) => ({ filename })), links: ['latest_draft', 'self', 'publish', 'files'] }, says: `the published record opens a new draft under conceptdoi ${conceptdoi}; Zenodo mints the next version DOI on publish` }
+    return { phase: 'zenodo' as const, act, may: true, sent: true, status: 201, tenant, user, record: true, conceptdoi, doi: null, related_identifiers: lined.related, doiGaps: lined.gaps, request: { method: 'POST' as const, url: `${API}/<pid>/actions/newversion`, scope: 'deposit:actions' as const, status: 201 as const, auth }, draft: { files: files.map((filename) => ({ filename })), links: ['latest_draft', 'self', 'publish', 'files'] }, says: proseFill(PROSE.quantumProcessingZenodo_says23, conceptdoi) }
   }
   if (act) {
     const who = given.as === 'anonymous' ? 'anonymous' as const : given.as === 'superuser' ? 'superuser' as const : typeof given.as === 'string' && slugOf(given.as) && given.as !== user ? 'other' as const : 'owner' as const
@@ -423,9 +424,9 @@ const deposit = (raw: unknown) => {
     return { phase: 'zenodo' as const, act, who, status, may: allowed, sent: allowed, tenant, user, record: given.record === true, ...(request ? { request } : {}), says: allowed ? `the ${who} may ${act} the draft` : `the ${who} is refused` }
   }
   const account = { ...base, oauth: oauthOf(app, user, paid) }
-  if (claim && claim.novel !== true) return { ...account, why: 'the claim is not novel', says: 'a claim that is not novel is not deposited' }
-  if (status !== 'published') return { ...account, why: 'a draft is not sent', says: 'a draft stays on the site until it is published' }
-  if (!title) return { ...account, why: 'a post has a title', says: 'a published post without a title is not deposited' }
+  if (claim && claim.novel !== true) return { ...account, why: 'the claim is not novel', says: PROSE.quantumProcessingZenodo_says24 }
+  if (status !== 'published') return { ...account, why: 'a draft is not sent', says: PROSE.quantumProcessingZenodo_says25 }
+  if (!title) return { ...account, why: 'a post has a title', says: PROSE.quantumProcessingZenodo_says26 }
   const extra = loadAccess(given)
   if ('error' in extra) return { ...account, why: extra.error, says: extra.error }
   const accepted = extra.communities.filter((community) => community.owner).map((community) => ({ id: community.identifier }))
@@ -438,26 +439,26 @@ const deposit = (raw: unknown) => {
   const editorial = given.editorial && typeof given.editorial === 'object' && !Array.isArray(given.editorial) ? given.editorial as Record<string, unknown> : {}
   const verified = links.filter((url) => editorial[url] === true)
   if (paid) {
-    if (files.length === 0) return { ...account, why: 'a deposit carries a file', says: 'the deposit is created, a file is posted, and only then is it published' }
+    if (files.length === 0) return { ...account, why: 'a deposit carries a file', says: PROSE.quantumProcessingZenodo_says27 }
     const auth = { header: 'Authorization' as const, scheme: 'Bearer' as const, secret: account.oauth.token.access_token }
     const metadata = { title, upload_type: extra.upload, ...(extra.upload === 'publication' ? { publication_type: 'article' as const } : {}), description, creators: [{ name: author.cited, orcid: author.orcid }], ...(extra.license ? { license: extra.license } : {}), keywords: ['blog'] as const, ...wire }
     const rdm = loadMetadata(metadata, extra)
     const request = { id: 'zenodo-deposit' as const, method: 'POST' as const, url: API, accept: 'application/json' as const, scope: 'deposit:write' as const, status: 201 as const, auth, body: { metadata, rdm } }
     const uploaded = files.map((name) => ({ id: 'zenodo-file' as const, method: 'POST' as const, url: `${API}/<id>/files`, accept: 'application/json' as const, scope: 'deposit:write' as const, status: 201 as const, auth, body: { name } }))
-    const publish = { id: 'zenodo-publish' as const, method: 'POST' as const, url: `${API}/<id>/actions/publish`, accept: 'application/json' as const, scope: 'deposit:actions' as const, status: 202 as const, auth, note: 'the record id is the deposit id. A second publish is not sent', ...(extra.communities.length ? { record: { communities: accepted }, cleared: true as const } : {}) }
-    return { ...account, may: true, sent: true, user, files, conceptdoi, doiGaps, related_identifiers: (extra as { related?: RelatedOut[] }).related ?? [], request, flow: [request, ...uploaded, publish], publish, legacy: dumpLegacy(rdm, true), says: `the published post is deposited with ${auth.secret} and cites ${author.name}` }
+    const publish = { id: 'zenodo-publish' as const, method: 'POST' as const, url: `${API}/<id>/actions/publish`, accept: 'application/json' as const, scope: 'deposit:actions' as const, status: 202 as const, auth, note: PROSE.quantumProcessingZenodo_note28, ...(extra.communities.length ? { record: { communities: accepted }, cleared: true as const } : {}) }
+    return { ...account, may: true, sent: true, user, files, conceptdoi, doiGaps, related_identifiers: (extra as { related?: RelatedOut[] }).related ?? [], request, flow: [request, ...uploaded, publish], publish, legacy: dumpLegacy(rdm, true), says: proseFill(PROSE.quantumProcessingZenodo_says29, auth.secret, author.name) }
   }
   const domain = domainOf(tenant)
-  if (!domain) return { ...account, links, verified: verified.length, why: 'the tenant names its domain', says: 'a free account is authored by the tenant domain' }
-  if (verified.length !== links.length) return { ...account, domain, links, verified: verified.length, why: 'every link is editorially verified', says: 'a free account waits until every link is verified' }
-  if (files.length === 0) return { ...account, domain, links, verified: verified.length, why: 'a deposit carries a file', says: 'the deposit is created, a file is posted, and only then is it published' }
+  if (!domain) return { ...account, links, verified: verified.length, why: PROSE.quantumProcessingZenodo_why30, says: PROSE.quantumProcessingZenodo_says31 }
+  if (verified.length !== links.length) return { ...account, domain, links, verified: verified.length, why: 'every link is editorially verified', says: PROSE.quantumProcessingZenodo_says32 }
+  if (files.length === 0) return { ...account, domain, links, verified: verified.length, why: 'a deposit carries a file', says: PROSE.quantumProcessingZenodo_says27 }
   const auth = { header: 'Authorization' as const, scheme: 'Bearer' as const, secret: account.oauth.token.access_token }
   const metadata = { title, upload_type: extra.upload, ...(extra.upload === 'publication' ? { publication_type: 'article' as const } : {}), description, creators: [{ name: domain }], ...(extra.license ? { license: extra.license } : {}), keywords: ['blog'] as const, ...wire }
   const rdm = loadMetadata(metadata, extra)
   const request = { id: 'zenodo-deposit' as const, method: 'POST' as const, url: API, accept: 'application/json' as const, scope: 'deposit:write' as const, status: 201 as const, auth, body: { metadata, rdm } }
   const uploaded = files.map((name) => ({ id: 'zenodo-file' as const, method: 'POST' as const, url: `${API}/<id>/files`, accept: 'application/json' as const, scope: 'deposit:write' as const, status: 201 as const, auth, body: { name } }))
-  const publish = { id: 'zenodo-publish' as const, method: 'POST' as const, url: `${API}/<id>/actions/publish`, accept: 'application/json' as const, scope: 'deposit:actions' as const, status: 202 as const, auth, note: 'the record id is the deposit id. A second publish is not sent', ...(extra.communities.length ? { record: { communities: accepted }, cleared: true as const } : {}) }
-  return { ...account, may: true, sent: true, domain, links, verified: verified.length, files, conceptdoi, doiGaps, related_identifiers: (extra as { related?: RelatedOut[] }).related ?? [], request, flow: [request, ...uploaded, publish], publish, legacy: dumpLegacy(rdm, true), says: `the free account deposits the post as ${domain}` }
+  const publish = { id: 'zenodo-publish' as const, method: 'POST' as const, url: `${API}/<id>/actions/publish`, accept: 'application/json' as const, scope: 'deposit:actions' as const, status: 202 as const, auth, note: PROSE.quantumProcessingZenodo_note28, ...(extra.communities.length ? { record: { communities: accepted }, cleared: true as const } : {}) }
+  return { ...account, may: true, sent: true, domain, links, verified: verified.length, files, conceptdoi, doiGaps, related_identifiers: (extra as { related?: RelatedOut[] }).related ?? [], request, flow: [request, ...uploaded, publish], publish, legacy: dumpLegacy(rdm, true), says: proseFill(PROSE.quantumProcessingZenodo_says33, domain) }
 }
 
 const ASPECTS = ['collection', 'global', 'field', 'node'] as const

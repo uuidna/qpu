@@ -35,6 +35,8 @@ jobs:
           node-version: 26
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: No sentence is typed in TypeScript
+        run: lake run prose
       - name: Seeds and Lean write the pages, VitePress builds them
         run: lake run site
       - uses: actions/upload-artifact@v4

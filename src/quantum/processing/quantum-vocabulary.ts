@@ -1,6 +1,7 @@
 // Every quantum term of ISO/IEC 4879:2024, computed once by the QPU (3.4.8 quantum processor, via UUID qubits) and addressed by one UUID; its circuit gate is the witness.
 // A term holds when the behaviour it names runs here. Device terms name a tangible device;
 // this program is the simulator of that behaviour, not the device.
+import { PROSE, proseFill } from './prose-index.ts'
 import {
   CNOT,
   Circuit,
@@ -317,7 +318,7 @@ export const physicalEvidence = (device?: DeviceReadings) => {
   const terms = TERMS.filter(([, name]) => /physical|processor|computer/.test(name)).map(([clause, name]) => ({ clause, name }))
   const measured = !!device && seal(device.id).valid && Object.values(device.sensors).some((v) => typeof v === 'number' && Number.isFinite(v))
   return { phase: 'physical' as const, standard: STANDARD, terms, device: device ?? null, measured, quantumBehaviour: 'UNVERIFIED' as const, theorem: 'textbook_physical_evidence',
-    says: measured ? `${terms.length} hardware term(s) computed on device ${device!.id.slice(0, 8)} (${device!.cpu}, ${device!.cores} cores), its sensors read at ${device!.at}; a classical machine, so quantum-mechanical behaviour stays UNVERIFIED` : `${terms.length} hardware term(s) and no device readings, so nothing is measured; quantum-mechanical behaviour stays UNVERIFIED` }
+    says: measured ? proseFill(PROSE.quantumProcessingQuantumVocabulary_s1, terms.length, device!.id.slice(0, 8), device!.cpu, device!.cores, device!.at) : proseFill(PROSE.quantumProcessingQuantumVocabulary_s2, terms.length) }
 }
 
 export const quantumVocabulary = (): QuantumTerm[] => vocabularyCache ?? (vocabularyCache = computeQuantumVocabulary())
@@ -355,12 +356,12 @@ export const quantumStandardLeads = () => quantumVocabulary().map((v) => {
   return {
     id,
     source: `${STANDARD} ${v.clause}`,
-    statement: `${title}. Holds: ${v.holds}. UUID ${v.uuid}. Page /${slug}. MCP e2e { standards: true }.`,
+    statement: proseFill(PROSE.quantumProcessingQuantumVocabulary_statement3, title, v.holds, v.uuid, slug),
     status: served ? 'served' as const : 'open' as const,
     tool: 'e2e' as const,
     title,
     slug,
     uuid: v.uuid,
-    ...(served ? {} : { reason: `${title} does not hold on the quantum simulator`, run: { tool: 'e2e' as const, arguments: { standards: true as const } } }),
+    ...(served ? {} : { reason: proseFill(PROSE.quantumProcessingQuantumVocabulary_reason4, title), run: { tool: 'e2e' as const, arguments: { standards: true as const } } }),
   }
 })

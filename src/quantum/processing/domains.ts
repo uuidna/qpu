@@ -2,6 +2,7 @@
 // The cover is the product of those field counts: one combination takes one field from every domain together.
 // A domain is not a separate request, and a page that is not the whole set is not the cover.
 
+import { PROSE, proseFill } from './prose-index.ts'
 import { canonicalText, compositions, seal, uuid } from '../uuid/index.ts'
 
 export { domainConfigs } from '../../plugins/domainCover.ts'
@@ -22,7 +23,7 @@ const unmeasured = () => ({
   whole: false as const,
   product: null,
   request: { method: 'GET' as const, url: DOMAINS_URL, accept: 'application/json' as const },
-  says: 'all scientific domains are one product: the field count of every domain multiplies, and that product is the cover. One domains page is the whole set. A domain is not fetched alone.',
+  says: PROSE.quantumProcessingDomains_says1,
 })
 
 /** The product of the field counts on one domains page. The page covers the domains when it holds every domain the count names, and every domain names at least one field. */
@@ -57,8 +58,8 @@ export const scientificDomains = (page?: DomainPage | true) => {
     address,
     sealed: seal(address).valid,
     says: whole && product !== null
-      ? `${domains.length} scientific domains covered at once: ${radices.join(' × ')} = ${product}. ${fields} fields sit in that one product. No domain was fetched alone.`
-      : 'the page is not the whole set of scientific domains, so the product is not the cover',
+      ? proseFill(PROSE.quantumProcessingDomains_s2, domains.length, radices.join(' × '), product, fields)
+      : PROSE.quantumProcessingDomains_s3,
   }
 }
 
