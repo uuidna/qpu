@@ -37,7 +37,21 @@ const hold = async (collection: string, where: Record<string, unknown>, data: Re
   return (found ? await payload.update({ collection: collection as never, id: found.id, data: data as never, context, draft: false, overrideAccess: true }) : await payload.create({ collection: collection as never, data: data as never, context, draft: false, overrideAccess: true })) as unknown as Doc
 }
 const idOf = (doc: Doc | null) => doc?.id ?? null
+/** The SEO plugin's own fields, filled from what the document states: its title, and its text up to the length a description shows. */
+const seo = (title: string, text: readonly string[] | string) => ({ title, description: (typeof text === 'string' ? text : text.filter(Boolean).join(' ')).slice(0, 160) })
+const titled = (doc: Doc, title: string) => (doc.meta as { title?: string } | undefined)?.title === title
 const refersTo = (value: unknown, id: unknown) => (typeof value === 'object' && value !== null ? (value as Doc).id : value) === id
+
+// THE FIRST ADMIN, when the admin panel cannot make one. QPU_ADMIN_EMAIL and QPU_ADMIN_PASSWORD are read from the
+// environment and never printed; with either unset, or with any user already held, nothing is done. The users
+// collection makes the first user an admin itself (ensureFirstUserIsAdmin).
+const admin = { email: process.env.QPU_ADMIN_EMAIL ?? '', password: process.env.QPU_ADMIN_PASSWORD ?? '' }
+let firstUser: 'made' | 'held' | 'unset' = 'unset'
+if (admin.email && admin.password) {
+  const users = await payload.count({ collection: 'users', overrideAccess: true })
+  firstUser = users.totalDocs > 0 ? 'held' : 'made'
+  if (users.totalDocs === 0 && !check) await payload.create({ collection: 'users', data: { email: admin.email, password: admin.password, roles: ['admin'] } as never, overrideAccess: true })
+}
 
 const tenant = await hold('tenants', { slug: { equals: plan.tenant.slug } }, plan.tenant)
 const pages = new Map<string, Doc | null>()
@@ -48,7 +62,7 @@ for (let waiting = [...plan.pages]; waiting.length > 0;) {
   await together(ready, async (page) => {
     const parent = page.parent ? idOf(pages.get(page.parent) ?? null) : null
     const layout = [{ blockType: 'content', columns: [{ size: 'full', richText: richText(page.text) }] }]
-    pages.set(page.slug, await hold('pages', { slug: { equals: page.slug } }, { title: page.title, slug: page.slug, tenant: idOf(tenant), parent, hero: { type: 'lowImpact' }, layout, _status: 'published' }, (doc) => doc.title === page.title && doc._status === 'published' && refersTo(doc.parent ?? null, parent)))
+    pages.set(page.slug, await hold('pages', { slug: { equals: page.slug } }, { title: page.title, slug: page.slug, tenant: idOf(tenant), parent, hero: { type: 'lowImpact' }, layout, meta: seo(page.title, page.text), _status: 'published' }, (doc) => doc.title === page.title && doc._status === 'published' && titled(doc, page.title) && refersTo(doc.parent ?? null, parent)))
   })
   waiting = waiting.filter((page) => !ready.includes(page))
 }
@@ -58,8 +72,8 @@ let variants = 0
 const held = new Map<string, Doc | null>()
 await together(plan.products, async (product) => {
   const category = idOf(categories.get(product.category) ?? null)
-  const base = { title: product.title, slug: product.slug, tenant: idOf(tenant), description: richText(product.description), categories: category === null ? [] : [category], _status: 'published' }
-  let made = await hold('products', { slug: { equals: product.slug } }, { ...base, enableVariants: false, variantTypes: [] }, (doc) => doc.title === product.title && doc._status === 'published')
+  const base = { title: product.title, slug: product.slug, tenant: idOf(tenant), description: richText(product.description), categories: category === null ? [] : [category], meta: seo(product.title, product.description), _status: 'published' }
+  let made = await hold('products', { slug: { equals: product.slug } }, { ...base, enableVariants: false, variantTypes: [] }, (doc) => doc.title === product.title && doc._status === 'published' && titled(doc, product.title))
   if (product.variants.length > 0 && made) {
     // the product's own variant type: its options are the examples this theorem names, and no other theorem's
     const own = Array.isArray(made.variantTypes) ? made.variantTypes[0] : undefined
@@ -82,6 +96,6 @@ const homeLayout = [
   { blockType: 'carousel', populateBy: 'collection', relationTo: 'products', limit: 12 },
 ]
 await hold('pages', { slug: { equals: plan.home.slug } }, { title: plan.home.title, slug: plan.home.slug, tenant: idOf(tenant), hero: { type: 'lowImpact', richText: headedText(plan.home.title, [plan.home.lead]) }, layout: homeLayout, _status: 'published' }, (doc) => doc.title === plan.home.title && doc._status === 'published' && Array.isArray(doc.layout) && doc.layout.length === homeLayout.length && JSON.stringify((doc.hero as { richText?: unknown } | undefined)?.richText ?? null).includes(plan.home.lead))
-console.log(JSON.stringify({ check, modules: only.length || 'all', ...plan.counts, variantsHeld: variants, written, missing, allowsDeploy: check ? missing === 0 : true }))
+console.log(JSON.stringify({ check, modules: only.length || 'all', ...plan.counts, variantsHeld: variants, firstUser, written, missing, allowsDeploy: check ? missing === 0 : true }))
 if (check && missing > 0) process.exit(1)
 process.exit(0)
