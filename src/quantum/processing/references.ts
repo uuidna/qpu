@@ -3,10 +3,11 @@
 // read into one graph; its cycles found by Tarjan's strongly connected components, iteratively so no depth overflows the stack; the dangling
 // references named. Whatever collides is fused, never refused: every strongly connected component is one node of the condensation, its members
 // in address order, and the condensation is always acyclic, so it always has an order. Pure: the client hands the documents over.
+import { UUID_SHAPE } from './config-index.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 import { uuid } from '../uuid/index.ts'
 export type RefDoc = { id: string; slug?: string; doc?: unknown; markdown?: string }
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+const UUID = new RegExp(`^${UUID_SHAPE}$`, 'i')
 /** The internal targets a path names: /slug or /<uuid>, its query and fragment dropped; an absolute URL is not internal. */
 const internalTarget = (url: string): string | null => { const u = url.trim(); if (!u.startsWith('/') || u.startsWith('//')) return null; const p = u.split(/[?#]/)[0]!.replace(/\/+$/, '').split('/').filter(Boolean).pop(); return p ? decodeURIComponent(p) : null }
 /** Every reference one document makes, as the names it gives (slugs, ids, uuids). */

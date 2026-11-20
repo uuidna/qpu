@@ -24,6 +24,8 @@ import qpuPlugin from '@/plugins/qpu'
 import { qpuCatalogueTools } from '@/utilities/qpuCatalogue'
 import { callUuidna } from '@/utilities/uuidnaDoor'
 
+import { isUuid } from '../quantum/uuid/index'
+
 /** plugin-mcp's access arguments (permissions for the request, and the request), as its Tool type declares them */
 type MCPAccessArgs = Parameters<NonNullable<ReturnType<ReturnType<typeof defineTool>['handler']>['access']>>[0]
 /** readsFor: public find/count like GET /api/<slug>; auth collections still need a user. */
@@ -125,7 +127,6 @@ const collectionAdditions: Plugin = (config: Config): Config => ({
   collections: (config.collections ?? []).map((collection) => additions[collection.slug]?.(collection) ?? collection),
 })
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 /** The id of an array row or a block: a UUID, where Payload's own default is a 24-character hex id. A row that
  *  arrives with another id (one the admin made, or one stored before) is given a UUID as it is saved. */
 const uuidRowID: TextField = {
@@ -134,7 +135,7 @@ const uuidRowID: TextField = {
   admin: { hidden: true },
   defaultValue: () => crypto.randomUUID(),
   hooks: {
-    beforeChange: [({ value }) => (typeof value === 'string' && UUID.test(value) ? value : crypto.randomUUID())],
+    beforeChange: [({ value }) => (isUuid(value) ? value : crypto.randomUUID())],
     beforeDuplicate: [() => crypto.randomUUID()],
   },
   label: 'ID',
@@ -143,7 +144,7 @@ const withRowID = (fields: Field[]): Field[] => (fields.some((field) => 'name' i
 // Payload adds its own id field to every block, so a block cannot carry a second one: the blocks field itself
 // gives each of its rows a UUID before the rows are stored.
 const uuidRows = ({ value }: { value?: unknown }) =>
-  Array.isArray(value) ? value.map((row: { id?: unknown }) => (typeof row?.id === 'string' && UUID.test(row.id) ? row : { ...row, id: crypto.randomUUID() })) : value
+  Array.isArray(value) ? value.map((row: { id?: unknown }) => (isUuid(row?.id) ? row : { ...row, id: crypto.randomUUID() })) : value
 const uuidBlock = (block: Block): Block => ({ ...block, fields: uuidFields(block.fields) })
 /** Every array and every block below these fields carries a UUID row id. */
 const uuidFields = (fields: Field[]): Field[] =>

@@ -110,4 +110,14 @@ theorem advantage_unbounded (k : Nat) : (List.replicate k 2).length = k ∧ 2 ^ 
   have h := two_pow_le_space (List.replicate k 2) (fun s hs => by rw [List.eq_of_mem_replicate hs]; exact Nat.le_refl 2)
   rwa [List.length_replicate] at h
 
+/-- The groups of a UUID as it is written: the hexadecimal digits between its dashes. -/
+def uuidGroups : List Nat := [8, 4, 4, 4, 12]
+
+/-- The sides a UUID spans: sixteen for each of its hexadecimal digits. -/
+def uuidSides : List Nat := List.replicate uuidGroups.sum 16
+
+/-- A UUID is an address: thirty-two digits read it, one for each side, in a space of two to the power 128. A walk
+to the same address steps through the space; the read costs its thirty-two digits. -/
+theorem uuid_address : uuidGroups.sum = 32 ∧ uuidSides.length = 32 ∧ space uuidSides = 2 ^ 128 := by decide
+
 end Advantage

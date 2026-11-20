@@ -40,6 +40,10 @@ def configOut : System.FilePath := ".lake" / "build" / "config-index.ts"
     , s!"export const LEAN_RESOURCE = {(Json.str leanResource).compress}"
     , "/** The ways an operation is inserted into a circuit, and the one used when none is named. */"
     , s!"export const INSERT_SCHEMA = \{ enum: {strings insertStrategies}, default: {(Json.str insertDefault).compress} }"
+    , "/** The groups of a UUID as it is written, from Advantage.uuidGroups: the hexadecimal digits between its dashes. */"
+    , s!"export const UUID_GROUPS = {(Json.arr (Advantage.uuidGroups.map fun n => Json.num n).toArray).compress} as const"
+    , "/** The shape of a UUID as a pattern, built from its groups; every check of a UUID in the code reads this one. */"
+    , s!"export const UUID_SHAPE = {(Json.str ("-".intercalate (Advantage.uuidGroups.map fun n => "[0-9a-f]" ++ "{" ++ toString n ++ "}"))).compress}"
     , "" ]
   IO.FS.createDirAll (".lake" / "build")
   IO.FS.writeFile configOut text

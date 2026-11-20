@@ -3,6 +3,7 @@
 // program rotated to), nested by the referer chain as the nested-docs plugin nests (parent, breadcrumbs), described by the
 // SEO plugin's fields from the block's Open Graph, carrying its JSON-LD and its licence. Pure and small: computed once per
 // block by the balancer, so the cost is a few kilobytes and no computation on the device — the battery is the result.
+import { UUID_SHAPE } from '../config-index.ts'
 import { PROSE, proseFill } from '../prose-index.ts'
 import { narrowScope, createSandbox, type NarrowRequest } from '../unit/namespaces.ts'
 import { defineTool, createChecks, listTools, isObj, unlimited, type Toolbox, type Context } from '../toolbox.ts'
@@ -1150,7 +1151,7 @@ const ideaSeed = (raw: unknown) => {
 }
 const MCP_ASPECTS = ['initialize', 'tools/list', 'tools/call', 'resources/list', 'resources/templates/list', 'resources/read'] as const
 const CONSULTED = ['initialize', 'tools/list', 'resources/list', 'resources/templates/list'] as const
-const UUID_PASS = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi
+const UUID_PASS = new RegExp(UUID_SHAPE, 'gi')
 const factorInteger = (integer: string) => {
   const n = BigInt(integer)
   const primality = testPrimality(n)

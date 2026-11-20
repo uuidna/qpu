@@ -11,7 +11,7 @@ import { askPayloadRbac, payloadRbacMcp, rbac } from '../api-mcp-rbac.ts'
 import { adaptQuantum, integrateClaude, integrateCursor, integrateDeclarations } from '../compat.ts'
 import { openQuantum } from '../ideas.ts'
 import { LEADS } from '../leads.ts'
-import { canonicalText, next, stream, uuid } from '../../uuid/index.ts'
+import { canonicalText, isUuid, next, stream, uuid } from '../../uuid/index.ts'
 import { pageSeed } from '../page-seed.ts'
 import { checkWitnesses } from '../witnesses.ts'
 import { flowWidget } from '../widgets.ts'
@@ -199,7 +199,7 @@ const extend = defineTool('extension', {
           const messaging = { written: false as const, memory: tasks.length, instances: tasks.reduce((n, task) => n + task.instances.length, 0), witnesses: tasks.reduce((n, task) => n + task.witnesses.faces, 0), messages: tasks.reduce((n, task) => n + task.messages.length, 0), covered: tasks.length > 0 && tasks.every((task) => task.covered) }
           return { phase: 'next' as const, manual: false as const, outbound: 0 as const, slower: false as const, waited: false as const, open: open.length, counts, ideas: open.filter((row) => row.idea).length, handled: leads.length, left: leads.filter((row) => !held(row)).length, leads, review, tasks, messaging, says: PROSE.quantumProcessingToolboxesExtension_says29 } as never
         }
-        const from = typeof asked === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(asked) ? asked : ''
+        const from = isUuid(asked) ? asked : ''
         if (!from) throw new Error(PROSE.quantumProcessingToolboxesExtension_s30)
         const stepped = next(from)
         return { ...stepped, phase: 'next' as const, manual: false as const, outbound: 0 as const, slower: false as const, waited: false as const, from, says: PROSE.quantumProcessingToolboxesExtension_says31 } as never

@@ -1,6 +1,7 @@
 // The quantum core. One UUID (ISO/IEC 9834-8): thirty-two nibbles, a handle, a program, a tail, and the two stamp
 // nibbles. Every result is that address. Style, presentation, and stream read it. Pure: equal calls give equal blocks.
 
+import { UUID_SHAPE } from '../processing/config-index.ts'
 import { PROSE, proseFill } from '../processing/prose-index.ts'
 export type BlockTests = {
   passed: boolean
@@ -53,6 +54,10 @@ const foldFrom = ([h0, h1, h2, h3]: Limbs, text: string): Limbs => {
 }
 const hex = (limbs: Limbs): string => limbs.map((l) => l.toString(16).padStart(4, '0')).reverse().join('')
 /** FNV-1a 64 fold of a string to 16 lowercase hex digits, the fold the unit builds every receipt and address on. O(n). */
+/** Whether a text has the shape of a UUID, lower case: the one check, from the groups Lean states in Advantage.uuidGroups. */
+const UUID_PATTERN = new RegExp(`^${UUID_SHAPE}$`)
+export const isUuid = (text: unknown): text is string => typeof text === 'string' && UUID_PATTERN.test(text)
+export { UUID_SHAPE }
 export const fold = (text: string): string => hex(foldFrom(OFFSET, text))
 /** The version nibble the other 31 digits decide: 1 + (rest^7 mod 91) mod 8, exact in numbers (r^7 < 2^53). O(1). */
 const version = (digits: string): string => { const r = [...digits].reduce((m, d, i) => (i === 12 ? m : (m * 16 + parseInt(d, 16)) % 91), 0); return (1 + ((r ** 7) % 91) % 8).toString(16) }
@@ -243,7 +248,7 @@ export const compile = (program: readonly number[], tools: readonly { name: stri
 /** The cheap check without the content: the version nibble the other 31 nibbles decide, read back. A tampered middle wears a
  *  version its content does not; one modular power tells. Shape and variant are checked too. */
 export const seal = (uuid: string): { valid: boolean; shape: boolean; variant: boolean; version: { found: string; expected: string; agree: boolean } } => {
-  const shape = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(uuid)
+  const shape = isUuid(uuid)
   if (!shape) return { valid: false, shape, variant: false, version: { found: '', expected: '', agree: false } }
   const digits = uuid.replace(/-/g, '')
   const found = digits[12]!
@@ -750,7 +755,7 @@ export const dnaStream = (seq: string, q: StreamQuery = {}) => {
 
 /** Formulated presentation overlays of the UUID core (DNA/Glagolitic/CMYK/a432/shadcn/OG/thousandBit); sealed address alone at password/address.js. */
 export const overlays = (hex = 'a432') => {
-  const address = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(hex) && seal(hex).valid ? hex : uuid(hex)
+  const address = isUuid(hex.toLowerCase()) && seal(hex).valid ? hex : uuid(hex)
   const styled = style(address), presented = presentation(address.replace(/-/g, '')), dna = dnaStream('ACGT')
   const clay = block('clay', { catalog: true }, { catalog: true }, '<p>a432</p>', 'a432 clay theatre')
   const aloneUuid = uuidAlone('a432'), coreUuid = uuid('a432'), aloneSeal = sealAlone(aloneUuid)
