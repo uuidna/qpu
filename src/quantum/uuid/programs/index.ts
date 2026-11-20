@@ -572,12 +572,12 @@ export const sealProgramProducts = (handle: string) => {
  * Gate any folder without an index that seals all neighbours via Payload UUID product combinations.
  * Files gate first (every folder indexed); then every hex leaf seals through the combination space.
  */
-export const gateProgramSeal = (dataset = root.path) => {
+/** Each leaf with its sealed products and its games, computed once: the gate and the audit both read these. */
+const sealLeaves = (dataset: string) => listProgramLeaves(dataset).map((leaf) => ({ leaf, sealed: sealProgramProducts(leaf.handle), games: competeProgramNeighbours(leaf.handle) }))
+
+export const gateProgramSeal = (dataset = root.path, computed = sealLeaves(dataset)) => {
   const files = gateProgramFiles(dataset)
-  const leaves = listProgramLeaves(dataset)
-  const rows = leaves.map((leaf) => {
-    const sealed = sealProgramProducts(leaf.handle)
-    const games = competeProgramNeighbours(leaf.handle)
+  const rows = computed.map(({ leaf, sealed, games }) => {
     const indexed = exists(leaf.path)
     const holds = indexed && sealed.holds && sealed.path === leaf.path && games.holds
     return {
@@ -659,13 +659,15 @@ export const indexProgramFolders = (dataset = root.path) => {
  * sealed through Payload UUID product combinations (gateProgramSeal).
  */
 export const auditProgramNeighbours = (dataset = root.path) => {
-  const gated = gateProgramSeal(dataset)
+  // the products and the games of each leaf are computed once and read by the gate and by the audit
+  const computed = sealLeaves(dataset)
+  const gated = gateProgramSeal(dataset, computed)
   const files = gated.files
-  const rows = gated.rows.map((leaf) => {
+  const rows = gated.rows.map((leaf, index) => {
     const at = program(leaf.handle)
     const around = at.neighbours
-    const products = sealProgramProducts(leaf.handle)
-    const games = competeProgramNeighbours(leaf.handle)
+    const products = computed[index]!.sealed
+    const games = computed[index]!.games
     const self = {
       handle: leaf.handle,
       path: leaf.path,
