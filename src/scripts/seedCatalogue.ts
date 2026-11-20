@@ -26,8 +26,12 @@ const together = async <T>(items: readonly T[], each: (item: T) => Promise<void>
 type Doc = { id: number | string } & Record<string, unknown>
 /** Find one document, and create or update it when it is absent or differs in a field the plan states. */
 const hold = async (collection: string, where: Record<string, unknown>, data: Record<string, unknown>, same: (doc: Doc) => boolean = () => true): Promise<Doc | null> => {
-  const found = (await payload.find({ collection: collection as never, where: where as never, limit: 1, depth: 0, draft: true, pagination: false, overrideAccess: true })).docs[0] as Doc | undefined
-  if (found && same(found)) return found
+  const read = async (draft: boolean) => (await payload.find({ collection: collection as never, where: where as never, limit: 1, depth: 0, draft, pagination: false, overrideAccess: true })).docs[0] as Doc | undefined
+  // a seed that was stopped between a document and its version leaves the document without one: the latest version
+  // does not show it, the collection does, and it is then written again instead of being created twice
+  const latest = await read(true)
+  const found = latest ?? (await read(false))
+  if (latest && same(latest)) return latest
   if (check) { missing += 1; return found ?? null }
   written += 1
   return (found ? await payload.update({ collection: collection as never, id: found.id, data: data as never, context, draft: false, overrideAccess: true }) : await payload.create({ collection: collection as never, data: data as never, context, draft: false, overrideAccess: true })) as unknown as Doc
