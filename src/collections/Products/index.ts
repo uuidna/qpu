@@ -21,6 +21,7 @@ import { DefaultDocumentIDType, Where } from 'payload'
 
 import { quantumField, runQuantumProgram } from '@/fields/quantum'
 import { developedFromField, markLeadDeveloped } from '@/hooks/markLeadDeveloped'
+import { qrGalleryFallback } from '@/hooks/qrGalleryFallback'
 
 export const ProductsCollection: CollectionOverride = ({ defaultCollection }) => ({
   ...defaultCollection,
@@ -223,5 +224,6 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
     ...defaultCollection?.hooks,
     beforeChange: [...(defaultCollection?.hooks?.beforeChange ?? []), runQuantumProgram],
     afterChange: [...(defaultCollection?.hooks?.afterChange ?? []), markLeadDeveloped('products')],
+    afterRead: [...(defaultCollection?.hooks?.afterRead ?? []), qrGalleryFallback],
   },
 })
