@@ -177,9 +177,10 @@ export const stem = (t: string): string => t.replace(/(ing|ed|es|s)$/, '')
 const stems = (text: string) => tokens(text.replace(/([a-z])([A-Z])/g, (_, a: string, b: string) => `${a} ${b}`).replace(NEGATION, () => ' ')).filter((t) => /^[a-z]/.test(t) && !BRAND.has(t)).map(stem)
 const values = (v: unknown, at = '', words: readonly string[] = []): { n: string; at: string; words: Set<string> }[] => {
   const o = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>, n = 'mantissa' in o ? `${o.mantissa}e${o.exponent}` : String(v)
-  // a row's own texts label its values (an order of 4); the result's own top-level texts name the call, not each value in it
-  const labels = at === '' ? [] : Object.entries(o).flatMap(([k, x]) => (k !== 'says' && typeof x === 'string' && !dec(x) ? stems(x) : []))
-  return (typeof v !== 'object' || 'mantissa' in o) ? (dec(n) ? [{ n, at, words: new Set(words) }] : []) : Object.entries(o).flatMap(([k, x]) => values(x, Array.isArray(v) ? `${at}[${k}]` : at ? `${at}.${k}` : k, [...words, ...labels, ...(Array.isArray(v) ? [] : stems(k))]))
+  // a row's own texts label its values (an order of 4, Willow's 105 qubits). At the top of a result they label the
+  // values stated there and not everything nested below: the call's own name is not the name of every number in it
+  const labels = Object.entries(o).flatMap(([k, x]) => (k !== 'says' && typeof x === 'string' && !dec(x) ? stems(x) : []))
+  return (typeof v !== 'object' || 'mantissa' in o) ? (dec(n) ? [{ n, at, words: new Set(words) }] : []) : Object.entries(o).flatMap(([k, x]) => values(x, Array.isArray(v) ? `${at}[${k}]` : at ? `${at}.${k}` : k, [...words, ...(at === '' && x !== null && typeof x === 'object' && !('mantissa' in x) ? [] : labels), ...(Array.isArray(v) ? [] : stems(k))]))
 }
 /** The values a text claims, each with its subject (the words before it in its clause, and its unit), after a verb or anywhere when bare; a
  *  number alone in its clause continues the claim before it (the factors are 3 and 7); an input is no claim. */
