@@ -32,9 +32,9 @@ jobs:
       - name: Payload migrate, then the D1 optimize
         run: pnpm run deploy:database
       - name: Payload writes one wave, then the next, in one session
-        run: cross-env NODE_ENV=production pnpm run seed
+        run: pnpm exec cross-env NODE_ENV=production pnpm run seed
       - name: Payload reads the pages back and deploy is allowed when they agree
-        run: cross-env NODE_ENV=production pnpm run seed:check
+        run: pnpm exec cross-env NODE_ENV=production pnpm run seed:check
       - name: OpenNext builds the Payload app and deploys the Worker
         run: pnpm run deploy:app
       - name: smoke the admin on both hostnames
@@ -60,4 +60,4 @@ jobs:
             -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
             -H "Content-Type: application/json" \
             --data "{\"queryId\":\"qpu-deploy\",\"timeframe\":{\"from\":${from},\"to\":${to}},\"view\":\"events\",\"limit\":5,\"parameters\":{\"datasets\":[\"cloudflare-workers\"],\"filters\":[{\"key\":\"\$metadata.service\",\"operation\":\"eq\",\"type\":\"string\",\"value\":\"qpu\"}]}}")
-          OBS_STATUS="$status" node -e 'const fs = require("node:fs"); const status = process.env.OBS_STATUS; const body = JSON.parse(fs.readFileSync("/tmp/qpu-obs.json", "utf8")); const result = body.result || {}; const events = Array.isArray(result.events) ? result.events : []; console.log("observability", status, "events", events.length); process.exit(status === "200" && body.success !== false ? 0 : 1)'
+          OBS_STATUS="$status" python3 -c 'import json,os,sys; status=os.environ["OBS_STATUS"]; body=json.load(open("/tmp/qpu-obs.json")); result=body.get("result") or {}; events=result.get("events"); print("observability", status, "events", len(events) if isinstance(events, list) else 0); sys.exit(0 if status=="200" and body.get("success") is True and isinstance(events, list) else 1)'
