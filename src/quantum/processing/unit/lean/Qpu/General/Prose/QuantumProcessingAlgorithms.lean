@@ -16,7 +16,7 @@ def quantumProcessingAlgorithms_via9 : String := "baby-step giant-step over the 
 def quantumProcessingAlgorithms_s10 : String := "the order exceeds m² ≈ ⟦0⟧ (the budget): bounded, never guessed — order-finding at this scale is computed by a physical quantum backend"
 def quantumProcessingAlgorithms_s11 : String := "a is a unit mod N, 2 ≤ a < N with gcd(a, N) = 1: otherwise gcd(a, N) is itself a factor, no order needed"
 def quantumProcessingAlgorithms_s12 : String := "r is the order of a mod N (a^r ≡ 1): a^⟦0⟧ mod N ≠ 1, so the measured period is wrong"
-def quantumProcessingAlgorithms_s13 : String := "the order is odd: this a yields no factor; another a is tried (the circuit is rerun, textbook_refuse_is_refuse)"
+def quantumProcessingAlgorithms_s13 : String := "the order is odd: this a yields no factor; another a is tried (the circuit is rerun)"
 def quantumProcessingAlgorithms_s14 : String := "a^(r/2) ≡ −1 mod N: this a yields only the trivial factor; another a is tried"
 def quantumProcessingAlgorithms_why15 : String := "gcd(a^(r/2) ± 1, N) splits N: a ⟦0⟧-bit factoring finished from its order, the product checked"
 
