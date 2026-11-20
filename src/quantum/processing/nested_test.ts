@@ -113,3 +113,30 @@ test('a trinity is two pairs sharing one textbook, three for every three textboo
   assert.equal(answer.variations.every((v: { products: { context: { scientific: string } }[] }) => v.products.filter((p) => p.context.scientific === names[1]).length === 1), true)
   assert.equal(call('textbook', { mix: names.slice(0, 2) }).result!.structuredContent.shared, undefined)
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every variation carries a receipt that leads back to exactly its address, in one read for each textbook. */
+test('every variation carries a receipt that leads back to exactly its address, in one read for each textbook', () => {
+  const kernel = new Set(THEOREMS.map((t) => t.key))
+  for (const names of [['Qpu.Processing.Qft', 'Qpu.Application.Shor'], ['Qpu.Processing.Qft', 'Qpu.Application.Shor', 'Qpu.Application.Grover']]) {
+    const first = call('textbook', { mix: names }).result!.structuredContent
+    assert.equal(first.advantage.reads, names.length)
+    assert.equal(first.advantage.space, first.total)
+    assert.ok(first.advantage.reads < first.advantage.space)
+    assert.ok(2 ** first.advantage.reads <= first.advantage.space)
+    assert.equal(first.advantage.theorems.every((name: string) => kernel.has(name)), true)
+    const last = call('textbook', { mix: names, page: first.pages }).result!.structuredContent
+    for (const variation of [...first.variations, ...last.variations]) {
+      const { index, digits, reads, walk } = variation.receipt
+      assert.deepEqual([index, reads, walk], [variation.index, names.length, variation.index + 1])
+      // the digits rank back to the address: one multiplication and one addition for each textbook
+      assert.equal(digits.reduce((at: number, digit: number, k: number) => at * first.advantage.sizes[k] + digit, 0), index)
+      const checked = call('textbook', { mix: names, receipt: { index, digits } }).result!.structuredContent
+      assert.equal(checked.holds, true)
+      assert.deepEqual(checked.products, variation.products)
+    }
+    const { index, digits } = last.variations.at(-1).receipt
+    assert.equal(call('textbook', { mix: names, receipt: { index: index - 1, digits } }).result!.structuredContent.holds, false)
+    assert.equal(call('textbook', { mix: names, receipt: { index: first.total, digits } }).result!.structuredContent.holds, false)
+    assert.equal(call('textbook', { mix: names, receipt: { index, digits: digits.slice(1) } }).result!.structuredContent.holds, false)
+  }
+})
