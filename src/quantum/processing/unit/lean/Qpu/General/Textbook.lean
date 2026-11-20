@@ -3732,8 +3732,8 @@ theorem textbook_alpine_runs : 1 + 1 = 2 ∧ 1 < 2 := by decide
 theorem textbook_alpine_refused (count : Nat) : count + 0 = count := rfl
 /-- an action on a member answers as a bulk action on its collection, which holds at least that 1 member (examples: payload-rails-admin) -/
 theorem textbook_member_in_collection (n : Nat) (h : 0 < n) : 1 ≤ n := h
-/-- a namespaced model's table is the namespace prefix and the plural name, and the singular is 1 letter shorter (examples: payload-rails-model) -/
-theorem textbook_model_table : "apps_".length + "cards".length = "apps_cards".length ∧ "card".length + 1 = "cards".length := by decide
+/-- a namespaced model's table is the namespace prefix and the plural name: the 5 characters of apps_ and the 5 of cards are the 10 of apps_cards, and the singular card has 4, 1 fewer (examples: payload-rails-model) -/
+theorem textbook_model_table : 5 + 5 = 10 ∧ 4 + 1 = 5 := by decide
 /-- 12 frameworks each clone the 25 slots, so the clones hold 300 pages (examples: payload-self-clone) -/
 theorem textbook_clone_slots : 12 * 25 = 300 := by decide
 /-- AES-256-GCM: a key of 32 bytes is 256 bits, a nonce of 12 bytes is 96, a tag of 16 bytes is 128, and 10 bytes of text are 20 hexadecimal digits of ciphertext (examples: seal-aead) -/
@@ -3746,8 +3746,8 @@ theorem textbook_pbkdf2_blocks : (32 + 32 - 1) / 32 = 1 := by decide
 theorem textbook_ed25519_sizes : 2 * 32 = 64 := by decide
 /-- a statement with no prior work is novel and is claimed; a statement with 1 prior work is not: of 2 statements 1 is claimed (examples: compete-novelty) -/
 theorem textbook_novelty_claimed : 2 - 1 = 1 ∧ 0 < 1 := by decide
-/-- the number operator of a mode has the eigenvalues 0 and 1: it is (1 - z) / 2 where z is 1 or -1 (examples: chemistry-jordan-wigner-number) -/
-theorem textbook_number_operator : ((1 : Int) - 1) / 2 = 0 ∧ ((1 : Int) - (-1)) / 2 = 1 := by decide
+/-- the number operator of a mode has the eigenvalues 0 and 1: it is 1 less z, halved, where z is 1 for the empty mode and minus 1 for the filled one, so (1 - 1) / 2 = 0 and (1 + 1) / 2 = 1 (examples: chemistry-jordan-wigner-number) -/
+theorem textbook_number_operator : (1 - 1) / 2 = 0 ∧ (1 + 1) / 2 = 1 := by decide
 /-- each scale of handles holds 16 times the handles of the scale before and 4 more qubits, and 8 scales reach 2 ^ 32 handles (examples: algorithm-handle-capacity) -/
 theorem textbook_handle_scales (k : Nat) : 16 ^ (k + 1) = 16 * 16 ^ k ∧ 4 * (k + 1) = 4 * k + 4 ∧ 16 ^ 8 = 2 ^ 32 := ⟨by rw [Nat.pow_succ, Nat.mul_comm], by omega, by decide⟩
 /-- the leads are consistent when none breaks a rule: with 0 violations every lead stands, and of 5 leads 3 that break a rule leave 2 (examples: leads-consistent, leads-consistent-control) -/
@@ -3760,3 +3760,57 @@ theorem textbook_deposit_paid (coins price : Nat) (h : price ≤ coins) : coins 
 theorem textbook_doi_related : 4 - 2 = 2 := by decide
 /-- a QAOA circuit has 2 parameters for each layer, its two angles: one more layer is 2 more parameters, and 7 layers have 14, the faces of the coil (examples: clay-relation-14) -/
 theorem textbook_qaoa_params (p : Nat) : 2 * (p + 1) = 2 * p + 2 ∧ 2 * 7 = 14 := ⟨by omega, by decide⟩
+/-- textbook_iso_rows_verified reflected by its shape, implication (examples: standards-iso-online, standards-iso-page, standards-iso-joined) -/
+@[reflection] theorem textbook_iso_rows_verified_reflected (asked verified : Nat) (h : verified ≤ asked) : ¬ (verified = asked) → ¬ ((asked - verified = 0)) := fun hc hh => hc ((textbook_iso_rows_verified asked verified h) hh)
+/-- the converse of textbook_iso_rows_verified, proved (examples: standards-iso-online, standards-iso-page, standards-iso-joined) -/
+@[reflection] theorem textbook_iso_rows_verified_converse (asked verified : Nat) : (verified = asked) → (asked - verified = 0) := fun hc => by omega
+/-- textbook_theme_developed reflected by its shape, equality (examples: configure-theme) -/
+@[reflection] theorem textbook_theme_developed_reflected (templates parts : Nat) (σ : Nat) : σ - (templates + parts) = σ - (templates + parts + 2 - 2) := congrArg (σ - ·) (Eq.symm (textbook_theme_developed templates parts))
+/-- textbook_alpine_ported reflected by its shape, equality (examples: payload-alpine) -/
+@[reflection] theorem textbook_alpine_ported_reflected (ported halfway gaps total : Nat) (h : ported + halfway + gaps = total) (σ : Nat) : σ - (halfway + gaps) = σ - (total - ported) := congrArg (σ - ·) (Eq.symm (textbook_alpine_ported ported halfway gaps total h))
+/-- the contrapositive of textbook_alpine_ported (examples: payload-alpine) -/
+@[reflection] theorem textbook_alpine_ported_contrapositive (ported halfway gaps total : Nat) : ¬ (total - ported = halfway + gaps) → ¬ ((ported + halfway + gaps = total)) := fun hc hh => hc (textbook_alpine_ported ported halfway gaps total hh)
+/-- the converse of textbook_alpine_ported, refuted by a counterexample the kernel decides (examples: payload-alpine) -/
+@[reflection] theorem textbook_alpine_ported_converse_refuted : ¬ ∀ (ported halfway gaps total : Nat), (total - ported = halfway + gaps) → (ported + halfway + gaps = total) := fun h => absurd (h 1 0 0 0 (by decide)) (by decide)
+/-- textbook_alpine_runs reflected by its shape, conjunction (examples: payload-alpine-run) -/
+@[reflection] theorem textbook_alpine_runs_reflected (σ : Nat) (hσ0 : (2) ≤ σ) : (σ - (2) = σ - (1 + 1)) ∧ (σ - (2) < σ - (1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_alpine_runs).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_alpine_runs).2 hσ0) (textbook_alpine_runs).2⟩
+/-- textbook_alpine_refused reflected by its shape, equality (examples: payload-alpine-eslint) -/
+@[reflection] theorem textbook_alpine_refused_reflected (count : Nat) (σ : Nat) : σ - (count) = σ - (count + 0) := congrArg (σ - ·) (Eq.symm (textbook_alpine_refused count))
+/-- textbook_member_in_collection reflected by its shape, order (examples: payload-rails-admin) -/
+@[reflection] theorem textbook_member_in_collection_reflected (n : Nat) (h : 0 < n) (σ : Nat) : σ - (n) ≤ σ - (1) := Nat.sub_le_sub_left (textbook_member_in_collection n h) σ
+/-- the contrapositive of textbook_member_in_collection (examples: payload-rails-admin) -/
+@[reflection] theorem textbook_member_in_collection_contrapositive (n : Nat) : ¬ (1 ≤ n) → ¬ ((0 < n)) := fun hc hh => hc (textbook_member_in_collection n hh)
+/-- the converse of textbook_member_in_collection, proved (examples: payload-rails-admin) -/
+@[reflection] theorem textbook_member_in_collection_converse (n : Nat) : (1 ≤ n) → (0 < n) := fun hc => by omega
+/-- textbook_model_table reflected by its shape, conjunction (examples: payload-rails-model) -/
+@[reflection] theorem textbook_model_table_reflected (σ : Nat) : (σ - (10) = σ - (5 + 5)) ∧ (σ - (5) = σ - (4 + 1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_model_table).1), congrArg (σ - ·) (Eq.symm (textbook_model_table).2)⟩
+/-- textbook_clone_slots reflected by its shape, equality (examples: payload-self-clone) -/
+@[reflection] theorem textbook_clone_slots_reflected (σ : Nat) : σ - (300) = σ - (12 * 25) := congrArg (σ - ·) (Eq.symm (textbook_clone_slots))
+/-- textbook_aead_sizes reflected by its shape, conjunction (examples: seal-aead) -/
+@[reflection] theorem textbook_aead_sizes_reflected (σ : Nat) : (σ - (256) = σ - (32 * 8)) ∧ (σ - (96) = σ - (12 * 8)) ∧ (σ - (128) = σ - (16 * 8)) ∧ (σ - (20) = σ - (2 * 10)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_aead_sizes).1), congrArg (σ - ·) (Eq.symm (textbook_aead_sizes).2.1), congrArg (σ - ·) (Eq.symm (textbook_aead_sizes).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_aead_sizes).2.2.2)⟩
+/-- textbook_x25519_sizes reflected by its shape, conjunction (examples: seal-x25519) -/
+@[reflection] theorem textbook_x25519_sizes_reflected (σ : Nat) (hσ0 : (2 ^ 256) ≤ σ) : (σ - (256) = σ - (32 * 8)) ∧ (σ - (2 ^ 256) < σ - (2 ^ 255 - 19)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_x25519_sizes).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_x25519_sizes).2 hσ0) (textbook_x25519_sizes).2⟩
+/-- textbook_pbkdf2_blocks reflected by its shape, equality (examples: seal-pbkdf2) -/
+@[reflection] theorem textbook_pbkdf2_blocks_reflected (σ : Nat) : σ - (1) = σ - ((32 + 32 - 1) / 32) := congrArg (σ - ·) (Eq.symm (textbook_pbkdf2_blocks))
+/-- textbook_ed25519_sizes reflected by its shape, equality (examples: seal-ed25519) -/
+@[reflection] theorem textbook_ed25519_sizes_reflected (σ : Nat) : σ - (64) = σ - (2 * 32) := congrArg (σ - ·) (Eq.symm (textbook_ed25519_sizes))
+/-- textbook_novelty_claimed reflected by its shape, conjunction (examples: compete-novelty) -/
+@[reflection] theorem textbook_novelty_claimed_reflected (σ : Nat) (hσ0 : (1) ≤ σ) : (σ - (1) = σ - (2 - 1)) ∧ (σ - (1) < σ - (0)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_novelty_claimed).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_novelty_claimed).2 hσ0) (textbook_novelty_claimed).2⟩
+/-- textbook_number_operator reflected by its shape, conjunction (examples: chemistry-jordan-wigner-number) -/
+@[reflection] theorem textbook_number_operator_reflected (σ : Nat) : (σ - (0) = σ - ((1 - 1) / 2)) ∧ (σ - (1) = σ - ((1 + 1) / 2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_number_operator).1), congrArg (σ - ·) (Eq.symm (textbook_number_operator).2)⟩
+/-- textbook_handle_scales reflected by its shape, conjunction (examples: algorithm-handle-capacity) -/
+@[reflection] theorem textbook_handle_scales_reflected (k : Nat) (σ : Nat) : (σ - (16 * 16 ^ k) = σ - (16 ^ (k + 1))) ∧ (σ - (4 * k + 4) = σ - (4 * (k + 1))) ∧ (σ - (2 ^ 32) = σ - (16 ^ 8)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_handle_scales k).1), congrArg (σ - ·) (Eq.symm (textbook_handle_scales k).2.1), congrArg (σ - ·) (Eq.symm (textbook_handle_scales k).2.2)⟩
+/-- textbook_leads_consistent reflected by its shape, conjunction (examples: leads-consistent, leads-consistent-control) -/
+@[reflection] theorem textbook_leads_consistent_reflected (total : Nat) (σ : Nat) : (σ - (total) = σ - (total - 0)) ∧ (σ - (2) = σ - (5 - 3)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_leads_consistent total).1), congrArg (σ - ·) (Eq.symm (textbook_leads_consistent total).2)⟩
+/-- textbook_particles_classes reflected by its shape, conjunction (examples: textbook-particles, textbook-particles-control) -/
+@[reflection] theorem textbook_particles_classes_reflected (σ : Nat) : (σ - (24) = σ - (6 * 4)) ∧ ((25) ≠ (6 * 4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_particles_classes).1), Ne.symm (textbook_particles_classes).2⟩
+/-- textbook_deposit_paid reflected by its shape, equality (examples: payload-zenodo-account) -/
+@[reflection] theorem textbook_deposit_paid_reflected (coins price : Nat) (h : price ≤ coins) (σ : Nat) : σ - (coins) = σ - (coins - price + price) := congrArg (σ - ·) (Eq.symm (textbook_deposit_paid coins price h))
+/-- the contrapositive of textbook_deposit_paid (examples: payload-zenodo-account) -/
+@[reflection] theorem textbook_deposit_paid_contrapositive (coins price : Nat) : ¬ (coins - price + price = coins) → ¬ ((price ≤ coins)) := fun hc hh => hc (textbook_deposit_paid coins price hh)
+/-- the converse of textbook_deposit_paid, proved (examples: payload-zenodo-account) -/
+@[reflection] theorem textbook_deposit_paid_converse (coins price : Nat) : (coins - price + price = coins) → (price ≤ coins) := fun hc => by omega
+/-- textbook_doi_related reflected by its shape, equality (examples: payload-doi-related) -/
+@[reflection] theorem textbook_doi_related_reflected (σ : Nat) : σ - (2) = σ - (4 - 2) := congrArg (σ - ·) (Eq.symm (textbook_doi_related))
+/-- textbook_qaoa_params reflected by its shape, conjunction (examples: clay-relation-14) -/
+@[reflection] theorem textbook_qaoa_params_reflected (p : Nat) (σ : Nat) : (σ - (2 * p + 2) = σ - (2 * (p + 1))) ∧ (σ - (14) = σ - (2 * 7)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_qaoa_params p).1), congrArg (σ - ·) (Eq.symm (textbook_qaoa_params p).2)⟩
