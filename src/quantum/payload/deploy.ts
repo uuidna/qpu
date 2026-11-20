@@ -1,4 +1,5 @@
 /** The deploy stages, in the order the workflow runs them. One Payload session writes every seed wave. Cloudflare receives the Worker. */
+import { PROSE } from '../processing/prose-index.ts'
 import { TENANTS } from '../processing/unit/tenants.ts'
 
 export type DeployStage = { id: string; says: string; run: string; block?: boolean }
@@ -24,11 +25,11 @@ status=$(curl -sS -o /tmp/qpu-obs.json -w '%{http_code}' -X POST \\
 OBS_STATUS="$status" python3 -c 'import json,os,sys; status=os.environ["OBS_STATUS"]; body=json.load(open("/tmp/qpu-obs.json")); result=body.get("result") or {}; events=result.get("events"); print("observability", status, "events", len(events) if isinstance(events, list) else 0); sys.exit(0 if status=="200" and body.get("success") is True and isinstance(events, list) else 1)'`
 
 export const DEPLOY_STAGES: readonly DeployStage[] = [
-  { id: 'database', run: 'pnpm run deploy:database', says: 'Payload migrate, then the D1 optimize' },
-  { id: 'seed', run: 'cross-env NODE_ENV=production pnpm run seed', says: 'Payload writes one wave, then the next, in one session' },
-  { id: 'check', run: 'cross-env NODE_ENV=production pnpm run seed:check', says: 'Payload reads the pages back and deploy is allowed when they agree' },
-  { id: 'app', run: 'pnpm run deploy:app', says: 'OpenNext builds the Payload app and deploys the Worker' },
-  { id: 'smoke', run: smoke, says: 'smoke the admin on both hostnames', block: true },
+  { id: 'database', run: 'pnpm run deploy:database', says: PROSE.quantumPayloadDeploy_says1 },
+  { id: 'seed', run: 'pnpm exec cross-env NODE_ENV=production pnpm run seed', says: PROSE.quantumPayloadDeploy_says2 },
+  { id: 'check', run: 'pnpm exec cross-env NODE_ENV=production pnpm run seed:check', says: PROSE.quantumPayloadDeploy_says3 },
+  { id: 'app', run: 'pnpm run deploy:app', says: PROSE.quantumPayloadDeploy_says4 },
+  { id: 'smoke', run: smoke, says: PROSE.quantumPayloadDeploy_says5, block: true },
   { id: 'logs', run: logs, says: 'query Worker logs', block: true },
 ]
 

@@ -1,3 +1,4 @@
+import { PROSE, proseFill } from '../quantum/processing/prose-index.ts'
 import { execFileSync } from 'child_process'
 import { randomBytes } from 'crypto'
 import { createPayloadRequest, getPayload, registerFirstUserOperation } from 'payload'
@@ -44,8 +45,8 @@ const user =
       req: await createPayloadRequest({ payload }),
     })
   ).user
-if (!user) throw new Error(`${email} is not a user here, and the database already has users: name an admin with LEGACY_ADMIN_EMAIL`)
-if (!user.roles?.includes('admin')) throw new Error(`${email} is not an admin: name one with LEGACY_ADMIN_EMAIL`)
+if (!user) throw new Error(proseFill(PROSE.scriptsQueueLegacyLeads_s1, email))
+if (!user.roles?.includes('admin')) throw new Error(proseFill(PROSE.scriptsQueueLegacyLeads_s2, email))
 const req = await createPayloadRequest({ payload, user: { ...user, collection: 'users' } })
 
 const tenants = await payload.find({ collection: 'tenants', limit: 1, req, where: { slug: { equals: 'qpu' } } })

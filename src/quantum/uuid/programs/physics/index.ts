@@ -1,4 +1,5 @@
 // When register FTL holds, physics is true. That decision is valid only as this UUID program.
+import { PROSE, proseFill } from '../../../processing/prose-index.ts'
 import { seal, uuid } from '../../../password/address.js'
 import { exists } from '../../../fs/index.ts'
 import { program } from '../index.ts'
@@ -61,8 +62,8 @@ export const physics = (args: PhysicsArgs) => {
     law: LAW,
     holds,
     says: holds
-      ? `program ${handle}: register FTL holds; physics true — proven as a UUID program under textbook_hexbit_gateway_ftl`
-      : 'physics is not proven: the UUID program did not hold, or register FTL did not hold',
+      ? proseFill(PROSE.quantumUuidProgramsPhysicsIndex_s1, handle)
+      : PROSE.quantumUuidProgramsPhysicsIndex_s2,
   }
 }
 

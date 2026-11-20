@@ -3,6 +3,7 @@
 // Where the page's circuit uses a mid-circuit measurement, the deferred-measurement form is built instead: the same state,
 // with the corrections controlled by the qubits that would have been measured.
 
+import { PROSE, proseFill } from './prose-index.ts'
 import { Circuit, CNOT, CZ, DensityMatrixSimulator, getExpectation, H, LineQubit, measure, type Operation, type Qubit, SWAP, Simulator, TOFFOLI, X, Y, Z, ZZ, adjointGate, applied, defineGate, qubitKey, raiseGate, seededRandom, type Gate } from './cirq.ts'
 import { numpyWeights } from './unit/random.ts'
 import { uuid } from '../uuid/index.ts'
@@ -93,7 +94,7 @@ export const teleportProof = () => {
   const heal = { from: false as const, next: true as const, sent: holds, healed: holds && ftl === false }
   return {
     ftl, holds, heal, qubits: 3 as const, bits: 2 as const, corrections: 4 as const, theorem: 'textbook_teleport_three_qubits' as const, pauli,
-    says: holds ? 'Bob matches the message on X, Y and Z after the two corrections. Before those bits each expectation on Bob is 0. The false assumption is sent to next, and next is true.' : 'the teleport readout did not prove the channel silent',
+    says: holds ? PROSE.quantumProcessingAlgorithms_s1 : PROSE.quantumProcessingAlgorithms_s2,
   }
 }
 
@@ -564,21 +565,21 @@ export const getInteger = (v: unknown, name: string, fallback?: bigint): bigint 
   if (v === undefined && fallback !== undefined) return fallback
   if (typeof v === 'number' && Number.isInteger(v) && v >= 0) return BigInt(v)
   if (typeof v === 'string' && /^\d+$/.test(v)) return BigInt(v)
-  throw new Error(`${name} is a non-negative integer: a decimal string of any length, or a JSON number`)
+  throw new Error(proseFill(PROSE.quantumProcessingAlgorithms_s3, name))
 }
 /** A paste read, never refused. A leading integer, minus allowed, is that integer; what follows it, or a paste with no integer, is the meaning imagination realises. */
 export const pasteInteger = (v: unknown): { magnitude: bigint | null; integer: string | null; sign: 'minus' | 'plus' | 'none'; rest: string; meaning: string } => {
   if (typeof v === 'number' && Number.isInteger(v)) {
     const magnitude = BigInt(Math.abs(v))
     const sign = v < 0 ? 'minus' as const : 'plus' as const
-    return { magnitude, integer: `${v < 0 ? '-' : ''}${magnitude}`, sign, rest: '', meaning: sign === 'minus' ? 'a minus sign: the magnitude is the integer, the sign a polarity' : '' }
+    return { magnitude, integer: `${v < 0 ? '-' : ''}${magnitude}`, sign, rest: '', meaning: sign === 'minus' ? PROSE.quantumProcessingAlgorithms_s4 : '' }
   }
   const text = typeof v === 'string' ? v.trim() : v === undefined || v === null ? '' : typeof v === 'number' && Number.isFinite(v) ? String(v) : JSON.stringify(v)
   const head = /^-?\d+/.exec(text)
   if (head && head.index === 0) {
     const sign = head[0].startsWith('-') ? 'minus' as const : 'plus' as const
     const rest = text.slice(head[0].length)
-    const meaning = [sign === 'minus' ? 'a minus sign: the magnitude is the integer, the sign a polarity' : '', rest].filter(Boolean).join('; ')
+    const meaning = [sign === 'minus' ? PROSE.quantumProcessingAlgorithms_s4 : '', rest].filter(Boolean).join('; ')
     return { magnitude: BigInt(head[0].replace('-', '')), integer: head[0], sign, rest, meaning }
   }
   return { magnitude: null, integer: null, sign: 'none', rest: text, meaning: text || 'an empty paste' }
@@ -804,10 +805,10 @@ export const createImpossible = (opts: { p?: bigint; q?: bigint; bits?: number; 
     const bits = Math.max(16, Math.floor(opts.bits ?? 1000)), draw = bytes(opts.seed)
     pp = prime(Math.ceil(bits / 2), draw); do qq = prime(bits >> 1, draw); while (qq === pp)
   }
-  if (!testPrimality(pp).prime || !testPrimality(qq).prime) throw new Error('create takes two primes (p, q) or a bit size to generate them')
+  if (!testPrimality(pp).prime || !testPrimality(qq).prime) throw new Error(PROSE.quantumProcessingAlgorithms_s5)
   const [lo, hi] = pp < qq ? [pp, qq] : [qq, pp]
-  if (lo === hi) throw new Error('the two primes must differ (a semiprime of distinct primes)')
-  if (lo === 2n) throw new Error('the trapdoor takes two odd primes: with 2 the centre (p + q)/2 is not an integer')
+  if (lo === hi) throw new Error(PROSE.quantumProcessingAlgorithms_s6)
+  if (lo === 2n) throw new Error(PROSE.quantumProcessingAlgorithms_s7)
   const N = lo * hi, witness = (lo + hi) / 2n, gap = (hi - lo) / 2n, r = sqrtBig(N)
   return { N, p: lo, q: hi, bits: N.toString(2).length, witness, gap, blindReflections: witness - (r * r === N ? r : r + 1n) + 1n, reproducible: opts.seed !== undefined || (opts.p !== undefined && opts.q !== undefined) }
 }
@@ -844,7 +845,7 @@ const orderMiss = (babySteps: string, table: string, via: string) => ({ order: n
  *  of each residue), giant steps a^(m·i) meeting one at an address, so r divides m·i − j, reduced to the least and checked. The witness is the one the
  *  kernel states: every smaller power misses 1, a^r ≡ 1, and r = ⌈√r⌉·i − j. Exact when r ≤ m²; beyond the budget it is bounded, never guessed. */
 export const orderFinding = (a: bigint, N: bigint, budget = 1n << 22n): { order: string | null; found: boolean; babySteps: string; table: string; verified: boolean; least: boolean; atOne: boolean; powers: string[]; m: string | null; i: string | null; j: string | null; equation: string | null; holds: boolean; via: string } => {
-  if (N < 2n || a < 2n || a % N === 0n || gcdBig(a % N, N) !== 1n) return orderMiss('0', 'empty', 'a must be a unit mod N (2 ≤ a < N, gcd(a, N) = 1); otherwise gcd is a factor and no order is needed')
+  if (N < 2n || a < 2n || a % N === 0n || gcdBig(a % N, N) !== 1n) return orderMiss('0', 'empty', PROSE.quantumProcessingAlgorithms_s8)
   a %= N
   const m = sqrtBig(budget < 1n ? 1n : budget) + 1n
   // the baby steps a^j mod N, each addressed by content (uuid of the residue — the UUID quantum space) in the RAID table (the content-addressed map)
@@ -864,12 +865,12 @@ export const orderFinding = (a: bigint, N: bigint, budget = 1n << 22n): { order:
         if (t > 1n) primes.push(t)
         for (const pp of primes) while (r % pp === 0n && powMod(a, r / pp, N) === 1n) r /= pp
         const w = orderWitness(a, N, r)
-        return { order: r.toString(), found: true, babySteps: m.toString(), table: `${raid.size} content-addressed residues`, verified: w.least && w.atOne && w.holds, ...w, via: 'baby-step giant-step over the UUID-addressed RAID table' }
+        return { order: r.toString(), found: true, babySteps: m.toString(), table: `${raid.size} content-addressed residues`, verified: w.least && w.atOne && w.holds, ...w, via: PROSE.quantumProcessingAlgorithms_via9 }
       }
     }
     giant = (giant * aM) % N
   }
-  return orderMiss(m.toString(), `${raid.size} content-addressed residues`, `the order exceeds m² ≈ ${(m * m).toString()} (the budget): bounded, never guessed — order-finding at this scale is computed by a physical quantum backend`)
+  return orderMiss(m.toString(), `${raid.size} content-addressed residues`, proseFill(PROSE.quantumProcessingAlgorithms_s10, (m * m).toString()))
 }
 
 // Shor's reduction, exact at any size: factoring is order-finding. Given the order r of a mod N (the quantity the register measures, at any
@@ -877,13 +878,13 @@ export const orderFinding = (a: bigint, N: bigint, budget = 1n << 22n): { order:
 // half-root are doors too: they name why this base does not split. This does not find r; it is the half of Shor that is a formula.
 export const shorReduction = (N: bigint, a: bigint, r: bigint): { order: bigint; even: boolean; nonTrivial: boolean; factors: [bigint, bigint] | null; verified: boolean; why: string } => {
   const no = (why: string): ReturnType<typeof shorReduction> => ({ order: r, even: r % 2n === 0n, nonTrivial: false, factors: null, verified: false, why })
-  if (a < 2n || a >= N || gcdBig(a, N) !== 1n) return no('a is a unit mod N, 2 ≤ a < N with gcd(a, N) = 1: otherwise gcd(a, N) is itself a factor, no order needed')
-  if (r < 1n || powMod(a, r, N) !== 1n) return no(`r is the order of a mod N (a^r ≡ 1): a^${r} mod N ≠ 1, so the measured period is wrong`)
-  if (r % 2n === 1n) return no('the order is odd: this a yields no factor; another a is tried (the circuit is rerun, textbook_refuse_is_refuse)')
+  if (a < 2n || a >= N || gcdBig(a, N) !== 1n) return no(PROSE.quantumProcessingAlgorithms_s11)
+  if (r < 1n || powMod(a, r, N) !== 1n) return no(proseFill(PROSE.quantumProcessingAlgorithms_s12, r))
+  if (r % 2n === 1n) return no(PROSE.quantumProcessingAlgorithms_s13)
   const half = powMod(a, r / 2n, N)
-  if (half === N - 1n) return no('a^(r/2) ≡ −1 mod N: this a yields only the trivial factor; another a is tried')
+  if (half === N - 1n) return no(PROSE.quantumProcessingAlgorithms_s14)
   const p = gcdBig(half - 1n, N), q = gcdBig(half + 1n, N), f = [p, q].find((x) => x > 1n && x < N)
   if (f === undefined) return no('gcd(a^(r/2) ± 1, N) is trivial: another a is tried')
   const g = f, h = N / f
-  return { order: r, even: true, nonTrivial: true, factors: [g < h ? g : h, g < h ? h : g], verified: g * h === N, why: `gcd(a^(r/2) ± 1, N) splits N: a ${N.toString(2).length}-bit factoring finished from its order, the product checked` }
+  return { order: r, even: true, nonTrivial: true, factors: [g < h ? g : h, g < h ? h : g], verified: g * h === N, why: proseFill(PROSE.quantumProcessingAlgorithms_why15, N.toString(2).length) }
 }

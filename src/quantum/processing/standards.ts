@@ -2,6 +2,7 @@
 // author a Person with an ORCID, the licence a URL, dates in ISO 8601, languages in ISO 639-1, currencies in ISO 4217,
 // countries in ISO 3166-1), and the free CLDR lists (Unicode's JSON of the ISO codes with their names) read as contracts so
 // the tree's locales and currencies are validated against the standard, never against prose. No I/O here.
+import { PROSE, proseFill } from './prose-index.ts'
 import { LICENSE } from './unit/license.ts'
 import { VERSION } from './unit/version.ts'
 import { TABLES } from './tables-index.ts'
@@ -61,6 +62,7 @@ import { echoProbability } from './echo.ts'
 import { WILLOW, isBelowThreshold, toDevice } from './processor.ts'
 import { codePoint, textbookLogicalError } from './qec.ts'
 import { coins, faces, mint, plane, rays, recomputeClay } from './clay-register.ts'
+import { CLAY_RELATIONS } from './clay-statements.ts'
 import { checkWitnesses, mergeWitnesses } from './witnesses.ts'
 import { CATALOGUE, accountCoins, balance, combinationVariants, createLedger, fuseCall, mintWitnessCoins } from './toolboxes/billing.ts'
 import { THEOREMS } from './theorems-index.ts'
@@ -106,7 +108,7 @@ export const validateCodes = (codes: Codes, mine: { locales: readonly string[]; 
 /** Which standard document a text is: the schema.org JSON-LD vocabulary, or a CLDR list. */
 export const detectStandard = (text: string): { detected: string; note: string } | null => {
   try { const j = JSON.parse(text) as { sha?: string; tree?: { path: string; type: string; size?: number }[]; truncated?: boolean }; if (Array.isArray(j.tree) && typeof j.sha === 'string') { const skills = j.tree.filter((e) => /\/SKILL\.md$/.test(e.path)).map((e) => e.path.split('/').slice(-2, -1)[0]); const refs = j.tree.filter((e) => /\/reference\/[^/]+\.md$/.test(e.path)).length; return { detected: 'github tree', note: `${j.tree.length} entries${j.truncated ? ' (truncated)' : ''}; ${skills.length} skill(s): ${skills.join(', ')}; ${refs} reference(s)` } } } catch { /* not a tree */ }
-  try { const j = JSON.parse(text) as { docs?: { layout?: { blockType: string }[]; meta?: object; breadcrumbs?: unknown[]; createdAt?: string }[]; totalDocs?: number }; if (Array.isArray(j.docs) && j.docs[0] && typeof j.docs[0].createdAt === 'string') { const d = j.docs[0]; return { detected: 'payload rest', note: `${j.totalDocs ?? j.docs.length} docs; blocks ${(d.layout ?? []).map((b) => b.blockType).join(', ') || 'none'}; ${d.meta ? 'seo meta' : 'no meta'}; ${Array.isArray(d.breadcrumbs) ? `${d.breadcrumbs.length} breadcrumb(s)` : 'no breadcrumbs'}: the site is the product's own output` } } } catch { /* not payload */ }
+  try { const j = JSON.parse(text) as { docs?: { layout?: { blockType: string }[]; meta?: object; breadcrumbs?: unknown[]; createdAt?: string }[]; totalDocs?: number }; if (Array.isArray(j.docs) && j.docs[0] && typeof j.docs[0].createdAt === 'string') { const d = j.docs[0]; return { detected: 'payload rest', note: proseFill(PROSE.quantumProcessingStandards_note1, j.totalDocs ?? j.docs.length, (d.layout ?? []).map((b) => b.blockType).join(', ') || 'none', d.meta ? 'seo meta' : 'no meta', Array.isArray(d.breadcrumbs) ? `${d.breadcrumbs.length} breadcrumb(s)` : 'no breadcrumbs') } } } catch { /* not payload */ }
   try {
     const j = JSON.parse(text) as Record<string, unknown>
     if (Array.isArray(j['@graph']) && j['@context']) return { detected: 'json-ld vocabulary', note: `${(j['@graph'] as unknown[]).length} terms (${text.length.toLocaleString('en-US')} chars)` }
@@ -135,7 +137,7 @@ export const createOpenapi = (origin: string, tools: readonly ApiTool[], hosts: 
     if (e.path === '/mcp') {
       op.operationId = 'mcp'
       op.requestBody = { required: true, content: { 'application/json': { schema: { $ref: '#/components/schemas/JsonRpcRequest' } } } }
-      op.responses = { '200': { description: 'the JSON-RPC result: content, structuredContent and _meta (widget, block, theme, jsonLd, license); ETag the content hash, X-Qpu-Address the block address', content: { 'application/json': { schema: { $ref: '#/components/schemas/JsonRpcResponse' } }, 'text/event-stream': { schema: { type: 'string', description: 'the MCP streamable transport: the same result as one event' } } } }, '304': { description: 'the block held is the block asked (If-None-Match named its content hash): nothing computed, nothing sent — the involution' } }
+      op.responses = { '200': { description: PROSE.quantumProcessingStandards_description2, content: { 'application/json': { schema: { $ref: '#/components/schemas/JsonRpcResponse' } }, 'text/event-stream': { schema: { type: 'string', description: PROSE.quantumProcessingStandards_description3 } } } }, '304': { description: PROSE.quantumProcessingStandards_description4 } }
     }
     paths[path] = { ...(paths[path] ?? {}), [method]: op }
   }
@@ -145,10 +147,10 @@ export const createOpenapi = (origin: string, tools: readonly ApiTool[], hosts: 
   schemas.JsonRpcResponse = { type: 'object', required: ['jsonrpc', 'id'], properties: { jsonrpc: { const: '2.0' }, id: { type: ['integer', 'string', 'null'] }, result: { type: 'object', properties: { content: { type: 'array' }, structuredContent: { type: 'object' }, _meta: { type: 'object' } } }, error: { type: 'object', required: ['code', 'message'], properties: { code: { enum: [-32601, -32602, -32700] }, message: { type: 'string' } } } } }
   return {
     openapi: '3.1.0',
-    info: { title: '@uuidna/qpu', version: VERSION, summary: 'An exact, formally verified quantum processing unit served over MCP: one endpoint, every tool a schema, every result a content-addressed block', license: { name: LICENSE.spdx, url: LICENSE.url }, contact: { name: LICENSE.author, url: origin } },
+    info: { title: '@uuidna/qpu', version: VERSION, summary: PROSE.quantumProcessingStandards_summary5, license: { name: LICENSE.spdx, url: LICENSE.url }, contact: { name: LICENSE.author, url: origin } },
     servers: hosts.map((url) => ({ url })),
     paths, components: { schemas },
-    'x-mcp': { endpoint: `${origin}/mcp`, protocol: '2025-06-18', methods: ['initialize', 'tools/list', 'tools/call', 'resources/list', 'resources/templates/list', 'resources/read'], tools: tools.map((t) => t.name), resource: OPENAPI_RESOURCE, says: 'the tools are the component schemas; a tools/call is the mcp operation with params.name one of them and params.arguments its schema; the two envelopes beyond the tools are JsonRpcRequest and JsonRpcResponse' },
+    'x-mcp': { endpoint: `${origin}/mcp`, protocol: '2025-06-18', methods: ['initialize', 'tools/list', 'tools/call', 'resources/list', 'resources/templates/list', 'resources/read'], tools: tools.map((t) => t.name), resource: OPENAPI_RESOURCE, says: PROSE.quantumProcessingStandards_says6 },
   }
 }
 
@@ -158,11 +160,11 @@ export const createOpenapi = (origin: string, tools: readonly ApiTool[], hosts: 
  *  split into content-addressed slices of a small bound, so validation, reindexing and cleanup run per slice (a page, a job), the cheapest unit, and an
  *  unchanged slice is skipped by its address (the 304 involution) — never the whole at once. The covered and the uncovered make the standards. Pure. */
 export const validateStandards = (bound = 6) => {
-  const mechanism = (kind: 'vocabulary' | 'codes' | 'reference'): string => kind === 'codes' ? 'a Payload select/validate against the CLDR list (ISO 639-1, 4217, 3166-1)' : kind === 'vocabulary' ? 'the schema.org JSON-LD every block, page and offer carries (standards { jsonld })' : 'the generated config and its field validations (configure)'
+  const mechanism = (kind: 'vocabulary' | 'codes' | 'reference'): string => kind === 'codes' ? PROSE.quantumProcessingStandards_s7 : kind === 'vocabulary' ? PROSE.quantumProcessingStandards_s8 : PROSE.quantumProcessingStandards_s9
   const rows = STANDARDS.map((s) => ({ id: s.id, name: s.name, kind: s.kind, contract: s.contract, mechanism: mechanism(s.kind), validatedBy: 'payload' as const, covered: true, address: uuid(`standard\n${s.id}`) }))
   const slices: { index: number; address: string; standards: string[]; count: number }[] = []
   for (let i = 0; i < rows.length; i += bound) { const chunk = rows.slice(i, i + bound); slices.push({ index: slices.length, address: uuid(JSON.stringify(chunk.map((r) => r.id))), standards: chunk.map((r) => r.id), count: chunk.length }) }
-  return { phase: 'standards-validate' as const, standards: rows.length, covered: rows.filter((r) => r.covered).length, uncovered: rows.filter((r) => !r.covered).length, rows, slices: slices.length, bySlice: slices, bound, reindex: 'each slice reindexed by referenceIndex (scope and combination, cached by query hash)', cleanup: 'each slice cleaned by purify and the RAID GC (orphans autodeleted), run per slice as a qpu-lead-run job', cheapest: 'validate, reindex and cleanup run per content-addressed slice (a page, a job), never the whole at once — the cheapest unit, an unchanged slice skipped by its address (the 304 involution)', theorems: ['textbook_standards_sliced'], says: `${rows.length} standards validated via Payload's standard implementation, all covered, in ${slices.length} cheap slices of ${bound}: each slice validated, reindexed and cleaned on its own, an unchanged slice skipped by its address` }
+  return { phase: 'standards-validate' as const, standards: rows.length, covered: rows.filter((r) => r.covered).length, uncovered: rows.filter((r) => !r.covered).length, rows, slices: slices.length, bySlice: slices, bound, reindex: PROSE.quantumProcessingStandards_reindex10, cleanup: PROSE.quantumProcessingStandards_cleanup11, cheapest: PROSE.quantumProcessingStandards_cheapest12, theorems: ['textbook_standards_sliced'], says: proseFill(PROSE.quantumProcessingStandards_says13, rows.length, slices.length, bound) }
 }
 
 
@@ -350,8 +352,8 @@ export const verifyIsoQuantumEquivalence = () => {
   const noLessPostulates: IsoQuantumPostulateReceipt[] = [
     {
       id: 'qubit_hilbert_space',
-      isoClause: 'ISO/IEC 4879:2024, 3.2.1 Hilbert space; 3.2.7 quantum state; 3.3.3 qubit',
-      postulate: 'A qubit (3.3.3) is a quantum system with two basis states. Its quantum state (3.2.7) is a vector, or a density operator, in a complex Hilbert space (3.2.1)',
+      isoClause: PROSE.quantumProcessingStandards_isoClause14,
+      postulate: PROSE.quantumProcessingStandards_postulate15,
       module: 'cirq.ts',
       holds: p1Holds,
       evidence: {
@@ -365,8 +367,8 @@ export const verifyIsoQuantumEquivalence = () => {
     },
     {
       id: 'superposition_interference',
-      isoClause: 'ISO/IEC 4879:2024, 3.2.8 quantum superposition; 3.2.18 quantum coherence',
-      postulate: 'A quantum superposition (3.2.8) of basis states, with quantum coherence (3.2.18) checked by a quantum Fourier transform round trip, an echo, Deutsch–Jozsa, Bernstein–Vazirani, Simon, and Grover',
+      isoClause: PROSE.quantumProcessingStandards_isoClause16,
+      postulate: PROSE.quantumProcessingStandards_postulate17,
       module: 'algorithms.ts, echo.ts',
       holds: p2Holds,
       evidence: {
@@ -381,8 +383,8 @@ export const verifyIsoQuantumEquivalence = () => {
     },
     {
       id: 'unitary_gates_circuits',
-      isoClause: 'ISO/IEC 4879:2024, 3.4.2 quantum gate; 3.4.3 unitary gate; 3.4.5 quantum circuit',
-      postulate: 'A quantum gate (3.4.2) transforms quantum states. A unitary gate (3.4.3) preserves inner products. A quantum circuit (3.4.5) is a sequence of quantum gates and other operations',
+      isoClause: PROSE.quantumProcessingStandards_isoClause18,
+      postulate: PROSE.quantumProcessingStandards_postulate19,
       module: 'cirq.ts, counting.ts',
       holds: p3Holds,
       evidence: {
@@ -397,7 +399,7 @@ export const verifyIsoQuantumEquivalence = () => {
     {
       id: 'entanglement_nonlocality',
       isoClause: 'ISO/IEC 4879:2024, 3.2.10 quantum entanglement',
-      postulate: 'Quantum entanglement (3.2.10): a joint quantum state that is not described by independent characteristics of its subsystems. The check is a Bell pair, CHSH S = 2√2, and teleportation of that state',
+      postulate: PROSE.quantumProcessingStandards_postulate20,
       module: 'algorithms.ts',
       holds: p4Holds,
       evidence: {
@@ -411,8 +413,8 @@ export const verifyIsoQuantumEquivalence = () => {
     },
     {
       id: 'measurement_open_systems',
-      isoClause: 'ISO/IEC 4879:2024, 3.2.16 quantum measurement; 3.2.17 projective measurement; 3.2.19 decoherence',
-      postulate: 'Quantum measurement (3.2.16) outputs a physical property of a quantum state. Projective measurement (3.2.17) leaves that state unchanged when repeated. Decoherence (3.2.19) is the loss of quantum coherence. Outcome probabilities follow the Born rule, the note to quantum physics (3.2.3). Eight noise channels keep trace 1',
+      isoClause: PROSE.quantumProcessingStandards_isoClause21,
+      postulate: PROSE.quantumProcessingStandards_postulate22,
       module: 'cirq.ts',
       holds: p5Holds,
       evidence: {
@@ -424,8 +426,8 @@ export const verifyIsoQuantumEquivalence = () => {
     },
     {
       id: 'qec_fault_tolerance',
-      isoClause: 'ISO/IEC 4879:2024, 3.3.7 logical qubit; 3.4.6 quantum error correction; 3.4.12 fault-tolerant quantum computing',
-      postulate: 'Quantum error correction (3.4.6) diagnoses and corrects errors in the parts of a logical qubit (3.3.7) without measuring the encoded quantum information. Fault-tolerant quantum computing (3.4.12) keeps one error from cascading without bound. Checked on the repetition code, the Steane [[7,1,3]] code, and the Willow layout',
+      isoClause: PROSE.quantumProcessingStandards_isoClause23,
+      postulate: PROSE.quantumProcessingStandards_postulate24,
       module: 'qec.ts, algorithms.ts, processor.ts',
       holds: p6Holds,
       evidence: {
@@ -507,7 +509,7 @@ export const verifyIsoQuantumEquivalence = () => {
   const stdValidation = validateStandards(6)
   const g3Holds =
     clay.holding === clay.total &&
-    clay.total === 55 &&
+    clay.total === CLAY_RELATIONS.length &&
     THEOREMS.length >= 1439 &&
     TEXTBOOK_THEOREMS.length >= 376 &&
     stdValidation.uncovered === 0 &&
@@ -519,7 +521,7 @@ export const verifyIsoQuantumEquivalence = () => {
   const purityGuards: IsoQuantumSoundnessGuard[] = [{
     id: 'purity-iso-iec-4879-2024',
     isoClause: 'ISO/IEC 4879:2024',
-    guard: 'ISO/IEC 4879:2024, 3.2.7 and 3.2.18: a state of trace 1 and purity 1 is admitted; a state of trace 1 and purity below 1 is not admitted as pure',
+    guard: PROSE.quantumProcessingStandards_guard25,
     module: 'cirq.ts',
     holds: purityAdmitted && mixedRefused,
     evidence: { purePurity: bellRho.purity, pureTrace: bellRho.trace, mixedPurity: noisyBellRho.purity, mixedTrace: noisyBellRho.trace, admitted: purityAdmitted, mixedRefused },
@@ -528,7 +530,7 @@ export const verifyIsoQuantumEquivalence = () => {
     {
       id: 'unitarity_trace_probability_guards',
       isoClause: 'ISO/IEC 4879:2024, 3.4.3 unitary gate',
-      guard: 'A unitary gate (3.4.3) preserves inner products and does not itself cause decoherence (3.2.19). Every gate has a power and an exponential, including S and T. The simulator refuses a probability outside [0, 1], an asymmetric sum above 1, two operations on one qubit in one moment, an uncoupled device pair, and noise on a state vector',
+      guard: PROSE.quantumProcessingStandards_guard26,
       module: 'cirq.ts, processor.ts',
       holds: g1Holds,
       evidence: {
@@ -543,8 +545,8 @@ export const verifyIsoQuantumEquivalence = () => {
     },
     {
       id: 'no_go_theorems_and_simulator_bounds',
-      isoClause: 'ISO/IEC 4879:2024, 3.2.8 superposition; 3.3.3 qubit; 3.4.22 quantum simulator',
-      guard: 'Enforces optimal universal cloning fidelity 5/6 < 1 (QuantumInformation.no_cloning), Holevo chi <= 1 bit, finite single-qubit Clifford order 24, polynomial stabilizer simulation (T-count = 0), and a register of any width (a 21-qubit state and a 9-qubit density matrix both run). Physics no-go names stay in evidence, not as ISO clauses.',
+      isoClause: PROSE.quantumProcessingStandards_isoClause27,
+      guard: PROSE.quantumProcessingStandards_guard28,
       module: 'algorithms.ts, counting.ts, cirq.ts',
       holds: g2Holds,
       evidence: {
@@ -562,8 +564,8 @@ export const verifyIsoQuantumEquivalence = () => {
     {
       id: 'kernel_and_standards_closure',
       isoClause: 'ISO 9001; ISO/IEC 4879:2024',
-      guard: 'All 55 Clay-register relations hold as recomputed identities; Lean 4 accepts the textbook surface with 0 sorry (kernel evidence, not an ISO standard); every STANDARDS slice validates with 0 uncovered',
-      module: 'clay-register.ts, standards.ts, Qpu/Textbook.lean',
+      guard: proseFill(PROSE.quantumProcessingStandards_guard29, CLAY_RELATIONS.length),
+      module: PROSE.quantumProcessingStandards_module30,
       holds: g3Holds,
       evidence: {
         clayRelationsHolding: `${clay.holding}/${clay.total}`,
@@ -603,8 +605,8 @@ export const verifyIsoQuantumEquivalence = () => {
   const isoBlockchainLayers: IsoBlockchainStandardLayer[] = [
     {
       standard: 'ISO/IEC 9834-8 (ITU-T X.667 / RFC 9562)',
-      title: '128-bit UUID Identifier & Witness Lattice Programmability',
-      programmability: 'Every block, coin, and token-coil is a 128-bit sealed UUID carrying 8 handle nibbles, 10 compiled program nibbles, 2 stamp nibbles (version decided by 1 + (rest^7 mod 91) mod 8), 12 tail nibbles, 9 simultaneous UUID schemas, and 14 cuboctahedron witnesses (6 square rotations + 8 triangular sigma-reflections)',
+      title: PROSE.quantumProcessingStandards_title31,
+      programmability: PROSE.quantumProcessingStandards_programmability32,
       holds:
         seal(genesisUuid).valid &&
         witnesses.faces === faces &&
@@ -623,15 +625,15 @@ export const verifyIsoQuantumEquivalence = () => {
     },
     {
       standard: 'ISO 22739:2024',
-      title: 'Blockchain and Distributed Ledger Technology — Vocabulary',
+      title: PROSE.quantumProcessingStandards_title33,
       programmability: 'Dig.watch 99+0+0 closed; wallet 3.100',
       holds: ['textbook_iso_22739_terms_read','textbook_iso_22739_wallet','textbook_iso_22739_orphan_blocks','textbook_iso_22739_hash_function','textbook_blockchain_hash_links','textbook_blockchain_tamper_evident','textbook_blockchain_transfer_once'].every((k) => THEOREMS.some((t) => t.key === k)),
       evidence: { source: 'https://dig.watch/resource/iso-227392020-blockchain-and-distributed-ledger-technologies-vocabulary', census: { total: 99, read: 99, cut: 0, lead: 0, wallet: 100 } },
     },
     {
       standard: 'ISO 23257:2022 & ISO/TR 23455:2019',
-      title: 'DLT Reference Architecture & Smart Contract Interactions',
-      programmability: 'Deterministic 4-layer architecture: RAID Binding 0 content-addressed storage, Lean 4 + three-valued witness consensus, 47 pure deterministic MCP tools across 12 toolboxes executed via entries (kind: call) with a432 harmonic RBAC and afterRead self-healing drift recovery',
+      title: PROSE.quantumProcessingStandards_title34,
+      programmability: PROSE.quantumProcessingStandards_programmability35,
       holds:
         fuseCall('fold').side === 'coin' &&
         fuseCall('payload').side === 'coil' &&
@@ -642,13 +644,13 @@ export const verifyIsoQuantumEquivalence = () => {
         deterministicTools: 47,
         algebraCoinTools: ['css', 'fold', 'verify', 'clay'],
         licensedCoilTools: 43,
-        consensus: 'Lean 4 rfl/decide/omega kernel + witness + RAID bit-0 verification',
+        consensus: PROSE.quantumProcessingStandards_consensus36,
       },
     },
     {
       standard: 'ISO 24165 (DTI), ISO 20022 & ISO 4217',
-      title: 'Digital Token Identifier & Double-Entry Coin-Coil Financial Messaging',
-      programmability: 'Each token is 1 coil with 2 reflecting coin UUIDs imprinted in one (mergeWitnesses shared = 2, mintWitnessCoins = 2), and each coin unfolds as a token in the next accounting transaction; double-entry stabilizer balance enforces sum(amount) = 0 and sum(count) = 0 in millicents across ISO 4217 EUR, USD, and BGN',
+      title: PROSE.quantumProcessingStandards_title37,
+      programmability: PROSE.quantumProcessingStandards_programmability38,
       holds:
         merged.shared.length === coins &&
         minted.coins === coins &&
@@ -734,7 +736,7 @@ export const verifyIsoQuantumEquivalence = () => {
       'textbook_rsa_beyond_bound',
       'QuantumInformation.no_cloning',
     ] as const,
-    says: `src/quantum is the QPU, a quantum processor (ISO/IEC 4879:2024, 3.4.8) computing via UUID qubits, its circuit gate the witness. ${vocabulary.filter((v) => v.holds).length}/${vocabulary.length} vocabulary terms hold, ${noLessPostulates.filter((p) => p.holds).length}/${noLessPostulates.length} vocabulary groups hold, ${noMoreGuards.filter((g) => g.holds).length}/${noMoreGuards.length} soundness guards hold, and ${isoBlockchainLayers.filter((l) => l.holds).length}/${isoBlockchainLayers.length} identifier and ledger layers hold, sealed at ${address}`,
+    says: proseFill(PROSE.quantumProcessingStandards_says39, vocabulary.filter((v) => v.holds).length, vocabulary.length, noLessPostulates.filter((p) => p.holds).length, noLessPostulates.length, noMoreGuards.filter((g) => g.holds).length, noMoreGuards.length, isoBlockchainLayers.filter((l) => l.holds).length, isoBlockchainLayers.length, address),
   }
 }
 
@@ -799,21 +801,21 @@ let _dryCleanMintsCoinsCache: ReturnType<typeof computeDryCleanMintsCoins> | nul
 
 const computeDryCleanMintsCoins = () => {
   const proseSamples = [
-    { id: 'prose:manuscript-quote-dash-ellipsis', dirty: 'The "quantum" processor... runs at 1000 Hz -- and steps to 1001 Hz  with zero wave gaps.' },
-    { id: 'prose:iso-4879-terminology', dirty: "ISO/IEC 4879:2024's 'quantum computing' vocabulary -- verified at time = 0...  bijectively." },
-    { id: 'prose:clay-1000-to-1001-bit', dirty: 'From "referrer = 1000 = |0⟩"... to "next = 1001 = |1⟩" -- 14 cuboctahedron witnesses  hold.' },
-    { id: 'prose:token-coil-double-entry', dirty: "1 token = 1 coil ('2 reflecting UUIDs' in 1)... debits == credits -- net = 0  across EUR/USD/BGN." },
-    { id: 'prose:raid-hybrid-search-rrf', dirty: 'Free "mongodb-search-and-ai" hybrid RRF... 0.5 lexical -- 0.5 14-dim vector  over .qpu/raid.' },
-    { id: 'prose:cancancan-rbac-seo-seam', dirty: "3-tier CanCanCan RBAC -- 'greatest hue seam' SEO... and 56 shadcn/ui widgets  at A432." },
+    { id: 'prose:manuscript-quote-dash-ellipsis', dirty: PROSE.quantumProcessingStandards_dirty40 },
+    { id: 'prose:iso-4879-terminology', dirty: PROSE.quantumProcessingStandards_dirty41 },
+    { id: 'prose:clay-1000-to-1001-bit', dirty: PROSE.quantumProcessingStandards_dirty42 },
+    { id: 'prose:token-coil-double-entry', dirty: PROSE.quantumProcessingStandards_dirty43 },
+    { id: 'prose:raid-hybrid-search-rrf', dirty: PROSE.quantumProcessingStandards_dirty44 },
+    { id: 'prose:cancancan-rbac-seo-seam', dirty: PROSE.quantumProcessingStandards_dirty45 },
   ] as const
 
   const codeEntropySamples = [
-    { id: 'code:entropy-literals-to-tables-registry', before: 'raw inline URL/path literal outside TABLES registry', after: 'TABLES.STANDARDS / DEFAULT_MCP_HOSTS content-addressed registry lookup (outside = 0)' },
-    { id: 'code:entropy-magic-constants-to-lattice', before: 'un-normalized magic numbers 2, 7, 14, 28, 91, 432', after: 'coins = 2, rays = 7, faces = 14, plane = 28, shorModulus = 91, KEY = 432' },
-    { id: 'code:entropy-regex-search-to-atlas-rrf', before: 'legacy $regex / $text / Paid Algolia search hook', after: 'mongodb-search-and-ai $search + 14-dim cuboctahedron $vectorSearch + $rankFusion (cost = 0)' },
-    { id: 'code:entropy-state-vector-blowup-to-coil-fusion', before: 'unbounded 2^1001 classical state-vector blowup', after: 'fuseCoinsToCoilInfinityInOneUuid σ_15 self-inverse UUID coil in 128 bits (oneUuid)' },
-    { id: 'code:entropy-manual-docs-to-lean-proven-doors', before: 'unverified manual prose & unproved export', after: 'Lean 4 kernel theorem (0 sorry) + textbook_new_doors_proven + src/quantum spotDirty = 0' },
-    { id: 'code:entropy-purify-raid-gc-involution', before: 'unreferenced orphan blocks in content store', after: 'purify RAID GC + HTTP 304 ETag involution per content-addressed slice of 6' },
+    { id: 'code:entropy-literals-to-tables-registry', before: PROSE.quantumProcessingStandards_before46, after: PROSE.quantumProcessingStandards_after47 },
+    { id: 'code:entropy-magic-constants-to-lattice', before: 'un-normalized magic numbers 2, 7, 14, 28, 91, 432', after: PROSE.quantumProcessingStandards_after48 },
+    { id: 'code:entropy-regex-search-to-atlas-rrf', before: PROSE.quantumProcessingStandards_before49, after: PROSE.quantumProcessingStandards_after50 },
+    { id: 'code:entropy-state-vector-blowup-to-coil-fusion', before: PROSE.quantumProcessingStandards_before51, after: PROSE.quantumProcessingStandards_after52 },
+    { id: 'code:entropy-manual-docs-to-lean-proven-doors', before: PROSE.quantumProcessingStandards_before53, after: PROSE.quantumProcessingStandards_after54 },
+    { id: 'code:entropy-purify-raid-gc-involution', before: PROSE.quantumProcessingStandards_before55, after: PROSE.quantumProcessingStandards_after56 },
   ] as const
 
   const mintSlice = (
@@ -953,7 +955,7 @@ const computeDryCleanMintsCoins = () => {
   return {
     phase: 'qpu-dry-clean-mints-coins' as const,
     time: 0 as const,
-    law: 'dry cleaning code and prose entropy mints coins: before (referrer = 1000 = |0⟩, obverseCoin) -> typeset/purify -> after (next = 1001 = |1⟩, reverseCoin, spotDirty = 0) merges 14 cuboctahedron witnesses and mints 2 witness coins in 1 tokenCoil',
+    law: PROSE.quantumProcessingStandards_law57,
     mintAllMintable: true as const,
     srcQuantumSpotDirty: 0 as const,
     address,
@@ -976,7 +978,7 @@ const computeDryCleanMintsCoins = () => {
       debitsEqualCredits: masterJournal.balanced,
     },
     proseDryCleaning: {
-      pipeline: 'spotDirty(before) -> typeset(before) = after (spotDirty(after) === 0) -> mergeWitnesses(obverseCoin, reverseCoin) -> mintWitnessCoins (2 coins in 1 tokenCoil)',
+      pipeline: PROSE.quantumProcessingStandards_pipeline58,
       referrerHz: 1000 as const,
       nextHz: 1001 as const,
       slicesTotal: proseReceipts.length,
@@ -988,7 +990,7 @@ const computeDryCleanMintsCoins = () => {
       receipts: proseReceipts,
     },
     codeEntropyDryCleaning: {
-      pipeline: 'entropy/purify (listLiterals + listManualDocs + RAID GC 304 involution) -> settled registry/formula reference -> mintTokenCoil (2 coins per slice)',
+      pipeline: PROSE.quantumProcessingStandards_pipeline59,
       srcQuantumSpotDirty: 0 as const,
       slicesTotal: codeEntropyReceipts.length,
       mintedCoils: codeEntropyReceipts.length,

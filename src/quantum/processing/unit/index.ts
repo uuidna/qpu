@@ -3,6 +3,7 @@
 // scopes it down to a tenant by either address — the subdomain <slug>.uuidna.com or the path qpu.uuidna.com/<slug>/.
 // Pure: host and path in, the tenant address out.
 
+import { PROSE, proseFill } from '../prose-index.ts'
 import { VERSION } from './version.ts'
 
 /** The unit's origin: the main UNSCOPED account — every tenant, the super-admin view. Never itself a tenant. */
@@ -55,7 +56,7 @@ export const QPU = {
   apex: QPU_APEX,
   version: VERSION,
   kernel: QPU_LEAN,
-  unscoped: `${QPU_ORIGIN} is the main unscoped account: every tenant, super-admin; never a tenant`,
+  unscoped: proseFill(PROSE.quantumProcessingUnitIndex_unscoped1, QPU_ORIGIN),
   address: '<slug>.uuidna.com == qpu.uuidna.com/<slug>/ ; slug = the UUID head, the invariant',
   resolve: tenantAddress,
 } as const

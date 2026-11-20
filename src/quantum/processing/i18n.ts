@@ -1,3 +1,4 @@
+import { PROSE, proseFill } from './prose-index.ts'
 import { TABLES as PAYLOAD_TABLES } from './tables-index.ts'
 // Translation without a network and without a model: the surface speaks a small vocabulary — labels, statuses, verdicts,
 // headings — and a table per language translates it both ways. A word with no entry stays as it is and is reported as a
@@ -56,14 +57,14 @@ export const listNumerals = (text: string): { text: string; numerals: { glyphs: 
 /** The thousand-bit width spoken and understood in Glagolitic: 1000 is the one letter the table gives it, read back as 1000. The integer 2^999+1 is not written (textbook_thousand_bit_width). */
 export const speakThousand = (raw: unknown) => {
   const spec = raw === 1000 || raw === true ? { bits: 1000 as const } : typeof raw === 'string' ? { text: raw } : raw !== null && typeof raw === 'object' ? raw as { bits?: number; text?: string } : null
-  if (!spec) throw new Error('a thousand bits is spoken as { bits: 1000 }, or as the Glagolitic numeral of 1000')
+  if (!spec) throw new Error(PROSE.quantumProcessingI18n_s1)
   const spoken = toGlagolitic(1000)
-  if (!spoken) throw new Error('the Glagolitic table has no letter for 1000')
+  if (!spoken) throw new Error(PROSE.quantumProcessingI18n_s2)
   const heard = typeof spec.text === 'string' ? spec.text.trim() : spoken
   const understood = listNumerals(heard).numerals[0]?.value ?? null
-  if (spec.bits !== undefined && spec.bits !== 1000) throw new Error('this speech is the thousand-bit width; a wider integer is not written')
+  if (spec.bits !== undefined && spec.bits !== 1000) throw new Error(PROSE.quantumProcessingI18n_s3)
   const bits = understood === 1000 ? 1000 as const : null
-  return { bits, spoken, heard, understood, roundTrip: heard === spoken && understood === 1000, materialised: false as const, theorem: 'textbook_thousand_bit_width' as const, says: understood === 1000 ? '1000 bits spoken in Glagolitic and read back as 1000; the integer is not written' : 'the speech is not the Glagolitic thousand' }
+  return { bits, spoken, heard, understood, roundTrip: heard === spoken && understood === 1000, materialised: false as const, theorem: 'textbook_thousand_bit_width' as const, says: understood === 1000 ? PROSE.quantumProcessingI18n_s4 : PROSE.quantumProcessingI18n_s5 }
 }
 export const speakHex = (hex: string) => {
   const clean = hex.toLowerCase().replace(/[^0-9a-f]/g, '')
@@ -72,5 +73,5 @@ export const speakHex = (hex: string) => {
   const dialect: Record<string, number> = {}
   for (const l of letters) for (const g of l.spoken) dialect[g] = (dialect[g] ?? 0) + 1
   const silent = letters.filter((l) => l.spoken === '').length
-  return { hex: clean, letters, spoken: letters.map((l) => l.spoken || '·').join(' '), read, roundTrip: read === clean, dialect, silent, says: `${clean.length} digit(s) spoken in Glagolitic numerals, ${silent} silent; read back through the same table ${read === clean ? 'to the same hex' : 'to a different hex'}`, theorem: 'textbook_glagolitic_round_trip' }
+  return { hex: clean, letters, spoken: letters.map((l) => l.spoken || '·').join(' '), read, roundTrip: read === clean, dialect, silent, says: proseFill(PROSE.quantumProcessingI18n_says6, clean.length, silent, read === clean ? 'to the same hex' : 'to a different hex'), theorem: 'textbook_glagolitic_round_trip' }
 }

@@ -1,3 +1,4 @@
+import { PROSE, proseFill } from './prose-index.ts'
 import { CLAY_RELATIONS } from './clay-statements.ts'
 import { memo } from '../uuid/index.ts'
 
@@ -156,7 +157,7 @@ export const reflectionOfRegister = (relations: readonly Relation[]): { readings
   for (const a of readings) for (const b of readings) if (a.name < b.name && a.seed + b.seed === 10 && a.seed !== 5) pairs.push({ a: a.name, b: b.name, seeds: [a.seed, b.seed] })
   // a relation is solved when a public sequence cross-formulates its value. The coil is the fourth Catalan number.
   // qaoaZz and chimera products of the register are 7-smooth: their prime factors are among 2, 3, 5 and 7.
-  const open = readings.filter((x) => !x.solved).map((x) => ({ id: `clay-open-${x.value}`, statement: `${x.name} (${x.value}) holds but no public sequence cross-formulates it yet: a discovery lead to ground the product`, status: 'open' as const, tool: 'clay' }))
+  const open = readings.filter((x) => !x.solved).map((x) => ({ id: `clay-open-${x.value}`, statement: proseFill(PROSE.quantumProcessingClayRegister_statement1, x.name, x.value), status: 'open' as const, tool: 'clay' }))
   return { readings, bySeed, byTrinity, pairs, fixed: readings.filter((x) => x.fixed).map((x) => x.name), tuned: readings.filter((x) => x.tuned).map((x) => x.name), open }
 }
 export { toLimbs16, fromLimbs16, recomputeClayPravets, clay } from '../uuid/programs/clay/index.ts'

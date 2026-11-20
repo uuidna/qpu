@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   lake-build:
     runs-on: ubuntu-latest
@@ -23,8 +26,19 @@ jobs:
           path: ~/.elan/toolchains
           key: elan-${{ hashFiles('lean-toolchain') }}
 
-      - name: Build Lean with warnings as errors
-        run: lake build --werror
+      - name: Cache Lake packages
+        uses: actions/cache@v4
+        with:
+          path: .lake/packages
+          key: lake-packages-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}
 
-      - name: Run all Lean linters
-        run: lake lint --linters=linter.all
+      - name: Fetch the Mathlib build cache
+        run: lake exe cache get
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 26
+
+      - name: Lake verifies everything
+        # the build, the claim manifest, the files rendered from Lean, and the draft applications
+        run: lake run verify

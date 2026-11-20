@@ -3,6 +3,7 @@
 // documentation (quantumai.google/cirq). The register has no width ceiling: a narrow one is a dense array, a wide one is the amplitudes that are occupied.
 // Every gate is a sealed UUID of its name, arity and matrix. A gate runs only when that address still matches the matrix and the seal holds.
 
+import { PROSE, proseFill } from './prose-index.ts'
 import { canonicalText, seal, uuid } from '../uuid/index.ts'
 
 export type Qubit =
@@ -291,7 +292,7 @@ const schur = (matrix: readonly C[], n: number, label: string): { T: C[]; Q: C[]
     const shift = iter % 10 === 9 ? zAdd(entry(H, n, end - 1, end - 1), zScale([0.6, 0.8], zAbs(entry(H, n, end - 1, end - 2)))) : wilkinson(H, n, end)
     qrStep(H, Q, n, start, end, shift)
   }
-  throw new Error(`${label}: the Schur form did not converge`)
+  throw new Error(proseFill(PROSE.quantumProcessingCirq_s1, label))
 }
 
 const blockMinus = (T: readonly C[], n: number, p: number, q: number, lambda: C): C[] => {
@@ -509,7 +510,7 @@ const deconstructSingleQubit = (input: readonly C[]): [number, number, number] =
 
 /** Cirq's PhasedXZGate.from_matrix: one PhasedXZ for a one-qubit unitary, in canonical exponents. The global phase is not recovered. */
 export const phasedXZOf = (matrix: readonly [number, number][]): Gate => {
-  if (matrix.length !== 4) throw new Error('PhasedXZ reads a one-qubit unitary')
+  if (matrix.length !== 4) throw new Error(PROSE.quantumProcessingCirq_s2)
   let [pre, rotation, post] = deconstructSingleQubit(matrix)
   pre = pre / Math.PI - 0.5
   post = post / Math.PI + 0.5
@@ -548,7 +549,7 @@ export class Moment {
     this.operations = operations
     const seen = new Set<string>()
     for (const op of operations) for (const q of op.qubits) {
-      if (seen.has(qubitKey(q))) throw new Error(`a moment acts on one qubit twice: ${qubitKey(q)}`)
+      if (seen.has(qubitKey(q))) throw new Error(proseFill(PROSE.quantumProcessingCirq_s3, qubitKey(q)))
       seen.add(qubitKey(q))
     }
   }
@@ -630,7 +631,7 @@ export class Device {
     requireUuidGate(op)
     for (const q of op.qubits) if (!this.keys.has(qubitKey(q))) throw new Error(`${qubitKey(q)} is not a qubit of this device`)
     if (op.kind === 'gate' && op.qubits.length === 2 && !this.couplerKeys.has(pairKey(op.qubits[0]!, op.qubits[1]!))) {
-      throw new Error(`${op.gate.name} acts on ${qubitKey(op.qubits[0]!)} and ${qubitKey(op.qubits[1]!)}, which the device does not couple`)
+      throw new Error(proseFill(PROSE.quantumProcessingCirq_s4, op.gate.name, qubitKey(op.qubits[0]!), qubitKey(op.qubits[1]!)))
     }
   }
 
@@ -790,7 +791,7 @@ export class Simulator {
   /** Gates in place, measurements into bits. */
   private apply(wave: Wave, ops: readonly Operation[], indexOf: (q: Qubit) => number, bits = new Map<string, number[]>()): Map<string, number[]> {
     for (const op of ops) {
-      if (op.kind === 'channel') throw new Error(`a ${op.channel.name} channel runs on the density matrix, not on a state vector`)
+      if (op.kind === 'channel') throw new Error(proseFill(PROSE.quantumProcessingCirq_s5, op.channel.name))
       const at = op.qubits.map(indexOf)
       if (op.kind === 'gate') { requireUuidGate(op); if (wave.kind === 'dense') applyGate(wave.state, op.gate, at); else applySparse(wave.state, op.gate, at) }
       else bits.set(op.key, at.map((q) => (wave.kind === 'dense' ? getQubit(wave.state, q, this.random) : measureSparse(wave.state, q, this.random))))
@@ -813,7 +814,7 @@ export class Simulator {
 
   /** Sampled results: the gates before the first measurement draw nothing at random, so they run once and each repetition copies that state. */
   run(circuit: Circuit, repetitions: number): Result {
-    if (!circuit.operations.some((op) => op.kind === 'measure')) throw new Error('run needs at least one measurement')
+    if (!circuit.operations.some((op) => op.kind === 'measure')) throw new Error(PROSE.quantumProcessingCirq_s6)
     const { wave: prefix, indexOf } = this.initial(circuit)
     const first = circuit.operations.findIndex((op) => op.kind !== 'gate')
     this.apply(prefix, circuit.operations.slice(0, first), indexOf)
@@ -909,7 +910,7 @@ const krausOperators = (channel: Channel): GateBody[] => {
     case 'asymmetric_depolarize': {
       const { p_x: px, p_y: py, p_z: pz } = channel
       probability(px, 'x'), probability(py, 'y'), probability(pz, 'z')
-      if (px + py + pz > 1) throw new Error('the asymmetric depolarizing probabilities sum to more than 1')
+      if (px + py + pz > 1) throw new Error(PROSE.quantumProcessingCirq_s7)
       return [weighted(ONE, 1 - px - py - pz), weighted(X, px), weighted(Y, py), weighted(Z, pz)]
     }
     case 'amplitude_damp':

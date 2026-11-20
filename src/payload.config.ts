@@ -29,6 +29,8 @@ import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
 import { legacyLeadTask } from './jobs/legacyLead'
 import { plugins } from './plugins'
+import { extensions } from './plugins/extensions'
+import { qrEndpoint } from '@/hooks/qrGalleryFallback'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -68,14 +70,6 @@ export default buildConfig({
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeLogin` statement on line 15.
       beforeLogin: ['@/components/BeforeLogin#BeforeLogin'],
-      afterNavLinks: ['@/components/quantum/QuantumNavLink#QuantumNavLink'],
-      views: {
-        // qpu's classical exact simulator of quantum circuits, run through /api/mcp
-        quantum: {
-          Component: '@/components/quantum/QuantumView#QuantumView',
-          path: '/quantum',
-        },
-      },
     },
     dashboard: {
       // The `GettingStarted` widget renders the onboarding steps below the welcome heading.
@@ -104,6 +98,8 @@ export default buildConfig({
   collections: [Users, Pages, Posts, Categories, Media, Tenants],
   db: sqliteD1Adapter({
     binding: cloudflare.env.D1,
+    // string ids, as the template's components assume
+    idType: 'uuid',
     prodMigrations: migrations,
   }),
   editor: lexicalEditor({
@@ -142,13 +138,14 @@ export default buildConfig({
     },
   }),
   //email: nodemailerAdapter(),
-  endpoints: [],
+  endpoints: [qrEndpoint],
   globals: [Header, Footer],
   jobs: {
     tasks: [legacyLeadTask],
   },
   logger: isProduction ? cloudflareLogger : undefined,
-  plugins,
+  // the template's plugins as shipped, then everything this installation adds
+  plugins: [...plugins, ...extensions],
   secret: process.env.PAYLOAD_SECRET || '',
   storage: [
     r2Storage({

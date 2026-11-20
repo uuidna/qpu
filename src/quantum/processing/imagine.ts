@@ -1,6 +1,7 @@
 // Imagination as a pure toolbox: every lead's statement matched with the reflection on, so each lead gets its hidden factors,
 // its angles, its mirror queries, its cluster and its verification requests; every reflection that finds something is a new
 // open lead; every enum value no example exercises is an untried door; every application family is an adaptor to build.
+import { PROSE, proseFill } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
@@ -27,7 +28,7 @@ export const integerLlm = (raw: unknown) => {
   const masked = text.replace(/-?\d+\.\d+/g, (d) => { const mark = String.fromCharCode(0xE000 + held.length); held.push(d); return mark })
   const integers = [...masked.matchAll(/-?\d+/g)].map((m) => m[0])
   const dropped = masked.replace(/-?\d+/g, ' ').replace(/[\uE000-\uF8FF]/g, ' ').replace(/\s+/g, ' ').trim()
-  return { phase: 'llm' as const, kind: 'integer-only' as const, prose: false as const, computed: false as const, integers, count: integers.length, decimals, factors: decimals.flatMap((d) => d.factors), dropped, says: `${integers.length} integer(s) spoken as written; ${decimals.length} decimal(s) imagined as the factors on either side of the point; nothing multiplies them` }
+  return { phase: 'llm' as const, kind: 'integer-only' as const, prose: false as const, computed: false as const, integers, count: integers.length, decimals, factors: decimals.flatMap((d) => d.factors), dropped, says: proseFill(PROSE.quantumProcessingImagine_says1, integers.length, decimals.length) }
 }
 
 /** Every lead (or the subset named) imagined. Pure; the matcher is built once. */
@@ -49,11 +50,11 @@ export const imagineLeads = (handle: (m: Rpc) => any, examples: readonly Example
   const exercised = new Set(examples.flatMap((e) => Object.entries(e.arguments).map(([k, v]) => `${e.tool}.${k}=${JSON.stringify(v)}`)))
   for (const t of list.result.tools) for (const [prop, spec] of Object.entries(t.inputSchema.properties ?? {})) for (const v of spec.enum ?? []) {
     const key = `${t.name}.${prop}=${JSON.stringify(v)}`
-    if (!exercised.has(key)) { const id = `schema-${t.name}-${prop}-${String(v)}`.toLowerCase().replace(/[^a-z0-9-]+/g, '-'); if (!imagined.has(id)) imagined.set(id, { id, source: `tools/list ${t.name}.${prop}`, statement: `${t.name} accepts ${prop} = ${JSON.stringify(v)} and no documented example exercises it`, status: 'open', tool: t.name, reason: 'an untried door of the schema; add the example and its expectation, or remove the value' }) }
+    if (!exercised.has(key)) { const id = `schema-${t.name}-${prop}-${String(v)}`.toLowerCase().replace(/[^a-z0-9-]+/g, '-'); if (!imagined.has(id)) imagined.set(id, { id, source: `tools/list ${t.name}.${prop}`, statement: proseFill(PROSE.quantumProcessingImagine_statement2, t.name, prop, JSON.stringify(v)), status: 'open', tool: t.name, reason: PROSE.quantumProcessingImagine_reason3 }) }
   }
-  for (const a of APPLICATIONS) { const id = `application-${a.family}`.toLowerCase().replace(/[^a-z0-9-]+/g, '-'); if (!imagined.has(id)) imagined.set(id, { id, source: 'the docket contract', statement: `${a.family}: an adaptor that writes ${a.entry}; verified by ${a.verifier}`, status: 'open', reason: 'the docket accepts the entry today; the adaptor, its schema and its verifier are the lead' }) }
+  for (const a of APPLICATIONS) { const id = `application-${a.family}`.toLowerCase().replace(/[^a-z0-9-]+/g, '-'); if (!imagined.has(id)) imagined.set(id, { id, source: 'the docket contract', statement: `${a.family}: an adaptor that writes ${a.entry}; verified by ${a.verifier}`, status: 'open', reason: PROSE.quantumProcessingImagine_reason4 }) }
   const verifierKinds = new Set(VERIFIERS.flatMap((v) => v.verifies as readonly string[]))
-  for (const kind of ['reading', 'command', 'ack', 'measurement', 'result', 'reply']) if (!verifierKinds.has(kind)) { const id = `fact-kind-${kind}`; if (!imagined.has(id)) imagined.set(id, { id, source: 'src/quantum/verifiers.ts', statement: `no verifier registers the fact kind "${kind}" that the application leads would write`, status: 'open', reason: 'register the kind and its free verifier with the first adaptor' }) }
+  for (const kind of ['reading', 'command', 'ack', 'measurement', 'result', 'reply']) if (!verifierKinds.has(kind)) { const id = `fact-kind-${kind}`; if (!imagined.has(id)) imagined.set(id, { id, source: 'src/quantum/verifiers.ts', statement: proseFill(PROSE.quantumProcessingImagine_statement5, kind), status: 'open', reason: PROSE.quantumProcessingImagine_reason6 }) }
   return { leads: chosen.length, verdicts, verifyRequests: verifyTotal, imaginedLeads: imagined.size, rows, imagined: [...imagined.values()] }
 }
 
@@ -70,13 +71,13 @@ export const claySession = (leads: readonly { id: string }[], clay: true | { ses
   const raw = clay === true ? '' : typeof clay.session === 'string' ? clay.session.trim() : ''
   if (raw && (raw.length > 80 || /[\n\0]/.test(raw))) throw new Error('session is a short id')
   const micro = clay === true ? undefined : clay.microdata
-  if (micro === undefined) return { phase: 'search' as const, via: 'client-session' as const, tokenFree: true as const, session: raw || null, leads: leads.length, possible: leads.length, requestList: CLAY_SEARCH, note: 'the client session fetches each page, collects its JSON-LD and microdata, and calls again with clay: { session, microdata }; every lead is then verified against that collection, and nothing here fetches' }
-  if (!raw) throw new Error('clay takes the session id with the microdata that session collected')
-  if (!Array.isArray(micro) || micro.length > 64) throw new Error('microdata is the session\'s collection, at most 64 items')
+  if (micro === undefined) return { phase: 'search' as const, via: 'client-session' as const, tokenFree: true as const, session: raw || null, leads: leads.length, possible: leads.length, requestList: CLAY_SEARCH, note: PROSE.quantumProcessingImagine_note7 }
+  if (!raw) throw new Error(PROSE.quantumProcessingImagine_s8)
+  if (!Array.isArray(micro) || micro.length > 64) throw new Error(PROSE.quantumProcessingImagine_s9)
   const items: Microdata[] = micro.map((item) => { if (!item || typeof item !== 'object') throw new Error('a microdata item is an object'); const o = item as Record<string, unknown>; return { '@type': clip(o['@type']), name: clip(o.name), identifier: clip(o.identifier), description: clip(o.description), url: clip(o.url), text: clip(o.text) } })
   const rows = leads.map((l) => { const hit = items.find((i) => i.identifier.toLowerCase() === l.id.toLowerCase() || i.name.toLowerCase() === l.id.toLowerCase()); return { id: l.id, verified: !!hit, by: hit?.['@type'] || null } })
   const verified = rows.filter((r) => r.verified).length
-  return { phase: 'verified' as const, via: 'client-session' as const, tokenFree: true as const, session: raw, leads: leads.length, possible: leads.length, collected: items.length, verified, open: leads.length - verified, rows, says: `${verified} of ${leads.length} leads verified by the microdata session ${raw} collected; the rest stay open` }
+  return { phase: 'verified' as const, via: 'client-session' as const, tokenFree: true as const, session: raw, leads: leads.length, possible: leads.length, collected: items.length, verified, open: leads.length - verified, rows, says: proseFill(PROSE.quantumProcessingImagine_says10, verified, leads.length, raw) }
 }
 
 /** Every next address of the Clay register. Each address is the theorem that proves that relation, used in practice: the relation is evaluated and both sides meet. The handle is the relation's place, the program is the theorem's numerals and σ of them, and the tail is the 14 witnesses. The hook names the following relation. Nothing is fetched and nothing is written. */
@@ -94,7 +95,7 @@ export const imagineClayNext = (relations: readonly { name: string; statement: s
   const linked = rows.map((row, index) => { const following = rows[index + 1]; return { ...row, next: following ? { id: following.uuid, theorem: following.theorem, executable: seal(following.uuid).valid && following.uuid !== row.uuid } : null } })
   const proved = linked.filter((row) => row.proves && row.sealed && row.witnesses.exact === true && row.witnesses.squares === 6 && row.witnesses.triangles === 8 && row.witnesses.faces === 14).length
   const all = proved === linked.length && linked.length > 0 && linked.slice(0, -1).every((row) => row.next?.executable === true)
-  return { phase: 'next' as const, via: 'imagine' as const, practice: 'clay' as const, tokens: 0 as const, queue: 0 as const, fetched: false as const, written: false as const, relations: linked.length, proved, all, rows: linked, says: all ? `${proved} theorems prove the Clay register in practice. Each address is that theorem and its 14 witnesses, in hex, and each names the next.` : 'a Clay relation was not proved in practice' }
+  return { phase: 'next' as const, via: 'imagine' as const, practice: 'clay' as const, tokens: 0 as const, queue: 0 as const, fetched: false as const, written: false as const, relations: linked.length, proved, all, rows: linked, says: all ? proseFill(PROSE.quantumProcessingImagine_s11, proved) : PROSE.quantumProcessingImagine_s12 }
 }
 
 /** The quantum computer as one game. UUID programs collide into the nil UUID, the all-zero singularity, saved in the root-priority folder. The move is the 1000-bit example seeded by the A432 key: one σ-reflection decodes it by its witness. The Clay seal is the author's claim, cited, and the tree does not restate it. Nothing is fetched and nothing is written. */
@@ -116,7 +117,7 @@ export const imagineNilGame = () => {
     collision: { into: nil.uuid, programs: 2 as const, singularity: nil.uuid },
     involution: { key: KEY, sigma: `${KEY} - x`, forth: partner.toString(), back: back.toString(), holds: involution },
     example, claim: cited, holds,
-    says: holds ? `the programs collide into the nil UUID at ${nil.folder}. The 1000-bit example is seeded by ${KEY} and decoded by its witness. The Clay seal is ${cited.author}'s claim, ${cited.doi}, submitted ${cited.submitted}.` : 'the nil game did not hold',
+    says: holds ? proseFill(PROSE.quantumProcessingImagine_s13, nil.folder, KEY, cited.author, cited.doi, cited.submitted) : PROSE.quantumProcessingImagine_s14,
   }
 }
 
@@ -130,12 +131,12 @@ export const allAsUuid = (leads: readonly { id: string; statement?: string; stat
   const members = [...new Set(rows.map((r) => r.uuid))].sort()
   const all = uuid(canonicalText(members))
   const collapsed = rows.length - members.length
-  return { phase: 'uuid' as const, leads: rows.length, members: members.length, collapsed, all, sealed: seal(all).valid && rows.every((r) => r.sealed), core: rows.every((r) => r.handle === 8 && r.program === 10 && r.tail === 12 && r.stamp === 2), rows, says: `${rows.length} lead(s) are ${members.length} address(es)${collapsed ? `, ${collapsed} copy collapsed into the address it already has` : ''}, and all of them is one address` }
+  return { phase: 'uuid' as const, leads: rows.length, members: members.length, collapsed, all, sealed: seal(all).valid && rows.every((r) => r.sealed), core: rows.every((r) => r.handle === 8 && r.program === 10 && r.tail === 12 && r.stamp === 2), rows, says: proseFill(PROSE.quantumProcessingImagine_says15, rows.length, members.length, collapsed ? proseFill(PROSE.quantumProcessingImagine_s16, collapsed) : '') }
 }
 
 export const getImaginePage = (im: Imagination, date: string, ms: number): string => ['---', 'title: Imagination', 'order: 54', '---', '', '# Imagination leads all leads', '',
-  `Generated by \`npm run next\` on ${date} in ${(ms / 1000).toFixed(1)} s through the \`imagine\` tool: every one of the ${im.leads} leads matched with the reflection on.`, '',
+  proseFill(PROSE.quantumProcessingImagine_s17, date, (ms / 1000).toFixed(1), im.leads), '',
   '| Verdict | Leads |', '|---|---:|', ...Object.entries(im.verdicts).map(([v, n]) => `| ${v} | ${n} |`), `| verification requests emitted | ${im.verifyRequests} |`, `| leads imagined (new, open) | ${im.imaginedLeads} |`, '',
   '## Imagined leads', '', '| Lead | Statement | From |', '|---|---|---|', ...im.imagined.map((l) => `| ${l.id} | ${l.statement.replace(/\|/g, '\\|')} | ${l.source.replace(/\|/g, '\\|')} |`), '',
-  '## Every lead, imagined', '', '| Lead | Status | Verdict | Tool | Cluster | Verify | Factors | Angles | Mirrors | Opened |', '|---|---|---|---|---:|---:|---:|---:|---:|---:|',
+  '## Every lead, imagined', '', PROSE.quantumProcessingImagine_s18, '|---|---|---|---|---:|---:|---:|---:|---:|---:|',
   ...im.rows.map((r) => `| ${r.lead} | ${r.status} | ${r.verdict} | ${r.tool ?? '—'} | ${r.cluster} | ${r.verify} | ${r.factors} | ${r.angles} | ${r.queries} | ${r.opened} |`), ''].join('\n')

@@ -1,5 +1,6 @@
 // Quantum demand from another model is computed on this register. The adapter speaks that model's API and runs the call here.
 // Sending the work to the model would wait on the model. The UUID of the formula is the ISO quantum receipt: every standard is in the formula, and the address stores that proof.
+import { PROSE, proseFill } from './prose-index.ts'
 import { canonicalText, channel, seal, uuid, uuidQubits } from '../uuid/index.ts'
 import { ISO_DIMENSIONS } from './standards.ts'
 import { getAdvantage } from './audit.ts'
@@ -356,10 +357,10 @@ const record = (value: unknown): value is Record<string, unknown> => !!value && 
 const argsOf = (value: unknown): Record<string, unknown> => {
   if (record(value)) return value
   if (typeof value !== 'string') return {}
-  if (!value.trim()) throw new Error('adapter.call function.arguments is a JSON object')
+  if (!value.trim()) throw new Error(PROSE.quantumProcessingCompat_s1)
   let parsed: unknown
-  try { parsed = JSON.parse(value) } catch { throw new Error('adapter.call function.arguments is a JSON object') }
-  if (!record(parsed)) throw new Error('adapter.call function.arguments is a JSON object')
+  try { parsed = JSON.parse(value) } catch { throw new Error(PROSE.quantumProcessingCompat_s1) }
+  if (!record(parsed)) throw new Error(PROSE.quantumProcessingCompat_s1)
   return parsed
 }
 
@@ -396,7 +397,7 @@ const readDemands = (call: Record<string, unknown>): Demand[] => {
     const id = typeof call.id === 'string' || typeof call.id === 'number' ? call.id : null
     const asked = oneDemand(call.params.name, call.params.arguments, { rpcId: id, wire: 'cursor' })
     if (asked) demands.push(asked)
-  } else if (typeof call.method === 'string' && demands.length === 0) throw new Error('adapter.call for Cursor is a tools/call')
+  } else if (typeof call.method === 'string' && demands.length === 0) throw new Error(PROSE.quantumProcessingCompat_s2)
   if (demands.length === 0) {
     const fromChoices = Array.isArray(call.choices) ? call.choices.flatMap((choice) => record(choice) && record(choice.message) && Array.isArray(choice.message.tool_calls) ? choice.message.tool_calls : []) : []
     const listed = fromChoices.length > 0 ? fromChoices : Array.isArray(call.tool_calls) ? call.tool_calls : []
@@ -433,15 +434,15 @@ export const adaptQuantum = (raw: true | Record<string, unknown>, cursorModel: s
       adapters: known.map((row) => ({ ...row, native: true as const, outbound: 0 as const, slower: false as const })),
       advantage: getAdvantage(2, receipt.holds ? 2 : 0),
       receipt,
-      says: 'Each model\'s quantum demand is an adapter on this register. The call is computed here, and the UUID of that formula is the receipt of every standard.',
+      says: PROSE.quantumProcessingCompat_says3,
     }
   }
   const model = typeof raw.model === 'string' ? raw.model : typeof raw.api === 'string' ? raw.api : ''
-  if (!/^[A-Za-z0-9._:-]{1,80}$/.test(model)) throw new Error('adapter.model names the model whose quantum demand this register computes')
+  if (!/^[A-Za-z0-9._:-]{1,80}$/.test(model)) throw new Error(PROSE.quantumProcessingCompat_s4)
   const call = (raw.call && typeof raw.call === 'object' ? stripSecrets(raw.call) : {}) as Record<string, unknown>
   const named = known.find((row) => row.id === model || row.model === model) ?? { id: model, model, speaks: 'tool_result' as const }
   const demands = readDemands(call)
-  if (demands.length === 0) throw new Error('adapter.call names the tool, or a processor this register computes')
+  if (demands.length === 0) throw new Error(PROSE.quantumProcessingCompat_s5)
   const runs = demands.map((demand) => {
     const narrowed = demand.schema === undefined ? { schema: null, drops: [] as { path: string; keyword: string }[] } : narrowSchema(demand.schema)
     const processor = demand.processor
@@ -496,7 +497,7 @@ export const adaptQuantum = (raw: true | Record<string, unknown>, cursorModel: s
     advantage: getAdvantage(2, receipt.holds ? 2 : 0),
     receipt,
     says: held
-      ? `${named.model} asked ${runs.map((row) => row.tool).join(', ')}. This register computed it, and ${receipt.id} stores the proof of every standard.`
-      : `${named.model} asked ${first.tool}. The register did not certify the result${first.ran.error ? `: ${first.ran.error}` : ''}.`,
+      ? proseFill(PROSE.quantumProcessingCompat_s6, named.model, runs.map((row) => row.tool).join(', '), receipt.id)
+      : proseFill(PROSE.quantumProcessingCompat_s7, named.model, first.tool, first.ran.error ? `: ${first.ran.error}` : ''),
   }
 }

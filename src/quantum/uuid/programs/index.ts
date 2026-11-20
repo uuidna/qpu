@@ -3,6 +3,7 @@
 // eight nibble levels, the leaf the dnode. uid 0 is the pool privilege. Depths run 0..7.
 // Every program installs, configures and uses all nine official Payload plugins. Disorder elsewhere raises entropy; the program path drives it to zero.
 // Neighbours are handled via quantum: six program-space steps (g1± g2± g3±), handle and tail kept — not listed by hand in each index.
+import { PROSE, proseFill } from '../../processing/prose-index.ts'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { exists, place, write } from '../../fs/index.ts'
@@ -180,7 +181,7 @@ export const guardUpstream = (plugin: ProgramPlugin) => {
     entropy: holds ? 0 as const : 1 as const,
     holds,
     says: holds
-      ? `upstream Payload plugin standards hold for ${plugin.slug}; ${checks.length}/${checks.length} guards`
+      ? proseFill(PROSE.quantumUuidProgramsIndex_s1, plugin.slug, checks.length, checks.length)
       : `upstream guard failed on ${checks.filter((row) => !row.holds).map((row) => row.id).join(', ')} — entropy`,
   }
 }
@@ -230,8 +231,8 @@ export const quantumNeighbours = (handle: string) => {
     of: 6 as const,
     holds,
     says: holds
-      ? `handle ${handle}: all 6 neighbours via quantum; index ${path}`
-      : `handle ${handle}: quantum neighbours did not hold`,
+      ? proseFill(PROSE.quantumUuidProgramsIndex_s2, handle, path)
+      : proseFill(PROSE.quantumUuidProgramsIndex_s3, handle),
   }
 }
 
@@ -249,7 +250,7 @@ const partsRoundTrip = (id: string) => {
 
 /**
  * Neighbours reflect and test each other: on each axis the + and − steps are partners.
- * σ of each neighbour mirrors; reflecting twice restores the parts (Qpu.Sigma).
+ * σ of each neighbour mirrors; reflecting twice restores the parts (Qpu.General.Sigma).
  */
 export const reflectProgramNeighbours = (handle: string) => {
   const around = quantumNeighbours(handle)
@@ -295,8 +296,8 @@ export const reflectProgramNeighbours = (handle: string) => {
     of: 6 as const,
     holds,
     says: holds
-      ? `handle ${handle}: 3 axis pairs reflect and test each other; σ round-trips`
-      : `handle ${handle}: neighbour reflection test did not hold`,
+      ? proseFill(PROSE.quantumUuidProgramsIndex_s4, handle)
+      : proseFill(PROSE.quantumUuidProgramsIndex_s5, handle),
   }
 }
 
@@ -366,8 +367,8 @@ export const competeProgramNeighbours = (handle: string) => {
     missing: games.length - holding,
     holds,
     says: holds
-      ? `handle ${handle}: hexbit + 2 gateway bits teleport challenge solutions across ${games.length} online competitions — combination space unwalked`
-      : `handle ${handle}: online hexbit challenge solutions did not hold (${holding}/${games.length})`,
+      ? proseFill(PROSE.quantumUuidProgramsIndex_s6, handle, games.length)
+      : proseFill(PROSE.quantumUuidProgramsIndex_s7, handle, holding, games.length),
   }
 }
 
@@ -488,8 +489,8 @@ export const gateProgramFiles = (dataset = root.path) => {
     holds,
     entropy: holds ? 0 as const : 1 as const,
     says: holds
-      ? `${folders.length} folders, ${allowed.length} index surfaces; every folder indexed under ${dataset}`
-      : `${refused.length} folder(s)/file(s) without index block fusion: ${refused.slice(0, 8).join(', ')}${refused.length > 8 ? '…' : ''}`,
+      ? proseFill(PROSE.quantumUuidProgramsIndex_s8, folders.length, allowed.length, dataset)
+      : proseFill(PROSE.quantumUuidProgramsIndex_s9, refused.length, refused.slice(0, 8).join(', '), refused.length > 8 ? '…' : ''),
   }
 }
 
@@ -562,8 +563,8 @@ export const sealProgramProducts = (handle: string) => {
     products,
     holds,
     says: holds
-      ? `handle ${handle}: index seals self + 6 neighbours across ${products.length} payload uuid product combinations`
-      : `handle ${handle}: product-combination neighbour seal did not hold`,
+      ? proseFill(PROSE.quantumUuidProgramsIndex_s10, handle, products.length)
+      : proseFill(PROSE.quantumUuidProgramsIndex_s11, handle),
   }
 }
 
@@ -624,8 +625,8 @@ export const gateProgramSeal = (dataset = root.path) => {
     says: !files.holds
       ? files.says
       : holds
-        ? `${rows.length}/${rows.length} leaves: neighbours reflect and test each other across ${rows[0]?.competitions} online competitions; sealed via ${rows[0]?.combinations} product combinations`
-        : `${holding}/${rows.length} leaves seal and compete online; ${refused.length} refused`,
+        ? proseFill(PROSE.quantumUuidProgramsIndex_s12, rows.length, rows.length, rows[0]?.competitions, rows[0]?.combinations)
+        : proseFill(PROSE.quantumUuidProgramsIndex_s13, holding, rows.length, refused.length),
   }
 }
 
@@ -731,7 +732,7 @@ export const auditProgramNeighbours = (dataset = root.path) => {
     says: !gated.holds
       ? gated.says
       : holds
-        ? `${rows.length}/${rows.length} folders: neighbours reflect and test each other across ${gated.competitions} online competitions`
+        ? proseFill(PROSE.quantumUuidProgramsIndex_s14, rows.length, rows.length, gated.competitions)
         : `${holding}/${rows.length} folders compete online; ${rows.length - holding} missing`,
   }
 }
@@ -779,8 +780,8 @@ export const utiliseProgramCapacity = (handle: string, width = 4) => {
     exchange: exchanged,
     holds,
     says: holds
-      ? `program ${handle}: self + 6 neighbours → utilise ${u.used}/${exchanged.effective}, left 0, navigate 6, space unwalked`
-      : `program ${handle}: capacity utilisation did not hold`,
+      ? proseFill(PROSE.quantumUuidProgramsIndex_s15, handle, u.used, exchanged.effective)
+      : proseFill(PROSE.quantumUuidProgramsIndex_s16, handle),
   }
 }
 
@@ -837,7 +838,7 @@ export const utiliseProgramFolders = (raw: unknown = true) => {
     walked: false as const,
     holds,
     says: holds
-      ? `${rows.length}/${rows.length} program folders: self + 6 neighbours → ${rows[0]?.used}/${rows[0]?.effective} qubits utilised, left 0, navigate degree 6, combination space unwalked`
+      ? proseFill(PROSE.quantumUuidProgramsIndex_s17, rows.length, rows.length, rows[0]?.used, rows[0]?.effective)
       : `${holding}/${rows.length} program folders utilised; lattice ${lattice.holds ? 'holds' : 'failed'}`,
   }
 }

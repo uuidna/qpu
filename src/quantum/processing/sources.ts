@@ -6,6 +6,7 @@
 // rest counted outside; and the MCP servers that serve books, proposed as doors. Public metadata only (titles, subjects, dates, licences), no
 // text of any book, no credential, nothing written anywhere. Every page followed to its end (next): unlimited, and the more the QPU is used
 // the more it holds (textbook_use_completes). Pure: the client fetches what the plan names and hands the answers back.
+import { PROSE, proseFill } from './prose-index.ts'
 import { compositions, uuid } from '../uuid/index.ts'
 import { pageSeed } from './page-seed.ts'
 import { summonCourt } from './toolboxes/legal.ts'
@@ -111,17 +112,17 @@ export const listSources = (c: SourceContext, answers: readonly SourceAnswer[], 
   const precedence = PRECEDENCE.map((p) => {
     const own = records.find((r) => r.doi === p.doi)?.published ?? `${p.year}-01-01`
     const works = by('openalex-near').filter((a) => a.id.startsWith(`openalex-near:${p.doi}`)).flatMap((a) => (ok(a)?.results ?? []) as { id: string; doi: string | null; title: string; publication_date: string }[]).filter((w) => (w.doi ?? '').toLowerCase() !== `https://doi.org/${p.doi}`.toLowerCase())
-    return { doi: p.doi, title: p.title, date: own, works: works.length, before: works.filter((w) => w.publication_date < own).length, after: works.filter((w) => w.publication_date >= own).length, earliest: works.map((w) => w.publication_date).sort()[0] ?? null, says: 'neighbours by title, dated: before is prior art to cite, after is a work that may build on the record; read, never a verdict' }
+    return { doi: p.doi, title: p.title, date: own, works: works.length, before: works.filter((w) => w.publication_date < own).length, after: works.filter((w) => w.publication_date >= own).length, earliest: works.map((w) => w.publication_date).sort()[0] ?? null, says: PROSE.quantumProcessingSources_says1 }
   })
   // licence: copies under another name, each a candidate with its case
   // the work is named by its owner or its package, never by a word others use too (a processor unit of VideoCore is a QPU as well)
   const pkgName = c.package.toLowerCase(), pkgBare = pkgName.replace(/^@/, '')
   const mentionsWork = (s: string) => { const t = s.toLowerCase(); return new RegExp(`\\b${owner}\\b`).test(t) || t.includes(pkgName) || t.includes(pkgBare) || t.includes(pkgBare.replace('/', '-')) }
   const candidates = [
-    ...by('npm-search').flatMap((a) => (ok(a)?.objects ?? []) as { package: { name: string; description?: string; publisher?: { username?: string }; links?: { npm?: string } } }[]).filter((o) => !author.has((o.package.publisher?.username ?? '').toLowerCase()) && !o.package.name.startsWith(`@${owner}/`) && mentionsWork(`${o.package.name} ${o.package.description ?? ''}`)).map((o) => ({ where: 'npm', name: o.package.name, url: o.package.links?.npm ?? `https://www.npmjs.com/package/${o.package.name}`, why: 'a package that names the work, published by another account' })),
-    ...by('github-search').flatMap((a) => (ok(a)?.items ?? []) as { full_name: string; html_url: string; owner: { login: string }; fork: boolean; description: string | null }[]).filter((i) => !author.has(i.owner.login.toLowerCase()) && !i.fork && mentionsWork(`${i.full_name} ${i.description ?? ''}`)).map((i) => ({ where: 'github', name: i.full_name, url: i.html_url, why: 'a repository that names the work under another account' })),
-    ...by('github-forks').flatMap((a) => (ok(a) ?? []) as { full_name: string; html_url: string; created_at: string; pushed_at: string }[]).filter((f) => f.pushed_at > f.created_at).map((f) => ({ where: 'github-fork', name: f.full_name, url: f.html_url, why: 'a fork with its own pushes after the copy: a derivative to review against the no-derivatives term' })),
-    ...by('swh-search').flatMap((a) => (ok(a) ?? []) as { url: string }[]).filter((o) => !new RegExp(`/${owner}(/|$)`, 'i').test(o.url) && mentionsWork(o.url)).map((o) => ({ where: 'software-heritage', name: o.url, url: o.url, why: 'an archived origin that names the work outside the author\'s accounts' })),
+    ...by('npm-search').flatMap((a) => (ok(a)?.objects ?? []) as { package: { name: string; description?: string; publisher?: { username?: string }; links?: { npm?: string } } }[]).filter((o) => !author.has((o.package.publisher?.username ?? '').toLowerCase()) && !o.package.name.startsWith(`@${owner}/`) && mentionsWork(`${o.package.name} ${o.package.description ?? ''}`)).map((o) => ({ where: 'npm', name: o.package.name, url: o.package.links?.npm ?? `https://www.npmjs.com/package/${o.package.name}`, why: PROSE.quantumProcessingSources_why2 })),
+    ...by('github-search').flatMap((a) => (ok(a)?.items ?? []) as { full_name: string; html_url: string; owner: { login: string }; fork: boolean; description: string | null }[]).filter((i) => !author.has(i.owner.login.toLowerCase()) && !i.fork && mentionsWork(`${i.full_name} ${i.description ?? ''}`)).map((i) => ({ where: 'github', name: i.full_name, url: i.html_url, why: PROSE.quantumProcessingSources_why3 })),
+    ...by('github-forks').flatMap((a) => (ok(a) ?? []) as { full_name: string; html_url: string; created_at: string; pushed_at: string }[]).filter((f) => f.pushed_at > f.created_at).map((f) => ({ where: 'github-fork', name: f.full_name, url: f.html_url, why: PROSE.quantumProcessingSources_why4 })),
+    ...by('swh-search').flatMap((a) => (ok(a) ?? []) as { url: string }[]).filter((o) => !new RegExp(`/${owner}(/|$)`, 'i').test(o.url) && mentionsWork(o.url)).map((o) => ({ where: 'software-heritage', name: o.url, url: o.url, why: PROSE.quantumProcessingSources_why5 })),
   ]
   const unique = [...new Map(candidates.map((x) => [x.url, x])).values()]
   const licence = unique.map((x) => ({ ...x, case: summonCourt({ gate: `licence scan ${x.where}`, rule: 'licence', evidence: { name: x.name, url: x.url, why: x.why }, tenant: owner }) }))
@@ -140,7 +141,7 @@ export const listSources = (c: SourceContext, answers: readonly SourceAnswer[], 
   const domain = new Set(routed.filter(strong).flatMap((x) => x.b.subjects))
   const reached = routed.filter(strong), inDomain = routed.filter((x) => !strong(x) && x.b.subjects.some((s) => domain.has(s))), outside = routed.length - reached.length - inDomain.length
   const byTheorem: Record<string, number> = {}; for (const x of reached) { const k = x.r.theorems[0]!.theorem; byTheorem[k] = (byTheorem[k] ?? 0) + 1 }
-  const textbookLeads: Lead[] = inDomain.map((x) => ({ id: `textbook-${x.b.source}-${x.b.id.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()}`, source: `${x.b.source} ${x.b.id}`, statement: `${x.b.title} (${x.b.subjects.slice(0, 3).join(', ')}${x.b.licence ? `; ${x.b.licence}` : ''}) teaches a subject the theorems reach, and no theorem reaches this book yet`, status: 'open' as const, reason: 'a book of the domain no theorem reaches: develop the theorem its subject names' }))
+  const textbookLeads: Lead[] = inDomain.map((x) => ({ id: `textbook-${x.b.source}-${x.b.id.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase()}`, source: `${x.b.source} ${x.b.id}`, statement: proseFill(PROSE.quantumProcessingSources_statement6, x.b.title, x.b.subjects.slice(0, 3).join(', '), x.b.licence ? `; ${x.b.licence}` : ''), status: 'open' as const, reason: PROSE.quantumProcessingSources_reason7 }))
   const tally = new Map<string, number>()
   for (const b of uniqueBooks) { const key = b.source === 'open-library' ? `open-library:${b.subjects[0] ?? ''}` : b.source; tally.set(key, (tally.get(key) ?? 0) + 1); pageSeed(b.title || b.id, [b.source, b.id, ...b.subjects, b.licence ?? '', b.year === null ? '' : String(b.year)].filter((part) => part.length > 0).join('\n')) }
   const radices = [...tally.values()]
@@ -151,7 +152,7 @@ export const listSources = (c: SourceContext, answers: readonly SourceAnswer[], 
   const reachedCount = answers.filter((a) => a.status === 200).length
   const bytes = accountBytes(answers.map((a) => a.text))
   const leads: Lead[] = [
-    ...licence.map((x) => ({ id: `licence-${x.where}-${x.name.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`, source: x.url, statement: `${x.name} (${x.where}): ${x.why}; the case ${x.case.case} is the author's to file`, status: 'open' as const, reason: 'a candidate, never a verdict: the court computes the case, the author decides' } as Lead)),
+    ...licence.map((x) => ({ id: `licence-${x.where}-${x.name.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`, source: x.url, statement: proseFill(PROSE.quantumProcessingSources_statement8, x.name, x.where, x.why, x.case.case), status: 'open' as const, reason: PROSE.quantumProcessingSources_reason9 } as Lead)),
     ...textbookLeads,
     ...answers.filter((a) => a.status !== 200).map((a) => ({ id: `source-unreached-${a.id.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}`, source: a.url, statement: `the source ${a.id} answered ${a.status || 'nothing'}`, status: 'blocked' as const, reason: 'measured on the next run' } as Lead)),
   ]
@@ -162,8 +163,8 @@ export const listSources = (c: SourceContext, answers: readonly SourceAnswer[], 
     precedence, licence,
     textbooks: { books: uniqueBooks.length, routed: reached.length, domain: [...domain].sort(), inDomain: inDomain.length, outside, byTheorem, seeds: uniqueBooks.length, radices, combinations: combinations.toString(), groups: Object.fromEntries(tally), theorem: 'textbook_textbooks_partition' },
     domains: (() => { const hit = by('openalex-domains').map((a) => json(a.text)).find((j) => j && typeof j.meta?.count === 'number' && Array.isArray(j.results) && j.results.length === j.meta.count); return hit ? scientificDomains(hit) : scientificDomains() })(),
-    mcp: { doors, says: 'servers that serve books, papers and libraries: proposed as doors of discovery, never called from the tree' },
+    mcp: { doors, says: PROSE.quantumProcessingSources_says10 },
     leads, bytes, theorems: ['textbook_use_completes', 'textbook_textbooks_partition', 'textbook_route_or_lead', 'textbook_cheap_gates', 'textbook_chain_bits'],
-    says: `${summary.reached} of ${summary.requests} answers read: ${summary.versions} immutable versions, ${summary.visits} archived snapshots, ${summary.candidates} licence candidate(s) with their cases, ${summary.books} open books of which ${summary.routed} the theorems reach and ${summary.domainLeads} of their domain are leads; ${summary.doors} MCP doors proposed; ${bytes.says}`,
+    says: proseFill(PROSE.quantumProcessingSources_says11, summary.reached, summary.requests, summary.versions, summary.visits, summary.candidates, summary.books, summary.routed, summary.domainLeads, summary.doors, bytes.says),
   }
 }

@@ -1,7 +1,8 @@
 // Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)
 // Pure cryptographic surfaces: the proven 1000-bit surface, UUID superpositions, NIST/CERN scenarios, AEAD/Merkle/PBKDF2/X25519, and attest theorem reads. No MCP, no fetch.
+import { PROSE, proseFill } from '../prose-index.ts'
 import { createImpossible, decodeImpossible, testPrimality, listFactors, shorReduction, orderFinding, sqrtBig, pasteInteger } from '../algorithms.ts'
-import { dnaToHex, hexToDna, dnaStream, uuid, seal, seal as uuidSeal, canonicalText, stream, neighbours, next, navigate, compositions, composition, compositionIndex, rosetta, harmonicDefaults, uuidQubits, hexbit, organiseQubits, coins, channel } from '../../uuid/index.ts'
+import { dnaToHex, hexToDna, dnaStream, uuid, seal, seal as uuidSeal, canonicalText, stream, neighbours, next, navigate, compositions, composition, compositionIndex, rosetta, harmonicDefaults, uuidQubits, hexbit, organiseQubits, coins, channel, isUuid } from '../../uuid/index.ts'
 import { coins as clayCoins, rays, faces, plane, recomputeClay, AXIOMS } from '../clay-register.ts'
 import { CLAY_RELATIONS } from '../clay-statements.ts'
 import { speakThousand } from '../i18n.ts'
@@ -77,10 +78,10 @@ export type CryptoConfig = {
     quantumComputer: CryptoQuantumComputer
   }
 }
-const cfgHosts = (c: CryptoConfig) => (c.hosts.length ? c.hosts : (() => { throw new Error('crypto config hosts: tenant domains from payload { cryptoConfig } or tenants.settings.arguments') })())
+const cfgHosts = (c: CryptoConfig) => (c.hosts.length ? c.hosts : (() => { throw new Error(PROSE.quantumProcessingCryptoIndex_s1) })())
 const cfgAttest = (c: CryptoConfig, id: string) => {
   const row = c.attestApis.find((a) => a.id === id)
-  if (!row) throw new Error(`crypto config missing ATTEST_APIS id ${id}: configure via Payload MCP`)
+  if (!row) throw new Error(proseFill(PROSE.quantumProcessingCryptoIndex_s2, id))
   return row
 }
 /** Processors a role may choose under the tenant crypto config (ISO/IEC 4879 inventory ∩ RBAC). */
@@ -315,7 +316,7 @@ export const integers = (raw: unknown) => {
   const entropy = rows.reduce((n, r) => n + r.entropy, 0)
   const singularity = uuid(canonicalText(members))
   const iso = isoEntropyOf(leads)
-  return { agnostic: true as const, refused: false as const, cases: findings, findings, reactions, leads, bound: leads <= findings, collapsed: reactions, entropy, burned: entropy, fuel: entropy, wave: { next: entropy > 0 ? 1 : 0, fuel: entropy }, singularity, sealed: uuidSeal(singularity).valid && rows.every((r) => r.sealed), rows, iso, theorems: ['textbook_entropy_fusion', 'singularity'] as const, says: `${findings} integer case(s) merge to one address; ${entropy} byte(s) of fuel burned; ${iso.standard} ${iso.definition} with W = ${iso.W}, S = ${iso.S} ${iso.unit}; the wave leaves ${leads} lead(s), never more than the cases` }
+  return { agnostic: true as const, refused: false as const, cases: findings, findings, reactions, leads, bound: leads <= findings, collapsed: reactions, entropy, burned: entropy, fuel: entropy, wave: { next: entropy > 0 ? 1 : 0, fuel: entropy }, singularity, sealed: uuidSeal(singularity).valid && rows.every((r) => r.sealed), rows, iso, theorems: ['textbook_entropy_fusion', 'singularity'] as const, says: proseFill(PROSE.quantumProcessingCryptoIndex_says3, findings, entropy, iso.standard, iso.definition, iso.W, iso.S, iso.unit, leads) }
 }
 
 const QUENEAU = Array.from({ length: 14 }, () => 10)
@@ -345,18 +346,18 @@ export const uuidSuperpositions = (address = SUPERPOSITION_ADDRESS, width = SUPE
   const grid = rosetta([6, 7])
   const streamed = stream([address, '016da774-e74c-2e44-8742-f8bcf5e8e8f5', '00000000-0000-1000-8000-000000000000'], { where: { nibble: { at: 1, is: '0' } }, sort: 'hue', execute: true })
   const rows: UuidSuperposition[] = [
-    { id: 'neighbours', surface: 'six neighbour superpositions', tool: 'fold', arguments: { neighbours: address }, says: 'six program-space neighbours, each a sealed lead', directions: around.neighbours.length },
-    { id: 'navigate', surface: 'neighbourhood team', tool: 'fold', arguments: { navigate: address }, says: 'the team is the six neighbours and their stream', directions: team.neighbours.length },
-    { id: 'next', surface: 'program rotation', tool: 'fold', arguments: { next: address }, says: 'the program rotates one place; ten rotations return it' },
-    { id: 'harmonic', surface: 'enum superposition', tool: 'fold', arguments: { harmonic: { schema: { properties: { style: { enum: ['nova', 'lyra', 'maia'] }, theme: { enum: ['neutral', 'stone', 'zinc', 'gray'] }, radius: { enum: ['0', '0.3', '0.5', '0.75', '1'] } } } } }, says: 'sixty combinations held at once; the a432 key chooses one', combinations: harmonic.count.toString() },
-    { id: 'stream', surface: 'UUID stream superposition', tool: 'fold', arguments: { uuids: [address, '016da774-e74c-2e44-8742-f8bcf5e8e8f5', '00000000-0000-1000-8000-000000000000'], query: { where: { nibble: { at: 1, is: '0' } }, sort: 'hue', execute: true } }, says: 'a UUID-only stream filtered and executed without storing the space', combinations: String(streamed.stream) },
-    { id: 'rosetta', surface: 'dual-axis superposition', tool: 'fold', arguments: { rosetta: [6, 7], index: '20' }, says: '6×7 and 7×6 are one scale of forty-two read two ways', combinations: grid.scale.toString() },
-    { id: 'combinatorics', surface: 'combination-space superposition', tool: 'fold', arguments: { combinatorics: true }, says: 'every named space counted; none of its compositions stored', combinations: spaces.find((s) => s.name === 'queneau')!.count },
-    { id: 'spaces', surface: 'named spaces at once', tool: 'fold', arguments: { spaces: Object.fromEntries(COMBINATORICS.map((s) => [s.name, [...s.radices]])) }, says: 'Queneau, plugins, adapters, sets, algorithm and installations counted by one primitive', combinations: String(spaces.length) },
-    { id: 'qubits', surface: 'UUID qubit register', tool: 'fold', arguments: { qubits: width }, says: 'hexbit qubits on each of thirty-two digits; capacity delivered as six neighbour leads', combinations: counted.handles.possible },
-    { id: 'exchange', surface: 'qubit exchange', tool: 'fold', arguments: { exchange: { address, hexbit: width } }, says: 'navigation, teleport and σ₁₅ signal over the register', directions: moved.navigate.directions },
-    { id: 'organise', surface: 'organised qubit trinities', tool: 'fold', arguments: { organise: { address, hexbit: width } }, says: 'fingerprint, combination and tail laid by trinity' },
-    { id: 'coins', surface: 'coins by address', tool: 'fold', arguments: { coins: [address, 'rodin', address] }, says: 'repeated addresses merge to one sealed coin', combinations: String(booked.count) },
+    { id: 'neighbours', surface: 'six neighbour superpositions', tool: 'fold', arguments: { neighbours: address }, says: PROSE.quantumProcessingCryptoIndex_says4, directions: around.neighbours.length },
+    { id: 'navigate', surface: 'neighbourhood team', tool: 'fold', arguments: { navigate: address }, says: PROSE.quantumProcessingCryptoIndex_says5, directions: team.neighbours.length },
+    { id: 'next', surface: 'program rotation', tool: 'fold', arguments: { next: address }, says: PROSE.quantumProcessingCryptoIndex_says6 },
+    { id: 'harmonic', surface: 'enum superposition', tool: 'fold', arguments: { harmonic: { schema: { properties: { style: { enum: ['nova', 'lyra', 'maia'] }, theme: { enum: ['neutral', 'stone', 'zinc', 'gray'] }, radius: { enum: ['0', '0.3', '0.5', '0.75', '1'] } } } } }, says: PROSE.quantumProcessingCryptoIndex_says7, combinations: harmonic.count.toString() },
+    { id: 'stream', surface: 'UUID stream superposition', tool: 'fold', arguments: { uuids: [address, '016da774-e74c-2e44-8742-f8bcf5e8e8f5', '00000000-0000-1000-8000-000000000000'], query: { where: { nibble: { at: 1, is: '0' } }, sort: 'hue', execute: true } }, says: PROSE.quantumProcessingCryptoIndex_says8, combinations: String(streamed.stream) },
+    { id: 'rosetta', surface: 'dual-axis superposition', tool: 'fold', arguments: { rosetta: [6, 7], index: '20' }, says: PROSE.quantumProcessingCryptoIndex_says9, combinations: grid.scale.toString() },
+    { id: 'combinatorics', surface: 'combination-space superposition', tool: 'fold', arguments: { combinatorics: true }, says: PROSE.quantumProcessingCryptoIndex_says10, combinations: spaces.find((s) => s.name === 'queneau')!.count },
+    { id: 'spaces', surface: 'named spaces at once', tool: 'fold', arguments: { spaces: Object.fromEntries(COMBINATORICS.map((s) => [s.name, [...s.radices]])) }, says: PROSE.quantumProcessingCryptoIndex_says11, combinations: String(spaces.length) },
+    { id: 'qubits', surface: 'UUID qubit register', tool: 'fold', arguments: { qubits: width }, says: PROSE.quantumProcessingCryptoIndex_says12, combinations: counted.handles.possible },
+    { id: 'exchange', surface: 'qubit exchange', tool: 'fold', arguments: { exchange: { address, hexbit: width } }, says: PROSE.quantumProcessingCryptoIndex_says13, directions: moved.navigate.directions },
+    { id: 'organise', surface: 'organised qubit trinities', tool: 'fold', arguments: { organise: { address, hexbit: width } }, says: PROSE.quantumProcessingCryptoIndex_says14 },
+    { id: 'coins', surface: 'coins by address', tool: 'fold', arguments: { coins: [address, 'rodin', address] }, says: PROSE.quantumProcessingCryptoIndex_says15, combinations: String(booked.count) },
   ]
   const holds =
     around.neighbours.length === 6 && around.neighbours.every((n) => n.sealed) &&
@@ -378,8 +379,8 @@ export const uuidSuperpositions = (address = SUPERPOSITION_ADDRESS, width = SUPE
     fetched: false as const, written: false as const, walked: false as const, holds,
     theorems: ['textbook_neighbour_step', 'textbook_harmonic_default', 'textbook_mixed_radix', 'textbook_queneau_compositions', 'textbook_coil_green'] as const,
     says: holds
-      ? `${rows.length} UUID superposition(s) of ${address}: six neighbour leads, sixty harmonic combinations, the ${counted.effective}-qubit register and its exchange and the combination spaces — none walked, none fetched.`
-      : 'a UUID superposition did not hold',
+      ? proseFill(PROSE.quantumProcessingCryptoIndex_s16, rows.length, address, counted.effective)
+      : PROSE.quantumProcessingCryptoIndex_s17,
   }
 }
 
@@ -428,16 +429,16 @@ export const uuidSuperpositionsReverse = (address = SUPERPOSITION_ADDRESS, width
   const again = coins(booked.coins)
   const coinsBack = booked.sealed === true && booked.count === 2 && again.count === booked.count && again.coins.every((id, i) => id === booked.coins[i]) 
   const rows = [
-    { id: 'neighbours', reverse: 'step back returns the program', returns: neighbourBack.every((row) => row.returns && row.sealed), of: neighbourBack.length },
-    { id: 'navigate', reverse: 'each neighbour\'s opposite step returns the program', returns: navigateBack, of: team.neighbours.length },
-    { id: 'next', reverse: 'one step back and ten around', returns: nextBack, of: rotated.places },
+    { id: 'neighbours', reverse: PROSE.quantumProcessingCryptoIndex_reverse18, returns: neighbourBack.every((row) => row.returns && row.sealed), of: neighbourBack.length },
+    { id: 'navigate', reverse: PROSE.quantumProcessingCryptoIndex_reverse19, returns: navigateBack, of: team.neighbours.length },
+    { id: 'next', reverse: PROSE.quantumProcessingCryptoIndex_reverse20, returns: nextBack, of: rotated.places },
     { id: 'harmonic', reverse: 'digits make the index', returns: harmonicBack, of: Number(harmonic.count) },
     { id: 'stream', reverse: 'executed next steps back', returns: streamBack, of: streamed.stream },
     { id: 'rosetta', reverse: 'transpose of the transpose', returns: rosettaBack, of: Number(grid.scale) },
     { id: 'combinatorics', reverse: 'last composition indexes itself', returns: combinatoricsBack, of: 14 },
     { id: 'spaces', reverse: 'each space indexes itself', returns: spacesBack, of: COMBINATORICS.length },
-    { id: 'qubits', reverse: 'σ both ways on the delivery coin', returns: qubitsBack, of: counted.delivery.leads.length },
-    { id: 'exchange', reverse: 'σ₁₅ signal and neighbour program steps', returns: exchangeBack, of: moved.signal.digits },
+    { id: 'qubits', reverse: PROSE.quantumProcessingCryptoIndex_reverse21, returns: qubitsBack, of: counted.delivery.leads.length },
+    { id: 'exchange', reverse: PROSE.quantumProcessingCryptoIndex_reverse22, returns: exchangeBack, of: moved.signal.digits },
     { id: 'organise', reverse: 'combination digits read as index', returns: organiseBack, of: laid.combination.digits },
     { id: 'coins', reverse: 'merge is idempotent', returns: coinsBack, of: booked.count },
   ] as const
@@ -448,8 +449,8 @@ export const uuidSuperpositionsReverse = (address = SUPERPOSITION_ADDRESS, width
     neighbours: neighbourBack, fetched: false as const, written: false as const, walked: false as const, holds,
     theorems: ['textbook_neighbour_step', 'textbook_harmonic_default', 'textbook_mixed_radix', 'textbook_queneau_compositions', 'textbook_coil_green'] as const,
     says: holds
-      ? `${rows.length} UUID superposition(s) reversed for ${address}: every neighbour steps back to the program, next undoes, the harmonic index rebuilds its digits, the rosetta transpose undoes, σ twice returns the parts, and coins merge once — none walked, none fetched.`
-      : `a UUID superposition did not reverse: ${rows.filter((row) => !row.returns).map((row) => row.id).join(', ') || 'none'}`,
+      ? proseFill(PROSE.quantumProcessingCryptoIndex_s23, rows.length, address)
+      : proseFill(PROSE.quantumProcessingCryptoIndex_s24, rows.filter((row) => !row.returns).map((row) => row.id).join(', ') || 'none'),
   }
 }
 
@@ -466,13 +467,13 @@ export const exchangeX25519 = (raw: unknown) => {
   const a = (isObj(raw) ? raw : {}) as { scalar?: string; point?: string }
   if (typeof a.scalar !== 'string' || typeof a.point !== 'string') throw new Error('x25519 takes { scalar, point } as hex')
   const scalar = fromHex(a.scalar, 'scalar'), point = fromHex(a.point, 'point')
-  if (scalar.length !== 32 || point.length !== 32) throw new Error('x25519 scalar and point are 32 bytes each')
+  if (scalar.length !== 32 || point.length !== 32) throw new Error(PROSE.quantumProcessingCryptoIndex_s25)
   return { phase: 'x25519' as const, rfc: 7748 as const, shared: hex(x25519(scalar, point)), sizes: { scalar: 32, point: 32, shared: 32 } }
 }
 /** PBKDF2-HMAC-SHA256 (RFC 8018 / NIST SP 800-132): a password stretched under a salt by `iterations` rounds to `length` bytes (default 32). Password and salt are utf-8 text, or hex when `hex: true`. */
 export const derivePbkdf2 = (raw: unknown) => {
   const a = (isObj(raw) ? raw : {}) as { password?: string; salt?: string; iterations?: number; length?: number; hex?: boolean }
-  if (typeof a.password !== 'string' || typeof a.salt !== 'string') throw new Error('pbkdf2 takes { password, salt, iterations }')
+  if (typeof a.password !== 'string' || typeof a.salt !== 'string') throw new Error(PROSE.quantumProcessingCryptoIndex_s26)
   if (!Number.isInteger(a.iterations) || (a.iterations as number) < 1) throw new Error('iterations is a positive integer')
   const length = a.length === undefined ? 32 : a.length
   if (!Number.isInteger(length) || length < 1) throw new Error('length is a positive integer')
@@ -508,30 +509,30 @@ const receiptFold = (leaves: readonly string[], leaf: (x: string) => string): st
 }
 /** The folds merkleGravity has been, the current one first. */
 const RECEIPT_FOLDS: readonly { id: string; change: string; leaf: (x: string) => string }[] = [
-  { id: 'uuidna-0a4c4e9d87', change: 'uuidna commit 0a4c4e9d87 (2026-09-25) tagged every leaf toUuid(\'leaf:\' + x), as RFC 6962 does, after merkleFold([a,b,c]) === merkleFold([merge(a,b),c]) was witnessed', leaf: (x) => uuidnaAddress(`leaf:${x}`) },
-  { id: 'uuidna-untagged', change: 'the fold before uuidna commit 0a4c4e9d87: bare addresses as leaves, shaped like a node', leaf: (x) => x },
+  { id: 'uuidna-0a4c4e9d87', change: PROSE.quantumProcessingCryptoIndex_change27, leaf: (x) => uuidnaAddress(`leaf:${x}`) },
+  { id: 'uuidna-untagged', change: PROSE.quantumProcessingCryptoIndex_change28, leaf: (x) => x },
 ]
 type ReceiptRow = { id: string; leaves: string[]; recorded: string; computed: string; verdict: 'holds' | 'stale' | 'wrong'; fold: string | null; change: string | null; says: string }
 export const findStaleReceipts = (raw: unknown) => {
-  if (!Array.isArray(raw)) throw new Error('receipts takes [{ id, leaves: [uuid… | { seed }], recorded }]')
+  if (!Array.isArray(raw)) throw new Error(PROSE.quantumProcessingCryptoIndex_s29)
   const [current, ...earlier] = RECEIPT_FOLDS as [typeof RECEIPT_FOLDS[number], ...typeof RECEIPT_FOLDS[number][]]
   const rows: ReceiptRow[] = raw.map((r, i) => {
-    if (!isObj(r) || !Array.isArray(r.leaves) || typeof r.recorded !== 'string') throw new Error(`receipts[${i}] is { id, leaves: [uuid… | { seed }], recorded }`)
+    if (!isObj(r) || !Array.isArray(r.leaves) || typeof r.recorded !== 'string') throw new Error(proseFill(PROSE.quantumProcessingCryptoIndex_s30, i))
     const leaves = (r.leaves as unknown[]).map((x, j) => {
       if (typeof x === 'string') return x
       if (isObj(x) && typeof x.seed === 'string') return uuidnaAddress(x.seed)
-      throw new Error(`receipts[${i}].leaves[${j}] is an address or { seed } to mint one from`)
+      throw new Error(proseFill(PROSE.quantumProcessingCryptoIndex_s31, i, j))
     })
     const id = typeof r.id === 'string' ? r.id : String(i), recorded = r.recorded
     const computed = receiptFold(leaves, current.leaf)
     if (computed === recorded) return { id, leaves, recorded, computed, verdict: 'holds', fold: current.id, change: null, says: `recomputes under ${current.id}` }
     const stale = earlier.find((f) => receiptFold(leaves, f.leaf) === recorded)
-    if (stale) return { id, leaves, recorded, computed, verdict: 'stale', fold: stale.id, change: current.change, says: `${stale.id} reproduces ${recorded} exactly and ${current.id} folds the same leaves to ${computed}: the fold's history, not a correction of the record; reseal under ${current.id}` }
-    return { id, leaves, recorded, computed, verdict: 'wrong', fold: null, change: null, says: `no known fold of these ${leaves.length} leaves gives ${recorded}; ${current.id} gives ${computed}` }
+    if (stale) return { id, leaves, recorded, computed, verdict: 'stale', fold: stale.id, change: current.change, says: proseFill(PROSE.quantumProcessingCryptoIndex_says32, stale.id, recorded, current.id, computed, current.id) }
+    return { id, leaves, recorded, computed, verdict: 'wrong', fold: null, change: null, says: proseFill(PROSE.quantumProcessingCryptoIndex_says33, leaves.length, recorded, current.id, computed) }
   })
   const count = (v: ReceiptRow['verdict']) => rows.filter((r) => r.verdict === v).length
   const holds = count('holds'), stale = count('stale'), wrong = count('wrong')
-  return { phase: 'receipts' as const, receipts: rows.length, holds, stale, wrong, invalidated: rows.filter((r) => r.verdict !== 'holds').map((r) => r.id), folds: RECEIPT_FOLDS.map(({ id, change }) => ({ id, change })), rows, theorems: ['textbook_receipts_partitioned'] as const, says: `${rows.length} recorded receipt${rows.length === 1 ? '' : 's'} recomputed under ${current.id}: ${holds} hold, ${stale} stale (an earlier fold reproduces them exactly: reseal, the inputs did not move), ${wrong} wrong (no known fold does); ${holds} + ${stale} + ${wrong} = ${rows.length}` }
+  return { phase: 'receipts' as const, receipts: rows.length, holds, stale, wrong, invalidated: rows.filter((r) => r.verdict !== 'holds').map((r) => r.id), folds: RECEIPT_FOLDS.map(({ id, change }) => ({ id, change })), rows, theorems: ['textbook_receipts_partitioned'] as const, says: proseFill(PROSE.quantumProcessingCryptoIndex_says34, rows.length, rows.length === 1 ? '' : 's', current.id, holds, stale, wrong, holds, stale, wrong, rows.length) }
 }
 
 /** RFC 6962 Merkle tree over SHA-256 (the Certificate Transparency log the attest tool reads): leaves as hex or utf-8 text; the root; an inclusion proof at an index; or verify { leaf, proof, root }. */
@@ -547,7 +548,7 @@ export const merkleTree = (raw: unknown) => {
     const verified = merkleVerify(leaf, proof, root)
     return { phase: 'merkle' as const, rfc: 6962 as const, direction: 'verify' as const, verified, leaf: hex(merkleLeafHash(leaf)), root: hex(root), proof: proof.map((s) => ({ hash: hex(s.hash), right: s.right })) }
   }
-  if (!Array.isArray(a.leaves)) throw new Error('merkle takes { leaves }, { leaves, index }, or { leaf, proof, root }')
+  if (!Array.isArray(a.leaves)) throw new Error(PROSE.quantumProcessingCryptoIndex_s35)
   const leaves = (a.leaves as unknown[]).map((x, i) => {
     if (typeof x !== 'string') throw new Error(`leaves[${i}] is a string`)
     return decode(x, `leaves[${i}]`)
@@ -564,18 +565,18 @@ export const merkleTree = (raw: unknown) => {
 export const aead = (raw: unknown) => {
   const a = (isObj(raw) ? raw : {}) as { cipher?: string; key?: string; nonce?: string; text?: string; aad?: string; open?: { ciphertext?: string; tag?: string } }
   const cipher = a.cipher === 'aes-256-gcm' || a.cipher === 'chacha20-poly1305' ? a.cipher : null
-  if (!cipher) throw new Error('cipher is aes-256-gcm or chacha20-poly1305')
-  if (typeof a.key !== 'string' || typeof a.nonce !== 'string') throw new Error('aead takes a key and a nonce, as hex')
+  if (!cipher) throw new Error(PROSE.quantumProcessingCryptoIndex_s36)
+  if (typeof a.key !== 'string' || typeof a.nonce !== 'string') throw new Error(PROSE.quantumProcessingCryptoIndex_s37)
   const key = fromHex(a.key, 'key'), nonce = fromHex(a.nonce, 'nonce'), aad = typeof a.aad === 'string' ? utf8(a.aad) : new Uint8Array(0)
   const open = isObj(a.open) ? a.open : null
   if (open) {
-    if (typeof open.ciphertext !== 'string' || typeof open.tag !== 'string') throw new Error('open takes the ciphertext and the tag, as hex')
+    if (typeof open.ciphertext !== 'string' || typeof open.tag !== 'string') throw new Error(PROSE.quantumProcessingCryptoIndex_s38)
     const ciphertext = fromHex(open.ciphertext, 'ciphertext'), tag = fromHex(open.tag, 'tag')
     const plain = cipher === 'aes-256-gcm' ? aes256gcmDecrypt(key, nonce, ciphertext, tag, aad) : chacha20poly1305Decrypt(key, nonce, ciphertext, tag, aad)
     const text = plain ? new TextDecoder('utf-8', { fatal: false }).decode(plain) : null
     return { phase: 'aead' as const, cipher, direction: 'open' as const, verified: plain !== null, plain: plain ? hex(plain) : null, text: plain ? text : null }
   }
-  if (typeof a.text !== 'string') throw new Error('aead takes the text to seal, or open: { ciphertext, tag }')
+  if (typeof a.text !== 'string') throw new Error(PROSE.quantumProcessingCryptoIndex_s39)
   const sealed = cipher === 'aes-256-gcm' ? aes256gcmEncrypt(key, nonce, utf8(a.text), aad) : chacha20poly1305Encrypt(key, nonce, utf8(a.text), aad)
   return { phase: 'aead' as const, cipher, direction: 'seal' as const, ciphertext: hex(sealed.ciphertext), tag: hex(sealed.tag), plain: hex(utf8(a.text)) }
 }
@@ -584,11 +585,11 @@ export const aead = (raw: unknown) => {
  * secret and the referer alone. The referer is public, so it adds no entropy: every bit comes from the secret; it binds the seed to its chain. */
 export const deriveRefererSeeds = (referer: unknown, key: unknown) => {
   const { address, chunks = 1 } = (isObj(referer) ? referer : { address: referer }) as { address?: unknown; chunks?: unknown }
-  if (typeof address !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(address)) throw new Error('referer is the address of the referer block (a UUID), or { address, chunks }')
-  if (!Number.isInteger(chunks) || (chunks as number) < 1) throw new Error('chunks is a whole number of 32-byte seeds, at least one')
+  if (typeof address !== 'string' || !isUuid(address)) throw new Error(PROSE.quantumProcessingCryptoIndex_s40)
+  if (!Number.isInteger(chunks) || (chunks as number) < 1) throw new Error(PROSE.quantumProcessingCryptoIndex_s41)
   const salt = Uint8Array.from((address.split('-').join('').match(/../g) ?? []).map((h) => parseInt(h, 16))), infos = Array.from({ length: chunks as number }, (_, i) => 'qpu referer seed ' + i)
   const ikm = typeof key === 'string' ? utf8(key) : null, secretBits = ikm ? Math.min(256, ikm.length * 8) : 256
-  return { kdf: 'HKDF-SHA256 (RFC 5869)', salt: address, infos, bytesPerChunk: 32, executedBy: ikm ? 'here, under a test key' : 'host', keyVar: 'QPU_PROOF_SIGNING_KEY (its 32-byte seed the input keying material; never sent here)', ...(ikm ? { seeds: infos.map((i) => hex(deriveHkdf(ikm, salt, utf8(i)))) } : {}), entropy: { secretBits, refererBits: 0, totalBits: secretBits, says: 'at most the secret\'s bits: the referer is public and recomputable, so it adds none, however the seed is chunked' }, binds: 'a seed belongs to one referer and one chunk: another referer or chunk gives another seed, and nobody without the secret can make either', recomputedFrom: ['the secret', 'the referer address', 'the chunk index'], theorem: 'textbook_referer_binds_not_entropy' }
+  return { kdf: 'HKDF-SHA256 (RFC 5869)', salt: address, infos, bytesPerChunk: 32, executedBy: ikm ? 'here, under a test key' : 'host', keyVar: PROSE.quantumProcessingCryptoIndex_keyVar42, ...(ikm ? { seeds: infos.map((i) => hex(deriveHkdf(ikm, salt, utf8(i)))) } : {}), entropy: { secretBits, refererBits: 0, totalBits: secretBits, says: PROSE.quantumProcessingCryptoIndex_says43 }, binds: PROSE.quantumProcessingCryptoIndex_binds44, recomputedFrom: ['the secret', 'the referer address', 'the chunk index'], theorem: 'textbook_referer_binds_not_entropy' }
 }
 
 /** A glTF 2.0 asset read as Unreal Engine reads it. */
@@ -596,18 +597,18 @@ const GLB_MAGIC = 0x46546c67, GLB_JSON = 0x4e4f534a, GLB_BIN = 0x004e4942
 export const getGltf = (g: { glb64?: string; json?: unknown }, supported: readonly string[]) => {
   let doc: Record<string, any> | null = null, bin = 0, why: string | null = null
   if (typeof g.glb64 === 'string') { const b = Uint8Array.from(atob(g.glb64), (c) => c.charCodeAt(0)), v = new DataView(b.buffer)
-    if (b.length < 20 || v.getUint32(0, true) !== GLB_MAGIC) why = 'not a .glb: the magic is not glTF'
+    if (b.length < 20 || v.getUint32(0, true) !== GLB_MAGIC) why = PROSE.quantumProcessingCryptoIndex_s45
     else if (v.getUint32(4, true) !== 2) why = `a .glb of container version ${v.getUint32(4, true)}, not 2`
-    else if (v.getUint32(8, true) !== b.length) why = `a .glb whose header says ${v.getUint32(8, true)} bytes, not ${b.length}`
+    else if (v.getUint32(8, true) !== b.length) why = proseFill(PROSE.quantumProcessingCryptoIndex_s46, v.getUint32(8, true), b.length)
     else for (let at = 12; at + 8 <= b.length;) { const len = v.getUint32(at, true), type = v.getUint32(at + 4, true); if (type === GLB_JSON && !doc) doc = JSON.parse(new TextDecoder().decode(b.subarray(at + 8, at + 8 + len))); else if (type === GLB_BIN) bin = len; at += 8 + len } }
   else if (isObj(g.json)) doc = g.json as Record<string, any>
-  if (!why && !doc) why = 'no glTF JSON: hand glb64 (a .glb as base64) or json (a .gltf)'
+  if (!why && !doc) why = PROSE.quantumProcessingCryptoIndex_s47
   if (!why && String(doc?.asset?.version) !== '2.0') why = `glTF ${doc?.asset?.version ?? 'without a version'}: only 2.0 is read`
   if (why) return { phase: 'gltf' as const, loadable: false, why, theorem: 'textbook_gltf_required_extensions' }
   const count = (k: string) => (Array.isArray(doc![k]) ? doc![k].length : 0), used: string[] = doc!.extensionsUsed ?? [], required: string[] = doc!.extensionsRequired ?? []
   const prefix = (e: string) => (e.startsWith('KHR_') ? 'khronos' : e.startsWith('EXT_') ? 'multi-vendor' : 'vendor'), missing = required.filter((e) => !supported.includes(e))
   const external = [...(doc!.buffers ?? []), ...(doc!.images ?? [])].map((x: { uri?: string }) => x.uri).filter((u): u is string => typeof u === 'string' && !u.startsWith('data:'))
-  return { phase: 'gltf' as const, format: g.glb64 ? 'glb' : 'gltf', version: '2.0', generator: doc!.asset?.generator ?? null, counts: Object.fromEntries(['scenes', 'nodes', 'meshes', 'materials', 'animations', 'skins', 'textures', 'images', 'buffers'].map((k) => [k, count(k)])), binBytes: bin, external, extensions: used.map((e) => ({ name: e, prefix: prefix(e), required: required.includes(e), supported: supported.includes(e) })), loadable: missing.length === 0, why: missing.length ? `it requires ${missing.join(', ')}, which this reader does not support` : null, theorem: 'textbook_gltf_required_extensions' }
+  return { phase: 'gltf' as const, format: g.glb64 ? 'glb' : 'gltf', version: '2.0', generator: doc!.asset?.generator ?? null, counts: Object.fromEntries(['scenes', 'nodes', 'meshes', 'materials', 'animations', 'skins', 'textures', 'images', 'buffers'].map((k) => [k, count(k)])), binBytes: bin, external, extensions: used.map((e) => ({ name: e, prefix: prefix(e), required: required.includes(e), supported: supported.includes(e) })), loadable: missing.length === 0, why: missing.length ? proseFill(PROSE.quantumProcessingCryptoIndex_s48, missing.join(', ')) : null, theorem: 'textbook_gltf_required_extensions' }
 }
 
 /** The ML-DSA parameter sets of FIPS 204 (table 2 of the standard: public key and signature sizes in bytes) and the Web Crypto names Workers and Node give them. */
@@ -620,9 +621,9 @@ type MlDsa = keyof typeof ML_DSA
 type SignaturePlan = { algorithm: MlDsa; fips: 204; over: 'sha256'; message: string; signed: string; executedBy: 'host'; keyVar: string; webcrypto: { flag: string; generateKey: { name: MlDsa }; sign: { name: MlDsa }; keyFormat: 'jwk'; kty: 'AKP'; since: string }; sizes: { publicKey: number; signature: number }; verify: string; value?: string; publicKey?: Record<string, unknown>; keyed?: 'secret' | 'ephemeral'; phase?: 'planned' | 'signed' | 'unsupported'; note?: string }
 /** The signature plan, pure: what the host signs (the 32 bytes of the digest), with which algorithm, under which key variable, through which Web Crypto call; the host fills value, publicKey and keyed. Flag/changelog from tenant crypto config. */
 export const planSignature = (digest: string, sign: unknown, config: CryptoConfig): SignaturePlan => {
-  const algorithm: MlDsa = sign === true || sign === 'ML-DSA-65' ? 'ML-DSA-65' : sign === 'ML-DSA-44' ? 'ML-DSA-44' : sign === 'ML-DSA-87' ? 'ML-DSA-87' : (() => { throw new Error(`sign is ML-DSA-44, ML-DSA-65 or ML-DSA-87 (FIPS 204), not ${JSON.stringify(sign)}`) })()
+  const algorithm: MlDsa = sign === true || sign === 'ML-DSA-65' ? 'ML-DSA-65' : sign === 'ML-DSA-44' ? 'ML-DSA-44' : sign === 'ML-DSA-87' ? 'ML-DSA-87' : (() => { throw new Error(proseFill(PROSE.quantumProcessingCryptoIndex_s49, JSON.stringify(sign))) })()
   const pq = config.postQuantum
-  return { algorithm, fips: 204, over: 'sha256', message: digest, signed: 'the 32 bytes of the SHA-256 digest (256 bits, whatever the text\'s length)', executedBy: 'host', keyVar: 'QPU_SIGNING_KEY[_<TENANT>] (a private JWK of kty AKP; absent, the host signs with a key it generates for its own lifetime and says so)', webcrypto: { flag: pq.workers.flag, generateKey: { name: algorithm }, sign: { name: algorithm }, keyFormat: 'jwk', kty: 'AKP', since: pq.workers.changelog }, sizes: { publicKey: ML_DSA[algorithm].publicKey, signature: ML_DSA[algorithm].signature }, verify: `crypto.subtle.verify({ name: '${algorithm}' }, publicKey, signature, bytes(sha256)) with the public key the answer carries: no secret needed`, phase: 'planned' }
+  return { algorithm, fips: 204, over: 'sha256', message: digest, signed: PROSE.quantumProcessingCryptoIndex_signed50, executedBy: 'host', keyVar: PROSE.quantumProcessingCryptoIndex_keyVar51, webcrypto: { flag: pq.workers.flag, generateKey: { name: algorithm }, sign: { name: algorithm }, keyFormat: 'jwk', kty: 'AKP', since: pq.workers.changelog }, sizes: { publicKey: ML_DSA[algorithm].publicKey, signature: ML_DSA[algorithm].signature }, verify: proseFill(PROSE.quantumProcessingCryptoIndex_verify52, algorithm), phase: 'planned' }
 }
 
 /** The ML-KEM parameter sets of FIPS 203 (table: encapsulation/decapsulation key, ciphertext and shared-secret sizes in bytes): the post-quantum
@@ -636,15 +637,15 @@ type MlKem = keyof typeof ML_KEM
 type EncapsulationPlan = { algorithm: MlKem; fips: 203; executedBy: 'host'; webcrypto: { flag: string; encapsulate: { name: MlKem }; keyFormat: 'raw-public'; since: string }; sizes: { encapsulationKey: number; decapsulationKey: number; ciphertext: number; sharedSecret: number }; encapsulate: string; decapsulate: string; ciphertext?: string; sharedSecret?: string; phase?: 'planned' | 'encapsulated' | 'unsupported' }
 /** The KEM encapsulation plan, pure: which ML-KEM, over which Web Crypto call, the sizes; the host runs encapsulate() with the recipient's public key and fills the ciphertext (the shared secret never leaves the host). */
 export const planEncapsulation = (kem: unknown, config: CryptoConfig): EncapsulationPlan => {
-  const algorithm: MlKem = kem === true || kem === 'ML-KEM-768' ? 'ML-KEM-768' : kem === 'ML-KEM-512' ? 'ML-KEM-512' : kem === 'ML-KEM-1024' ? 'ML-KEM-1024' : (() => { throw new Error(`kem is ML-KEM-512, ML-KEM-768 or ML-KEM-1024 (FIPS 203), not ${JSON.stringify(kem)}`) })()
+  const algorithm: MlKem = kem === true || kem === 'ML-KEM-768' ? 'ML-KEM-768' : kem === 'ML-KEM-512' ? 'ML-KEM-512' : kem === 'ML-KEM-1024' ? 'ML-KEM-1024' : (() => { throw new Error(proseFill(PROSE.quantumProcessingCryptoIndex_s53, JSON.stringify(kem))) })()
   const s = ML_KEM[algorithm]
   const pq = config.postQuantum
-  return { algorithm, fips: 203, executedBy: 'host', webcrypto: { flag: pq.workers.flag, encapsulate: { name: algorithm }, keyFormat: 'raw-public', since: pq.workers.changelog }, sizes: { encapsulationKey: s.encapsulationKey, decapsulationKey: s.decapsulationKey, ciphertext: s.ciphertext, sharedSecret: s.sharedSecret }, encapsulate: `crypto.subtle.encapsulateBits({ name: '${algorithm}' }, encapsulationKey): the ciphertext travels, the ${s.sharedSecret}-byte shared secret stays on the host`, decapsulate: `crypto.subtle.decapsulateBits({ name: '${algorithm}' }, decapsulationKey, ciphertext): the recipient recovers the same shared secret`, phase: 'planned' }
+  return { algorithm, fips: 203, executedBy: 'host', webcrypto: { flag: pq.workers.flag, encapsulate: { name: algorithm }, keyFormat: 'raw-public', since: pq.workers.changelog }, sizes: { encapsulationKey: s.encapsulationKey, decapsulationKey: s.decapsulationKey, ciphertext: s.ciphertext, sharedSecret: s.sharedSecret }, encapsulate: proseFill(PROSE.quantumProcessingCryptoIndex_encapsulate54, algorithm, s.sharedSecret), decapsulate: proseFill(PROSE.quantumProcessingCryptoIndex_decapsulate55, algorithm), phase: 'planned' }
 }
 
 /** Ed25519 (RFC 8032), the classical signature beside the PQC ML-DSA: host-executed via Web Crypto (Node, Workers and browsers all have it), a 32-byte public key and a 64-byte signature over the message itself (no pre-hash); verified without any secret. */
 type Ed25519Plan = { algorithm: 'Ed25519'; rfc: 8032; over: 'message'; executedBy: 'host'; webcrypto: { generateKey: { name: 'Ed25519' }; sign: { name: 'Ed25519' }; keyFormat: 'raw' }; sizes: { publicKey: 32; signature: 64 }; message: string; verify: string; phase: 'planned' }
-export const planEd25519 = (message: string): Ed25519Plan => ({ algorithm: 'Ed25519', rfc: 8032, over: 'message', executedBy: 'host', webcrypto: { generateKey: { name: 'Ed25519' }, sign: { name: 'Ed25519' }, keyFormat: 'raw' }, sizes: { publicKey: 32, signature: 64 }, message, verify: "crypto.subtle.verify('Ed25519', publicKey, signature, message): the public key the answer carries, no secret needed", phase: 'planned' })
+export const planEd25519 = (message: string): Ed25519Plan => ({ algorithm: 'Ed25519', rfc: 8032, over: 'message', executedBy: 'host', webcrypto: { generateKey: { name: 'Ed25519' }, sign: { name: 'Ed25519' }, keyFormat: 'raw' }, sizes: { publicKey: 32, signature: 64 }, message, verify: PROSE.quantumProcessingCryptoIndex_verify56, phase: 'planned' })
 
 /** SLH-DSA parameter sets of FIPS 205 (table: public key and signature sizes in bytes): the hash-based (SPHINCS+) signature, the third PQC standard beside ML-KEM (203) and ML-DSA (204); host-executed — its signatures are large, so the plan carries the sizes and the call. */
 const SLH_DSA = {
@@ -658,12 +659,12 @@ type SlhDsaPlan = { algorithm: SlhDsa; fips: 205; over: 'message'; executedBy: '
 export const planSlhDsa = (slh: unknown): SlhDsaPlan => {
   const algorithm = (typeof slh === 'string' && slh in SLH_DSA ? slh : slh === true ? 'SLH-DSA-SHA2-128s' : (() => { throw new Error(`slh is one of ${Object.keys(SLH_DSA).join(', ')} (FIPS 205), not ${JSON.stringify(slh)}`) })()) as SlhDsa
   const s = SLH_DSA[algorithm]
-  return { algorithm, fips: 205, over: 'message', executedBy: 'host', sizes: { publicKey: s.publicKey, signature: s.signature }, verify: `verify the ${s.signature}-byte SLH-DSA signature over the message with the ${s.publicKey}-byte public key — hash-based, stateless, no number-theoretic assumption`, phase: 'planned' }
+  return { algorithm, fips: 205, over: 'message', executedBy: 'host', sizes: { publicKey: s.publicKey, signature: s.signature }, verify: proseFill(PROSE.quantumProcessingCryptoIndex_verify57, s.signature, s.publicKey), phase: 'planned' }
 }
 
 /** ECDSA on P-256 (FIPS 186-5), the other classical signature beside Ed25519: host-executed via Web Crypto, over the SHA-256 of the message; 65-byte uncompressed public key, 64-byte raw (r‖s) signature. */
 type EcdsaPlan = { algorithm: 'ECDSA'; curve: 'P-256'; fips: '186-5'; over: 'sha256'; executedBy: 'host'; webcrypto: { generateKey: { name: 'ECDSA'; namedCurve: 'P-256' }; sign: { name: 'ECDSA'; hash: 'SHA-256' } }; sizes: { publicKey: 65; signature: 64 }; message: string; verify: string; phase: 'planned' }
-export const planEcdsaP256 = (message: string): EcdsaPlan => ({ algorithm: 'ECDSA', curve: 'P-256', fips: '186-5', over: 'sha256', executedBy: 'host', webcrypto: { generateKey: { name: 'ECDSA', namedCurve: 'P-256' }, sign: { name: 'ECDSA', hash: 'SHA-256' } }, sizes: { publicKey: 65, signature: 64 }, message, verify: "crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, publicKey, signature, message): no secret needed", phase: 'planned' })
+export const planEcdsaP256 = (message: string): EcdsaPlan => ({ algorithm: 'ECDSA', curve: 'P-256', fips: '186-5', over: 'sha256', executedBy: 'host', webcrypto: { generateKey: { name: 'ECDSA', namedCurve: 'P-256' }, sign: { name: 'ECDSA', hash: 'SHA-256' } }, sizes: { publicKey: 65, signature: 64 }, message, verify: PROSE.quantumProcessingCryptoIndex_verify58, phase: 'planned' })
 
 
 /** Derived hosts from a Payload MCP / tenant crypto config. */
@@ -691,18 +692,18 @@ export const nistScenarios = (config: CryptoConfig, hosts: readonly string[] = c
   const CODATA_URL = config.codataUrl
   const host = hosts[0] ?? cryptoHosts(config).qpu
   const scenarios: NistScenario[] = [
-    { id: 'fips-180-4', standard: 'FIPS 180-4', tool: 'seal', arguments: { text: 'nist', fips180: true }, says: 'SHA-1, SHA-256 and SHA-512 of one text' },
-    { id: 'fips-186-5-ecdsa', standard: 'FIPS 186-5', tool: 'seal', arguments: { text: 'nist', ecdsa: true }, says: 'ECDSA P-256 over the SHA-256 of the text' },
-    { id: 'fips-202-sha3', standard: 'FIPS 202', tool: 'seal', arguments: { text: 'nist', sha3: true }, says: 'SHA3-256 and SHA3-512 beside SHA-256' },
-    { id: 'fips-202-shake', standard: 'FIPS 202', tool: 'seal', arguments: { text: 'nist', shake: true }, says: 'SHAKE128 of 32 bytes and SHAKE256 of 64 bytes' },
-    ...(['ML-KEM-512', 'ML-KEM-768', 'ML-KEM-1024'] as const).map((kem) => ({ id: `fips-203-${kem}`, standard: 'FIPS 203', tool: 'seal' as const, arguments: { kem }, says: `${kem} names its sizes and stays on the host` })),
-    ...(['ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87'] as const).map((sign) => ({ id: `fips-204-${sign}`, standard: 'FIPS 204', tool: 'seal' as const, arguments: { text: 'nist', sign }, says: `${sign} plans a signature over the digest` })),
-    ...(['SLH-DSA-SHA2-128s', 'SLH-DSA-SHA2-128f', 'SLH-DSA-SHA2-192s', 'SLH-DSA-SHA2-256s'] as const).map((slh) => ({ id: `fips-205-${slh}`, standard: 'FIPS 205', tool: 'seal' as const, arguments: { slh }, says: `${slh} names its public key and signature` })),
-    { id: 'sp-800-132-pbkdf2', standard: 'NIST SP 800-132', tool: 'seal', arguments: { pbkdf2: { password: 'password', salt: 'salt', iterations: 1, length: 32 } }, says: 'PBKDF2-HMAC-SHA256 one-iteration vector' },
-    { id: 'sp-800-38d-aes-gcm', standard: 'NIST SP 800-38D', tool: 'seal', arguments: { aead: { ...AES_GCM_VECTOR } }, says: 'AES-256-GCM seals to its known ciphertext and tag' },
-    { id: 'codata', standard: 'CODATA', tool: 'seal', arguments: { constants: true }, says: 'CODATA is named and not fetched', request: { id: 'codata', method: 'GET', url: CODATA_URL, accept: 'text/plain' } },
-    { id: 'nist-opendata', standard: 'NIST Open Data', tool: 'attest', arguments: { op: 'experience', nist: true }, says: 'NIST Open Data is asked and not fetched', request: { id: 'nist-opendata', method: 'GET', url: 'https://data.nist.gov/rmm/records?page=0&size=5', accept: 'application/json' } },
-    { id: 'attest-plan', standard: 'NIST attest', tool: 'attest', arguments: { op: 'plan', hosts: [...hosts] }, says: `attest plans every open API and the live certificate of ${host}` },
+    { id: 'fips-180-4', standard: 'FIPS 180-4', tool: 'seal', arguments: { text: 'nist', fips180: true }, says: PROSE.quantumProcessingCryptoIndex_says59 },
+    { id: 'fips-186-5-ecdsa', standard: 'FIPS 186-5', tool: 'seal', arguments: { text: 'nist', ecdsa: true }, says: PROSE.quantumProcessingCryptoIndex_says60 },
+    { id: 'fips-202-sha3', standard: 'FIPS 202', tool: 'seal', arguments: { text: 'nist', sha3: true }, says: PROSE.quantumProcessingCryptoIndex_says61 },
+    { id: 'fips-202-shake', standard: 'FIPS 202', tool: 'seal', arguments: { text: 'nist', shake: true }, says: PROSE.quantumProcessingCryptoIndex_says62 },
+    ...(['ML-KEM-512', 'ML-KEM-768', 'ML-KEM-1024'] as const).map((kem) => ({ id: `fips-203-${kem}`, standard: 'FIPS 203', tool: 'seal' as const, arguments: { kem }, says: proseFill(PROSE.quantumProcessingCryptoIndex_says63, kem) })),
+    ...(['ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87'] as const).map((sign) => ({ id: `fips-204-${sign}`, standard: 'FIPS 204', tool: 'seal' as const, arguments: { text: 'nist', sign }, says: proseFill(PROSE.quantumProcessingCryptoIndex_says64, sign) })),
+    ...(['SLH-DSA-SHA2-128s', 'SLH-DSA-SHA2-128f', 'SLH-DSA-SHA2-192s', 'SLH-DSA-SHA2-256s'] as const).map((slh) => ({ id: `fips-205-${slh}`, standard: 'FIPS 205', tool: 'seal' as const, arguments: { slh }, says: proseFill(PROSE.quantumProcessingCryptoIndex_says65, slh) })),
+    { id: 'sp-800-132-pbkdf2', standard: 'NIST SP 800-132', tool: 'seal', arguments: { pbkdf2: { password: 'password', salt: 'salt', iterations: 1, length: 32 } }, says: PROSE.quantumProcessingCryptoIndex_says66 },
+    { id: 'sp-800-38d-aes-gcm', standard: 'NIST SP 800-38D', tool: 'seal', arguments: { aead: { ...AES_GCM_VECTOR } }, says: PROSE.quantumProcessingCryptoIndex_says67 },
+    { id: 'codata', standard: 'CODATA', tool: 'seal', arguments: { constants: true }, says: PROSE.quantumProcessingCryptoIndex_says68, request: { id: 'codata', method: 'GET', url: CODATA_URL, accept: 'text/plain' } },
+    { id: 'nist-opendata', standard: 'NIST Open Data', tool: 'attest', arguments: { op: 'experience', nist: true }, says: PROSE.quantumProcessingCryptoIndex_says69, request: { id: 'nist-opendata', method: 'GET', url: 'https://data.nist.gov/rmm/records?page=0&size=5', accept: 'application/json' } },
+    { id: 'attest-plan', standard: 'NIST attest', tool: 'attest', arguments: { op: 'plan', hosts: [...hosts] }, says: proseFill(PROSE.quantumProcessingCryptoIndex_says70, host) },
     ...ATTEST_APIS.filter((a) => a.open && !a.url.startsWith('tls://') && a.id !== 'crt-sh').map((a) => ({
       id: a.id, standard: a.name, tool: 'attest' as const, arguments: { op: 'read' as const }, says: a.measured,
       request: { id: a.id, method: 'GET' as const, url: a.url, accept: a.id === 'csrc-pqc' ? 'text/html' : 'application/json' },
@@ -718,7 +719,7 @@ export const nistScenarios = (config: CryptoConfig, hosts: readonly string[] = c
     phase: 'nist' as const, host, scenarios, standards, tools: ['kem', 'slh', 'ed25519', 'ecdsa', 'shake', 'sha3', 'fips180', 'pbkdf2', 'aead', 'constants', 'attest'] as const,
     requests, liveCertificates, fetched: false as const, written: false as const, holds,
     theorems: ['textbook_sha256_fips_180_4', 'textbook_sha3_fips_202', 'textbook_pqc_standards_three', 'textbook_precommitment_is_sha512', 'textbook_coil_green'] as const,
-    says: `${scenarios.length} NIST scenario(s) across ${standards.length} standard(s); ${requests.length} request(s) and ${liveCertificates.length} live certificate(s) for ${host}. Nothing is fetched.`,
+    says: proseFill(PROSE.quantumProcessingCryptoIndex_says71, scenarios.length, standards.length, requests.length, liveCertificates.length, host),
   }
 }
 
@@ -754,15 +755,15 @@ export const nistScenariosReverse = (config: CryptoConfig, hosts: readonly strin
   const shakeBack = shakeOnce.shake128 === shakeAgain.shake128 && shakeOnce.shake256 === shakeAgain.shake256 && shakeOnce.shake128.length === 64 && shakeOnce.shake256.length === 128
   const kemRows = (['ML-KEM-512', 'ML-KEM-768', 'ML-KEM-1024'] as const).map((kem) => {
     const once = planEncapsulation(kem, config), again = planEncapsulation(kem, config)
-    return { id: `fips-203-${kem}`, standard: 'FIPS 203', reverse: `${kem} plan recomputes the same sizes`, returns: once.algorithm === again.algorithm && once.sizes.ciphertext === again.sizes.ciphertext && once.sizes.sharedSecret === 32 && once.fips === 203, of: once.sizes.sharedSecret, tool: 'seal' as const, arguments: { kem } }
+    return { id: `fips-203-${kem}`, standard: 'FIPS 203', reverse: proseFill(PROSE.quantumProcessingCryptoIndex_reverse72, kem), returns: once.algorithm === again.algorithm && once.sizes.ciphertext === again.sizes.ciphertext && once.sizes.sharedSecret === 32 && once.fips === 203, of: once.sizes.sharedSecret, tool: 'seal' as const, arguments: { kem } }
   })
   const dsaRows = (['ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87'] as const).map((sign) => {
     const once = planSignature(digest, sign, config), again = planSignature(sha('nist'), sign, config)
-    return { id: `fips-204-${sign}`, standard: 'FIPS 204', reverse: `${sign} plan recomputes over the same digest`, returns: once.algorithm === again.algorithm && once.message === again.message && once.message === digest && once.fips === 204, of: once.sizes.signature, tool: 'seal' as const, arguments: { text: 'nist', sign } }
+    return { id: `fips-204-${sign}`, standard: 'FIPS 204', reverse: proseFill(PROSE.quantumProcessingCryptoIndex_reverse73, sign), returns: once.algorithm === again.algorithm && once.message === again.message && once.message === digest && once.fips === 204, of: once.sizes.signature, tool: 'seal' as const, arguments: { text: 'nist', sign } }
   })
   const slhRows = (['SLH-DSA-SHA2-128s', 'SLH-DSA-SHA2-128f', 'SLH-DSA-SHA2-192s', 'SLH-DSA-SHA2-256s'] as const).map((slh) => {
     const once = planSlhDsa(slh), again = planSlhDsa(slh)
-    return { id: `fips-205-${slh}`, standard: 'FIPS 205', reverse: `${slh} plan recomputes the same sizes`, returns: once.algorithm === again.algorithm && once.sizes.signature === again.sizes.signature && once.fips === 205, of: once.sizes.signature, tool: 'seal' as const, arguments: { slh } }
+    return { id: `fips-205-${slh}`, standard: 'FIPS 205', reverse: proseFill(PROSE.quantumProcessingCryptoIndex_reverse72, slh), returns: once.algorithm === again.algorithm && once.sizes.signature === again.sizes.signature && once.fips === 205, of: once.sizes.signature, tool: 'seal' as const, arguments: { slh } }
   })
   const pbkdf = { password: 'password', salt: 'salt', iterations: 1, length: 32 }
   const derivedOnce = derivePbkdf2(pbkdf) as { derived: string }, derivedAgain = derivePbkdf2(pbkdf) as { derived: string }
@@ -777,17 +778,17 @@ export const nistScenariosReverse = (config: CryptoConfig, hosts: readonly strin
   // CERN first, then the remaining open APIs in reverse of the NIST-first order
   const attestOrder = [openApis.find((a) => a.id === 'cern-opendata')!, ...[...openApis].filter((a) => a.id !== 'cern-opendata').reverse()]
   const local: NistReverseRow[] = [
-    { id: 'fips-180-4', standard: 'FIPS 180-4', reverse: 'digests recompute the same hex', returns: fipsBack, of: 3, tool: 'seal', arguments: { text: 'nist', fips180: true } },
-    { id: 'fips-186-5-ecdsa', standard: 'FIPS 186-5', reverse: 'ECDSA plan recomputes over the same digest', returns: ecdsaBack, of: ecdsaOnce.sizes.signature, tool: 'seal', arguments: { text: 'nist', ecdsa: true } },
-    { id: 'fips-202-sha3', standard: 'FIPS 202', reverse: 'SHA-3 digests recompute the same hex', returns: sha3Back, of: 2, tool: 'seal', arguments: { text: 'nist', sha3: true } },
-    { id: 'fips-202-shake', standard: 'FIPS 202', reverse: 'SHAKE digests recompute the same hex', returns: shakeBack, of: 2, tool: 'seal', arguments: { text: 'nist', shake: true } },
+    { id: 'fips-180-4', standard: 'FIPS 180-4', reverse: PROSE.quantumProcessingCryptoIndex_reverse74, returns: fipsBack, of: 3, tool: 'seal', arguments: { text: 'nist', fips180: true } },
+    { id: 'fips-186-5-ecdsa', standard: 'FIPS 186-5', reverse: PROSE.quantumProcessingCryptoIndex_reverse75, returns: ecdsaBack, of: ecdsaOnce.sizes.signature, tool: 'seal', arguments: { text: 'nist', ecdsa: true } },
+    { id: 'fips-202-sha3', standard: 'FIPS 202', reverse: PROSE.quantumProcessingCryptoIndex_reverse76, returns: sha3Back, of: 2, tool: 'seal', arguments: { text: 'nist', sha3: true } },
+    { id: 'fips-202-shake', standard: 'FIPS 202', reverse: PROSE.quantumProcessingCryptoIndex_reverse77, returns: shakeBack, of: 2, tool: 'seal', arguments: { text: 'nist', shake: true } },
     ...kemRows, ...dsaRows, ...slhRows,
-    { id: 'sp-800-132-pbkdf2', standard: 'NIST SP 800-132', reverse: 'PBKDF2 recomputes the one-iteration vector', returns: pbkdfBack, of: 32, tool: 'seal', arguments: { pbkdf2: pbkdf } },
-    { id: 'sp-800-38d-aes-gcm', standard: 'NIST SP 800-38D', reverse: 'AES-256-GCM opens the text it sealed', returns: aeadBack, of: AES_GCM_VECTOR.text.length, tool: 'seal', arguments: { aead: { cipher: AES_GCM_VECTOR.cipher, key: AES_GCM_VECTOR.key, nonce: AES_GCM_VECTOR.nonce, aad: AES_GCM_VECTOR.aad, open: { ciphertext: sealed.ciphertext, tag: sealed.tag } } } },
-    { id: 'rfc-6962-merkle', standard: 'RFC 6962', reverse: 'inclusion proof verifies against the root', returns: merkleBack, of: proof.proof.length, tool: 'seal', arguments: { merkle: { leaf: 'b', proof: proof.proof, root: proof.root } } },
-    { id: 'codata', standard: 'CODATA', reverse: 'CODATA is named again and not fetched', returns: true, tool: 'seal', arguments: { constants: true }, request: { id: 'codata', method: 'GET', url: CODATA_URL, accept: 'text/plain' } },
-    { id: 'cern-opendata', standard: 'CERN Open Data', reverse: 'CERN Open Data is the pivot and is not fetched', returns: true, tool: 'attest', arguments: { op: 'experience', cern: true }, request: { id: 'cern-opendata', method: 'GET', url: CERN_OPEN_DATA, accept: 'application/json' } },
-    { id: 'attest-plan', standard: 'CERN attest', reverse: `attest plans every open API and the live certificate of ${host}`, returns: true, tool: 'attest', arguments: { op: 'plan', hosts: [...hosts] } },
+    { id: 'sp-800-132-pbkdf2', standard: 'NIST SP 800-132', reverse: PROSE.quantumProcessingCryptoIndex_reverse78, returns: pbkdfBack, of: 32, tool: 'seal', arguments: { pbkdf2: pbkdf } },
+    { id: 'sp-800-38d-aes-gcm', standard: 'NIST SP 800-38D', reverse: PROSE.quantumProcessingCryptoIndex_reverse79, returns: aeadBack, of: AES_GCM_VECTOR.text.length, tool: 'seal', arguments: { aead: { cipher: AES_GCM_VECTOR.cipher, key: AES_GCM_VECTOR.key, nonce: AES_GCM_VECTOR.nonce, aad: AES_GCM_VECTOR.aad, open: { ciphertext: sealed.ciphertext, tag: sealed.tag } } } },
+    { id: 'rfc-6962-merkle', standard: 'RFC 6962', reverse: PROSE.quantumProcessingCryptoIndex_reverse80, returns: merkleBack, of: proof.proof.length, tool: 'seal', arguments: { merkle: { leaf: 'b', proof: proof.proof, root: proof.root } } },
+    { id: 'codata', standard: 'CODATA', reverse: PROSE.quantumProcessingCryptoIndex_reverse81, returns: true, tool: 'seal', arguments: { constants: true }, request: { id: 'codata', method: 'GET', url: CODATA_URL, accept: 'text/plain' } },
+    { id: 'cern-opendata', standard: 'CERN Open Data', reverse: PROSE.quantumProcessingCryptoIndex_reverse82, returns: true, tool: 'attest', arguments: { op: 'experience', cern: true }, request: { id: 'cern-opendata', method: 'GET', url: CERN_OPEN_DATA, accept: 'application/json' } },
+    { id: 'attest-plan', standard: 'CERN attest', reverse: proseFill(PROSE.quantumProcessingCryptoIndex_says70, host), returns: true, tool: 'attest', arguments: { op: 'plan', hosts: [...hosts] } },
     ...attestOrder.filter((a) => a.id !== 'cern-opendata').map((a) => ({
       id: a.id, standard: a.name, reverse: a.measured, returns: true as const, tool: 'attest' as const, arguments: { op: 'read' as const },
       request: { id: a.id, method: 'GET' as const, url: a.url, accept: a.id === 'csrc-pqc' ? 'text/html' : 'application/json' },
@@ -809,8 +810,8 @@ export const nistScenariosReverse = (config: CryptoConfig, hosts: readonly strin
     requests, liveCertificates, fetched: false as const, written: false as const, holds,
     theorems: ['textbook_sha256_fips_180_4', 'textbook_sha3_fips_202', 'textbook_pqc_standards_three', 'textbook_tree_size_positive', 'textbook_doi_well_formed', 'textbook_coil_green'] as const,
     says: holds
-      ? `${scenarios.length} NIST scenario(s) reversed via CERN (${host}): AES opens what it sealed, Merkle verifies, digests and plans recompute, and ${requests.length} request(s) lead with CERN Open Data. Nothing is fetched.`
-      : `a NIST scenario did not reverse via CERN: ${scenarios.filter((s) => !s.returns).map((s) => s.id).join(', ') || 'none'}`,
+      ? proseFill(PROSE.quantumProcessingCryptoIndex_s83, scenarios.length, host, requests.length)
+      : proseFill(PROSE.quantumProcessingCryptoIndex_s84, scenarios.filter((s) => !s.returns).map((s) => s.id).join(', ') || 'none'),
   }
 }
 export type AttestAnswer = { id: string; text: string; status?: number }
@@ -835,11 +836,11 @@ export const attestAnswers = (answers: readonly AttestAnswer[], now = 0): { sour
       const prevUri = p.uri.replace(/\/pulse\/\d+$/, `/pulse/${p.pulseIndex - 1}`)
       if (prev === undefined) followUps.push({ id: 'nist-beacon-previous', url: prevUri, accept: 'application/json' })
       else if (prev?.pulse) { const q = prev.pulse as typeof p; const previous = (p.listValues ?? []).find((x) => x.type === 'previous')?.value
-        verdicts.push(v('textbook_chain_index_steps', p.pulseIndex === q.pulseIndex + 1, `pulse ${p.pulseIndex} follows ${q.pulseIndex}`), v('textbook_beacon_period', Date.parse(p.timeStamp) - Date.parse(q.timeStamp) === p.period, `${Date.parse(p.timeStamp) - Date.parse(q.timeStamp)} ms between the pulses`), v('textbook_chain_links_by_output', previous === q.outputValue, 'the last pulse\'s previous value is the previous pulse\'s output'), v('textbook_precommitment_is_sha512', hex(sha512(new Uint8Array((p.localRandomValue.match(/../g) ?? []).map((x) => parseInt(x, 16))))).toUpperCase() === q.precommitmentValue.toUpperCase(), 'SHA-512 of the last local random value is the previous precommitment')) }
+        verdicts.push(v('textbook_chain_index_steps', p.pulseIndex === q.pulseIndex + 1, `pulse ${p.pulseIndex} follows ${q.pulseIndex}`), v('textbook_beacon_period', Date.parse(p.timeStamp) - Date.parse(q.timeStamp) === p.period, `${Date.parse(p.timeStamp) - Date.parse(q.timeStamp)} ms between the pulses`), v('textbook_chain_links_by_output', previous === q.outputValue, PROSE.quantumProcessingCryptoIndex_s85), v('textbook_precommitment_is_sha512', hex(sha512(new Uint8Array((p.localRandomValue.match(/../g) ?? []).map((x) => parseInt(x, 16))))).toUpperCase() === q.precommitmentValue.toUpperCase(), PROSE.quantumProcessingCryptoIndex_s86)) }
       src('nist-beacon', { chainIndex: p.chainIndex, pulseIndex: p.pulseIndex, timeStamp: p.timeStamp, previous: prev?.pulse ? (prev.pulse as { pulseIndex: number }).pulseIndex : null }, verdicts) } }
   // CT: the signed tree head
   { const j = json('ct-sth') as { tree_size?: number; timestamp?: number; sha256_root_hash?: string } | null | undefined
-    if (j === undefined) src('ct-sth', {}, [], 'absent'); else if (!j || typeof j.tree_size !== 'number') src('ct-sth', {}, [], 'unreadable'); else src('ct-sth', { treeSize: j.tree_size, timestamp: j.timestamp }, [v('textbook_hash_bits', b64len(j.sha256_root_hash ?? '') === 32, `root hash ${b64len(j.sha256_root_hash ?? '')} bytes`), v('textbook_tree_size_positive', j.tree_size > 0, `tree size ${j.tree_size}`), ...(now ? [v('textbook_dates_ordered', (j.timestamp ?? 0) <= now, 'the tree head is not from the future')] : [])]) }
+    if (j === undefined) src('ct-sth', {}, [], 'absent'); else if (!j || typeof j.tree_size !== 'number') src('ct-sth', {}, [], 'unreadable'); else src('ct-sth', { treeSize: j.tree_size, timestamp: j.timestamp }, [v('textbook_hash_bits', b64len(j.sha256_root_hash ?? '') === 32, `root hash ${b64len(j.sha256_root_hash ?? '')} bytes`), v('textbook_tree_size_positive', j.tree_size > 0, `tree size ${j.tree_size}`), ...(now ? [v('textbook_dates_ordered', (j.timestamp ?? 0) <= now, PROSE.quantumProcessingCryptoIndex_s87)] : [])]) }
   // ACME: the five resources of RFC 8555
   { const j = json('acme-directory') as Record<string, unknown> | null | undefined; const need = ['newNonce', 'newAccount', 'newOrder', 'revokeCert', 'keyChange']
     if (j === undefined) src('acme-directory', {}, [], 'absent'); else if (!j) src('acme-directory', {}, [], 'unreadable'); else src('acme-directory', { resources: need.filter((k) => k in j) }, [v('textbook_acme_resources_five', need.every((k) => typeof j[k] === 'string'), `${need.filter((k) => k in j).length} of the five resources`)]) }
@@ -862,7 +863,7 @@ export const attestAnswers = (answers: readonly AttestAnswer[], now = 0): { sour
     for (const e of entries) { const nb = ms(e.notBefore) ?? 0, na = ms(e.notAfter) ?? 0; verdicts.push(v('textbook_dates_ordered', nb < na, `${e.host}: ${e.notBefore} before ${e.notAfter}`), v('textbook_cert_validity_bound', na - nb <= 398 * dayMs, `${e.host}: ${Math.round((na - nb) / dayMs)} days (≤ 398)`)); if (now && e.from === 'tls-live') verdicts.push(v('textbook_now_within_validity', nb <= now && now <= na, `${e.host}: now within the validity`)) }
     if (entries.some((e) => e.from === 'tls-live')) src('tls-live', { hosts: entries.filter((e) => e.from === 'tls-live').map((e) => `${e.host} (${e.issuer})`) }, verdicts.filter((x) => entries.some((e) => x.says.startsWith(e.host) && e.from === 'tls-live'))); if (crt && Array.isArray(crt)) sources['crt-sh']!.verdicts = verdicts.filter((x) => !sources['tls-live']?.verdicts.includes(x)) }
   // CSRC: the three standards named
-  { const a = byId.get('csrc-pqc'); if (!a) src('csrc-pqc', {}, [], 'absent'); else src('csrc-pqc', { named: ['FIPS 203', 'FIPS 204', 'FIPS 205'].filter((f) => a.text.includes(f)) }, [v('textbook_pqc_standards_three', ['FIPS 203', 'FIPS 204', 'FIPS 205'].every((f) => a.text.includes(f)), 'FIPS 203, 204 and 205 named on the page')]) }
+  { const a = byId.get('csrc-pqc'); if (!a) src('csrc-pqc', {}, [], 'absent'); else src('csrc-pqc', { named: ['FIPS 203', 'FIPS 204', 'FIPS 205'].filter((f) => a.text.includes(f)) }, [v('textbook_pqc_standards_three', ['FIPS 203', 'FIPS 204', 'FIPS 205'].every((f) => a.text.includes(f)), PROSE.quantumProcessingCryptoIndex_s88)]) }
   const all = Object.entries(sources).flatMap(([id, x]) => x.verdicts.map((y) => ({ source: id, ...y })))
   const byTheorem: Record<string, { passed: number; failed: number }> = {}
   for (const x of all) { byTheorem[x.theorem] = byTheorem[x.theorem] ?? { passed: 0, failed: 0 }; if (x.passed) byTheorem[x.theorem]!.passed += 1; else byTheorem[x.theorem]!.failed += 1 }
@@ -876,7 +877,7 @@ export const CERN = JSON.stringify({ hits: { total: 5566, hits: [{ id: '5209', m
 const NIST_OPEN_DATA = 'https://data.nist.gov/rmm/records?page=0&size=5'
 /** NIST Open Data, read as the client hands the body: each record addressed by a sealed UUID, its DOI well formed when it names one. Nothing is fetched. */
 export const nistOpenData = (raw: unknown = true) => {
-  if (raw === true) return { phase: 'requests' as const, source: 'nist-opendata' as const, fetched: false as const, written: false as const, request: { id: 'nist-opendata' as const, method: 'GET' as const, url: NIST_OPEN_DATA, accept: 'application/json' as const }, tools: ['kem', 'slh', 'ed25519', 'ecdsa', 'shake'] as const, says: 'NIST Open Data is asked at data.nist.gov. Nothing is fetched. Hand the body back as nist.' }
+  if (raw === true) return { phase: 'requests' as const, source: 'nist-opendata' as const, fetched: false as const, written: false as const, request: { id: 'nist-opendata' as const, method: 'GET' as const, url: NIST_OPEN_DATA, accept: 'application/json' as const }, tools: ['kem', 'slh', 'ed25519', 'ecdsa', 'shake'] as const, says: PROSE.quantumProcessingCryptoIndex_says89 }
   type Body = { ResultCount?: number; ResultData?: { title?: unknown; doi?: unknown }[] }
   let body: Body | null = null
   if (typeof raw === 'string') { try { body = JSON.parse(raw) as Body } catch { body = null } }
@@ -893,14 +894,14 @@ export const nistOpenData = (raw: unknown = true) => {
   const total = typeof body?.ResultCount === 'number' ? body.ResultCount : rows.length
   const withDoi = records.filter((row) => row.doiHolds !== null)
   const holds = records.length > 0 && total >= records.length && records.every((row) => row.sealed && row.doiHolds !== false) && withDoi.some((row) => row.doiHolds === true)
-  return { phase: 'experience' as const, source: 'nist-opendata' as const, fetched: false as const, written: false as const, total, records: records.length, dois: withDoi.length, rows: records, holds, theorems: ['textbook_seal_and_content_decided'] as const, says: holds ? `${records.length} NIST Open Data record(s), ${withDoi.length} with a DOI, each addressed by a sealed UUID.` : 'a NIST Open Data record did not hold its DOI or its seal' }
+  return { phase: 'experience' as const, source: 'nist-opendata' as const, fetched: false as const, written: false as const, total, records: records.length, dois: withDoi.length, rows: records, holds, theorems: ['textbook_seal_and_content_decided'] as const, says: holds ? proseFill(PROSE.quantumProcessingCryptoIndex_s90, records.length, withDoi.length) : PROSE.quantumProcessingCryptoIndex_s91 }
 }
 
 /** CERN Open Data, read as the client hands the body: each hit addressed by a sealed UUID, its DOI well formed when it names one. Nothing is fetched. */
 export const cernOpenData = (raw: unknown = true, config?: CryptoConfig) => {
   if (raw === true) {
-    if (!config) throw new Error('cernOpenData requests need crypto config from payload { cryptoConfig } or tenants.settings.arguments')
-    return { phase: 'requests' as const, source: 'cern-opendata' as const, fetched: false as const, written: false as const, request: { id: 'cern-opendata' as const, method: 'GET' as const, url: cfgAttest(config, 'cern-opendata').url, accept: 'application/json' as const }, tools: ['kem', 'slh', 'ed25519', 'ecdsa', 'shake'] as const, says: 'CERN Open Data is asked at opendata.cern.ch. Nothing is fetched. Hand the body back as cern.' }
+    if (!config) throw new Error(PROSE.quantumProcessingCryptoIndex_s92)
+    return { phase: 'requests' as const, source: 'cern-opendata' as const, fetched: false as const, written: false as const, request: { id: 'cern-opendata' as const, method: 'GET' as const, url: cfgAttest(config, 'cern-opendata').url, accept: 'application/json' as const }, tools: ['kem', 'slh', 'ed25519', 'ecdsa', 'shake'] as const, says: PROSE.quantumProcessingCryptoIndex_says93 }
   }
   type Body = { hits?: { total?: number; hits?: { id?: unknown; metadata?: { title?: unknown; relations?: { doi?: unknown }[] } }[] } }
   let body: Body | null = null
@@ -919,6 +920,6 @@ export const cernOpenData = (raw: unknown = true, config?: CryptoConfig) => {
   const total = typeof body?.hits?.total === 'number' ? body.hits.total : rows.length
   const withDoi = records.filter((row) => row.doiHolds !== null)
   const holds = records.length > 0 && total >= records.length && records.every((row) => row.sealed && row.doiHolds !== false) && withDoi.some((row) => row.doiHolds === true)
-  return { phase: 'experience' as const, source: 'cern-opendata' as const, fetched: false as const, written: false as const, total, records: records.length, dois: withDoi.length, rows: records, holds, theorems: ['textbook_seal_and_content_decided'] as const, says: holds ? `${records.length} CERN Open Data record(s), ${withDoi.length} with a DOI, each addressed by a sealed UUID.` : 'a CERN Open Data record did not hold its DOI or its seal' }
+  return { phase: 'experience' as const, source: 'cern-opendata' as const, fetched: false as const, written: false as const, total, records: records.length, dois: withDoi.length, rows: records, holds, theorems: ['textbook_seal_and_content_decided'] as const, says: holds ? proseFill(PROSE.quantumProcessingCryptoIndex_s94, records.length, withDoi.length) : PROSE.quantumProcessingCryptoIndex_s95 }
 }
 

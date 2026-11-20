@@ -1,15 +1,16 @@
 // Game seeds. The collision framework is collisions.ts, verified through CERN, NIST and these seeds.
 // Each seed is a website pages document: draft, default hero, one content block.
 
+import { PROSE } from '../processing/prose-index.ts'
 import { coins, seal } from '../uuid/index.ts'
 import { findArgs, pageData, writeArgs } from '../payload/index.ts'
 import { accountBytes } from '../processing/toolboxes/billing.ts'
 import { asset, loadable } from './unreal/index.ts'
 
 const LINES = [
-  { name: 'chess', says: 'the chess players are the players of every other game' },
-  { name: 'tarro', says: 'the original tarot is 56 suit cards and 22 trumps' },
-  { name: 'unreal', says: 'a game seed is a glTF 2.0 asset Unreal loads when it requires none of the six extensions' },
+  { name: 'chess', says: PROSE.quantumEngineIndex_says1 },
+  { name: 'tarro', says: PROSE.quantumEngineIndex_says2 },
+  { name: 'unreal', says: PROSE.quantumEngineIndex_says3 },
 ] as const
 
 const coinOf = (text: string) => { const booked = coins([text]); const address = booked.coins[0] ?? null; return { address, sealed: !!address && seal(address).valid && booked.sealed } }

@@ -1,6 +1,7 @@
 // Payload seeds, one ISO wave and then the next. A quantum wave is a clause of ISO/IEC 4879:2024.
 // Each wave discovers its own pages and improves the following wave. CI and CD are pages of the last wave.
 // A program is the ZFS object of its handle: eight nibble levels, depth 7.
+import { PROSE, proseFill } from '../processing/prose-index.ts'
 import { place } from '../fs/index.ts'
 import { leadResearch } from '../processing/discovery.ts'
 import { pageSeed } from '../processing/page-seed.ts'
@@ -18,13 +19,13 @@ export const STANDARD_HZ = 440
 const CI_WORKFLOWS = ['pre-commit', 'commit-msg', 'pre-push', 'post-commit', 'prepare-commit-msg', 'ci', 'pre-deploy'] as const
 
 const CHECKOUT = 'actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5'
-const PNPM = 'pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4'
-const NODE = 'actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5'
+const PNPM = PROSE.quantumPayloadWaves_s1
+const NODE = PROSE.quantumPayloadWaves_s2
 
 export const a432Drift = (stated: number) => {
   const computes = KEY
   const sure = stated !== computes
-  const because = `the standard still states ${stated} Hz. the quantum computation is ${computes} Hz. an updated standard would already state ${computes}`
+  const because = proseFill(PROSE.quantumPayloadWaves_s3, stated, computes, computes)
   return { stated, computes, sure, novel: sure, because, harmonics: [...HARMONICS], voice: 'author' as const, tree: false as const }
 }
 
@@ -68,7 +69,7 @@ export const seedWaves = (examples: readonly string[] = []) => {
   const names = ['home', 'standards', ...sections, 'cicd']
   const improves = (name: string) => names[(names.indexOf(name) + 1) % names.length]!
   const requests = discovery.requestList
-  const homeText = `The page at / is this page. ISO/IEC 4879:2024 is computed by its clauses, and each clause improves the next. CI and CD are Payload pages. A program is the object the filesystem places, eight levels deep.`
+  const homeText = PROSE.quantumPayloadWaves_s4
   const homeProgram = programWays(homeText)
   const home = {
     name: 'home',
@@ -78,7 +79,7 @@ export const seedWaves = (examples: readonly string[] = []) => {
     compute: homeProgram,
     pages: [
       publish(pageSeed('home', `${homeText}\nThe program ${homeProgram.handle} is at ${homeProgram.path}.`)),
-      pageSeed('nil uuid', 'The nil UUID is 00000000-0000-0000-0000-000000000000. Every bit is zero. It is saved at src/quantum/uuid/programs/0/0/0/0/0/0/0/0.'),
+      pageSeed('nil uuid', PROSE.quantumPayloadWaves_s5),
     ],
   }
   const standards = {
@@ -89,9 +90,9 @@ export const seedWaves = (examples: readonly string[] = []) => {
     compute: programWays(ISO_DIMENSIONS.join('\n')),
     pages: [
       ...ISO_DIMENSIONS.map((dimension) => pageSeed(dimension, dimension === 'ISO 16'
-        ? `${drift.because} The harmonics are ${drift.harmonics.join(', ')}. This wave improves ${improves('standards')}.`
-        : `${dimension} is processed by its textbook. This wave improves ${improves('standards')}.`)),
-      pageSeed('A432 drift', `${drift.because}\nThe harmonics are ${drift.harmonics.join(', ')}. The tree does not restate the author's record.`),
+        ? proseFill(PROSE.quantumPayloadWaves_s6, drift.because, drift.harmonics.join(', '), improves('standards'))
+        : proseFill(PROSE.quantumPayloadWaves_s7, dimension, improves('standards')))),
+      pageSeed('A432 drift', proseFill(PROSE.quantumPayloadWaves_s8, drift.because, drift.harmonics.join(', '))),
       pageSeed('A432 research', `Nothing is fetched here.\n${requests.map((row) => `${row.method} ${row.url}`).join('\n')}\nExamples: ${examples.length ? examples.join(', ') : 'the standards above'}.`),
     ],
   }
@@ -106,8 +107,8 @@ export const seedWaves = (examples: readonly string[] = []) => {
       discovered: terms.length,
       compute,
       pages: [
-        ...terms.map((term) => pageSeed(`${term.clause} ${term.name}`, `${term.standard}, ${term.clause} ${term.name}. This wave improves ${improves(section)}. The program ${compute.handle} computes in one step at depth 1.`)),
-        pageSeed(`program ${section}`, `The program ${compute.handle} is the page at ${compute.path}. ${compute.chosen} takes ${compute.steps} step. all-handles takes 256. bit-folders takes ${256 * 8}.`),
+        ...terms.map((term) => pageSeed(`${term.clause} ${term.name}`, proseFill(PROSE.quantumPayloadWaves_s9, term.standard, term.clause, term.name, improves(section), compute.handle))),
+        pageSeed(`program ${section}`, proseFill(PROSE.quantumPayloadWaves_s10, compute.handle, compute.path, compute.chosen, compute.steps, 256 * 8)),
       ],
     }
   })
@@ -120,8 +121,8 @@ export const seedWaves = (examples: readonly string[] = []) => {
     discovered: CI_WORKFLOWS.length + DEPLOY_STAGES.length,
     compute: cicdProgram,
     pages: [
-      ...CI_WORKFLOWS.map((name) => pageSeed(`ci ${name}`, `The workflow ${name} is a Payload page. The runner walks the steps Payload names and decides nothing itself. This wave improves ${improves('cicd')}.`)),
-      ...DEPLOY_STAGES.map((stage) => pageSeed(`deploy ${stage.id}`, `${stage.says}. The runner executes \`${stage.run}\`. The program ${cicdProgram.handle} is at ${cicdProgram.path}.`)),
+      ...CI_WORKFLOWS.map((name) => pageSeed(`ci ${name}`, proseFill(PROSE.quantumPayloadWaves_s11, name, improves('cicd')))),
+      ...DEPLOY_STAGES.map((stage) => pageSeed(`deploy ${stage.id}`, proseFill(PROSE.quantumPayloadWaves_s12, stage.says, stage.run, cicdProgram.handle, cicdProgram.path))),
     ],
   }
   return [home, standards, ...quantum, cicd]

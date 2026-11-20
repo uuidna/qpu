@@ -3,6 +3,7 @@
 // coin's possibilities are the ones navigate computes now. Folding the board is σ₇ on file and rank, and each meeting
 // multiplies to one product.
 
+import { PROSE, proseFill } from '../../processing/prose-index.ts'
 import { add, div, mul, natSub } from '../calculator/index.ts'
 import { channel, coins, navigate } from '../../uuid/index.ts'
 
@@ -145,7 +146,7 @@ const recognise = (formulas: readonly Formula[], doors: { nist?: NistPulse | nul
     roster: teams,
     meetings: against,
     possibilities: players.map((p) => ({ player: p.player, formula: p.name, side: sideOf(p.seed), square: p.square, byte: byteAt(p.square), neighbours: p.possibilities.neighbours.length, rows: p.possibilities.stream.rows.length })),
-    says: `NIST and CERN play by the clay rules: a coin below seed 5 is NIST and the coin at 10 minus that seed is CERN, they meet only by a chess move, and the fold is the reply. ${scenarios.length} scenarios, ${players.filter((p) => sideOf(p.seed) === 'nist').length} NIST coins and ${players.filter((p) => sideOf(p.seed) === 'cern').length} CERN coins, on the beacon board of ${door.squares} squares, each meeting one product`,
+    says: proseFill(PROSE.quantumAppsChessIndex_says1, scenarios.length, players.filter((p) => sideOf(p.seed) === 'nist').length, players.filter((p) => sideOf(p.seed) === 'cern').length, door.squares),
   }
 }
 

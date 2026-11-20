@@ -3,6 +3,7 @@
 // that create or check its resources, the plan it needs, and its missing links — a step no MCP API or migration tool covers. Every one of
 // the combinations is composed from its mixed-radix index (composition, textbook_mixed_radix) into one workflow; the whole space
 // is counted: the combinations that port completely and the missing links that block the rest, each a lead (textbook_ports_cover). Pure.
+import { PROSE, proseFill } from './prose-index.ts'
 import { composition, compositions } from '../uuid/index.ts'
 import type { Lead } from './leads.ts'
 import { STORAGE } from '../net/index.ts'
@@ -33,7 +34,7 @@ export const listPorts = () => {
   const count = Number(compositions([...PORT_RADICES]))
   const all = Array.from({ length: count }, (_, i) => portAt(i))
   const links = new Map<string, number[]>(); for (const p of all) for (const m of p.missing) links.set(m, [...(links.get(m) ?? []), p.index])
-  const leads: Lead[] = [...links.entries()].map(([m, at]) => ({ id: `port-${m.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '')}`, source: 'the Cloudflare port of the Payload adapters', statement: `${m} (blocks ${at.length} of ${count} combinations)`, status: 'open' as const, reason: 'a step of the port no Cloudflare MCP API or migration tool covers yet' }))
+  const leads: Lead[] = [...links.entries()].map(([m, at]) => ({ id: `port-${m.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '')}`, source: PROSE.quantumProcessingPort_source1, statement: `${m} (blocks ${at.length} of ${count} combinations)`, status: 'open' as const, reason: PROSE.quantumProcessingPort_reason2 }))
   const complete = all.filter((p) => p.complete)
-  return { combinations: count, radices: PORT_RADICES, complete: complete.length, blocked: count - complete.length, completeOnes: complete.map((p) => `${p.database} + ${p.storage} + ${p.email}`), missingLinks: links.size, byPlan: { free: all.filter((p) => p.plan === 'free').length, paid: all.filter((p) => p.plan === 'paid').length }, mcpTools: [...new Set(all.flatMap((p) => p.mcp.map((c) => c.tool)))].sort(), writes: [...new Set(all.flatMap((p) => p.mcp.filter((c) => c.write).map((c) => c.tool)))].sort(), leads, theorems: ['textbook_adapter_combinations', 'textbook_mixed_radix', 'textbook_ports_cover'], says: `${count} combinations ported onto Cloudflare: ${complete.length} complete, ${count - complete.length} blocked by ${links.size} missing link(s), each a lead` }
+  return { combinations: count, radices: PORT_RADICES, complete: complete.length, blocked: count - complete.length, completeOnes: complete.map((p) => `${p.database} + ${p.storage} + ${p.email}`), missingLinks: links.size, byPlan: { free: all.filter((p) => p.plan === 'free').length, paid: all.filter((p) => p.plan === 'paid').length }, mcpTools: [...new Set(all.flatMap((p) => p.mcp.map((c) => c.tool)))].sort(), writes: [...new Set(all.flatMap((p) => p.mcp.filter((c) => c.write).map((c) => c.tool)))].sort(), leads, theorems: ['textbook_adapter_combinations', 'textbook_mixed_radix', 'textbook_ports_cover'], says: proseFill(PROSE.quantumProcessingPort_says3, count, complete.length, count - complete.length, links.size) }
 }

@@ -1,3 +1,4 @@
+import { CLAY_RELATIONS } from './clay-statements.ts'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
@@ -142,7 +143,7 @@ test('a drift wave runs in every Clay family and names the next family', () => {
   const waves = driftWaves()
   assert.equal(waves.holds, true)
   assert.equal(waves.families, 19)
-  assert.equal(waves.relationCount, 55)
+  assert.equal(waves.relationCount, CLAY_RELATIONS.length)
   assert.equal(waves.hz, 432)
   assert.equal(waves.rows[0]?.family, 'Annealing')
   assert.equal(waves.rows[0]?.next, 'Anyon')
@@ -172,7 +173,7 @@ test('a drift wave runs in every Clay family and names the next family', () => {
   assert.equal(clay?.rows?.[0]?.handle, '32b0168e')
   assert.equal(clay?.rows?.[0]?.algebra?.via, 'lean')
   assert.equal(clay?.rows?.[0]?.cross?.lean, true)
-  assert.equal(clay?.rows?.[0]?.cross?.module, 'Qpu.Program')
+  assert.equal(clay?.rows?.[0]?.cross?.module, 'Qpu.General.Program')
   assert.equal(clay?.rows?.[0]?.cross?.uuid, clay?.rows?.[0]?.address)
   assert.equal(clay?.rows?.[0]?.cross?.superpositions, 14)
   assert.equal(clay?.rows?.[0]?.cross?.verified, 14)
@@ -226,10 +227,10 @@ test('a drift wave runs in every Clay family and names the next family', () => {
   assert.equal(clay?.rows?.every((row: { walk: { places: number; returned: boolean; steps: { kept: boolean; params: { hz: number } }[] } }) => row.walk.places === 10 && row.walk.returned && row.walk.steps.every((place) => place.kept && place.params.hz === 432)), true)
   assert.equal(clay?.rows?.every((row: { solved: boolean; holds: boolean; file: boolean }) => row.solved === false && row.holds === true && row.file === true), true)
   assert.equal(new Set(clay?.rows?.map((row: { handle: string }) => row.handle)).size, 19)
-  assert.equal(clay?.lean, 'Qpu.Program')
-  const lean = readFileSync('src/quantum/processing/unit/lean/Qpu/Program.lean', 'utf8')
+  assert.equal(clay?.lean, 'Qpu.General.Program')
+  const lean = readFileSync('src/quantum/processing/unit/lean/Qpu/General/Program.lean', 'utf8')
   const root = readFileSync('src/quantum/processing/unit/lean/Qpu.lean', 'utf8')
-  assert.match(root, /import Qpu\.Program/)
+  assert.match(root, /import Qpu\.General\.Program/)
   for (const name of clay?.theorems ?? []) assert.match(lean, new RegExp(`theorem ${name}`))
   assert.match(lean, /def schema : List Nat := \[0, 1, 1, 1, 1, 0, 2, 2, 3, 1\]/)
   assert.match(lean, /rotN 1 schema = \[1, 1, 1, 1, 0, 2, 2, 3, 1, 0\]/)

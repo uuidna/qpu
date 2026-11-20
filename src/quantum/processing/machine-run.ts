@@ -5,6 +5,7 @@
 // file (`step <tool> <json>`) calling the handler as a library (the same code the door serves), each generator writing the path and text its
 // door answers, each process step the command the table names; a step past its budget is killed with its process group and recorded red; the
 // red steps are retried once after the generators ran; the receipt is the last line, `RECEIPT {json}`, the body of the machine's entry.
+import { PROSE, proseFill } from './prose-index.ts'
 import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readdirSync, readFileSync, readlinkSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
@@ -94,7 +95,7 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   balancerLoad(memory.read())
   const args = await resolveArgs(JSON.parse(argsJson), cwd, call)
   // e2e asks each host once before it replays a single example: a host that does not answer tools/list as JSON-RPC is named
-  if (tool === 'e2e') for (const url of new Set((args as { hosts?: string[] }).hosts ?? [])) { const ok = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream' }, body: '{"jsonrpc":"2.0","id":0,"method":"tools/list"}', signal: AbortSignal.timeout(20000) }).then((r) => /json|event-stream/.test(r.headers.get('content-type') ?? ''), () => false); if (!ok) { console.log(JSON.stringify({ error: `${url} does not answer tools/list as JSON-RPC; no example was replayed` })); process.exitCode = 1; return } }
+  if (tool === 'e2e') for (const url of new Set((args as { hosts?: string[] }).hosts ?? [])) { const ok = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: PROSE.quantumProcessingMachineRun_accept1 }, body: '{"jsonrpc":"2.0","id":0,"method":"tools/list"}', signal: AbortSignal.timeout(20000) }).then((r) => /json|event-stream/.test(r.headers.get('content-type') ?? ''), () => false); if (!ok) { console.log(JSON.stringify({ error: proseFill(PROSE.quantumProcessingMachineRun_error2, url) })); process.exitCode = 1; return } }
   const r = call(tool, args)
   if (r.error) { console.log(JSON.stringify({ error: r.error.message })); process.exitCode = 1; return }
   let s = r.result?.structuredContent ?? null
@@ -184,7 +185,7 @@ export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolea
   const last = Object.values(Object.fromEntries(receipt.steps.map((s) => [s.name, s])))
   receipt.green = last.filter((s) => s.status === 'green').length; receipt.red = last.filter((s) => s.status === 'red').length; receipt.skipped = last.filter((s) => s.status === 'skipped').length
   receipt.wallMs = clock() - wall0; receipt.sumMs = receipt.steps.reduce((n, s) => n + s.ms, 0); receipt.speedup = receipt.wallMs ? Number((receipt.sumMs / receipt.wallMs).toFixed(2)) : null
-  say(`next: ${receipt.green} green, ${receipt.red} red, ${receipt.skipped} skipped in ${(receipt.wallMs / 1000).toFixed(1)} s (${receipt.lanes} lanes, speedup ${receipt.speedup})`)
+  say(proseFill(PROSE.quantumProcessingMachineRun_s3, receipt.green, receipt.red, receipt.skipped, (receipt.wallMs / 1000).toFixed(1), receipt.lanes, receipt.speedup))
   console.log(`RECEIPT ${JSON.stringify(receipt)}`)
   return receipt
 }
@@ -263,5 +264,5 @@ if (process.argv[1] && SELF === fileURLToPath(new URL(process.argv[1], 'file://'
   else if (action === 'hook') process.exitCode = await runHook(rest[0] ?? '', rest.slice(1), process.cwd())
   else if (action === 'next') { const r = await runNext({ cwd: process.cwd(), offline: rest.includes('--offline'), fast: rest.includes('--fast'), generators: rest.includes('--generators') }); process.exitCode = r.red ? 1 : 0 }
   else if (action) { const r = await runMachine({ action, confirm: rest.includes('--confirm'), message: rest.includes('-m') ? rest[rest.indexOf('-m') + 1] : undefined, branch: rest.includes('--branch') ? rest[rest.indexOf('--branch') + 1] : undefined }, process.cwd()); console.log(JSON.stringify(r.answer)); process.exitCode = (r as { record?: { ok: boolean } }).record?.ok === false ? 1 : 0 }
-  else console.log(`${MACHINE_RUNNER}: step <tool> <json> [--write] | next [--offline] [--fast] [--generators] | hook <pre-commit|commit-msg|pre-push> [git's arguments] | ${MACHINE_ACTIONS.map((a) => a.id).join(' | ')}`)
+  else console.log(proseFill(PROSE.quantumProcessingMachineRun_s4, MACHINE_RUNNER, MACHINE_ACTIONS.map((a) => a.id).join(' | ')))
 }

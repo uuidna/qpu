@@ -1,31 +1,12 @@
 // The ISO deliverables the website MCP can import. No UUID graph: the addresses stay in the caller.
 // Each dimension is one row of iso_deliverables_metadata. The catalogue number is a field of that row. The English scope is that row's full scope.
 
+import { PROSE, proseFill } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
+import { ISO_DIMENSIONS } from './iso-index.ts'
 
-/** The ISO dimensions this tree already names. Quantum purity is gated on each of them. */
-export const ISO_DIMENSIONS = [
-  'ISO/IEC 4879:2024',
-  'ISO 80000-10',
-  'ISO/IEC 9834-8',
-  'ISO 22739:2024',
-  'ISO 23257:2022',
-  'ISO/TR 23455:2019',
-  'ISO 24165',
-  'ISO 20022',
-  'ISO 4217',
-  'ISO 8601',
-  'ISO 639-1',
-  'ISO 3166-1',
-  'ISO/IEC 19770',
-  'ISO 16',
-  'ISO 9001',
-  'ISO/IEC/IEEE 12207:2026',
-  'ISO/IEC/IEEE 42010:2022',
-  'ISO/IEC 25010:2023',
-  'ISO/IEC 25051:2014',
-  'ISO/IEC 27001:2022',
-] as const
+/** The ISO dimensions this tree names, as Lean lists them in Qpu.General.Iso. Quantum purity is gated on each of them. */
+export { ISO_DIMENSIONS }
 
 /**
  * Entropy: dictionary first, then the meaning is verified (ISO 80000-5).
@@ -98,7 +79,7 @@ export const isoEntropyOf = (W: number) => {
     holds: verified,
     says: verified
       ? `dictionary ${ISO_ENTROPY.dictionary.means}; verified ${ISO_ENTROPY.definition} with W = ${microstates}, S = ${S}`
-      : 'dictionary entropy not verified under ISO 80000-5',
+      : PROSE.quantumProcessingIsoDeliverables_s1,
   }
 }
 
@@ -183,17 +164,17 @@ export const isoResearch = () => ({
   standards: ['ISO 690', 'ISO 26324'] as const,
   source: 'doi' as const,
   requirements: [
-    { standard: 'ISO 690' as const, requires: 'a citation names its creator, its title, its date and its identifier' },
-    { standard: 'ISO 26324' as const, requires: 'the identifier of the work is a DOI' },
+    { standard: 'ISO 690' as const, requires: PROSE.quantumProcessingIsoDeliverables_requires2 },
+    { standard: 'ISO 26324' as const, requires: PROSE.quantumProcessingIsoDeliverables_requires3 },
   ],
   ecosystem: [
     { id: 'doi-org', url: 'https://doi.org', standard: 'ISO 26324' as const, does: 'the identifier resolves' },
-    { id: 'crossref', url: 'https://api.crossref.org', standard: 'ISO 690' as const, does: 'the citation elements of a registered work' },
-    { id: 'datacite', url: 'https://api.datacite.org', standard: 'ISO 690' as const, does: 'the citation elements and the related works' },
-    { id: 'zenodo', url: 'https://zenodo.org/api', standard: 'ISO 26324' as const, does: 'the record and its related identifiers' },
-    { id: 'openalex', url: 'https://api.openalex.org', standard: 'ISO 690' as const, does: 'the works that cite the DOI' },
+    { id: 'crossref', url: 'https://api.crossref.org', standard: 'ISO 690' as const, does: PROSE.quantumProcessingIsoDeliverables_does4 },
+    { id: 'datacite', url: 'https://api.datacite.org', standard: 'ISO 690' as const, does: PROSE.quantumProcessingIsoDeliverables_does5 },
+    { id: 'zenodo', url: 'https://zenodo.org/api', standard: 'ISO 26324' as const, does: PROSE.quantumProcessingIsoDeliverables_does6 },
+    { id: 'openalex', url: 'https://api.openalex.org', standard: 'ISO 690' as const, does: PROSE.quantumProcessingIsoDeliverables_does7 },
   ],
-  says: 'research and citations are asked of the DOI ecosystem: ISO 690 names the elements of a citation, ISO 26324 names the identifier',
+  says: PROSE.quantumProcessingIsoDeliverables_says8,
 })
 
 const isoPlain = (value: unknown): string => {
@@ -296,7 +277,7 @@ const PRODUCER_TRINITY_NAMES = Object.keys(PRODUCER_TRINITIES) as (keyof typeof 
 /** Eight combinations of NIST·CERN·Clay. Each on trinity unlocks its perspectives; the most effective unlocks every hidden one. */
 export const unlockHiddenPerspectives = (raw: unknown = true) => {
   if (raw !== true && !(raw && typeof raw === 'object' && !Array.isArray(raw))) {
-    throw new Error('trinity takes true or { bits?: 0..7 | { nist?, cern?, clay? } }')
+    throw new Error(PROSE.quantumProcessingIsoDeliverables_s9)
   }
   const asked = raw === true ? null : raw as { bits?: unknown; nist?: unknown; cern?: unknown; clay?: unknown }
   const bitOf = (name: keyof typeof PRODUCER_TRINITIES, index: number) => {
@@ -366,9 +347,9 @@ export const unlockHiddenPerspectives = (raw: unknown = true) => {
     holds,
     says: holds
       ? (active.most
-        ? `NIST·CERN·Clay most effective combination unlocks all ${HIDDEN_PERSPECTIVES.length} perspectives; ${space} combinations, one bit per trinity`
+        ? proseFill(PROSE.quantumProcessingIsoDeliverables_s10, HIDDEN_PERSPECTIVES.length, space)
         : `combination ${active.bits}: unlocked ${active.unlocked.join(', ') || 'none'}; still hidden: ${active.hidden.join(', ') || 'none'}`)
-      : 'NIST·CERN·Clay trinity did not unlock every hidden perspective',
+      : PROSE.quantumProcessingIsoDeliverables_s11,
   }
 }
 
@@ -380,7 +361,7 @@ export const unlockHiddenPerspectives = (raw: unknown = true) => {
  */
 export const extractIsoFromProducers = (raw: unknown = true) => {
   if (raw !== true && !(raw && typeof raw === 'object' && !Array.isArray(raw))) {
-    throw new Error('producers takes true or { answers?: { <url|id>: <text> } }')
+    throw new Error(PROSE.quantumProcessingIsoDeliverables_s12)
   }
   const answers = raw !== true && raw && typeof raw === 'object' && (raw as { answers?: unknown }).answers && typeof (raw as { answers: unknown }).answers === 'object'
     ? (raw as { answers: Record<string, unknown> }).answers
@@ -438,10 +419,10 @@ export const extractIsoFromProducers = (raw: unknown = true) => {
       verified,
       holds: answers === null ? planned : verified,
       says: answers === null
-        ? `plan: ${producer.name} produces ${dimensions.length} ISO dimensions via ${producer.sources.length} open source(s); hand answers back`
+        ? proseFill(PROSE.quantumProcessingIsoDeliverables_s13, producer.name, dimensions.length, producer.sources.length)
         : verified
-          ? `verified: ${producer.name} produces ${dimensions.length} ISO dimensions; extracted ${extracted.length} ISO ref(s)`
-          : `unanswered: re-hand answers for every ${producer.id} source`,
+          ? proseFill(PROSE.quantumProcessingIsoDeliverables_s14, producer.name, dimensions.length, extracted.length)
+          : proseFill(PROSE.quantumProcessingIsoDeliverables_s15, producer.id),
     }
   })
   const planned = rows.every((row) => row.planned)
@@ -470,8 +451,8 @@ export const extractIsoFromProducers = (raw: unknown = true) => {
     holds,
     says: holds
       ? (answers === null
-        ? `NIST and CERN as producers: ${dimensions.length} ISO standards; Clay completes the trinity — ${trinity.most.unlocked.length} perspectives unlocked across ${trinity.space} combinations; hand answers for ${requestList.length} open sources`
-        : `extracted ISO standards from NIST and CERN producing; Clay trinity unlocks all ${trinity.most.unlocked.length} perspectives`)
-      : 'NIST/CERN/Clay producer trinity did not hold — re-hand answers or check hidden perspectives',
+        ? proseFill(PROSE.quantumProcessingIsoDeliverables_s16, dimensions.length, trinity.most.unlocked.length, trinity.space, requestList.length)
+        : proseFill(PROSE.quantumProcessingIsoDeliverables_s17, trinity.most.unlocked.length))
+      : PROSE.quantumProcessingIsoDeliverables_s18,
   }
 }

@@ -9,6 +9,7 @@ import { THEOREMS } from './theorems-index.ts'
 import { linkAxioms } from './audit.ts'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
+const TEXTBOOK_LEAN_PATH = 'src/quantum/processing/unit/lean/Qpu/General/Textbook.lean'
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: every textbook axiom has a kernel-accepted QPU theorem linked to it. */
 test('every textbook axiom has a kernel-accepted QPU theorem linked to it', () => {
@@ -100,9 +101,29 @@ test('combinatorics microdata is what its inline docs state', () => {
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: every theorem sentence is a Lean doc comment that opens and closes once, whatever the prose holds. */
 test('every theorem sentence is a Lean doc comment that opens and closes once, whatever the prose holds', async () => {
-  const { TEXTBOOK_LEAN, escapeLeanDoc } = await import('./textbook-theorems.ts')
-  const docs = TEXTBOOK_LEAN().split('\n').filter((l) => l.startsWith('/-- '))
+  const { escapeLeanDoc } = await import('./textbook-theorems.ts')
+  const docs = readFileSync(join(process.cwd(), TEXTBOOK_LEAN_PATH), 'utf8').split('\n').filter((l) => l.startsWith('/-- '))
   assert.ok(docs.length > 0)
   for (const d of docs) { const body = d.slice(4, d.lastIndexOf(' -/')); assert.ok(!body.includes('-/') && !body.includes('/-'), d.slice(0, 80)) }
   assert.equal(escapeLeanDoc('a -/ b /- c'), 'a - / b / - c')
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the Lean file is the author of the textbook, and the index is what Lean read from it. */
+test('the Lean file is the author of the textbook, and the index is what Lean read from it', () => {
+  const source = readFileSync(join(process.cwd(), TEXTBOOK_LEAN_PATH), 'utf8')
+  const kernel = new Set(THEOREMS.map((t) => t.key))
+  assert.ok(TEXTBOOK_THEOREMS.length > 0)
+  assert.equal(new Set(TEXTBOOK_THEOREMS.map((t) => t.key)).size, TEXTBOOK_THEOREMS.length, 'every textbook theorem is written once')
+  // each row is a theorem the kernel accepted, and its text stands in the source as the row states it
+  assert.deepEqual(TEXTBOOK_THEOREMS.filter((t) => !kernel.has(t.key) || !source.includes(t.lean)).map((t) => t.key), [])
+  assert.deepEqual(TEXTBOOK_THEOREMS.filter((t) => t.example && !t.example.split('\n').every((line) => source.includes(line))).map((t) => t.key), [])
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the numbers Lean states are the numbers the data hold. */
+test('the numbers Lean states are the numbers the data hold', async () => {
+  const { MEASURED_THEOREMS } = await import('./textbook-measured.ts')
+  const written = new Map(TEXTBOOK_THEOREMS.map((t) => [t.key, t]))
+  assert.ok(MEASURED_THEOREMS.length > 0)
+  const differs = MEASURED_THEOREMS.filter((m) => { const t = written.get(m.key); return !t || t.lean !== m.lean || t.says !== m.says || (m.example !== undefined && t.example !== m.example) }).map((m) => m.key)
+  assert.deepEqual(differs, [], `the data moved away from what Lean states; change the theorem in ${TEXTBOOK_LEAN_PATH}: ${differs.join(', ')}`)
 })
