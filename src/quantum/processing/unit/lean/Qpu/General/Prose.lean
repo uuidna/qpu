@@ -49,6 +49,7 @@ import Qpu.General.Prose.QuantumProcessingQuantumVocabulary
 import Qpu.General.Prose.QuantumProcessingReadiness
 import Qpu.General.Prose.QuantumProcessingReferences
 import Qpu.General.Prose.QuantumProcessingRelated
+import Qpu.General.Prose.QuantumProcessingRelease
 import Qpu.General.Prose.QuantumProcessingRepositories
 import Qpu.General.Prose.QuantumProcessingScan
 import Qpu.General.Prose.QuantumProcessingScriptDoors

@@ -17,6 +17,7 @@ import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { developedFromField, markLeadDeveloped } from '../../hooks/markLeadDeveloped'
 import { populateAuthors } from './hooks/populateAuthors'
+import { publishRelease } from './hooks/publishRelease'
 import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
 
 import {
@@ -225,7 +226,7 @@ export const Posts: CollectionConfig = {
     developedFromField,
   ],
   hooks: {
-    afterChange: [revalidatePost, markLeadDeveloped('posts')],
+    afterChange: [revalidatePost, markLeadDeveloped('posts'), publishRelease],
     afterRead: [populateAuthors],
     afterDelete: [revalidateDelete],
   },
