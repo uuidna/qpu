@@ -1,5 +1,5 @@
-// The files the payload doors render from the Lean sources and the kernel's theorem index: BLUEPRINT.md and
-// clay-statements.ts. Run after Lean has written the theorem index, which they read. With --check nothing is written and a
+// clay-statements.ts, which the payload door renders from Qpu/General/Clay.lean (the Clay register's own generator).
+// Every other file that follows Lean is written by Lean itself: see the tools beside the Lean sources. Run after Lean has written the theorem index, which they read. With --check nothing is written and a
 // difference fails: Lean decides, the rendered files follow.
 import { PROSE } from '../quantum/processing/prose-index.ts'
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
@@ -15,7 +15,6 @@ const lean = Object.fromEntries(walk(root).map((file) => [file.slice(root.length
 
 const check = process.argv.includes('--check')
 const doors = [
-  scripts({ blueprint: { lean } }) as unknown as Door,
   scripts({ clay: { lean: lean['Qpu/General/Clay.lean'] } }) as unknown as Door,
 ]
 let drift = 0

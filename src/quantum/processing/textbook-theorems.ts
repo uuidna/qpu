@@ -6,8 +6,7 @@
 // that file (lake run index) and this module reads it; nothing here states a theorem.
 import { PROSE, proseFill } from './prose-index.ts'
 import { evaluate } from './expressions.ts'
-import { TEXTBOOK_INDEX } from './textbook-index.ts'
-import type { TextbookRow } from './textbook-parse.ts'
+import { TEXTBOOK_INDEX, type TextbookRow } from './textbook-index.ts'
 type TextbookTheorem = TextbookRow
 export const TEXTBOOK_THEOREMS: readonly TextbookTheorem[] = TEXTBOOK_INDEX
 // Every theorem of the table reflected by the shape of its statement, generated beside it into Qpu/General/Textbook.lean and never assumed: an

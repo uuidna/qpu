@@ -49,7 +49,7 @@ def applicationsFile : String := "src/quantum/processing/unit/lean/tools/Applica
 
 /-- The scripts that render files from Lean, in the order they depend on each other. -/
 def renderers : List String :=
-  ["src/scripts/textbookIndex.ts", "src/scripts/leanDerived.ts"]
+  ["src/scripts/leanDerived.ts"]
 
 /-- The Lean file that writes the prose index, where it writes it, and where the TypeScript reads it. -/
 def proseFile : String := "src/quantum/processing/unit/lean/tools/Prose.lean"
@@ -85,6 +85,12 @@ def catalogueFile : String := "src/quantum/processing/unit/lean/tools/Catalogue.
 /-- The Lean file that writes the thousand-bit table. -/
 def thousandFile : String := "src/quantum/processing/unit/lean/tools/Thousand.lean"
 
+/-- The Lean file that writes the blueprint. -/
+def blueprintFile : String := "src/quantum/processing/unit/lean/tools/Blueprint.lean"
+
+/-- The Lean file that writes the textbook index. -/
+def textbookFile : String := "src/quantum/processing/unit/lean/tools/Textbook.lean"
+
 /-- The Lean file that writes the theorem index. -/
 def theoremsFile : String := "src/quantum/processing/unit/lean/tools/Theorems.lean"
 
@@ -94,14 +100,19 @@ def renderProse (check : Bool) : IO UInt32 := do
   if said != 0 then return said
   let stated ← renderByLean theoremsFile (".lake" / "build" / "theorems-index.ts") ("src" / "quantum" / "processing" / "theorems-index.ts") check
   if stated != 0 then return stated
+  let taught ← renderByLean textbookFile (".lake" / "build" / "textbook-index.ts") ("src" / "quantum" / "processing" / "textbook-index.ts") check
+  if taught != 0 then return taught
+  let drawn ← renderByLean blueprintFile (".lake" / "build" / "BLUEPRINT.md") ("src" / "quantum" / "BLUEPRINT.md") check
+  if drawn != 0 then return drawn
   let nested ← renderByLean nestedFile nestedBuilt nestedIndex check
   if nested != 0 then return nested
   let claimed ← renderByLean catalogueFile (".lake" / "build" / "CATALOGUE.md") ("src" / "quantum" / "CATALOGUE.md") check
   if claimed != 0 then return claimed
   renderByLean thousandFile (".lake" / "build" / "thousand-index.ts") ("src" / "quantum" / "processing" / "thousand-index.ts") check
 
-/-- `lake run index`: build, then render every file that follows Lean (prose index, textbook index, theorem index,
-blueprint, Clay statements). The prose index comes first: every other renderer reads its sentences from it. -/
+/-- `lake run index`: build, then Lean writes every file that follows it (prose index, theorem index, textbook index,
+blueprint, nested catalogue, catalogue of claims, thousand-bit table). The Clay statements keep their own generator,
+which runs last. The prose index comes first: every other renderer reads its sentences from it. -/
 script index do
   let built ← step "lake" #["build"]
   if built != 0 then return built
@@ -126,7 +137,7 @@ script applications do
   steps [("lake", #["build"]), ("lake", #["env", "lean", applicationsFile])]
 
 /-- The Lean files that write rendered output; `lake run verify` runs each of them. -/
-def leanTools : List String := [applicationsFile, proseFile, theoremsFile, nestedFile, catalogueFile, thousandFile]
+def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile]
 
 /-- `lake run leanfiles`: no Lean file is skipped. Every `.lean` file the repository tracks is this lakefile, a module
 the build compiles, a tool `lake run verify` runs, or evidence kept under `lean/`, which is named and never removed. -/
