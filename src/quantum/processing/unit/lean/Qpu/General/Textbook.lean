@@ -9,7 +9,8 @@ import Qpu.Processing.QuantumGate
 /-! # Qpu.General.Textbook
 The textbook's axioms replaced by theorems: every arithmetic relation an example asserts, stated so the kernel checks it, and each one reflected by its shape.
 This file is written here, in Lean. Each textbook theorem is a doc comment `<sentence> (examples: a, b)`, the theorem,
-an optional `example` testing it, and the theorems that reflect it. `lake run index` renders textbook-index.ts
+where it has variables an `example := @name` that holds the theorem at every value at once and at no chosen size, and the
+theorems that reflect it. `lake run index` renders textbook-index.ts
 from this text, and the TypeScript side reads that. -/
 
 /-- the 9 default plugins MCP configures, each in or out: 512 configurations (examples: configure-payload) -/
@@ -26,10 +27,7 @@ theorem textbook_uuid_is_36 : 32 + 4 = 36 := by decide
 @[reflection] theorem textbook_uuid_is_36_reflected (σ : Nat) : σ - (36) = σ - (32 + 4) := congrArg (σ - ·) (Eq.symm (textbook_uuid_is_36))
 /-- a seed and its reflection σ₁₀(s) = 10 − s sum to ten (examples: css-stylesheet, configure-all) -/
 theorem textbook_reflection_sums_to_ten (s : Nat) (h : s ≤ 10) : s + (10 - s) = 10 := by omega
-example := textbook_reflection_sums_to_ten (s := 0) (h := by first | decide | omega | simp)
-example := textbook_reflection_sums_to_ten (s := 1) (h := by first | decide | omega | simp)
-example := textbook_reflection_sums_to_ten (s := 2) (h := by first | decide | omega | simp)
-example := textbook_reflection_sums_to_ten (s := 10) (h := by first | decide | omega | simp)
+example := @textbook_reflection_sums_to_ten
 /-- textbook_reflection_sums_to_ten reflected by its shape, equality (examples: css-stylesheet, configure-all) -/
 @[reflection] theorem textbook_reflection_sums_to_ten_reflected (s : Nat) (h : s ≤ 10) (σ : Nat) : σ - (10) = σ - (s + (10 - s)) := congrArg (σ - ·) (Eq.symm (textbook_reflection_sums_to_ten s h))
 /-- the contrapositive of textbook_reflection_sums_to_ten (examples: css-stylesheet, configure-all) -/
@@ -38,12 +36,7 @@ example := textbook_reflection_sums_to_ten (s := 10) (h := by first | decide | o
 @[reflection] theorem textbook_reflection_sums_to_ten_converse (s : Nat) : (s + (10 - s) = 10) → (s ≤ 10) := fun hc => by omega
 /-- piece i and its mirror n − i sum to the boundary n (examples: fold-ledger) -/
 theorem textbook_fold_mirror (n i : Nat) (h : i ≤ n) : i + (n - i) = n := by omega
-example := textbook_fold_mirror (n := 0) (i := 0) (h := by first | decide | omega | simp)
-example := textbook_fold_mirror (n := 1) (i := 0) (h := by first | decide | omega | simp)
-example := textbook_fold_mirror (n := 1) (i := 1) (h := by first | decide | omega | simp)
-example := textbook_fold_mirror (n := 2) (i := 0) (h := by first | decide | omega | simp)
-example := textbook_fold_mirror (n := 2) (i := 1) (h := by first | decide | omega | simp)
-example := textbook_fold_mirror (n := 2) (i := 2) (h := by first | decide | omega | simp)
+example := @textbook_fold_mirror
 /-- textbook_fold_mirror reflected by its shape, equality (examples: fold-ledger) -/
 @[reflection] theorem textbook_fold_mirror_reflected (n i : Nat) (h : i ≤ n) (σ : Nat) : σ - (n) = σ - (i + (n - i)) := congrArg (σ - ·) (Eq.symm (textbook_fold_mirror n i h))
 /-- the contrapositive of textbook_fold_mirror (examples: fold-ledger) -/
@@ -56,24 +49,7 @@ theorem textbook_integrations_are_thirty_five : 34 + 1 = 35 := by decide
 @[reflection] theorem textbook_integrations_are_thirty_five_reflected (σ : Nat) : σ - (35) = σ - (34 + 1) := congrArg (σ - ·) (Eq.symm (textbook_integrations_are_thirty_five))
 /-- an institution within its edition's cap of users never pays more than the cap's bill: the bill is users times the price, monotone in the users (examples: textbook-institution) -/
 theorem textbook_institution_bill (u c p : Nat) (h : u ≤ c) : u * p ≤ c * p := Nat.mul_le_mul h (Nat.le_refl p)
-example := textbook_institution_bill (u := 0) (c := 0) (p := 0) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 0) (c := 0) (p := 1) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 0) (c := 0) (p := 2) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 0) (c := 1) (p := 0) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 0) (c := 1) (p := 1) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 0) (c := 1) (p := 2) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 0) (c := 2) (p := 0) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 0) (c := 2) (p := 1) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 0) (c := 2) (p := 2) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 1) (c := 1) (p := 0) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 1) (c := 1) (p := 1) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 1) (c := 1) (p := 2) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 1) (c := 2) (p := 0) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 1) (c := 2) (p := 1) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 1) (c := 2) (p := 2) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 2) (c := 2) (p := 0) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 2) (c := 2) (p := 1) (h := by first | decide | omega | simp)
-example := textbook_institution_bill (u := 2) (c := 2) (p := 2) (h := by first | decide | omega | simp)
+example := @textbook_institution_bill
 /-- textbook_institution_bill reflected by its shape, order (examples: textbook-institution) -/
 @[reflection] theorem textbook_institution_bill_reflected (u c p : Nat) (h : u ≤ c) (σ : Nat) : σ - (c * p) ≤ σ - (u * p) := Nat.sub_le_sub_left (textbook_institution_bill u c p h) σ
 /-- the contrapositive of textbook_institution_bill (examples: textbook-institution) -/
@@ -86,10 +62,7 @@ theorem textbook_workspace_sets : 3 * 3 * 3 * 3 * 3 * 3 * 2 * 3 * 2 * 3 = 26244 
 @[reflection] theorem textbook_workspace_sets_reflected (σ : Nat) : (σ - (26244) = σ - (3 * 3 * 3 * 3 * 3 * 3 * 2 * 3 * 2 * 3)) ∧ (σ - (3) = σ - (3)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_workspace_sets).1), congrArg (σ - ·) (Eq.symm (textbook_workspace_sets).2)⟩
 /-- a namespace narrows a credential, never widens it: a tenant the request may act in is one the request named and the user already held (examples: payload-namespace-sandbox, payload-namespace-narrow, leads-client) -/
 theorem textbook_namespace_narrows (named held : Bool) : (named && held) = true → held = true := by cases named <;> cases held <;> simp
-example := textbook_namespace_narrows (named := true) (held := true)
-example := textbook_namespace_narrows (named := true) (held := false)
-example := textbook_namespace_narrows (named := false) (held := true)
-example := textbook_namespace_narrows (named := false) (held := false)
+example := @textbook_namespace_narrows
 /-- textbook_namespace_narrows reflected by its shape, implication (examples: payload-namespace-sandbox, payload-namespace-narrow, leads-client) -/
 @[reflection] theorem textbook_namespace_narrows_reflected (named held : Bool) : ¬ (held = true) → ¬ (((named && held) = true)) := fun hc hh => hc ((textbook_namespace_narrows named held) hh)
 /-- a deterministic check of equal inputs has an equal verdict: an example whose answer folds to the integers its theorem's confirmed pass recorded is decided by that theorem, and the text checks run only to confirm a new integer (examples: audit-self) -/
@@ -98,22 +71,12 @@ theorem textbook_integers_first (a b : Nat) (v : Nat → Bool) (h : a = b) : v a
 @[reflection] theorem textbook_integers_first_reflected (a b : Nat) (v : Nat → Bool) (h : a = b) : (v b) = (v a) := Eq.symm (textbook_integers_first a b v h)
 /-- a size ratio rounded down never overstates: the framework's bytes over the stylesheet's, times the stylesheet's, is at most the framework's bytes; keepMeasured reads the measured rows of every comparison by size (examples: css-compare, extend-compare) -/
 theorem textbook_size_ratio_bound (framework qpu : Nat) : framework / qpu * qpu ≤ framework := Nat.div_mul_le_self framework qpu
-example := textbook_size_ratio_bound (framework := 0) (qpu := 0)
-example := textbook_size_ratio_bound (framework := 0) (qpu := 1)
-example := textbook_size_ratio_bound (framework := 0) (qpu := 2)
-example := textbook_size_ratio_bound (framework := 1) (qpu := 0)
-example := textbook_size_ratio_bound (framework := 1) (qpu := 1)
-example := textbook_size_ratio_bound (framework := 1) (qpu := 2)
-example := textbook_size_ratio_bound (framework := 2) (qpu := 0)
-example := textbook_size_ratio_bound (framework := 2) (qpu := 1)
-example := textbook_size_ratio_bound (framework := 2) (qpu := 2)
+example := @textbook_size_ratio_bound
 /-- textbook_size_ratio_bound reflected by its shape, order (examples: css-compare, extend-compare) -/
 @[reflection] theorem textbook_size_ratio_bound_reflected (framework qpu : Nat) (σ : Nat) : σ - (framework) ≤ σ - (framework / qpu * qpu) := Nat.sub_le_sub_left (textbook_size_ratio_bound framework qpu) σ
 /-- every line books the same amount on both sides, so debits equal credits and the journal nets to zero both ways: a coin at zero, a coil at its price, a settlement as cash and fees against the receivable (examples: stripe-ledger, compete-economics, verify-radar) -/
 theorem textbook_double_entry (debits credits : Nat) (h : debits = credits) : debits - credits = 0 ∧ credits - debits = 0 := by subst h; exact ⟨Nat.sub_self _, Nat.sub_self _⟩
-example := textbook_double_entry (debits := 0) (credits := 0) (h := by first | decide | omega | simp)
-example := textbook_double_entry (debits := 1) (credits := 1) (h := by first | decide | omega | simp)
-example := textbook_double_entry (debits := 2) (credits := 2) (h := by first | decide | omega | simp)
+example := @textbook_double_entry
 /-- textbook_double_entry reflected by its shape, conjunction (examples: stripe-ledger, compete-economics, verify-radar) -/
 @[reflection] theorem textbook_double_entry_reflected (debits credits : Nat) (h : debits = credits) (σ : Nat) : (σ - (0) = σ - (debits - credits)) ∧ (σ - (0) = σ - (credits - debits)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_double_entry debits credits h).1), congrArg (σ - ·) (Eq.symm (textbook_double_entry debits credits h).2)⟩
 /-- the contrapositive of textbook_double_entry (examples: stripe-ledger, compete-economics, verify-radar) -/
@@ -122,12 +85,7 @@ example := textbook_double_entry (debits := 2) (credits := 2) (h := by first | d
 @[reflection] theorem textbook_double_entry_converse (debits credits : Nat) : (debits - credits = 0 ∧ credits - debits = 0) → (debits = credits) := fun hc => by omega
 /-- validateStandards validates against all standards via Payload's standard implementation, in the cheapest possible slices: every standard (a codes list by a select/validate against CLDR, a vocabulary by schema.org JSON-LD, a reference by the generated config and its field validations) covered, split into content-addressed slices so validation, reindexing and cleanup run per slice as a job — the cheapest unit, an unchanged slice skipped by its address; the covered and the uncovered make the standards (examples: standards-validate, textbook-education, payload-iso-connector, payload-iso-connector-auth, payload-iso-connector-id) -/
 theorem textbook_standards_sliced (covered uncovered total : Nat) (h : covered + uncovered = total) : total - uncovered = covered := by omega
-example := textbook_standards_sliced (covered := 0) (uncovered := 0) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_standards_sliced (covered := 0) (uncovered := 1) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_standards_sliced (covered := 0) (uncovered := 2) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_standards_sliced (covered := 1) (uncovered := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_standards_sliced (covered := 1) (uncovered := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_standards_sliced (covered := 2) (uncovered := 0) (total := 2) (h := by first | decide | omega | simp)
+example := @textbook_standards_sliced
 /-- textbook_standards_sliced reflected by its shape, equality (examples: standards-validate, textbook-education, payload-iso-connector, payload-iso-connector-auth, payload-iso-connector-id) -/
 @[reflection] theorem textbook_standards_sliced_reflected (covered uncovered total : Nat) (h : covered + uncovered = total) (σ : Nat) : σ - (covered) = σ - (total - uncovered) := congrArg (σ - ·) (Eq.symm (textbook_standards_sliced covered uncovered total h))
 /-- the contrapositive of textbook_standards_sliced (examples: standards-validate, textbook-education, payload-iso-connector, payload-iso-connector-auth, payload-iso-connector-id) -/
@@ -140,19 +98,12 @@ theorem textbook_parse_microdata_deep : 4 > 2 ∧ 141 > 14 ∧ 15 = 15 := by dec
 @[reflection] theorem textbook_parse_microdata_deep_reflected (σ : Nat) (hσ0 : (4) ≤ σ) (hσ1 : (141) ≤ σ) : (σ - (4) < σ - (2)) ∧ (σ - (141) < σ - (14)) ∧ (σ - (15) = σ - (15)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_parse_microdata_deep).1 hσ0) (textbook_parse_microdata_deep).1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_parse_microdata_deep).2.1 hσ1) (textbook_parse_microdata_deep).2.1, congrArg (σ - ·) (Eq.symm (textbook_parse_microdata_deep).2.2)⟩
 /-- typography set twice is set once: a run of spaces set to at most one stays at most one when set again, so standardising a document changes nothing the second time (examples: payload-standardise) -/
 theorem textbook_typography_idempotent (n : Nat) : min (min n 1) 1 = min n 1 := by omega
-example := textbook_typography_idempotent (n := 0)
-example := textbook_typography_idempotent (n := 1)
-example := textbook_typography_idempotent (n := 2)
+example := @textbook_typography_idempotent
 /-- textbook_typography_idempotent reflected by its shape, equality (examples: payload-standardise) -/
 @[reflection] theorem textbook_typography_idempotent_reflected (n : Nat) (σ : Nat) : σ - (min n 1) = σ - (min (min n 1) 1) := congrArg (σ - ·) (Eq.symm (textbook_typography_idempotent n))
 /-- n documents fused into k nodes, each cycle one node: the n − k fused away and the k that remain are the n, every document counted once, and the condensation they form has no cycle, so it always has an order (examples: payload-references) -/
 theorem textbook_references_acyclic (k n : Nat) (h : k ≤ n) : n - k + k = n := by omega
-example := textbook_references_acyclic (k := 0) (n := 0) (h := by first | decide | omega | simp)
-example := textbook_references_acyclic (k := 0) (n := 1) (h := by first | decide | omega | simp)
-example := textbook_references_acyclic (k := 0) (n := 2) (h := by first | decide | omega | simp)
-example := textbook_references_acyclic (k := 1) (n := 1) (h := by first | decide | omega | simp)
-example := textbook_references_acyclic (k := 1) (n := 2) (h := by first | decide | omega | simp)
-example := textbook_references_acyclic (k := 2) (n := 2) (h := by first | decide | omega | simp)
+example := @textbook_references_acyclic
 /-- textbook_references_acyclic reflected by its shape, equality (examples: payload-references) -/
 @[reflection] theorem textbook_references_acyclic_reflected (k n : Nat) (h : k ≤ n) (σ : Nat) : σ - (n) = σ - (n - k + k) := congrArg (σ - ·) (Eq.symm (textbook_references_acyclic k n h))
 /-- the contrapositive of textbook_references_acyclic (examples: payload-references) -/
@@ -161,12 +112,7 @@ example := textbook_references_acyclic (k := 2) (n := 2) (h := by first | decide
 @[reflection] theorem textbook_references_acyclic_converse (k n : Nat) : (n - k + k = n) → (k ≤ n) := fun hc => by omega
 /-- the query-hash cache minimises Cloudflare cost: every query served from its content address is a 304 with no Worker compute and no AI binding call, so the served (distinct) and the saved (cache hits, each a spared Cloudflare request or AI binding call) make the total queries; the index is scoped per tenant and read under its rolify role, so one tenant's cache never serves another's — referenceIndex (examples: payload-reference-index) -/
 theorem textbook_cache_saves_cost (served saved total : Nat) (h : served + saved = total) : total - saved = served := by omega
-example := textbook_cache_saves_cost (served := 0) (saved := 0) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_cache_saves_cost (served := 0) (saved := 1) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_cache_saves_cost (served := 0) (saved := 2) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_cache_saves_cost (served := 1) (saved := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_cache_saves_cost (served := 1) (saved := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_cache_saves_cost (served := 2) (saved := 0) (total := 2) (h := by first | decide | omega | simp)
+example := @textbook_cache_saves_cost
 /-- textbook_cache_saves_cost reflected by its shape, equality (examples: payload-reference-index) -/
 @[reflection] theorem textbook_cache_saves_cost_reflected (served saved total : Nat) (h : served + saved = total) (σ : Nat) : σ - (served) = σ - (total - saved) := congrArg (σ - ·) (Eq.symm (textbook_cache_saves_cost served saved total h))
 /-- the contrapositive of textbook_cache_saves_cost (examples: payload-reference-index) -/
@@ -175,12 +121,7 @@ example := textbook_cache_saves_cost (served := 2) (saved := 0) (total := 2) (h 
 @[reflection] theorem textbook_cache_saves_cost_converse_refuted : ¬ ∀ (served saved total : Nat), (total - saved = served) → (served + saved = total) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- referenceIndex indexes every reference by its scope and combination and addresses it by the content hash of (scope, from, to), so equal queries share one address and are served from it (the 304 involution) — the distinct addresses and the cache hits make the references, the best caching; the SEO plugin is another way of referencing, each document's title a canonical self-reference its hooks generate, folded into the same index over the Payload search results (examples: payload-reference-index) -/
 theorem textbook_reference_index_cached (distinct hits total : Nat) (h : distinct + hits = total) : total - hits = distinct := by omega
-example := textbook_reference_index_cached (distinct := 0) (hits := 0) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_reference_index_cached (distinct := 0) (hits := 1) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_reference_index_cached (distinct := 0) (hits := 2) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_reference_index_cached (distinct := 1) (hits := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_reference_index_cached (distinct := 1) (hits := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_reference_index_cached (distinct := 2) (hits := 0) (total := 2) (h := by first | decide | omega | simp)
+example := @textbook_reference_index_cached
 /-- textbook_reference_index_cached reflected by its shape, equality (examples: payload-reference-index) -/
 @[reflection] theorem textbook_reference_index_cached_reflected (distinct hits total : Nat) (h : distinct + hits = total) (σ : Nat) : σ - (distinct) = σ - (total - hits) := congrArg (σ - ·) (Eq.symm (textbook_reference_index_cached distinct hits total h))
 /-- the contrapositive of textbook_reference_index_cached (examples: payload-reference-index) -/
@@ -197,14 +138,12 @@ theorem textbook_uuid_time_space : 48 + 4 + 2 + 74 = 128 := by decide
 @[reflection] theorem textbook_uuid_time_space_reflected (σ : Nat) : σ - (128) = σ - (48 + 4 + 2 + 74) := congrArg (σ - ·) (Eq.symm (textbook_uuid_time_space))
 /-- a word is found in a table only among the table's own keys: a lookup that hits names an own key, never a built-in the object inherits (examples: match-builtin-words, chat-builtin-words, translate-builtin-words, chat-cirq-constructors) -/
 theorem textbook_own_keys_only (own hit : Bool) (h : hit = true → own = true) (found : hit = true) : own = true := h found
-example := textbook_own_keys_only (own := true) (hit := true) (h := by first | decide | omega | simp) (found := by first | decide | omega | simp)
+example := @textbook_own_keys_only
 /-- textbook_own_keys_only reflected by its shape, equality (examples: match-builtin-words, chat-builtin-words, translate-builtin-words, chat-cirq-constructors) -/
 @[reflection] theorem textbook_own_keys_only_reflected (own hit : Bool) (h : hit = true → own = true) (found : hit = true) : (true) = (own) := Eq.symm (textbook_own_keys_only own hit h found)
 /-- a penalty's coin line books the same count on both sides, so it nets to zero (examples: repository-penalty) -/
 theorem textbook_penalty_balanced (d c : Nat) (h : d = c) : d - c = 0 := by omega
-example := textbook_penalty_balanced (d := 0) (c := 0) (h := by first | decide | omega | simp)
-example := textbook_penalty_balanced (d := 1) (c := 1) (h := by first | decide | omega | simp)
-example := textbook_penalty_balanced (d := 2) (c := 2) (h := by first | decide | omega | simp)
+example := @textbook_penalty_balanced
 /-- textbook_penalty_balanced reflected by its shape, equality (examples: repository-penalty) -/
 @[reflection] theorem textbook_penalty_balanced_reflected (d c : Nat) (h : d = c) (σ : Nat) : σ - (0) = σ - (d - c) := congrArg (σ - ·) (Eq.symm (textbook_penalty_balanced d c h))
 /-- the contrapositive of textbook_penalty_balanced (examples: repository-penalty) -/
@@ -213,25 +152,12 @@ example := textbook_penalty_balanced (d := 2) (c := 2) (h := by first | decide |
 @[reflection] theorem textbook_penalty_balanced_converse_refuted : ¬ ∀ (d c : Nat), (d - c = 0) → (d = c) := fun h => absurd (h 0 1 (by decide)) (by decide)
 /-- penalising then clearing leaves the open count as it was: a clearing undoes its penalty (examples: repository-penalty-clear) -/
 theorem textbook_penalty_clear_involution (opn n : Nat) : opn + n - n = opn := by omega
-example := textbook_penalty_clear_involution (opn := 0) (n := 0)
-example := textbook_penalty_clear_involution (opn := 0) (n := 1)
-example := textbook_penalty_clear_involution (opn := 0) (n := 2)
-example := textbook_penalty_clear_involution (opn := 1) (n := 0)
-example := textbook_penalty_clear_involution (opn := 1) (n := 1)
-example := textbook_penalty_clear_involution (opn := 1) (n := 2)
-example := textbook_penalty_clear_involution (opn := 2) (n := 0)
-example := textbook_penalty_clear_involution (opn := 2) (n := 1)
-example := textbook_penalty_clear_involution (opn := 2) (n := 2)
+example := @textbook_penalty_clear_involution
 /-- textbook_penalty_clear_involution reflected by its shape, equality (examples: repository-penalty-clear) -/
 @[reflection] theorem textbook_penalty_clear_involution_reflected (opn n : Nat) (σ : Nat) : σ - (opn) = σ - (opn + n - n) := congrArg (σ - ·) (Eq.symm (textbook_penalty_clear_involution opn n))
 /-- every penalty opened is either cleared or still open: the open count is the opened less the cleared (examples: none yet) -/
 theorem textbook_penalty_conserved (opened cleared openNow : Nat) (h : cleared + openNow = opened) : opened - cleared = openNow := by omega
-example := textbook_penalty_conserved (opened := 0) (cleared := 0) (openNow := 0) (h := by first | decide | omega | simp)
-example := textbook_penalty_conserved (opened := 1) (cleared := 0) (openNow := 1) (h := by first | decide | omega | simp)
-example := textbook_penalty_conserved (opened := 1) (cleared := 1) (openNow := 0) (h := by first | decide | omega | simp)
-example := textbook_penalty_conserved (opened := 2) (cleared := 0) (openNow := 2) (h := by first | decide | omega | simp)
-example := textbook_penalty_conserved (opened := 2) (cleared := 1) (openNow := 1) (h := by first | decide | omega | simp)
-example := textbook_penalty_conserved (opened := 2) (cleared := 2) (openNow := 0) (h := by first | decide | omega | simp)
+example := @textbook_penalty_conserved
 /-- textbook_penalty_conserved reflected by its shape, equality (examples: none yet) -/
 @[reflection] theorem textbook_penalty_conserved_reflected (opened cleared openNow : Nat) (h : cleared + openNow = opened) (σ : Nat) : σ - (openNow) = σ - (opened - cleared) := congrArg (σ - ·) (Eq.symm (textbook_penalty_conserved opened cleared openNow h))
 /-- the contrapositive of textbook_penalty_conserved (examples: none yet) -/
@@ -240,10 +166,7 @@ example := textbook_penalty_conserved (opened := 2) (cleared := 2) (openNow := 0
 @[reflection] theorem textbook_penalty_conserved_converse_refuted : ¬ ∀ (opened cleared openNow : Nat), (opened - cleared = openNow) → (cleared + openNow = opened) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- a penalty's tokens, its bytes over four rounded up, never exceed its bytes (examples: repository-penalty) -/
 theorem textbook_penalty_tokens_bound (b : Nat) (h : 0 < b) : (b + 3) / 4 ≤ b := by omega
-example := textbook_penalty_tokens_bound (b := 1) (h := by first | decide | omega | simp)
-example := textbook_penalty_tokens_bound (b := 2) (h := by first | decide | omega | simp)
-example := textbook_penalty_tokens_bound (b := 3) (h := by first | decide | omega | simp)
-example := textbook_penalty_tokens_bound (b := 4) (h := by first | decide | omega | simp)
+example := @textbook_penalty_tokens_bound
 /-- textbook_penalty_tokens_bound reflected by its shape, order (examples: repository-penalty) -/
 @[reflection] theorem textbook_penalty_tokens_bound_reflected (b : Nat) (h : 0 < b) (σ : Nat) : σ - (b) ≤ σ - ((b + 3) / 4) := Nat.sub_le_sub_left (textbook_penalty_tokens_bound b h) σ
 /-- the contrapositive of textbook_penalty_tokens_bound (examples: repository-penalty) -/
@@ -252,9 +175,7 @@ example := textbook_penalty_tokens_bound (b := 4) (h := by first | decide | omeg
 @[reflection] theorem textbook_penalty_tokens_bound_converse_refuted : ¬ ∀ (b : Nat), ((b + 3) / 4 ≤ b) → (0 < b) := fun h => absurd (h 0 (by decide)) (by decide)
 /-- the same gap gives the same content address, so it is one entry however often it is penalised (examples: repository-penalty-once) -/
 theorem textbook_penalty_once (a b : Nat) (h : a = b) : a = b := h
-example := textbook_penalty_once (a := 0) (b := 0) (h := by first | decide | omega | simp)
-example := textbook_penalty_once (a := 1) (b := 1) (h := by first | decide | omega | simp)
-example := textbook_penalty_once (a := 2) (b := 2) (h := by first | decide | omega | simp)
+example := @textbook_penalty_once
 /-- textbook_penalty_once reflected by its shape, equality (examples: repository-penalty-once) -/
 @[reflection] theorem textbook_penalty_once_reflected (a b : Nat) (h : a = b) (σ : Nat) : σ - (b) = σ - (a) := congrArg (σ - ·) (Eq.symm (textbook_penalty_once a b h))
 /-- the contrapositive of textbook_penalty_once (examples: repository-penalty-once) -/
@@ -263,114 +184,7 @@ example := textbook_penalty_once (a := 2) (b := 2) (h := by first | decide | ome
 @[reflection] theorem textbook_penalty_once_converse (a b : Nat) : (a = b) → (a = b) := fun hc => by omega
 /-- a waiting price never falls as a task gets slower or hotter: the wall milliseconds beyond the budget b plus the CPU milliseconds beyond it, and more of either never lowers it (examples: repository-penalty-waiting) -/
 theorem textbook_penalty_time_heat_monotone (b w w' c c' : Nat) (hw : w ≤ w') (hc : c ≤ c') : (w - b) + (c - b) ≤ (w' - b) + (c' - b) := by omega
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 0) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 0) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 0) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 0) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 0) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 0) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 1) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 1) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 1) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 1) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 1) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 1) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 2) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 2) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 2) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 2) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 2) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 0) (w' := 2) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 1) (w' := 1) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 1) (w' := 1) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 1) (w' := 1) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 1) (w' := 1) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 1) (w' := 1) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 1) (w' := 1) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 1) (w' := 2) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 1) (w' := 2) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 1) (w' := 2) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 1) (w' := 2) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 1) (w' := 2) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 1) (w' := 2) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 2) (w' := 2) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 2) (w' := 2) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 2) (w' := 2) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 2) (w' := 2) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 2) (w' := 2) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 0) (w := 2) (w' := 2) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 0) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 0) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 0) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 0) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 0) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 0) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 1) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 1) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 1) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 1) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 1) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 1) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 2) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 2) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 2) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 2) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 2) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 0) (w' := 2) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 1) (w' := 1) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 1) (w' := 1) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 1) (w' := 1) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 1) (w' := 1) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 1) (w' := 1) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 1) (w' := 1) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 1) (w' := 2) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 1) (w' := 2) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 1) (w' := 2) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 1) (w' := 2) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 1) (w' := 2) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 1) (w' := 2) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 2) (w' := 2) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 2) (w' := 2) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 2) (w' := 2) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 2) (w' := 2) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 2) (w' := 2) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 1) (w := 2) (w' := 2) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 0) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 0) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 0) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 0) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 0) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 0) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 1) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 1) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 1) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 1) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 1) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 1) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 2) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 2) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 2) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 2) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 2) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 0) (w' := 2) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 1) (w' := 1) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 1) (w' := 1) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 1) (w' := 1) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 1) (w' := 1) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 1) (w' := 1) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 1) (w' := 1) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 1) (w' := 2) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 1) (w' := 2) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 1) (w' := 2) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 1) (w' := 2) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 1) (w' := 2) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 1) (w' := 2) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 2) (w' := 2) (c := 0) (c' := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 2) (w' := 2) (c := 0) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 2) (w' := 2) (c := 0) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 2) (w' := 2) (c := 1) (c' := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 2) (w' := 2) (c := 1) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_time_heat_monotone (b := 2) (w := 2) (w' := 2) (c := 2) (c' := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
+example := @textbook_penalty_time_heat_monotone
 /-- textbook_penalty_time_heat_monotone reflected by its shape, order (examples: repository-penalty-waiting) -/
 @[reflection] theorem textbook_penalty_time_heat_monotone_reflected (b w w' c c' : Nat) (hw : w ≤ w') (hc : c ≤ c') (σ : Nat) : σ - ((w' - b) + (c' - b)) ≤ σ - ((w - b) + (c - b)) := Nat.sub_le_sub_left (textbook_penalty_time_heat_monotone b w w' c c' hw hc) σ
 /-- the contrapositive of textbook_penalty_time_heat_monotone (examples: repository-penalty-waiting) -/
@@ -379,51 +193,12 @@ example := textbook_penalty_time_heat_monotone (b := 2) (w := 2) (w' := 2) (c :=
 @[reflection] theorem textbook_penalty_time_heat_monotone_converse_refuted : ¬ ∀ (b w w' c c' : Nat), ((w - b) + (c - b) ≤ (w' - b) + (c' - b)) → (w ≤ w') ∧ (c ≤ c') := fun h => absurd (h 0 0 1 1 0 (by decide)) (by decide)
 /-- the waiting price has no cliff: one more millisecond on the wall raises it by at most one, at the budget as everywhere, so nothing rewards stopping just under a threshold (examples: repository-penalty-no-cliff) -/
 theorem textbook_penalty_no_cliff (b w c : Nat) : (w + 1 - b) + (c - b) ≤ (w - b) + (c - b) + 1 := by omega
-example := textbook_penalty_no_cliff (b := 0) (w := 0) (c := 0)
-example := textbook_penalty_no_cliff (b := 0) (w := 0) (c := 1)
-example := textbook_penalty_no_cliff (b := 0) (w := 0) (c := 2)
-example := textbook_penalty_no_cliff (b := 0) (w := 1) (c := 0)
-example := textbook_penalty_no_cliff (b := 0) (w := 1) (c := 1)
-example := textbook_penalty_no_cliff (b := 0) (w := 1) (c := 2)
-example := textbook_penalty_no_cliff (b := 0) (w := 2) (c := 0)
-example := textbook_penalty_no_cliff (b := 0) (w := 2) (c := 1)
-example := textbook_penalty_no_cliff (b := 0) (w := 2) (c := 2)
-example := textbook_penalty_no_cliff (b := 1) (w := 0) (c := 0)
-example := textbook_penalty_no_cliff (b := 1) (w := 0) (c := 1)
-example := textbook_penalty_no_cliff (b := 1) (w := 0) (c := 2)
-example := textbook_penalty_no_cliff (b := 1) (w := 1) (c := 0)
-example := textbook_penalty_no_cliff (b := 1) (w := 1) (c := 1)
-example := textbook_penalty_no_cliff (b := 1) (w := 1) (c := 2)
-example := textbook_penalty_no_cliff (b := 1) (w := 2) (c := 0)
-example := textbook_penalty_no_cliff (b := 1) (w := 2) (c := 1)
-example := textbook_penalty_no_cliff (b := 1) (w := 2) (c := 2)
-example := textbook_penalty_no_cliff (b := 2) (w := 0) (c := 0)
-example := textbook_penalty_no_cliff (b := 2) (w := 0) (c := 1)
-example := textbook_penalty_no_cliff (b := 2) (w := 0) (c := 2)
-example := textbook_penalty_no_cliff (b := 2) (w := 1) (c := 0)
-example := textbook_penalty_no_cliff (b := 2) (w := 1) (c := 1)
-example := textbook_penalty_no_cliff (b := 2) (w := 1) (c := 2)
-example := textbook_penalty_no_cliff (b := 2) (w := 2) (c := 0)
-example := textbook_penalty_no_cliff (b := 2) (w := 2) (c := 1)
-example := textbook_penalty_no_cliff (b := 2) (w := 2) (c := 2)
+example := @textbook_penalty_no_cliff
 /-- textbook_penalty_no_cliff reflected by its shape, order (examples: repository-penalty-no-cliff) -/
 @[reflection] theorem textbook_penalty_no_cliff_reflected (b w c : Nat) (σ : Nat) : σ - ((w - b) + (c - b) + 1) ≤ σ - ((w + 1 - b) + (c - b)) := Nat.sub_le_sub_left (textbook_penalty_no_cliff b w c) σ
 /-- a task within the one-second budget, on the wall and on the CPU, is free: its waiting price is zero (examples: repository-penalty-under-budget) -/
 theorem textbook_penalty_free_under_budget (b w c : Nat) (hw : w ≤ b) (hc : c ≤ b) : (w - b) + (c - b) = 0 := by omega
-example := textbook_penalty_free_under_budget (b := 0) (w := 0) (c := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_free_under_budget (b := 1) (w := 0) (c := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_free_under_budget (b := 1) (w := 0) (c := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_free_under_budget (b := 1) (w := 1) (c := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_free_under_budget (b := 1) (w := 1) (c := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_free_under_budget (b := 2) (w := 0) (c := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_free_under_budget (b := 2) (w := 0) (c := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_free_under_budget (b := 2) (w := 0) (c := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_free_under_budget (b := 2) (w := 1) (c := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_free_under_budget (b := 2) (w := 1) (c := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_free_under_budget (b := 2) (w := 1) (c := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_free_under_budget (b := 2) (w := 2) (c := 0) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_free_under_budget (b := 2) (w := 2) (c := 1) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_penalty_free_under_budget (b := 2) (w := 2) (c := 2) (hw := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
+example := @textbook_penalty_free_under_budget
 /-- textbook_penalty_free_under_budget reflected by its shape, equality (examples: repository-penalty-under-budget) -/
 @[reflection] theorem textbook_penalty_free_under_budget_reflected (b w c : Nat) (hw : w ≤ b) (hc : c ≤ b) (σ : Nat) : σ - (0) = σ - ((w - b) + (c - b)) := congrArg (σ - ·) (Eq.symm (textbook_penalty_free_under_budget b w c hw hc))
 /-- the contrapositive of textbook_penalty_free_under_budget (examples: repository-penalty-under-budget) -/
@@ -432,110 +207,22 @@ example := textbook_penalty_free_under_budget (b := 2) (w := 2) (c := 2) (hw := 
 @[reflection] theorem textbook_penalty_free_under_budget_converse (b w c : Nat) : ((w - b) + (c - b) = 0) → (w ≤ b) ∧ (c ≤ b) := fun hc => ⟨by omega, by omega⟩
 /-- a gap and its antimatter annihilate: the line priced by the antimatter's cost, reversed by its clearing, nets to zero, and only what stood beside it — the burned time — remains (examples: repository-penalty-annihilate) -/
 theorem textbook_penalty_antimatter_annihilates (t p : Nat) : t + p - t = p := by omega
-example := textbook_penalty_antimatter_annihilates (t := 0) (p := 0)
-example := textbook_penalty_antimatter_annihilates (t := 0) (p := 1)
-example := textbook_penalty_antimatter_annihilates (t := 0) (p := 2)
-example := textbook_penalty_antimatter_annihilates (t := 1) (p := 0)
-example := textbook_penalty_antimatter_annihilates (t := 1) (p := 1)
-example := textbook_penalty_antimatter_annihilates (t := 1) (p := 2)
-example := textbook_penalty_antimatter_annihilates (t := 2) (p := 0)
-example := textbook_penalty_antimatter_annihilates (t := 2) (p := 1)
-example := textbook_penalty_antimatter_annihilates (t := 2) (p := 2)
+example := @textbook_penalty_antimatter_annihilates
 /-- textbook_penalty_antimatter_annihilates reflected by its shape, equality (examples: repository-penalty-annihilate) -/
 @[reflection] theorem textbook_penalty_antimatter_annihilates_reflected (t p : Nat) (σ : Nat) : σ - (p) = σ - (t + p - t) := congrArg (σ - ·) (Eq.symm (textbook_penalty_antimatter_annihilates t p))
 /-- a penalty is an involution on status and standing, never a punishment: raised then cleared, the gap's status and the offender's standing are exactly what they were before the violation — the coins burned for the time it stood are not part of it (examples: repository-penalty-no-punishment) -/
 theorem textbook_penalty_no_punishment (balance standing t : Nat) : (balance + t - t, standing + t - t) = (balance, standing) := by rw [Nat.add_sub_cancel, Nat.add_sub_cancel]
-example := textbook_penalty_no_punishment (balance := 0) (standing := 0) (t := 0)
-example := textbook_penalty_no_punishment (balance := 0) (standing := 0) (t := 1)
-example := textbook_penalty_no_punishment (balance := 0) (standing := 0) (t := 2)
-example := textbook_penalty_no_punishment (balance := 0) (standing := 1) (t := 0)
-example := textbook_penalty_no_punishment (balance := 0) (standing := 1) (t := 1)
-example := textbook_penalty_no_punishment (balance := 0) (standing := 1) (t := 2)
-example := textbook_penalty_no_punishment (balance := 0) (standing := 2) (t := 0)
-example := textbook_penalty_no_punishment (balance := 0) (standing := 2) (t := 1)
-example := textbook_penalty_no_punishment (balance := 0) (standing := 2) (t := 2)
-example := textbook_penalty_no_punishment (balance := 1) (standing := 0) (t := 0)
-example := textbook_penalty_no_punishment (balance := 1) (standing := 0) (t := 1)
-example := textbook_penalty_no_punishment (balance := 1) (standing := 0) (t := 2)
-example := textbook_penalty_no_punishment (balance := 1) (standing := 1) (t := 0)
-example := textbook_penalty_no_punishment (balance := 1) (standing := 1) (t := 1)
-example := textbook_penalty_no_punishment (balance := 1) (standing := 1) (t := 2)
-example := textbook_penalty_no_punishment (balance := 1) (standing := 2) (t := 0)
-example := textbook_penalty_no_punishment (balance := 1) (standing := 2) (t := 1)
-example := textbook_penalty_no_punishment (balance := 1) (standing := 2) (t := 2)
-example := textbook_penalty_no_punishment (balance := 2) (standing := 0) (t := 0)
-example := textbook_penalty_no_punishment (balance := 2) (standing := 0) (t := 1)
-example := textbook_penalty_no_punishment (balance := 2) (standing := 0) (t := 2)
-example := textbook_penalty_no_punishment (balance := 2) (standing := 1) (t := 0)
-example := textbook_penalty_no_punishment (balance := 2) (standing := 1) (t := 1)
-example := textbook_penalty_no_punishment (balance := 2) (standing := 1) (t := 2)
-example := textbook_penalty_no_punishment (balance := 2) (standing := 2) (t := 0)
-example := textbook_penalty_no_punishment (balance := 2) (standing := 2) (t := 1)
-example := textbook_penalty_no_punishment (balance := 2) (standing := 2) (t := 2)
+example := @textbook_penalty_no_punishment
 /-- textbook_penalty_no_punishment reflected by its shape, equality (examples: repository-penalty-no-punishment) -/
 @[reflection] theorem textbook_penalty_no_punishment_reflected (balance standing t : Nat) : ((balance, standing)) = ((balance + t - t, standing + t - t)) := Eq.symm (textbook_penalty_no_punishment balance standing t)
 /-- the time a gap stood is burned like a proof-of-stake stake: its charge never falls as it stands longer, is zero when cleared within the budget, and is booked to the burn account, never refunded (examples: repository-penalty-annihilate) -/
 theorem textbook_penalty_time_burned (b s s' c : Nat) (hs : s ≤ s') : (s - b) + (c - b) ≤ (s' - b) + (c - b) ∧ (s ≤ b → c ≤ b → (s - b) + (c - b) = 0) := ⟨by omega, fun h1 h2 => by omega⟩
-example := textbook_penalty_time_burned (b := 0) (s := 0) (s' := 0) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 0) (s' := 0) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 0) (s' := 0) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 0) (s' := 1) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 0) (s' := 1) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 0) (s' := 1) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 0) (s' := 2) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 0) (s' := 2) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 0) (s' := 2) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 1) (s' := 1) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 1) (s' := 1) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 1) (s' := 1) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 1) (s' := 2) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 1) (s' := 2) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 1) (s' := 2) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 2) (s' := 2) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 2) (s' := 2) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 0) (s := 2) (s' := 2) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 0) (s' := 0) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 0) (s' := 0) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 0) (s' := 0) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 0) (s' := 1) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 0) (s' := 1) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 0) (s' := 1) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 0) (s' := 2) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 0) (s' := 2) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 0) (s' := 2) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 1) (s' := 1) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 1) (s' := 1) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 1) (s' := 1) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 1) (s' := 2) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 1) (s' := 2) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 1) (s' := 2) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 2) (s' := 2) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 2) (s' := 2) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 1) (s := 2) (s' := 2) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 0) (s' := 0) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 0) (s' := 0) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 0) (s' := 0) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 0) (s' := 1) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 0) (s' := 1) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 0) (s' := 1) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 0) (s' := 2) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 0) (s' := 2) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 0) (s' := 2) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 1) (s' := 1) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 1) (s' := 1) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 1) (s' := 1) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 1) (s' := 2) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 1) (s' := 2) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 1) (s' := 2) (c := 2) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 2) (s' := 2) (c := 0) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 2) (s' := 2) (c := 1) (hs := by first | decide | omega | simp)
-example := textbook_penalty_time_burned (b := 2) (s := 2) (s' := 2) (c := 2) (hs := by first | decide | omega | simp)
+example := @textbook_penalty_time_burned
 /-- textbook_penalty_time_burned reflected by its shape, conjunction (examples: repository-penalty-annihilate) -/
 @[reflection] theorem textbook_penalty_time_burned_reflected (b s s' c : Nat) (hs : s ≤ s') (σ : Nat) : (σ - ((s' - b) + (c - b)) ≤ σ - ((s - b) + (c - b))) ∧ (¬ ((s - b) + (c - b) = 0) → ¬ ((s ≤ b) ∧ (c ≤ b))) := ⟨Nat.sub_le_sub_left (textbook_penalty_time_burned b s s' c hs).1 σ, fun hc hh => hc ((textbook_penalty_time_burned b s s' c hs).2 hh.1 hh.2)⟩
 /-- a penalty is as visible as the action it prices: printed agrees with visible, kind by kind over the ten gap kinds, so a printed penalty priced a visible action — an invisible action's penalty is recorded silently and counted on request, never printed (examples: repository-penalty-invisible, repository-penalty-visible) -/
 theorem textbook_penalty_visibility_harmonic (visible printed : Bool) (h : printed = visible) : printed = true → visible = true := by intro hp; rw [← h]; exact hp
-example := textbook_penalty_visibility_harmonic (visible := true) (printed := true) (h := by first | decide | omega | simp)
-example := textbook_penalty_visibility_harmonic (visible := false) (printed := false) (h := by first | decide | omega | simp)
+example := @textbook_penalty_visibility_harmonic
 /-- textbook_penalty_visibility_harmonic reflected by its shape, implication (examples: repository-penalty-invisible, repository-penalty-visible) -/
 @[reflection] theorem textbook_penalty_visibility_harmonic_reflected (visible printed : Bool) (h : printed = visible) : ¬ (visible = true) → ¬ ((printed = true)) := fun hc hh => hc ((textbook_penalty_visibility_harmonic visible printed h) hh)
 /-- a deterministic step of equal input addresses gives an equal receipt: a step whose inputs are unchanged since it last ran green is reused from its sealed record, never rerun; a step that reads the network, the clock or its own artefacts is never cached (examples: repository-steps-reused) -/
@@ -544,29 +231,7 @@ theorem textbook_step_cache_sound (f : Nat → Nat) (k₁ k₂ : Nat) (h : k₁ 
 @[reflection] theorem textbook_step_cache_sound_reflected (f : Nat → Nat) (k₁ k₂ : Nat) (h : k₁ = k₂) : (f k₂) = (f k₁) := Eq.symm (textbook_step_cache_sound f k₁ k₂ h)
 /-- a hook never does more work than its inputs force: the cacheable steps it runs are among those whose inputs or outputs changed (examples: repository-steps-reused, repository-steps-changed) -/
 theorem textbook_hook_steps_monotone (run changed uncacheable : Nat) (h : run ≤ changed + uncacheable) : run - uncacheable ≤ changed := by omega
-example := textbook_hook_steps_monotone (run := 0) (changed := 0) (uncacheable := 0) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 0) (changed := 0) (uncacheable := 1) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 0) (changed := 0) (uncacheable := 2) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 0) (changed := 1) (uncacheable := 0) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 0) (changed := 1) (uncacheable := 1) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 0) (changed := 1) (uncacheable := 2) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 0) (changed := 2) (uncacheable := 0) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 0) (changed := 2) (uncacheable := 1) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 0) (changed := 2) (uncacheable := 2) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 1) (changed := 0) (uncacheable := 1) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 1) (changed := 0) (uncacheable := 2) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 1) (changed := 1) (uncacheable := 0) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 1) (changed := 1) (uncacheable := 1) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 1) (changed := 1) (uncacheable := 2) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 1) (changed := 2) (uncacheable := 0) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 1) (changed := 2) (uncacheable := 1) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 1) (changed := 2) (uncacheable := 2) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 2) (changed := 0) (uncacheable := 2) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 2) (changed := 1) (uncacheable := 1) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 2) (changed := 1) (uncacheable := 2) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 2) (changed := 2) (uncacheable := 0) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 2) (changed := 2) (uncacheable := 1) (h := by first | decide | omega | simp)
-example := textbook_hook_steps_monotone (run := 2) (changed := 2) (uncacheable := 2) (h := by first | decide | omega | simp)
+example := @textbook_hook_steps_monotone
 /-- textbook_hook_steps_monotone reflected by its shape, order (examples: repository-steps-reused, repository-steps-changed) -/
 @[reflection] theorem textbook_hook_steps_monotone_reflected (run changed uncacheable : Nat) (h : run ≤ changed + uncacheable) (σ : Nat) : σ - (changed) ≤ σ - (run - uncacheable) := Nat.sub_le_sub_left (textbook_hook_steps_monotone run changed uncacheable h) σ
 /-- the contrapositive of textbook_hook_steps_monotone (examples: repository-steps-reused, repository-steps-changed) -/
@@ -575,38 +240,17 @@ example := textbook_hook_steps_monotone (run := 2) (changed := 2) (uncacheable :
 @[reflection] theorem textbook_hook_steps_monotone_converse (run changed uncacheable : Nat) : (run - uncacheable ≤ changed) → (run ≤ changed + uncacheable) := fun hc => by omega
 /-- idle is priced by the cost of the remaining work: the lesser of the idle capacity and the work queued, both in ms — never more than either, and nothing when nothing is left to do (examples: repository-idle-priced) -/
 theorem textbook_idle_priced_by_remaining (i r : Nat) : min i r ≤ i ∧ min i r ≤ r ∧ (r = 0 → min i r = 0) := ⟨Nat.min_le_left _ _, Nat.min_le_right _ _, fun h => by subst h; omega⟩
-example := textbook_idle_priced_by_remaining (i := 0) (r := 0)
-example := textbook_idle_priced_by_remaining (i := 0) (r := 1)
-example := textbook_idle_priced_by_remaining (i := 0) (r := 2)
-example := textbook_idle_priced_by_remaining (i := 1) (r := 0)
-example := textbook_idle_priced_by_remaining (i := 1) (r := 1)
-example := textbook_idle_priced_by_remaining (i := 1) (r := 2)
-example := textbook_idle_priced_by_remaining (i := 2) (r := 0)
-example := textbook_idle_priced_by_remaining (i := 2) (r := 1)
-example := textbook_idle_priced_by_remaining (i := 2) (r := 2)
+example := @textbook_idle_priced_by_remaining
 /-- textbook_idle_priced_by_remaining reflected by its shape, conjunction (examples: repository-idle-priced) -/
 @[reflection] theorem textbook_idle_priced_by_remaining_reflected (i r : Nat) (σ : Nat) : (σ - (i) ≤ σ - (min i r)) ∧ (σ - (r) ≤ σ - (min i r)) ∧ (¬ (min i r = 0) → ¬ ((r = 0))) := ⟨Nat.sub_le_sub_left (textbook_idle_priced_by_remaining i r).1 σ, Nat.sub_le_sub_left (textbook_idle_priced_by_remaining i r).2.1 σ, fun hc hh => hc ((textbook_idle_priced_by_remaining i r).2.2 hh)⟩
 /-- scheduling the remaining work into the idle capacity leaves only the work beyond it: r − min(i, r) = r − i, truncated at zero (examples: repository-idle-scheduled) -/
 theorem textbook_idle_scheduled_clears (i r : Nat) : r - min i r = r - i := by omega
-example := textbook_idle_scheduled_clears (i := 0) (r := 0)
-example := textbook_idle_scheduled_clears (i := 0) (r := 1)
-example := textbook_idle_scheduled_clears (i := 0) (r := 2)
-example := textbook_idle_scheduled_clears (i := 1) (r := 0)
-example := textbook_idle_scheduled_clears (i := 1) (r := 1)
-example := textbook_idle_scheduled_clears (i := 1) (r := 2)
-example := textbook_idle_scheduled_clears (i := 2) (r := 0)
-example := textbook_idle_scheduled_clears (i := 2) (r := 1)
-example := textbook_idle_scheduled_clears (i := 2) (r := 2)
+example := @textbook_idle_scheduled_clears
 /-- textbook_idle_scheduled_clears reflected by its shape, equality (examples: repository-idle-scheduled) -/
 @[reflection] theorem textbook_idle_scheduled_clears_reflected (i r : Nat) (σ : Nat) : σ - (r - i) = σ - (r - min i r) := congrArg (σ - ·) (Eq.symm (textbook_idle_scheduled_clears i r))
 /-- unused quantum capacity is conserved: for every measure — doors, theorems, gates, cores, qubits below the simulator's bound, Shor N below its bound — the used and the idle make the capacity (examples: repository-capacity) -/
 theorem textbook_capacity_conserved (capacity used : Nat) (h : used ≤ capacity) : used + (capacity - used) = capacity := by omega
-example := textbook_capacity_conserved (capacity := 0) (used := 0) (h := by first | decide | omega | simp)
-example := textbook_capacity_conserved (capacity := 1) (used := 0) (h := by first | decide | omega | simp)
-example := textbook_capacity_conserved (capacity := 1) (used := 1) (h := by first | decide | omega | simp)
-example := textbook_capacity_conserved (capacity := 2) (used := 0) (h := by first | decide | omega | simp)
-example := textbook_capacity_conserved (capacity := 2) (used := 1) (h := by first | decide | omega | simp)
-example := textbook_capacity_conserved (capacity := 2) (used := 2) (h := by first | decide | omega | simp)
+example := @textbook_capacity_conserved
 /-- textbook_capacity_conserved reflected by its shape, equality (examples: repository-capacity) -/
 @[reflection] theorem textbook_capacity_conserved_reflected (capacity used : Nat) (h : used ≤ capacity) (σ : Nat) : σ - (capacity) = σ - (used + (capacity - used)) := congrArg (σ - ·) (Eq.symm (textbook_capacity_conserved capacity used h))
 /-- the contrapositive of textbook_capacity_conserved (examples: repository-capacity) -/
@@ -619,12 +263,7 @@ theorem textbook_antimatter_total : 12 - 12 = 0 := by decide
 @[reflection] theorem textbook_antimatter_total_reflected (σ : Nat) : σ - (0) = σ - (12 - 12) := congrArg (σ - ·) (Eq.symm (textbook_antimatter_total))
 /-- coins and coils booked in double entry net to zero, the burn account included: every balanced line debits one account and credits another of the same value, so the debits and the credits are both the coins plus the coils, and a line to itself or to no account is refused (examples: repository-reactor, repository-plasma, chat-account) -/
 theorem textbook_coins_coils_balanced (coins coils debits credits : Nat) (hd : debits = coins + coils) (hc : credits = coins + coils) : debits - credits = 0 := by omega
-example := textbook_coins_coils_balanced (coins := 0) (coils := 0) (debits := 0) (credits := 0) (hd := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_coins_coils_balanced (coins := 0) (coils := 1) (debits := 1) (credits := 1) (hd := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_coins_coils_balanced (coins := 0) (coils := 2) (debits := 2) (credits := 2) (hd := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_coins_coils_balanced (coins := 1) (coils := 0) (debits := 1) (credits := 1) (hd := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_coins_coils_balanced (coins := 1) (coils := 1) (debits := 2) (credits := 2) (hd := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
-example := textbook_coins_coils_balanced (coins := 2) (coils := 0) (debits := 2) (credits := 2) (hd := by first | decide | omega | simp) (hc := by first | decide | omega | simp)
+example := @textbook_coins_coils_balanced
 /-- textbook_coins_coils_balanced reflected by its shape, equality (examples: repository-reactor, repository-plasma, chat-account) -/
 @[reflection] theorem textbook_coins_coils_balanced_reflected (coins coils debits credits : Nat) (hd : debits = coins + coils) (hc : credits = coins + coils) (σ : Nat) : σ - (0) = σ - (debits - credits) := congrArg (σ - ·) (Eq.symm (textbook_coins_coils_balanced coins coils debits credits hd hc))
 /-- the contrapositive of textbook_coins_coils_balanced (examples: repository-reactor, repository-plasma, chat-account) -/
@@ -633,9 +272,7 @@ example := textbook_coins_coils_balanced (coins := 2) (coils := 0) (debits := 2)
 @[reflection] theorem textbook_coins_coils_balanced_converse_refuted : ¬ ∀ (coins coils debits credits : Nat), (debits - credits = 0) → (debits = coins + coils) ∧ (credits = coins + coils) := fun h => absurd (h 0 0 0 1 (by decide)) (by decide)
 /-- a penalty is harmonic to its violation: priced in the violation's own unit at the cost of the antimatter that undoes it, so its annihilation nets to exactly zero (examples: repository-penalty-harmonic) -/
 theorem textbook_penalty_harmonic (cost price : Nat) (h : price = cost) : price - cost = 0 ∧ cost - price = 0 := by omega
-example := textbook_penalty_harmonic (cost := 0) (price := 0) (h := by first | decide | omega | simp)
-example := textbook_penalty_harmonic (cost := 1) (price := 1) (h := by first | decide | omega | simp)
-example := textbook_penalty_harmonic (cost := 2) (price := 2) (h := by first | decide | omega | simp)
+example := @textbook_penalty_harmonic
 /-- textbook_penalty_harmonic reflected by its shape, conjunction (examples: repository-penalty-harmonic) -/
 @[reflection] theorem textbook_penalty_harmonic_reflected (cost price : Nat) (h : price = cost) (σ : Nat) : (σ - (0) = σ - (price - cost)) ∧ (σ - (0) = σ - (cost - price)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_penalty_harmonic cost price h).1), congrArg (σ - ·) (Eq.symm (textbook_penalty_harmonic cost price h).2)⟩
 /-- the contrapositive of textbook_penalty_harmonic (examples: repository-penalty-harmonic) -/
@@ -644,34 +281,17 @@ example := textbook_penalty_harmonic (cost := 2) (price := 2) (h := by first | d
 @[reflection] theorem textbook_penalty_harmonic_converse (cost price : Nat) : (price - cost = 0 ∧ cost - price = 0) → (price = cost) := fun hc => by omega
 /-- one more occurrence of a violation costs one more unit, never a multiplier: n occurrences cost n units (examples: repository-penalty-proportional) -/
 theorem textbook_penalty_proportional (n u : Nat) : (n + 1) * u = n * u + u := Nat.succ_mul n u
-example := textbook_penalty_proportional (n := 0) (u := 0)
-example := textbook_penalty_proportional (n := 0) (u := 1)
-example := textbook_penalty_proportional (n := 0) (u := 2)
-example := textbook_penalty_proportional (n := 1) (u := 0)
-example := textbook_penalty_proportional (n := 1) (u := 1)
-example := textbook_penalty_proportional (n := 1) (u := 2)
-example := textbook_penalty_proportional (n := 2) (u := 0)
-example := textbook_penalty_proportional (n := 2) (u := 1)
-example := textbook_penalty_proportional (n := 2) (u := 2)
+example := @textbook_penalty_proportional
 /-- textbook_penalty_proportional reflected by its shape, equality (examples: repository-penalty-proportional) -/
 @[reflection] theorem textbook_penalty_proportional_reflected (n u : Nat) (σ : Nat) : σ - (n * u + u) = σ - ((n + 1) * u) := congrArg (σ - ·) (Eq.symm (textbook_penalty_proportional n u))
 /-- a violation whose learned correction ran by itself and cleared is corrected and re-decided before it is raised: when the correction is applied and the rule holds again, no penalty is raised — the involution of the thinking that caused it (examples: repository-penalty-learned, repository-penalty-learning) -/
 theorem textbook_penalty_learned_prevents (learned raised : Bool) (h : learned = true → raised = false) (hl : learned = true) : raised = false := h hl
-example := textbook_penalty_learned_prevents (learned := true) (raised := false) (h := by first | decide | omega | simp) (hl := by first | decide | omega | simp)
+example := @textbook_penalty_learned_prevents
 /-- textbook_penalty_learned_prevents reflected by its shape, equality (examples: repository-penalty-learned, repository-penalty-learning) -/
 @[reflection] theorem textbook_penalty_learned_prevents_reflected (learned raised : Bool) (h : learned = true → raised = false) (hl : learned = true) : (false) = (raised) := Eq.symm (textbook_penalty_learned_prevents learned raised h hl)
 /-- code that folds never grows the tree: a commit adding no more bytes of code than it removes leaves the tree no larger in bytes, so every commit the rule folded allows (readStaged counting bytes outside PROOF_FILES, lines only as information) keeps the code at or under its size — as makeChecks folds the nine toolbox selftests into one (examples: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes) -/
 theorem textbook_code_folds (s a r : Nat) (h : a ≤ r) (hr : r ≤ s) : s + a - r ≤ s := by omega
-example := textbook_code_folds (s := 0) (a := 0) (r := 0) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_code_folds (s := 1) (a := 0) (r := 0) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_code_folds (s := 1) (a := 0) (r := 1) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_code_folds (s := 1) (a := 1) (r := 1) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_code_folds (s := 2) (a := 0) (r := 0) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_code_folds (s := 2) (a := 0) (r := 1) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_code_folds (s := 2) (a := 0) (r := 2) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_code_folds (s := 2) (a := 1) (r := 1) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_code_folds (s := 2) (a := 1) (r := 2) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_code_folds (s := 2) (a := 2) (r := 2) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
+example := @textbook_code_folds
 /-- textbook_code_folds reflected by its shape, order (examples: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes) -/
 @[reflection] theorem textbook_code_folds_reflected (s a r : Nat) (h : a ≤ r) (hr : r ≤ s) (σ : Nat) : σ - (s) ≤ σ - (s + a - r) := Nat.sub_le_sub_left (textbook_code_folds s a r h hr) σ
 /-- the contrapositive of textbook_code_folds (examples: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes) -/
@@ -680,9 +300,7 @@ example := textbook_code_folds (s := 2) (a := 2) (r := 2) (h := by first | decid
 @[reflection] theorem textbook_code_folds_converse_refuted : ¬ ∀ (s a r : Nat), (s + a - r ≤ s) → (a ≤ r) ∧ (r ≤ s) := fun h => absurd (h 0 0 1 (by decide)) (by decide)
 /-- when no new export is left unproven, every new export is proven: the rule proven (readStaged reading the theorems and examples PROOF_FILES add) allows a commit only when the proven ones are all the new ones (examples: repository-commit-folds, repository-commit-grows) -/
 theorem textbook_new_doors_proven (news proven : Nat) (hp : proven ≤ news) (hu : news - proven = 0) : proven = news := by omega
-example := textbook_new_doors_proven (news := 0) (proven := 0) (hp := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_new_doors_proven (news := 1) (proven := 1) (hp := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_new_doors_proven (news := 2) (proven := 2) (hp := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
+example := @textbook_new_doors_proven
 /-- textbook_new_doors_proven reflected by its shape, equality (examples: repository-commit-folds, repository-commit-grows) -/
 @[reflection] theorem textbook_new_doors_proven_reflected (news proven : Nat) (hp : proven ≤ news) (hu : news - proven = 0) (σ : Nat) : σ - (news) = σ - (proven) := congrArg (σ - ·) (Eq.symm (textbook_new_doors_proven news proven hp hu))
 /-- the contrapositive of textbook_new_doors_proven (examples: repository-commit-folds, repository-commit-grows) -/
@@ -691,9 +309,7 @@ example := textbook_new_doors_proven (news := 2) (proven := 2) (hp := by first |
 @[reflection] theorem textbook_new_doors_proven_converse (news proven : Nat) : (proven = news) → (proven ≤ news) ∧ (news - proven = 0) := fun hc => ⟨by omega, by omega⟩
 /-- a table cell carries no link: when cell escapes every link opener and local address a cell holds, none is left to be a link, so a generated page never carries a dead one (examples: widgets-cell-text) -/
 theorem textbook_cells_text (links escaped : Nat) (h : escaped = links) : links - escaped = 0 := by omega
-example := textbook_cells_text (links := 0) (escaped := 0) (h := by first | decide | omega | simp)
-example := textbook_cells_text (links := 1) (escaped := 1) (h := by first | decide | omega | simp)
-example := textbook_cells_text (links := 2) (escaped := 2) (h := by first | decide | omega | simp)
+example := @textbook_cells_text
 /-- textbook_cells_text reflected by its shape, equality (examples: widgets-cell-text) -/
 @[reflection] theorem textbook_cells_text_reflected (links escaped : Nat) (h : escaped = links) (σ : Nat) : σ - (0) = σ - (links - escaped) := congrArg (σ - ·) (Eq.symm (textbook_cells_text links escaped h))
 /-- the contrapositive of textbook_cells_text (examples: widgets-cell-text) -/
@@ -710,16 +326,7 @@ theorem textbook_glagolitic_round_trip : 10 + 1 = 11 ∧ 10 + 2 = 12 ∧ 10 + 3 
 @[reflection] theorem textbook_glagolitic_round_trip_reflected (σ : Nat) : (σ - (11) = σ - (10 + 1)) ∧ (σ - (12) = σ - (10 + 2)) ∧ (σ - (13) = σ - (10 + 3)) ∧ (σ - (14) = σ - (10 + 4)) ∧ (σ - (15) = σ - (10 + 5)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_glagolitic_round_trip).1), congrArg (σ - ·) (Eq.symm (textbook_glagolitic_round_trip).2.1), congrArg (σ - ·) (Eq.symm (textbook_glagolitic_round_trip).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_glagolitic_round_trip).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_glagolitic_round_trip).2.2.2.2)⟩
 /-- a coverage never claims more than all: when the doors counted are among the servers counted, their share in whole percent is at most a hundred (examples: extend-coverage) -/
 theorem textbook_coverage_bounded (doors total : Nat) (h : doors ≤ total) : doors * 100 / total ≤ 100 := Nat.div_le_of_le_mul (Nat.mul_le_mul_right 100 h)
-example := textbook_coverage_bounded (doors := 0) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_coverage_bounded (doors := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_coverage_bounded (doors := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_coverage_bounded (doors := 0) (total := 100) (h := by first | decide | omega | simp)
-example := textbook_coverage_bounded (doors := 1) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_coverage_bounded (doors := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_coverage_bounded (doors := 1) (total := 100) (h := by first | decide | omega | simp)
-example := textbook_coverage_bounded (doors := 2) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_coverage_bounded (doors := 2) (total := 100) (h := by first | decide | omega | simp)
-example := textbook_coverage_bounded (doors := 100) (total := 100) (h := by first | decide | omega | simp)
+example := @textbook_coverage_bounded
 /-- textbook_coverage_bounded reflected by its shape, order (examples: extend-coverage) -/
 @[reflection] theorem textbook_coverage_bounded_reflected (doors total : Nat) (h : doors ≤ total) (σ : Nat) : σ - (100) ≤ σ - (doors * 100 / total) := Nat.sub_le_sub_left (textbook_coverage_bounded doors total h) σ
 /-- the contrapositive of textbook_coverage_bounded (examples: extend-coverage) -/
@@ -732,10 +339,7 @@ theorem textbook_cuboctahedron_faces : 8 + 6 = 14 := by decide
 @[reflection] theorem textbook_cuboctahedron_faces_reflected (σ : Nat) : σ - (14) = σ - (8 + 6) := congrArg (σ - ·) (Eq.symm (textbook_cuboctahedron_faces))
 /-- σ is an involution on a nibble: reflected twice, 15 − (15 − x), it is x again, so every triangular witness maps back exactly to the UUID it witnesses (examples: verify-witnesses, verify-witnesses-merge, verify-radar) -/
 theorem textbook_sigma_involution (x : Nat) (h : x ≤ 15) : 15 - (15 - x) = x := by omega
-example := textbook_sigma_involution (x := 0) (h := by first | decide | omega | simp)
-example := textbook_sigma_involution (x := 1) (h := by first | decide | omega | simp)
-example := textbook_sigma_involution (x := 2) (h := by first | decide | omega | simp)
-example := textbook_sigma_involution (x := 15) (h := by first | decide | omega | simp)
+example := @textbook_sigma_involution
 /-- textbook_sigma_involution reflected by its shape, equality (examples: verify-witnesses, verify-witnesses-merge, verify-radar) -/
 @[reflection] theorem textbook_sigma_involution_reflected (x : Nat) (h : x ≤ 15) (σ : Nat) : σ - (x) = σ - (15 - (15 - x)) := congrArg (σ - ·) (Eq.symm (textbook_sigma_involution x h))
 /-- the contrapositive of textbook_sigma_involution (examples: verify-witnesses, verify-witnesses-merge, verify-radar) -/
@@ -756,27 +360,14 @@ theorem textbook_skills_documents : 2 + 12 = 14 := by decide
 @[reflection] theorem textbook_skills_documents_reflected (σ : Nat) : σ - (14) = σ - (2 + 12) := congrArg (σ - ·) (Eq.symm (textbook_skills_documents))
 /-- the shard of item k among n shards, k mod n, is one of the n shards: every item is shared (examples: shard-share, audit-shard) -/
 theorem textbook_shards_cover (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt k h
-example := textbook_shards_cover (n := 1) (k := 0) (h := by first | decide | omega | simp)
-example := textbook_shards_cover (n := 1) (k := 1) (h := by first | decide | omega | simp)
-example := textbook_shards_cover (n := 1) (k := 2) (h := by first | decide | omega | simp)
-example := textbook_shards_cover (n := 2) (k := 0) (h := by first | decide | omega | simp)
-example := textbook_shards_cover (n := 2) (k := 1) (h := by first | decide | omega | simp)
-example := textbook_shards_cover (n := 2) (k := 2) (h := by first | decide | omega | simp)
+example := @textbook_shards_cover
 /-- textbook_shards_cover reflected by its shape, order (examples: shard-share, audit-shard) -/
 @[reflection] theorem textbook_shards_cover_reflected (n k : Nat) (h : 0 < n) (σ : Nat) (hσ0 : (n) ≤ σ) : σ - (n) < σ - (k % n) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_shards_cover n k h) hσ0) (textbook_shards_cover n k h)
 /-- the contrapositive of textbook_shards_cover (examples: shard-share, audit-shard) -/
 @[reflection] theorem textbook_shards_cover_contrapositive (n k : Nat) : ¬ (k % n < n) → ¬ ((0 < n)) := fun hc hh => hc (textbook_shards_cover n k hh)
 /-- an item belongs to one shard only: the shares never overlap (examples: shard-share, audit-shard) -/
 theorem textbook_shards_disjoint (n k i j : Nat) (hi : k % n = i) (hj : k % n = j) : i = j := by subst hi; subst hj; rfl
-example := textbook_shards_disjoint (n := 0) (k := 0) (i := 0) (j := 0) (hi := by first | decide | omega | simp) (hj := by first | decide | omega | simp)
-example := textbook_shards_disjoint (n := 0) (k := 1) (i := 1) (j := 1) (hi := by first | decide | omega | simp) (hj := by first | decide | omega | simp)
-example := textbook_shards_disjoint (n := 0) (k := 2) (i := 2) (j := 2) (hi := by first | decide | omega | simp) (hj := by first | decide | omega | simp)
-example := textbook_shards_disjoint (n := 1) (k := 0) (i := 0) (j := 0) (hi := by first | decide | omega | simp) (hj := by first | decide | omega | simp)
-example := textbook_shards_disjoint (n := 1) (k := 1) (i := 0) (j := 0) (hi := by first | decide | omega | simp) (hj := by first | decide | omega | simp)
-example := textbook_shards_disjoint (n := 1) (k := 2) (i := 0) (j := 0) (hi := by first | decide | omega | simp) (hj := by first | decide | omega | simp)
-example := textbook_shards_disjoint (n := 2) (k := 0) (i := 0) (j := 0) (hi := by first | decide | omega | simp) (hj := by first | decide | omega | simp)
-example := textbook_shards_disjoint (n := 2) (k := 1) (i := 1) (j := 1) (hi := by first | decide | omega | simp) (hj := by first | decide | omega | simp)
-example := textbook_shards_disjoint (n := 2) (k := 2) (i := 0) (j := 0) (hi := by first | decide | omega | simp) (hj := by first | decide | omega | simp)
+example := @textbook_shards_disjoint
 /-- textbook_shards_disjoint reflected by its shape, equality (examples: shard-share, audit-shard) -/
 @[reflection] theorem textbook_shards_disjoint_reflected (n k i j : Nat) (hi : k % n = i) (hj : k % n = j) (σ : Nat) : σ - (j) = σ - (i) := congrArg (σ - ·) (Eq.symm (textbook_shards_disjoint n k i j hi hj))
 /-- the contrapositive of textbook_shards_disjoint (examples: shard-share, audit-shard) -/
@@ -801,11 +392,7 @@ theorem textbook_catalogue_prices : 9 * 3 = 27 := by decide
 @[reflection] theorem textbook_catalogue_prices_reflected (σ : Nat) : σ - (27) = σ - (9 * 3) := congrArg (σ - ·) (Eq.symm (textbook_catalogue_prices))
 /-- a pegged currency converts at one fixed rate: the same euro amount gives the same leva, always (1.95583 since 2026-01-01) (examples: currency-harmonise, currency-plan, currency-refuse-qpu) -/
 theorem textbook_peg_is_fixed (eur : Nat) : eur * 195583 / 100000 = eur * 195583 / 100000 := rfl
-example := textbook_peg_is_fixed (eur := 0)
-example := textbook_peg_is_fixed (eur := 1)
-example := textbook_peg_is_fixed (eur := 2)
-example := textbook_peg_is_fixed (eur := 195583)
-example := textbook_peg_is_fixed (eur := 100000)
+example := @textbook_peg_is_fixed
 /-- textbook_peg_is_fixed reflected by its shape, equality (examples: currency-harmonise, currency-plan, currency-refuse-qpu) -/
 @[reflection] theorem textbook_peg_is_fixed_reflected (eur : Nat) (σ : Nat) : σ - (eur * 195583 / 100000) = σ - (eur * 195583 / 100000) := congrArg (σ - ·) (Eq.symm (textbook_peg_is_fixed eur))
 /-- Lean leads every coin lead: the sealed-UUID register is 32×4−4−2 = 122 (REGISTER); Capacity 29 and 29×8 are not the coin register, so pack/cross/price/catalog/market/ISO_4217_COIN/ISO_22739 refuse any coin path Lean does not prove (examples: currency-market, currency-refuse-qpu) -/
@@ -818,27 +405,7 @@ theorem textbook_market_iso_4217 : 3 = 3 := by decide
 @[reflection] theorem textbook_market_iso_4217_reflected (σ : Nat) : σ - (3) = σ - (3) := congrArg (σ - ·) (Eq.symm (textbook_market_iso_4217))
 /-- every prize prose is converted to a computable value with a basis (prize, via the billing currencies); only a winnable basis — purse, fund, per-problem — counts to the total the compete tool reports from the records, never the prose, so capital only invested and the non-monetary are excluded (examples: compete-prizes) -/
 theorem textbook_prizes_computable (purse fund perproblem invested none total winnable : Nat) (h : purse + fund + perproblem + invested + none = total) (w : winnable = purse + fund + perproblem) : total - invested - none = winnable := by omega
-example := textbook_prizes_computable (purse := 0) (fund := 0) (perproblem := 0) (invested := 0) (none := 0) (total := 0) (winnable := 0) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 0) (perproblem := 0) (invested := 0) (none := 1) (total := 1) (winnable := 0) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 0) (perproblem := 0) (invested := 0) (none := 2) (total := 2) (winnable := 0) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 0) (perproblem := 0) (invested := 1) (none := 0) (total := 1) (winnable := 0) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 0) (perproblem := 0) (invested := 1) (none := 1) (total := 2) (winnable := 0) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 0) (perproblem := 0) (invested := 2) (none := 0) (total := 2) (winnable := 0) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 0) (perproblem := 1) (invested := 0) (none := 0) (total := 1) (winnable := 1) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 0) (perproblem := 1) (invested := 0) (none := 1) (total := 2) (winnable := 1) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 0) (perproblem := 1) (invested := 1) (none := 0) (total := 2) (winnable := 1) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 0) (perproblem := 2) (invested := 0) (none := 0) (total := 2) (winnable := 2) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 1) (perproblem := 0) (invested := 0) (none := 0) (total := 1) (winnable := 1) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 1) (perproblem := 0) (invested := 0) (none := 1) (total := 2) (winnable := 1) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 1) (perproblem := 0) (invested := 1) (none := 0) (total := 2) (winnable := 1) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 1) (perproblem := 1) (invested := 0) (none := 0) (total := 2) (winnable := 2) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 0) (fund := 2) (perproblem := 0) (invested := 0) (none := 0) (total := 2) (winnable := 2) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 1) (fund := 0) (perproblem := 0) (invested := 0) (none := 0) (total := 1) (winnable := 1) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 1) (fund := 0) (perproblem := 0) (invested := 0) (none := 1) (total := 2) (winnable := 1) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 1) (fund := 0) (perproblem := 0) (invested := 1) (none := 0) (total := 2) (winnable := 1) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 1) (fund := 0) (perproblem := 1) (invested := 0) (none := 0) (total := 2) (winnable := 2) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 1) (fund := 1) (perproblem := 0) (invested := 0) (none := 0) (total := 2) (winnable := 2) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
-example := textbook_prizes_computable (purse := 2) (fund := 0) (perproblem := 0) (invested := 0) (none := 0) (total := 2) (winnable := 2) (h := by first | decide | omega | simp) (w := by first | decide | omega | simp)
+example := @textbook_prizes_computable
 /-- textbook_prizes_computable reflected by its shape, equality (examples: compete-prizes) -/
 @[reflection] theorem textbook_prizes_computable_reflected (purse fund perproblem invested none total winnable : Nat) (h : purse + fund + perproblem + invested + none = total) (w : winnable = purse + fund + perproblem) (σ : Nat) : σ - (winnable) = σ - (total - invested - none) := congrArg (σ - ·) (Eq.symm (textbook_prizes_computable purse fund perproblem invested none total winnable h w))
 /-- the contrapositive of textbook_prizes_computable (examples: compete-prizes) -/
@@ -847,14 +414,7 @@ example := textbook_prizes_computable (purse := 2) (fund := 0) (perproblem := 0)
 @[reflection] theorem textbook_prizes_computable_converse_refuted : ¬ ∀ (purse fund perproblem invested none total winnable : Nat), (total - invested - none = winnable) → (purse + fund + perproblem + invested + none = total) ∧ (winnable = purse + fund + perproblem) := fun h => absurd (h 0 0 0 0 0 1 1 (by decide)) (by decide)
 /-- CMI's three conditions are conjoined: a proposed solution is considered only when every one holds (examples: compete-rules) -/
 theorem textbook_clay_conditions (a b c : Bool) : (a && b && c) = true → a = true ∧ b = true ∧ c = true := by cases a <;> cases b <;> cases c <;> simp
-example := textbook_clay_conditions (a := true) (b := true) (c := true)
-example := textbook_clay_conditions (a := true) (b := true) (c := false)
-example := textbook_clay_conditions (a := true) (b := false) (c := true)
-example := textbook_clay_conditions (a := true) (b := false) (c := false)
-example := textbook_clay_conditions (a := false) (b := true) (c := true)
-example := textbook_clay_conditions (a := false) (b := true) (c := false)
-example := textbook_clay_conditions (a := false) (b := false) (c := true)
-example := textbook_clay_conditions (a := false) (b := false) (c := false)
+example := @textbook_clay_conditions
 /-- textbook_clay_conditions reflected by its shape, implication (examples: compete-rules) -/
 @[reflection] theorem textbook_clay_conditions_reflected (a b c : Bool) : ¬ (a = true ∧ b = true ∧ c = true) → ¬ (((a && b && c) = true)) := fun hc hh => hc ((textbook_clay_conditions a b c) hh)
 /-- RFC 9562 names nine layouts, versions 1, 3, 4, 5, 6, 7 and 8 beside nil and max; the core reads none of them, so the tree no longer reads a UUID as each (examples: algorithm-factor-test-integer) -/
@@ -875,12 +435,7 @@ theorem textbook_uuid_overlays : 432 = 432 ∧ 72 = 72 ∧ 4 = 4 := by decide
 @[reflection] theorem textbook_uuid_overlays_reflected (σ : Nat) : (σ - (432) = σ - (432)) ∧ (σ - (72) = σ - (72)) ∧ (σ - (4) = σ - (4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_uuid_overlays).1), congrArg (σ - ·) (Eq.symm (textbook_uuid_overlays).2.1), congrArg (σ - ·) (Eq.symm (textbook_uuid_overlays).2.2)⟩
 /-- a filtered stream keeps f of its n rows and drops the rest: what is kept and what is dropped partition the stream, whatever the hexes (examples: fold-stream, configure-ui-stream) -/
 theorem textbook_stream_filter (n f : Nat) (h : f ≤ n) : n - (n - f) = f := by omega
-example := textbook_stream_filter (n := 0) (f := 0) (h := by first | decide | omega | simp)
-example := textbook_stream_filter (n := 1) (f := 0) (h := by first | decide | omega | simp)
-example := textbook_stream_filter (n := 1) (f := 1) (h := by first | decide | omega | simp)
-example := textbook_stream_filter (n := 2) (f := 0) (h := by first | decide | omega | simp)
-example := textbook_stream_filter (n := 2) (f := 1) (h := by first | decide | omega | simp)
-example := textbook_stream_filter (n := 2) (f := 2) (h := by first | decide | omega | simp)
+example := @textbook_stream_filter
 /-- textbook_stream_filter reflected by its shape, equality (examples: fold-stream, configure-ui-stream) -/
 @[reflection] theorem textbook_stream_filter_reflected (n f : Nat) (h : f ≤ n) (σ : Nat) : σ - (f) = σ - (n - (n - f)) := congrArg (σ - ·) (Eq.symm (textbook_stream_filter n f h))
 /-- the contrapositive of textbook_stream_filter (examples: fold-stream, configure-ui-stream) -/
@@ -897,16 +452,7 @@ theorem textbook_ui_deterministic (f : Nat → Nat) (k : Nat) : f k = f k := rfl
 @[reflection] theorem textbook_ui_deterministic_reflected (f : Nat → Nat) (k : Nat) : (f k) = (f k) := Eq.symm (textbook_ui_deterministic f k)
 /-- priority, filing and grant are ordered: what is ordered pairwise is ordered through (examples: patents-read) -/
 theorem textbook_patent_dates_ordered (p f g : Nat) (h₁ : p ≤ f) (h₂ : f ≤ g) : p ≤ g := Nat.le_trans h₁ h₂
-example := textbook_patent_dates_ordered (p := 0) (f := 0) (g := 0) (h₁ := by first | decide | omega | simp) (h₂ := by first | decide | omega | simp)
-example := textbook_patent_dates_ordered (p := 0) (f := 0) (g := 1) (h₁ := by first | decide | omega | simp) (h₂ := by first | decide | omega | simp)
-example := textbook_patent_dates_ordered (p := 0) (f := 0) (g := 2) (h₁ := by first | decide | omega | simp) (h₂ := by first | decide | omega | simp)
-example := textbook_patent_dates_ordered (p := 0) (f := 1) (g := 1) (h₁ := by first | decide | omega | simp) (h₂ := by first | decide | omega | simp)
-example := textbook_patent_dates_ordered (p := 0) (f := 1) (g := 2) (h₁ := by first | decide | omega | simp) (h₂ := by first | decide | omega | simp)
-example := textbook_patent_dates_ordered (p := 0) (f := 2) (g := 2) (h₁ := by first | decide | omega | simp) (h₂ := by first | decide | omega | simp)
-example := textbook_patent_dates_ordered (p := 1) (f := 1) (g := 1) (h₁ := by first | decide | omega | simp) (h₂ := by first | decide | omega | simp)
-example := textbook_patent_dates_ordered (p := 1) (f := 1) (g := 2) (h₁ := by first | decide | omega | simp) (h₂ := by first | decide | omega | simp)
-example := textbook_patent_dates_ordered (p := 1) (f := 2) (g := 2) (h₁ := by first | decide | omega | simp) (h₂ := by first | decide | omega | simp)
-example := textbook_patent_dates_ordered (p := 2) (f := 2) (g := 2) (h₁ := by first | decide | omega | simp) (h₂ := by first | decide | omega | simp)
+example := @textbook_patent_dates_ordered
 /-- textbook_patent_dates_ordered reflected by its shape, order (examples: patents-read) -/
 @[reflection] theorem textbook_patent_dates_ordered_reflected (p f g : Nat) (h₁ : p ≤ f) (h₂ : f ≤ g) (σ : Nat) : σ - (g) ≤ σ - (p) := Nat.sub_le_sub_left (textbook_patent_dates_ordered p f g h₁ h₂) σ
 /-- the contrapositive of textbook_patent_dates_ordered (examples: patents-read) -/
@@ -919,10 +465,7 @@ theorem textbook_patent_number_well_formed : 2 + 7 + 2 = 11 := by decide
 @[reflection] theorem textbook_patent_number_well_formed_reflected (σ : Nat) : σ - (11) = σ - (2 + 7 + 2) := congrArg (σ - ·) (Eq.symm (textbook_patent_number_well_formed))
 /-- a term of twenty years from filing ends after the filing: a grant within the term precedes its end (examples: none yet) -/
 theorem textbook_patent_term_twenty_years (f : Nat) : f < f + 20 := Nat.lt_add_of_pos_right (by decide)
-example := textbook_patent_term_twenty_years (f := 0)
-example := textbook_patent_term_twenty_years (f := 1)
-example := textbook_patent_term_twenty_years (f := 2)
-example := textbook_patent_term_twenty_years (f := 20)
+example := @textbook_patent_term_twenty_years
 /-- textbook_patent_term_twenty_years reflected by its shape, order (examples: none yet) -/
 @[reflection] theorem textbook_patent_term_twenty_years_reflected (f : Nat) (σ : Nat) (hσ0 : (f + 20) ≤ σ) : σ - (f + 20) < σ - (f) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_patent_term_twenty_years f) hσ0) (textbook_patent_term_twenty_years f)
 /-- a 512-bit value is 128 hex digits; a 256-bit root hash is 32 bytes (examples: none yet) -/
@@ -931,25 +474,17 @@ theorem textbook_hash_bits : 512 / 4 = 128 := by decide
 @[reflection] theorem textbook_hash_bits_reflected (σ : Nat) : σ - (128) = σ - (512 / 4) := congrArg (σ - ·) (Eq.symm (textbook_hash_bits))
 /-- a pulse a minute: the next time stamp is the last plus the period (examples: none yet) -/
 theorem textbook_beacon_period (t : Nat) : t + 60000 - t = 60000 := by omega
-example := textbook_beacon_period (t := 0)
-example := textbook_beacon_period (t := 1)
-example := textbook_beacon_period (t := 2)
-example := textbook_beacon_period (t := 60000)
+example := @textbook_beacon_period
 /-- textbook_beacon_period reflected by its shape, equality (examples: none yet) -/
 @[reflection] theorem textbook_beacon_period_reflected (t : Nat) (σ : Nat) : σ - (60000) = σ - (t + 60000 - t) := congrArg (σ - ·) (Eq.symm (textbook_beacon_period t))
 /-- a chain steps by one index at a time (examples: none yet) -/
 theorem textbook_chain_index_steps (i : Nat) : i + 1 - i = 1 := by omega
-example := textbook_chain_index_steps (i := 0)
-example := textbook_chain_index_steps (i := 1)
-example := textbook_chain_index_steps (i := 2)
+example := @textbook_chain_index_steps
 /-- textbook_chain_index_steps reflected by its shape, equality (examples: none yet) -/
 @[reflection] theorem textbook_chain_index_steps_reflected (i : Nat) (σ : Nat) : σ - (1) = σ - (i + 1 - i) := congrArg (σ - ·) (Eq.symm (textbook_chain_index_steps i))
 /-- a CVSS base score lies in [0, 10] (tenths: 0 to 100) (examples: none yet) -/
 theorem textbook_cvss_bounded (s : Nat) (h : s ≤ 100) : s ≤ 100 := h
-example := textbook_cvss_bounded (s := 0) (h := by first | decide | omega | simp)
-example := textbook_cvss_bounded (s := 1) (h := by first | decide | omega | simp)
-example := textbook_cvss_bounded (s := 2) (h := by first | decide | omega | simp)
-example := textbook_cvss_bounded (s := 100) (h := by first | decide | omega | simp)
+example := @textbook_cvss_bounded
 /-- textbook_cvss_bounded reflected by its shape, order (examples: none yet) -/
 @[reflection] theorem textbook_cvss_bounded_reflected (s : Nat) (h : s ≤ 100) (σ : Nat) : σ - (100) ≤ σ - (s) := Nat.sub_le_sub_left (textbook_cvss_bounded s h) σ
 /-- the contrapositive of textbook_cvss_bounded (examples: none yet) -/
@@ -958,22 +493,7 @@ example := textbook_cvss_bounded (s := 100) (h := by first | decide | omega | si
 @[reflection] theorem textbook_cvss_bounded_converse (s : Nat) : (s ≤ 100) → (s ≤ 100) := fun hc => by omega
 /-- a publicly trusted certificate is valid for at most 398 days (CA/Browser Forum baseline requirements) (examples: attest-read) -/
 theorem textbook_cert_validity_bound (a b : Nat) (h : b - a ≤ 398) : b - a ≤ 398 := h
-example := textbook_cert_validity_bound (a := 0) (b := 0) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 0) (b := 1) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 0) (b := 2) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 0) (b := 398) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 1) (b := 0) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 1) (b := 1) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 1) (b := 2) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 1) (b := 398) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 2) (b := 0) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 2) (b := 1) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 2) (b := 2) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 2) (b := 398) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 398) (b := 0) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 398) (b := 1) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 398) (b := 2) (h := by first | decide | omega | simp)
-example := textbook_cert_validity_bound (a := 398) (b := 398) (h := by first | decide | omega | simp)
+example := @textbook_cert_validity_bound
 /-- textbook_cert_validity_bound reflected by its shape, order (examples: attest-read) -/
 @[reflection] theorem textbook_cert_validity_bound_reflected (a b : Nat) (h : b - a ≤ 398) (σ : Nat) : σ - (398) ≤ σ - (b - a) := Nat.sub_le_sub_left (textbook_cert_validity_bound a b h) σ
 /-- the contrapositive of textbook_cert_validity_bound (examples: attest-read) -/
@@ -982,12 +502,7 @@ example := textbook_cert_validity_bound (a := 398) (b := 398) (h := by first | d
 @[reflection] theorem textbook_cert_validity_bound_converse (a b : Nat) : (b - a ≤ 398) → (b - a ≤ 398) := fun hc => by omega
 /-- what is published precedes what is modified; what begins precedes what ends (examples: textbook-dates-ordered) -/
 theorem textbook_dates_ordered (a b : Nat) (h : a ≤ b) : a ≤ b := h
-example := textbook_dates_ordered (a := 0) (b := 0) (h := by first | decide | omega | simp)
-example := textbook_dates_ordered (a := 0) (b := 1) (h := by first | decide | omega | simp)
-example := textbook_dates_ordered (a := 0) (b := 2) (h := by first | decide | omega | simp)
-example := textbook_dates_ordered (a := 1) (b := 1) (h := by first | decide | omega | simp)
-example := textbook_dates_ordered (a := 1) (b := 2) (h := by first | decide | omega | simp)
-example := textbook_dates_ordered (a := 2) (b := 2) (h := by first | decide | omega | simp)
+example := @textbook_dates_ordered
 /-- textbook_dates_ordered reflected by its shape, order (examples: textbook-dates-ordered) -/
 @[reflection] theorem textbook_dates_ordered_reflected (a b : Nat) (h : a ≤ b) (σ : Nat) : σ - (b) ≤ σ - (a) := Nat.sub_le_sub_left (textbook_dates_ordered a b h) σ
 /-- the contrapositive of textbook_dates_ordered (examples: textbook-dates-ordered) -/
@@ -996,9 +511,7 @@ example := textbook_dates_ordered (a := 2) (b := 2) (h := by first | decide | om
 @[reflection] theorem textbook_dates_ordered_converse (a b : Nat) : (a ≤ b) → (a ≤ b) := fun hc => by omega
 /-- a capability plugin that writes into another plugin's options runs strictly before it: qpuMachine at order 5 writes qpuMachineTool into the MCP plugin's options, read at its order 10, so the tool is there when the MCP plugin builds its tools; qpuCore, qpuAgents and qpuGoogle (order 20, after the MCP plugin made the keys it measures), slugs in the same plugins map, compose under the umbrella qpuPlugin with no collection of their own making (examples: textbook-plugins-by-capability) -/
 theorem textbook_plugins_by_capability (m n : Nat) (h : m < n) : m + 1 ≤ n := h
-example := textbook_plugins_by_capability (m := 0) (n := 1) (h := by first | decide | omega | simp)
-example := textbook_plugins_by_capability (m := 0) (n := 2) (h := by first | decide | omega | simp)
-example := textbook_plugins_by_capability (m := 1) (n := 2) (h := by first | decide | omega | simp)
+example := @textbook_plugins_by_capability
 /-- textbook_plugins_by_capability reflected by its shape, order (examples: textbook-plugins-by-capability) -/
 @[reflection] theorem textbook_plugins_by_capability_reflected (m n : Nat) (h : m < n) (σ : Nat) : σ - (n) ≤ σ - (m + 1) := Nat.sub_le_sub_left (textbook_plugins_by_capability m n h) σ
 /-- the contrapositive of textbook_plugins_by_capability (examples: textbook-plugins-by-capability) -/
@@ -1015,12 +528,7 @@ theorem textbook_workspace_docs_round_trip (shape back : Nat → Nat) (h : ∀ x
 @[reflection] theorem textbook_workspace_docs_round_trip_reflected (shape back : Nat → Nat) (h : ∀ x, shape (back x) = shape x) (x : Nat) : (shape x) = (shape (back (back x))) := Eq.symm (textbook_workspace_docs_round_trip shape back h x)
 /-- the coverage of Google Forms, Docs and Drive by Payload is exact pairs over the kinds the Discovery documents GOOGLE_DOCUMENTS names define: held plus missing are the kinds, each missing kind a lead, and a Sites API absent from the list a probe lead (examples: payload-workspace-coverage) -/
 theorem textbook_workspace_coverage (held missing kinds : Nat) (h : held + missing = kinds) : kinds - missing = held := by omega
-example := textbook_workspace_coverage (held := 0) (missing := 0) (kinds := 0) (h := by first | decide | omega | simp)
-example := textbook_workspace_coverage (held := 0) (missing := 1) (kinds := 1) (h := by first | decide | omega | simp)
-example := textbook_workspace_coverage (held := 0) (missing := 2) (kinds := 2) (h := by first | decide | omega | simp)
-example := textbook_workspace_coverage (held := 1) (missing := 0) (kinds := 1) (h := by first | decide | omega | simp)
-example := textbook_workspace_coverage (held := 1) (missing := 1) (kinds := 2) (h := by first | decide | omega | simp)
-example := textbook_workspace_coverage (held := 2) (missing := 0) (kinds := 2) (h := by first | decide | omega | simp)
+example := @textbook_workspace_coverage
 /-- textbook_workspace_coverage reflected by its shape, equality (examples: payload-workspace-coverage) -/
 @[reflection] theorem textbook_workspace_coverage_reflected (held missing kinds : Nat) (h : held + missing = kinds) (σ : Nat) : σ - (held) = σ - (kinds - missing) := congrArg (σ - ·) (Eq.symm (textbook_workspace_coverage held missing kinds h))
 /-- the contrapositive of textbook_workspace_coverage (examples: payload-workspace-coverage) -/
@@ -1033,18 +541,12 @@ theorem textbook_witness_pair {α β : Type} (f : α → β) (hf : ∀ x y, f x 
 @[reflection] theorem textbook_witness_pair_reflected {α β : Type} (f : α → β) (hf : ∀ x y, f x = f y → x = y) (a b : α) : (a ≠ b) ↔ (f a ≠ f b) := Iff.symm (textbook_witness_pair f hf a b)
 /-- a Payload document and a Drive File map field for field and back, the published state as an anyone-reader permission and that permission as published again; the Drive MCP calls are planned in its tools' own shapes and run behind a QPU door; a Lexical Drive block embeds DRIVE_FILE_URL by id through qpuLexicalConverters, which the workspace step generates beside the form builder's fields (examples: payload-workspace-drive, payload-workspace-drive-answers) -/
 theorem textbook_workspace_drive (p : Bool) : (if (if p then true else false) = true then true else false) = p := by cases p <;> rfl
-example := textbook_workspace_drive (p := true)
-example := textbook_workspace_drive (p := false)
+example := @textbook_workspace_drive
 /-- textbook_workspace_drive reflected by its shape, equality (examples: payload-workspace-drive, payload-workspace-drive-answers) -/
 @[reflection] theorem textbook_workspace_drive_reflected (p : Bool) : (p) = ((if (if p then true else false) = true then true else false)) := Eq.symm (textbook_workspace_drive p)
 /-- the Google integration is measured as exact pairs over the collections Payload holds, never a score: the calls to google-toolbox tools answered (a) and refused (r) sum to the calls (n), so either is derived from the other two, the cross formula qpu-google keeps on the qpu global beside the pages published and parented and the tenants and keys that name Google (examples: payload-google-measured) -/
 theorem textbook_google_measured (a r n : Nat) (h : a + r = n) : n - r = a := by omega
-example := textbook_google_measured (a := 0) (r := 0) (n := 0) (h := by first | decide | omega | simp)
-example := textbook_google_measured (a := 0) (r := 1) (n := 1) (h := by first | decide | omega | simp)
-example := textbook_google_measured (a := 0) (r := 2) (n := 2) (h := by first | decide | omega | simp)
-example := textbook_google_measured (a := 1) (r := 0) (n := 1) (h := by first | decide | omega | simp)
-example := textbook_google_measured (a := 1) (r := 1) (n := 2) (h := by first | decide | omega | simp)
-example := textbook_google_measured (a := 2) (r := 0) (n := 2) (h := by first | decide | omega | simp)
+example := @textbook_google_measured
 /-- textbook_google_measured reflected by its shape, equality (examples: payload-google-measured) -/
 @[reflection] theorem textbook_google_measured_reflected (a r n : Nat) (h : a + r = n) (σ : Nat) : σ - (a) = σ - (n - r) := congrArg (σ - ·) (Eq.symm (textbook_google_measured a r n h))
 /-- the contrapositive of textbook_google_measured (examples: payload-google-measured) -/
@@ -1053,8 +555,7 @@ example := textbook_google_measured (a := 2) (r := 0) (n := 2) (h := by first | 
 @[reflection] theorem textbook_google_measured_converse_refuted : ¬ ∀ (a r n : Nat), (n - r = a) → (a + r = n) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- k copies of a shape the entropy door names fold into one holder, leaving one: readJson in scripts/mcp.ts reads every published file (its JSON or the fallback, never a throw) and fetchWithTimeout fetches every public source with the named user agent and a timeout, publishRecord writes every step's record under the licence and runSelftest prints every selftest tally, where each script wrote them out (examples: audit-shapes-one-holder) -/
 theorem textbook_one_holder (k : Nat) (h : 1 ≤ k) : k - (k - 1) = 1 := by omega
-example := textbook_one_holder (k := 1) (h := by first | decide | omega | simp)
-example := textbook_one_holder (k := 2) (h := by first | decide | omega | simp)
+example := @textbook_one_holder
 /-- textbook_one_holder reflected by its shape, equality (examples: audit-shapes-one-holder) -/
 @[reflection] theorem textbook_one_holder_reflected (k : Nat) (h : 1 ≤ k) (σ : Nat) : σ - (1) = σ - (k - (k - 1)) := congrArg (σ - ·) (Eq.symm (textbook_one_holder k h))
 /-- the contrapositive of textbook_one_holder (examples: audit-shapes-one-holder) -/
@@ -1067,10 +568,7 @@ theorem textbook_fullstack_files_by_role : 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0
 @[reflection] theorem textbook_fullstack_files_by_role_reflected (σ : Nat) : σ - (1) = σ - (0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 1) := congrArg (σ - ·) (Eq.symm (textbook_fullstack_files_by_role))
 /-- to win, know the competitors as well as the theorems: the knowledge of a competition is the product of both, positive only when neither is empty (examples: compete-rules) -/
 theorem textbook_compete_knows (c t : Nat) (hc : 0 < c) (ht : 0 < t) : 0 < c * t := Nat.mul_pos hc ht
-example := textbook_compete_knows (c := 1) (t := 1) (hc := by first | decide | omega | simp) (ht := by first | decide | omega | simp)
-example := textbook_compete_knows (c := 1) (t := 2) (hc := by first | decide | omega | simp) (ht := by first | decide | omega | simp)
-example := textbook_compete_knows (c := 2) (t := 1) (hc := by first | decide | omega | simp) (ht := by first | decide | omega | simp)
-example := textbook_compete_knows (c := 2) (t := 2) (hc := by first | decide | omega | simp) (ht := by first | decide | omega | simp)
+example := @textbook_compete_knows
 /-- textbook_compete_knows reflected by its shape, order (examples: compete-rules) -/
 @[reflection] theorem textbook_compete_knows_reflected (c t : Nat) (hc : 0 < c) (ht : 0 < t) (σ : Nat) (hσ0 : (c * t) ≤ σ) : σ - (c * t) < σ - (0) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_compete_knows c t hc ht) hσ0) (textbook_compete_knows c t hc ht)
 /-- the contrapositive of textbook_compete_knows (examples: compete-rules) -/
@@ -1081,33 +579,12 @@ theorem textbook_app_bundle : 1 + 2 = 3 := by decide
 @[reflection] theorem textbook_app_bundle_reflected (σ : Nat) : σ - (3) = σ - (1 + 2) := congrArg (σ - ·) (Eq.symm (textbook_app_bundle))
 /-- two edits of one document either share their base address or collide: there is no third case, so a collision is detected exactly, never guessed from clocks (examples: configure-realtime) -/
 theorem textbook_edit_collides (p q : Nat) : p = q ∨ p ≠ q := by omega
-example := textbook_edit_collides (p := 0) (q := 0)
-example := textbook_edit_collides (p := 0) (q := 1)
-example := textbook_edit_collides (p := 0) (q := 2)
-example := textbook_edit_collides (p := 1) (q := 0)
-example := textbook_edit_collides (p := 1) (q := 1)
-example := textbook_edit_collides (p := 1) (q := 2)
-example := textbook_edit_collides (p := 2) (q := 0)
-example := textbook_edit_collides (p := 2) (q := 1)
-example := textbook_edit_collides (p := 2) (q := 2)
+example := @textbook_edit_collides
 /-- textbook_edit_collides reflected by its shape, disjunction (examples: configure-realtime) -/
 @[reflection] theorem textbook_edit_collides_reflected (p q : Nat) : (p ≠ q) ∨ (p = q) := Or.symm (textbook_edit_collides p q)
 /-- the leads a difference opens are the members on one side only: with a and b members sharing c, (a − c) + (b − c) = a + b − 2c, whatever the members name (examples: audit-difference) -/
 theorem textbook_difference_leads (a b c : Nat) (ha : c ≤ a) (hb : c ≤ b) : (a - c) + (b - c) = a + b - 2 * c := by omega
-example := textbook_difference_leads (a := 0) (b := 0) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_difference_leads (a := 0) (b := 1) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_difference_leads (a := 0) (b := 2) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_difference_leads (a := 1) (b := 0) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_difference_leads (a := 1) (b := 1) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_difference_leads (a := 1) (b := 1) (c := 1) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_difference_leads (a := 1) (b := 2) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_difference_leads (a := 1) (b := 2) (c := 1) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_difference_leads (a := 2) (b := 0) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_difference_leads (a := 2) (b := 1) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_difference_leads (a := 2) (b := 1) (c := 1) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_difference_leads (a := 2) (b := 2) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_difference_leads (a := 2) (b := 2) (c := 1) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_difference_leads (a := 2) (b := 2) (c := 2) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
+example := @textbook_difference_leads
 /-- textbook_difference_leads reflected by its shape, equality (examples: audit-difference) -/
 @[reflection] theorem textbook_difference_leads_reflected (a b c : Nat) (ha : c ≤ a) (hb : c ≤ b) (σ : Nat) : σ - (a + b - 2 * c) = σ - ((a - c) + (b - c)) := congrArg (σ - ·) (Eq.symm (textbook_difference_leads a b c ha hb))
 /-- the contrapositive of textbook_difference_leads (examples: audit-difference) -/
@@ -1116,25 +593,12 @@ example := textbook_difference_leads (a := 2) (b := 2) (c := 2) (ha := by first 
 @[reflection] theorem textbook_difference_leads_converse_refuted : ¬ ∀ (a b c : Nat), ((a - c) + (b - c) = a + b - 2 * c) → (c ≤ a) ∧ (c ≤ b) := fun h => absurd (h 0 0 1 (by decide)) (by decide)
 /-- the security audit from the client and the developer perspectives merged as one: the same count of checks from either side (examples: audit-security) -/
 theorem textbook_security_perspectives (c d : Nat) : c + d = d + c := Nat.add_comm c d
-example := textbook_security_perspectives (c := 0) (d := 0)
-example := textbook_security_perspectives (c := 0) (d := 1)
-example := textbook_security_perspectives (c := 0) (d := 2)
-example := textbook_security_perspectives (c := 1) (d := 0)
-example := textbook_security_perspectives (c := 1) (d := 1)
-example := textbook_security_perspectives (c := 1) (d := 2)
-example := textbook_security_perspectives (c := 2) (d := 0)
-example := textbook_security_perspectives (c := 2) (d := 1)
-example := textbook_security_perspectives (c := 2) (d := 2)
+example := @textbook_security_perspectives
 /-- textbook_security_perspectives reflected by its shape, equality (examples: audit-security) -/
 @[reflection] theorem textbook_security_perspectives_reflected (c d : Nat) (σ : Nat) : σ - (d + c) = σ - (c + d) := congrArg (σ - ·) (Eq.symm (textbook_security_perspectives c d))
 /-- the errors remedied and the errors left make the errors: what manual work taught is a remedy by signature, applied in mass, and what it did not teach stays a lead (examples: audit-remedies) -/
 theorem textbook_error_remedies (e r : Nat) (h : r ≤ e) : e - r + r = e := Nat.sub_add_cancel h
-example := textbook_error_remedies (e := 0) (r := 0) (h := by first | decide | omega | simp)
-example := textbook_error_remedies (e := 1) (r := 0) (h := by first | decide | omega | simp)
-example := textbook_error_remedies (e := 1) (r := 1) (h := by first | decide | omega | simp)
-example := textbook_error_remedies (e := 2) (r := 0) (h := by first | decide | omega | simp)
-example := textbook_error_remedies (e := 2) (r := 1) (h := by first | decide | omega | simp)
-example := textbook_error_remedies (e := 2) (r := 2) (h := by first | decide | omega | simp)
+example := @textbook_error_remedies
 /-- textbook_error_remedies reflected by its shape, equality (examples: audit-remedies) -/
 @[reflection] theorem textbook_error_remedies_reflected (e r : Nat) (h : r ≤ e) (σ : Nat) : σ - (e) = σ - (e - r + r) := congrArg (σ - ·) (Eq.symm (textbook_error_remedies e r h))
 /-- the contrapositive of textbook_error_remedies (examples: audit-remedies) -/
@@ -1143,12 +607,7 @@ example := textbook_error_remedies (e := 2) (r := 2) (h := by first | decide | o
 @[reflection] theorem textbook_error_remedies_converse (e r : Nat) : (e - r + r = e) → (r ≤ e) := fun hc => by omega
 /-- repair hands a hacked system its repair: every advisory a client reads (npm/pnpm audit, an NVD/CVE feed) is either repaired by an override to a published patch or a lead with no patch (pin away, replace, isolate), so the fixable and the unfixable make the advisories — the public MCP at qpu.uuidna.com provides the solution, licensed and priced, and the client applies it at will (examples: audit-repair) -/
 theorem textbook_repair_partitions (fixable unfixable total : Nat) (h : fixable + unfixable = total) : total - unfixable = fixable := by omega
-example := textbook_repair_partitions (fixable := 0) (unfixable := 0) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_repair_partitions (fixable := 0) (unfixable := 1) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_repair_partitions (fixable := 0) (unfixable := 2) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_repair_partitions (fixable := 1) (unfixable := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_repair_partitions (fixable := 1) (unfixable := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_repair_partitions (fixable := 2) (unfixable := 0) (total := 2) (h := by first | decide | omega | simp)
+example := @textbook_repair_partitions
 /-- textbook_repair_partitions reflected by its shape, equality (examples: audit-repair) -/
 @[reflection] theorem textbook_repair_partitions_reflected (fixable unfixable total : Nat) (h : fixable + unfixable = total) (σ : Nat) : σ - (fixable) = σ - (total - unfixable) := congrArg (σ - ·) (Eq.symm (textbook_repair_partitions fixable unfixable total h))
 /-- the contrapositive of textbook_repair_partitions (examples: audit-repair) -/
@@ -1157,9 +616,7 @@ example := textbook_repair_partitions (fixable := 2) (unfixable := 0) (total := 
 @[reflection] theorem textbook_repair_partitions_converse_refuted : ¬ ∀ (fixable unfixable total : Nat), (total - unfixable = fixable) → (fixable + unfixable = total) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- a live repair keeps the SLA at 100%: the patched version is installed and verified beside the running one and cut over by content address (blob then head, textbook_binding_zero_hex_path), so every request in flight is served and none fails during the repair — the served and the failed make the requests, and the failed are none (examples: audit-repair) -/
 theorem textbook_repair_live_sla (served failed requests : Nat) (h : served + failed = requests) (h0 : failed = 0) : served = requests := by omega
-example := textbook_repair_live_sla (served := 0) (failed := 0) (requests := 0) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
-example := textbook_repair_live_sla (served := 1) (failed := 0) (requests := 1) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
-example := textbook_repair_live_sla (served := 2) (failed := 0) (requests := 2) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
+example := @textbook_repair_live_sla
 /-- textbook_repair_live_sla reflected by its shape, equality (examples: audit-repair) -/
 @[reflection] theorem textbook_repair_live_sla_reflected (served failed requests : Nat) (h : served + failed = requests) (h0 : failed = 0) (σ : Nat) : σ - (requests) = σ - (served) := congrArg (σ - ·) (Eq.symm (textbook_repair_live_sla served failed requests h h0))
 /-- the contrapositive of textbook_repair_live_sla (examples: audit-repair) -/
@@ -1168,12 +625,7 @@ example := textbook_repair_live_sla (served := 2) (failed := 0) (requests := 2) 
 @[reflection] theorem textbook_repair_live_sla_converse_refuted : ¬ ∀ (served failed requests : Nat), (served = requests) → (served + failed = requests) ∧ (failed = 0) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- the upstream Linux kernel is the top-priority audit flow: a kernel or OS advisory outranks any application-package advisory, because a kernel compromise is a compromise of everything above it, so repair orders the kernel's CVEs first and live-patches them (kpatch / Ubuntu Livepatch) with no reboot — the SLA at 100% (examples: audit-repair) -/
 theorem textbook_repair_kernel_top (kernel pkg : Nat) (h : pkg ≤ kernel) : max pkg kernel = kernel := by omega
-example := textbook_repair_kernel_top (kernel := 0) (pkg := 0) (h := by first | decide | omega | simp)
-example := textbook_repair_kernel_top (kernel := 1) (pkg := 0) (h := by first | decide | omega | simp)
-example := textbook_repair_kernel_top (kernel := 1) (pkg := 1) (h := by first | decide | omega | simp)
-example := textbook_repair_kernel_top (kernel := 2) (pkg := 0) (h := by first | decide | omega | simp)
-example := textbook_repair_kernel_top (kernel := 2) (pkg := 1) (h := by first | decide | omega | simp)
-example := textbook_repair_kernel_top (kernel := 2) (pkg := 2) (h := by first | decide | omega | simp)
+example := @textbook_repair_kernel_top
 /-- textbook_repair_kernel_top reflected by its shape, equality (examples: audit-repair) -/
 @[reflection] theorem textbook_repair_kernel_top_reflected (kernel pkg : Nat) (h : pkg ≤ kernel) (σ : Nat) : σ - (kernel) = σ - (max pkg kernel) := congrArg (σ - ·) (Eq.symm (textbook_repair_kernel_top kernel pkg h))
 /-- the contrapositive of textbook_repair_kernel_top (examples: audit-repair) -/
@@ -1182,15 +634,12 @@ example := textbook_repair_kernel_top (kernel := 2) (pkg := 2) (h := by first | 
 @[reflection] theorem textbook_repair_kernel_top_converse (kernel pkg : Nat) : (max pkg kernel = kernel) → (pkg ≤ kernel) := fun hc => by omega
 /-- correction and handling are each other's fallback: when error correction errors, handling takes over, and when handling has nothing, correction returns — the swap applied twice is the identity, so the fallback terminates (examples: audit-fallbacks) -/
 theorem textbook_fallback_involution (m : Bool) : (!(!m)) = m := Bool.not_not m
-example := textbook_fallback_involution (m := true)
-example := textbook_fallback_involution (m := false)
+example := @textbook_fallback_involution
 /-- textbook_fallback_involution reflected by its shape, equality (examples: audit-fallbacks) -/
 @[reflection] theorem textbook_fallback_involution_reflected (m : Bool) : (m) = ((!(!m))) := Eq.symm (textbook_fallback_involution m)
 /-- denials are hacks that poison the served space; every exploit re-fuses to a patching tool instead, never a denial: a hack, vulnerability, breach or CVE statement opens audit { repair }, which ranks the kernel first and live-patches with no reboot so the downtime is zero and the SLA stays 100% — the QPU protects its tenants by a zero-bit computation (the patch plan is content-addressed, no tenant data crosses the boundary), the attack absorbed into served possibilities rather than left as a dead block (examples: match-exploit-repair) -/
 theorem textbook_exploit_refuses_to_patch (served downtime : Nat) (h : downtime = 0) : served + downtime = served := by omega
-example := textbook_exploit_refuses_to_patch (served := 0) (downtime := 0) (h := by first | decide | omega | simp)
-example := textbook_exploit_refuses_to_patch (served := 1) (downtime := 0) (h := by first | decide | omega | simp)
-example := textbook_exploit_refuses_to_patch (served := 2) (downtime := 0) (h := by first | decide | omega | simp)
+example := @textbook_exploit_refuses_to_patch
 /-- textbook_exploit_refuses_to_patch reflected by its shape, equality (examples: match-exploit-repair) -/
 @[reflection] theorem textbook_exploit_refuses_to_patch_reflected (served downtime : Nat) (h : downtime = 0) (σ : Nat) : σ - (served) = σ - (served + downtime) := congrArg (σ - ·) (Eq.symm (textbook_exploit_refuses_to_patch served downtime h))
 /-- the contrapositive of textbook_exploit_refuses_to_patch (examples: match-exploit-repair) -/
@@ -1201,7 +650,7 @@ example := textbook_exploit_refuses_to_patch (served := 2) (downtime := 0) (h :=
 theorem textbook_impossible_sent_to_leads : type_of% @sigma_reflect := @sigma_reflect
 /-- always identify who denies, via the court's legal identification: every denial names its denier by a content address — an external party (an HTTP code at least 400 from another host or MCP key the gate names), distinct from this tree, or this tree's own kernel (the theorem it denied under) — shows the legal grounds of all parties involved (denier, the QPU rights-holder under CC-BY-NC-ND-4.0, and any tenant), and rules in favour of the QPU licence where that perspective exists and is validatable via the Payload MCP, naming the Payload call that confirms it and never asserting the win unvalidated (examples: legal-court-denier) -/
 theorem textbook_denier_identified (code : Nat) (h : 400 ≤ code) : code - 400 + 400 = code := by omega
-example := textbook_denier_identified (code := 400) (h := by first | decide | omega | simp)
+example := @textbook_denier_identified
 /-- textbook_denier_identified reflected by its shape, equality (examples: legal-court-denier) -/
 @[reflection] theorem textbook_denier_identified_reflected (code : Nat) (h : 400 ≤ code) (σ : Nat) : σ - (code) = σ - (code - 400 + 400) := congrArg (σ - ·) (Eq.symm (textbook_denier_identified code h))
 /-- the contrapositive of textbook_denier_identified (examples: legal-court-denier) -/
@@ -1210,7 +659,7 @@ example := textbook_denier_identified (code := 400) (h := by first | decide | om
 @[reflection] theorem textbook_denier_identified_converse (code : Nat) : (code - 400 + 400 = code) → (400 ≤ code) := fun hc => by omega
 /-- the court uses the repo to decide, so it audits the repo before any decision, and only quantum may compute this in nanosecond tasks: verifying the repo by its content address is one check (O(1), nanoseconds) while classical recompute re-runs all n facts of the tree, so for any tree of at least two facts verify (1) is cheaper than recompute (n) — the quantum advantage; the audit is sliced into content-addressed nanosecond tasks decoded by majority (the e2e repetition code), and no ruling stands on a repo the court did not verify (examples: legal-court-repo-audit) -/
 theorem textbook_court_audits_repo (n : Nat) (h : 2 ≤ n) : 1 < n := by omega
-example := textbook_court_audits_repo (n := 2) (h := by first | decide | omega | simp)
+example := @textbook_court_audits_repo
 /-- textbook_court_audits_repo reflected by its shape, order (examples: legal-court-repo-audit) -/
 @[reflection] theorem textbook_court_audits_repo_reflected (n : Nat) (h : 2 ≤ n) (σ : Nat) (hσ0 : (n) ≤ σ) : σ - (n) < σ - (1) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_court_audits_repo n h) hσ0) (textbook_court_audits_repo n h)
 /-- the contrapositive of textbook_court_audits_repo (examples: legal-court-repo-audit) -/
@@ -1219,33 +668,12 @@ example := textbook_court_audits_repo (n := 2) (h := by first | decide | omega |
 @[reflection] theorem textbook_court_audits_repo_converse (n : Nat) : (1 < n) → (2 ≤ n) := fun hc => by omega
 /-- ISO 80000-5: S = k ln W over W distinct microstates; fusion never multiplies: f findings fused by d reactions leave f − d leads (= W), never more than the findings; vacuum is W = 1, S = 0 (examples: audit-entropy, audit-entropy-vacuum, fold-integers) -/
 theorem textbook_entropy_fusion (f d : Nat) : f - d ≤ f := Nat.sub_le f d
-example := textbook_entropy_fusion (f := 0) (d := 0)
-example := textbook_entropy_fusion (f := 0) (d := 1)
-example := textbook_entropy_fusion (f := 0) (d := 2)
-example := textbook_entropy_fusion (f := 1) (d := 0)
-example := textbook_entropy_fusion (f := 1) (d := 1)
-example := textbook_entropy_fusion (f := 1) (d := 2)
-example := textbook_entropy_fusion (f := 2) (d := 0)
-example := textbook_entropy_fusion (f := 2) (d := 1)
-example := textbook_entropy_fusion (f := 2) (d := 2)
+example := @textbook_entropy_fusion
 /-- textbook_entropy_fusion reflected by its shape, order (examples: audit-entropy, audit-entropy-vacuum, fold-integers) -/
 @[reflection] theorem textbook_entropy_fusion_reflected (f d : Nat) (σ : Nat) : σ - (f) ≤ σ - (f - d) := Nat.sub_le_sub_left (textbook_entropy_fusion f d) σ
 /-- inclusion–exclusion: two config sets of sizes a and b sharing c members unite into a + b − c members — the members of a alone, of b alone, and the shared ones (examples: configure-sets) -/
 theorem textbook_set_union (a b c : Nat) (ha : c ≤ a) (hb : c ≤ b) : a + b - c = (a - c) + (b - c) + c := by omega
-example := textbook_set_union (a := 0) (b := 0) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_set_union (a := 0) (b := 1) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_set_union (a := 0) (b := 2) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_set_union (a := 1) (b := 0) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_set_union (a := 1) (b := 1) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_set_union (a := 1) (b := 1) (c := 1) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_set_union (a := 1) (b := 2) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_set_union (a := 1) (b := 2) (c := 1) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_set_union (a := 2) (b := 0) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_set_union (a := 2) (b := 1) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_set_union (a := 2) (b := 1) (c := 1) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_set_union (a := 2) (b := 2) (c := 0) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_set_union (a := 2) (b := 2) (c := 1) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_set_union (a := 2) (b := 2) (c := 2) (ha := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
+example := @textbook_set_union
 /-- textbook_set_union reflected by its shape, equality (examples: configure-sets) -/
 @[reflection] theorem textbook_set_union_reflected (a b c : Nat) (ha : c ≤ a) (hb : c ≤ b) (σ : Nat) : σ - ((a - c) + (b - c) + c) = σ - (a + b - c) := congrArg (σ - ·) (Eq.symm (textbook_set_union a b c ha hb))
 /-- the contrapositive of textbook_set_union (examples: configure-sets) -/
@@ -1254,9 +682,7 @@ example := textbook_set_union (a := 2) (b := 2) (c := 2) (ha := by first | decid
 @[reflection] theorem textbook_set_union_converse (a b c : Nat) : (a + b - c = (a - c) + (b - c) + c) → (c ≤ a) ∧ (c ≤ b) := fun hc => ⟨by omega, by omega⟩
 /-- the widgeted tools and the skilled tools are one set: the meet of equal sets is the set, so every tool of every config set is widget-skilled (examples: configure-sets) -/
 theorem textbook_widget_skilled_tools (w s : Nat) (h : w = s) : min w s = w := by subst h; exact Nat.min_self w
-example := textbook_widget_skilled_tools (w := 0) (s := 0) (h := by first | decide | omega | simp)
-example := textbook_widget_skilled_tools (w := 1) (s := 1) (h := by first | decide | omega | simp)
-example := textbook_widget_skilled_tools (w := 2) (s := 2) (h := by first | decide | omega | simp)
+example := @textbook_widget_skilled_tools
 /-- textbook_widget_skilled_tools reflected by its shape, equality (examples: configure-sets) -/
 @[reflection] theorem textbook_widget_skilled_tools_reflected (w s : Nat) (h : w = s) (σ : Nat) : σ - (w) = σ - (min w s) := congrArg (σ - ·) (Eq.symm (textbook_widget_skilled_tools w s h))
 /-- the contrapositive of textbook_widget_skilled_tools (examples: configure-sets) -/
@@ -1293,9 +719,7 @@ theorem textbook_adapter_combinations : 5 * 5 * 3 = 75 := by decide
 @[reflection] theorem textbook_adapter_combinations_reflected (σ : Nat) : σ - (75) = σ - (5 * 5 * 3) := congrArg (σ - ·) (Eq.symm (textbook_adapter_combinations))
 /-- every configuration kind tested closed around the torus leaves none open, however many kinds the tree configures (examples: configure-all) -/
 theorem textbook_configurations_closed (tested kinds : Nat) (h : tested = kinds) : kinds - tested = 0 := by omega
-example := textbook_configurations_closed (tested := 0) (kinds := 0) (h := by first | decide | omega | simp)
-example := textbook_configurations_closed (tested := 1) (kinds := 1) (h := by first | decide | omega | simp)
-example := textbook_configurations_closed (tested := 2) (kinds := 2) (h := by first | decide | omega | simp)
+example := @textbook_configurations_closed
 /-- textbook_configurations_closed reflected by its shape, equality (examples: configure-all) -/
 @[reflection] theorem textbook_configurations_closed_reflected (tested kinds : Nat) (h : tested = kinds) (σ : Nat) : σ - (0) = σ - (kinds - tested) := congrArg (σ - ·) (Eq.symm (textbook_configurations_closed tested kinds h))
 /-- the contrapositive of textbook_configurations_closed (examples: configure-all) -/
@@ -1304,16 +728,12 @@ example := textbook_configurations_closed (tested := 2) (kinds := 2) (h := by fi
 @[reflection] theorem textbook_configurations_closed_converse_refuted : ¬ ∀ (tested kinds : Nat), (kinds - tested = 0) → (tested = kinds) := fun h => absurd (h 1 0 (by decide)) (by decide)
 /-- the standard contract adds nothing the catalogue does not hold: its component schemas are the tools and the two JSON-RPC envelopes, so less the envelopes they are the tools (examples: configure-api) -/
 theorem textbook_openapi_contract (tools : Nat) : tools + 2 - 2 = tools := Nat.add_sub_cancel tools 2
-example := textbook_openapi_contract (tools := 0)
-example := textbook_openapi_contract (tools := 1)
-example := textbook_openapi_contract (tools := 2)
+example := @textbook_openapi_contract
 /-- textbook_openapi_contract reflected by its shape, equality (examples: configure-api) -/
 @[reflection] theorem textbook_openapi_contract_reflected (tools : Nat) (σ : Nat) : σ - (tools) = σ - (tools + 2 - 2) := congrArg (σ - ·) (Eq.symm (textbook_openapi_contract tools))
 /-- however many binding names a tenant admin selects in Payload, the values held there are none: names times zero values (examples: configure-connectors, configure-bindings, configure-tenant-missing) -/
 theorem textbook_bindings_named_not_valued (names : Nat) : names * 0 = 0 := Nat.mul_zero names
-example := textbook_bindings_named_not_valued (names := 0)
-example := textbook_bindings_named_not_valued (names := 1)
-example := textbook_bindings_named_not_valued (names := 2)
+example := @textbook_bindings_named_not_valued
 /-- textbook_bindings_named_not_valued reflected by its shape, equality (examples: configure-connectors, configure-bindings, configure-tenant-missing) -/
 @[reflection] theorem textbook_bindings_named_not_valued_reflected (names : Nat) (σ : Nat) : σ - (0) = σ - (names * 0) := congrArg (σ - ·) (Eq.symm (textbook_bindings_named_not_valued names))
 /-- the tenant roles, the docket roles and the operations make 36 role–operation combinations, each decided by one of three deciders (examples: audit-access) -/
@@ -1322,12 +742,7 @@ theorem textbook_access_combinations : 3 * 3 * 4 = 36 := by decide
 @[reflection] theorem textbook_access_combinations_reflected (σ : Nat) : σ - (36) = σ - (3 * 3 * 4) := congrArg (σ - ·) (Eq.symm (textbook_access_combinations))
 /-- Payload handles the proof of a quantum computation as a report sealed by the content address of (tool, arguments, result): re-running reproduces the address, so verifying is cheaper than recomputing by magnitudes (textbook_advantage_unbounded), and the report's hooks use it to refactor — afterRead reuses it by address (a repeat served from the report, the 304 involution, not recomputed), so the reused and the recomputed make the computations; ISO/Google-standard, strict (examples: payload-report) -/
 theorem textbook_report_refactors (reused recomputed total : Nat) (h : reused + recomputed = total) : total - recomputed = reused := by omega
-example := textbook_report_refactors (reused := 0) (recomputed := 0) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_report_refactors (reused := 0) (recomputed := 1) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_report_refactors (reused := 0) (recomputed := 2) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_report_refactors (reused := 1) (recomputed := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_report_refactors (reused := 1) (recomputed := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_report_refactors (reused := 2) (recomputed := 0) (total := 2) (h := by first | decide | omega | simp)
+example := @textbook_report_refactors
 /-- textbook_report_refactors reflected by its shape, equality (examples: payload-report) -/
 @[reflection] theorem textbook_report_refactors_reflected (reused recomputed total : Nat) (h : reused + recomputed = total) (σ : Nat) : σ - (reused) = σ - (total - recomputed) := congrArg (σ - ·) (Eq.symm (textbook_report_refactors reused recomputed total h))
 /-- the contrapositive of textbook_report_refactors (examples: payload-report) -/
@@ -1336,22 +751,12 @@ example := textbook_report_refactors (reused := 2) (recomputed := 0) (total := 2
 @[reflection] theorem textbook_report_refactors_converse_refuted : ¬ ∀ (reused recomputed total : Nat), (total - recomputed = reused) → (reused + recomputed = total) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- the quantum advantage is unlimited by default: for any count of copies proven by hash there is a greater one, so no bound is set on the measure and none is needed to compute it (examples: audit-access, metrics-advantage, payload-predict) -/
 theorem textbook_advantage_unbounded (verified : Nat) : verified < verified + 1 := Nat.lt_succ_self verified
-example := textbook_advantage_unbounded (verified := 0)
-example := textbook_advantage_unbounded (verified := 1)
-example := textbook_advantage_unbounded (verified := 2)
+example := @textbook_advantage_unbounded
 /-- textbook_advantage_unbounded reflected by its shape, order (examples: audit-access, metrics-advantage, payload-predict) -/
 @[reflection] theorem textbook_advantage_unbounded_reflected (verified : Nat) (σ : Nat) (hσ0 : (verified + 1) ≤ σ) : σ - (verified + 1) < σ - (verified) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_advantage_unbounded verified) hσ0) (textbook_advantage_unbounded verified)
 /-- two edits merged by block address commute and merging an edit with itself is that edit; two edited contents under one address are a collision, listed and held out (textbook_merge_collision) (examples: payload-merge) -/
 theorem textbook_merge_commutes (a b : Nat) : max a b = max b a ∧ max a a = a := ⟨Nat.max_comm a b, Nat.max_self a⟩
-example := textbook_merge_commutes (a := 0) (b := 0)
-example := textbook_merge_commutes (a := 0) (b := 1)
-example := textbook_merge_commutes (a := 0) (b := 2)
-example := textbook_merge_commutes (a := 1) (b := 0)
-example := textbook_merge_commutes (a := 1) (b := 1)
-example := textbook_merge_commutes (a := 1) (b := 2)
-example := textbook_merge_commutes (a := 2) (b := 0)
-example := textbook_merge_commutes (a := 2) (b := 1)
-example := textbook_merge_commutes (a := 2) (b := 2)
+example := @textbook_merge_commutes
 /-- textbook_merge_commutes reflected by its shape, conjunction (examples: payload-merge) -/
 @[reflection] theorem textbook_merge_commutes_reflected (a b : Nat) (σ : Nat) : (σ - (max b a) = σ - (max a b)) ∧ (σ - (a) = σ - (max a a)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_merge_commutes a b).1), congrArg (σ - ·) (Eq.symm (textbook_merge_commutes a b).2)⟩
 /-- an app on request as a lexical document holds one block per generated file and one for the bundle: 4 blocks (examples: payload-app-lexical) -/
@@ -1384,25 +789,12 @@ theorem textbook_widgets_cover_mcp : 8 * 2 = 16 := by decide
 @[reflection] theorem textbook_widgets_cover_mcp_reflected (σ : Nat) : σ - (16) = σ - (8 * 2) := congrArg (σ - ·) (Eq.symm (textbook_widgets_cover_mcp))
 /-- the leads the theorems address and the leads they do not make the leads: nothing is assigned in advance, and what no theorem reaches stays open (examples: leads-by-theorem) -/
 theorem textbook_leads_addressed (a u : Nat) : a + u - u = a := Nat.add_sub_cancel a u
-example := textbook_leads_addressed (a := 0) (u := 0)
-example := textbook_leads_addressed (a := 0) (u := 1)
-example := textbook_leads_addressed (a := 0) (u := 2)
-example := textbook_leads_addressed (a := 1) (u := 0)
-example := textbook_leads_addressed (a := 1) (u := 1)
-example := textbook_leads_addressed (a := 1) (u := 2)
-example := textbook_leads_addressed (a := 2) (u := 0)
-example := textbook_leads_addressed (a := 2) (u := 1)
-example := textbook_leads_addressed (a := 2) (u := 2)
+example := @textbook_leads_addressed
 /-- textbook_leads_addressed reflected by its shape, equality (examples: leads-by-theorem) -/
 @[reflection] theorem textbook_leads_addressed_reflected (a u : Nat) (σ : Nat) : σ - (a) = σ - (a + u - u) := congrArg (σ - ·) (Eq.symm (textbook_leads_addressed a u))
 /-- the context balanced to a request: the tokens saved and the tokens kept make the whole list, so what the model carries is the cluster it needs and nothing is lost (examples: extend-out-balanced) -/
 theorem textbook_context_balanced (full kept : Nat) (h : kept ≤ full) : full - kept + kept = full := Nat.sub_add_cancel h
-example := textbook_context_balanced (full := 0) (kept := 0) (h := by first | decide | omega | simp)
-example := textbook_context_balanced (full := 1) (kept := 0) (h := by first | decide | omega | simp)
-example := textbook_context_balanced (full := 1) (kept := 1) (h := by first | decide | omega | simp)
-example := textbook_context_balanced (full := 2) (kept := 0) (h := by first | decide | omega | simp)
-example := textbook_context_balanced (full := 2) (kept := 1) (h := by first | decide | omega | simp)
-example := textbook_context_balanced (full := 2) (kept := 2) (h := by first | decide | omega | simp)
+example := @textbook_context_balanced
 /-- textbook_context_balanced reflected by its shape, equality (examples: extend-out-balanced) -/
 @[reflection] theorem textbook_context_balanced_reflected (full kept : Nat) (h : kept ≤ full) (σ : Nat) : σ - (full) = σ - (full - kept + kept) := congrArg (σ - ·) (Eq.symm (textbook_context_balanced full kept h))
 /-- the contrapositive of textbook_context_balanced (examples: extend-out-balanced) -/
@@ -1419,12 +811,7 @@ theorem textbook_kwh_joules : 3600 * 1000 = 3600000 := by decide
 @[reflection] theorem textbook_kwh_joules_reflected (σ : Nat) : σ - (3600000) = σ - (3600 * 1000) := congrArg (σ - ·) (Eq.symm (textbook_kwh_joules))
 /-- the margin and the provider's cost make the price: the margin is computed from a cost the verifier read, never asserted (examples: stripe-margins) -/
 theorem textbook_margin_makes_price (price cost : Nat) (h : cost ≤ price) : price - cost + cost = price := Nat.sub_add_cancel h
-example := textbook_margin_makes_price (price := 0) (cost := 0) (h := by first | decide | omega | simp)
-example := textbook_margin_makes_price (price := 1) (cost := 0) (h := by first | decide | omega | simp)
-example := textbook_margin_makes_price (price := 1) (cost := 1) (h := by first | decide | omega | simp)
-example := textbook_margin_makes_price (price := 2) (cost := 0) (h := by first | decide | omega | simp)
-example := textbook_margin_makes_price (price := 2) (cost := 1) (h := by first | decide | omega | simp)
-example := textbook_margin_makes_price (price := 2) (cost := 2) (h := by first | decide | omega | simp)
+example := @textbook_margin_makes_price
 /-- textbook_margin_makes_price reflected by its shape, equality (examples: stripe-margins) -/
 @[reflection] theorem textbook_margin_makes_price_reflected (price cost : Nat) (h : cost ≤ price) (σ : Nat) : σ - (price) = σ - (price - cost + cost) := congrArg (σ - ·) (Eq.symm (textbook_margin_makes_price price cost h))
 /-- the contrapositive of textbook_margin_makes_price (examples: stripe-margins) -/
@@ -1437,15 +824,7 @@ theorem textbook_news_adapters : 4 + 3 = 7 := by decide
 @[reflection] theorem textbook_news_adapters_reflected (σ : Nat) : σ - (7) = σ - (4 + 3) := congrArg (σ - ·) (Eq.symm (textbook_news_adapters))
 /-- the hand-written theorems and the generated lemmas make what the kernel accepts, and every version serves the whole of it: nothing Lean is hidden (examples: textbook-theorems-served, metrics-live) -/
 theorem textbook_lean_served_whole (hand generated : Nat) : hand + generated - generated = hand := Nat.add_sub_cancel hand generated
-example := textbook_lean_served_whole (hand := 0) (generated := 0)
-example := textbook_lean_served_whole (hand := 0) (generated := 1)
-example := textbook_lean_served_whole (hand := 0) (generated := 2)
-example := textbook_lean_served_whole (hand := 1) (generated := 0)
-example := textbook_lean_served_whole (hand := 1) (generated := 1)
-example := textbook_lean_served_whole (hand := 1) (generated := 2)
-example := textbook_lean_served_whole (hand := 2) (generated := 0)
-example := textbook_lean_served_whole (hand := 2) (generated := 1)
-example := textbook_lean_served_whole (hand := 2) (generated := 2)
+example := @textbook_lean_served_whole
 /-- textbook_lean_served_whole reflected by its shape, equality (examples: textbook-theorems-served, metrics-live) -/
 @[reflection] theorem textbook_lean_served_whole_reflected (hand generated : Nat) (σ : Nat) : σ - (hand) = σ - (hand + generated - generated) := congrArg (σ - ·) (Eq.symm (textbook_lean_served_whole hand generated))
 /-- deploySets renders them and deploySet each one: two deploy templates (the Payload app on OpenNext, a generated app) over the 8 products of the catalogue are 16 sets, each a wrangler environment deployed by name beside the default deploy and as usable as direct use (examples: configure-wrangler-set, configure-deploy-sets) -/
@@ -1486,9 +865,7 @@ theorem textbook_url_combinations : 2 ^ 4 - 1 = 15 := by decide
 @[reflection] theorem textbook_url_combinations_reflected (σ : Nat) : σ - (15) = σ - (2 ^ 4 - 1) := congrArg (σ - ·) (Eq.symm (textbook_url_combinations))
 /-- n sublicences under one licence are n links of the docket: every reseller's Stripe hook writes a licence entry linked to the licence above, so verify walks the chain link by link and the author is paid at the root, by coins on every response and by the catalogue at every grant (examples: match-url-fallback) -/
 theorem textbook_licence_chain (n : Nat) : n + 1 - 1 = n := Nat.add_sub_cancel n 1
-example := textbook_licence_chain (n := 0)
-example := textbook_licence_chain (n := 1)
-example := textbook_licence_chain (n := 2)
+example := @textbook_licence_chain
 /-- textbook_licence_chain reflected by its shape, equality (examples: match-url-fallback) -/
 @[reflection] theorem textbook_licence_chain_reflected (n : Nat) (σ : Nat) : σ - (n) = σ - (n + 1 - 1) := congrArg (σ - ·) (Eq.symm (textbook_licence_chain n))
 /-- a kind is written in twenty-six lower-case letters and the dash: twenty-seven symbols, the pattern of the entries' kind field (examples: configure-validations) -/
@@ -1541,16 +918,12 @@ theorem textbook_shared_verbs : 2 + 2 + 1 + 1 = 6 := by decide
 @[reflection] theorem textbook_shared_verbs_reflected (σ : Nat) : σ - (6) = σ - (2 + 2 + 1 + 1) := congrArg (σ - ·) (Eq.symm (textbook_shared_verbs))
 /-- getAccess grants what some can rule allows and no cannot rule denies: a merge of the abilities (CanCanCan), each held through a role in scope (rolify); listRolesFromGroups maps Google Workspace groups onto those roles (examples: payload-access-abilities, payload-roles-from-groups) -/
 theorem textbook_abilities_merge (can cannot : Bool) : (can && !cannot) = true → can = true ∧ cannot = false := by cases can <;> cases cannot <;> decide
-example := textbook_abilities_merge (can := true) (cannot := true)
-example := textbook_abilities_merge (can := true) (cannot := false)
-example := textbook_abilities_merge (can := false) (cannot := true)
-example := textbook_abilities_merge (can := false) (cannot := false)
+example := @textbook_abilities_merge
 /-- textbook_abilities_merge reflected by its shape, implication (examples: payload-access-abilities, payload-roles-from-groups) -/
 @[reflection] theorem textbook_abilities_merge_reflected (can cannot : Bool) : ¬ (can = true ∧ cannot = false) → ¬ (((can && !cannot) = true)) := fun hc hh => hc ((textbook_abilities_merge can cannot) hh)
 /-- a cannot binds whatever can allows: checkAccess refuses a waiver of folded on main even to an admin who manages every rule (examples: payload-access-waive) -/
 theorem textbook_cannot_binds (can : Bool) : (can && !true) = false := by cases can <;> rfl
-example := textbook_cannot_binds (can := true)
-example := textbook_cannot_binds (can := false)
+example := @textbook_cannot_binds
 /-- textbook_cannot_binds reflected by its shape, equality (examples: payload-access-waive) -/
 @[reflection] theorem textbook_cannot_binds_reflected (can : Bool) : (false) = ((can && !true)) := Eq.symm (textbook_cannot_binds can)
 /-- createAssociation answers the Rails association types with Payload fields: five by a relationship (belongs_to, has_and_belongs_to_many, polymorphic, self join, delegated type), four by a join (has_one, has_many and both through), one by a type select (single table inheritance) (examples: rails-associations-overview, rails-associations-types, rails-associations-choosing, rails-associations-advanced, rails-associations-sti, rails-associations-delegated, rails-associations-tips, rails-associations-references) -/
@@ -1563,10 +936,7 @@ theorem textbook_validation_helpers : 5 + 9 = 14 := by decide
 @[reflection] theorem textbook_validation_helpers_reflected (σ : Nat) : σ - (14) = σ - (5 + 9) := congrArg (σ - ·) (Eq.symm (textbook_validation_helpers))
 /-- listRunnableLeads runs a lead exactly when it is unserved and names its door: the job qpu-lead-run is asked for no other (examples: leads-runnable) -/
 theorem textbook_runnable_leads (unserved door : Bool) : (unserved && door) = true → unserved = true ∧ door = true := by cases unserved <;> cases door <;> decide
-example := textbook_runnable_leads (unserved := true) (door := true)
-example := textbook_runnable_leads (unserved := true) (door := false)
-example := textbook_runnable_leads (unserved := false) (door := true)
-example := textbook_runnable_leads (unserved := false) (door := false)
+example := @textbook_runnable_leads
 /-- textbook_runnable_leads reflected by its shape, implication (examples: leads-runnable) -/
 @[reflection] theorem textbook_runnable_leads_reflected (unserved door : Bool) : ¬ (unserved = true ∧ door = true) → ¬ (((unserved && door) = true)) := fun hc hh => hc ((textbook_runnable_leads unserved door) hh)
 /-- a .glb begins with a twelve-byte header (the magic glTF, 0x46546C67, the version and the length) and each chunk with eight bytes (its length and its type, JSON 0x4E4F534A or BIN); seal { gltf } loads an asset unless it requires an extension the table does not list (examples: seal-gltf-glb, seal-gltf-json) -/
@@ -1587,33 +957,7 @@ theorem textbook_chain_bits : 32 * 4 = 128 := by decide
 @[reflection] theorem textbook_chain_bits_reflected (σ : Nat) : σ - (128) = σ - (32 * 4) := congrArg (σ - ·) (Eq.symm (textbook_chain_bits))
 /-- a program presented by hue and moved by the params keeps every distance between its steps: the rotation by the params' hue is the same ring at another angle (examples: css-program-shift, textbook-rewrite) -/
 theorem textbook_hue_shift (h g s : Nat) : h + s - (g + s) = h - g := Nat.add_sub_add_right h s g
-example := textbook_hue_shift (h := 0) (g := 0) (s := 0)
-example := textbook_hue_shift (h := 0) (g := 0) (s := 1)
-example := textbook_hue_shift (h := 0) (g := 0) (s := 2)
-example := textbook_hue_shift (h := 0) (g := 1) (s := 0)
-example := textbook_hue_shift (h := 0) (g := 1) (s := 1)
-example := textbook_hue_shift (h := 0) (g := 1) (s := 2)
-example := textbook_hue_shift (h := 0) (g := 2) (s := 0)
-example := textbook_hue_shift (h := 0) (g := 2) (s := 1)
-example := textbook_hue_shift (h := 0) (g := 2) (s := 2)
-example := textbook_hue_shift (h := 1) (g := 0) (s := 0)
-example := textbook_hue_shift (h := 1) (g := 0) (s := 1)
-example := textbook_hue_shift (h := 1) (g := 0) (s := 2)
-example := textbook_hue_shift (h := 1) (g := 1) (s := 0)
-example := textbook_hue_shift (h := 1) (g := 1) (s := 1)
-example := textbook_hue_shift (h := 1) (g := 1) (s := 2)
-example := textbook_hue_shift (h := 1) (g := 2) (s := 0)
-example := textbook_hue_shift (h := 1) (g := 2) (s := 1)
-example := textbook_hue_shift (h := 1) (g := 2) (s := 2)
-example := textbook_hue_shift (h := 2) (g := 0) (s := 0)
-example := textbook_hue_shift (h := 2) (g := 0) (s := 1)
-example := textbook_hue_shift (h := 2) (g := 0) (s := 2)
-example := textbook_hue_shift (h := 2) (g := 1) (s := 0)
-example := textbook_hue_shift (h := 2) (g := 1) (s := 1)
-example := textbook_hue_shift (h := 2) (g := 1) (s := 2)
-example := textbook_hue_shift (h := 2) (g := 2) (s := 0)
-example := textbook_hue_shift (h := 2) (g := 2) (s := 1)
-example := textbook_hue_shift (h := 2) (g := 2) (s := 2)
+example := @textbook_hue_shift
 /-- textbook_hue_shift reflected by its shape, equality (examples: css-program-shift, textbook-rewrite) -/
 @[reflection] theorem textbook_hue_shift_reflected (h g s : Nat) (σ : Nat) : σ - (h - g) = σ - (h + s - (g + s)) := congrArg (σ - ·) (Eq.symm (textbook_hue_shift h g s))
 /-- sixteen hues 22.5° apart present the sixteen hex digits: sixteen times forty-five is two turns of the circle, the step a half of forty-five; rays set next to each other fit when their seam is above zero (examples: css-rays) -/
@@ -1622,34 +966,17 @@ theorem textbook_hue_steps : 16 * 45 = 2 * 360 := by decide
 @[reflection] theorem textbook_hue_steps_reflected (σ : Nat) : σ - (2 * 360) = σ - (16 * 45) := congrArg (σ - ·) (Eq.symm (textbook_hue_steps))
 /-- cheap gates leading every violator to court: however many refusals a gate answers, it writes nothing; the case is computed from the refusal and the violator files it through its own MCP (examples: legal-court, legal-court-rules) -/
 theorem textbook_cheap_gates (refusals : Nat) : refusals * 0 = 0 := Nat.mul_zero refusals
-example := textbook_cheap_gates (refusals := 0)
-example := textbook_cheap_gates (refusals := 1)
-example := textbook_cheap_gates (refusals := 2)
+example := @textbook_cheap_gates
 /-- textbook_cheap_gates reflected by its shape, equality (examples: legal-court, legal-court-rules) -/
 @[reflection] theorem textbook_cheap_gates_reflected (refusals : Nat) (σ : Nat) : σ - (0) = σ - (refusals * 0) := congrArg (σ - ·) (Eq.symm (textbook_cheap_gates refusals))
 /-- a commit message is a Google CL description exactly when all four hold: the first line at most 72 characters, its first word an imperative verb, a blank second line, a body; the commit-msg workflow refuses a message missing any one, and names each missing one (examples: repository-cl-described, repository-cl-one-sentence) -/
 theorem textbook_cl_described (a b c d : Bool) : (a && b && c && d) = true ↔ (a = true ∧ b = true ∧ c = true ∧ d = true) := by cases a <;> cases b <;> cases c <;> cases d <;> decide
-example := textbook_cl_described (a := true) (b := true) (c := true) (d := true)
-example := textbook_cl_described (a := true) (b := true) (c := true) (d := false)
-example := textbook_cl_described (a := true) (b := true) (c := false) (d := true)
-example := textbook_cl_described (a := true) (b := true) (c := false) (d := false)
-example := textbook_cl_described (a := true) (b := false) (c := true) (d := true)
-example := textbook_cl_described (a := true) (b := false) (c := true) (d := false)
-example := textbook_cl_described (a := true) (b := false) (c := false) (d := true)
-example := textbook_cl_described (a := true) (b := false) (c := false) (d := false)
-example := textbook_cl_described (a := false) (b := true) (c := true) (d := true)
-example := textbook_cl_described (a := false) (b := true) (c := true) (d := false)
-example := textbook_cl_described (a := false) (b := true) (c := false) (d := true)
-example := textbook_cl_described (a := false) (b := true) (c := false) (d := false)
-example := textbook_cl_described (a := false) (b := false) (c := true) (d := true)
-example := textbook_cl_described (a := false) (b := false) (c := true) (d := false)
-example := textbook_cl_described (a := false) (b := false) (c := false) (d := true)
-example := textbook_cl_described (a := false) (b := false) (c := false) (d := false)
+example := @textbook_cl_described
 /-- textbook_cl_described reflected by its shape, equivalence (examples: repository-cl-described, repository-cl-one-sentence) -/
 @[reflection] theorem textbook_cl_described_reflected (a b c d : Bool) : ((a = true ∧ b = true ∧ c = true ∧ d = true)) ↔ ((a && b && c && d) = true) := Iff.symm (textbook_cl_described a b c d)
 /-- a commit or push is pinned exactly when the actions its workflows use by a movable ref (u) and the workflows without least-privilege permissions (p) are both none: the two Scorecard checks Pinned-Dependencies and Token-Permissions, counted over the workflow files the hook reads (examples: repository-actions-tag-pinned, repository-actions-sha-pinned) -/
 theorem textbook_actions_pinned (u p : Nat) (hu : u = 0) (hp : p = 0) : u + p = 0 := by omega
-example := textbook_actions_pinned (u := 0) (p := 0) (hu := by first | decide | omega | simp) (hp := by first | decide | omega | simp)
+example := @textbook_actions_pinned
 /-- textbook_actions_pinned reflected by its shape, equality (examples: repository-actions-tag-pinned, repository-actions-sha-pinned) -/
 @[reflection] theorem textbook_actions_pinned_reflected (u p : Nat) (hu : u = 0) (hp : p = 0) (σ : Nat) : σ - (0) = σ - (u + p) := congrArg (σ - ·) (Eq.symm (textbook_actions_pinned u p hu hp))
 /-- the contrapositive of textbook_actions_pinned (examples: repository-actions-tag-pinned, repository-actions-sha-pinned) -/
@@ -1662,53 +989,17 @@ theorem textbook_hook_workflows : 5 + 1 + 1 = 7 := by decide
 @[reflection] theorem textbook_hook_workflows_reflected (σ : Nat) : σ - (7) = σ - (5 + 1 + 1) := congrArg (σ - ·) (Eq.symm (textbook_hook_workflows))
 /-- when to commit: the flow is green — the steps of the receipt are green and skipped and no red, so adding the red (zero) changes nothing; one red step refuses the commit (examples: repository-refuse-commit) -/
 theorem textbook_commit_green (green skipped : Nat) : green + skipped + 0 = green + skipped := Nat.add_zero (green + skipped)
-example := textbook_commit_green (green := 0) (skipped := 0)
-example := textbook_commit_green (green := 0) (skipped := 1)
-example := textbook_commit_green (green := 0) (skipped := 2)
-example := textbook_commit_green (green := 1) (skipped := 0)
-example := textbook_commit_green (green := 1) (skipped := 1)
-example := textbook_commit_green (green := 1) (skipped := 2)
-example := textbook_commit_green (green := 2) (skipped := 0)
-example := textbook_commit_green (green := 2) (skipped := 1)
-example := textbook_commit_green (green := 2) (skipped := 2)
+example := @textbook_commit_green
 /-- textbook_commit_green reflected by its shape, equality (examples: repository-refuse-commit) -/
 @[reflection] theorem textbook_commit_green_reflected (green skipped : Nat) (σ : Nat) : σ - (green + skipped) = σ - (green + skipped + 0) := congrArg (σ - ·) (Eq.symm (textbook_commit_green green skipped))
 /-- Google through one door: a commit holds the rule google-via-payload exactly when the direct Google calls it stages (URLs of a GOOGLE_HOST outside the registries and the generated plugin) are zero; every Google call is the qpu-google-call job: the scripts ask it by askGoogle (fetchWithTimeout and discover route every Google host there), the dashboard's analytics routes by report, rows, reportBody, answer and week, the reCAPTCHA check and the Measurement Protocol by askJob and GOOGLE_ENDPOINTS (examples: repository-google-via-payload, textbook-rewrite) -/
 theorem textbook_google_one_door (direct : Nat) : direct = 0 ↔ ¬ 0 < direct := by omega
-example := textbook_google_one_door (direct := 0)
-example := textbook_google_one_door (direct := 1)
-example := textbook_google_one_door (direct := 2)
+example := @textbook_google_one_door
 /-- textbook_google_one_door reflected by its shape, equivalence (examples: repository-google-via-payload, textbook-rewrite) -/
 @[reflection] theorem textbook_google_one_door_reflected (direct : Nat) : (¬ 0 < direct) ↔ (direct = 0) := Iff.symm (textbook_google_one_door direct)
 /-- a Google call runs exactly when its violations of the Discovery document (GOOGLE_DISCOVERY names where it is read) sum to none, that is when each kind is none: an unknown method or parameter, a required one missing, an enum or pattern broken, a credential from the caller; otherwise the qpu-google-call job records the refusal (examples: payload-google-call-validated, payload-google-call-endpoint, payload-google-call-refused) -/
 theorem textbook_google_call_schema (unknown missing broken : Nat) : unknown + missing + broken = 0 ↔ unknown = 0 ∧ missing = 0 ∧ broken = 0 := by omega
-example := textbook_google_call_schema (unknown := 0) (missing := 0) (broken := 0)
-example := textbook_google_call_schema (unknown := 0) (missing := 0) (broken := 1)
-example := textbook_google_call_schema (unknown := 0) (missing := 0) (broken := 2)
-example := textbook_google_call_schema (unknown := 0) (missing := 1) (broken := 0)
-example := textbook_google_call_schema (unknown := 0) (missing := 1) (broken := 1)
-example := textbook_google_call_schema (unknown := 0) (missing := 1) (broken := 2)
-example := textbook_google_call_schema (unknown := 0) (missing := 2) (broken := 0)
-example := textbook_google_call_schema (unknown := 0) (missing := 2) (broken := 1)
-example := textbook_google_call_schema (unknown := 0) (missing := 2) (broken := 2)
-example := textbook_google_call_schema (unknown := 1) (missing := 0) (broken := 0)
-example := textbook_google_call_schema (unknown := 1) (missing := 0) (broken := 1)
-example := textbook_google_call_schema (unknown := 1) (missing := 0) (broken := 2)
-example := textbook_google_call_schema (unknown := 1) (missing := 1) (broken := 0)
-example := textbook_google_call_schema (unknown := 1) (missing := 1) (broken := 1)
-example := textbook_google_call_schema (unknown := 1) (missing := 1) (broken := 2)
-example := textbook_google_call_schema (unknown := 1) (missing := 2) (broken := 0)
-example := textbook_google_call_schema (unknown := 1) (missing := 2) (broken := 1)
-example := textbook_google_call_schema (unknown := 1) (missing := 2) (broken := 2)
-example := textbook_google_call_schema (unknown := 2) (missing := 0) (broken := 0)
-example := textbook_google_call_schema (unknown := 2) (missing := 0) (broken := 1)
-example := textbook_google_call_schema (unknown := 2) (missing := 0) (broken := 2)
-example := textbook_google_call_schema (unknown := 2) (missing := 1) (broken := 0)
-example := textbook_google_call_schema (unknown := 2) (missing := 1) (broken := 1)
-example := textbook_google_call_schema (unknown := 2) (missing := 1) (broken := 2)
-example := textbook_google_call_schema (unknown := 2) (missing := 2) (broken := 0)
-example := textbook_google_call_schema (unknown := 2) (missing := 2) (broken := 1)
-example := textbook_google_call_schema (unknown := 2) (missing := 2) (broken := 2)
+example := @textbook_google_call_schema
 /-- textbook_google_call_schema reflected by its shape, equivalence (examples: payload-google-call-validated, payload-google-call-endpoint, payload-google-call-refused) -/
 @[reflection] theorem textbook_google_call_schema_reflected (unknown missing broken : Nat) : (unknown = 0 ∧ missing = 0 ∧ broken = 0) ↔ (unknown + missing + broken = 0) := Iff.symm (textbook_google_call_schema unknown missing broken)
 /-- a retried step is its last attempt: whatever the earlier attempts were, the status the green rule reads is the last one, so a step next retried to green no longer refuses the commit; every attempt stays in the receipt as history (examples: repository-retry-supersedes) -/
@@ -1717,9 +1008,7 @@ theorem textbook_retry_supersedes (attempts : List Bool) (last : Bool) : (attemp
 @[reflection] theorem textbook_retry_supersedes_reflected (attempts : List Bool) (last : Bool) : (some last) = ((attempts ++ [last]).getLast?) := Eq.symm (textbook_retry_supersedes attempts last)
 /-- when to push: the version is the last tag or its one next step (one step forward, one back is the tag), and the build it names is the one the package answers on initialize (examples: configure-versions) -/
 theorem textbook_version_sequential (n : Nat) : n + 1 - 1 = n := Nat.add_sub_cancel n 1
-example := textbook_version_sequential (n := 0)
-example := textbook_version_sequential (n := 1)
-example := textbook_version_sequential (n := 2)
+example := @textbook_version_sequential
 /-- textbook_version_sequential reflected by its shape, equality (examples: configure-versions) -/
 @[reflection] theorem textbook_version_sequential_reflected (n : Nat) (σ : Nat) : σ - (n) = σ - (n + 1 - 1) := congrArg (σ - ·) (Eq.symm (textbook_version_sequential n))
 /-- the e2e gate decodes by majority: two agreeing copies of three decide a combination (twice two exceeds three); a push needs nothing uncorrectable (examples: none yet) -/
@@ -1728,61 +1017,22 @@ theorem textbook_majority_of_three : 2 * 2 > 3 := by decide
 @[reflection] theorem textbook_majority_of_three_reflected (σ : Nat) (hσ0 : (2 * 2) ≤ σ) : σ - (2 * 2) < σ - (3) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_majority_of_three) hσ0) (textbook_majority_of_three)
 /-- every chat turn is a door call or one programmable question with at least one option, never prose: a problem no door decides alone (chat) is asked back with the doors around it as its options, the choice re-enters the loop, the routing is measured as exact pairs and misroutes as leads, and the chat is the MCP App ui://qpu/chat, which the React host QpuApp mounts when no tool is named, in the admin and as the registry item qpu-chat; the door is entered only for a chat given as an object (isObj) and every turn is one tools/call envelope (call) (examples: chat-question, chat-choice, chat-routes, chat-not-object, configure-chat-item, imagine-integer-llm, chat-account, chat-thousand, textbook-chat-plan, textbook-chat-coverage) -/
 theorem textbook_chat_call_or_question (served : Bool) (options : Nat) (h : served = false → 0 < options) : served = true ∨ 0 < options := match served, h with | true, _ => Or.inl rfl | false, h => Or.inr (h rfl)
-example := textbook_chat_call_or_question (served := true) (options := 0) (h := by first | decide | omega | simp)
-example := textbook_chat_call_or_question (served := true) (options := 1) (h := by first | decide | omega | simp)
-example := textbook_chat_call_or_question (served := true) (options := 2) (h := by first | decide | omega | simp)
-example := textbook_chat_call_or_question (served := false) (options := 1) (h := by first | decide | omega | simp)
-example := textbook_chat_call_or_question (served := false) (options := 2) (h := by first | decide | omega | simp)
+example := @textbook_chat_call_or_question
 /-- textbook_chat_call_or_question reflected by its shape, disjunction (examples: chat-question, chat-choice, chat-routes, chat-not-object, configure-chat-item, imagine-integer-llm, chat-account, chat-thousand, textbook-chat-plan, textbook-chat-coverage) -/
 @[reflection] theorem textbook_chat_call_or_question_reflected (served : Bool) (options : Nat) (h : served = false → 0 < options) : (0 < options) ∨ (served = true) := Or.symm (textbook_chat_call_or_question served options h)
 /-- every prompt is routed to the theorems it reaches by its subject or two specific words, or it is a lead: no third case, the chat answering with the theorems and their examples as routes (examples: match-route) -/
 theorem textbook_route_or_lead (b : Bool) : b = true ∨ b = false := by cases b <;> decide
-example := textbook_route_or_lead (b := true)
-example := textbook_route_or_lead (b := false)
+example := @textbook_route_or_lead
 /-- textbook_route_or_lead reflected by its shape, disjunction (examples: match-route) -/
 @[reflection] theorem textbook_route_or_lead_reflected (b : Bool) : (b = false) ∨ (b = true) := Or.symm (textbook_route_or_lead b)
 /-- the more the QPU is used the more complete it gets: every run adds what its sources answered (k) to what it held (n) and loses nothing, the immutable sources answering the same forever (examples: leads-sources-plan) -/
 theorem textbook_use_completes (n k : Nat) : n ≤ n + k := Nat.le_add_right n k
-example := textbook_use_completes (n := 0) (k := 0)
-example := textbook_use_completes (n := 0) (k := 1)
-example := textbook_use_completes (n := 0) (k := 2)
-example := textbook_use_completes (n := 1) (k := 0)
-example := textbook_use_completes (n := 1) (k := 1)
-example := textbook_use_completes (n := 1) (k := 2)
-example := textbook_use_completes (n := 2) (k := 0)
-example := textbook_use_completes (n := 2) (k := 1)
-example := textbook_use_completes (n := 2) (k := 2)
+example := @textbook_use_completes
 /-- textbook_use_completes reflected by its shape, order (examples: leads-sources-plan) -/
 @[reflection] theorem textbook_use_completes_reflected (n k : Nat) (σ : Nat) : σ - (n + k) ≤ σ - (n) := Nat.sub_le_sub_left (textbook_use_completes n k) σ
 /-- every open textbook is reached by a theorem, a lead of the domain the theorems reach, or outside it: three parts and no fourth (examples: leads-sources-judged) -/
 theorem textbook_textbooks_partition (routed domain outside : Nat) : routed + domain + outside - outside - domain = routed := by omega
-example := textbook_textbooks_partition (routed := 0) (domain := 0) (outside := 0)
-example := textbook_textbooks_partition (routed := 0) (domain := 0) (outside := 1)
-example := textbook_textbooks_partition (routed := 0) (domain := 0) (outside := 2)
-example := textbook_textbooks_partition (routed := 0) (domain := 1) (outside := 0)
-example := textbook_textbooks_partition (routed := 0) (domain := 1) (outside := 1)
-example := textbook_textbooks_partition (routed := 0) (domain := 1) (outside := 2)
-example := textbook_textbooks_partition (routed := 0) (domain := 2) (outside := 0)
-example := textbook_textbooks_partition (routed := 0) (domain := 2) (outside := 1)
-example := textbook_textbooks_partition (routed := 0) (domain := 2) (outside := 2)
-example := textbook_textbooks_partition (routed := 1) (domain := 0) (outside := 0)
-example := textbook_textbooks_partition (routed := 1) (domain := 0) (outside := 1)
-example := textbook_textbooks_partition (routed := 1) (domain := 0) (outside := 2)
-example := textbook_textbooks_partition (routed := 1) (domain := 1) (outside := 0)
-example := textbook_textbooks_partition (routed := 1) (domain := 1) (outside := 1)
-example := textbook_textbooks_partition (routed := 1) (domain := 1) (outside := 2)
-example := textbook_textbooks_partition (routed := 1) (domain := 2) (outside := 0)
-example := textbook_textbooks_partition (routed := 1) (domain := 2) (outside := 1)
-example := textbook_textbooks_partition (routed := 1) (domain := 2) (outside := 2)
-example := textbook_textbooks_partition (routed := 2) (domain := 0) (outside := 0)
-example := textbook_textbooks_partition (routed := 2) (domain := 0) (outside := 1)
-example := textbook_textbooks_partition (routed := 2) (domain := 0) (outside := 2)
-example := textbook_textbooks_partition (routed := 2) (domain := 1) (outside := 0)
-example := textbook_textbooks_partition (routed := 2) (domain := 1) (outside := 1)
-example := textbook_textbooks_partition (routed := 2) (domain := 1) (outside := 2)
-example := textbook_textbooks_partition (routed := 2) (domain := 2) (outside := 0)
-example := textbook_textbooks_partition (routed := 2) (domain := 2) (outside := 1)
-example := textbook_textbooks_partition (routed := 2) (domain := 2) (outside := 2)
+example := @textbook_textbooks_partition
 /-- textbook_textbooks_partition reflected by its shape, equality (examples: leads-sources-judged) -/
 @[reflection] theorem textbook_textbooks_partition_reflected (routed domain outside : Nat) (σ : Nat) : σ - (routed) = σ - (routed + domain + outside - outside - domain) := congrArg (σ - ·) (Eq.symm (textbook_textbooks_partition routed domain outside))
 /-- three distinctive words of the lead asked of the public MCP registry, one search each of at most ten servers: thirty related servers at most (examples: discover-lead-registry) -/
@@ -1799,16 +1049,7 @@ theorem textbook_wave_requests_by_lead : 3 + 2 + 7 * 3 + 1 + 1 = 28 := by decide
 @[reflection] theorem textbook_wave_requests_by_lead_reflected (σ : Nat) : σ - (28) = σ - (3 + 2 + 7 * 3 + 1 + 1) := congrArg (σ - ·) (Eq.symm (textbook_wave_requests_by_lead))
 /-- the unit judges every lead: served, refuted or in trial, so the leads less those in trial are the ones it settled, however many leads a run reads (examples: readiness-plan) -/
 theorem textbook_readiness_judged (served refuted trial leads : Nat) (h : served + refuted + trial = leads) : leads - trial = served + refuted := by omega
-example := textbook_readiness_judged (served := 0) (refuted := 0) (trial := 0) (leads := 0) (h := by first | decide | omega | simp)
-example := textbook_readiness_judged (served := 0) (refuted := 0) (trial := 1) (leads := 1) (h := by first | decide | omega | simp)
-example := textbook_readiness_judged (served := 0) (refuted := 0) (trial := 2) (leads := 2) (h := by first | decide | omega | simp)
-example := textbook_readiness_judged (served := 0) (refuted := 1) (trial := 0) (leads := 1) (h := by first | decide | omega | simp)
-example := textbook_readiness_judged (served := 0) (refuted := 1) (trial := 1) (leads := 2) (h := by first | decide | omega | simp)
-example := textbook_readiness_judged (served := 0) (refuted := 2) (trial := 0) (leads := 2) (h := by first | decide | omega | simp)
-example := textbook_readiness_judged (served := 1) (refuted := 0) (trial := 0) (leads := 1) (h := by first | decide | omega | simp)
-example := textbook_readiness_judged (served := 1) (refuted := 0) (trial := 1) (leads := 2) (h := by first | decide | omega | simp)
-example := textbook_readiness_judged (served := 1) (refuted := 1) (trial := 0) (leads := 2) (h := by first | decide | omega | simp)
-example := textbook_readiness_judged (served := 2) (refuted := 0) (trial := 0) (leads := 2) (h := by first | decide | omega | simp)
+example := @textbook_readiness_judged
 /-- textbook_readiness_judged reflected by its shape, equality (examples: readiness-plan) -/
 @[reflection] theorem textbook_readiness_judged_reflected (served refuted trial leads : Nat) (h : served + refuted + trial = leads) (σ : Nat) : σ - (served + refuted) = σ - (leads - trial) := congrArg (σ - ·) (Eq.symm (textbook_readiness_judged served refuted trial leads h))
 /-- the contrapositive of textbook_readiness_judged (examples: readiness-plan) -/
@@ -1829,12 +1070,7 @@ theorem textbook_translate_phrases : 5 + 1 + 0 = 6 := by decide
 @[reflection] theorem textbook_translate_phrases_reflected (σ : Nat) : σ - (6) = σ - (5 + 1 + 0) := congrArg (σ - ·) (Eq.symm (textbook_translate_phrases))
 /-- every term of a locale's vocabulary is known or missing, so the missing and the known make the terms whatever the vocabulary has grown to (examples: translate-coverage) -/
 theorem textbook_vocabulary_measured (terms known : Nat) (h : known ≤ terms) : terms - known + known = terms := Nat.sub_add_cancel h
-example := textbook_vocabulary_measured (terms := 0) (known := 0) (h := by first | decide | omega | simp)
-example := textbook_vocabulary_measured (terms := 1) (known := 0) (h := by first | decide | omega | simp)
-example := textbook_vocabulary_measured (terms := 1) (known := 1) (h := by first | decide | omega | simp)
-example := textbook_vocabulary_measured (terms := 2) (known := 0) (h := by first | decide | omega | simp)
-example := textbook_vocabulary_measured (terms := 2) (known := 1) (h := by first | decide | omega | simp)
-example := textbook_vocabulary_measured (terms := 2) (known := 2) (h := by first | decide | omega | simp)
+example := @textbook_vocabulary_measured
 /-- textbook_vocabulary_measured reflected by its shape, equality (examples: translate-coverage) -/
 @[reflection] theorem textbook_vocabulary_measured_reflected (terms known : Nat) (h : known ≤ terms) (σ : Nat) : σ - (terms) = σ - (terms - known + known) := congrArg (σ - ·) (Eq.symm (textbook_vocabulary_measured terms known h))
 /-- the contrapositive of textbook_vocabulary_measured (examples: translate-coverage) -/
@@ -1867,9 +1103,7 @@ theorem textbook_mentions_by_source : 3 + 2 + 0 = 5 ∧ 2 + 1 = 3 := by decide
 @[reflection] theorem textbook_mentions_by_source_reflected (σ : Nat) : (σ - (5) = σ - (3 + 2 + 0)) ∧ (σ - (3) = σ - (2 + 1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_mentions_by_source).1), congrArg (σ - ·) (Eq.symm (textbook_mentions_by_source).2)⟩
 /-- the legal plan makes one call per claim the author makes and two more, however many claims the tree carries (examples: legal-plan) -/
 theorem textbook_legal_plan_calls (claims : Nat) : claims + 2 - claims = 2 := by omega
-example := textbook_legal_plan_calls (claims := 0)
-example := textbook_legal_plan_calls (claims := 1)
-example := textbook_legal_plan_calls (claims := 2)
+example := @textbook_legal_plan_calls
 /-- textbook_legal_plan_calls reflected by its shape, equality (examples: legal-plan) -/
 @[reflection] theorem textbook_legal_plan_calls_reflected (claims : Nat) (σ : Nat) : σ - (2) = σ - (claims + 2 - claims) := congrArg (σ - ·) (Eq.symm (textbook_legal_plan_calls claims))
 /-- three workflow leads, three branch leads, three tag leads, two release leads, one Zenodo, one workspace and one npm lead: fourteen leads (examples: repository-watch) -/
@@ -1922,10 +1156,7 @@ theorem textbook_attest_facets : 4 - 1 = 3 ∧ 2 * 1 * 1 = 2 := by decide
 @[reflection] theorem textbook_attest_facets_reflected (σ : Nat) : (σ - (3) = σ - (4 - 1)) ∧ (σ - (2) = σ - (2 * 1 * 1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_attest_facets).1), congrArg (σ - ·) (Eq.symm (textbook_attest_facets).2)⟩
 /-- the plan that replaces the textbook's axioms by theorems through the Payload MCP is four steps, over at least ten theorems and ten backed examples (examples: payload-theorems-plan) -/
 theorem textbook_theorems_plan_steps (theorems backed : Nat) (h1 : 10 ≤ theorems) (h2 : 10 ≤ backed) : 1 + 1 + 1 + 1 = 4 ∧ 20 ≤ theorems + backed := by omega
-example := textbook_theorems_plan_steps (theorems := 20) (backed := 20) (h1 := by first | decide | omega | simp) (h2 := by first | decide | omega | simp)
-example := textbook_theorems_plan_steps (theorems := 20) (backed := 10) (h1 := by first | decide | omega | simp) (h2 := by first | decide | omega | simp)
-example := textbook_theorems_plan_steps (theorems := 10) (backed := 20) (h1 := by first | decide | omega | simp) (h2 := by first | decide | omega | simp)
-example := textbook_theorems_plan_steps (theorems := 10) (backed := 10) (h1 := by first | decide | omega | simp) (h2 := by first | decide | omega | simp)
+example := @textbook_theorems_plan_steps
 /-- textbook_theorems_plan_steps reflected by its shape, conjunction (examples: payload-theorems-plan) -/
 @[reflection] theorem textbook_theorems_plan_steps_reflected (theorems backed : Nat) (h1 : 10 ≤ theorems) (h2 : 10 ≤ backed) (σ : Nat) : (σ - (4) = σ - (1 + 1 + 1 + 1)) ∧ (σ - (theorems + backed) ≤ σ - (20)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_theorems_plan_steps theorems backed h1 h2).1), Nat.sub_le_sub_left (textbook_theorems_plan_steps theorems backed h1 h2).2 σ⟩
 /-- the contrapositive of textbook_theorems_plan_steps (examples: payload-theorems-plan) -/
@@ -1942,10 +1173,7 @@ theorem textbook_app_fields_validated : 3 + 1 = 4 ∧ 2 + 1 = 3 := by decide
 @[reflection] theorem textbook_app_fields_validated_reflected (σ : Nat) : (σ - (4) = σ - (3 + 1)) ∧ (σ - (3) = σ - (2 + 1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_app_fields_validated).1), congrArg (σ - ·) (Eq.symm (textbook_app_fields_validated).2)⟩
 /-- the site's documents are its use-case pages and the gate pages, and the gate pages are every gate, every category and the root: one document each, whatever the number of gates (examples: payload-site) -/
 theorem textbook_site_documents (pages gates categories docs : Nat) (h : docs = pages + (gates + categories + 1)) : docs - pages = gates + categories + 1 := by omega
-example := textbook_site_documents (pages := 0) (gates := 0) (categories := 0) (docs := 1) (h := by first | decide | omega | simp)
-example := textbook_site_documents (pages := 0) (gates := 0) (categories := 1) (docs := 2) (h := by first | decide | omega | simp)
-example := textbook_site_documents (pages := 0) (gates := 1) (categories := 0) (docs := 2) (h := by first | decide | omega | simp)
-example := textbook_site_documents (pages := 1) (gates := 0) (categories := 0) (docs := 2) (h := by first | decide | omega | simp)
+example := @textbook_site_documents
 /-- textbook_site_documents reflected by its shape, equality (examples: payload-site) -/
 @[reflection] theorem textbook_site_documents_reflected (pages gates categories docs : Nat) (h : docs = pages + (gates + categories + 1)) (σ : Nat) : σ - (gates + categories + 1) = σ - (docs - pages) := congrArg (σ - ·) (Eq.symm (textbook_site_documents pages gates categories docs h))
 /-- the contrapositive of textbook_site_documents (examples: payload-site) -/
@@ -1958,19 +1186,12 @@ theorem textbook_mcp_search_limit : 1 ≤ 10 ∧ 10 ≤ 100 := by decide
 @[reflection] theorem textbook_mcp_search_limit_reflected (σ : Nat) : (σ - (10) ≤ σ - (1)) ∧ (σ - (100) ≤ σ - (10)) := ⟨Nat.sub_le_sub_left (textbook_mcp_search_limit).1 σ, Nat.sub_le_sub_left (textbook_mcp_search_limit).2 σ⟩
 /-- installing a server adds at most one row to the tenant's mcps, and a url already held adds none: extend { install } answers the row, the duplicate and the tools/list that follows (examples: extend-install) -/
 theorem textbook_mcp_install_rows (held : Nat) : held ≤ held + 1 ∧ held + 1 - 1 = held := by omega
-example := textbook_mcp_install_rows (held := 0)
-example := textbook_mcp_install_rows (held := 1)
-example := textbook_mcp_install_rows (held := 2)
+example := @textbook_mcp_install_rows
 /-- textbook_mcp_install_rows reflected by its shape, conjunction (examples: extend-install) -/
 @[reflection] theorem textbook_mcp_install_rows_reflected (held : Nat) (σ : Nat) : (σ - (held + 1) ≤ σ - (held)) ∧ (σ - (held) = σ - (held + 1 - 1)) := ⟨Nat.sub_le_sub_left (textbook_mcp_install_rows held).1 σ, congrArg (σ - ·) (Eq.symm (textbook_mcp_install_rows held).2)⟩
 /-- every declaration the compiler reports never read is either removed or left as a lead: removeDead reads the TS6133/6192/6196/6198/6199 report, removes the unused import specifier or top-level declaration with its doc comment, and returns fixed + left = findings (examples: audit-dead) -/
 theorem textbook_dead_removed (fixed found : Nat) (h : fixed ≤ found) : fixed + (found - fixed) = found := by omega
-example := textbook_dead_removed (fixed := 0) (found := 0) (h := by first | decide | omega | simp)
-example := textbook_dead_removed (fixed := 0) (found := 1) (h := by first | decide | omega | simp)
-example := textbook_dead_removed (fixed := 0) (found := 2) (h := by first | decide | omega | simp)
-example := textbook_dead_removed (fixed := 1) (found := 1) (h := by first | decide | omega | simp)
-example := textbook_dead_removed (fixed := 1) (found := 2) (h := by first | decide | omega | simp)
-example := textbook_dead_removed (fixed := 2) (found := 2) (h := by first | decide | omega | simp)
+example := @textbook_dead_removed
 /-- textbook_dead_removed reflected by its shape, equality (examples: audit-dead) -/
 @[reflection] theorem textbook_dead_removed_reflected (fixed found : Nat) (h : fixed ≤ found) (σ : Nat) : σ - (found) = σ - (fixed + (found - fixed)) := congrArg (σ - ·) (Eq.symm (textbook_dead_removed fixed found h))
 /-- the contrapositive of textbook_dead_removed (examples: audit-dead) -/
@@ -1979,12 +1200,7 @@ example := textbook_dead_removed (fixed := 2) (found := 2) (h := by first | deci
 @[reflection] theorem textbook_dead_removed_converse (fixed found : Nat) : (fixed + (found - fixed) = found) → (fixed ≤ found) := fun hc => by omega
 /-- every file read is either classified under the ISO dimensions it cites or named unclassified: isoClassify reads the ISO references of a text and keeps each dimension whose number they cite, in any edition or part (examples: validate-iso-classify) -/
 theorem textbook_iso_classify (cited files : Nat) (h : cited ≤ files) : cited + (files - cited) = files := by omega
-example := textbook_iso_classify (cited := 0) (files := 0) (h := by first | decide | omega | simp)
-example := textbook_iso_classify (cited := 0) (files := 1) (h := by first | decide | omega | simp)
-example := textbook_iso_classify (cited := 0) (files := 2) (h := by first | decide | omega | simp)
-example := textbook_iso_classify (cited := 1) (files := 1) (h := by first | decide | omega | simp)
-example := textbook_iso_classify (cited := 1) (files := 2) (h := by first | decide | omega | simp)
-example := textbook_iso_classify (cited := 2) (files := 2) (h := by first | decide | omega | simp)
+example := @textbook_iso_classify
 /-- textbook_iso_classify reflected by its shape, equality (examples: validate-iso-classify) -/
 @[reflection] theorem textbook_iso_classify_reflected (cited files : Nat) (h : cited ≤ files) (σ : Nat) : σ - (files) = σ - (cited + (files - cited)) := congrArg (σ - ·) (Eq.symm (textbook_iso_classify cited files h))
 /-- the contrapositive of textbook_iso_classify (examples: validate-iso-classify) -/
@@ -1993,17 +1209,12 @@ example := textbook_iso_classify (cited := 2) (files := 2) (h := by first | deci
 @[reflection] theorem textbook_iso_classify_converse (cited files : Nat) : (cited + (files - cited) = files) → (cited ≤ files) := fun hc => by omega
 /-- physicalEvidence counts a device as measured only when it is identified by a sealed address and one of its sensors reads a number; quantum-mechanical behaviour stays UNVERIFIED either way (examples: validate-physical-measured, validate-physical-unmeasured) -/
 theorem textbook_physical_evidence (identified read : Bool) (h : (identified && read) = true) : identified = true ∧ read = true := by cases identified <;> cases read <;> simp_all
-example := textbook_physical_evidence (identified := true) (read := true) (h := by first | decide | omega | simp)
+example := @textbook_physical_evidence
 /-- textbook_physical_evidence reflected by its shape, conjunction (examples: validate-physical-measured, validate-physical-unmeasured) -/
 @[reflection] theorem textbook_physical_evidence_reflected (identified read : Bool) (h : (identified && read) = true) : ((true) = (identified)) ∧ ((true) = (read)) := ⟨Eq.symm (textbook_physical_evidence identified read h).1, Eq.symm (textbook_physical_evidence identified read h).2⟩
 /-- auditPrograms partitions the files it reads: each is a UUID program (placed, a Lean module, installing one, or a generator output) or a lead naming the ISO/IEC 4879 terms it consolidates under (examples: audit-programs) -/
 theorem textbook_programs_partition (programs files : Nat) (h : programs ≤ files) : programs + (files - programs) = files := by omega
-example := textbook_programs_partition (programs := 0) (files := 0) (h := by first | decide | omega | simp)
-example := textbook_programs_partition (programs := 0) (files := 1) (h := by first | decide | omega | simp)
-example := textbook_programs_partition (programs := 0) (files := 2) (h := by first | decide | omega | simp)
-example := textbook_programs_partition (programs := 1) (files := 1) (h := by first | decide | omega | simp)
-example := textbook_programs_partition (programs := 1) (files := 2) (h := by first | decide | omega | simp)
-example := textbook_programs_partition (programs := 2) (files := 2) (h := by first | decide | omega | simp)
+example := @textbook_programs_partition
 /-- textbook_programs_partition reflected by its shape, equality (examples: audit-programs) -/
 @[reflection] theorem textbook_programs_partition_reflected (programs files : Nat) (h : programs ≤ files) (σ : Nat) : σ - (files) = σ - (programs + (files - programs)) := congrArg (σ - ·) (Eq.symm (textbook_programs_partition programs files h))
 /-- the contrapositive of textbook_programs_partition (examples: audit-programs) -/
@@ -2012,12 +1223,7 @@ example := textbook_programs_partition (programs := 2) (files := 2) (h := by fir
 @[reflection] theorem textbook_programs_partition_converse (programs files : Nat) : (programs + (files - programs) = files) → (programs ≤ files) := fun hc => by omega
 /-- tick reads the monotonic clock, so a call's duration is the later reading less the earlier and never negative; metrics times computed and served calls with it, on the host (examples: metrics-served-calls) -/
 theorem textbook_monotonic_tick (started ended : Nat) (h : started ≤ ended) : ended - started + started = ended := by omega
-example := textbook_monotonic_tick (started := 0) (ended := 0) (h := by first | decide | omega | simp)
-example := textbook_monotonic_tick (started := 0) (ended := 1) (h := by first | decide | omega | simp)
-example := textbook_monotonic_tick (started := 0) (ended := 2) (h := by first | decide | omega | simp)
-example := textbook_monotonic_tick (started := 1) (ended := 1) (h := by first | decide | omega | simp)
-example := textbook_monotonic_tick (started := 1) (ended := 2) (h := by first | decide | omega | simp)
-example := textbook_monotonic_tick (started := 2) (ended := 2) (h := by first | decide | omega | simp)
+example := @textbook_monotonic_tick
 /-- textbook_monotonic_tick reflected by its shape, equality (examples: metrics-served-calls) -/
 @[reflection] theorem textbook_monotonic_tick_reflected (started ended : Nat) (h : started ≤ ended) (σ : Nat) : σ - (ended) = σ - (ended - started + started) := congrArg (σ - ·) (Eq.symm (textbook_monotonic_tick started ended h))
 /-- the contrapositive of textbook_monotonic_tick (examples: metrics-served-calls) -/
@@ -2026,9 +1232,7 @@ example := textbook_monotonic_tick (started := 2) (ended := 2) (h := by first | 
 @[reflection] theorem textbook_monotonic_tick_converse (started ended : Nat) : (ended - started + started = ended) → (started ≤ ended) := fun hc => by omega
 /-- the catalogue extended inward is the tree's own tools and the one door the docs add, whatever the number of tools (examples: extend-in-docs) -/
 theorem textbook_extend_inward (mine : Nat) : mine + 1 - mine = 1 := by omega
-example := textbook_extend_inward (mine := 0)
-example := textbook_extend_inward (mine := 1)
-example := textbook_extend_inward (mine := 2)
+example := @textbook_extend_inward
 /-- textbook_extend_inward reflected by its shape, equality (examples: extend-in-docs) -/
 @[reflection] theorem textbook_extend_inward_reflected (mine : Nat) (σ : Nat) : σ - (1) = σ - (mine + 1 - mine) := congrArg (σ - ·) (Eq.symm (textbook_extend_inward mine))
 /-- a foreign door is named by its host, a colon and its tool: docs.mcp.cloudflare.com (23 characters), ':' and search_cloudflare_documentation (31), fifty-five characters (examples: extend-call-served) -/
@@ -2041,7 +1245,7 @@ theorem textbook_attest_requests : 8 + 1 = 9 := by decide
 @[reflection] theorem textbook_attest_requests_reflected (σ : Nat) : σ - (9) = σ - (8 + 1) := congrArg (σ - ·) (Eq.symm (textbook_attest_requests))
 /-- the textbook is categorised four ways, by toolbox, tool, theorem and module, and it holds more examples than toolboxes (examples: textbook-categories) -/
 theorem textbook_textbook_categories (examples toolboxes : Nat) (h1 : 49 ≤ examples) (h2 : 8 ≤ toolboxes) (h3 : toolboxes ≤ 12) : 1 + 1 + 1 + 1 = 4 ∧ toolboxes ≤ examples := by omega
-example := textbook_textbook_categories (examples := 49) (toolboxes := 8) (h1 := by first | decide | omega | simp) (h2 := by first | decide | omega | simp) (h3 := by first | decide | omega | simp)
+example := @textbook_textbook_categories
 /-- textbook_textbook_categories reflected by its shape, conjunction (examples: textbook-categories) -/
 @[reflection] theorem textbook_textbook_categories_reflected (examples toolboxes : Nat) (h1 : 49 ≤ examples) (h2 : 8 ≤ toolboxes) (h3 : toolboxes ≤ 12) (σ : Nat) : (σ - (4) = σ - (1 + 1 + 1 + 1)) ∧ (σ - (examples) ≤ σ - (toolboxes)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_textbook_categories examples toolboxes h1 h2 h3).1), Nat.sub_le_sub_left (textbook_textbook_categories examples toolboxes h1 h2 h3).2 σ⟩
 /-- the contrapositive of textbook_textbook_categories (examples: textbook-categories) -/
@@ -2070,9 +1274,7 @@ theorem textbook_sycamore_couplers : 2 * 88 = 176 ∧ 176 ≤ 4 * 54 := by decid
 @[reflection] theorem textbook_sycamore_couplers_reflected (σ : Nat) : (σ - (176) = σ - (2 * 88)) ∧ (σ - (4 * 54) ≤ σ - (176)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_sycamore_couplers).1), Nat.sub_le_sub_left (textbook_sycamore_couplers).2 σ⟩
 /-- heldQubits gives each of a UUID's 32 hex digits w qubits, the version digit none and the variant digit w − 2, so an address holds 32·w − w − 2 at every hexbit width w ≥ 2: the Register processor is that grid, its counts the formulas of Qpu.Information.Qubit (Qubit.effective_formula, Qubit.couplers_formula) and its width unbounded by coins (Qubit.unbounded) (examples: processor-register) -/
 theorem textbook_register_held (w : Nat) (h : 2 ≤ w) : 30 * w + 0 + (w - 2) = 32 * w - w - 2 := by omega
-example := textbook_register_held (w := 2) (h := by first | decide | omega | simp)
-example := textbook_register_held (w := 30) (h := by first | decide | omega | simp)
-example := textbook_register_held (w := 32) (h := by first | decide | omega | simp)
+example := @textbook_register_held
 /-- textbook_register_held reflected by its shape, equality (examples: processor-register) -/
 @[reflection] theorem textbook_register_held_reflected (w : Nat) (h : 2 ≤ w) (σ : Nat) : σ - (32 * w - w - 2) = σ - (30 * w + 0 + (w - 2)) := congrArg (σ - ·) (Eq.symm (textbook_register_held w h))
 /-- the contrapositive of textbook_register_held (examples: processor-register) -/
@@ -2181,27 +1383,7 @@ theorem textbook_repositories_by_language : 11 + 3 + 1 = 15 := by decide
 @[reflection] theorem textbook_repositories_by_language_reflected (σ : Nat) : σ - (15) = σ - (11 + 3 + 1) := congrArg (σ - ·) (Eq.symm (textbook_repositories_by_language))
 /-- every lead has one of five statuses: the leads less the open ones are the ones followed, served, partial, blocked or out of scope, whatever the count of the run (examples: leads-all) -/
 theorem textbook_leads_by_status (served partly blocked outside opened total : Nat) (h : served + partly + blocked + outside + opened = total) : total - opened = served + partly + blocked + outside := by omega
-example := textbook_leads_by_status (served := 0) (partly := 0) (blocked := 0) (outside := 0) (opened := 0) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 0) (blocked := 0) (outside := 0) (opened := 1) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 0) (blocked := 0) (outside := 0) (opened := 2) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 0) (blocked := 0) (outside := 1) (opened := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 0) (blocked := 0) (outside := 1) (opened := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 0) (blocked := 0) (outside := 2) (opened := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 0) (blocked := 1) (outside := 0) (opened := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 0) (blocked := 1) (outside := 0) (opened := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 0) (blocked := 1) (outside := 1) (opened := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 0) (blocked := 2) (outside := 0) (opened := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 1) (blocked := 0) (outside := 0) (opened := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 1) (blocked := 0) (outside := 0) (opened := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 1) (blocked := 0) (outside := 1) (opened := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 1) (blocked := 1) (outside := 0) (opened := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 0) (partly := 2) (blocked := 0) (outside := 0) (opened := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 1) (partly := 0) (blocked := 0) (outside := 0) (opened := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 1) (partly := 0) (blocked := 0) (outside := 0) (opened := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 1) (partly := 0) (blocked := 0) (outside := 1) (opened := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 1) (partly := 0) (blocked := 1) (outside := 0) (opened := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 1) (partly := 1) (blocked := 0) (outside := 0) (opened := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_leads_by_status (served := 2) (partly := 0) (blocked := 0) (outside := 0) (opened := 0) (total := 2) (h := by first | decide | omega | simp)
+example := @textbook_leads_by_status
 /-- textbook_leads_by_status reflected by its shape, equality (examples: leads-all) -/
 @[reflection] theorem textbook_leads_by_status_reflected (served partly blocked outside opened total : Nat) (h : served + partly + blocked + outside + opened = total) (σ : Nat) : σ - (served + partly + blocked + outside) = σ - (total - opened) := congrArg (σ - ·) (Eq.symm (textbook_leads_by_status served partly blocked outside opened total h))
 /-- the contrapositive of textbook_leads_by_status (examples: leads-all) -/
@@ -2262,9 +1444,7 @@ theorem textbook_rsa_beyond_bound : 2 ^ 4 < 21 ∧ 21 < 2 ^ 5 ∧ 5 < 2048 := by
 @[reflection] theorem textbook_rsa_beyond_bound_reflected (σ : Nat) (hσ0 : (21) ≤ σ) (hσ1 : (2 ^ 5) ≤ σ) (hσ2 : (2048) ≤ σ) : (σ - (21) < σ - (2 ^ 4)) ∧ (σ - (2 ^ 5) < σ - (21)) ∧ (σ - (2048) < σ - (5)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_rsa_beyond_bound).1 hσ0) (textbook_rsa_beyond_bound).1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_rsa_beyond_bound).2.1 hσ1) (textbook_rsa_beyond_bound).2.1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_rsa_beyond_bound).2.2 hσ2) (textbook_rsa_beyond_bound).2.2⟩
 /-- the audit replays every check: when none fails every check passes, however many checks the tree has grown to (examples: audit-self) -/
 theorem textbook_audit_all_pass (passed failed total : Nat) (h : passed + failed = total) (h0 : failed = 0) : passed = total := by omega
-example := textbook_audit_all_pass (passed := 0) (failed := 0) (total := 0) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
-example := textbook_audit_all_pass (passed := 1) (failed := 0) (total := 1) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
-example := textbook_audit_all_pass (passed := 2) (failed := 0) (total := 2) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
+example := @textbook_audit_all_pass
 /-- textbook_audit_all_pass reflected by its shape, equality (examples: audit-self) -/
 @[reflection] theorem textbook_audit_all_pass_reflected (passed failed total : Nat) (h : passed + failed = total) (h0 : failed = 0) (σ : Nat) : σ - (total) = σ - (passed) := congrArg (σ - ·) (Eq.symm (textbook_audit_all_pass passed failed total h h0))
 /-- the contrapositive of textbook_audit_all_pass (examples: audit-self) -/
@@ -2273,9 +1453,7 @@ example := textbook_audit_all_pass (passed := 2) (failed := 0) (total := 2) (h :
 @[reflection] theorem textbook_audit_all_pass_converse_refuted : ¬ ∀ (passed failed total : Nat), (passed = total) → (passed + failed = total) ∧ (failed = 0) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- every axiom of the textbook has its theorem: when every example is linked to a kernel-accepted theorem, the examples left without one are none (examples: textbook-axioms) -/
 theorem textbook_axioms_linked (examples linked : Nat) (h : linked = examples) : examples - linked = 0 := by omega
-example := textbook_axioms_linked (examples := 0) (linked := 0) (h := by first | decide | omega | simp)
-example := textbook_axioms_linked (examples := 1) (linked := 1) (h := by first | decide | omega | simp)
-example := textbook_axioms_linked (examples := 2) (linked := 2) (h := by first | decide | omega | simp)
+example := @textbook_axioms_linked
 /-- textbook_axioms_linked reflected by its shape, equality (examples: textbook-axioms) -/
 @[reflection] theorem textbook_axioms_linked_reflected (examples linked : Nat) (h : linked = examples) (σ : Nat) : σ - (0) = σ - (examples - linked) := congrArg (σ - ·) (Eq.symm (textbook_axioms_linked examples linked h))
 /-- the contrapositive of textbook_axioms_linked (examples: textbook-axioms) -/
@@ -2284,7 +1462,7 @@ example := textbook_axioms_linked (examples := 2) (linked := 2) (h := by first |
 @[reflection] theorem textbook_axioms_linked_converse_refuted : ¬ ∀ (examples linked : Nat), (examples - linked = 0) → (linked = examples) := fun h => absurd (h 0 1 (by decide)) (by decide)
 /-- a subject shared by k problems, two at least, is one missing theorem that serves more than one problem, and every one of them collides with at least one other: each problem solves many others (examples: leads-collide) -/
 theorem textbook_collision_solves_many (k : Nat) (h : 2 ≤ k) : 1 < k ∧ 1 ≤ k - 1 := by omega
-example := textbook_collision_solves_many (k := 2) (h := by first | decide | omega | simp)
+example := @textbook_collision_solves_many
 /-- textbook_collision_solves_many reflected by its shape, conjunction (examples: leads-collide) -/
 @[reflection] theorem textbook_collision_solves_many_reflected (k : Nat) (h : 2 ≤ k) (σ : Nat) (hσ0 : (k) ≤ σ) : (σ - (k) < σ - (1)) ∧ (σ - (k - 1) ≤ σ - (1)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_collision_solves_many k h).1 hσ0) (textbook_collision_solves_many k h).1, Nat.sub_le_sub_left (textbook_collision_solves_many k h).2 σ⟩
 /-- the contrapositive of textbook_collision_solves_many (examples: leads-collide) -/
@@ -2293,16 +1471,12 @@ example := textbook_collision_solves_many (k := 2) (h := by first | decide | ome
 @[reflection] theorem textbook_collision_solves_many_converse (k : Nat) : (1 < k ∧ 1 ≤ k - 1) → (2 ≤ k) := fun hc => by omega
 /-- the quantum core computes on the classical world only through coins fused into coils, and the classical world reaches it only the same way back: two loops of one double torus, every crossing a finite step with always a next and one step back (examples: stripe-fusion, algorithm-factor-test-integer) -/
 theorem textbook_double_torus (n : Nat) : n < n + 1 ∧ n + 1 - 1 = n := by omega
-example := textbook_double_torus (n := 0)
-example := textbook_double_torus (n := 1)
-example := textbook_double_torus (n := 2)
+example := @textbook_double_torus
 /-- textbook_double_torus reflected by its shape, conjunction (examples: stripe-fusion, algorithm-factor-test-integer) -/
 @[reflection] theorem textbook_double_torus_reflected (n : Nat) (σ : Nat) (hσ0 : (n + 1) ≤ σ) : (σ - (n + 1) < σ - (n)) ∧ (σ - (n) = σ - (n + 1 - 1)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_double_torus n).1 hσ0) (textbook_double_torus n).1, congrArg (σ - ·) (Eq.symm (textbook_double_torus n).2)⟩
 /-- redact before publish: every path a record holds made relative to the tree and every leak replaced by its kind before a receipt, a lead or a machine record is written, so nothing published holds one (examples: machine-redact) -/
 theorem textbook_redact_before_publish (leaks redacted : Nat) (h : redacted = leaks) : leaks - redacted = 0 := by omega
-example := textbook_redact_before_publish (leaks := 0) (redacted := 0) (h := by first | decide | omega | simp)
-example := textbook_redact_before_publish (leaks := 1) (redacted := 1) (h := by first | decide | omega | simp)
-example := textbook_redact_before_publish (leaks := 2) (redacted := 2) (h := by first | decide | omega | simp)
+example := @textbook_redact_before_publish
 /-- textbook_redact_before_publish reflected by its shape, equality (examples: machine-redact) -/
 @[reflection] theorem textbook_redact_before_publish_reflected (leaks redacted : Nat) (h : redacted = leaks) (σ : Nat) : σ - (0) = σ - (leaks - redacted) := congrArg (σ - ·) (Eq.symm (textbook_redact_before_publish leaks redacted h))
 /-- the contrapositive of textbook_redact_before_publish (examples: machine-redact) -/
@@ -2311,9 +1485,7 @@ example := textbook_redact_before_publish (leaks := 2) (redacted := 2) (h := by 
 @[reflection] theorem textbook_redact_before_publish_converse_refuted : ¬ ∀ (leaks redacted : Nat), (leaks - redacted = 0) → (redacted = leaks) := fun h => absurd (h 0 1 (by decide)) (by decide)
 /-- findLeaks: problem solving requires problem finding (the one allowance shared with purify, LEAK_ALLOWED): every leak found in what is published is reported by its kind and place and redacted, so none of its values is repeated, however many are found (examples: audit-leaks, audit-leak-allowed) -/
 theorem textbook_leaks_redacted (found redacted : Nat) (h : redacted = found) : found - redacted = 0 := by omega
-example := textbook_leaks_redacted (found := 0) (redacted := 0) (h := by first | decide | omega | simp)
-example := textbook_leaks_redacted (found := 1) (redacted := 1) (h := by first | decide | omega | simp)
-example := textbook_leaks_redacted (found := 2) (redacted := 2) (h := by first | decide | omega | simp)
+example := @textbook_leaks_redacted
 /-- textbook_leaks_redacted reflected by its shape, equality (examples: audit-leaks, audit-leak-allowed) -/
 @[reflection] theorem textbook_leaks_redacted_reflected (found redacted : Nat) (h : redacted = found) (σ : Nat) : σ - (0) = σ - (found - redacted) := congrArg (σ - ·) (Eq.symm (textbook_leaks_redacted found redacted h))
 /-- the contrapositive of textbook_leaks_redacted (examples: audit-leaks, audit-leak-allowed) -/
@@ -2322,9 +1494,7 @@ example := textbook_leaks_redacted (found := 2) (redacted := 2) (h := by first |
 @[reflection] theorem textbook_leaks_redacted_converse_refuted : ¬ ∀ (found redacted : Nat), (found - redacted = 0) → (redacted = found) := fun h => absurd (h 0 1 (by decide)) (by decide)
 /-- every textbook expression is a tool: when each closed statement evaluated exactly agrees with what the kernel proved, none disagrees, and every number the prose states rests on one of them or is a lead (examples: textbook-expressions, textbook-prose) -/
 theorem textbook_expressions_evaluate (closed held : Nat) (h : held = closed) : closed - held = 0 := by omega
-example := textbook_expressions_evaluate (closed := 0) (held := 0) (h := by first | decide | omega | simp)
-example := textbook_expressions_evaluate (closed := 1) (held := 1) (h := by first | decide | omega | simp)
-example := textbook_expressions_evaluate (closed := 2) (held := 2) (h := by first | decide | omega | simp)
+example := @textbook_expressions_evaluate
 /-- textbook_expressions_evaluate reflected by its shape, equality (examples: textbook-expressions, textbook-prose) -/
 @[reflection] theorem textbook_expressions_evaluate_reflected (closed held : Nat) (h : held = closed) (σ : Nat) : σ - (0) = σ - (closed - held) := congrArg (σ - ·) (Eq.symm (textbook_expressions_evaluate closed held h))
 /-- the contrapositive of textbook_expressions_evaluate (examples: textbook-expressions, textbook-prose) -/
@@ -2337,15 +1507,7 @@ theorem textbook_queneau_compositions : 10 ^ 14 = 100000000000000 ∧ 365 * 24 *
 @[reflection] theorem textbook_queneau_compositions_reflected (σ : Nat) : (σ - (100000000000000) = σ - (10 ^ 14)) ∧ (σ - (525600) = σ - (365 * 24 * 60)) ∧ (σ - (190258751) = σ - (10 ^ 14 / 525600)) ∧ (σ - (474400) = σ - (10 ^ 14 % 525600)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_queneau_compositions).1), congrArg (σ - ·) (Eq.symm (textbook_queneau_compositions).2.1), congrArg (σ - ·) (Eq.symm (textbook_queneau_compositions).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_queneau_compositions).2.2.2)⟩
 /-- every composition is computed from its index and back: a choice below its position's number of choices comes out of the number it made, the remainder the choice and the quotient the rest, so one primitive covers every combination space and stores none; rosetta reads it as a rosetta, the transpose a σ-permutation of the axes (examples: fold-queneau, fold-rosetta, leads-scientific-domains, payload-domain-configs, css-shadcn) -/
 theorem textbook_mixed_radix (q r d : Nat) (h : d < r) : (d + r * q) % r = d ∧ (d + r * q) / r = q := ⟨by rw [Nat.add_mul_mod_self_left, Nat.mod_eq_of_lt h], by rw [Nat.add_mul_div_left _ _ (by omega), Nat.div_eq_of_lt h, Nat.zero_add]⟩
-example := textbook_mixed_radix (q := 0) (r := 1) (d := 0) (h := by first | decide | omega | simp)
-example := textbook_mixed_radix (q := 0) (r := 2) (d := 0) (h := by first | decide | omega | simp)
-example := textbook_mixed_radix (q := 0) (r := 2) (d := 1) (h := by first | decide | omega | simp)
-example := textbook_mixed_radix (q := 1) (r := 1) (d := 0) (h := by first | decide | omega | simp)
-example := textbook_mixed_radix (q := 1) (r := 2) (d := 0) (h := by first | decide | omega | simp)
-example := textbook_mixed_radix (q := 1) (r := 2) (d := 1) (h := by first | decide | omega | simp)
-example := textbook_mixed_radix (q := 2) (r := 1) (d := 0) (h := by first | decide | omega | simp)
-example := textbook_mixed_radix (q := 2) (r := 2) (d := 0) (h := by first | decide | omega | simp)
-example := textbook_mixed_radix (q := 2) (r := 2) (d := 1) (h := by first | decide | omega | simp)
+example := @textbook_mixed_radix
 /-- textbook_mixed_radix reflected by its shape, conjunction (examples: fold-queneau, fold-rosetta, leads-scientific-domains, payload-domain-configs, css-shadcn) -/
 @[reflection] theorem textbook_mixed_radix_reflected (q r d : Nat) (h : d < r) (σ : Nat) : (σ - (d) = σ - ((d + r * q) % r)) ∧ (σ - (q) = σ - ((d + r * q) / r)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_mixed_radix q r d h).1), congrArg (σ - ·) (Eq.symm (textbook_mixed_radix q r d h).2)⟩
 /-- the contrapositive of textbook_mixed_radix (examples: fold-queneau, fold-rosetta, leads-scientific-domains, payload-domain-configs, css-shadcn) -/
@@ -2362,12 +1524,7 @@ theorem textbook_tamper_detected : 256 / 2 = 128 ∧ 10 ^ 38 < 2 ^ 128 := by dec
 @[reflection] theorem textbook_tamper_detected_reflected (σ : Nat) (hσ0 : (2 ^ 128) ≤ σ) : (σ - (128) = σ - (256 / 2)) ∧ (σ - (2 ^ 128) < σ - (10 ^ 38)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_tamper_detected).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_tamper_detected).2 hσ0) (textbook_tamper_detected).2⟩
 /-- every public artifact downloaded is verified or a mismatch, and every one not reached is measured again: when none mismatches, every artifact reached verifies against the digest its registry recorded, however many are published (examples: seal-artifacts) -/
 theorem textbook_artifacts_verified (verified mismatched unreached total : Nat) (h : verified + mismatched + unreached = total) (hm : mismatched = 0) : total - unreached = verified := by omega
-example := textbook_artifacts_verified (verified := 0) (mismatched := 0) (unreached := 0) (total := 0) (h := by first | decide | omega | simp) (hm := by first | decide | omega | simp)
-example := textbook_artifacts_verified (verified := 0) (mismatched := 0) (unreached := 1) (total := 1) (h := by first | decide | omega | simp) (hm := by first | decide | omega | simp)
-example := textbook_artifacts_verified (verified := 0) (mismatched := 0) (unreached := 2) (total := 2) (h := by first | decide | omega | simp) (hm := by first | decide | omega | simp)
-example := textbook_artifacts_verified (verified := 1) (mismatched := 0) (unreached := 0) (total := 1) (h := by first | decide | omega | simp) (hm := by first | decide | omega | simp)
-example := textbook_artifacts_verified (verified := 1) (mismatched := 0) (unreached := 1) (total := 2) (h := by first | decide | omega | simp) (hm := by first | decide | omega | simp)
-example := textbook_artifacts_verified (verified := 2) (mismatched := 0) (unreached := 0) (total := 2) (h := by first | decide | omega | simp) (hm := by first | decide | omega | simp)
+example := @textbook_artifacts_verified
 /-- textbook_artifacts_verified reflected by its shape, equality (examples: seal-artifacts) -/
 @[reflection] theorem textbook_artifacts_verified_reflected (verified mismatched unreached total : Nat) (h : verified + mismatched + unreached = total) (hm : mismatched = 0) (σ : Nat) : σ - (verified) = σ - (total - unreached) := congrArg (σ - ·) (Eq.symm (textbook_artifacts_verified verified mismatched unreached total h hm))
 /-- the contrapositive of textbook_artifacts_verified (examples: seal-artifacts) -/
@@ -2376,12 +1533,7 @@ example := textbook_artifacts_verified (verified := 2) (mismatched := 0) (unreac
 @[reflection] theorem textbook_artifacts_verified_converse_refuted : ¬ ∀ (verified mismatched unreached total : Nat), (total - unreached = verified) → (verified + mismatched + unreached = total) ∧ (mismatched = 0) := fun h => absurd (h 0 0 1 0 (by decide)) (by decide)
 /-- every action asked of the developer machine is run because the allow-list names it and the rules allow it, or refused with the court's case: the refused and the run make every request, no third (examples: repository-machine-actions, repository-machine-refused, repository-machine-push-unconfirmed, repository-machine-worktree-unconfirmed, repository-machine-tag-confirmed, repository-machine-commit-deferred) -/
 theorem textbook_machine_allow_list (asked allowed : Nat) (h : allowed ≤ asked) : asked - allowed + allowed = asked := Nat.sub_add_cancel h
-example := textbook_machine_allow_list (asked := 0) (allowed := 0) (h := by first | decide | omega | simp)
-example := textbook_machine_allow_list (asked := 1) (allowed := 0) (h := by first | decide | omega | simp)
-example := textbook_machine_allow_list (asked := 1) (allowed := 1) (h := by first | decide | omega | simp)
-example := textbook_machine_allow_list (asked := 2) (allowed := 0) (h := by first | decide | omega | simp)
-example := textbook_machine_allow_list (asked := 2) (allowed := 1) (h := by first | decide | omega | simp)
-example := textbook_machine_allow_list (asked := 2) (allowed := 2) (h := by first | decide | omega | simp)
+example := @textbook_machine_allow_list
 /-- textbook_machine_allow_list reflected by its shape, equality (examples: repository-machine-actions, repository-machine-refused, repository-machine-push-unconfirmed, repository-machine-worktree-unconfirmed, repository-machine-tag-confirmed, repository-machine-commit-deferred) -/
 @[reflection] theorem textbook_machine_allow_list_reflected (asked allowed : Nat) (h : allowed ≤ asked) (σ : Nat) : σ - (asked) = σ - (asked - allowed + allowed) := congrArg (σ - ·) (Eq.symm (textbook_machine_allow_list asked allowed h))
 /-- the contrapositive of textbook_machine_allow_list (examples: repository-machine-actions, repository-machine-refused, repository-machine-push-unconfirmed, repository-machine-worktree-unconfirmed, repository-machine-tag-confirmed, repository-machine-commit-deferred) -/
@@ -2390,16 +1542,7 @@ example := textbook_machine_allow_list (asked := 2) (allowed := 2) (h := by firs
 @[reflection] theorem textbook_machine_allow_list_converse (asked allowed : Nat) : (asked - allowed + allowed = asked) → (allowed ≤ asked) := fun hc => by omega
 /-- while work runs the stream is never silent for more than a second: a heartbeat follows any second without an event, so every gap between two events is within the heartbeat, and the heartbeat is one second (examples: repository-status-no-silence) -/
 theorem textbook_stream_no_silence (gap beat : Nat) (h : gap ≤ beat) (hb : beat ≤ 1000) : gap ≤ 1000 := Nat.le_trans h hb
-example := textbook_stream_no_silence (gap := 0) (beat := 0) (h := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_stream_no_silence (gap := 0) (beat := 1) (h := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_stream_no_silence (gap := 0) (beat := 2) (h := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_stream_no_silence (gap := 0) (beat := 1000) (h := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_stream_no_silence (gap := 1) (beat := 1) (h := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_stream_no_silence (gap := 1) (beat := 2) (h := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_stream_no_silence (gap := 1) (beat := 1000) (h := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_stream_no_silence (gap := 2) (beat := 2) (h := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_stream_no_silence (gap := 2) (beat := 1000) (h := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
-example := textbook_stream_no_silence (gap := 1000) (beat := 1000) (h := by first | decide | omega | simp) (hb := by first | decide | omega | simp)
+example := @textbook_stream_no_silence
 /-- textbook_stream_no_silence reflected by its shape, order (examples: repository-status-no-silence) -/
 @[reflection] theorem textbook_stream_no_silence_reflected (gap beat : Nat) (h : gap ≤ beat) (hb : beat ≤ 1000) (σ : Nat) : σ - (1000) ≤ σ - (gap) := Nat.sub_le_sub_left (textbook_stream_no_silence gap beat h hb) σ
 /-- the contrapositive of textbook_stream_no_silence (examples: repository-status-no-silence) -/
@@ -2408,24 +1551,7 @@ example := textbook_stream_no_silence (gap := 1000) (beat := 1000) (h := by firs
 @[reflection] theorem textbook_stream_no_silence_converse_refuted : ¬ ∀ (gap beat : Nat), (gap ≤ 1000) → (gap ≤ beat) ∧ (beat ≤ 1000) := fun h => absurd (h 0 1001 (by decide)) (by decide)
 /-- forecastTimes: an ETA is the forecast of the recorded times, estimated and labelled so, or absent when none is recorded: exponential smoothing in exact rationals weighs each time a/q and the level (q - a)/q, the weights sum to q, so equal recorded times forecast exactly that time; the interval is the one-step errors at 95 %, and the forecast is the step's budget (examples: repository-status-eta, repository-status-forecast) -/
 theorem textbook_eta_from_receipts (a q x : Nat) (h : a ≤ q) : a * x + (q - a) * x = q * x := by rw [← Nat.add_mul, Nat.add_sub_of_le h]
-example := textbook_eta_from_receipts (a := 0) (q := 0) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 0) (q := 0) (x := 1) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 0) (q := 0) (x := 2) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 0) (q := 1) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 0) (q := 1) (x := 1) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 0) (q := 1) (x := 2) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 0) (q := 2) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 0) (q := 2) (x := 1) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 0) (q := 2) (x := 2) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 1) (q := 1) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 1) (q := 1) (x := 1) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 1) (q := 1) (x := 2) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 1) (q := 2) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 1) (q := 2) (x := 1) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 1) (q := 2) (x := 2) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 2) (q := 2) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 2) (q := 2) (x := 1) (h := by first | decide | omega | simp)
-example := textbook_eta_from_receipts (a := 2) (q := 2) (x := 2) (h := by first | decide | omega | simp)
+example := @textbook_eta_from_receipts
 /-- textbook_eta_from_receipts reflected by its shape, equality (examples: repository-status-eta, repository-status-forecast) -/
 @[reflection] theorem textbook_eta_from_receipts_reflected (a q x : Nat) (h : a ≤ q) (σ : Nat) : σ - (q * x) = σ - (a * x + (q - a) * x) := congrArg (σ - ·) (Eq.symm (textbook_eta_from_receipts a q x h))
 /-- the contrapositive of textbook_eta_from_receipts (examples: repository-status-eta, repository-status-forecast) -/
@@ -2434,149 +1560,14 @@ example := textbook_eta_from_receipts (a := 2) (q := 2) (x := 2) (h := by first 
 @[reflection] theorem textbook_eta_from_receipts_converse_refuted : ¬ ∀ (a q x : Nat), (a * x + (q - a) * x = q * x) → (a ≤ q) := fun h => absurd (h 1 0 0 (by decide)) (by decide)
 /-- next runs in waves: a step of a later wave starts only after every step of the earlier wave ended (w < v is w + 1 ≤ v), and the lanes of a wave never exceed the cores nor press more heap on the memory than it has (lanes × heap ≤ capacity); the runner in the tree applies exactly this bound (examples: repository-machine-next) -/
 theorem textbook_next_waves_ordered (lanes cores heap cap w v : Nat) (hl : lanes ≤ cores) (hm : lanes * heap ≤ cap) (hw : w < v) : lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w + 1 ≤ v := ⟨hl, hm, hw⟩
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 0) (cap := 0) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 0) (cap := 0) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 0) (cap := 0) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 0) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 0) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 0) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 0) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 0) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 0) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 1) (cap := 0) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 1) (cap := 0) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 1) (cap := 0) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 1) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 1) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 1) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 1) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 1) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 1) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 2) (cap := 0) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 2) (cap := 0) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 2) (cap := 0) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 2) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 2) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 2) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 2) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 2) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 0) (heap := 2) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 0) (cap := 0) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 0) (cap := 0) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 0) (cap := 0) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 0) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 0) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 0) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 0) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 0) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 0) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 1) (cap := 0) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 1) (cap := 0) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 1) (cap := 0) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 1) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 1) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 1) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 1) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 1) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 1) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 2) (cap := 0) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 2) (cap := 0) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 2) (cap := 0) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 2) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 2) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 2) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 2) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 2) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 1) (heap := 2) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 0) (cap := 0) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 0) (cap := 0) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 0) (cap := 0) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 0) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 0) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 0) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 0) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 0) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 0) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 1) (cap := 0) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 1) (cap := 0) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 1) (cap := 0) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 1) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 1) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 1) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 1) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 1) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 1) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 2) (cap := 0) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 2) (cap := 0) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 2) (cap := 0) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 2) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 2) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 2) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 2) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 2) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 0) (cores := 2) (heap := 2) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 0) (cap := 0) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 0) (cap := 0) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 0) (cap := 0) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 0) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 0) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 0) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 0) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 0) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 0) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 1) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 1) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 1) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 1) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 1) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 1) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 2) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 2) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 1) (heap := 2) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 0) (cap := 0) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 0) (cap := 0) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 0) (cap := 0) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 0) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 0) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 0) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 0) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 0) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 0) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 1) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 1) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 1) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 1) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 1) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 1) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 2) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 2) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 1) (cores := 2) (heap := 2) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 2) (cores := 2) (heap := 0) (cap := 0) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 2) (cores := 2) (heap := 0) (cap := 0) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 2) (cores := 2) (heap := 0) (cap := 0) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 2) (cores := 2) (heap := 0) (cap := 1) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 2) (cores := 2) (heap := 0) (cap := 1) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 2) (cores := 2) (heap := 0) (cap := 1) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 2) (cores := 2) (heap := 0) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 2) (cores := 2) (heap := 0) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 2) (cores := 2) (heap := 0) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 2) (cores := 2) (heap := 1) (cap := 2) (w := 0) (v := 1) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 2) (cores := 2) (heap := 1) (cap := 2) (w := 0) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
-example := textbook_next_waves_ordered (lanes := 2) (cores := 2) (heap := 1) (cap := 2) (w := 1) (v := 2) (hl := by first | decide | omega | simp) (hm := by first | decide | omega | simp) (hw := by first | decide | omega | simp)
+example := @textbook_next_waves_ordered
 /-- textbook_next_waves_ordered reflected by its shape, conjunction (examples: repository-machine-next) -/
 @[reflection] theorem textbook_next_waves_ordered_reflected (lanes cores heap cap w v : Nat) (hl : lanes ≤ cores) (hm : lanes * heap ≤ cap) (hw : w < v) (σ : Nat) : (σ - (cores) ≤ σ - (lanes)) ∧ (σ - (cap) ≤ σ - (lanes * heap)) ∧ (σ - (v) ≤ σ - (w + 1)) := ⟨Nat.sub_le_sub_left (textbook_next_waves_ordered lanes cores heap cap w v hl hm hw).1 σ, Nat.sub_le_sub_left (textbook_next_waves_ordered lanes cores heap cap w v hl hm hw).2.1 σ, Nat.sub_le_sub_left (textbook_next_waves_ordered lanes cores heap cap w v hl hm hw).2.2 σ⟩
 /-- the contrapositive of textbook_next_waves_ordered (examples: repository-machine-next) -/
 @[reflection] theorem textbook_next_waves_ordered_contrapositive (lanes cores heap cap w v : Nat) : ¬ (lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w + 1 ≤ v) → ¬ ((lanes ≤ cores) ∧ (lanes * heap ≤ cap) ∧ (w < v)) := fun hc hh => hc (textbook_next_waves_ordered lanes cores heap cap w v hh.1 hh.2.1 hh.2.2)
 /-- an action whose budget exceeds the request it is asked in cannot answer within that request: the door queues it as a job and answers the job id at once, the queue runs it in child processes for the rest of the budget (budget − request > 0), and its record is an entry when it ends; the request is never held and the app never stalls behind it (examples: repository-machine-next-long) -/
 theorem textbook_long_action_queued (budget request ms : Nat) (h : request < budget) (hr : request ≤ ms) : request < budget ∧ request ≤ ms ∧ 0 < budget - request := ⟨h, hr, Nat.sub_pos_of_lt h⟩
-example := textbook_long_action_queued (budget := 1) (request := 0) (ms := 0) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_long_action_queued (budget := 1) (request := 0) (ms := 1) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_long_action_queued (budget := 1) (request := 0) (ms := 2) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_long_action_queued (budget := 2) (request := 0) (ms := 0) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_long_action_queued (budget := 2) (request := 0) (ms := 1) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_long_action_queued (budget := 2) (request := 0) (ms := 2) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_long_action_queued (budget := 2) (request := 1) (ms := 1) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
-example := textbook_long_action_queued (budget := 2) (request := 1) (ms := 2) (h := by first | decide | omega | simp) (hr := by first | decide | omega | simp)
+example := @textbook_long_action_queued
 /-- textbook_long_action_queued reflected by its shape, conjunction (examples: repository-machine-next-long) -/
 @[reflection] theorem textbook_long_action_queued_reflected (budget request ms : Nat) (h : request < budget) (hr : request ≤ ms) (σ : Nat) (hσ0 : (budget) ≤ σ) (hσ1 : (budget - request) ≤ σ) : (σ - (budget) < σ - (request)) ∧ (σ - (ms) ≤ σ - (request)) ∧ (σ - (budget - request) < σ - (0)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_long_action_queued budget request ms h hr).1 hσ0) (textbook_long_action_queued budget request ms h hr).1, Nat.sub_le_sub_left (textbook_long_action_queued budget request ms h hr).2.1 σ, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_long_action_queued budget request ms h hr).2.2 hσ1) (textbook_long_action_queued budget request ms h hr).2.2⟩
 /-- the contrapositive of textbook_long_action_queued (examples: repository-machine-next-long) -/
@@ -2585,24 +1576,7 @@ example := textbook_long_action_queued (budget := 2) (request := 1) (ms := 2) (h
 @[reflection] theorem textbook_long_action_queued_converse (budget request ms : Nat) : (request < budget ∧ request ≤ ms ∧ 0 < budget - request) → (request < budget) ∧ (request ≤ ms) := fun hc => ⟨by omega, by omega⟩
 /-- the QPU's skills are complete when every toolbox has its skill (skilled = boxes) and the index makes one more; the ISO/IEC 4879:2024 vocabulary they name and the terms no skill names together are the whole vocabulary (named + unnamed = terms), so a gap is counted, never hidden; each skill is one sealed UUID register of 122 qubits computed from its own text (examples: payload-scripts-skills) -/
 theorem textbook_skills_complete (boxes skilled terms named : Nat) (hs : skilled = boxes) (hn : named ≤ terms) : skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms := ⟨by omega, by omega⟩
-example := textbook_skills_complete (boxes := 0) (skilled := 0) (terms := 0) (named := 0) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 0) (skilled := 0) (terms := 1) (named := 0) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 0) (skilled := 0) (terms := 1) (named := 1) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 0) (skilled := 0) (terms := 2) (named := 0) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 0) (skilled := 0) (terms := 2) (named := 1) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 0) (skilled := 0) (terms := 2) (named := 2) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 1) (skilled := 1) (terms := 0) (named := 0) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 1) (skilled := 1) (terms := 1) (named := 0) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 1) (skilled := 1) (terms := 1) (named := 1) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 1) (skilled := 1) (terms := 2) (named := 0) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 1) (skilled := 1) (terms := 2) (named := 1) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 1) (skilled := 1) (terms := 2) (named := 2) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 2) (skilled := 2) (terms := 0) (named := 0) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 2) (skilled := 2) (terms := 1) (named := 0) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 2) (skilled := 2) (terms := 1) (named := 1) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 2) (skilled := 2) (terms := 2) (named := 0) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 2) (skilled := 2) (terms := 2) (named := 1) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
-example := textbook_skills_complete (boxes := 2) (skilled := 2) (terms := 2) (named := 2) (hs := by first | decide | omega | simp) (hn := by first | decide | omega | simp)
+example := @textbook_skills_complete
 /-- textbook_skills_complete reflected by its shape, conjunction (examples: payload-scripts-skills) -/
 @[reflection] theorem textbook_skills_complete_reflected (boxes skilled terms named : Nat) (hs : skilled = boxes) (hn : named ≤ terms) (σ : Nat) : (σ - (boxes + 1) = σ - (skilled + 1)) ∧ (σ - (terms) = σ - (named + (terms - named))) := ⟨congrArg (σ - ·) (Eq.symm (textbook_skills_complete boxes skilled terms named hs hn).1), congrArg (σ - ·) (Eq.symm (textbook_skills_complete boxes skilled terms named hs hn).2)⟩
 /-- the contrapositive of textbook_skills_complete (examples: payload-scripts-skills) -/
@@ -2611,12 +1585,7 @@ example := textbook_skills_complete (boxes := 2) (skilled := 2) (terms := 2) (na
 @[reflection] theorem textbook_skills_complete_converse (boxes skilled terms named : Nat) : (skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms) → (skilled = boxes) ∧ (named ≤ terms) := fun hc => ⟨by omega, by omega⟩
 /-- every cap of a read or a walk the entropy audit counts is either removed by the uncap door or kept with its citation as a standard's or an API's own bound: removed + kept = caps, nothing silently left; the tree holds no cap of its own (examples: audit-uncap) -/
 theorem textbook_caps_removed (caps removed kept : Nat) (h : removed + kept = caps) (hk : kept ≤ caps) : caps - removed = kept ∧ removed ≤ caps := ⟨by omega, by omega⟩
-example := textbook_caps_removed (caps := 0) (removed := 0) (kept := 0) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_caps_removed (caps := 1) (removed := 0) (kept := 1) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_caps_removed (caps := 1) (removed := 1) (kept := 0) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_caps_removed (caps := 2) (removed := 0) (kept := 2) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_caps_removed (caps := 2) (removed := 1) (kept := 1) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_caps_removed (caps := 2) (removed := 2) (kept := 0) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
+example := @textbook_caps_removed
 /-- textbook_caps_removed reflected by its shape, conjunction (examples: audit-uncap) -/
 @[reflection] theorem textbook_caps_removed_reflected (caps removed kept : Nat) (h : removed + kept = caps) (hk : kept ≤ caps) (σ : Nat) : (σ - (kept) = σ - (caps - removed)) ∧ (σ - (caps) ≤ σ - (removed)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_caps_removed caps removed kept h hk).1), Nat.sub_le_sub_left (textbook_caps_removed caps removed kept h hk).2 σ⟩
 /-- the contrapositive of textbook_caps_removed (examples: audit-uncap) -/
@@ -2625,21 +1594,7 @@ example := textbook_caps_removed (caps := 2) (removed := 2) (kept := 0) (h := by
 @[reflection] theorem textbook_caps_removed_converse (caps removed kept : Nat) : (caps - removed = kept ∧ removed ≤ caps) → (removed + kept = caps) ∧ (kept ≤ caps) := fun hc => ⟨by omega, by omega⟩
 /-- neighbours: one step in program space moves g1 by one modulo 2^16 or g2, g3 by one modulo 2^12 (their stamp nibble decided, never walked), and the step back returns the program, at every edge of the torus (examples: fold-neighbours) -/
 theorem textbook_neighbour_step (x y : Nat) (hx : x < 65536) (hy : y < 4096) : ((x + 1) % 65536 + 65535) % 65536 = x ∧ ((y + 1) % 4096 + 4095) % 4096 = y := by omega
-example := textbook_neighbour_step (x := 0) (y := 0) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 0) (y := 1) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 0) (y := 2) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 1) (y := 0) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 1) (y := 1) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 1) (y := 2) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 2) (y := 0) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 2) (y := 1) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 2) (y := 2) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 65535) (y := 0) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 65535) (y := 1) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 65535) (y := 2) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 4096) (y := 0) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 4096) (y := 1) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
-example := textbook_neighbour_step (x := 4096) (y := 2) (hx := by first | decide | omega | simp) (hy := by first | decide | omega | simp)
+example := @textbook_neighbour_step
 /-- textbook_neighbour_step reflected by its shape, conjunction (examples: fold-neighbours) -/
 @[reflection] theorem textbook_neighbour_step_reflected (x y : Nat) (hx : x < 65536) (hy : y < 4096) (σ : Nat) : (σ - (x) = σ - (((x + 1) % 65536 + 65535) % 65536)) ∧ (σ - (y) = σ - (((y + 1) % 4096 + 4095) % 4096)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_neighbour_step x y hx hy).1), congrArg (σ - ·) (Eq.symm (textbook_neighbour_step x y hx hy).2)⟩
 /-- the contrapositive of textbook_neighbour_step (examples: fold-neighbours) -/
@@ -2648,7 +1603,7 @@ example := textbook_neighbour_step (x := 4096) (y := 2) (hx := by first | decide
 @[reflection] theorem textbook_neighbour_step_converse (x y : Nat) : (((x + 1) % 65536 + 65535) % 65536 = x ∧ ((y + 1) % 4096 + 4095) % 4096 = y) → (x < 65536) ∧ (y < 4096) := fun hc => ⟨by omega, by omega⟩
 /-- navigate: teamwork to the zero bit — a UUID actor's team is its six program-space neighbours (three axes g1/g2/g3, two steps each) and the stream over the seven (the actor and its six); a team is a neighbourhood a UUID navigates, computed from the actor and stored nowhere, the zero bit discovered in teamwork itself (examples: fold-navigate) -/
 theorem textbook_teamwork_navigation (axes : Nat) (h : axes = 3) : 2 * axes = 6 ∧ 1 + 2 * axes = 7 := by omega
-example := textbook_teamwork_navigation (axes := 3) (h := by first | decide | omega | simp)
+example := @textbook_teamwork_navigation
 /-- textbook_teamwork_navigation reflected by its shape, conjunction (examples: fold-navigate) -/
 @[reflection] theorem textbook_teamwork_navigation_reflected (axes : Nat) (h : axes = 3) (σ : Nat) : (σ - (6) = σ - (2 * axes)) ∧ (σ - (7) = σ - (1 + 2 * axes)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_teamwork_navigation axes h).1), congrArg (σ - ·) (Eq.symm (textbook_teamwork_navigation axes h).2)⟩
 /-- the contrapositive of textbook_teamwork_navigation (examples: fold-navigate) -/
@@ -2657,25 +1612,12 @@ example := textbook_teamwork_navigation (axes := 3) (h := by first | decide | om
 @[reflection] theorem textbook_teamwork_navigation_converse (axes : Nat) : (2 * axes = 6 ∧ 1 + 2 * axes = 7) → (axes = 3) := fun hc => by omega
 /-- routeLeads: a leg whose items run at once lasts as long as its longest item, never longer than the same items one after another, so a route through waves of disjoint files is never longer than its staticDuration, the Routes API's duration without traffic (examples: leads-session-route) -/
 theorem textbook_route_waves (a b : Nat) : max a b ≤ a + b := by omega
-example := textbook_route_waves (a := 0) (b := 0)
-example := textbook_route_waves (a := 0) (b := 1)
-example := textbook_route_waves (a := 0) (b := 2)
-example := textbook_route_waves (a := 1) (b := 0)
-example := textbook_route_waves (a := 1) (b := 1)
-example := textbook_route_waves (a := 1) (b := 2)
-example := textbook_route_waves (a := 2) (b := 0)
-example := textbook_route_waves (a := 2) (b := 1)
-example := textbook_route_waves (a := 2) (b := 2)
+example := @textbook_route_waves
 /-- textbook_route_waves reflected by its shape, order (examples: leads-session-route) -/
 @[reflection] theorem textbook_route_waves_reflected (a b : Nat) (σ : Nat) : σ - (a + b) ≤ σ - (max a b) := Nat.sub_le_sub_left (textbook_route_waves a b) σ
 /-- a deploy carries a bundle no older than its sources: the build's time is at or after the last source change, or the bundle is rebuilt (examples: repository-predeploy) -/
 theorem textbook_build_fresh (built source : Nat) (h : source ≤ built) : built - source + source = built := Nat.sub_add_cancel h
-example := textbook_build_fresh (built := 0) (source := 0) (h := by first | decide | omega | simp)
-example := textbook_build_fresh (built := 1) (source := 0) (h := by first | decide | omega | simp)
-example := textbook_build_fresh (built := 1) (source := 1) (h := by first | decide | omega | simp)
-example := textbook_build_fresh (built := 2) (source := 0) (h := by first | decide | omega | simp)
-example := textbook_build_fresh (built := 2) (source := 1) (h := by first | decide | omega | simp)
-example := textbook_build_fresh (built := 2) (source := 2) (h := by first | decide | omega | simp)
+example := @textbook_build_fresh
 /-- textbook_build_fresh reflected by its shape, equality (examples: repository-predeploy) -/
 @[reflection] theorem textbook_build_fresh_reflected (built source : Nat) (h : source ≤ built) (σ : Nat) : σ - (built) = σ - (built - source + source) := congrArg (σ - ·) (Eq.symm (textbook_build_fresh built source h))
 /-- the contrapositive of textbook_build_fresh (examples: repository-predeploy) -/
@@ -2684,9 +1626,7 @@ example := textbook_build_fresh (built := 2) (source := 2) (h := by first | deci
 @[reflection] theorem textbook_build_fresh_converse (built source : Nat) : (built - source + source = built) → (source ≤ built) := fun hc => by omega
 /-- every binding the adapters need is declared and every resource it names exists in the account: when none is missing, the declared are the needed, however many the adapters bind (examples: repository-predeploy, configure-cloudflare-adapters) -/
 theorem textbook_bindings_bound (needed declared missing : Nat) (h : declared + missing = needed) (h0 : missing = 0) : declared = needed := by omega
-example := textbook_bindings_bound (needed := 0) (declared := 0) (missing := 0) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
-example := textbook_bindings_bound (needed := 1) (declared := 1) (missing := 0) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
-example := textbook_bindings_bound (needed := 2) (declared := 2) (missing := 0) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
+example := @textbook_bindings_bound
 /-- textbook_bindings_bound reflected by its shape, equality (examples: repository-predeploy, configure-cloudflare-adapters) -/
 @[reflection] theorem textbook_bindings_bound_reflected (needed declared missing : Nat) (h : declared + missing = needed) (h0 : missing = 0) (σ : Nat) : σ - (needed) = σ - (declared) := congrArg (σ - ·) (Eq.symm (textbook_bindings_bound needed declared missing h h0))
 /-- the contrapositive of textbook_bindings_bound (examples: repository-predeploy, configure-cloudflare-adapters) -/
@@ -2695,9 +1635,7 @@ example := textbook_bindings_bound (needed := 2) (declared := 2) (missing := 0) 
 @[reflection] theorem textbook_bindings_bound_converse_refuted : ¬ ∀ (needed declared missing : Nat), (declared = needed) → (declared + missing = needed) ∧ (missing = 0) := fun h => absurd (h 0 0 1 (by decide)) (by decide)
 /-- every Cloudflare binding is used and usable the Google way: the roles — compute, database, object store, key-value, email — partition the bindings with none idle (used + idle = total, idle = 0), and each Cloudflare binding is paired one-to-one with its google-cloud equivalent (Worker↔Cloud Run, D1/DOCKET↔Cloud SQL, R2↔Cloud Storage, KV↔Firestore, Email↔Gmail) through the adapters profile, so the same app the Payload admin drives runs on either; the RAID db qpuRaidDb uses the data, object and key-value bindings, the Worker the compute, the email adapter the mail (examples: configure-bindings-google) -/
 theorem textbook_bindings_used_google (used idle total paired : Nat) (h : used + idle = total) (h0 : idle = 0) (hp : paired = total) : used = total ∧ paired = used := ⟨by omega, by omega⟩
-example := textbook_bindings_used_google (used := 0) (idle := 0) (total := 0) (paired := 0) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp) (hp := by first | decide | omega | simp)
-example := textbook_bindings_used_google (used := 1) (idle := 0) (total := 1) (paired := 1) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp) (hp := by first | decide | omega | simp)
-example := textbook_bindings_used_google (used := 2) (idle := 0) (total := 2) (paired := 2) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp) (hp := by first | decide | omega | simp)
+example := @textbook_bindings_used_google
 /-- textbook_bindings_used_google reflected by its shape, conjunction (examples: configure-bindings-google) -/
 @[reflection] theorem textbook_bindings_used_google_reflected (used idle total paired : Nat) (h : used + idle = total) (h0 : idle = 0) (hp : paired = total) (σ : Nat) : (σ - (total) = σ - (used)) ∧ (σ - (used) = σ - (paired)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_bindings_used_google used idle total paired h h0 hp).1), congrArg (σ - ·) (Eq.symm (textbook_bindings_used_google used idle total paired h h0 hp).2)⟩
 /-- the contrapositive of textbook_bindings_used_google (examples: configure-bindings-google) -/
@@ -2706,11 +1644,7 @@ example := textbook_bindings_used_google (used := 2) (idle := 0) (total := 2) (p
 @[reflection] theorem textbook_bindings_used_google_converse_refuted : ¬ ∀ (used idle total paired : Nat), (used = total ∧ paired = used) → (used + idle = total) ∧ (idle = 0) ∧ (paired = total) := fun h => absurd (h 0 1 0 0 (by decide)) (by decide)
 /-- the deployed Worker observed: at most one server error in a thousand requests, as the account's observability records it, so the errors never outnumber the requests (examples: repository-predeploy) -/
 theorem textbook_observed_errors (errors requests : Nat) (h : errors * 1000 ≤ requests) : errors ≤ requests := by omega
-example := textbook_observed_errors (errors := 0) (requests := 0) (h := by first | decide | omega | simp)
-example := textbook_observed_errors (errors := 0) (requests := 1) (h := by first | decide | omega | simp)
-example := textbook_observed_errors (errors := 0) (requests := 2) (h := by first | decide | omega | simp)
-example := textbook_observed_errors (errors := 0) (requests := 1000) (h := by first | decide | omega | simp)
-example := textbook_observed_errors (errors := 1) (requests := 1000) (h := by first | decide | omega | simp)
+example := @textbook_observed_errors
 /-- textbook_observed_errors reflected by its shape, order (examples: repository-predeploy) -/
 @[reflection] theorem textbook_observed_errors_reflected (errors requests : Nat) (h : errors * 1000 ≤ requests) (σ : Nat) : σ - (requests) ≤ σ - (errors) := Nat.sub_le_sub_left (textbook_observed_errors errors requests h) σ
 /-- the contrapositive of textbook_observed_errors (examples: repository-predeploy) -/
@@ -2719,12 +1653,7 @@ example := textbook_observed_errors (errors := 1) (requests := 1000) (h := by fi
 @[reflection] theorem textbook_observed_errors_converse_refuted : ¬ ∀ (errors requests : Nat), (errors ≤ requests) → (errors * 1000 ≤ requests) := fun h => absurd (h 1 1 (by decide)) (by decide)
 /-- the minimum bill of existing and computing (zero within the free tiers, the paid base beyond them) is covered by the cheapest licence of the catalogue: the licence is the bill and the margin of the quantum framework (examples: repository-predeploy, textbook-bill-covered) -/
 theorem textbook_bill_covered (price cost : Nat) (h : cost ≤ price) : price - cost + cost = price := Nat.sub_add_cancel h
-example := textbook_bill_covered (price := 0) (cost := 0) (h := by first | decide | omega | simp)
-example := textbook_bill_covered (price := 1) (cost := 0) (h := by first | decide | omega | simp)
-example := textbook_bill_covered (price := 1) (cost := 1) (h := by first | decide | omega | simp)
-example := textbook_bill_covered (price := 2) (cost := 0) (h := by first | decide | omega | simp)
-example := textbook_bill_covered (price := 2) (cost := 1) (h := by first | decide | omega | simp)
-example := textbook_bill_covered (price := 2) (cost := 2) (h := by first | decide | omega | simp)
+example := @textbook_bill_covered
 /-- textbook_bill_covered reflected by its shape, equality (examples: repository-predeploy, textbook-bill-covered) -/
 @[reflection] theorem textbook_bill_covered_reflected (price cost : Nat) (h : cost ≤ price) (σ : Nat) : σ - (price) = σ - (price - cost + cost) := congrArg (σ - ·) (Eq.symm (textbook_bill_covered price cost h))
 /-- the contrapositive of textbook_bill_covered (examples: repository-predeploy, textbook-bill-covered) -/
@@ -2741,23 +1670,14 @@ theorem textbook_order_finding : 2 ^ 4 % 15 = 1 ∧ 2 ^ 1 % 15 ≠ 1 ∧ 2 ^ 2 %
 @[reflection] theorem textbook_order_finding_reflected (σ : Nat) : (σ - (1) = σ - (2 ^ 4 % 15)) ∧ ((1) ≠ (2 ^ 1 % 15)) ∧ ((1) ≠ (2 ^ 2 % 15)) ∧ ((1) ≠ (2 ^ 3 % 15)) ∧ (σ - (2 * 2 - 0) = σ - (4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_order_finding).1), Ne.symm (textbook_order_finding).2.1, Ne.symm (textbook_order_finding).2.2.1, Ne.symm (textbook_order_finding).2.2.2.1, congrArg (σ - ·) (Eq.symm (textbook_order_finding).2.2.2.2)⟩
 /-- a part found of an integer, multiplied by the rest, gives the integer back, so it divides it: the classical door checks every factor it finds by that product (readInteger and writeInteger, testPrimality, findFactors), at any size; the σ-involution reflection N = a² − b² = (a − b)(a + b) reads a factor pair off when a² − N is a square (reflectShift) (examples: algorithm-factor-1000-bit, algorithm-factor-observe, algorithm-factor-mersenne, payload-predict) -/
 theorem textbook_factors_divide (f c n : Nat) (h : f * c = n) : f ∣ n := ⟨c, h.symm⟩
-example := textbook_factors_divide (f := 0) (c := 0) (n := 0) (h := by first | decide | omega | simp)
-example := textbook_factors_divide (f := 0) (c := 1) (n := 0) (h := by first | decide | omega | simp)
-example := textbook_factors_divide (f := 0) (c := 2) (n := 0) (h := by first | decide | omega | simp)
-example := textbook_factors_divide (f := 1) (c := 0) (n := 0) (h := by first | decide | omega | simp)
-example := textbook_factors_divide (f := 1) (c := 1) (n := 1) (h := by first | decide | omega | simp)
-example := textbook_factors_divide (f := 1) (c := 2) (n := 2) (h := by first | decide | omega | simp)
-example := textbook_factors_divide (f := 2) (c := 0) (n := 0) (h := by first | decide | omega | simp)
-example := textbook_factors_divide (f := 2) (c := 1) (n := 2) (h := by first | decide | omega | simp)
+example := @textbook_factors_divide
 /-- getInteger reads an integer of any size from its decimal string (never a float, a fallback when absent) and listFactors returns the prime factors whose product is the integer: fifteen parses and lists as three times five, dividing back exactly (examples: algorithm-factor-15, algorithm-one-door) -/
 theorem textbook_factor_parse_list : 15 = 3 * 5 ∧ 15 / 3 = 5 := by decide
 /-- textbook_factor_parse_list reflected by its shape, conjunction (examples: algorithm-factor-15, algorithm-one-door) -/
 @[reflection] theorem textbook_factor_parse_list_reflected (σ : Nat) : (σ - (3 * 5) = σ - (15)) ∧ (σ - (5) = σ - (15 / 3)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_factor_parse_list).1), congrArg (σ - ·) (Eq.symm (textbook_factor_parse_list).2)⟩
 /-- no missing scenario in the RAID: its five stores (filesystem, R2, KV, D1 the SQLite system db, Postgres) and their composite partition the storage choices, each exercised by a test running the same CRUD and both id types (Mongo text, Postgres number), so covered and missing make the whole and the missing are none — qpuRaidDb is one db over every store (examples: raid-bit-zero-verify) -/
 theorem textbook_raid_no_missing_store (covered missing total : Nat) (h : covered + missing = total) (h0 : missing = 0) : covered = total := by omega
-example := textbook_raid_no_missing_store (covered := 0) (missing := 0) (total := 0) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
-example := textbook_raid_no_missing_store (covered := 1) (missing := 0) (total := 1) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
-example := textbook_raid_no_missing_store (covered := 2) (missing := 0) (total := 2) (h := by first | decide | omega | simp) (h0 := by first | decide | omega | simp)
+example := @textbook_raid_no_missing_store
 /-- textbook_raid_no_missing_store reflected by its shape, equality (examples: raid-bit-zero-verify) -/
 @[reflection] theorem textbook_raid_no_missing_store_reflected (covered missing total : Nat) (h : covered + missing = total) (h0 : missing = 0) (σ : Nat) : σ - (total) = σ - (covered) := congrArg (σ - ·) (Eq.symm (textbook_raid_no_missing_store covered missing total h h0))
 /-- the contrapositive of textbook_raid_no_missing_store (examples: raid-bit-zero-verify) -/
@@ -2774,33 +1694,7 @@ theorem textbook_shor_sigma_root : 64 ^ 2 % 91 = 1 ∧ 64 ≠ 1 ∧ 64 ≠ 90 �
 @[reflection] theorem textbook_shor_sigma_root_reflected (σ : Nat) : (σ - (1) = σ - (64 ^ 2 % 91)) ∧ ((1) ≠ (64)) ∧ ((90) ≠ (64)) ∧ (σ - (0) = σ - ((64 - 1) * (64 + 1) % 91)) ∧ (σ - (7) = σ - (Nat.gcd (64 - 1) 91)) ∧ (σ - (13) = σ - (Nat.gcd (64 + 1) 91)) ∧ (σ - (91) = σ - (7 * 13)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).1), Ne.symm (textbook_shor_sigma_root).2.1, Ne.symm (textbook_shor_sigma_root).2.2.1, congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).2.2.2.2.2.2)⟩
 /-- a search resumed from the centre it reached covers the same centres as one search of both budgets: k centres from start, then m from start + k, is k + m from start, so a remainder handed on as the next lead loses and repeats nothing (examples: algorithm-factor-continues) -/
 theorem textbook_search_resumes (start k m : Nat) : (start + k) + m = start + (k + m) := by omega
-example := textbook_search_resumes (start := 0) (k := 0) (m := 0)
-example := textbook_search_resumes (start := 0) (k := 0) (m := 1)
-example := textbook_search_resumes (start := 0) (k := 0) (m := 2)
-example := textbook_search_resumes (start := 0) (k := 1) (m := 0)
-example := textbook_search_resumes (start := 0) (k := 1) (m := 1)
-example := textbook_search_resumes (start := 0) (k := 1) (m := 2)
-example := textbook_search_resumes (start := 0) (k := 2) (m := 0)
-example := textbook_search_resumes (start := 0) (k := 2) (m := 1)
-example := textbook_search_resumes (start := 0) (k := 2) (m := 2)
-example := textbook_search_resumes (start := 1) (k := 0) (m := 0)
-example := textbook_search_resumes (start := 1) (k := 0) (m := 1)
-example := textbook_search_resumes (start := 1) (k := 0) (m := 2)
-example := textbook_search_resumes (start := 1) (k := 1) (m := 0)
-example := textbook_search_resumes (start := 1) (k := 1) (m := 1)
-example := textbook_search_resumes (start := 1) (k := 1) (m := 2)
-example := textbook_search_resumes (start := 1) (k := 2) (m := 0)
-example := textbook_search_resumes (start := 1) (k := 2) (m := 1)
-example := textbook_search_resumes (start := 1) (k := 2) (m := 2)
-example := textbook_search_resumes (start := 2) (k := 0) (m := 0)
-example := textbook_search_resumes (start := 2) (k := 0) (m := 1)
-example := textbook_search_resumes (start := 2) (k := 0) (m := 2)
-example := textbook_search_resumes (start := 2) (k := 1) (m := 0)
-example := textbook_search_resumes (start := 2) (k := 1) (m := 1)
-example := textbook_search_resumes (start := 2) (k := 1) (m := 2)
-example := textbook_search_resumes (start := 2) (k := 2) (m := 0)
-example := textbook_search_resumes (start := 2) (k := 2) (m := 1)
-example := textbook_search_resumes (start := 2) (k := 2) (m := 2)
+example := @textbook_search_resumes
 /-- textbook_search_resumes reflected by its shape, equality (examples: algorithm-factor-continues) -/
 @[reflection] theorem textbook_search_resumes_reflected (start k m : Nat) (σ : Nat) : σ - (start + (k + m)) = σ - ((start + k) + m) := congrArg (σ - ·) (Eq.symm (textbook_search_resumes start k m))
 /-- the impossible-integer trapdoor, the same zero-bit σ-reflection as the crypto σ-root (textbook_shor_sigma_root) read as a create/decode key: a semiprime N = p·q is minted with its witness the centre a = (p + q)/2 and gap b = (q − p)/2, so N = (a − b)(a + b) = a² − b² and q = σ_{2a}(p) = 2a − p (shown at p = 5, q = 13: a = 9, b = 4, 65 = (9 − 4)(9 + 4) = 81 − 16, 9 − 4 = 5, 9 + 4 = 13, 2·9 − 5 = 13). Blind, the reflection climbs a − ⌈√N⌉ + 1 centres (about b²/2a for close primes, about a for distant ones) — out of reach when b ≫ √a; with the witness a, one reflection decodes N. The clay cluster publishes the witness as a cross-UUID address (uuid N, a): the integer is hard to split yet trivial to decode by its address — a trapdoor the create/decode doors mint and open, never a factoring of an integer whose witness is unknown (the RSA-class decline of textbook_rsa_beyond_bound stands); built on sigma_involution and textbook_factors_divide (examples: algorithm-impossible-create, algorithm-impossible-decode) -/
@@ -2813,12 +1707,7 @@ theorem textbook_thermal_time_sigma : 10 - (10 - 3) = 3 ∧ 10 - (10 - 7) = 7 �
 @[reflection] theorem textbook_thermal_time_sigma_reflected (σ : Nat) : (σ - (3) = σ - (10 - (10 - 3))) ∧ (σ - (7) = σ - (10 - (10 - 7))) ∧ (σ - (5) = σ - (10 - (10 - 5))) ∧ (σ - (5) = σ - (10 - 5)) ∧ (σ - (10) = σ - (3 + 7)) ∧ (σ - (10) = σ - (6 + 4)) ∧ (σ - (10) = σ - (9 + 1)) ∧ (σ - (10) = σ - (2 + 8)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma).2.2.2.2.2.2.2)⟩
 /-- the bridge crossing clay paths at each 0, general over every clay case: each clay relation is where formula-family paths meet at a value d (the "X, Y, Z meet at N" families of its doc comment), and the bridge that crosses those paths is the zero-bit σ-involution σ_d(x) = d − x — it crosses and returns (σ_d(σ_d(x)) = x, the connection is reversible, both directions), it partitions the meeting value (x + (d − x) = d, the two paths summing to where they meet), and it has its zero endpoints at each 0 (σ_d(0) = d and σ_d(d) = 0, the fixed/zero structure). This is the general form the two named bridges instantiate — textbook_shor_sigma_root at d = 91 (crypto) and textbook_thermal_time_sigma at d = 10 (physics) — one σ-connection between the crossing families at every clay case's value; built on sigma_involution and textbook_reflection_sums_to_ten (examples: clay-reflection) -/
 theorem textbook_clay_bridge (d x : Nat) (h : x ≤ d) : d - (d - x) = x ∧ (d - x) + x = d ∧ d - 0 = d ∧ d - d = 0 := by omega
-example := textbook_clay_bridge (d := 0) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_clay_bridge (d := 1) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_clay_bridge (d := 1) (x := 1) (h := by first | decide | omega | simp)
-example := textbook_clay_bridge (d := 2) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_clay_bridge (d := 2) (x := 1) (h := by first | decide | omega | simp)
-example := textbook_clay_bridge (d := 2) (x := 2) (h := by first | decide | omega | simp)
+example := @textbook_clay_bridge
 /-- textbook_clay_bridge reflected by its shape, conjunction (examples: clay-reflection) -/
 @[reflection] theorem textbook_clay_bridge_reflected (d x : Nat) (h : x ≤ d) (σ : Nat) : (σ - (x) = σ - (d - (d - x))) ∧ (σ - (d) = σ - ((d - x) + x)) ∧ (σ - (d) = σ - (d - 0)) ∧ (σ - (0) = σ - (d - d)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_clay_bridge d x h).1), congrArg (σ - ·) (Eq.symm (textbook_clay_bridge d x h).2.1), congrArg (σ - ·) (Eq.symm (textbook_clay_bridge d x h).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_clay_bridge d x h).2.2.2)⟩
 /-- the contrapositive of textbook_clay_bridge (examples: clay-reflection) -/
@@ -2847,12 +1736,7 @@ theorem textbook_gravity_torus_sigma : 3 * 60 = 180 ∧ 2 * 90 = 180 ∧ 360 - 1
 @[reflection] theorem textbook_gravity_torus_sigma_reflected (σ : Nat) : (σ - (180) = σ - (3 * 60)) ∧ (σ - (180) = σ - (2 * 90)) ∧ (σ - (180) = σ - (360 - 180)) ∧ (σ - (6) = σ - (360 / 60)) ∧ (σ - (4) = σ - (360 / 90)) ∧ (σ - (2) = σ - (360 / 180)) ∧ (σ - (360) = σ - (180 * 2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_gravity_torus_sigma).1), congrArg (σ - ·) (Eq.symm (textbook_gravity_torus_sigma).2.1), congrArg (σ - ·) (Eq.symm (textbook_gravity_torus_sigma).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_gravity_torus_sigma).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_gravity_torus_sigma).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_gravity_torus_sigma).2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_gravity_torus_sigma).2.2.2.2.2.2)⟩
 /-- the neuroscience bridge: σ_d(x) = d − x as the brain↔mind reference map — the brain references the mind and the mind reflects back, a reversible map (σ_d(σ_d(x)) = x, even powers the identity; σ_d(σ_d(σ_d(x))) = σ_d(x), odd powers the reflection), the two sides summing to the whole (x + (d − x) = d). This is the hub σ-involution through which each science references the mind (the same zero-bit involution as textbook_clay_bridge), so physics, chemistry and biology bridge THROUGH neuroscience by one reflection; built on sigma_involution (examples: clay-reflection) -/
 theorem textbook_mind_sigma (d x : Nat) (h : x ≤ d) : d - (d - x) = x ∧ d - (d - (d - x)) = d - x ∧ (d - x) + x = d := by omega
-example := textbook_mind_sigma (d := 0) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_mind_sigma (d := 1) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_mind_sigma (d := 1) (x := 1) (h := by first | decide | omega | simp)
-example := textbook_mind_sigma (d := 2) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_mind_sigma (d := 2) (x := 1) (h := by first | decide | omega | simp)
-example := textbook_mind_sigma (d := 2) (x := 2) (h := by first | decide | omega | simp)
+example := @textbook_mind_sigma
 /-- textbook_mind_sigma reflected by its shape, conjunction (examples: clay-reflection) -/
 @[reflection] theorem textbook_mind_sigma_reflected (d x : Nat) (h : x ≤ d) (σ : Nat) : (σ - (x) = σ - (d - (d - x))) ∧ (σ - (d - x) = σ - (d - (d - (d - x)))) ∧ (σ - (d) = σ - ((d - x) + x)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_mind_sigma d x h).1), congrArg (σ - ·) (Eq.symm (textbook_mind_sigma d x h).2.1), congrArg (σ - ·) (Eq.symm (textbook_mind_sigma d x h).2.2)⟩
 /-- the contrapositive of textbook_mind_sigma (examples: clay-reflection) -/
@@ -2861,12 +1745,7 @@ example := textbook_mind_sigma (d := 2) (x := 2) (h := by first | decide | omega
 @[reflection] theorem textbook_mind_sigma_converse (d x : Nat) : (d - (d - x) = x ∧ d - (d - (d - x)) = d - x ∧ (d - x) + x = d) → (x ≤ d) := fun hc => by omega
 /-- the claim↔proof gate as a σ-involution: proving reflects a possibility into a claim and claiming is its measurement, so claim∘prove = id (σ_d(σ_d(x)) = x — a proven statement is claimed at exactly its strength, reversibly), the claim preserved at strength (x × 1 = x, no underclaiming) and the impossibility collapsed to zero (x × 0 = 0, measure-to-0, σ-reflected into new leads), the possibility partitioned by the gate (x + (d − x) = d). The kernel law the claim↔proof hook enforces: claims equal the proven-possible, no weaker and no stronger; built on sigma_involution (examples: clay-reflection) -/
 theorem textbook_claim_prove_involution (d x : Nat) (h : x ≤ d) : d - (d - x) = x ∧ x * 1 = x ∧ x * 0 = 0 ∧ (d - x) + x = d := by omega
-example := textbook_claim_prove_involution (d := 0) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_claim_prove_involution (d := 1) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_claim_prove_involution (d := 1) (x := 1) (h := by first | decide | omega | simp)
-example := textbook_claim_prove_involution (d := 2) (x := 0) (h := by first | decide | omega | simp)
-example := textbook_claim_prove_involution (d := 2) (x := 1) (h := by first | decide | omega | simp)
-example := textbook_claim_prove_involution (d := 2) (x := 2) (h := by first | decide | omega | simp)
+example := @textbook_claim_prove_involution
 /-- textbook_claim_prove_involution reflected by its shape, conjunction (examples: clay-reflection) -/
 @[reflection] theorem textbook_claim_prove_involution_reflected (d x : Nat) (h : x ≤ d) (σ : Nat) : (σ - (x) = σ - (d - (d - x))) ∧ (σ - (x) = σ - (x * 1)) ∧ (σ - (0) = σ - (x * 0)) ∧ (σ - (d) = σ - ((d - x) + x)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_claim_prove_involution d x h).1), congrArg (σ - ·) (Eq.symm (textbook_claim_prove_involution d x h).2.1), congrArg (σ - ·) (Eq.symm (textbook_claim_prove_involution d x h).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_claim_prove_involution d x h).2.2.2)⟩
 /-- the contrapositive of textbook_claim_prove_involution (examples: clay-reflection) -/
@@ -2995,12 +1874,7 @@ theorem textbook_tuning_ratio : Nat.gcd 432 440 = 8 ∧ 432 / 8 = 54 ∧ 440 / 8
 @[reflection] theorem textbook_tuning_ratio_reflected (σ : Nat) : (σ - (8) = σ - (Nat.gcd 432 440)) ∧ (σ - (54) = σ - (432 / 8)) ∧ (σ - (55) = σ - (440 / 8)) ∧ (σ - (440 * 54) = σ - (432 * 55)) ∧ (σ - (8) = σ - (440 - 432)) ∧ (σ - (1) = σ - (55 - 54)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.2.2.2.2)⟩
 /-- every question read from a source Payload holds is decided or a lead: the questions less the leads are the decided ones, a lexical neighbour counted a lead (examples: match-questions) -/
 theorem textbook_questions_matched (decided leads total : Nat) (h : decided + leads = total) : total - leads = decided := by omega
-example := textbook_questions_matched (decided := 0) (leads := 0) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_questions_matched (decided := 0) (leads := 1) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_questions_matched (decided := 0) (leads := 2) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_questions_matched (decided := 1) (leads := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_questions_matched (decided := 1) (leads := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_questions_matched (decided := 2) (leads := 0) (total := 2) (h := by first | decide | omega | simp)
+example := @textbook_questions_matched
 /-- textbook_questions_matched reflected by its shape, equality (examples: match-questions) -/
 @[reflection] theorem textbook_questions_matched_reflected (decided leads total : Nat) (h : decided + leads = total) (σ : Nat) : σ - (decided) = σ - (total - leads) := congrArg (σ - ·) (Eq.symm (textbook_questions_matched decided leads total h))
 /-- the contrapositive of textbook_questions_matched (examples: match-questions) -/
@@ -3009,16 +1883,7 @@ example := textbook_questions_matched (decided := 2) (leads := 0) (total := 2) (
 @[reflection] theorem textbook_questions_matched_converse_refuted : ¬ ∀ (decided leads total : Nat), (total - leads = decided) → (decided + leads = total) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- the news define the problems every day and the QPU provides the solutions: matchNews reads each news item as a problem and decides it — served (the call that answers it), impossible (the bound that proves it cannot) or unknown (a lead to develop) — so the served, the impossible and the unknown make the items, served from qpu.uuidna.com under the licence and priced (examples: match-news) -/
 theorem textbook_news_problems (served impossible unknown total : Nat) (h : served + impossible + unknown = total) : total - impossible - unknown = served := by omega
-example := textbook_news_problems (served := 0) (impossible := 0) (unknown := 0) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_news_problems (served := 0) (impossible := 0) (unknown := 1) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_news_problems (served := 0) (impossible := 0) (unknown := 2) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_news_problems (served := 0) (impossible := 1) (unknown := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_news_problems (served := 0) (impossible := 1) (unknown := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_news_problems (served := 0) (impossible := 2) (unknown := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_news_problems (served := 1) (impossible := 0) (unknown := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_news_problems (served := 1) (impossible := 0) (unknown := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_news_problems (served := 1) (impossible := 1) (unknown := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_news_problems (served := 2) (impossible := 0) (unknown := 0) (total := 2) (h := by first | decide | omega | simp)
+example := @textbook_news_problems
 /-- textbook_news_problems reflected by its shape, equality (examples: match-news) -/
 @[reflection] theorem textbook_news_problems_reflected (served impossible unknown total : Nat) (h : served + impossible + unknown = total) (σ : Nat) : σ - (served) = σ - (total - impossible - unknown) := congrArg (σ - ·) (Eq.symm (textbook_news_problems served impossible unknown total h))
 /-- the contrapositive of textbook_news_problems (examples: match-news) -/
@@ -3027,12 +1892,7 @@ example := textbook_news_problems (served := 2) (impossible := 0) (unknown := 0)
 @[reflection] theorem textbook_news_problems_converse_refuted : ¬ ∀ (served impossible unknown total : Nat), (total - impossible - unknown = served) → (served + impossible + unknown = total) := fun h => absurd (h 0 0 1 0 (by decide)) (by decide)
 /-- each theorem is a real textbook scenario whose says uses respected terminology (UUID, seal, ISO, coil — never Clay axiom names), so full-text search over the textbook (textbook { search } / searchTextbookPrograms) returns usable programs: the examples that replay the hit, each a tool with its arguments and the programmable schema beside the kernel-accepted proof; MCP and Payload lexical search (match) carries the same proof; the proven and the unproven make the answers (examples: match-search, textbook-search-programs) -/
 theorem textbook_search_proven (proven unproven total : Nat) (h : proven + unproven = total) : total - unproven = proven := by omega
-example := textbook_search_proven (proven := 0) (unproven := 0) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_search_proven (proven := 0) (unproven := 1) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_search_proven (proven := 0) (unproven := 2) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_search_proven (proven := 1) (unproven := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_search_proven (proven := 1) (unproven := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_search_proven (proven := 2) (unproven := 0) (total := 2) (h := by first | decide | omega | simp)
+example := @textbook_search_proven
 /-- textbook_search_proven reflected by its shape, equality (examples: match-search, textbook-search-programs) -/
 @[reflection] theorem textbook_search_proven_reflected (proven unproven total : Nat) (h : proven + unproven = total) (σ : Nat) : σ - (proven) = σ - (total - unproven) := congrArg (σ - ·) (Eq.symm (textbook_search_proven proven unproven total h))
 /-- the contrapositive of textbook_search_proven (examples: match-search, textbook-search-programs) -/
@@ -3041,12 +1901,7 @@ example := textbook_search_proven (proven := 2) (unproven := 0) (total := 2) (h 
 @[reflection] theorem textbook_search_proven_converse_refuted : ¬ ∀ (proven unproven total : Nat), (total - unproven = proven) → (proven + unproven = total) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- autonomous editorial management per tenant, monetising on tenant specifics: editorial turns the day's solved news into the tenant's blog — each served problem a draft post (Payload publishing, the editor publishes at will), priced by the tenant's own catalogue, and each unknown the editorial backlog — so the posts and the backlog make the items; the verified combinatorics write the posts and Payload's validations verify them, run daily as the qpu-news-solve Payload job (newsSolveTask), never auto-deployed (examples: match-editorial) -/
 theorem textbook_editorial_posts (posts backlog items : Nat) (h : posts + backlog = items) : items - backlog = posts := by omega
-example := textbook_editorial_posts (posts := 0) (backlog := 0) (items := 0) (h := by first | decide | omega | simp)
-example := textbook_editorial_posts (posts := 0) (backlog := 1) (items := 1) (h := by first | decide | omega | simp)
-example := textbook_editorial_posts (posts := 0) (backlog := 2) (items := 2) (h := by first | decide | omega | simp)
-example := textbook_editorial_posts (posts := 1) (backlog := 0) (items := 1) (h := by first | decide | omega | simp)
-example := textbook_editorial_posts (posts := 1) (backlog := 1) (items := 2) (h := by first | decide | omega | simp)
-example := textbook_editorial_posts (posts := 2) (backlog := 0) (items := 2) (h := by first | decide | omega | simp)
+example := @textbook_editorial_posts
 /-- textbook_editorial_posts reflected by its shape, equality (examples: match-editorial) -/
 @[reflection] theorem textbook_editorial_posts_reflected (posts backlog items : Nat) (h : posts + backlog = items) (σ : Nat) : σ - (posts) = σ - (items - backlog) := congrArg (σ - ·) (Eq.symm (textbook_editorial_posts posts backlog items h))
 /-- the contrapositive of textbook_editorial_posts (examples: match-editorial) -/
@@ -3055,12 +1910,7 @@ example := textbook_editorial_posts (posts := 2) (backlog := 0) (items := 2) (h 
 @[reflection] theorem textbook_editorial_posts_converse_refuted : ¬ ∀ (posts backlog items : Nat), (items - backlog = posts) → (posts + backlog = items) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- every combination of the adapters ported onto Cloudflare is complete or names the missing link that blocks it: the combinations less the blocked ones are the complete ones, however many adapters the app grows to (examples: configure-adapters-port) -/
 theorem textbook_ports_cover (complete blocked total : Nat) (h : complete + blocked = total) : total - blocked = complete := by omega
-example := textbook_ports_cover (complete := 0) (blocked := 0) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_ports_cover (complete := 0) (blocked := 1) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_ports_cover (complete := 0) (blocked := 2) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_ports_cover (complete := 1) (blocked := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_ports_cover (complete := 1) (blocked := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_ports_cover (complete := 2) (blocked := 0) (total := 2) (h := by first | decide | omega | simp)
+example := @textbook_ports_cover
 /-- textbook_ports_cover reflected by its shape, equality (examples: configure-adapters-port) -/
 @[reflection] theorem textbook_ports_cover_reflected (complete blocked total : Nat) (h : complete + blocked = total) (σ : Nat) : σ - (complete) = σ - (total - blocked) := congrArg (σ - ·) (Eq.symm (textbook_ports_cover complete blocked total h))
 /-- the contrapositive of textbook_ports_cover (examples: configure-adapters-port) -/
@@ -3069,24 +1919,14 @@ example := textbook_ports_cover (complete := 2) (blocked := 0) (total := 2) (h :
 @[reflection] theorem textbook_ports_cover_converse_refuted : ¬ ∀ (complete blocked total : Nat), (total - blocked = complete) → (complete + blocked = total) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- harmonic options by default: the referrer's address, or the a432 key, reduced modulo the number of combinations a schema's enums hold is always below that number, so the default it names is always one of the combinations (examples: fold-harmonic, payload-hooks-collapse) -/
 theorem textbook_harmonic_default (n k : Nat) (h : 0 < n) : k % n < n := Nat.mod_lt k h
-example := textbook_harmonic_default (n := 1) (k := 0) (h := by first | decide | omega | simp)
-example := textbook_harmonic_default (n := 1) (k := 1) (h := by first | decide | omega | simp)
-example := textbook_harmonic_default (n := 1) (k := 2) (h := by first | decide | omega | simp)
-example := textbook_harmonic_default (n := 2) (k := 0) (h := by first | decide | omega | simp)
-example := textbook_harmonic_default (n := 2) (k := 1) (h := by first | decide | omega | simp)
-example := textbook_harmonic_default (n := 2) (k := 2) (h := by first | decide | omega | simp)
+example := @textbook_harmonic_default
 /-- textbook_harmonic_default reflected by its shape, order (examples: fold-harmonic, payload-hooks-collapse) -/
 @[reflection] theorem textbook_harmonic_default_reflected (n k : Nat) (h : 0 < n) (σ : Nat) (hσ0 : (n) ≤ σ) : σ - (n) < σ - (k % n) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_harmonic_default n k h) hσ0) (textbook_harmonic_default n k h)
 /-- the contrapositive of textbook_harmonic_default (examples: fold-harmonic, payload-hooks-collapse) -/
 @[reflection] theorem textbook_harmonic_default_contrapositive (n k : Nat) : ¬ (k % n < n) → ¬ ((0 < n)) := fun hc hh => hc (textbook_harmonic_default n k hh)
 /-- a role sees a part of every enum's superposition: the combinations it may choose and the ones it may not make all of them, and its harmonic default is always one it may choose; in the app one predicate, admin, reads the admin role for every access function (examples: fold-harmonic-rbac) -/
 theorem textbook_rbac_options (allowed all : Nat) (h : allowed ≤ all) : all - allowed + allowed = all := Nat.sub_add_cancel h
-example := textbook_rbac_options (allowed := 0) (all := 0) (h := by first | decide | omega | simp)
-example := textbook_rbac_options (allowed := 0) (all := 1) (h := by first | decide | omega | simp)
-example := textbook_rbac_options (allowed := 0) (all := 2) (h := by first | decide | omega | simp)
-example := textbook_rbac_options (allowed := 1) (all := 1) (h := by first | decide | omega | simp)
-example := textbook_rbac_options (allowed := 1) (all := 2) (h := by first | decide | omega | simp)
-example := textbook_rbac_options (allowed := 2) (all := 2) (h := by first | decide | omega | simp)
+example := @textbook_rbac_options
 /-- textbook_rbac_options reflected by its shape, equality (examples: fold-harmonic-rbac) -/
 @[reflection] theorem textbook_rbac_options_reflected (allowed all : Nat) (h : allowed ≤ all) (σ : Nat) : σ - (all) = σ - (all - allowed + allowed) := congrArg (σ - ·) (Eq.symm (textbook_rbac_options allowed all h))
 /-- the contrapositive of textbook_rbac_options (examples: fold-harmonic-rbac) -/
@@ -3095,12 +1935,7 @@ example := textbook_rbac_options (allowed := 2) (all := 2) (h := by first | deci
 @[reflection] theorem textbook_rbac_options_converse (allowed all : Nat) : (all - allowed + allowed = all) → (allowed ≤ all) := fun hc => by omega
 /-- every call is free or a coil, decided by the licence: only the pure algebraic formulas are free, every other call is covered by the licence and billed by the coins; the free and the coils make the calls (examples: metrics-bill, repository-penalty-way) -/
 theorem textbook_free_or_coil (calls free : Nat) (h : free ≤ calls) : calls - free + free = calls := Nat.sub_add_cancel h
-example := textbook_free_or_coil (calls := 0) (free := 0) (h := by first | decide | omega | simp)
-example := textbook_free_or_coil (calls := 1) (free := 0) (h := by first | decide | omega | simp)
-example := textbook_free_or_coil (calls := 1) (free := 1) (h := by first | decide | omega | simp)
-example := textbook_free_or_coil (calls := 2) (free := 0) (h := by first | decide | omega | simp)
-example := textbook_free_or_coil (calls := 2) (free := 1) (h := by first | decide | omega | simp)
-example := textbook_free_or_coil (calls := 2) (free := 2) (h := by first | decide | omega | simp)
+example := @textbook_free_or_coil
 /-- textbook_free_or_coil reflected by its shape, equality (examples: metrics-bill, repository-penalty-way) -/
 @[reflection] theorem textbook_free_or_coil_reflected (calls free : Nat) (h : free ≤ calls) (σ : Nat) : σ - (calls) = σ - (calls - free + free) := congrArg (σ - ·) (Eq.symm (textbook_free_or_coil calls free h))
 /-- the contrapositive of textbook_free_or_coil (examples: metrics-bill, repository-penalty-way) -/
@@ -3113,11 +1948,7 @@ theorem textbook_authorship_tracked : 1 = 1 ∧ 0 = 0 := by decide
 @[reflection] theorem textbook_authorship_tracked_reflected (σ : Nat) : (σ - (1) = σ - (1)) ∧ (σ - (0) = σ - (0)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_authorship_tracked).1), congrArg (σ - ·) (Eq.symm (textbook_authorship_tracked).2)⟩
 /-- combineLeads: a432 builds every lead combination — the key 432 is 2⁴ · 3³, the product of the seven radices [2, 2, 2, 2, 3, 3, 3]; the a432 key reduced mod 432 names cell 0; and every cell below 432 read as its mixed-radix digits and encoded again is itself, so every lead lands in exactly one cell (examples: leads-combinations) -/
 theorem textbook_lead_cells (i : Nat) (h : i < 432) : 2 ^ 4 * 3 ^ 3 = 432 ∧ 2 * 2 * 2 * 2 * 3 * 3 * 3 = 432 ∧ 432 % 432 = 0 ∧ i % 2 + 2 * (i / 2 % 2) + 4 * (i / 4 % 2) + 8 * (i / 8 % 2) + 16 * (i / 16 % 3) + 48 * (i / 48 % 3) + 144 * (i / 144 % 3) = i := by refine ⟨by decide, by decide, by decide, ?_⟩; omega
-example := textbook_lead_cells (i := 0) (h := by first | decide | omega | simp)
-example := textbook_lead_cells (i := 1) (h := by first | decide | omega | simp)
-example := textbook_lead_cells (i := 2) (h := by first | decide | omega | simp)
-example := textbook_lead_cells (i := 4) (h := by first | decide | omega | simp)
-example := textbook_lead_cells (i := 3) (h := by first | decide | omega | simp)
+example := @textbook_lead_cells
 /-- textbook_lead_cells reflected by its shape, conjunction (examples: leads-combinations) -/
 @[reflection] theorem textbook_lead_cells_reflected (i : Nat) (h : i < 432) (σ : Nat) : (σ - (432) = σ - (2 ^ 4 * 3 ^ 3)) ∧ (σ - (432) = σ - (2 * 2 * 2 * 2 * 3 * 3 * 3)) ∧ (σ - (0) = σ - (432 % 432)) ∧ (σ - (i) = σ - (i % 2 + 2 * (i / 2 % 2) + 4 * (i / 4 % 2) + 8 * (i / 8 % 2) + 16 * (i / 16 % 3) + 48 * (i / 48 % 3) + 144 * (i / 144 % 3))) := ⟨congrArg (σ - ·) (Eq.symm (textbook_lead_cells i h).1), congrArg (σ - ·) (Eq.symm (textbook_lead_cells i h).2.1), congrArg (σ - ·) (Eq.symm (textbook_lead_cells i h).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_lead_cells i h).2.2.2)⟩
 /-- the contrapositive of textbook_lead_cells (examples: leads-combinations) -/
@@ -3126,10 +1957,7 @@ example := textbook_lead_cells (i := 3) (h := by first | decide | omega | simp)
 @[reflection] theorem textbook_lead_cells_converse (i : Nat) : (2 ^ 4 * 3 ^ 3 = 432 ∧ 2 * 2 * 2 * 2 * 3 * 3 * 3 = 432 ∧ 432 % 432 = 0 ∧ i % 2 + 2 * (i / 2 % 2) + 4 * (i / 4 % 2) + 8 * (i / 8 % 2) + 16 * (i / 16 % 3) + 48 * (i / 48 % 3) + 144 * (i / 144 % 3) = i) → (i < 432) := fun hc => by omega
 /-- runSession: every directive of every session lands in exactly one of four classes — folded into an Open work item, proposed as a new one, acted on where it was said once, or an assent — so the four counts sum to the directives read (examples: leads-session) -/
 theorem textbook_session_partition (c : Nat) (h : c < 4) : c = 0 ∨ c = 1 ∨ c = 2 ∨ c = 3 := by omega
-example := textbook_session_partition (c := 0) (h := by first | decide | omega | simp)
-example := textbook_session_partition (c := 1) (h := by first | decide | omega | simp)
-example := textbook_session_partition (c := 2) (h := by first | decide | omega | simp)
-example := textbook_session_partition (c := 3) (h := by first | decide | omega | simp)
+example := @textbook_session_partition
 /-- textbook_session_partition reflected by its shape, disjunction (examples: leads-session) -/
 @[reflection] theorem textbook_session_partition_reflected (c : Nat) (h : c < 4) : (c = 1 ∨ c = 2 ∨ c = 3) ∨ (c = 0) := Or.symm (textbook_session_partition c h)
 /-- the contrapositive of textbook_session_partition (examples: leads-session) -/
@@ -3138,16 +1966,7 @@ example := textbook_session_partition (c := 3) (h := by first | decide | omega |
 @[reflection] theorem textbook_session_partition_converse (c : Nat) : (c = 0 ∨ c = 1 ∨ c = 2 ∨ c = 3) → (c < 4) := fun hc => by omega
 /-- sitemapLeads: every url of a sitemap (sitemaps.org: loc, lastmod) is refused by name, covered by a hand-written lead, or a lead of its own — the three counts sum to the urls handed over, so nothing the site lists is dropped (examples: leads-sitemap) -/
 theorem textbook_sitemap_leads (u v c l : Nat) (h : v + (u - v) = u) (k : c + l = v) : c + l + (u - v) = u := by omega
-example := textbook_sitemap_leads (u := 0) (v := 0) (c := 0) (l := 0) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_sitemap_leads (u := 1) (v := 0) (c := 0) (l := 0) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_sitemap_leads (u := 1) (v := 1) (c := 0) (l := 1) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_sitemap_leads (u := 1) (v := 1) (c := 1) (l := 0) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_sitemap_leads (u := 2) (v := 0) (c := 0) (l := 0) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_sitemap_leads (u := 2) (v := 1) (c := 0) (l := 1) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_sitemap_leads (u := 2) (v := 1) (c := 1) (l := 0) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_sitemap_leads (u := 2) (v := 2) (c := 0) (l := 2) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_sitemap_leads (u := 2) (v := 2) (c := 1) (l := 1) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_sitemap_leads (u := 2) (v := 2) (c := 2) (l := 0) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
+example := @textbook_sitemap_leads
 /-- textbook_sitemap_leads reflected by its shape, equality (examples: leads-sitemap) -/
 @[reflection] theorem textbook_sitemap_leads_reflected (u v c l : Nat) (h : v + (u - v) = u) (k : c + l = v) (σ : Nat) : σ - (u) = σ - (c + l + (u - v)) := congrArg (σ - ·) (Eq.symm (textbook_sitemap_leads u v c l h k))
 /-- the contrapositive of textbook_sitemap_leads (examples: leads-sitemap) -/
@@ -3156,12 +1975,7 @@ example := textbook_sitemap_leads (u := 2) (v := 2) (c := 2) (l := 0) (h := by f
 @[reflection] theorem textbook_sitemap_leads_converse_refuted : ¬ ∀ (u v c l : Nat), (c + l + (u - v) = u) → (v + (u - v) = u) ∧ (c + l = v) := fun h => absurd (h 0 1 0 0 (by decide)) (by decide)
 /-- the Clay rosetta: the unit seeds a value by its last decimal digit and the tree by its digital root; σ₁₀ holds on both sides for every n, and the two conventions name the same seed exactly when n mod 9 and n mod 10 agree (3432: 3 against 2; 15: 6 against 5), a difference of convention, never of error (examples: clay-rosetta) -/
 theorem textbook_rosetta_conventions (n : Nat) : (n % 10 + (10 - n % 10) % 10) % 10 = 0 ∧ 1 + (n - 1) % 9 + (10 - (1 + (n - 1) % 9)) = 10 ∧ 3432 % 9 = 3 ∧ 3432 % 10 = 2 ∧ 15 % 9 ≠ 15 % 10 := by refine ⟨by omega, by omega, by decide, by decide, by decide⟩
-example := textbook_rosetta_conventions (n := 0)
-example := textbook_rosetta_conventions (n := 1)
-example := textbook_rosetta_conventions (n := 2)
-example := textbook_rosetta_conventions (n := 10)
-example := textbook_rosetta_conventions (n := 9)
-example := textbook_rosetta_conventions (n := 3432)
+example := @textbook_rosetta_conventions
 /-- textbook_rosetta_conventions reflected by its shape, conjunction (examples: clay-rosetta) -/
 @[reflection] theorem textbook_rosetta_conventions_reflected (n : Nat) (σ : Nat) : (σ - (0) = σ - ((n % 10 + (10 - n % 10) % 10) % 10)) ∧ (σ - (10) = σ - (1 + (n - 1) % 9 + (10 - (1 + (n - 1) % 9)))) ∧ (σ - (3) = σ - (3432 % 9)) ∧ (σ - (2) = σ - (3432 % 10)) ∧ ((15 % 10) ≠ (15 % 9)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_rosetta_conventions n).1), congrArg (σ - ·) (Eq.symm (textbook_rosetta_conventions n).2.1), congrArg (σ - ·) (Eq.symm (textbook_rosetta_conventions n).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_rosetta_conventions n).2.2.2.1), Ne.symm (textbook_rosetta_conventions n).2.2.2.2⟩
 /-- binding 0 (the qpuRaidDb adapter) is the filesystem: hexPath puts a document at g1/g2/g3/<uuid>, the three middle groups of its address (four hex digits each, so one program's versions share a folder) and the 36 characters of the address, 51 in all, the R2 key and the GCS object of the same document; 65 536 folders a level; Payload's qpu-raid plugin (qpuRaid) writes each version once through getBinding0 with a pointer to the latest and reads back only what its address verifies, wherever its file lies; RAID_ORDER puts binding 0 last on every profile, so raidRead and readLeads always have a place to read when Payload does not answer (examples: raid-binding0-mirror, raid-binding0-restore) -/
@@ -3170,10 +1984,7 @@ theorem textbook_binding_zero_hex_path : 4 + 1 + 4 + 1 + 4 + 1 + 36 = 51 ∧ 16 
 @[reflection] theorem textbook_binding_zero_hex_path_reflected (σ : Nat) : (σ - (51) = σ - (4 + 1 + 4 + 1 + 4 + 1 + 36)) ∧ (σ - (65536) = σ - (16 * 16 * 16 * 16)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_binding_zero_hex_path).1), congrArg (σ - ·) (Eq.symm (textbook_binding_zero_hex_path).2)⟩
 /-- verifyCopies: each binding's copy of a version is verified by the address its own bytes recompute (bit 0), missing, or differing, so the three counts sum to the bindings; with one verified copy the rebuilds (missing and differing) are fewer than the bindings, each written from a verified copy at its middle-part path, and a file outside that path is moved there; Payload runs it as the qpu-raid-verify batch (examples: raid-bit-zero-verify) -/
 theorem textbook_raid_bit_zero_verify (v m d b : Nat) (h : v + m + d = b) (k : 1 ≤ v) : m + d + v = b ∧ m + d < b := by omega
-example := textbook_raid_bit_zero_verify (v := 1) (m := 0) (d := 0) (b := 1) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_raid_bit_zero_verify (v := 1) (m := 0) (d := 1) (b := 2) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_raid_bit_zero_verify (v := 1) (m := 1) (d := 0) (b := 2) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_raid_bit_zero_verify (v := 2) (m := 0) (d := 0) (b := 2) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
+example := @textbook_raid_bit_zero_verify
 /-- textbook_raid_bit_zero_verify reflected by its shape, conjunction (examples: raid-bit-zero-verify) -/
 @[reflection] theorem textbook_raid_bit_zero_verify_reflected (v m d b : Nat) (h : v + m + d = b) (k : 1 ≤ v) (σ : Nat) (hσ0 : (b) ≤ σ) : (σ - (b) = σ - (m + d + v)) ∧ (σ - (b) < σ - (m + d)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_raid_bit_zero_verify v m d b h k).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_raid_bit_zero_verify v m d b h k).2 hσ0) (textbook_raid_bit_zero_verify v m d b h k).2⟩
 /-- the contrapositive of textbook_raid_bit_zero_verify (examples: raid-bit-zero-verify) -/
@@ -3202,120 +2013,7 @@ theorem textbook_merge_collision : 1 + 1 + 0 = 2 ∧ 2 = 2 ∧ 2 - 1 = 1 ∧ 1 +
 @[reflection] theorem textbook_merge_collision_reflected (σ : Nat) : (σ - (2) = σ - (1 + 1 + 0)) ∧ (σ - (2) = σ - (2)) ∧ (σ - (1) = σ - (2 - 1)) ∧ (σ - (2) = σ - (1 + 1 + 0)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_merge_collision).1), congrArg (σ - ·) (Eq.symm (textbook_merge_collision).2.1), congrArg (σ - ·) (Eq.symm (textbook_merge_collision).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_merge_collision).2.2.2)⟩
 /-- a config set is its n given members less their r repeats, addressed by the canonical text of the distinct ones (never a newline join, under which one member holding a newline is two); on distinct members the union of a and b is a + b less their intersection i (examples: configure-sets-given) -/
 theorem textbook_set_address_canonical (n r a b i u : Nat) (hr : r ≤ n) (hu : u + i = a + b) : n - r + r = n ∧ u = a + b - i := by omega
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 0) (b := 0) (i := 0) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 0) (b := 1) (i := 0) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 0) (b := 1) (i := 1) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 0) (b := 2) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 0) (b := 2) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 0) (b := 2) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 1) (b := 0) (i := 0) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 1) (b := 0) (i := 1) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 1) (b := 1) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 1) (b := 1) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 1) (b := 1) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 1) (b := 2) (i := 1) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 1) (b := 2) (i := 2) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 2) (b := 0) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 2) (b := 0) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 2) (b := 0) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 2) (b := 1) (i := 1) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 2) (b := 1) (i := 2) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 0) (r := 0) (a := 2) (b := 2) (i := 2) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 0) (b := 0) (i := 0) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 0) (b := 1) (i := 0) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 0) (b := 1) (i := 1) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 0) (b := 2) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 0) (b := 2) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 0) (b := 2) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 1) (b := 0) (i := 0) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 1) (b := 0) (i := 1) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 1) (b := 1) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 1) (b := 1) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 1) (b := 1) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 1) (b := 2) (i := 1) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 1) (b := 2) (i := 2) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 2) (b := 0) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 2) (b := 0) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 2) (b := 0) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 2) (b := 1) (i := 1) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 2) (b := 1) (i := 2) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 0) (a := 2) (b := 2) (i := 2) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 0) (b := 0) (i := 0) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 0) (b := 1) (i := 0) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 0) (b := 1) (i := 1) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 0) (b := 2) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 0) (b := 2) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 0) (b := 2) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 1) (b := 0) (i := 0) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 1) (b := 0) (i := 1) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 1) (b := 1) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 1) (b := 1) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 1) (b := 1) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 1) (b := 2) (i := 1) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 1) (b := 2) (i := 2) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 2) (b := 0) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 2) (b := 0) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 2) (b := 0) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 2) (b := 1) (i := 1) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 2) (b := 1) (i := 2) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 1) (r := 1) (a := 2) (b := 2) (i := 2) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 0) (b := 0) (i := 0) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 0) (b := 1) (i := 0) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 0) (b := 1) (i := 1) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 0) (b := 2) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 0) (b := 2) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 0) (b := 2) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 1) (b := 0) (i := 0) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 1) (b := 0) (i := 1) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 1) (b := 1) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 1) (b := 1) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 1) (b := 1) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 1) (b := 2) (i := 1) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 1) (b := 2) (i := 2) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 2) (b := 0) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 2) (b := 0) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 2) (b := 0) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 2) (b := 1) (i := 1) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 2) (b := 1) (i := 2) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 0) (a := 2) (b := 2) (i := 2) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 0) (b := 0) (i := 0) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 0) (b := 1) (i := 0) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 0) (b := 1) (i := 1) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 0) (b := 2) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 0) (b := 2) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 0) (b := 2) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 1) (b := 0) (i := 0) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 1) (b := 0) (i := 1) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 1) (b := 1) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 1) (b := 1) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 1) (b := 1) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 1) (b := 2) (i := 1) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 1) (b := 2) (i := 2) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 2) (b := 0) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 2) (b := 0) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 2) (b := 0) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 2) (b := 1) (i := 1) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 2) (b := 1) (i := 2) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 1) (a := 2) (b := 2) (i := 2) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 0) (b := 0) (i := 0) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 0) (b := 1) (i := 0) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 0) (b := 1) (i := 1) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 0) (b := 2) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 0) (b := 2) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 0) (b := 2) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 1) (b := 0) (i := 0) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 1) (b := 0) (i := 1) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 1) (b := 1) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 1) (b := 1) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 1) (b := 1) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 1) (b := 2) (i := 1) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 1) (b := 2) (i := 2) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 2) (b := 0) (i := 0) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 2) (b := 0) (i := 1) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 2) (b := 0) (i := 2) (u := 0) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 2) (b := 1) (i := 1) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 2) (b := 1) (i := 2) (u := 1) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
-example := textbook_set_address_canonical (n := 2) (r := 2) (a := 2) (b := 2) (i := 2) (u := 2) (hr := by first | decide | omega | simp) (hu := by first | decide | omega | simp)
+example := @textbook_set_address_canonical
 /-- textbook_set_address_canonical reflected by its shape, conjunction (examples: configure-sets-given) -/
 @[reflection] theorem textbook_set_address_canonical_reflected (n r a b i u : Nat) (hr : r ≤ n) (hu : u + i = a + b) (σ : Nat) : (σ - (n) = σ - (n - r + r)) ∧ (σ - (a + b - i) = σ - (u)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_set_address_canonical n r a b i u hr hu).1), congrArg (σ - ·) (Eq.symm (textbook_set_address_canonical n r a b i u hr hu).2)⟩
 /-- the contrapositive of textbook_set_address_canonical (examples: configure-sets-given) -/
@@ -3344,15 +2042,7 @@ theorem textbook_css_one_source : 23963508 % 360 = 108 ∧ 108 = 108 := by decid
 @[reflection] theorem textbook_css_one_source_reflected (σ : Nat) : (σ - (108) = σ - (23963508 % 360)) ∧ (σ - (108) = σ - (108)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_css_one_source).1), congrArg (σ - ·) (Eq.symm (textbook_css_one_source).2)⟩
 /-- division by zero is total in the kernel, for every number: x / 0 = 0 and x % 0 = x for every natural x, z / 0 = 0 for every integer z (Lean's convention, Mathlib's div_zero for fields); 0 has no inverse, so (x / 0) · 0 = x fails for x ≠ 0 (examples: match-div-zero) -/
 theorem textbook_div_zero (x : Nat) (z : Int) : x / Nat.zero = Nat.zero ∧ x % Nat.zero = x ∧ z / (Nat.zero : Int) = (Nat.zero : Int) := by simp
-example := textbook_div_zero (x := 0) (z := 0)
-example := textbook_div_zero (x := 0) (z := 1)
-example := textbook_div_zero (x := 0) (z := 2)
-example := textbook_div_zero (x := 1) (z := 0)
-example := textbook_div_zero (x := 1) (z := 1)
-example := textbook_div_zero (x := 1) (z := 2)
-example := textbook_div_zero (x := 2) (z := 0)
-example := textbook_div_zero (x := 2) (z := 1)
-example := textbook_div_zero (x := 2) (z := 2)
+example := @textbook_div_zero
 example : (7 : Nat) / 0 = 0 ∧ (7 : Nat) % 0 = 7 ∧ (-7 : Int) / 0 = 0 := textbook_div_zero 7 (-7)
 /-- textbook_div_zero reflected by its shape, conjunction (examples: match-div-zero) -/
 @[reflection] theorem textbook_div_zero_reflected (x : Nat) (z : Int) : ((Nat.zero) = (x / Nat.zero)) ∧ ((x) = (x % Nat.zero)) ∧ (((Nat.zero : Int)) = (z / (Nat.zero : Int))) := ⟨Eq.symm (textbook_div_zero x z).1, Eq.symm (textbook_div_zero x z).2.1, Eq.symm (textbook_div_zero x z).2.2⟩
@@ -3370,16 +2060,7 @@ theorem textbook_witness_gates_decode : 4 * 4 - 15 = 1 * 1 ∧ (4 - 1) * (4 + 1)
 @[reflection] theorem textbook_witness_gates_decode_reflected (σ : Nat) : (σ - (1 * 1) = σ - (4 * 4 - 15)) ∧ (σ - (15) = σ - ((4 - 1) * (4 + 1))) ∧ (∀ b, ¬ (b * b ≠ 7 * 7 - 15) → ¬ ((b < 6))) := ⟨congrArg (σ - ·) (Eq.symm (textbook_witness_gates_decode).1), congrArg (σ - ·) (Eq.symm (textbook_witness_gates_decode).2.1), fun b => fun hc hh => hc (((textbook_witness_gates_decode).2.2 b) hh)⟩
 /-- a check has three states — passed (recomputed now), contradicted (a witness present and disagreeing) and missing (the witness not supplied, null) — so the decided checks are all but the missing ones and a pass is one of them: a neighbour link of caller strings, a decode without its address and an artifact without its bytes are missing, never passed (examples: verify-neighbours-asserted, verify-neighbours-witnessed, verify-neighbours-contradicted, seal-artifacts-digest-alone) -/
 theorem textbook_check_three_states (passed contradicted missing total : Nat) (h : passed + contradicted + missing = total) : total - missing = passed + contradicted ∧ passed ≤ total - missing := by omega
-example := textbook_check_three_states (passed := 0) (contradicted := 0) (missing := 0) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_check_three_states (passed := 0) (contradicted := 0) (missing := 1) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_check_three_states (passed := 0) (contradicted := 0) (missing := 2) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_check_three_states (passed := 0) (contradicted := 1) (missing := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_check_three_states (passed := 0) (contradicted := 1) (missing := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_check_three_states (passed := 0) (contradicted := 2) (missing := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_check_three_states (passed := 1) (contradicted := 0) (missing := 0) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_check_three_states (passed := 1) (contradicted := 0) (missing := 1) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_check_three_states (passed := 1) (contradicted := 1) (missing := 0) (total := 2) (h := by first | decide | omega | simp)
-example := textbook_check_three_states (passed := 2) (contradicted := 0) (missing := 0) (total := 2) (h := by first | decide | omega | simp)
+example := @textbook_check_three_states
 /-- textbook_check_three_states reflected by its shape, conjunction (examples: verify-neighbours-asserted, verify-neighbours-witnessed, verify-neighbours-contradicted, seal-artifacts-digest-alone) -/
 @[reflection] theorem textbook_check_three_states_reflected (passed contradicted missing total : Nat) (h : passed + contradicted + missing = total) (σ : Nat) : (σ - (passed + contradicted) = σ - (total - missing)) ∧ (σ - (total - missing) ≤ σ - (passed)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_check_three_states passed contradicted missing total h).1), Nat.sub_le_sub_left (textbook_check_three_states passed contradicted missing total h).2 σ⟩
 /-- the contrapositive of textbook_check_three_states (examples: verify-neighbours-asserted, verify-neighbours-witnessed, verify-neighbours-contradicted, seal-artifacts-digest-alone) -/
@@ -3388,12 +2069,7 @@ example := textbook_check_three_states (passed := 2) (contradicted := 0) (missin
 @[reflection] theorem textbook_check_three_states_converse_refuted : ¬ ∀ (passed contradicted missing total : Nat), (total - missing = passed + contradicted ∧ passed ≤ total - missing) → (passed + contradicted + missing = total) := fun h => absurd (h 0 0 1 0 (by decide)) (by decide)
 /-- a proof check emits its digest (a digest, never a signature) exactly for the calls whose theorem's examples hold the call again: the digests are the round trips, so a call without one gets nothing for the block's proof hook to MAC and sign (examples: verify-call, verify-call-no-round-trip) -/
 theorem textbook_digest_on_round_trip (digests roundTrips checked : Nat) (h : digests = roundTrips) (k : roundTrips ≤ checked) : digests ≤ checked ∧ checked - digests = checked - roundTrips := by omega
-example := textbook_digest_on_round_trip (digests := 0) (roundTrips := 0) (checked := 0) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_digest_on_round_trip (digests := 0) (roundTrips := 0) (checked := 1) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_digest_on_round_trip (digests := 0) (roundTrips := 0) (checked := 2) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_digest_on_round_trip (digests := 1) (roundTrips := 1) (checked := 1) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_digest_on_round_trip (digests := 1) (roundTrips := 1) (checked := 2) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_digest_on_round_trip (digests := 2) (roundTrips := 2) (checked := 2) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
+example := @textbook_digest_on_round_trip
 /-- textbook_digest_on_round_trip reflected by its shape, conjunction (examples: verify-call, verify-call-no-round-trip) -/
 @[reflection] theorem textbook_digest_on_round_trip_reflected (digests roundTrips checked : Nat) (h : digests = roundTrips) (k : roundTrips ≤ checked) (σ : Nat) : (σ - (checked) ≤ σ - (digests)) ∧ (σ - (checked - roundTrips) = σ - (checked - digests)) := ⟨Nat.sub_le_sub_left (textbook_digest_on_round_trip digests roundTrips checked h k).1 σ, congrArg (σ - ·) (Eq.symm (textbook_digest_on_round_trip digests roundTrips checked h k).2)⟩
 /-- the contrapositive of textbook_digest_on_round_trip (examples: verify-call, verify-call-no-round-trip) -/
@@ -3402,8 +2078,7 @@ example := textbook_digest_on_round_trip (digests := 2) (roundTrips := 2) (check
 @[reflection] theorem textbook_digest_on_round_trip_converse_refuted : ¬ ∀ (digests roundTrips checked : Nat), (digests ≤ checked ∧ checked - digests = checked - roundTrips) → (digests = roundTrips) ∧ (roundTrips ≤ checked) := fun h => absurd (h 0 1 0 (by decide)) (by decide)
 /-- the coins of a witness move are computed from the move: the step down from 2k to 2(k − 1) pays (2k − 2(k − 1))/2 = 1, the step up to 2(k + 1) collects 1, and the net is their difference, 0, for every k ≥ 1 (examples: verify-witness-move, verify-witness-move-110) -/
 theorem textbook_witness_move_computed (k : Nat) (h : 1 ≤ k) : (2 * k - 2 * (k - 1)) / 2 = 1 ∧ (2 * (k + 1) - 2 * k) / 2 = 1 ∧ (2 * (k + 1) - 2 * k) / 2 - (2 * k - 2 * (k - 1)) / 2 = 0 := by omega
-example := textbook_witness_move_computed (k := 1) (h := by first | decide | omega | simp)
-example := textbook_witness_move_computed (k := 2) (h := by first | decide | omega | simp)
+example := @textbook_witness_move_computed
 /-- textbook_witness_move_computed reflected by its shape, conjunction (examples: verify-witness-move, verify-witness-move-110) -/
 @[reflection] theorem textbook_witness_move_computed_reflected (k : Nat) (h : 1 ≤ k) (σ : Nat) : (σ - (1) = σ - ((2 * k - 2 * (k - 1)) / 2)) ∧ (σ - (1) = σ - ((2 * (k + 1) - 2 * k) / 2)) ∧ (σ - (0) = σ - ((2 * (k + 1) - 2 * k) / 2 - (2 * k - 2 * (k - 1)) / 2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_witness_move_computed k h).1), congrArg (σ - ·) (Eq.symm (textbook_witness_move_computed k h).2.1), congrArg (σ - ·) (Eq.symm (textbook_witness_move_computed k h).2.2)⟩
 /-- the contrapositive of textbook_witness_move_computed (examples: verify-witness-move, verify-witness-move-110) -/
@@ -3412,11 +2087,7 @@ example := textbook_witness_move_computed (k := 2) (h := by first | decide | ome
 @[reflection] theorem textbook_witness_move_computed_converse (k : Nat) : ((2 * k - 2 * (k - 1)) / 2 = 1 ∧ (2 * (k + 1) - 2 * k) / 2 = 1 ∧ (2 * (k + 1) - 2 * k) / 2 - (2 * k - 2 * (k - 1)) / 2 = 0) → (1 ≤ k) := fun hc => by omega
 /-- the correction branch is reached with the real majority: when more than half of the copies agree, the others are fewer than the agreeing ones, so correction decodes with no swap; without a majority handling takes over (examples: e2e-corrected-by-majority) -/
 theorem textbook_correction_by_majority (votes total : Nat) (h : total < 2 * votes) : total - votes < votes := by omega
-example := textbook_correction_by_majority (votes := 1) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_correction_by_majority (votes := 1) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_correction_by_majority (votes := 2) (total := 0) (h := by first | decide | omega | simp)
-example := textbook_correction_by_majority (votes := 2) (total := 1) (h := by first | decide | omega | simp)
-example := textbook_correction_by_majority (votes := 2) (total := 2) (h := by first | decide | omega | simp)
+example := @textbook_correction_by_majority
 /-- textbook_correction_by_majority reflected by its shape, order (examples: e2e-corrected-by-majority) -/
 @[reflection] theorem textbook_correction_by_majority_reflected (votes total : Nat) (h : total < 2 * votes) (σ : Nat) (hσ0 : (votes) ≤ σ) : σ - (votes) < σ - (total - votes) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_correction_by_majority votes total h) hσ0) (textbook_correction_by_majority votes total h)
 /-- the contrapositive of textbook_correction_by_majority (examples: e2e-corrected-by-majority) -/
@@ -3425,144 +2096,12 @@ example := textbook_correction_by_majority (votes := 2) (total := 2) (h := by fi
 @[reflection] theorem textbook_correction_by_majority_converse (votes total : Nat) : (total - votes < votes) → (total < 2 * votes) := fun hc => by omega
 /-- balance: a journal entry is balanced exactly when its syndrome is zero — the debits d and the credits c, each summed from its own side of the stored postings (a debit +, a credit −), differ by (d − c) + (c − d) on the naturals, zero iff d = c; so Σ = 0 is a parity check like a stabilizer's +1, and a nonzero syndrome { amount, count, entry } is the unbalanced gap that blocks, the postings untouched (examples: stripe-journal-parity, stripe-ledger-sides, stripe-ledger) -/
 theorem textbook_postings_parity (d c : Nat) : d - c + (c - d) = 0 ↔ d = c := by omega
-example := textbook_postings_parity (d := 0) (c := 0)
-example := textbook_postings_parity (d := 0) (c := 1)
-example := textbook_postings_parity (d := 0) (c := 2)
-example := textbook_postings_parity (d := 1) (c := 0)
-example := textbook_postings_parity (d := 1) (c := 1)
-example := textbook_postings_parity (d := 1) (c := 2)
-example := textbook_postings_parity (d := 2) (c := 0)
-example := textbook_postings_parity (d := 2) (c := 1)
-example := textbook_postings_parity (d := 2) (c := 2)
+example := @textbook_postings_parity
 /-- textbook_postings_parity reflected by its shape, equivalence (examples: stripe-journal-parity, stripe-ledger-sides, stripe-ledger) -/
 @[reflection] theorem textbook_postings_parity_reflected (d c : Nat) : (d = c) ↔ (d - c + (c - d) = 0) := Iff.symm (textbook_postings_parity d c)
 /-- royalty: the fractal shares never exceed the fee — at the ratio 2/110 the example's royalty reports, the first share ⌊f·2/110⌋ leaves a remainder at least 108/2 times itself, and while the remainder r covers 108/2 of the last share p, the next share s = ⌊p·2/110⌋ fits under r and leaves r − s covering 108/2 of s: by induction over the levels the shares sum to at most the fee (examples: stripe-royalty) -/
 theorem textbook_royalty_fractal (f p s r : Nat) (hp : 2 * p ≤ 108 * r) (hs : s * 110 ≤ p * 2) : f * 2 / 110 ≤ f ∧ 2 * (f * 2 / 110) ≤ 108 * (f - f * 2 / 110) ∧ s ≤ r ∧ 2 * s ≤ 108 * (r - s) := by omega
-example := textbook_royalty_fractal (f := 0) (p := 0) (s := 0) (r := 0) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 0) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 0) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 0) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 0) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 1) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 1) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 1) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 1) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 2) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 2) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 2) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 2) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 110) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 110) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 110) (s := 1) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 110) (s := 1) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 110) (s := 2) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 110) (s := 2) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 108) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 108) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 108) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 108) (s := 1) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 108) (s := 1) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 0) (p := 108) (s := 1) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 0) (s := 0) (r := 0) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 0) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 0) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 0) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 0) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 1) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 1) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 1) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 1) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 2) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 2) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 2) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 2) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 110) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 110) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 110) (s := 1) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 110) (s := 1) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 110) (s := 2) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 110) (s := 2) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 108) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 108) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 108) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 108) (s := 1) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 108) (s := 1) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 1) (p := 108) (s := 1) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 0) (s := 0) (r := 0) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 0) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 0) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 0) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 0) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 1) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 1) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 1) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 1) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 2) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 2) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 2) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 2) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 110) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 110) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 110) (s := 1) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 110) (s := 1) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 110) (s := 2) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 110) (s := 2) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 108) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 108) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 108) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 108) (s := 1) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 108) (s := 1) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 2) (p := 108) (s := 1) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 0) (s := 0) (r := 0) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 0) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 0) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 0) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 0) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 1) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 1) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 1) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 1) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 2) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 2) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 2) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 2) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 110) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 110) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 110) (s := 1) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 110) (s := 1) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 110) (s := 2) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 110) (s := 2) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 108) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 108) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 108) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 108) (s := 1) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 108) (s := 1) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 110) (p := 108) (s := 1) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 0) (s := 0) (r := 0) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 0) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 0) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 0) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 0) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 1) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 1) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 1) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 1) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 2) (s := 0) (r := 1) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 2) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 2) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 2) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 110) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 110) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 110) (s := 1) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 110) (s := 1) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 110) (s := 2) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 110) (s := 2) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 108) (s := 0) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 108) (s := 0) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 108) (s := 0) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 108) (s := 1) (r := 2) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 108) (s := 1) (r := 110) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
-example := textbook_royalty_fractal (f := 108) (p := 108) (s := 1) (r := 108) (hp := by first | decide | omega | simp) (hs := by first | decide | omega | simp)
+example := @textbook_royalty_fractal
 /-- textbook_royalty_fractal reflected by its shape, conjunction (examples: stripe-royalty) -/
 @[reflection] theorem textbook_royalty_fractal_reflected (f p s r : Nat) (hp : 2 * p ≤ 108 * r) (hs : s * 110 ≤ p * 2) (σ : Nat) : (σ - (f) ≤ σ - (f * 2 / 110)) ∧ (σ - (108 * (f - f * 2 / 110)) ≤ σ - (2 * (f * 2 / 110))) ∧ (σ - (r) ≤ σ - (s)) ∧ (σ - (108 * (r - s)) ≤ σ - (2 * s)) := ⟨Nat.sub_le_sub_left (textbook_royalty_fractal f p s r hp hs).1 σ, Nat.sub_le_sub_left (textbook_royalty_fractal f p s r hp hs).2.1 σ, Nat.sub_le_sub_left (textbook_royalty_fractal f p s r hp hs).2.2.1 σ, Nat.sub_le_sub_left (textbook_royalty_fractal f p s r hp hs).2.2.2 σ⟩
 /-- the contrapositive of textbook_royalty_fractal (examples: stripe-royalty) -/
@@ -3571,12 +2110,7 @@ example := textbook_royalty_fractal (f := 108) (p := 108) (s := 1) (r := 108) (h
 @[reflection] theorem textbook_royalty_fractal_converse_refuted : ¬ ∀ (f p s r : Nat), (f * 2 / 110 ≤ f ∧ 2 * (f * 2 / 110) ≤ 108 * (f - f * 2 / 110) ∧ s ≤ r ∧ 2 * s ≤ 108 * (r - s)) → (2 * p ≤ 108 * r) ∧ (s * 110 ≤ p * 2) := fun h => absurd (h 0 0 1 2 (by decide)) (by decide)
 /-- royalty: the shares paid p stay under the fee f (textbook_royalty_fractal), so the remainder x = f − p to revenue:author makes shares and remainder the fee exactly: the entry posts +f and −p − x, Σ = 0, which balance measures again from the stored postings; a share held in escrow is still posted, never lost (examples: stripe-royalty, stripe-royalty-escrow) -/
 theorem textbook_royalty_conserved (f p x : Nat) (hp : p ≤ f) (hx : x = f - p) : p + x = f ∧ f - p - x = 0 := by omega
-example := textbook_royalty_conserved (f := 0) (p := 0) (x := 0) (hp := by first | decide | omega | simp) (hx := by first | decide | omega | simp)
-example := textbook_royalty_conserved (f := 1) (p := 0) (x := 1) (hp := by first | decide | omega | simp) (hx := by first | decide | omega | simp)
-example := textbook_royalty_conserved (f := 1) (p := 1) (x := 0) (hp := by first | decide | omega | simp) (hx := by first | decide | omega | simp)
-example := textbook_royalty_conserved (f := 2) (p := 0) (x := 2) (hp := by first | decide | omega | simp) (hx := by first | decide | omega | simp)
-example := textbook_royalty_conserved (f := 2) (p := 1) (x := 1) (hp := by first | decide | omega | simp) (hx := by first | decide | omega | simp)
-example := textbook_royalty_conserved (f := 2) (p := 2) (x := 0) (hp := by first | decide | omega | simp) (hx := by first | decide | omega | simp)
+example := @textbook_royalty_conserved
 /-- textbook_royalty_conserved reflected by its shape, conjunction (examples: stripe-royalty, stripe-royalty-escrow) -/
 @[reflection] theorem textbook_royalty_conserved_reflected (f p x : Nat) (hp : p ≤ f) (hx : x = f - p) (σ : Nat) : (σ - (f) = σ - (p + x)) ∧ (σ - (0) = σ - (f - p - x)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_royalty_conserved f p x hp hx).1), congrArg (σ - ·) (Eq.symm (textbook_royalty_conserved f p x hp hx).2)⟩
 /-- the contrapositive of textbook_royalty_conserved (examples: stripe-royalty, stripe-royalty-escrow) -/
@@ -3585,16 +2119,7 @@ example := textbook_royalty_conserved (f := 2) (p := 2) (x := 0) (hp := by first
 @[reflection] theorem textbook_royalty_conserved_converse (f p x : Nat) : (p + x = f ∧ f - p - x = 0) → (p ≤ f) ∧ (x = f - p) := fun hc => ⟨by omega, by omega⟩
 /-- witness, mintWitnessCoins and contribution: every item is passed (p), missing (m) or contradicted (c), the three summing to the items n, and the coins booked k are the passed alone, so k + m + c = n and k ≤ n − m − c — a missing witness books nothing (a witness gap, listed, its share held in escrow), a contradicted one books nothing (a refusal) (examples: stripe-mint-witnesses, stripe-idea-contribution, stripe-royalty-escrow, verify-witnesses-merge) -/
 theorem textbook_witness_books_nothing (n p m c k : Nat) (h : p + m + c = n) (hk : k = p) : k + m + c = n ∧ k ≤ n - m - c := by omega
-example := textbook_witness_books_nothing (n := 0) (p := 0) (m := 0) (c := 0) (k := 0) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_witness_books_nothing (n := 1) (p := 0) (m := 0) (c := 1) (k := 0) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_witness_books_nothing (n := 1) (p := 0) (m := 1) (c := 0) (k := 0) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_witness_books_nothing (n := 1) (p := 1) (m := 0) (c := 0) (k := 1) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_witness_books_nothing (n := 2) (p := 0) (m := 0) (c := 2) (k := 0) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_witness_books_nothing (n := 2) (p := 0) (m := 1) (c := 1) (k := 0) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_witness_books_nothing (n := 2) (p := 0) (m := 2) (c := 0) (k := 0) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_witness_books_nothing (n := 2) (p := 1) (m := 0) (c := 1) (k := 1) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_witness_books_nothing (n := 2) (p := 1) (m := 1) (c := 0) (k := 1) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
-example := textbook_witness_books_nothing (n := 2) (p := 2) (m := 0) (c := 0) (k := 2) (h := by first | decide | omega | simp) (hk := by first | decide | omega | simp)
+example := @textbook_witness_books_nothing
 /-- textbook_witness_books_nothing reflected by its shape, conjunction (examples: stripe-mint-witnesses, stripe-idea-contribution, stripe-royalty-escrow, verify-witnesses-merge) -/
 @[reflection] theorem textbook_witness_books_nothing_reflected (n p m c k : Nat) (h : p + m + c = n) (hk : k = p) (σ : Nat) : (σ - (n) = σ - (k + m + c)) ∧ (σ - (n - m - c) ≤ σ - (k)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_witness_books_nothing n p m c k h hk).1), Nat.sub_le_sub_left (textbook_witness_books_nothing n p m c k h hk).2 σ⟩
 /-- the contrapositive of textbook_witness_books_nothing (examples: stripe-mint-witnesses, stripe-idea-contribution, stripe-royalty-escrow, verify-witnesses-merge) -/
@@ -3603,9 +2128,7 @@ example := textbook_witness_books_nothing (n := 2) (p := 2) (m := 0) (c := 0) (k
 @[reflection] theorem textbook_witness_books_nothing_converse_refuted : ¬ ∀ (n p m c k : Nat), (k + m + c = n ∧ k ≤ n - m - c) → (p + m + c = n) ∧ (k = p) := fun h => absurd (h 0 1 0 0 0 (by decide)) (by decide)
 /-- one judge decides a statement for the match, the chat and the search alike: each witness passed (recomputed now), contradicted (present and disagreeing) or missing (named) — the schema bound of the door that answers, the arithmetic the statement writes, the kernel's theorem or the call made now with its example replayed, each value it claims (a number alone in its clause continuing the claim before it; a number neither an input nor a claim witnessed only by a value equal to it) against the values the answer and its routed theorem compute (numbers reads the numbers, sides a theorem's computed sides, the side its own words name deciding first, evaluateRouted binds the statement's numbers to the routed theorem as the chat does), its polarity, and the words a named theorem does not state; the present, the missing and the contradicted make the witnesses, and a statement is served only when none is missing and none contradicted, every witness present (solid when the kernel accepts the theorem naming the answer, liquid else); one contradicted is a collision (impossible, the chat answers with it), one missing gas (unknown), and a search is solved only when served (examples: match-witness-p-np, match-witness-planck, match-witness-planck-value, match-witness-negation, match-witness-willow, match-witness-willow-wrong, match-search-witnessed, chat-witness-planck, chat-witness-computed, match-witness-loose) -/
 theorem textbook_witness_states (present missing contradicted witnesses : Nat) (h : present + missing + contradicted = witnesses) (k : missing + contradicted = 0) : present = witnesses ∧ contradicted = 0 ∧ missing = 0 := by omega
-example := textbook_witness_states (present := 0) (missing := 0) (contradicted := 0) (witnesses := 0) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_witness_states (present := 1) (missing := 0) (contradicted := 0) (witnesses := 1) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
-example := textbook_witness_states (present := 2) (missing := 0) (contradicted := 0) (witnesses := 2) (h := by first | decide | omega | simp) (k := by first | decide | omega | simp)
+example := @textbook_witness_states
 /-- textbook_witness_states reflected by its shape, conjunction (examples: match-witness-p-np, match-witness-planck, match-witness-planck-value, match-witness-negation, match-witness-willow, match-witness-willow-wrong, match-search-witnessed, chat-witness-planck, chat-witness-computed, match-witness-loose) -/
 @[reflection] theorem textbook_witness_states_reflected (present missing contradicted witnesses : Nat) (h : present + missing + contradicted = witnesses) (k : missing + contradicted = 0) (σ : Nat) : (σ - (witnesses) = σ - (present)) ∧ (σ - (0) = σ - (contradicted)) ∧ (σ - (0) = σ - (missing)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_witness_states present missing contradicted witnesses h k).1), congrArg (σ - ·) (Eq.symm (textbook_witness_states present missing contradicted witnesses h k).2.1), congrArg (σ - ·) (Eq.symm (textbook_witness_states present missing contradicted witnesses h k).2.2)⟩
 /-- the contrapositive of textbook_witness_states (examples: match-witness-p-np, match-witness-planck, match-witness-planck-value, match-witness-negation, match-witness-willow, match-witness-willow-wrong, match-search-witnessed, chat-witness-planck, chat-witness-computed, match-witness-loose) -/
@@ -3614,8 +2137,7 @@ example := textbook_witness_states (present := 2) (missing := 0) (contradicted :
 @[reflection] theorem textbook_witness_states_converse (present missing contradicted witnesses : Nat) : (present = witnesses ∧ contradicted = 0 ∧ missing = 0) → (present + missing + contradicted = witnesses) ∧ (missing + contradicted = 0) := fun hc => ⟨by omega, by omega⟩
 /-- ISO 22739:2024 3.6, 3.4, 3.44 and 3.47: a blockchain is a distributed ledger with confirmed blocks organized in an append-only, sequential chain using hash links; a block header includes a hash link (cryptographic link: a reference constructed by applying a hash function to the data) to the previous block, if present; the genesis block is the first block and has no previous block — so n blocks carry n − 1 hash links and the genesis block none (NISTIR 8202 §3.7: each block holds the hash of the previous block's header); in the tree the header is the UUID the content folds to and the hash link is the predecessor content folded back to the id the block names (verify prev) (examples: verify-blockchain-genesis, verify-blockchain-linked, verify-radar) -/
 theorem textbook_blockchain_hash_links (n : Nat) (h : 1 ≤ n) : (n - 1) + 1 = n ∧ 1 - 1 = 0 := by omega
-example := textbook_blockchain_hash_links (n := 1) (h := by first | decide | omega | simp)
-example := textbook_blockchain_hash_links (n := 2) (h := by first | decide | omega | simp)
+example := @textbook_blockchain_hash_links
 /-- textbook_blockchain_hash_links reflected by its shape, conjunction (examples: verify-blockchain-genesis, verify-blockchain-linked, verify-radar) -/
 @[reflection] theorem textbook_blockchain_hash_links_reflected (n : Nat) (h : 1 ≤ n) (σ : Nat) : (σ - (n) = σ - ((n - 1) + 1)) ∧ (σ - (0) = σ - (1 - 1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_blockchain_hash_links n h).1), congrArg (σ - ·) (Eq.symm (textbook_blockchain_hash_links n h).2)⟩
 /-- the contrapositive of textbook_blockchain_hash_links (examples: verify-blockchain-genesis, verify-blockchain-linked, verify-radar) -/
@@ -3624,9 +2146,7 @@ example := textbook_blockchain_hash_links (n := 2) (h := by first | decide | ome
 @[reflection] theorem textbook_blockchain_hash_links_converse (n : Nat) : ((n - 1) + 1 = n ∧ 1 - 1 = 0) → (1 ≤ n) := fun hc => by omega
 /-- NISTIR 8202 §3.7 Chaining Blocks: a changed block has a different hash, so every subsequent block, holding the previous header's hash, changes too, and altered blocks are detected and rejected; of n blocks with the i-th altered, the i before it still link and the n − i from it onward are evident, the altered block itself first (its content no longer folds to its header) — ISO 22739:2024 3.23 Note 1 and 3.51 immutability: a distributed ledger is immutable, tamper-resistant, tamper-evident and append-only (examples: verify-blockchain-tampered) -/
 theorem textbook_blockchain_tamper_evident (n i : Nat) (h : i < n) : i + (n - i) = n ∧ 1 ≤ n - i := by omega
-example := textbook_blockchain_tamper_evident (n := 1) (i := 0) (h := by first | decide | omega | simp)
-example := textbook_blockchain_tamper_evident (n := 2) (i := 0) (h := by first | decide | omega | simp)
-example := textbook_blockchain_tamper_evident (n := 2) (i := 1) (h := by first | decide | omega | simp)
+example := @textbook_blockchain_tamper_evident
 /-- textbook_blockchain_tamper_evident reflected by its shape, conjunction (examples: verify-blockchain-tampered) -/
 @[reflection] theorem textbook_blockchain_tamper_evident_reflected (n i : Nat) (h : i < n) (σ : Nat) : (σ - (n) = σ - (i + (n - i))) ∧ (σ - (n - i) ≤ σ - (1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_blockchain_tamper_evident n i h).1), Nat.sub_le_sub_left (textbook_blockchain_tamper_evident n i h).2 σ⟩
 /-- the contrapositive of textbook_blockchain_tamper_evident (examples: verify-blockchain-tampered) -/
@@ -3655,12 +2175,7 @@ theorem textbook_iso_22739_hash_function : 1 + 1 + 1 = 3 := by decide
 @[reflection] theorem textbook_iso_22739_hash_function_reflected (σ : Nat) : σ - (3) = σ - (1 + 1 + 1) := congrArg (σ - ·) (Eq.symm (textbook_iso_22739_hash_function))
 /-- ISO 22739:2024 3.69 orphan block: a previously confirmed block that is no longer confirmed; of confirmed blocks, the orphans and the still-confirmed partition the same count — (confirmed − orphans) + orphans = confirmed (examples: verify-iso-22739-terms-read) -/
 theorem textbook_iso_22739_orphan_blocks (confirmed orphans : Nat) (h : orphans ≤ confirmed) : (confirmed - orphans) + orphans = confirmed := by omega
-example := textbook_iso_22739_orphan_blocks (confirmed := 0) (orphans := 0) (h := by first | decide | omega | simp)
-example := textbook_iso_22739_orphan_blocks (confirmed := 1) (orphans := 0) (h := by first | decide | omega | simp)
-example := textbook_iso_22739_orphan_blocks (confirmed := 1) (orphans := 1) (h := by first | decide | omega | simp)
-example := textbook_iso_22739_orphan_blocks (confirmed := 2) (orphans := 0) (h := by first | decide | omega | simp)
-example := textbook_iso_22739_orphan_blocks (confirmed := 2) (orphans := 1) (h := by first | decide | omega | simp)
-example := textbook_iso_22739_orphan_blocks (confirmed := 2) (orphans := 2) (h := by first | decide | omega | simp)
+example := @textbook_iso_22739_orphan_blocks
 /-- textbook_iso_22739_orphan_blocks reflected by its shape, equality (examples: verify-iso-22739-terms-read) -/
 @[reflection] theorem textbook_iso_22739_orphan_blocks_reflected (confirmed orphans : Nat) (h : orphans ≤ confirmed) (σ : Nat) : σ - (confirmed) = σ - ((confirmed - orphans) + orphans) := congrArg (σ - ·) (Eq.symm (textbook_iso_22739_orphan_blocks confirmed orphans h))
 /-- the contrapositive of textbook_iso_22739_orphan_blocks (examples: verify-iso-22739-terms-read) -/
@@ -3673,12 +2188,7 @@ theorem textbook_iso_22739_wallet : 99 + 1 = 100 := by decide
 @[reflection] theorem textbook_iso_22739_wallet_reflected (σ : Nat) : σ - (100) = σ - (99 + 1) := congrArg (σ - ·) (Eq.symm (textbook_iso_22739_wallet))
 /-- ISO 22739:2024 3.15, 3.27 and 3.37 with NISTIR 8202 §3.4: a cryptocurrency is a cryptoasset designed to work as a medium of payment or value exchange, the transfer of assets verified in the DLT system; a DLT address designates the originating source or destination of a transaction (NIST: the to and from endpoints, derived from a public key by a cryptographic hash function); an electronic funds transfer of one unit from a to b conserves the total, a − 1 + b + 1 = a + b, booked once in double entry (textbook_coins_coils_balanced), and control transferred more than once (2 > 1) is double spending, a failure of the platform (examples: verify-blockchain-transfer-once) -/
 theorem textbook_blockchain_transfer_once (a b : Nat) (h : 1 ≤ a) : (a - 1) + (b + 1) = a + b ∧ 1 < 2 := by omega
-example := textbook_blockchain_transfer_once (a := 1) (b := 0) (h := by first | decide | omega | simp)
-example := textbook_blockchain_transfer_once (a := 1) (b := 1) (h := by first | decide | omega | simp)
-example := textbook_blockchain_transfer_once (a := 1) (b := 2) (h := by first | decide | omega | simp)
-example := textbook_blockchain_transfer_once (a := 2) (b := 0) (h := by first | decide | omega | simp)
-example := textbook_blockchain_transfer_once (a := 2) (b := 1) (h := by first | decide | omega | simp)
-example := textbook_blockchain_transfer_once (a := 2) (b := 2) (h := by first | decide | omega | simp)
+example := @textbook_blockchain_transfer_once
 /-- textbook_blockchain_transfer_once reflected by its shape, conjunction (examples: verify-blockchain-transfer-once) -/
 @[reflection] theorem textbook_blockchain_transfer_once_reflected (a b : Nat) (h : 1 ≤ a) (σ : Nat) (hσ0 : (2) ≤ σ) : (σ - (a + b) = σ - ((a - 1) + (b + 1))) ∧ (σ - (2) < σ - (1)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_blockchain_transfer_once a b h).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_blockchain_transfer_once a b h).2 hσ0) (textbook_blockchain_transfer_once a b h).2⟩
 /-- the contrapositive of textbook_blockchain_transfer_once (examples: verify-blockchain-transfer-once) -/
@@ -3715,9 +2225,7 @@ theorem textbook_stale_receipt_refuses_deploy : 1 + 1 + 0 = 2 ∧ 2 - 1 = 1 + 0 
 @[reflection] theorem textbook_stale_receipt_refuses_deploy_reflected (σ : Nat) (hσ0 : (2 - 1) ≤ σ) : (σ - (2) = σ - (1 + 1 + 0)) ∧ (σ - (1 + 0) = σ - (2 - 1)) ∧ (σ - (2 - 1) < σ - (0)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_stale_receipt_refuses_deploy).1), congrArg (σ - ·) (Eq.symm (textbook_stale_receipt_refuses_deploy).2.1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_stale_receipt_refuses_deploy).2.2 hσ0) (textbook_stale_receipt_refuses_deploy).2.2⟩
 /-- no register is the last: every qubit count has a larger one, and one more qubit doubles the states, so a tool asked with no arguments answers unlimited and bounds nothing (examples: processor-unlimited, circuit-unlimited, echo-unlimited, match-unlimited, prose-unlimited, seal-unlimited, verify-unlimited, stripe-unlimited, fold-unlimited, repository-unlimited, payload-unlimited) -/
 theorem textbook_unlimited_qubits (q : Nat) : q < q + 1 ∧ 2 ^ (q + 1) = 2 * 2 ^ q := ⟨Nat.lt_succ_self q, by rw [Nat.pow_succ, Nat.mul_comm]⟩
-example := textbook_unlimited_qubits (q := 0)
-example := textbook_unlimited_qubits (q := 1)
-example := textbook_unlimited_qubits (q := 2)
+example := @textbook_unlimited_qubits
 /-- textbook_unlimited_qubits reflected by its shape, conjunction (examples: processor-unlimited, circuit-unlimited, echo-unlimited, match-unlimited, prose-unlimited, seal-unlimited, verify-unlimited, stripe-unlimited, fold-unlimited, repository-unlimited, payload-unlimited) -/
 @[reflection] theorem textbook_unlimited_qubits_reflected (q : Nat) (σ : Nat) (hσ0 : (q + 1) ≤ σ) : (σ - (q + 1) < σ - (q)) ∧ (σ - (2 * 2 ^ q) = σ - (2 ^ (q + 1))) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_unlimited_qubits q).1 hσ0) (textbook_unlimited_qubits q).1, congrArg (σ - ·) (Eq.symm (textbook_unlimited_qubits q).2)⟩
 /-- a standard is verified only when every row asked is verified: while rows are unverified the check does not hold (examples: standards-iso-online, standards-iso-page, standards-iso-joined) -/

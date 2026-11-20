@@ -4,6 +4,7 @@ import Mathlib.Data.Nat.Fib.Basic
 import Mathlib.Data.Nat.GCD.Basic
 import Qpu.General.Mint
 import Qpu.General.Combinatorics
+import Qpu.General.Lattice
 import Qpu.Application.Shor
 import Qpu.Processing.Anyon
 import Qpu.Processing.Qft
@@ -144,3 +145,22 @@ shared `b`, and `c` is the pairs `{a, b}` and `{b, c}`, which differ exactly whe
 theorem trinity_pairs_differ (a b c : Nat) (h : a ≠ c) : (a, b) ≠ (c, b) := by
   intro e
   exact h (congrArg Prod.fst e)
+
+/-- Every pair lies in the trinities it forms with each other member: among `t` members a pair is in `t - 2` trinities,
+so three times the trinities are the pairs times `t - 2`. No pair is left out and none is used more than another. -/
+theorem pair_in_trinities (t : Nat) : 3 * t.choose 3 = (t - 2) * t.choose 2 := by
+  have h3 := six_mul_nat_choose_three t
+  have h2 := two_mul_nat_choose_two t
+  have h : 2 * (3 * t.choose 3) = 2 * ((t - 2) * t.choose 2) := by
+    calc 2 * (3 * t.choose 3) = 6 * t.choose 3 := by omega
+      _ = t * (t - 1) * (t - 2) := h3
+      _ = (t - 2) * (t * (t - 1)) := Nat.mul_comm _ _
+      _ = (t - 2) * (2 * t.choose 2) := by rw [h2]
+      _ = 2 * ((t - 2) * t.choose 2) := Nat.mul_left_comm _ _ _
+  exact Nat.eq_of_mul_eq_mul_left (by decide) h
+
+/-- The hexbit paired completely: its 4 qubits form 6 pairs and 4 trinities, each trinity holds 3 pairs, and each pair
+lies in exactly 2 trinities. The trinities use every pair of the hexbit, each one equally. -/
+theorem hexbit_paired_completely :
+    hexbit = 4 ∧ choose hexbit 2 = 6 ∧ choose hexbit 3 = 4 ∧ choose hexbit 3 * choose 3 2 = 2 * choose hexbit 2 := by
+  decide
