@@ -1,9 +1,9 @@
-import * as migration_20261111_120000_pages_blocks from './20261111_120000_pages_blocks'
+import * as migration_20261120_163138_baseline from './20261120_163138_baseline';
 
 export const migrations = [
   {
-    up: migration_20261111_120000_pages_blocks.up,
-    down: migration_20261111_120000_pages_blocks.down,
-    name: '20261111_120000_pages_blocks',
+    up: migration_20261120_163138_baseline.up,
+    down: migration_20261120_163138_baseline.down,
+    name: '20261120_163138_baseline'
   },
-]
+];
