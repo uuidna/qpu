@@ -15,6 +15,8 @@ export const PROTOCOL_VERSION = "2025-06-18"
 export const LEAN_RESOURCE = "lean://qpu/theorems"
 /** The ways an operation is inserted into a circuit, and the one used when none is named. */
 export const INSERT_SCHEMA = { enum: ["EARLIEST","NEW","INLINE","NEW_THEN_INLINE"], default: "EARLIEST" }
+/** The coin qubit space, from Config.coinQubitSpace: the most remembered results a computation keeps at once. */
+export const COIN_QUBIT_SPACE = 16
 /** The groups of a UUID as it is written, from Advantage.uuidGroups: the hexadecimal digits between its dashes. */
 export const UUID_GROUPS = [8,4,4,4,12] as const
 /** The shape of a UUID as a pattern, built from its groups; every check of a UUID in the code reads this one. */
