@@ -1,0 +1,25 @@
+// The plan Payload is seeded from is the Lean catalogue, whole: every page, product and variant, each addressed once.
+import { test } from 'node:test'
+import assert from 'node:assert/strict'
+import { planCatalogue } from './catalogue-seed.ts'
+import { NESTED, NESTED_COUNTS } from './nested-index.ts'
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the plan holds every product and variant Lean counts, and every slug once. */
+test('the plan holds every product and variant Lean counts, and every slug once', () => {
+  const plan = planCatalogue()
+  assert.equal(plan.counts.products, NESTED_COUNTS.products)
+  assert.equal(plan.counts.variants, NESTED_COUNTS.variants)
+  assert.equal(plan.counts.pages, NESTED.length + new Set(NESTED.map((page) => page.clause)).size)
+  for (const list of [plan.pages, plan.categories, plan.products]) assert.equal(new Set(list.map((doc) => doc.slug)).size, list.length)
+  assert.equal(plan.pages.filter((page) => page.parent !== null).every((page) => plan.pages.some((parent) => parent.slug === page.parent && parent.parent === null)), true)
+  assert.equal(plan.products.every((product) => plan.categories.some((category) => category.slug === product.category) && product.variants.every((variant) => plan.options.includes(variant))), true)
+  assert.equal(plan.products.every((product) => product.description.some((line) => line.length > 0)), true)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a plan of one module holds that module alone. */
+test('a plan of one module holds that module alone', () => {
+  const plan = planCatalogue(['Qpu.Processing.Qft'])
+  assert.deepEqual(plan.categories.map((category) => category.title), ['Qpu.Processing.Qft'])
+  assert.deepEqual(plan.pages.map((page) => page.slug), ['processing', 'qpu-processing-qft'])
+  assert.equal(plan.products.length, NESTED.find((page) => page.module === 'Qpu.Processing.Qft')!.products.length)
+})
