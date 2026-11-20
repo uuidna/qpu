@@ -273,6 +273,7 @@ test('the crypto toolbox selftest replays every crypto example through Payload M
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: every NIST scenario runs locally, then e2e against qpu.uuidna.com fetches the planned NIST APIs and its live TLS certificate. */
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every NIST scenario holds locally and e2e against qpu.uuidna.com. */
 test('every NIST scenario holds locally and e2e against qpu.uuidna.com', async () => {
   const plan = invoke('seal', { nist: true })
   assert.equal(plan.phase, 'nist')
@@ -363,6 +364,7 @@ test('every NIST scenario holds locally and e2e against qpu.uuidna.com', async (
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: every NIST scenario reverses via CERN, then e2e against opendata.cern.ch fetches CERN first and its live TLS certificate. */
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every NIST scenario reverses via CERN and e2e against opendata.cern.ch. */
 test('every NIST scenario reverses via CERN and e2e against opendata.cern.ch', async () => {
   const plan = invoke('seal', { nist: { reverse: true, via: 'cern' } })
   assert.equal(plan.phase, 'nist-reverse')

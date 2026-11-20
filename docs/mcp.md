@@ -41,6 +41,7 @@ Any client mounts:
 | `css` | tree |
 | `dashboard` | tree |
 | `clone` | tree |
+| `apis` | tree |
 | `discover` | flow |
 | `wave` | flow |
 | `readiness` | flow |

@@ -518,4 +518,12 @@ def quantumProcessingExamples_shows511 : String := "The vocabulary the blockchai
 def quantumProcessingExamples_shows512 : String := "The transfer law checked by its key: the kernel accepts textbook_blockchain_transfer_once — one transfer conserves the total and a second transfer of the same control is double spending (ISO 22739:2024 3.37) — and lists the examples it proves."
 def quantumProcessingExamples_shows513 : String := "The block's digital signature planned (ISO 22739:2024 3.22): ML-DSA-44 of FIPS 204 over the 32-byte digest, public key 1312 bytes and signature 2420 (Table 2), executed by the host with its key, never here."
 
+def quantumProcessingExamples_showsJsonldBlock : String := "The block as JSON-LD: the author is a Person whose @id is the ORCID, sixteen digits in four groups with three dashes, nineteen characters (textbook_orcid_digits)."
+
+def quantumProcessingExamples_showsJsonldCatalogue : String := "The catalogue as JSON-LD: an OfferCatalog whose offers are the nine the catalogue holds (textbook_catalogue_offers)."
+
+def quantumProcessingExamples_showsCodesPlan : String := "The codes tool with no lists given plans the three CLDR requests and names the eleven locales it will validate (textbook_codes_locales)."
+
+def quantumProcessingExamples_showsCloudflareAdapters : String := "The adapters configuration names, for each adapter, the Cloudflare bindings it needs: the declared are the needed when none is missing (textbook_bindings_bound)."
+
 end Prose

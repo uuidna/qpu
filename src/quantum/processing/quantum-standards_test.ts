@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { canonicalText, seal, uuid } from '../uuid/index.ts'
+import { ISO_CLAUSES } from './iso-index.ts'
 import { quantumStandards } from './quantum-vocabulary.ts'
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: each quantum standard is one sealed UUID and the receipt is that list. */
@@ -11,9 +12,9 @@ test('each quantum standard is one sealed UUID and the receipt is that list', ()
   assert.equal(s.via, 'uuid')
   assert.equal(s.dry, true)
   assert.equal(s.entropy, 0)
-  assert.equal(s.total, 77)
-  assert.equal(s.holding, 77)
-  assert.equal(s.unique, 77)
+  assert.equal(s.total, ISO_CLAUSES.length)
+  assert.equal(s.holding, ISO_CLAUSES.length)
+  assert.equal(s.unique, ISO_CLAUSES.length)
   assert.equal(s.sealed, true)
   assert.equal(seal(s.address).valid, true)
   assert.equal(again.address, s.address)
