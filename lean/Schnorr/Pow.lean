@@ -1,1 +1,0 @@
-<full literal Pow.lean — pow, pow_zero, pow_succ, pow_add, pow_mul, pow_e, pow_inv_cancel, pow_inv, g_order, h_order, pow_congr_gen, pow_mod_gen, pow_mod, ~85 lines>
