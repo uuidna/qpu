@@ -115,14 +115,18 @@ script applications do
 def leanTools : List String := [applicationsFile, proseFile, nestedFile, catalogueFile]
 
 /-- `lake run leanfiles`: no Lean file is skipped. Every `.lean` file the repository tracks is this lakefile, a module
-the build compiles, or a tool `lake run verify` runs; any other file holds Lean the kernel never sees. -/
+the build compiles, a tool `lake run verify` runs, or evidence kept under `lean/`, which is named and never removed. -/
 script leanfiles do
   let listed ← IO.Process.output { cmd := "git", args := #["ls-files", "*.lean"] }
   let files := (listed.stdout.splitOn "\n").filter (· != "")
-  let skipped := files.filter fun file =>
+  let unchecked := files.filter fun file =>
     !(file == "lakefile.lean" || file.startsWith "src/quantum/processing/unit/lean/Qpu/" || file == "src/quantum/processing/unit/lean/Qpu.lean" || leanTools.contains file)
+  -- `lean/` is kept as evidence: its files are named here on every run, and nothing is removed for the kernel's sake
+  let evidence := unchecked.filter (·.startsWith "lean/")
+  let skipped := unchecked.filter (!·.startsWith "lean/")
+  for file in evidence do IO.println s!"{file}: kept as evidence, not checked by the kernel"
   for file in skipped do IO.eprintln s!"{file}: no build and no script checks this Lean file"
-  IO.println s!"{files.length} Lean file(s), {skipped.length} skipped"
+  IO.println s!"{files.length} Lean file(s), {evidence.length} kept as evidence and not checked, {skipped.length} skipped"
   return if skipped.isEmpty then 0 else 1
 
 /-- `lake run verify`: everything the kernel and the rendered files must satisfy — the build, the claim manifest,

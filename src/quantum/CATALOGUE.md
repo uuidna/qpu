@@ -4,7 +4,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1759 products, 2 under a declared claim context and 1757 as the author's own statement, with 1459 variants (the examples a theorem names).
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1759 products, 2 under a declared claim context and 1757 as the author's own statement, with 1469 variants (the examples a theorem names).
 
 This catalogue records authorship and the date of each release. It is a publication, not a patent application: publishing a statement discloses it, and what is filed as a patent, and when, is for a patent attorney to decide before it is published.
 
@@ -4726,7 +4726,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_bindings_bound`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy, configure-cloudflare-adapters.
 
 ```lean
 ∀ (needed declared missing : ℕ), declared + missing = needed → missing = 0 → declared = needed
@@ -4734,7 +4734,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_bindings_bound_contrapositive`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy, configure-cloudflare-adapters.
 
 ```lean
 ∀ (needed declared missing : ℕ), ¬declared = needed → ¬(declared + missing = needed ∧ missing = 0)
@@ -4742,7 +4742,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_bindings_bound_converse_refuted`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy, configure-cloudflare-adapters.
 
 ```lean
 ¬∀ (needed declared missing : ℕ), declared = needed → declared + missing = needed ∧ missing = 0
@@ -4750,7 +4750,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_bindings_bound_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy, configure-cloudflare-adapters.
 
 ```lean
 ∀ (needed declared missing : ℕ), declared + missing = needed → missing = 0 → ∀ (σ : ℕ), σ - needed = σ - declared
@@ -5096,7 +5096,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_catalogue_offers`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: jsonld-catalogue.
 
 ```lean
 1 + 3 + 2 + 3 = 9
@@ -5104,7 +5104,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_catalogue_offers_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: jsonld-catalogue.
 
 ```lean
 ∀ (σ : ℕ), σ - 9 = σ - (1 + 3 + 2 + 3)
@@ -5542,7 +5542,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_codes_locales`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: codes-plan.
 
 ```lean
 1 + 10 = 11
@@ -5550,7 +5550,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_codes_locales_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: codes-plan.
 
 ```lean
 ∀ (σ : ℕ), σ - 11 = σ - (1 + 10)
@@ -8752,7 +8752,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_orcid_digits`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: jsonld-block.
 
 ```lean
 4 * 4 + 3 = 19
@@ -8760,7 +8760,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_orcid_digits_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: jsonld-block.
 
 ```lean
 ∀ (σ : ℕ), σ - 19 = σ - (4 * 4 + 3)
