@@ -3,6 +3,7 @@ import test from 'node:test'
 
 import { DEPLOY_TENANTS, FOLDERS, OFFICIAL_PACKAGES, OFFICIAL_PLUGINS, plugins } from './plugin.ts'
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: each quantum folder is one payload plugin. */
 test('each quantum folder is one payload plugin', async () => {
   assert.deepEqual(plugins.map((plugin) => plugin.folder), [...FOLDERS])
   assert.equal(OFFICIAL_PLUGINS.length, 9)

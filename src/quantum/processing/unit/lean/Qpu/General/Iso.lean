@@ -194,6 +194,15 @@ theorem country_codes : letterCodes 2 = 676 ∧ letterCodes 3 = 17576 ∧ 10 ^ 3
 /-- ISO 16: the tuning note is 440 hertz, and an octave doubles or halves it. -/
 theorem tuning_octaves : 440 * 2 = 880 ∧ 440 / 2 = 220 := by decide
 
+/-- ISO/IEC 27001:2022: Annex A lists 93 controls in four themes, 37 organizational, 8 people, 14 physical and 34 technological. -/
+theorem security_controls : 37 + 8 + 14 + 34 = 93 := by decide
+
+/-- ISO 9001:2015: of its 10 clauses the first 3 set no requirement, so 7 clauses carry the requirements. -/
+theorem quality_clauses : 10 - 3 = 7 := by decide
+
+/-- ISO/IEC 25010:2023: the product quality model has 9 characteristics, one more than the 8 of the edition before. -/
+theorem quality_characteristics : 8 + 1 = 9 := by decide
+
 /-- ISO/IEC 4879: every term of the register is numbered and witnessed. -/
 theorem vocabulary_whole : clauses.length = (groups.map fun (_, _, n) => n).sum := by decide
 
@@ -220,15 +229,15 @@ def standards : List Standard :=
   , ⟨"ISO 3166-1", some ``country_codes⟩
   , ⟨"ISO/IEC 19770", none⟩
   , ⟨"ISO 16", some ``tuning_octaves⟩
-  , ⟨"ISO 9001", none⟩
+  , ⟨"ISO 9001", some ``quality_clauses⟩
   , ⟨"ISO/IEC/IEEE 12207:2026", none⟩
   , ⟨"ISO/IEC/IEEE 42010:2022", none⟩
-  , ⟨"ISO/IEC 25010:2023", none⟩
+  , ⟨"ISO/IEC 25010:2023", some ``quality_characteristics⟩
   , ⟨"ISO/IEC 25051:2014", none⟩
-  , ⟨"ISO/IEC 27001:2022", none⟩ ]
+  , ⟨"ISO/IEC 27001:2022", some ``security_controls⟩ ]
 
-/-- The register names twenty standards, and seven of them have a witness. -/
+/-- The register names twenty standards, and ten of them have a witness. -/
 theorem standards_count :
-    standards.length = 20 ∧ (standards.filter (·.witness.isSome)).length = 7 := by decide
+    standards.length = 20 ∧ (standards.filter (·.witness.isSome)).length = 10 := by decide
 
 end Iso

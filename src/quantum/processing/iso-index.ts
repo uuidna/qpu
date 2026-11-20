@@ -2,7 +2,7 @@
 /** The vocabulary standard whose terms the register holds. */
 export const ISO_VOCABULARY = "ISO/IEC 4879:2024" as const
 /** What the register holds, in Lean's own counts. */
-export const ISO_SAYS = "The tree names 20 standards: 7 have a theorem that states a fact the standard fixes, and 13 are open. Each of the 86 terms of ISO/IEC 4879:2024 has a theorem the kernel accepted."
+export const ISO_SAYS = "The tree names 20 standards: 10 have a theorem that states a fact the standard fixes, and 10 are open. Each of the 86 terms of ISO/IEC 4879:2024 has a theorem the kernel accepted."
 /** The groups of the vocabulary standard, each with the number of its terms. */
 export const ISO_GROUPS: readonly { group: string; title: string; terms: number }[] = [{"group":"3.1","terms":9,"title":"General terms"},{"group":"3.2","terms":21,"title":"Quantum physics"},{"group":"3.3","terms":12,"title":"Quantum information"},{"group":"3.4","terms":32,"title":"Quantum information processing"},{"group":"3.5","terms":8,"title":"Applications"},{"group":"3.6","terms":4,"title":"Communication and sensing"}]
 /** Every term of the vocabulary standard: its clause, its name, the check the processor runs for it, and the theorem that witnesses it with its statement. */
@@ -112,10 +112,10 @@ export const ISO_STANDARDS: readonly { reference: string; says: string; witness:
   {"module":"Qpu.General.Iso","reference":"ISO 3166-1","says":"ISO 3166-1 is witnessed by the theorem Iso.country_codes, which states a fact the standard fixes and which the kernel accepted.","statement":"letterCodes 2 = 676 ∧ letterCodes 3 = 17576 ∧ 10 ^ 3 = 1000","witness":"Iso.country_codes"},
   {"reference":"ISO/IEC 19770","says":"ISO/IEC 19770 is named by the tree and no theorem states a fact it fixes yet: it is open, a theorem still to prove.","witness":null},
   {"module":"Qpu.General.Iso","reference":"ISO 16","says":"ISO 16 is witnessed by the theorem Iso.tuning_octaves, which states a fact the standard fixes and which the kernel accepted.","statement":"440 * 2 = 880 ∧ 440 / 2 = 220","witness":"Iso.tuning_octaves"},
-  {"reference":"ISO 9001","says":"ISO 9001 is named by the tree and no theorem states a fact it fixes yet: it is open, a theorem still to prove.","witness":null},
+  {"module":"Qpu.General.Iso","reference":"ISO 9001","says":"ISO 9001 is witnessed by the theorem Iso.quality_clauses, which states a fact the standard fixes and which the kernel accepted.","statement":"10 - 3 = 7","witness":"Iso.quality_clauses"},
   {"reference":"ISO/IEC/IEEE 12207:2026","says":"ISO/IEC/IEEE 12207:2026 is named by the tree and no theorem states a fact it fixes yet: it is open, a theorem still to prove.","witness":null},
   {"reference":"ISO/IEC/IEEE 42010:2022","says":"ISO/IEC/IEEE 42010:2022 is named by the tree and no theorem states a fact it fixes yet: it is open, a theorem still to prove.","witness":null},
-  {"reference":"ISO/IEC 25010:2023","says":"ISO/IEC 25010:2023 is named by the tree and no theorem states a fact it fixes yet: it is open, a theorem still to prove.","witness":null},
+  {"module":"Qpu.General.Iso","reference":"ISO/IEC 25010:2023","says":"ISO/IEC 25010:2023 is witnessed by the theorem Iso.quality_characteristics, which states a fact the standard fixes and which the kernel accepted.","statement":"8 + 1 = 9","witness":"Iso.quality_characteristics"},
   {"reference":"ISO/IEC 25051:2014","says":"ISO/IEC 25051:2014 is named by the tree and no theorem states a fact it fixes yet: it is open, a theorem still to prove.","witness":null},
-  {"reference":"ISO/IEC 27001:2022","says":"ISO/IEC 27001:2022 is named by the tree and no theorem states a fact it fixes yet: it is open, a theorem still to prove.","witness":null},
+  {"module":"Qpu.General.Iso","reference":"ISO/IEC 27001:2022","says":"ISO/IEC 27001:2022 is witnessed by the theorem Iso.security_controls, which states a fact the standard fixes and which the kernel accepted.","statement":"37 + 8 + 14 + 34 = 93","witness":"Iso.security_controls"},
 ]

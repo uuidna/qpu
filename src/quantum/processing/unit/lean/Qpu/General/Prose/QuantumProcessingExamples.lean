@@ -228,7 +228,7 @@ def quantumProcessingExamples_shows221 : String := "The involution of thinking: 
 def quantumProcessingExamples_shows222 : String := "What the penalties taught, in order: one gap raised and cleared by a correction that ran by itself teaches it (a clearing that needed confirmation teaches nothing); its second occurrence is corrected before it is decided, so it is prevented, never raised again — zero recurrences."
 def quantumProcessingExamples_shows223 : String := "A commit that folds two lines into one is allowed by the rules folded and proven: readStaged counts 1 line added against 2 removed outside PROOF_FILES, and it adds no export to prove — the shape of the commit where makeChecks folded the nine toolbox selftests into one."
 def quantumProcessingExamples_shows224 : String := "Joining lines is not folding: one line replaces two, yet it carries more bytes than the two it removes, so the rule folded, counting bytes in readStaged, refuses it while the line count alone would have passed it."
-def quantumProcessingExamples_diff225 : String := "+++ b/site/src/app/(payload)/admin/importMap.js\n+import { A as A_1 } from '@payloadcms/ui'\n+++ b/site/src/payload-types.ts\n+export type A = string\n"
+def quantumProcessingExamples_diff225 : String := "+++ b/src/app/(payload)/admin/importMap.js\n+import { A as A_1 } from '@payloadcms/ui'\n+++ b/src/payload-types.ts\n+export type A = string\n"
 def quantumProcessingExamples_shows226 : String := "What Payload writes itself is generated, never hand-written growth: a build that adds lines to the admin import map and the generated types, staged with no header the client recognised, still adds no byte of code, because readStaged sets aside PAYLOAD_WRITES as it sets aside GENERATED_FILES; the sitemaps lie outside LITERAL_ROOTS and never reach the staged diff."
 def quantumProcessingExamples_message227 : String := "Split the QPU plugin into capability plugins\n\nThe QPU was one hand-composed plugin; the generated module now defines\nqpu-core, qpu-agents and qpu-machine with definePlugin.\n# a comment git strips\n"
 def quantumProcessingExamples_shows228 : String := "A Google CL description passes the commit-msg rule described: the first line is imperative (Split) and 44 characters, the second blank, a body follows; lines git strips as comments are not read."
@@ -517,5 +517,17 @@ def quantumProcessingExamples_shows510 : String := "The same block's text under 
 def quantumProcessingExamples_shows511 : String := "The vocabulary the blockchain theorems cite, checked by its key: the kernel accepts textbook_iso_22739_terms_read (99 terms read in full from Dig.watch, 0 cut, 0 unread; lead iso-22739-terms-unread closed) and lists the examples it proves — so every ISO term a theorem names is one the tree has read."
 def quantumProcessingExamples_shows512 : String := "The transfer law checked by its key: the kernel accepts textbook_blockchain_transfer_once — one transfer conserves the total and a second transfer of the same control is double spending (ISO 22739:2024 3.37) — and lists the examples it proves."
 def quantumProcessingExamples_shows513 : String := "The block's digital signature planned (ISO 22739:2024 3.22): ML-DSA-44 of FIPS 204 over the 32-byte digest, public key 1312 bytes and signature 2420 (Table 2), executed by the host with its key, never here."
+
+def quantumProcessingExamples_showsJsonldBlock : String := "The block as JSON-LD: the author is a Person whose @id is the ORCID, sixteen digits in four groups with three dashes, nineteen characters (textbook_orcid_digits)."
+
+def quantumProcessingExamples_showsJsonldCatalogue : String := "The catalogue as JSON-LD: an OfferCatalog whose offers are the nine the catalogue holds (textbook_catalogue_offers)."
+
+def quantumProcessingExamples_showsCodesPlan : String := "The codes tool with no lists given plans the three CLDR requests and names the eleven locales it will validate (textbook_codes_locales)."
+
+def quantumProcessingExamples_showsCloudflareAdapters : String := "The adapters configuration names, for each adapter, the Cloudflare bindings it needs: the declared are the needed when none is missing (textbook_bindings_bound)."
+
+def quantumProcessingExamples_showsClayRelation14 : String := "The relation at 14 by name: the faces of the lattice are the coil and the parameters of a QAOA circuit of seven layers, two for each layer (textbook_qaoa_params)."
+
+def quantumProcessingExamples_showsShorOddOrder : String := "Order-finding where the order is odd: 4 has the order 3 modulo 21, so this base yields no factor and another base is tried (textbook_refuse_is_refuse)."
 
 end Prose

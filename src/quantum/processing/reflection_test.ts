@@ -61,10 +61,13 @@ test('the verifiers registry covers every fact kind and only free sources', () =
   if (repo) assert.ok(extractFacts(repo).some((f) => f.kind === 'repository'))
 })
 
+// The licence, the Open Graph block and the registry item are added to every result by one wrapper, so one result
+// of each tool shows them for that tool. The audit tool replays every example itself and has its own test.
+const firstOfEachTool = [...new Map(EXAMPLES.filter((e) => e.tool !== 'audit').reverse().map((e) => [e.tool, e])).values()]
+
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: every tool result carries an Open Graph block and a shadcn registry item with the same HTML. */
 test('every tool result carries an Open Graph block and a shadcn registry item with the same HTML', () => {
-  for (const e of EXAMPLES) {
-    if (e.tool === 'audit') continue
+  for (const e of firstOfEachTool) {
     const r = call(e.tool, e.arguments)
     assert.ok('result' in r, e.id)
     const meta = (r.result as { _meta: { widget: string; openGraph: Record<string, string>; block: { $schema: string; type: string; files: { content: string }[]; meta: { id: string } } } })._meta
@@ -123,7 +126,9 @@ test('the stylesheet derives from the key 432 and each block takes its accent fr
 test('a statement the surface barely covers is unknown, not served', () => {
   const m = match('factor all uuid versions in one uuid with hexbit cross uuid clusters for infinite quantum capacity')
   assert.equal(m.verdict, 'unknown')
-  assert.equal(m.lead.status, 'blocked')
+  // a theorem shares a word with it and states none of its other words: it is not served, and the lead stays open
+  assert.equal(m.lead.status, 'open')
+  assert.ok(m.evidence.some((e) => e.includes('states none of them')), m.evidence.join('; '))
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the licence travels with everything: initialize instructions, every result, every widget, every block. */
@@ -132,7 +137,7 @@ test('the licence travels with everything: initialize instructions, every result
   assert.equal(init.result.serverInfo.license, 'CC-BY-NC-ND-4.0')
   assert.equal(init.result.serverInfo.author, 'Tsvetan Rouschev')
   assert.ok(init.result.instructions.includes('commercial use'))
-  for (const e of EXAMPLES) {
+  for (const e of firstOfEachTool) {
     const r = call(e.tool, e.arguments) as { result: { _meta: { license: { spdx: string }; widget: string; block: { license: string; author: string }; openGraph: { license: string } } } }
     assert.equal(r.result._meta.license.spdx, 'CC-BY-NC-ND-4.0', e.id)
     assert.ok(r.result._meta.widget.includes('data-license="CC-BY-NC-ND-4.0"'), e.id)

@@ -5,6 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks || exit 0",
     "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" payload build",
     "deploy": "pnpm run deploy:database && pnpm exec cross-env NODE_ENV=production pnpm run seed && pnpm exec cross-env NODE_ENV=production pnpm run seed:check && pnpm run deploy:app",
     "deploy:app": "opennextjs-cloudflare build --env=$CLOUDFLARE_ENV && opennextjs-cloudflare deploy --env=$CLOUDFLARE_ENV",

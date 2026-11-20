@@ -1,7 +1,7 @@
 // The quantum core. One UUID (ISO/IEC 9834-8): thirty-two nibbles, a handle, a program, a tail, and the two stamp
 // nibbles. Every result is that address. Style, presentation, and stream read it. Pure: equal calls give equal blocks.
 
-import { UUID_SHAPE } from '../processing/config-index.ts'
+import { COIN_QUBIT_SPACE, UUID_SHAPE } from '../processing/config-index.ts'
 import { PROSE, proseFill } from '../processing/prose-index.ts'
 export type BlockTests = {
   passed: boolean
@@ -111,7 +111,19 @@ export type PhysicsDecision = {
 }
 type PhysicsOf = (args: { ftl: boolean; gateway: number; walked: boolean }) => PhysicsDecision
 let physicsOf: PhysicsOf | null = null
-const qubitRegisters = new Map<number, ReturnType<typeof countQubits>>()
+/** A memory of results that never holds more than the coin qubit space: when it is full, the oldest result leaves.
+ *  It remembers pure results only, so a result that has left is computed again and is the same (textbook_memo_identity). */
+export const bounded = <K, V>(space: number = COIN_QUBIT_SPACE) => {
+  const held = new Map<K, V>()
+  return {
+    get: (key: K): V | undefined => held.get(key),
+    has: (key: K): boolean => held.has(key),
+    set: (key: K, value: V): void => { if (!held.has(key) && held.size >= space) held.delete(held.keys().next().value as K); held.set(key, value) },
+    clear: (): void => held.clear(),
+    get size() { return held.size },
+  }
+}
+const qubitRegisters = bounded<number, ReturnType<typeof countQubits>>()
 /** Bind the physics UUID program. One word — not a hardcoded physics bit. Clears the register cache so organised.zero cannot keep a pre-bind ftl claim. */
 export const bindPhysics = (decide: PhysicsOf) => {
   physicsOf = decide
@@ -475,9 +487,9 @@ const quantumRadar = (address: string) => {
     says: holds ? PROSE.quantumUuidIndex_s10 : PROSE.quantumUuidIndex_s11,
   }
 }
-const mintedTrinity = new Map<string, string>()
+const mintedTrinity = bounded<string, string>()
 const trinityUuid = (text: string) => { const hit = mintedTrinity.get(text); if (hit) return hit; const id = uuid(text); mintedTrinity.set(text, id); return id }
-const organisedQubits = new Map<string, ReturnType<typeof layQubits>>()
+const organisedQubits = bounded<string, ReturnType<typeof layQubits>>()
 /** Qubits on one hex symbol. The version nibble is decided, so it holds none. The variant nibble keeps two bits for the RFC prefix, so it holds hexbit − 2. Every other symbol holds the hexbit. */
 export const heldQubits = (at: number, hexbit: number) => at === 12 ? 0 : at === 16 ? hexbit - 2 : hexbit
 export const organiseQubits = (address: string, hexbit = 4) => {
@@ -597,8 +609,8 @@ export const canonicalText = (value: unknown): string =>
 
 /** A docket entry's canonical text (kind, source, body, the ids it links): what the entries hook addresses and every client predicting an address computes. */
 export const entryText = (e: { kind: unknown; from: unknown; body?: unknown; links?: readonly string[] }): string => canonicalText({ kind: e.kind, from: e.from, body: e.body ?? null, ...(e.links?.length ? { links: [...e.links].sort() } : {}) })
-/** f memoised by the content address of its arguments, unbounded; for a pure f only, memo(f)(x) = f(x) (textbook_memo_identity). */
-export const memo = <A extends unknown[], R>(f: (...a: A) => R): ((...a: A) => R) => { const m = new Map<string, R>(); return (...a) => { const k = uuid(canonicalText(a)); if (!m.has(k)) m.set(k, f(...a)); return m.get(k)! } }
+/** f memoised by the content address of its arguments, within the coin qubit space; for a pure f only, memo(f)(x) = f(x) (textbook_memo_identity). */
+export const memo = <A extends unknown[], R>(f: (...a: A) => R): ((...a: A) => R) => { const m = bounded<string, R>(); return (...a) => { const k = uuid(canonicalText(a)); if (!m.has(k)) m.set(k, f(...a)); return m.get(k)! } }
 
 const escape = (t: string): string => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 

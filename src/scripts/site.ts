@@ -5,7 +5,7 @@
 import { PROSE } from '../quantum/processing/prose-index.ts'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { TOOLBOXES } from '../quantum/processing/mcp.ts'
+import { TOOLBOXES, handle } from '../quantum/processing/mcp.ts'
 import { allSeedWaves } from './seedWaves.ts'
 
 type Text = { text?: string; children?: Text[] }
@@ -49,6 +49,8 @@ for (const wave of waves) {
 write(join(out, 'catalogue.md'), ['---', 'title: "Catalogue of claims"', '---', '', readFileSync('src/quantum/CATALOGUE.md', 'utf8')].join('\n'))
 const tools = TOOLBOXES.flatMap((box) => box.tools.map((tool) => ({ name: tool.name, toolbox: box.name, description: tool.description, inputSchema: tool.inputSchema })))
 write(join(out, 'public', 'mcp.json'), JSON.stringify({ live: 'POST /api/mcp', says: PROSE.scriptsSite_says1, tools }, null, 2))
+// the manifest the repository publishes beside the docs: exactly what tools/list answers
+write(join('docs', 'public', 'mcp.json'), JSON.stringify({ tools: (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: unknown } }).result.tools }, null, 2))
 write(join(out, '.vitepress', 'sidebar.json'), JSON.stringify(sidebar))
 write(join(out, 'index.md'), [
   '---', 'title: "Quantum Processing Unit"', PROSE.scriptsSite_s2, '---', '',

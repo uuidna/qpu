@@ -176,8 +176,11 @@ export const stem = (t: string): string => t.replace(/(ing|ed|es|s)$/, '')
  *  words naming it: the keys on its path and the labels beside and above it (says names nothing). */
 const stems = (text: string) => tokens(text.replace(/([a-z])([A-Z])/g, (_, a: string, b: string) => `${a} ${b}`).replace(NEGATION, () => ' ')).filter((t) => /^[a-z]/.test(t) && !BRAND.has(t)).map(stem)
 const values = (v: unknown, at = '', words: readonly string[] = []): { n: string; at: string; words: Set<string> }[] => {
-  const o = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>, n = 'mantissa' in o ? `${o.mantissa}e${o.exponent}` : String(v), labels = Object.entries(o).flatMap(([k, x]) => (k !== 'says' && typeof x === 'string' && !dec(x) ? stems(x) : []))
-  return (typeof v !== 'object' || 'mantissa' in o) ? (dec(n) ? [{ n, at, words: new Set(words) }] : []) : Object.entries(o).flatMap(([k, x]) => values(x, Array.isArray(v) ? `${at}[${k}]` : at ? `${at}.${k}` : k, [...words, ...labels, ...(Array.isArray(v) ? [] : stems(k))]))
+  const o = (v && typeof v === 'object' ? v : {}) as Record<string, unknown>, n = 'mantissa' in o ? `${o.mantissa}e${o.exponent}` : String(v)
+  // a row's own texts label its values (an order of 4, Willow's 105 qubits). At the top of a result they label the
+  // values stated there and not everything nested below: the call's own name is not the name of every number in it
+  const labels = Object.entries(o).flatMap(([k, x]) => (k !== 'says' && typeof x === 'string' && !dec(x) ? stems(x) : []))
+  return (typeof v !== 'object' || 'mantissa' in o) ? (dec(n) ? [{ n, at, words: new Set(words) }] : []) : Object.entries(o).flatMap(([k, x]) => values(x, Array.isArray(v) ? `${at}[${k}]` : at ? `${at}.${k}` : k, [...words, ...(at === '' && x !== null && typeof x === 'object' && !('mantissa' in x) ? [] : labels), ...(Array.isArray(v) ? [] : stems(k))]))
 }
 /** The values a text claims, each with its subject (the words before it in its clause, and its unit), after a verb or anywhere when bare; a
  *  number alone in its clause continues the claim before it (the factors are 3 and 7); an input is no claim. */
@@ -333,7 +336,10 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
   for (const [i, l] of leads.entries()) {
     const lt = leadTok[i]!
     const hits = overlap(q, lt)
-    if (hits > 0) candidates.push({ kind: 'lead', id: l.id, score: overlap(q, lt, w), hits, text: `${l.status}${l.tool ? ` by ${l.tool}` : ''}${l.reason ? `: ${l.reason}` : ''}` })
+    // a lead the statement names in full (every word of the lead's own statement is in it) is the lead it is about,
+    // as a tool named by the statement is its tool: it outranks a longer lead that only shares common words
+    const own = tokens(l.statement), named = own.length > 0 && own.every((x) => q.includes(x)) ? 2 : 0
+    if (hits > 0) candidates.push({ kind: 'lead', id: l.id, score: overlap(q, lt, w) + named, hits: hits + named, text: `${l.status}${l.tool ? ` by ${l.tool}` : ''}${l.reason ? `: ${l.reason}` : ''}` })
   }
   candidates.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id))
   const top = candidates[0]
@@ -426,7 +432,10 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
     const onDoor = (property: string) => door ? !!door.inputSchema.properties?.[property] : !proven
     // a property with no maximum is not a ceiling. On the door that takes it, the number is within the call. Beside a door that does not take it, the claim checker still compares it with the answer.
     const held = exceeded(statement).filter((b) => b.bounded ? !b.exceeded.length || has(inputs, b.text) || onDoor(b.property) : onDoor(b.property) || has(inputs, b.text))
-    for (const b of held) if (!b.exceeded.length || has(inputs, b.text)) put(true, `${b.phrase}: within ${b.exceeded.length ? `the call ${m.call!.name} answered` : b.bounded ? 'every schema bound' : `the call ${m.call?.name ?? 'answered'} answered`}`); else for (const e of b.exceeded) put(false, e)
+    // a size the statement names is within the call only when the call made carries it; when the answer states another
+    // size for the same property (a 1000-bit integer for a 2048-bit claim), the answer contradicts the claim
+    const answeredFor = (b: { property: string; text: string }) => { const stated = m.result !== null && typeof m.result === 'object' ? (m.result as Record<string, unknown>)[b.property] : undefined; return served && (typeof stated === 'number' || typeof stated === 'string') && !has(inputs, b.text) && !agree(b.text, String(stated)) ? String(stated) : null }
+    for (const b of held) if (answeredFor(b) !== null) put(false, proseFill(PROSE.quantumProcessingMatch_answeredFor, b.phrase, m.call?.name ?? 'made', answeredFor(b), b.property, b.text)); else if (!b.exceeded.length || has(inputs, b.text)) put(true, `${b.phrase}: within ${b.exceeded.length ? `the call ${m.call!.name} answered` : b.bounded ? 'every schema bound' : `the call ${m.call?.name ?? 'answered'} answered`}`); else for (const e of b.exceeded) put(false, e)
     for (const r of relations) { try { const e = evaluate(r.replace(/[×·]/g, () => '*').replace(/−/g, () => '-'), {}); if (typeof e.value === 'boolean') put(e.value !== negated, `${r}: recomputed ${e.parts.map((x) => `${x.left} ${x.op} ${x.right}`).join(', ')}`) } catch { /* no arithmetic the evaluator reads */ } }
     // a primality claim is recomputed, never taken from a door that answered about the number (91 is prime: 91 = 7 × 13)
     for (const p of plain.matchAll(/\b(\d+)\s+is\s+(?:an?\s+)?(prime|composite)\b/gi)) { const r = testPrimality(BigInt(p[1]!)); put((r.prime === (p[2]!.toLowerCase() === 'prime')) !== negated, `${p[1]} is ${p[2]}: recomputed, ${p[1]} is ${r.prime ? 'prime' : 'composite'}${r.certain ? '' : ' (probable)'}`) }
@@ -444,7 +453,10 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
     const witnessed = [...((found.length || stated.length) && served && m.result !== undefined ? values(m.result).map((v) => ({ ...v, by: `${m.example ?? m.tool} at ${v.at}` })) : []), ...(proven && theorem ? labelled(`theorem ${theorem.key} : ${theorem.statement}`, theorem.key, own) : []), ...(computed ? labelled(computed.lean, computed.theorem, near, computed.values) : [])]
     for (const c of found) {
       const all = witnessed.map((v) => ({ ...v, full: c.subject.every((x) => v.words.has(x)), named: 'label' in v && v.label.length > 0 && v.label.every((x) => c.subject.includes(x)), agrees: agree(c.n, v.n) })), full = all.filter((v) => v.full)
-      const decisive = full.some((v) => v.named) ? full.filter((v) => v.named || !('label' in v)) : full
+      // when no value's place names the whole subject, the values whose place names part of it decide (a factor is
+      // looked for among the factors), before any agreeing value anywhere in the result is taken as a witness
+      const partial = full.length ? full : all.filter((v) => c.subject.some((x) => v.words.has(x)))
+      const decisive = full.some((v) => v.named) ? full.filter((v) => v.named || !('label' in v)) : partial
       const ok = decisive.length ? decisive.some((v) => v.agrees) : all.some((v) => v.agrees) || null, shown = (decisive.length ? decisive : all).filter((v) => (ok ? v.agrees : ok === false))
       put(ok === null ? null : ok !== negated, `${c.shown} (${c.subject.join(' ')}): ${[...new Set(shown.map((v) => v.by))].map((b) => `${b} states ${shown.filter((v) => v.by === b).map((v) => v.n).join(', ')}`).join('; ') || 'no witness states it'}`)
     }
