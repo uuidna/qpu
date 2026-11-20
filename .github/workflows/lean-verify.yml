@@ -50,5 +50,6 @@ jobs:
 
       - name: The files rendered from Lean agree with Lean
         run: |
+          node src/scripts/textbookIndex.ts --check
           node src/scripts/theoremsIndex.ts --check
           node src/scripts/leanDerived.ts --check

@@ -3,17 +3,16 @@
 // Fused on the payload tool as payload { scripts: … }; never a new tools/list door (connect bill stays the existing catalogue).
 
 type ClayRelation = { name: string; statement: string; families: string[] }
-import { TEXTBOOK_LEAN } from './textbook-theorems.ts'
+import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { QUANTUM_TERMS, quantumVocabulary } from './quantum-vocabulary.ts'
 import { canonicalText, seal, uuid, uuidQubits } from '../uuid/index.ts'
 import { TOOLBOXES } from './mcp.ts'
 import { THEOREMS } from './theorems-index.ts'
 
-/** Qpu/General/Textbook.lean from the textbook theorems table. Formerly scripts/gen-docs.ts (its Lean half). */
+/** Qpu/General/Textbook.lean is written in Lean. This door renders nothing: it names the file and counts what the index read from it. */
 const textbookLean = () => {
-  const path = 'src/quantum/processing/unit/lean/Qpu/General/Textbook.lean', text = TEXTBOOK_LEAN()
-  const theorems = (text.match(/^theorem /gm) ?? []).length
-  return { phase: 'scripts-textbook-lean' as const, path, text, theorems, says: `${theorems} theorem(s) rendered for the kernel from the textbook table` }
+  const path = 'src/quantum/processing/unit/lean/Qpu/General/Textbook.lean', theorems = TEXTBOOK_THEOREMS.length
+  return { phase: 'scripts-textbook-lean' as const, path, theorems, says: `${theorems} textbook theorem(s) are written in Lean at ${path}; pnpm run lean:index renders textbook-index.ts from it` }
 }
 
 /** BLUEPRINT.md from the blueprint's Lean: each module's doc (its frontmatter names the component) and, from the kernel's index, every
@@ -266,7 +265,7 @@ const SCRIPT_INVOKE = {
   payload_scripts_clay: { tool: 'payload', args: '{ scripts: { clay: { lean } } }', via: 'scripts/gen-clay.ts', npm: 'npm run clay:gen' },
   payload_scripts_leads: { tool: 'payload', args: '{ scripts: { leadsIndex } }', via: 'scripts/mcp.ts leads-sync → Payload entries', npm: 'npm run leads' },
   payload_scripts_tables: { tool: 'payload', args: '{ scripts: { tablesIndex } }', via: 'scripts/mcp.ts tables-sync → Payload pages', npm: 'npm run clean' },
-  payload_scripts_textbook_lean: { tool: 'payload', args: '{ scripts: { textbookLean } }', via: 'scripts/gen-docs.ts (Qpu/General/Textbook.lean)', npm: 'next step docs:gen' },
+  payload_scripts_textbook_lean: { tool: 'payload', args: '{ scripts: { textbookLean } }', via: 'Qpu/General/Textbook.lean is written in Lean; src/scripts/textbookIndex.ts reads it', npm: 'next step docs:gen' },
   payload_scripts_skills: { tool: 'payload', args: '{ scripts: { skills } }', via: 'none before: the tree had no skills of its own', npm: 'next step skills:gen' },
   payload_scripts_theorems_index: { tool: 'payload', args: '{ scripts: { theoremsIndex: { output } } }', via: 'scripts/purify.ts + scripts/theorems.lean', npm: 'next step theorems:index' },
   leads: { tool: 'leads', via: 'scripts/mcp.ts leads-run | session.ts | sources.ts | claims.ts', npm: 'next steps' },
