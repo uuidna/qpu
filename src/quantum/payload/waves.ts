@@ -144,9 +144,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
+    # a newer deploy carries everything an older one would write, and the seed and the migration skip what already agrees:
+    # the newer one takes over instead of waiting
     concurrency:
       group: deploy
-      cancel-in-progress: false
+      cancel-in-progress: true
     env:
       CLOUDFLARE_API_TOKEN: \${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: \${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
