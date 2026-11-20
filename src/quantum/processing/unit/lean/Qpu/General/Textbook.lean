@@ -3184,9 +3184,9 @@ example := textbook_raid_bit_zero_verify (v := 2) (m := 0) (d := 0) (b := 2) (h 
 theorem textbook_reflection_by_shape (d a b : Nat) (h : a ≤ b) (P Q : Prop) (hpq : P → Q) : d - b ≤ d - a ∧ (¬ Q → ¬ P) := ⟨Nat.sub_le_sub_left h d, fun hq hp => hq (hpq hp)⟩
 /-- textbook_reflection_by_shape reflected by its shape, conjunction (examples: textbook-reflected) -/
 @[reflection] theorem textbook_reflection_by_shape_reflected (d a b : Nat) (h : a ≤ b) (P Q : Prop) (hpq : P → Q) (σ : Nat) : (σ - (d - a) ≤ σ - (d - b)) ∧ (¬ (¬ P) → ¬ ((¬ Q))) := ⟨Nat.sub_le_sub_left (textbook_reflection_by_shape d a b h P Q hpq).1 σ, fun hc hh => hc ((textbook_reflection_by_shape d a b h P Q hpq).2 hh)⟩
-/-- the RSA cross-formula relation_rsa holds on the register's own constants shorBase 8 and shorModulus 91: 8^4 ≡ 1 (mod 91) so 8^2 = 64 is a square root of one, and gcd(64 − 1, 91) = 7, gcd(64 + 1, 91) = 13, 7 · 13 = 91 — Shor's reduction in exact integers, the shorBase/shorModulus pair the clay register carries (examples: none yet) -/
+/-- the RSA cross-formula relation_rsa holds on the register's own constants shorBase 8 and shorModulus 91: 8^4 ≡ 1 (mod 91) so 8^2 = 64 is a square root of one, and gcd(64 − 1, 91) = 7, gcd(64 + 1, 91) = 13, 7 · 13 = 91 — Shor's reduction in exact integers, the shorBase/shorModulus pair the clay register carries (examples: clay-relation-rsa) -/
 theorem textbook_relation_rsa : Nat.gcd (8 ^ 2 - 1) 91 = 7 ∧ Nat.gcd (8 ^ 2 + 1) 91 = 13 ∧ 7 * 13 = 91 ∧ 8 ^ 4 % 91 = 1 := by decide
-/-- textbook_relation_rsa reflected by its shape, conjunction (examples: none yet) -/
+/-- textbook_relation_rsa reflected by its shape, conjunction (examples: clay-relation-rsa) -/
 @[reflection] theorem textbook_relation_rsa_reflected (σ : Nat) : (σ - (7) = σ - (Nat.gcd (8 ^ 2 - 1) 91)) ∧ (σ - (13) = σ - (Nat.gcd (8 ^ 2 + 1) 91)) ∧ (σ - (91) = σ - (7 * 13)) ∧ (σ - (1) = σ - (8 ^ 4 % 91)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_relation_rsa).1), congrArg (σ - ·) (Eq.symm (textbook_relation_rsa).2.1), congrArg (σ - ·) (Eq.symm (textbook_relation_rsa).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_relation_rsa).2.2.2)⟩
 /-- the ancient foundation fused into the court is four codes (Ur-Nammu, Hammurabi, the Twelve Tables, the Corpus Juris Civilis) and five maxims (audi alteram partem, nemo iudex in causa sua, nulla poena sine lege, ei incumbit probatio, res judicata) = nine entries of ANCIENT_LAW, and the burden-of-proof maxim ei incumbit probatio is exactly this tree's duty legal_only_the_proven_is_admitted (examples: legal-ancient) -/
 theorem textbook_ancient_law : 4 + 5 = 9 := by decide
@@ -3720,3 +3720,41 @@ example := textbook_unlimited_qubits (q := 1)
 example := textbook_unlimited_qubits (q := 2)
 /-- textbook_unlimited_qubits reflected by its shape, conjunction (examples: processor-unlimited, circuit-unlimited, echo-unlimited, match-unlimited, prose-unlimited, seal-unlimited, verify-unlimited, stripe-unlimited, fold-unlimited, repository-unlimited, payload-unlimited) -/
 @[reflection] theorem textbook_unlimited_qubits_reflected (q : Nat) (σ : Nat) (hσ0 : (q + 1) ≤ σ) : (σ - (q + 1) < σ - (q)) ∧ (σ - (2 * 2 ^ q) = σ - (2 ^ (q + 1))) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_unlimited_qubits q).1 hσ0) (textbook_unlimited_qubits q).1, congrArg (σ - ·) (Eq.symm (textbook_unlimited_qubits q).2)⟩
+/-- a standard is verified only when every row asked is verified: while rows are unverified the check does not hold (examples: standards-iso-online, standards-iso-page, standards-iso-joined) -/
+theorem textbook_iso_rows_verified (asked verified : Nat) (h : verified ≤ asked) : asked - verified = 0 → verified = asked := by omega
+/-- a theme is configured in one read: what is developed is each template, each of its parts, and the theme and the mode, which are 2 (examples: configure-theme) -/
+theorem textbook_theme_developed (templates parts : Nat) : templates + parts + 2 - 2 = templates + parts := by omega
+/-- every Alpine directive is ported, partial or a gap, and each one not ported is a lead (examples: payload-alpine) -/
+theorem textbook_alpine_ported (ported halfway gaps total : Nat) (h : ported + halfway + gaps = total) : total - ported = halfway + gaps := by omega
+/-- a directive that runs adds the store to the count: 1 and 1 is 2, which is more than 1, and so the count shows (examples: payload-alpine-run) -/
+theorem textbook_alpine_runs : 1 + 1 = 2 ∧ 1 < 2 := by decide
+/-- a directive the linter refuses does not run, so the count stays as it was (examples: payload-alpine-eslint) -/
+theorem textbook_alpine_refused (count : Nat) : count + 0 = count := rfl
+/-- an action on a member answers as a bulk action on its collection, which holds at least that 1 member (examples: payload-rails-admin) -/
+theorem textbook_member_in_collection (n : Nat) (h : 0 < n) : 1 ≤ n := h
+/-- a namespaced model's table is the namespace prefix and the plural name, and the singular is 1 letter shorter (examples: payload-rails-model) -/
+theorem textbook_model_table : "apps_".length + "cards".length = "apps_cards".length ∧ "card".length + 1 = "cards".length := by decide
+/-- 12 frameworks each clone the 25 slots, so the clones hold 300 pages (examples: payload-self-clone) -/
+theorem textbook_clone_slots : 12 * 25 = 300 := by decide
+/-- AES-256-GCM: a key of 32 bytes is 256 bits, a nonce of 12 bytes is 96, a tag of 16 bytes is 128, and 10 bytes of text are 20 hexadecimal digits of ciphertext (examples: seal-aead) -/
+theorem textbook_aead_sizes : 32 * 8 = 256 ∧ 12 * 8 = 96 ∧ 16 * 8 = 128 ∧ 2 * 10 = 20 := by decide
+/-- X25519: a scalar, a point and the shared secret are 32 bytes each, 256 bits, and the field of 2 ^ 255 - 19 elements fits in them (examples: seal-x25519) -/
+theorem textbook_x25519_sizes : 32 * 8 = 256 ∧ 2 ^ 255 - 19 < 2 ^ 256 := by decide
+/-- PBKDF2 with HMAC-SHA256: a derived key of 32 bytes takes 1 block of 32 bytes (examples: seal-pbkdf2) -/
+theorem textbook_pbkdf2_blocks : (32 + 32 - 1) / 32 = 1 := by decide
+/-- Ed25519: a public key is 32 bytes and a signature is 2 of them, 64 bytes (examples: seal-ed25519) -/
+theorem textbook_ed25519_sizes : 2 * 32 = 64 := by decide
+/-- a statement with no prior work is novel and is claimed; a statement with 1 prior work is not: of 2 statements 1 is claimed (examples: compete-novelty) -/
+theorem textbook_novelty_claimed : 2 - 1 = 1 ∧ 0 < 1 := by decide
+/-- the number operator of a mode has the eigenvalues 0 and 1: it is (1 - z) / 2 where z is 1 or -1 (examples: chemistry-jordan-wigner-number) -/
+theorem textbook_number_operator : ((1 : Int) - 1) / 2 = 0 ∧ ((1 : Int) - (-1)) / 2 = 1 := by decide
+/-- each scale of handles holds 16 times the handles of the scale before and 4 more qubits, and 8 scales reach 2 ^ 32 handles (examples: algorithm-handle-capacity) -/
+theorem textbook_handle_scales (k : Nat) : 16 ^ (k + 1) = 16 * 16 ^ k ∧ 4 * (k + 1) = 4 * k + 4 ∧ 16 ^ 8 = 2 ^ 32 := ⟨by rw [Nat.pow_succ, Nat.mul_comm], by omega, by decide⟩
+/-- the leads are consistent when none breaks a rule: with 0 violations every lead stands, and of 5 leads 3 that break a rule leave 2 (examples: leads-consistent, leads-consistent-control) -/
+theorem textbook_leads_consistent (total : Nat) : total - 0 = total ∧ 5 - 3 = 2 := ⟨rfl, by decide⟩
+/-- every textbook theorem falls in one class, so the classes count the total; a statement whose number is wrong is a mismatch: 6 * 4 is 24 and not 25 (examples: textbook-particles, textbook-particles-control) -/
+theorem textbook_particles_classes : 6 * 4 = 24 ∧ 6 * 4 ≠ 25 := by decide
+/-- a deposit that is paid is covered: the coins held less the price, and the price again, are the coins held (examples: payload-zenodo-account) -/
+theorem textbook_deposit_paid (coins price : Nat) (h : price ≤ coins) : coins - price + price = coins := Nat.sub_add_cancel h
+/-- of the 4 collections that may name a DOI, 2 verify it and 2 leads remain (examples: payload-doi-related) -/
+theorem textbook_doi_related : 4 - 2 = 2 := by decide

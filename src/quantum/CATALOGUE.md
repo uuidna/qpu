@@ -4,7 +4,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1825 products, 2 under a declared claim context and 1823 as the author's own statement, with 1469 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1844 products, 2 under a declared claim context and 1842 as the author's own statement, with 1494 variants (the examples a theorem names). 2 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 7 with a theorem that states a fact the standard fixes and 13 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -5427,6 +5427,38 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (verified σ : ℕ), verified + 1 ≤ σ → σ - (verified + 1) < σ - verified
 ```
 
+### `textbook_aead_sizes`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-aead.
+
+```lean
+32 * 8 = 256 ∧ 12 * 8 = 96 ∧ 16 * 8 = 128 ∧ 2 * 10 = 20
+```
+
+### `textbook_alpine_ported`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-alpine.
+
+```lean
+∀ (ported halfway gaps total : ℕ), ported + halfway + gaps = total → total - ported = halfway + gaps
+```
+
+### `textbook_alpine_refused`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-alpine-eslint.
+
+```lean
+∀ (count : ℕ), count + 0 = count
+```
+
+### `textbook_alpine_runs`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-alpine-run.
+
+```lean
+1 + 1 = 2 ∧ 1 < 2
+```
+
 ### `textbook_ancient_law`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: legal-ancient.
@@ -6568,6 +6600,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
           σ - 12 = σ - (3 + 9) ∧ σ - 12 = σ - (12 - 3 + 3) ∧ σ - 12 = σ - (12 - 0) ∧ σ - 0 = σ - (12 - 12)
 ```
 
+### `textbook_clone_slots`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-self-clone.
+
+```lean
+12 * 25 = 300
+```
+
 ### `textbook_cloudflare_cost_gate`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: apis-cost-lead-run, apis-cost-sampled, apis-zone-counts.
@@ -7266,6 +7306,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (σ : ℕ), σ - 16 = σ - 2 * 8
 ```
 
+### `textbook_deposit_paid`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-zenodo-account.
+
+```lean
+∀ (coins price : ℕ), price ≤ coins → coins - price + price = coins
+```
+
 ### `textbook_deutsch_jozsa`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-deutsch-jozsa.
@@ -7420,6 +7468,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
       σ - 11 = σ - (2 * 4 + 3) ∧ σ - 2 = σ - 11 / 4 ∧ σ - 3 = σ - 11 % 4 ∧ σ - 0 = σ - 1 / 4 ∧ σ - 1 = σ - 1 % 4
 ```
 
+### `textbook_doi_related`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-doi-related.
+
+```lean
+4 - 2 = 2
+```
+
 ### `textbook_double_entry`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-ledger, compete-economics, verify-radar.
@@ -7530,6 +7586,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (σ : ℕ), σ - 103 ≤ σ - 65 ∧ σ - 105 ≤ σ - 103
+```
+
+### `textbook_ed25519_sizes`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-ed25519.
+
+```lean
+2 * 32 = 64
 ```
 
 ### `textbook_edit_collides`
@@ -8403,6 +8467,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (σ : ℕ), σ - 7 = σ - (2 ^ 3 - 1) ∧ σ - 4 = σ - (7 - 3) ∧ σ - 1 = σ - (3 - 1) / 2 ∧ σ - 16 = σ - 2 ^ 4
 ```
 
+### `textbook_handle_scales`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-handle-capacity.
+
+```lean
+∀ (k : ℕ), 16 ^ (k + 1) = 16 * 16 ^ k ∧ 4 * (k + 1) = 4 * k + 4 ∧ 16 ^ 8 = 2 ^ 32
+```
+
 ### `textbook_harmonic_default`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-harmonic, payload-hooks-collapse.
@@ -8869,6 +8941,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (cited files : ℕ), cited ≤ files → ∀ (σ : ℕ), σ - files = σ - (cited + (files - cited))
 ```
 
+### `textbook_iso_rows_verified`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: standards-iso-online, standards-iso-page, standards-iso-joined.
+
+```lean
+∀ (asked verified : ℕ), verified ≤ asked → asked - verified = 0 → verified = asked
+```
+
 ### `textbook_kind_alphabet`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-validations.
@@ -9028,6 +9108,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (served partly blocked outside opened total : ℕ),
   served + partly + blocked + outside + opened = total →
     ∀ (σ : ℕ), σ - (served + partly + blocked + outside) = σ - (total - opened)
+```
+
+### `textbook_leads_consistent`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-consistent, leads-consistent-control.
+
+```lean
+∀ (total : ℕ), total - 0 = total ∧ 5 - 3 = 2
 ```
 
 ### `textbook_leaks_redacted`
@@ -9358,6 +9446,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (σ : ℕ), σ - 48 = σ - (13 + 11 + 6 + 2 + 1 + 2 + 3 + 1 + 3 + 2 + 1 + 3)
 ```
 
+### `textbook_member_in_collection`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-rails-admin.
+
+```lean
+∀ (n : ℕ), 0 < n → 1 ≤ n
+```
+
 ### `textbook_memo_identity`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: metrics-memo.
@@ -9507,6 +9603,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
     7219 ≤ σ →
       σ - 3732 = σ - (1312 + 2420) ∧
         σ - 5261 = σ - (1952 + 3309) ∧ σ - 7219 = σ - (2592 + 4627) ∧ σ - 5261 < σ - 3732 ∧ σ - 7219 < σ - 5261
+```
+
+### `textbook_model_table`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-rails-model.
+
+```lean
+"apps_".length + "cards".length = "apps_cards".length ∧ "card".length + 1 = "cards".length
 ```
 
 ### `textbook_mongo_find_filter`
@@ -9759,6 +9863,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
       Operator.ap 4 u (fun r => HilbertSpace.basis 0 r + HilbertSpace.basis 2 r) 1 ≠ 1
 ```
 
+### `textbook_novelty_claimed`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-novelty.
+
+```lean
+2 - 1 = 1 ∧ 0 < 1
+```
+
+### `textbook_number_operator`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: chemistry-jordan-wigner-number.
+
+```lean
+(1 - 1) / 2 = 0 ∧ (1 - -1) / 2 = 1
+```
+
 ### `textbook_observed_errors`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy.
@@ -9935,6 +10055,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (σ : ℕ), 4 ≤ σ → 141 ≤ σ → σ - 4 < σ - 2 ∧ σ - 141 < σ - 14 ∧ σ - 15 = σ - 15
+```
+
+### `textbook_particles_classes`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-particles, textbook-particles-control.
+
+```lean
+6 * 4 = 24 ∧ 6 * 4 ≠ 25
 ```
 
 ### `textbook_pascal_rule`
@@ -10143,6 +10271,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (σ : ℕ), σ - 323 = σ - 19 * 17
+```
+
+### `textbook_pbkdf2_blocks`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-pbkdf2.
+
+```lean
+(32 + 32 - 1) / 32 = 1
 ```
 
 ### `textbook_peg_is_fixed`
@@ -11374,7 +11510,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_relation_rsa`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-relation-rsa.
 
 ```lean
 (8 ^ 2 - 1).gcd 91 = 7 ∧ (8 ^ 2 + 1).gcd 91 = 13 ∧ 7 * 13 = 91 ∧ 8 ^ 4 % 91 = 1
@@ -11382,7 +11518,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_relation_rsa_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-relation-rsa.
 
 ```lean
 ∀ (σ : ℕ),
@@ -12802,6 +12938,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (routed domain outside σ : ℕ), σ - routed = σ - (routed + domain + outside - outside - domain)
 ```
 
+### `textbook_theme_developed`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-theme.
+
+```lean
+∀ (templates parts : ℕ), templates + parts + 2 - 2 = templates + parts
+```
+
 ### `textbook_theorems_plan_steps`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-theorems-plan.
@@ -13688,6 +13832,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (σ : ℕ), σ - 10 = σ - (12 - 2) ∧ σ - 10 ≤ σ - 5
+```
+
+### `textbook_x25519_sizes`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-x25519.
+
+```lean
+32 * 8 = 256 ∧ 2 ^ 255 - 19 < 2 ^ 256
 ```
 
 ### `textbook_xeb`

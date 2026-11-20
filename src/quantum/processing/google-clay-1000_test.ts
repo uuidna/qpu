@@ -8,6 +8,7 @@ import { call } from './mcp.ts'
 import { seal } from '../uuid/index.ts'
 import { GOOGLE_CHALLENGE_IDS } from './toolboxes/google.ts'
 import { crypto1000Bit } from './crypto/index.ts'
+import { CLAY_RELATIONS } from './clay-statements.ts'
 
 const content = (tool: string, args: Record<string, unknown> = {}): Record<string, any> => {
   const reply = call(tool, args) as { result?: { structuredContent?: Record<string, any> }; error?: { message: string } }
@@ -32,7 +33,7 @@ const CLAY_ALGORITHMS = ['Shor', 'Qaoa', 'Qft', 'Grover'] as const
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: Google Quantum AI challenges hold through the 1000-bit Clay algorithms. */
 test('Google Quantum AI challenges hold through the 1000-bit Clay algorithms', () => {
   const clay = content('clay')
-  assert.equal(clay.total, 55)
+  assert.equal(clay.total, CLAY_RELATIONS.length)
   assert.equal(clay.holding, clay.total)
   const algorithms = (clay.relations as { name: string; holds: boolean; families: string[]; sides: { value: number }[]; statement: string }[])
     .filter((r) => r.families.some((f) => (CLAY_ALGORITHMS as readonly string[]).includes(f)))
