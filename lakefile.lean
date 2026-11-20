@@ -22,6 +22,10 @@ lean_exe claims where
   root := `Qpu.Claims.Extract
   supportInterpreter := true
 
+/-- `lake exe meaning <number> …`: the family formulas that reach each number, by `Thousand.meaning`. -/
+lean_exe meaning where
+  root := `Qpu.General.ThousandMain
+
 /-! ## Scripts
 
 Lake is the one entry point. Every step that reads Lean or renders from it is a script here, so a workflow, a
@@ -78,13 +82,18 @@ def renderByLean (file : String) (built index : System.FilePath) (check : Bool) 
 /-- The Lean file that writes the catalogue of claims. -/
 def catalogueFile : String := "src/quantum/processing/unit/lean/tools/Catalogue.lean"
 
-/-- Lean writes the prose index, the nested catalogue and the catalogue of claims. -/
+/-- The Lean file that writes the thousand-bit table. -/
+def thousandFile : String := "src/quantum/processing/unit/lean/tools/Thousand.lean"
+
+/-- Lean writes the prose index, the nested catalogue, the catalogue of claims and the thousand-bit table. -/
 def renderProse (check : Bool) : IO UInt32 := do
   let said ← renderByLean proseFile proseBuilt proseIndex check
   if said != 0 then return said
   let nested ← renderByLean nestedFile nestedBuilt nestedIndex check
   if nested != 0 then return nested
-  renderByLean catalogueFile (".lake" / "build" / "CATALOGUE.md") ("src" / "quantum" / "CATALOGUE.md") check
+  let claimed ← renderByLean catalogueFile (".lake" / "build" / "CATALOGUE.md") ("src" / "quantum" / "CATALOGUE.md") check
+  if claimed != 0 then return claimed
+  renderByLean thousandFile (".lake" / "build" / "thousand-index.ts") ("src" / "quantum" / "processing" / "thousand-index.ts") check
 
 /-- `lake run index`: build, then render every file that follows Lean (prose index, textbook index, theorem index,
 blueprint, Clay statements). The prose index comes first: every other renderer reads its sentences from it. -/
@@ -112,7 +121,7 @@ script applications do
   steps [("lake", #["build"]), ("lake", #["env", "lean", applicationsFile])]
 
 /-- The Lean files that write rendered output; `lake run verify` runs each of them. -/
-def leanTools : List String := [applicationsFile, proseFile, nestedFile, catalogueFile]
+def leanTools : List String := [applicationsFile, proseFile, nestedFile, catalogueFile, thousandFile]
 
 /-- `lake run leanfiles`: no Lean file is skipped. Every `.lean` file the repository tracks is this lakefile, a module
 the build compiles, a tool `lake run verify` runs, or evidence kept under `lean/`, which is named and never removed. -/

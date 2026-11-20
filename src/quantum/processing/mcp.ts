@@ -11,6 +11,7 @@ import { TABLES } from './tables-index.ts'
 import { listDeclarations, removeDead, auditPrograms, scanLexical, runAudit, getEntropy, uncap, diffMembers, auditSecurity, listRemedies, repair, getAdvantage, getAddressedByTheorem, getBill, FALLBACKS, FALLBACK_ADAPTERS, handleOrCorrect, linkAxioms, listLeaks, sealJson, sealTokenLeaks } from './audit.ts'
 import { TEXTBOOK_THEOREMS, getReflections, searchTextbookPrograms } from './textbook-theorems.ts'
 import { NESTED as NESTED_CATALOGUE, NESTED_COUNTS } from './nested-index.ts'
+import { THOUSAND, THOUSAND_SHARED } from './thousand-index.ts'
 import { updateTheoremSources } from './textbook-measured.ts'
 import { builders, accessAudit, auditedSave, build, crossVerifiedFormula, websiteGate, developFindings, developViaHooks, serveViaHooks } from './toolboxes/payload.ts'
 import { ISO_QUANTUM_AI, MCP_API_KEY, isOnlineVerify } from '../../plugins/websiteClient.ts'
@@ -1911,8 +1912,9 @@ const OWN: Tool[] = [
   tool({
     name: 'clay',
     description: PROSE.quantumProcessingMcp_description288,
-    inputSchema: { type: 'object', properties: { name: { type: 'string', description: PROSE.quantumProcessingMcp_description289 }, lean: { type: 'boolean', description: PROSE.quantumProcessingMcp_description290 }, technique: { type: 'string', enum: ['reflection'], description: PROSE.quantumProcessingMcp_description291 }, unit: { type: 'array', items: { type: 'object' }, description: PROSE.quantumProcessingMcp_description292 }, catalog: { type: 'boolean', description: PROSE.quantumProcessingMcp_description293 }, combinations: { type: 'boolean', description: PROSE.quantumProcessingMcp_description294 }, chess: { type: 'boolean', description: PROSE.quantumProcessingMcp_description295 }, nist: { type: 'object', description: PROSE.quantumProcessingMcp_description296 }, cern: { type: 'object', description: PROSE.quantumProcessingMcp_description297 }, solve: { type: 'boolean', description: PROSE.quantumProcessingMcp_description298 }, drift: { type: 'boolean', description: PROSE.quantumProcessingMcp_description299 }, readme: { description: PROSE.quantumProcessingMcp_description300 }, pravets: { type: 'boolean', description: PROSE.quantumProcessingMcp_description301 } } },
+    inputSchema: { type: 'object', properties: { thousand: { description: PROSE.quantumProcessingMcp_thousand1 }, name: { type: 'string', description: PROSE.quantumProcessingMcp_description289 }, lean: { type: 'boolean', description: PROSE.quantumProcessingMcp_description290 }, technique: { type: 'string', enum: ['reflection'], description: PROSE.quantumProcessingMcp_description291 }, unit: { type: 'array', items: { type: 'object' }, description: PROSE.quantumProcessingMcp_description292 }, catalog: { type: 'boolean', description: PROSE.quantumProcessingMcp_description293 }, combinations: { type: 'boolean', description: PROSE.quantumProcessingMcp_description294 }, chess: { type: 'boolean', description: PROSE.quantumProcessingMcp_description295 }, nist: { type: 'object', description: PROSE.quantumProcessingMcp_description296 }, cern: { type: 'object', description: PROSE.quantumProcessingMcp_description297 }, solve: { type: 'boolean', description: PROSE.quantumProcessingMcp_description298 }, drift: { type: 'boolean', description: PROSE.quantumProcessingMcp_description299 }, readme: { description: PROSE.quantumProcessingMcp_description300 }, pravets: { type: 'boolean', description: PROSE.quantumProcessingMcp_description301 } } },
     run: (args) => {
+      if (args.thousand === true || typeof args.thousand === 'string') return thousandTable(args.thousand) as never
       if (args.drift === true) return driftPrograms() as never
       const base = recomputeClay()
       const all = { ...base, relations: base.relations.map((r) => { const theorems = clayCaseTheorems(r); const variants = theorems.map((t) => ({ product: t.theorem, variant: t.case })); return { ...r, case: variants[0]?.variant ?? r.name, product: variants[0]?.product ?? null, variant: variants[0]?.variant ?? r.name, variants, theorems } }) }
@@ -2059,6 +2061,19 @@ const apis = defineTool('tree', {
   widget: apisWidget as never,
 })
 const metrics = defineTool('tree', { name: 'metrics', description: PROSE.quantumProcessingMcp_description337, inputSchema: { type: 'object', properties: { artefacts: { type: 'object', description: PROSE.quantumProcessingMcp_description338 } } }, run: (args) => treeMetrics((args.artefacts ?? {}) as RunArtefacts), widget: flowWidget })
+
+/** The thousand-bit table Lean writes (Qpu.General.Thousand): each family formula with the number of its examples below
+ *  2 ^ 1000, its first and last examples and the last one's reflection, and the numbers more than one formula reaches. Pure. */
+const thousandTable = (asked: true | string) => {
+  const rows = asked === true ? THOUSAND : THOUSAND.filter((row) => row.family === asked)
+  if (!rows.length) return { phase: 'thousand' as const, found: false, asked, families: [...new Set(THOUSAND.map((row) => row.family))], says: PROSE.quantumProcessingMcp_thousand3 }
+  const names = new Set(rows.map((row) => row.name))
+  const shared = THOUSAND_SHARED.filter((entry) => entry.meaning.some((m) => names.has(m.name)))
+  return {
+    phase: 'thousand' as const, found: true, bound: '2 ^ 1000', formulas: rows, shared, families: [...new Set(rows.map((row) => row.family))],
+    says: proseFill(PROSE.quantumProcessingMcp_thousand2, rows.length, new Set(rows.map((row) => row.family)).size, shared.length),
+  }
+}
 
 /** A mix of two textbooks: every product of one with every product of the other. A product's variants are its examples,
  *  and a product with none is its own one variation. Each side keeps its ISO context (the clause) and its scientific
