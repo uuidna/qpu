@@ -23,5 +23,8 @@ jobs:
           path: ~/.elan/toolchains
           key: elan-${{ hashFiles('lean-toolchain') }}
 
-      - name: lake build (kernel-checks Qpu.Verify and all imports)
-        run: lake build
+      - name: Build Lean with warnings as errors
+        run: lake build --werror
+
+      - name: Run all Lean linters
+        run: lake lint --linters=linter.all
