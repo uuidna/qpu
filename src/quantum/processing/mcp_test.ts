@@ -402,6 +402,7 @@ test('harmonic options by default: every enum of a schema a superposition of its
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: a quantum tool stays unlimited. A superposition does not set its default, and an omitted size is the register. An example passes the size it proves. */
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a quantum tool stays unlimited: a superposition does not set its default, and an omitted size is the register. */
 test('a quantum tool stays unlimited: a superposition does not set its default, and an omitted size is the register', () => {
   const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { toolbox: 'google', full: true } }) as { result: { tools: { name: string; inputSchema: { properties: Record<string, { enum?: unknown[]; default?: unknown }>; 'x-harmonic'?: { unlimited?: boolean; from: string } } }[] } }).result.tools
   const algorithm = tools.find((t) => t.name === 'algorithm')!

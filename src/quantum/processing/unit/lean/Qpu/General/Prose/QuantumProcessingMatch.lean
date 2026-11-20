@@ -34,4 +34,6 @@ def quantumProcessingMatch_monetisation27 : String := "a tenant app of its own a
 def quantumProcessingMatch_says28 : String := "the lead \"⟦0⟧\" implemented as the tenant app ⟦1⟧.uuidna.com"
 def quantumProcessingMatch_says29 : String := "⟦0⟧: ⟦1⟧ solved news item(s) written as draft blog posts (the solution the body), ⟦2⟧ unknown ones split into tenant apps at <slug>.uuidna.com — each monetised on its own catalogue; the posts and the apps make the items, run daily as the qpu-news-solve Payload job, never auto-deployed"
 
+def quantumProcessingMatch_answeredFor : String := "⟦1⟧: the call ⟦2⟧ answered for ⟦3⟧ ⟦4⟧, not ⟦5⟧"
+
 end Prose

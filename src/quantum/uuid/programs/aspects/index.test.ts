@@ -5,6 +5,7 @@ import { DEPLOY_STAGES } from '../../../payload/deploy.ts'
 import { configKinds } from '../../../processing/payload-vocabulary.ts'
 import { aspectPrograms } from './index.ts'
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every Payload configuration and every deploy stage is one program, verified by its handle. */
 test('every Payload configuration and every deploy stage is one program, verified by its handle', () => {
   const programs = aspectPrograms()
   assert.equal(programs.holds, true)

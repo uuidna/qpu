@@ -44,10 +44,18 @@ test('a statement about an out-of-scope lead is unknown, the lead its missing wi
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: a statement nothing serves becomes a new lead to develop. */
 test('a statement nothing serves becomes a new lead to develop', () => {
+  // nothing in the tree shares a word with this statement: it is unknown, and the lead it becomes is blocked on its reason
+  const none = match('zyxwv plugh xyzzy')
+  assert.equal(none.verdict, 'unknown')
+  assert.equal(none.lead.status, 'blocked')
+  assert.ok(none.lead.id.length > 0)
+  // an example shares some of this statement's words and covers too little of it to serve it: the match is not
+  // admitted, and the lead stays open for research
   const m = match('teleport a cat to the moon')
   assert.equal(m.verdict, 'unknown')
-  assert.equal(m.lead.status, 'blocked')
+  assert.equal(m.lead.status, 'open')
   assert.ok(m.lead.id.length > 0)
+  assert.ok(m.evidence.some((e) => e.includes('not admitted as served')), m.evidence.join('; '))
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the match tool is served over MCP and agrees with the direct call. */

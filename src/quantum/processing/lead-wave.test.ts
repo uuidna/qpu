@@ -7,6 +7,7 @@ import { driftWaves, followWave, harmonicCover } from './lead-wave.ts'
 import { QUANTUM_TERMS } from './quantum-vocabulary.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a follow computes the ISO wave at 432 Hz and signals the 8 coins. */
 test('a follow computes the ISO wave at 432 Hz and signals the 8 coins', () => {
   const wave = followWave([{ id: 'iso-16', statement: 'ISO 16 states 440 Hz' }])
   assert.equal(wave.holds, true)
@@ -56,6 +57,7 @@ test('a follow computes the ISO wave at 432 Hz and signals the 8 coins', () => {
   assert.equal(wave.signal.payload[0]?.id, 'iso-16')
 })
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: following a runnable lead and a wave request carry that signal. */
 test('following a runnable lead and a wave request carry that signal', () => {
   const followed = call('leads', { runnable: { leads: [{ id: 'iso-16', source: 'iso', statement: 'ISO 16 states 440 Hz', status: 'open', run: { tool: 'payload', arguments: {} } }] } }).result?.structuredContent
   assert.equal(followed?.runs?.length, 1)
@@ -88,6 +90,7 @@ test('following a runnable lead and a wave request carry that signal', () => {
   assert.equal(asked?.follow?.signal?.mcp?.api, 'https://qpu.uuidna.com/api/mcp')
 })
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the ISO patch covers every drift with a harmonic and leaves the note on afterRead. */
 test('the ISO patch covers every drift with a harmonic and leaves the note on afterRead', () => {
   const cover = harmonicCover()
   assert.equal(cover.holds, true)
@@ -139,6 +142,7 @@ test('the ISO patch covers every drift with a harmonic and leaves the note on af
   assert.equal(patch?.afterRead?.programs?.rows?.[0]?.file, true)
 })
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a drift wave runs in every Clay family and names the next family. */
 test('a drift wave runs in every Clay family and names the next family', () => {
   const waves = driftWaves()
   assert.equal(waves.holds, true)

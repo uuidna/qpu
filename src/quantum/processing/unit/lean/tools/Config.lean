@@ -11,6 +11,12 @@ The index is written to `.lake/build/config-index.ts`; `lake run index` installs
 
 open Lean Meta Config
 
+/-- The text of one git hook, written by Lean: the hook is only the client of the workflow of its name. -/
+def hookText (hook : String) : String :=
+  "#!/bin/sh\n"
+  ++ s!"# {hook} is the client of its workflow: the machine runner asks repository \{ workflow: '{hook}' }, walks its steps, hands back the facts and obeys the decision.\n"
+  ++ s!"exec node src/quantum/processing/machine-run.ts hook {hook} \"$@\"\n"
+
 /-- Where the rendered index is written. -/
 def configOut : System.FilePath := ".lake" / "build" / "config-index.ts"
 
@@ -40,11 +46,22 @@ def configOut : System.FilePath := ".lake" / "build" / "config-index.ts"
     , s!"export const LEAN_RESOURCE = {(Json.str leanResource).compress}"
     , "/** The ways an operation is inserted into a circuit, and the one used when none is named. */"
     , s!"export const INSERT_SCHEMA = \{ enum: {strings insertStrategies}, default: {(Json.str insertDefault).compress} }"
+    , "/** The coin qubit space, from Config.coinQubitSpace: the most remembered results a computation keeps at once. */"
+    , s!"export const COIN_QUBIT_SPACE = {coinQubitSpace}"
+    , "/** The workflows the repository tool serves, from Config.workflows. */"
+    , s!"export const WORKFLOWS = {strings workflows} as const"
+    , "/** The workflows git starts from the hook of the same name, from Config.gitHooks. */"
+    , s!"export const GIT_HOOKS = {strings gitHooks} as const"
     , "/** The groups of a UUID as it is written, from Advantage.uuidGroups: the hexadecimal digits between its dashes. */"
     , s!"export const UUID_GROUPS = {(Json.arr (Advantage.uuidGroups.map fun n => Json.num n).toArray).compress} as const"
     , "/** The shape of a UUID as a pattern, built from its groups; every check of a UUID in the code reads this one. */"
     , s!"export const UUID_SHAPE = {(Json.str ("-".intercalate (Advantage.uuidGroups.map fun n => "[0-9a-f]" ++ "{" ++ toString n ++ "}"))).compress}"
     , "" ]
   IO.FS.createDirAll (".lake" / "build")
+  -- each git hook is the client of its workflow: one line that hands the hook to the machine runner, which asks the
+  -- repository tool for the workflow, walks its steps and obeys the decision
+  IO.FS.createDirAll (".lake" / "build" / "githooks")
+  for hook in gitHooks do
+    IO.FS.writeFile (".lake" / "build" / "githooks" / hook) (hookText hook)
   IO.FS.writeFile configOut text
   IO.println s!"wrote {formulas.length} formula(s), {nibblePrimes.length} prime(s) and {officialPlugins.length} plugin(s) to {configOut}"

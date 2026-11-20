@@ -1,4 +1,5 @@
 import Qpu.General.Textbook
+import Qpu.General.Lattice
 
 /-! # Qpu.General.Config
 
@@ -63,5 +64,23 @@ def insertDefault : String := "EARLIEST"
 theorem config_consistent :
     officialPlugins.length = 9 ∧ officialPlugins.eraseDups.length = 9 ∧ clayFirst.length = 3 ∧
     insertStrategies.contains insertDefault = true ∧ formulas.length = 3 := by decide
+
+/-- The coin qubit space: the states of the qubits the coins mint. The coins mint the hexbit, and the hexbit's qubits
+span this many states. No computation keeps more remembered results than this at once. -/
+def coinQubitSpace : Nat := mint hexbit
+
+/-- The coins are 2, the hexbit they mint is 4 qubits, and those span 16 states. -/
+theorem coin_qubit_space : coins = 2 ∧ hexbit = 4 ∧ coinQubitSpace = 16 := ⟨coins_two, rfl, rfl⟩
+
+/-- The workflows the repository tool serves: the points at which the tree checks itself. -/
+def workflows : List String := ["pre-commit", "commit-msg", "pre-push", "post-commit", "prepare-commit-msg", "ci", "pre-deploy"]
+
+/-- The workflows git itself starts, each from the hook of the same name. The others are started by CI and by the deploy. -/
+def gitHooks : List String := ["pre-commit", "commit-msg", "pre-push", "post-commit", "prepare-commit-msg"]
+
+/-- Every git hook is a workflow, and every workflow that is not a git hook is one CI or the deploy starts. -/
+theorem git_hooks_are_workflows :
+    (gitHooks.all fun hook => workflows.contains hook) = true ∧ (workflows.filter fun w => !gitHooks.contains w) = ["ci", "pre-deploy"] := by
+  decide
 
 end Config

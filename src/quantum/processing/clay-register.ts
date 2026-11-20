@@ -130,16 +130,30 @@ type ClayReading = { name: string; value: number; seed: number; reflection: numb
 // Grover state space, a perfect number also triangular and hexagonal (oeis.org, verified live for 28 and 496).
 const isSquare = (x: number): boolean => { if (x < 0) return false; const r = Math.round(Math.sqrt(x)); return r * r === x }
 
+/** C_n = C(2n, n) / (n + 1), decided by the exact product (n + 1) C_n = C(2n, n). */
+const isCatalan = (v: number): boolean => { for (let k = 0, c = 1n; c <= BigInt(v); k++, c = (c * BigInt(2 * (2 * k - 1))) / BigInt(k + 1)) if (c === BigInt(v)) return true; return false }
+
+/** Humble numbers (OEIS A002473): after the primes 2, 3, 5 and 7 are divided out, 1 remains. */
+const isHumble = (v: number): boolean => { if (v < 1) return false; let x = v; for (const p of [2, 3, 5, 7]) while (x % p === 0) x /= p; return x === 1 }
+
+/** Fibonacci numbers (OEIS A000045): v is one exactly when 5v² + 4 or 5v² − 4 is a square. */
+const isFibonacci = (v: number): boolean => v >= 0 && v < 2 ** 24 && (isSquare(5 * v * v + 4) || isSquare(5 * v * v - 4))
+
+/** Primes (OEIS A000040), by trial division. */
+const isPrime = (v: number): boolean => { if (v < 2) return false; for (let d = 2; d * d <= v; d++) if (v % d === 0) return false; return true }
+
 const oeis = (v: number, statement = ''): { a: string; name: string }[] => {
   const s: { a: string; name: string }[] = []
   if (v > 0 && (v & (v - 1)) === 0) s.push({ a: 'A000079', name: 'p2' })
   if (isSquare(8 * v + 1)) s.push({ a: 'A000217', name: 't' })
+  if (isCatalan(v)) s.push({ a: 'A000108', name: 'catalan' })
+  if (isHumble(v)) s.push({ a: 'A002473', name: 'humble' })
+  if (isFibonacci(v)) s.push({ a: 'A000045', name: 'fibonacci' })
+  if (isPrime(v)) s.push({ a: 'A000040', name: 'prime' })
+  // a value the relation states as a binomial coefficient is an entry of Pascal's triangle
+  if (/\bchoose\b/.test(statement)) s.push({ a: 'A007318', name: 'binomial' })
   return s
 }
-
-/** C_n = C(2n, n) / (n + 1), decided by the exact product (n + 1) C_n = C(2n, n). */
-
-/** Humble numbers (OEIS A002473): after the primes 2, 3, 5 and 7 are divided out, 1 remains. */
 
 export const digitalRoot = (n: number): number => (n === 0 ? 0 : 1 + ((n - 1) % 9))
 export const trinityFor = (seed: number): number[] => (seed === 0 ? [] : seed % 3 === 0 ? [3, 6, 9] : [7, 4, 1].includes(seed) ? [7, 4, 1] : [2, 5, 8])

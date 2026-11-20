@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { rsaPrograms } from './index.ts'
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every RSA case is one uuid program and factors the primes it was created with. */
 test('every RSA case is one uuid program and factors the primes it was created with', () => {
   const programs = rsaPrograms()
   assert.equal(programs.holds, true)
