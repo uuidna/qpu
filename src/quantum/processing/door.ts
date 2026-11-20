@@ -31,7 +31,7 @@ export const forward = async (message: DoorMessage, o: { endpoints?: readonly { 
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: { accept: 'application/json, text/event-stream', 'content-type': 'application/json', ...(key ? { authorization: `users API-Key ${key}` } : {}) },
+        headers: { accept: ['application/json', 'text/event-stream'].join(', '), 'content-type': 'application/json', ...(key ? { authorization: `users API-Key ${key}` } : {}) },
         body: JSON.stringify(message),
         signal: AbortSignal.timeout(o.budgetMs ?? 30000),
       })
