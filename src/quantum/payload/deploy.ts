@@ -24,11 +24,16 @@ status=$(curl -sS -o /tmp/qpu-obs.json -w '%{http_code}' -X POST \\
   --data "{\\"queryId\\":\\"qpu-deploy\\",\\"timeframe\\":{\\"from\\":\${from},\\"to\\":\${to}},\\"view\\":\\"events\\",\\"limit\\":5,\\"parameters\\":{\\"datasets\\":[\\"cloudflare-workers\\"],\\"filters\\":[{\\"key\\":\\"\\$metadata.service\\",\\"operation\\":\\"eq\\",\\"type\\":\\"string\\",\\"value\\":\\"qpu\\"}]}}")
 OBS_STATUS="$status" python3 -c 'import json,os,sys; status=os.environ["OBS_STATUS"]; body=json.load(open("/tmp/qpu-obs.json")); result=body.get("result") or {}; events=result.get("events"); events=events.get("events") if isinstance(events, dict) else events; print("observability", status, "events", len(events) if isinstance(events, list) else "none"); sys.exit(0 if status=="200" and body.get("success") is True and isinstance(events, list) else 1)'`
 
+/** The seed's door on the deployed app: the Worker holds each document beside its database, so no statement of the
+ *  seed crosses the network one at a time. */
+export const SEED_DOOR = `https://${Object.keys(TENANTS)[0]}/api/seed/hold`
+const seeded = (script: string) => `pnpm exec cross-env NODE_ENV=production QPU_SEED_DOOR=${SEED_DOOR} pnpm run ${script}`
+
 export const DEPLOY_STAGES: readonly DeployStage[] = [
   { id: 'database', run: 'pnpm run deploy:database', says: PROSE.quantumPayloadDeploy_says1 },
-  { id: 'seed', run: 'pnpm exec cross-env NODE_ENV=production pnpm run seed', says: PROSE.quantumPayloadDeploy_says2 },
-  { id: 'check', run: 'pnpm exec cross-env NODE_ENV=production pnpm run seed:check', says: PROSE.quantumPayloadDeploy_says3 },
   { id: 'app', run: 'pnpm run deploy:app', says: PROSE.quantumPayloadDeploy_says4 },
+  { id: 'seed', run: seeded('seed'), says: PROSE.quantumPayloadDeploy_says2 },
+  { id: 'check', run: seeded('seed:check'), says: PROSE.quantumPayloadDeploy_says3 },
   { id: 'smoke', run: smoke, says: PROSE.quantumPayloadDeploy_says5, block: true },
   { id: 'logs', run: logs, says: 'query Worker logs', block: true },
 ]
