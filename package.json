@@ -39,6 +39,7 @@
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
   },
   "dependencies": {
+    "@modelcontextprotocol/server": "2.4.0",
     "@opennextjs/cloudflare": "^1.11.0",
     "@payloadcms/admin-bar": "4.0.0-beta.7",
     "@payloadcms/db-d1-sqlite": "4.0.0-beta.7",
