@@ -8,7 +8,7 @@ reflection, in the order of the source. Each row is the theorem's name, its text
 sentence and the examples of its inline doc (`<sentence> (examples: a, b)`), and the `example` lines that follow it.
 Lean finds each theorem by the place it holds in the source; nothing reads the file by guessing at its lines.
 
-Run from the repository root: `lake env lean src/quantum/processing/unit/lean/tools/Textbook.lean`.
+Run from the repository root: `lake env lean lean/tools/Textbook.lean`.
 The index is written to `.lake/build/textbook-index.ts`; `lake run index` installs it and `lake run check` compares it. -/
 
 open Lean
@@ -17,7 +17,7 @@ open Lean
 def textbookOut : System.FilePath := ".lake" / "build" / "textbook-index.ts"
 
 /-- The source of the textbook. -/
-def textbookSource : System.FilePath := "src/quantum/processing/unit/lean/Qpu/General/Textbook.lean"
+def textbookSource : System.FilePath := "lean/Qpu/General/Textbook.lean"
 
 #eval show CoreM Unit from do
   let env ← getEnv

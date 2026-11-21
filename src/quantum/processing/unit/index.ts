@@ -11,7 +11,7 @@ export const QPU_ORIGIN = 'qpu.uuidna.com'
 /** The apex the tenant subdomains live under. */
 export const QPU_APEX = 'uuidna.com'
 /** Where the unit's proofs are published; the client reads the module and builds it with lake. */
-export const QPU_LEAN = 'https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/lean'
+export const QPU_LEAN = 'https://github.com/uuidna/qpu/blob/main/lean'
 /** First path segments that belong to the app's own routes: resolved before any tenant, never a tenant slug. */
 export const RESERVED_SEGMENTS: ReadonlySet<string> = new Set(['admin', 'api', '_next', 'static', 'favicon.ico'])
 

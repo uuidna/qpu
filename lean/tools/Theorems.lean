@@ -6,7 +6,7 @@ import Qpu
 Lean writes the theorem index: every theorem the author declared (`Qpu.declaredTheorems`), with the statement the
 kernel accepted, the axioms it rests on and its inline doc, and every module's doc. The TypeScript reads this index.
 
-Run from the repository root: `lake env lean src/quantum/processing/unit/lean/tools/Theorems.lean`.
+Run from the repository root: `lake env lean lean/tools/Theorems.lean`.
 The index is written to `.lake/build/theorems-index.ts`; `lake run index` installs it and `lake run check` compares it. -/
 
 open Lean Meta

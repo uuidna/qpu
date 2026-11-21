@@ -11,7 +11,7 @@ by the claim context declared beside it when there is one, and otherwise as the 
 as stated. The catalogue is derived from the environment, so no product can be left without a claim: a theorem that
 exists is listed, and a theorem that is listed is claimed.
 
-Run from the repository root: `lake env lean src/quantum/processing/unit/lean/tools/Catalogue.lean`.
+Run from the repository root: `lake env lean lean/tools/Catalogue.lean`.
 The catalogue is written to `.lake/build/CATALOGUE.md`; `lake run index` installs it as `src/quantum/CATALOGUE.md`,
 which the site and each release carry, and `lake run check` compares it. -/
 

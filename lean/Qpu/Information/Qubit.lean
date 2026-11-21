@@ -103,7 +103,7 @@ theorem unbounded (N : Nat) : ∃ k, N < k * effective hexbit :=
 /-- The qubit-layout claim, proved by `effective_formula` and `couplers_formula`. -/
 def qubitLayoutClaim : Qpu.Claim :=
   { theoremName := "Qubit.couplers_formula"
-    source := "src/quantum/processing/unit/lean/Qpu/Information/Qubit.lean"
+    source := "lean/Qpu/Information/Qubit.lean"
     wave := "3.3"
     context :=
       { title := "Address-defined qubit register layout"

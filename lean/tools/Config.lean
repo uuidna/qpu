@@ -6,7 +6,7 @@ import Qpu
 Lean writes the configuration the connector reads, from `Qpu.General.Config`. A formula whose witness is not a theorem
 the author declared stops the run.
 
-Run from the repository root: `lake env lean src/quantum/processing/unit/lean/tools/Config.lean`.
+Run from the repository root: `lake env lean lean/tools/Config.lean`.
 The index is written to `.lake/build/config-index.ts`; `lake run index` installs it and `lake run check` compares it. -/
 
 open Lean Meta Config

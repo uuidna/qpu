@@ -118,7 +118,7 @@ export const machineStatus = (s: { events: readonly StreamEvent[]; times?: Recor
 // selftest, expanded at run time from tools/list. offline skips the steps that need the network; fast skips the long ones (the pre-commit form).
 export type NextStep = { name: string; wave: number; budgetMs: number; via: 'door' | 'generator' | 'process'; tool?: string; arguments?: Record<string, unknown>; cmd?: string; args?: readonly string[]; needs?: 'online'; long?: true; shards?: number }
 export const NEXT_STEPS: readonly NextStep[] = [
-  { name: 'clay:gen', wave: 1, budgetMs: 120_000, via: 'generator', tool: 'payload', arguments: { scripts: { clay: { lean: { $file: 'src/quantum/processing/unit/lean/Qpu/General/Clay.lean' } } } } },
+  { name: 'clay:gen', wave: 1, budgetMs: 120_000, via: 'generator', tool: 'payload', arguments: { scripts: { clay: { lean: { $file: 'lean/Qpu/General/Clay.lean' } } } } },
   { name: 'docs:gen', wave: 1, budgetMs: 120_000, via: 'generator', tool: 'payload', arguments: { scripts: { textbookLean: true } } },
   { name: 'skills:gen', wave: 1, budgetMs: 120_000, via: 'generator', tool: 'payload', arguments: { scripts: { skills: true } } },
   { name: 'lean', wave: 1.5, budgetMs: 1_800_000, via: 'process', cmd: 'lake', args: ['build'] },

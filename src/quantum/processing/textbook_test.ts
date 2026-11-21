@@ -9,7 +9,7 @@ import { THEOREMS } from './theorems-index.ts'
 import { linkAxioms } from './audit.ts'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
-const TEXTBOOK_LEAN_PATH = 'src/quantum/processing/unit/lean/Qpu/General/Textbook.lean'
+const TEXTBOOK_LEAN_PATH = 'lean/Qpu/General/Textbook.lean'
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: every textbook axiom has a kernel-accepted QPU theorem linked to it. */
 test('every textbook axiom has a kernel-accepted QPU theorem linked to it', () => {

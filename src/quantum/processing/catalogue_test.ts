@@ -34,7 +34,7 @@ test('a theorem a sentence names and the kernel lacks is listed as a claim still
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: every theorem a Lean source declares is in the kernel index and in the catalogue, private or not. */
 test('every theorem a Lean source declares is in the kernel index and in the catalogue, private or not', () => {
-  const root = 'src/quantum/processing/unit/lean/Qpu'
+  const root = 'lean/Qpu'
   const walk = (dir: string): string[] => readdirSync(dir, { withFileTypes: true }).flatMap((entry) => (entry.isDirectory() ? walk(join(dir, entry.name)) : entry.name.endsWith('.lean') ? [join(dir, entry.name)] : []))
   // the name each `theorem` keyword declares, with `private` in front or not; the namespace is not needed to find it
   const declared = walk(root).flatMap((file) => [...readFileSync(file, 'utf8').matchAll(/^[ \t]*(?:@\[[^\]]*\][ \t]*)?(?:private[ \t]+|protected[ \t]+)?theorem[ \t]+([^\s:({\[]+)/gm)].map((m) => ({ file, name: m[1]! })))

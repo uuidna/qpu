@@ -11,7 +11,7 @@ A module is a textbook, its clause the ISO context and the module itself the sci
 time: Lean's own `choose` counts the mixes, and a mix varies every product of one textbook with every product of the other.
 They mix in trinities too, three at a time, counted the same way.
 
-Run from the repository root: `lake env lean src/quantum/processing/unit/lean/tools/Nested.lean`.
+Run from the repository root: `lake env lean lean/tools/Nested.lean`.
 The index is written to `.lake/build/nested-index.ts`; `lake run index` installs it and `lake run check` compares it. -/
 
 open Lean Meta

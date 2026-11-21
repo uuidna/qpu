@@ -7,7 +7,7 @@ Lean writes prose-index.ts: every sentence defined under the `Prose` namespace, 
 reads a sentence from that index and types none of its own. `⟦n⟧` in a sentence is where the nth computed value goes;
 `proseFill` puts the values in.
 
-Run from the repository root: `lake env lean src/quantum/processing/unit/lean/tools/Prose.lean`.
+Run from the repository root: `lake env lean lean/tools/Prose.lean`.
 The index is written to `.lake/build/prose-index.ts`; `lake run index` installs it and `lake run check` compares it.
 The same sentences are written for the site: `site/prose/` and `site/public/prose.json`. -/
 
@@ -54,7 +54,7 @@ def proseOut : System.FilePath := ".lake" / "build" / "prose-index.ts"
     let page :=
       [ "---", s!"title: \"Qpu.General.Prose.{unit}\"", s!"description: \"{mine.length} sentence(s) written in Lean\"", "---", ""
       , s!"# Qpu.General.Prose.{unit}", ""
-      , s!"Written in `src/quantum/processing/unit/lean/Qpu/General/Prose/{unit}.lean`. Each sentence is one Lean definition; `⟦n⟧` is where the nth computed value goes.", "" ]
+      , s!"Written in `lean/Qpu/General/Prose/{unit}.lean`. Each sentence is one Lean definition; `⟦n⟧` is where the nth computed value goes.", "" ]
       ++ mine.flatMap (fun (key, text) => [ s!"## {key}", "", "````text", text, "````", "" ])
     IO.FS.writeFile (site / "prose" / s!"{unit}.md") ("\n".intercalate page)
   let index :=
