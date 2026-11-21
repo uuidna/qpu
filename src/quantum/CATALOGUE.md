@@ -4,7 +4,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1890 products, 2 under a declared claim context and 1888 as the author's own statement, with 1534 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1894 products, 2 under a declared claim context and 1892 as the author's own statement, with 1540 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -7060,6 +7060,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (c t : ℕ), ¬0 < c * t → ¬(0 < c ∧ 0 < t)
 ```
 
+### `textbook_compete_knows_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-rules.
+
+```lean
+∀ (c t : ℕ), 0 < c * t → 0 < c ∧ 0 < t
+```
+
 ### `textbook_compete_knows_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-rules.
@@ -8751,6 +8759,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (n k : ℕ), ¬k % n < n → ¬0 < n
 ```
 
+### `textbook_harmonic_default_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-harmonic, payload-hooks-collapse.
+
+```lean
+∀ (n k : ℕ), k % n < n → 0 < n
+```
+
 ### `textbook_harmonic_default_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-harmonic, payload-hooks-collapse.
@@ -10156,6 +10172,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```lean
 ∀ (lanes cores heap cap w v : ℕ),
   ¬(lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w + 1 ≤ v) → ¬(lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w < v)
+```
+
+### `textbook_next_waves_ordered_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-next.
+
+```lean
+∀ (lanes cores heap cap w v : ℕ),
+  lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w + 1 ≤ v → lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w < v
 ```
 
 ### `textbook_next_waves_ordered_reflected`
@@ -12594,6 +12619,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (n k : ℕ), ¬k % n < n → ¬0 < n
+```
+
+### `textbook_shards_cover_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: shard-share, audit-shard.
+
+```lean
+∀ (n k : ℕ), k % n < n → 0 < n
 ```
 
 ### `textbook_shards_cover_reflected`

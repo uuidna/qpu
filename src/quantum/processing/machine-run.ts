@@ -223,7 +223,9 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   const { call } = await import('./mcp.ts') as { call: Call }, { LITERAL_ROOTS } = await import('./audit.ts')
   const ask = (a: Record<string, unknown>) => { const r = call('repository', a); if (r.error) throw new Error(r.error.message); return r.result!.structuredContent }
   const git = async (...a: string[]) => (await spawnRun('git', a, { cwd })).stdout.trim()
-  const w = ask({ workflow: name, offline: true }).workflow as { steps: { id: string; kind: string; detach?: boolean; cmd?: string; args?: string[]; files?: string[] }[] }
+  // a workflow after the act reports through the door, so its door is asked for; the others run here, offline
+  const after = (AFTER_HOOKS as readonly string[]).includes(name)
+  const w = ask({ workflow: name, offline: !after }).workflow as { steps: { id: string; kind: string; detach?: boolean; cmd?: string; args?: string[]; files?: string[] }[] }
   const facts: Record<string, unknown> = { branch: await git('branch', '--show-current') }
   let red = false
   for (const s of w.steps) {
@@ -255,7 +257,6 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   type Decision = { allowed: boolean; says?: string; rules: { rule: string; holds: boolean | null; evidence: string }[] }
   // a workflow after the act reports it: the commit, and for a push every remote-tracking ref that moved (old, new, ref, as git hands them over).
   // The report goes to the Payload app through its MCP door, which answers the decision; with no door in reach the decision is computed here.
-  const after = (AFTER_HOOKS as readonly string[]).includes(name)
   let d: Decision | null = null, source = 'here'
   if (after) {
     facts.commit = { head: await git('rev-parse', 'HEAD'), subject: await git('log', '-1', '--format=%s') }
