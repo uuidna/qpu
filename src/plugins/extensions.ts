@@ -22,6 +22,7 @@ import { orderRunsField, runOrderPrograms } from '@/hooks/runOrderPrograms'
 import { fuseToolResponse } from '@/plugins/isoSolution'
 import qpuPlugin from '@/plugins/qpu'
 import { qpuCatalogueTools } from '@/utilities/qpuCatalogue'
+import { seedHoldEndpoint } from '@/utilities/seedHold'
 import { callUuidna } from '@/utilities/uuidnaDoor'
 
 import { PASSWORD_HASH_ITERATIONS } from '../quantum/processing/config-index'
@@ -172,9 +173,13 @@ const workerPasswordHash: Plugin = (config: Config): Config => ({
   auth: { ...config.auth, passwordHashIterations: PASSWORD_HASH_ITERATIONS as NonNullable<NonNullable<Config['auth']>['passwordHashIterations']> },
 })
 
+/** The seed's door: the deployed app holds the documents a signed seed states, beside its own database. */
+const seedDoor: Plugin = (config: Config): Config => ({ ...config, endpoints: [...(config.endpoints ?? []), seedHoldEndpoint] })
+
 export const extensions: Plugin[] = [
   collectionAdditions,
   workerPasswordHash,
+  seedDoor,
   redirectsPlugin({
     collections: ['pages', 'products'],
   }),
