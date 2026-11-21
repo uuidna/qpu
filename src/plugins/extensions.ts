@@ -177,39 +177,10 @@ const workerPasswordHash: Plugin = (config: Config): Config => ({
 /** The seed's door: the deployed app holds the documents a signed seed states, beside its own database. */
 const seedDoor: Plugin = (config: Config): Config => ({ ...config, endpoints: [...(config.endpoints ?? []), seedHoldEndpoint] })
 
-type Log = (objOrMsg: object | string, msg?: string) => void
-const LOG_LEVELS = ['trace', 'debug', 'info', 'warn', 'error', 'fatal'] as const
-/** A logger with what it is bound to: each line carries the bindings, and a text is said after the prefix. */
-const boundLogger = (base: Record<string, unknown>, bound: object, prefix: string): Record<string, unknown> => ({
-  ...base,
-  ...Object.fromEntries(LOG_LEVELS.map((level) => [level, ((objOrMsg, msg) => {
-    const say = base[level] as Log
-    if (typeof objOrMsg === 'string') say({ ...bound }, `${prefix}${objOrMsg}`)
-    else say({ ...bound, ...objOrMsg }, `${prefix}${msg ?? (objOrMsg as { msg?: string }).msg ?? ''}`)
-  }) satisfies Log])),
-  child: (bindings: object = {}, options: { msgPrefix?: string } = {}) => boundLogger(base, { ...bound, ...bindings }, `${prefix}${options.msgPrefix ?? ''}`),
-})
-/** The console logger a Worker runs with has no `child`, and a plugin that asks for one (the MCP plugin does, on every
- *  request) failed there. A logger given as an object without `child` gains one that binds what it is given. */
-const loggerWithChild: Plugin = (config: Config): Config => {
-  const logger = config.logger as unknown
-  if (logger === null || typeof logger !== 'object' || typeof (logger as { child?: unknown }).child === 'function' || typeof (logger as { info?: unknown }).info !== 'function') return config
-  return { ...config, logger: boundLogger(logger as Record<string, unknown>, {}, '') as unknown as Config['logger'] }
-}
-
-/** An error Payload answers is also written to the console, with its path: on a Worker the console is the log that
- *  the observability query reads, so a failure in production can be read instead of guessed. */
-const errorsToConsole: Plugin = (config: Config): Config => ({
-  ...config,
-  hooks: { ...config.hooks, afterError: [...(config.hooks?.afterError ?? []), ({ error, req }) => { console.error(req.pathname ?? '', error?.stack ?? error) }] },
-})
-
 export const extensions: Plugin[] = [
   collectionAdditions,
   workerPasswordHash,
   seedDoor,
-  loggerWithChild,
-  errorsToConsole,
   redirectsPlugin({
     collections: ['pages', 'products'],
   }),
