@@ -1,3 +1,4 @@
+import { workerSchema } from './workerSchema'
 import { defineTool } from '@payloadcms/plugin-mcp'
 import { handle } from '@uuidna/qpu/mcp'
 
@@ -22,7 +23,7 @@ export const qpuCatalogueTools = async (): Promise<Record<string, Tool>> => {
   return Object.fromEntries(
     result.tools.map((t) => [
       t.name,
-      defineTool({ access: () => true, description: t.description, input: t.inputSchema as never }).handler(async ({ input }) => {
+      defineTool({ access: () => true, description: t.description, input: workerSchema(t.inputSchema) }).handler(async ({ input }) => {
         const r = await callCatalogue(t.name, input)
         if ('error' in r) return { content: [{ type: 'text', text: JSON.stringify({ error: r.error }) }], isError: true }
         return {
