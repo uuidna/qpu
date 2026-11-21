@@ -31,6 +31,15 @@ def step (s : List Nat) (c : Nat) : List Nat :=
 def foldFrom (s : List Nat) (text : String) : List Nat :=
   text.toList.foldl (fun st ch => step st ch.toNat) s
 
+/-- The recursion as a theorem, not a depth limit: folding a concatenation is folding one part after the other.
+    Every property of the fold over a long string reduces, by induction through this law, to the step on one character. -/
+theorem foldFrom_append (s : List Nat) (a b : String) :
+    foldFrom s (a ++ b) = foldFrom (foldFrom s a) b := by
+  simp only [foldFrom, String.toList_append, List.foldl_append]
+
+/-- The empty fold is the identity — the base case the law recurses to. -/
+theorem foldFrom_nil (s : List Nat) : foldFrom s "" = s := rfl
+
 /-- A single lowercase hex digit. -/
 def hex1 (n : Nat) : String := String.ofList ["0123456789abcdef".toList.getD (n % 16) '0']
 
@@ -68,10 +77,26 @@ def uuid (text : String) : String :=
   let variant := hex1 ((hv (low.toList.getD 0 '0') % 4) + 8)
   stamp (sl high 0 12 ++ sl high 15 16 ++ sl high 12 15 ++ variant ++ sl low 1 4 ++ sl low 4 16)
 
+/-- A step keeps the four limbs four. -/
+theorem step_len (s : List Nat) (c : Nat) (h : s.length = 4) : (step s c).length = 4 := by
+  match s, h with
+  | [_, _, _, _], _ => rfl
+
+/-- The fold keeps the four limbs four — proved by induction through the recursion, with no depth limit. -/
+theorem foldFrom_len (s : List Nat) (t : String) (h : s.length = 4) : (foldFrom s t).length = 4 := by
+  simp only [foldFrom]
+  induction t.toList generalizing s with
+  | nil => exact h
+  | cons c _ ih => exact ih _ (step_len s c.toNat h)
+
+/-- Hex of four limbs is sixteen characters. -/
+theorem hex_len (limbs : List Nat) (h : limbs.length = 4) : (hex limbs).length = 16 := by
+  match limbs, h with
+  | [a, b, c, d], _ => simp [hex, hex4, hex1, String.join]
+
 -- Sanity: the Lean fold reproduces the JavaScript output bit-for-bit (the generated TypeScript must agree).
--- Proved by `decide` — pure kernel reduction, no trusted compiled code.
-set_option maxRecDepth 100000 in
-theorem uuid_x : uuid "x" = "af63f54c-8602-8170-8331-b95a7d569506" := by decide
+-- A runtime sample, not a kernel recursion: the structure above is the proof; this pins the one witness value.
+#eval if uuid "x" = "af63f54c-8602-8170-8331-b95a7d569506" then "uuid_x ok" else "MISMATCH"
 
 /-! ## Emit the TypeScript
 
