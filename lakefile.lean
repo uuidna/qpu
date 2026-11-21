@@ -86,6 +86,9 @@ def textbookFile : String := "lean/tools/Textbook.lean"
 /-- The Lean file that writes the theorem index. -/
 def theoremsFile : String := "lean/tools/Theorems.lean"
 
+/-- The Lean file that renders the UUID address core as TypeScript (Lean → TS codegen). -/
+def addressFile : String := "lean/tools/Address.lean"
+
 /-- Compare what a Lean tool wrote with the committed file, or install it. -/
 def settle (built index : System.FilePath) (check : Bool) : IO UInt32 := do
   let written ← IO.FS.readFile built
@@ -108,7 +111,8 @@ def rendered : List (String × System.FilePath × System.FilePath) :=
   , (catalogueFile, ".lake" / "build" / "CATALOGUE.md", "src" / "quantum" / "CATALOGUE.md")
   , (thousandFile, ".lake" / "build" / "thousand-index.ts", "src" / "quantum" / "processing" / "thousand-index.ts")
   , (isoFile, ".lake" / "build" / "iso-index.ts", "src" / "quantum" / "processing" / "iso-index.ts")
-  , (configFile, ".lake" / "build" / "config-index.ts", "src" / "quantum" / "processing" / "config-index.ts") ]
+  , (configFile, ".lake" / "build" / "config-index.ts", "src" / "quantum" / "processing" / "config-index.ts")
+  , (addressFile, ".lake" / "build" / "address-core.ts", "src" / "quantum" / "password" / "address-core.ts") ]
 
 /-- Lean writes the prose index, the theorem index, the textbook index, the blueprint, the nested catalogue, the
 catalogue of claims, the thousand-bit table, the register of standards and the configuration. The tools read the same
@@ -190,7 +194,7 @@ script applications do
   steps [("lake", #["build"]), ("lake", #["env", "lean", applicationsFile])]
 
 /-- The Lean files that write rendered output; `lake run verify` runs each of them. -/
-def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile, configFile]
+def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile, configFile, addressFile]
 
 /-- `lake run leanfiles`: no Lean file is skipped. Every `.lean` file the repository tracks is this lakefile, a module
 the build compiles, a tool `lake run verify` runs, or evidence kept under `lean/`, which is named and never removed. -/

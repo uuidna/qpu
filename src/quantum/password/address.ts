@@ -1,26 +1,7 @@
-// The address functions, standalone: fold, stamp and coil addresses, without the uuid/index.ts graph.
-
-const OFFSET = [0x2325, 0x8422, 0x9ce4, 0xcbf2]
-const foldFrom = ([h0, h1, h2, h3]: readonly number[], text: string) => {
-  let a = h0!, b = h1!, c = h2!, d = h3!
-  for (let i = 0; i < text.length; i++) {
-    a ^= text.charCodeAt(i)
-    const t0 = a * 0x1b3, t1 = b * 0x1b3 + (t0 >>> 16), t2 = c * 0x1b3 + (a << 8) + (t1 >>> 16)
-    d = (d * 0x1b3 + (b << 8) + (t2 >>> 16)) & 0xffff; a = t0 & 0xffff; b = t1 & 0xffff; c = t2 & 0xffff
-  }
-  return [a, b, c, d]
-}
-const hex = (limbs: readonly number[]) => limbs.map((l) => l.toString(16).padStart(4, '0')).reverse().join('')
-const version = (digits: string) => { const r = [...digits].reduce((m, d, i) => (i === 12 ? m : (m * 16 + parseInt(d, 16)) % 91), 0); return (1 + ((r ** 7) % 91) % 8).toString(16) }
-const dashed = (h: string) => `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20, 32)}`
-export const stamp = (digits: string) => dashed(`${digits.slice(0, 12)}${version(digits)}${digits.slice(13)}`)
-export const uuid = (text: string) => {
-  const state = foldFrom(OFFSET, text)
-  const high = hex(state)
-  const low = hex(foldFrom(state, '\u0000shape'))
-  const variant = ((parseInt(low.slice(0, 1), 16) % 4) + 8).toString(16)
-  return stamp(`${high.slice(0, 12)}${high.slice(15, 16)}${high.slice(12, 15)}${variant}${low.slice(1, 4)}${low.slice(4, 16)}`)
-}
+// The address functions. The fold/stamp/uuid core is generated from Lean (lean/tools/Address.lean → address-core.ts),
+// where the kernel proves it reproduces the JavaScript; the coil functions below build on it.
+import { uuid, stamp, version } from './address-core.ts'
+export { uuid, stamp }
 export const uuidFromParts = (handle: string, program: readonly number[], tail: string) => {
   if (!/^[0-9a-f]{8}$/.test(handle) || program.length !== 10 || program.some((n) => !Number.isInteger(n) || n < 0 || n > 15) || !/^[0-9a-f]{12}$/.test(tail)) throw new Error('a handle is 8 hex, a program ten nibbles 0..15, a tail 12 hex')
   const p = program.map((n) => n.toString(16))

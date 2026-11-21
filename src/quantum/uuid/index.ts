@@ -35,6 +35,8 @@ import { KEY, HARMONICS, ANGLES, accentOfUuid, cmykOfUuid, coilColour, hue, prog
 import { speakHex, toGlagolitic } from '../processing/i18n.ts'
 import { divide } from '../apps/calculator/index.ts'
 import { seal as sealAlone, uuid as uuidAlone } from '../password/address.ts'
+import { uuid, stamp, version } from '../password/address-core.ts'
+export { uuid, stamp }
 export { KEY, HARMONICS, ANGLES, accentOfUuid, cmykOfUuid, coilColour, hue, programHues, getFramesGradient, GLAGOLITIC_OF, getCss }
 export const stylesheet = getCss
 import { LICENSE, attributionHtml } from '../processing/unit/license.ts'
@@ -59,18 +61,8 @@ const UUID_PATTERN = new RegExp(`^${UUID_SHAPE}$`)
 export const isUuid = (text: unknown): text is string => typeof text === 'string' && UUID_PATTERN.test(text)
 export { UUID_SHAPE }
 export const fold = (text: string): string => hex(foldFrom(OFFSET, text))
-/** The version nibble the other 31 digits decide: 1 + (rest^7 mod 91) mod 8, exact in numbers (r^7 < 2^53). O(1). */
-const version = (digits: string): string => { const r = [...digits].reduce((m, d, i) => (i === 12 ? m : (m * 16 + parseInt(d, 16)) % 91), 0); return (1 + ((r ** 7) % 91) % 8).toString(16) }
+// stamp, version and uuid are the Lean-generated core (address-core.ts), imported above; foldFrom/hex/OFFSET stay for fold.
 const dashed = (h: string): string => `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20, 32)}`
-/** 32 hex digits stamped and grouped 8-4-4-4-12: the version nibble (position 12) is DECIDED by the other 31. O(1). */
-export const stamp = (digits: string): string => dashed(`${digits.slice(0, 12)}${version(digits)}${digits.slice(13)}`)
-export const uuid = (text: string): string => {
-  const state = foldFrom(OFFSET, text)
-  const high = hex(state)
-  const low = hex(foldFrom(state, '\u0000shape'))
-  const variant = ((parseInt(low.slice(0, 1), 16) % 4) + 8).toString(16)
-  return stamp(`${high.slice(0, 12)}${high.slice(15, 16)}${high.slice(12, 15)}${variant}${low.slice(1, 4)}${low.slice(4, 16)}`)
-}
 /** A UUID reassembled from its parts: handle (8 hex), ten program nibbles, tail (12 hex); the variant nibble is 8 and the version is
  *  decided by the stamp, so the result is a valid, sealed address whose channel reads back the same handle, program and tail. */
 export const uuidFromParts = (handle: string, program: readonly number[], tail: string): string => {
