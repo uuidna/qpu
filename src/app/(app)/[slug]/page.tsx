@@ -6,7 +6,6 @@ import { generateMeta } from '@/utilities/generateMeta'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
-import React from 'react'
 
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import { pageJsonLd } from '@/quantum/processing/jsonld'
