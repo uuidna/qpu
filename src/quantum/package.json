@@ -9,6 +9,7 @@
     ".": "./password/password-hash.ts",
     "./unit": "./processing/unit/index.ts",
     "./mcp": "./processing/mcp.ts",
+    "./serve": "./net/mcp-http.ts",
     "./blocks": "./uuid/index.ts",
     "./apis": "./uuid/programs/apis/index.ts",
     "./feeds": "./processing/feeds.ts",

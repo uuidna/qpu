@@ -4,14 +4,12 @@
 import type { Block, CollectionConfig, Config, Field, Plugin, TextField } from 'payload'
 
 import { importExportPlugin } from '@payloadcms/plugin-import-export'
-import { defineTool, mcpPlugin } from '@payloadcms/plugin-mcp'
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { searchPlugin } from '@payloadcms/plugin-search'
 import { sentryPlugin } from '@payloadcms/plugin-sentry'
 import { stripePlugin } from '@payloadcms/plugin-stripe'
-import { VERSION } from '@uuidna/qpu/version'
 
 import { checkRole } from '@/access/utilities'
 import { trialLead } from '@/collections/Pages/hooks/trialLead'
@@ -19,58 +17,14 @@ import { quantumField, runQuantumProgram } from '@/fields/quantum'
 import { developedFromField, markLeadDeveloped } from '@/hooks/markLeadDeveloped'
 import { qrGalleryFallback } from '@/hooks/qrGalleryFallback'
 import { orderRunsField, runOrderPrograms } from '@/hooks/runOrderPrograms'
-import { fuseToolResponse } from '@/plugins/isoSolution'
 import qpuPlugin from '@/plugins/qpu'
-import { qpuCatalogueTools } from '@/utilities/qpuCatalogue'
 import { seedHoldEndpoint } from '@/utilities/seedHold'
-import { workerSchema, workerValidator } from '@/utilities/workerSchema'
-import { callUuidna } from '@/utilities/uuidnaDoor'
 
 import { PASSWORD_HASH_ITERATIONS } from '../quantum/processing/config-index'
 import { isUuid } from '../quantum/uuid/index'
 
-/** plugin-mcp's access arguments (permissions for the request, and the request), as its Tool type declares them */
-type MCPAccessArgs = Parameters<NonNullable<ReturnType<ReturnType<typeof defineTool>['handler']>['access']>>[0]
-/** readsFor: public find/count like GET /api/<slug>; auth collections still need a user. */
-const readsFor = (kind: 'collections' | 'globals', tools: readonly string[]) =>
-  new Proxy({}, {
-    get: (_, slug) =>
-      typeof slug !== 'string'
-        ? undefined
-        : {
-            tools: Object.fromEntries(
-              tools.map((tool) => [
-                tool,
-                {
-                  access: ({ permissions, req }: MCPAccessArgs) =>
-                    Boolean((permissions?.[kind] as Record<string, { read?: boolean }> | undefined)?.[slug]?.read) &&
-                    (kind === 'globals' || Boolean(req.user) || !(req.payload.collections as Record<string, { config: { auth?: unknown } } | undefined>)[slug]?.config.auth),
-                },
-              ]),
-            ),
-          },
-  })
-
-/** uuidna door + qpu catalogue tools (public). */
-const mcpTools = async () => ({
-  uuidna: defineTool({
-    access: () => true,
-    description: 'Call a uuidna MCP door by name (https://uuidna.com/mcp).',
-    input: workerSchema({
-      type: 'object',
-      properties: {
-        name: { type: 'string', description: 'uuidna tool name' },
-        arguments: { type: 'object', description: 'tool arguments' },
-      },
-      required: ['name'],
-    }),
-  }).handler(async ({ input }) => {
-    const { name, arguments: args } = input as { name: string; arguments?: Record<string, unknown> }
-    const answer = await callUuidna(name, args ?? {})
-    return { content: [{ type: 'text', text: answer.text }], isError: answer.isError }
-  }),
-  ...(await qpuCatalogueTools()),
-})
+// The MCP is served at /api/mcp by the package's own transport (serveMcp), mounted as a Next route, not by a
+// Payload plugin: the same 48-tool catalogue the hosted door answers, with no per-tool re-wrapping here.
 
 type Hooks = NonNullable<CollectionConfig['hooks']>
 /** A collection with fields and hooks added after the ones it already has. */
@@ -216,32 +170,7 @@ export const extensions: Plugin[] = [
         }),
       ]
     : []),
-  // plugin-mcp: collections/globals via readsFor; catalogue + uuidna beside them
-  mcpPlugin({
-    // the catalogue door is public, as qpu.uuidna.com/mcp has always served it: anyone may list and call the tools.
-    // beta.11 gates MCP use behind this top-level access, defaulting signed-out callers out; this opens it, per tool.
-    access: () => true,
-    // beta.11 turns OAuth on by default, so a signed-out HTTP caller gets a 401 challenge instead of the catalogue.
-    // Turn it off: anonymous callers read and call the public catalogue, and a users API-Key still authenticates
-    // a caller for the collection tools that need one (Authorization: users API-Key <key>).
-    oauth: false,
-    collections: readsFor('collections', ['find', 'count']),
-    globals: readsFor('globals', ['find']),
-    hooks: {
-      afterToolCall: [
-        ({ input, response, toolName }) =>
-          fuseToolResponse(
-            toolName === 'findDocuments' && response.doc && !response.structuredContent ? { ...response, structuredContent: response.doc } : response,
-            toolName,
-            input,
-          ),
-      ],
-    },
-    // the SDK's default validator compiles each schema from a string, which a Worker forbids; its Workers validator
-    // interprets the schema instead
-    mcp: { serverOptions: { options: { jsonSchemaValidator: workerValidator }, serverInfo: { name: 'qpu', version: VERSION } } },
-    tools: await mcpTools(),
-  }),
+  // The MCP is served at /api/mcp by src/app/(payload)/api/mcp/route.ts calling the package transport (serveMcp).
   qpuPlugin(),
   uuidRowIDs,
 ]
