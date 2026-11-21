@@ -1,6 +1,6 @@
 // Every scientific domain, one product, carried by the UUID of every Payload config.
 // The address functions are the website copy. They match the quantum register.
-import { canonicalText, compositions, seal, uuid } from '../quantum/password/address.js'
+import { canonicalText, compositions, seal, uuid } from '../quantum/password/address.ts'
 import { configKinds } from '../quantum/processing/payload-vocabulary.ts'
 import { TENANTS } from '../quantum/processing/unit/tenants.ts'
 

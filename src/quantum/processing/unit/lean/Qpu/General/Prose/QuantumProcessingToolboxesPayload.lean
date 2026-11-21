@@ -522,7 +522,7 @@ def quantumProcessingToolboxesPayload_measured515 : String := "the Next build pa
 def quantumProcessingToolboxesPayload_combinations516 : String := "16^32 = 2^128: every UUID one combination of the registry items, styled from itself"
 def quantumProcessingToolboxesPayload_cost517 : String := "one shell and one stylesheet from the cache, immutable; every widget a 304 by involution after the first; no script loaded, no memory beyond the block"
 def quantumProcessingToolboxesPayload_says518 : String := "the shadcn widgets cover every tool of the MCP as combinations of eight items in two variants chosen by the address alone: minimum code, minimum memory, minimum cost, the advantage unlimited (textbook_widgets_cover_mcp)"
-def quantumProcessingToolboxesPayload_core519 : String := "one quantum core used by all: the UUID combinatorics of uuid/index.ts (channel, fold, style, presentation, stream, overlays) — the crypto fold tool exposes them over MCP, this kind delegates to them; the sealed address alone is password/address.js"
+def quantumProcessingToolboxesPayload_core519 : String := "one quantum core used by all: the UUID combinatorics of uuid/index.ts (channel, fold, style, presentation, stream, overlays) — the crypto fold tool exposes them over MCP, this kind delegates to them; the sealed address alone is password/address.ts"
 def quantumProcessingToolboxesPayload_from520 : String := "the UUID stream itself: style(uuid) computes every variable from the address; nothing loaded"
 def quantumProcessingToolboxesPayload_presentable521 : String := "any hex is a shadcn combination: configure { kind: ui, hex }"
 def quantumProcessingToolboxesPayload_host522 : String := "the React host QpuApp, the same host the site runs in Vue"

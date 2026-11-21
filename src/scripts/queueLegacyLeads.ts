@@ -4,7 +4,7 @@ import { randomBytes } from 'crypto'
 import { createPayloadRequest, getPayload, registerFirstUserOperation } from 'payload'
 
 import config from '@payload-config'
-import { uuid } from '../quantum/password/address.js'
+import { uuid } from '../quantum/password/address.ts'
 
 /** Bootstrap the admin user and queue module leads, then run them: `pnpm payload run src/scripts/queueLegacyLeads.ts`.
  *  Modules are read from git by path (LEGACY_PATHS names them; the default tree is empty once a prior fork is removed),

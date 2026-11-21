@@ -3,7 +3,7 @@
 // A link's handle is the param. The program is the same for every handle.
 // The referrer names one further program. The handle space stays unwalked.
 // Law: first the dictionary meaning; then the meaning is verified. qpuMcpPlugin routes every tools/call as a program.
-import { seal, uuid, uuidFromParts, canonicalText } from '../quantum/password/address.js'
+import { seal, uuid, uuidFromParts, canonicalText } from '../quantum/password/address.ts'
 import { ENTROPY_LAW, entropySurface, isoOnlineSources } from '../quantum/processing/iso-deliverables.ts'
 import { program } from '../quantum/uuid/programs/index.ts'
 import { WEBSITE_CLIENT, WEBSITE_ORIGIN, WEBSITE_ROUTES } from './websiteClient.ts'

@@ -1,6 +1,6 @@
 // When register FTL holds, physics is true. That decision is valid only as this UUID program.
 import { PROSE, proseFill } from '../../../processing/prose-index.ts'
-import { seal, uuid } from '../../../password/address.js'
+import { seal, uuid } from '../../../password/address.ts'
 import { exists } from '../../../fs/index.ts'
 import { program } from '../index.ts'
 

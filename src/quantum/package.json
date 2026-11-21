@@ -6,7 +6,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./password/password-hash.js",
+    ".": "./password/password-hash.ts",
     "./unit": "./processing/unit/index.ts",
     "./mcp": "./processing/mcp.ts",
     "./blocks": "./uuid/index.ts",

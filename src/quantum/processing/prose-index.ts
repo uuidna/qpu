@@ -2559,7 +2559,7 @@ const SENTENCES = {
   quantumProcessingToolboxesPayload_combinations516: "16^32 = 2^128: every UUID one combination of the registry items, styled from itself",
   quantumProcessingToolboxesPayload_combinationsSay662: "⟦0⟧ tenant roles × ⟦1⟧ docket roles × ⟦2⟧ operations = ⟦3⟧ role–operation combinations, each decided by one of three deciders: the user's roles, the x-qpu-role header, the entry's kind (textbook_access_combinations)",
   quantumProcessingToolboxesPayload_coordinated370: "input and output are coordinated by address: a call's output block is the next call's input by uuid, so a batch is a chain of addresses the balancer answers without recomputing",
-  quantumProcessingToolboxesPayload_core519: "one quantum core used by all: the UUID combinatorics of uuid/index.ts (channel, fold, style, presentation, stream, overlays) — the crypto fold tool exposes them over MCP, this kind delegates to them; the sealed address alone is password/address.js",
+  quantumProcessingToolboxesPayload_core519: "one quantum core used by all: the UUID combinatorics of uuid/index.ts (channel, fold, style, presentation, stream, overlays) — the crypto fold tool exposes them over MCP, this kind delegates to them; the sealed address alone is password/address.ts",
   quantumProcessingToolboxesPayload_cost517: "one shell and one stylesheet from the cache, immutable; every widget a 304 by involution after the first; no script loaded, no memory beyond the block",
   quantumProcessingToolboxesPayload_customers304: "users (the site's own, roles admin | public)",
   quantumProcessingToolboxesPayload_database543: "db-mongodb over the RAID docket (the mongo tool's language)",

@@ -38,9 +38,9 @@ The library root `Qpu.lean` imports every `Qpu/Processing/Verify/*` module, so a
 
 ## Exporter PoC
 
-`tools/cirq_to_lean.py` converts a stabilizer circuit JSON into a generated
+`tools/cirq_to_lean.ts` converts a stabilizer circuit JSON into a generated
 Lean module of `decide` theorems (one per conjugation step) plus the final
-tableau. See its docstring for the input format and sign-tracking limitation.
+tableau. See its header for the input format and sign-tracking limitation.
 
 ## Scope honesty
 

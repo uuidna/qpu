@@ -2,7 +2,7 @@ import { workerSchema } from './workerSchema'
 import { defineTool } from '@payloadcms/plugin-mcp'
 import { handle } from '@uuidna/qpu/mcp'
 
-import { canonicalText, uuid } from '@/quantum/password/address.js'
+import { canonicalText, uuid } from '@/quantum/password/address.ts'
 
 type Tool = ReturnType<ReturnType<typeof defineTool>['handler']>
 type Listed = { description: string; inputSchema: Record<string, unknown>; name: string }

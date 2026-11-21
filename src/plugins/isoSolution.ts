@@ -1,7 +1,7 @@
 // The standard Payload ISO solution, fused onto every MCP tool response.
 // The deliverables and the address functions are leaves. The one consolidation is isoAspects.
 // The configuration and deploy programs are the objects those aspects already place. Nothing is fetched and nothing is written.
-import { seal, uuid } from '../quantum/password/address.js'
+import { seal, uuid } from '../quantum/password/address.ts'
 import { aspectPrograms } from '../quantum/uuid/programs/aspects/index.ts'
 import { ISO_DIMENSIONS, ISO_OPEN_DEFINITIONS, verifyIsoOnline } from '../quantum/processing/iso-deliverables.ts'
 import { isoAspects } from '../quantum/processing/iso-aspects.ts'

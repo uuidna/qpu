@@ -1,7 +1,7 @@
 // A pasted link is research on the browser OS.
 // This call fetches every discoverable ISO source first, through the OS fetch, and the pasted URLs with them.
 // A page already in hand is the reading when that fetch returns no body. Nothing is written.
-import { seal, uuid } from '../quantum/password/address.js'
+import { seal, uuid } from '../quantum/password/address.ts'
 import { AXIOMS } from '../quantum/processing/clay-register.ts'
 import { ISO_DIMENSIONS, ISO_OPEN_DATA, ISO_OPEN_DEFINITIONS, ISO_OPEN_SUCCESSORS, isoDatasetHref, isoOnlineSources } from '../quantum/processing/iso-deliverables.ts'
 import { readOnline } from '../quantum/os/fetch.ts'
@@ -112,7 +112,7 @@ const entangle = (onlineUrl: string, offlineText: string | null, fetched: boolea
   const offlineAddress = offlineText === null ? null : uuid(offlineText)
   const bound = offlineAddress === null ? null : `${onlineAddress}\n${offlineAddress}`
   const joint = bound === null ? null : uuid(bound)
-  const entangled = joint !== null && offlineAddress !== null && joint !== onlineAddress && joint !== offlineAddress && joint.length === 36 && seal(joint).valid && uuid(bound) === joint
+  const entangled = joint !== null && bound !== null && offlineAddress !== null && joint !== onlineAddress && joint !== offlineAddress && joint.length === 36 && seal(joint).valid && uuid(bound) === joint
   return {
     physics: false as const,
     clause: 'ISO/IEC 4879:2024, 3.2.10' as const,

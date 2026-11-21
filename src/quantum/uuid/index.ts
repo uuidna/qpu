@@ -34,7 +34,7 @@ type RegistryItem = { $schema: 'https://ui.shadcn.com/schema/registry-item.json'
 import { KEY, HARMONICS, ANGLES, accentOfUuid, cmykOfUuid, coilColour, hue, programHues, getFramesGradient, GLAGOLITIC_OF, getCss, castRays, resonance } from '../processing/unit/theme.ts'
 import { speakHex, toGlagolitic } from '../processing/i18n.ts'
 import { divide } from '../apps/calculator/index.ts'
-import { seal as sealAlone, uuid as uuidAlone } from '../password/address.js'
+import { seal as sealAlone, uuid as uuidAlone } from '../password/address.ts'
 export { KEY, HARMONICS, ANGLES, accentOfUuid, cmykOfUuid, coilColour, hue, programHues, getFramesGradient, GLAGOLITIC_OF, getCss }
 export const stylesheet = getCss
 import { LICENSE, attributionHtml } from '../processing/unit/license.ts'
@@ -765,13 +765,13 @@ export const dnaStream = (seq: string, q: StreamQuery = {}) => {
   return { bases: clean.length, basesPerUuid: 64, hex, uuids, readBack: hexToDna(hex).slice(0, clean.length), roundTrips: hexToDna(hex).slice(0, clean.length) === clean, address: uuid(clean), stream: stream(uuids, q), theorem: 'textbook_dna_base4', says: proseFill(PROSE.quantumUuidIndex_says21, clean.length, uuids.length) }
 }
 
-/** Formulated presentation overlays of the UUID core (DNA/Glagolitic/CMYK/a432/shadcn/OG/thousandBit); sealed address alone at password/address.js. */
+/** Formulated presentation overlays of the UUID core (DNA/Glagolitic/CMYK/a432/shadcn/OG/thousandBit); sealed address alone at password/address.ts. */
 export const overlays = (hex = 'a432') => {
   const address = isUuid(hex.toLowerCase()) && seal(hex).valid ? hex : uuid(hex)
   const styled = style(address), presented = presentation(address.replace(/-/g, '')), dna = dnaStream('ACGT')
   const clay = block('clay', { catalog: true }, { catalog: true }, '<p>a432</p>', 'a432 clay theatre')
   const aloneUuid = uuidAlone('a432'), coreUuid = uuid('a432'), aloneSeal = sealAlone(aloneUuid)
-  const alone = { path: 'src/quantum/password/address.js' as const, uuid: aloneUuid, sealed: aloneSeal.valid, same: aloneUuid === coreUuid && aloneSeal.valid && seal(coreUuid).valid }
+  const alone = { path: 'src/quantum/password/address.ts' as const, uuid: aloneUuid, sealed: aloneSeal.valid, same: aloneUuid === coreUuid && aloneSeal.valid && seal(coreUuid).valid }
   const thousandBit = clay.tests.thousandBit
   const holds = alone.same === true && alone.sealed === true && dna.roundTrips === true && presented.parts.length === address.replace(/-/g, '').length
     && /^rgb\(\d+ \d+ \d+\)$/.test(accentOfUuid(address)) && clay.shadcn.type === 'registry:block'

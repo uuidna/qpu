@@ -2,7 +2,7 @@
 // The same one part in 54 is the integer of the proton-electron mass ratio. The 8 coins of the difference
 // are deducted from the 440 source and added to the 432 destination on the signal. Nothing is fetched and nothing is written.
 import { PROSE, proseFill } from './prose-index.ts'
-import { seal, uuid } from '../password/address.js'
+import { seal, uuid } from '../password/address.ts'
 import { QPU_CONNECTOR } from '../../plugins/websiteClient.ts'
 import { teleportProof } from './algorithms.ts'
 import { CLAY_RELATIONS } from './clay-statements.ts'
