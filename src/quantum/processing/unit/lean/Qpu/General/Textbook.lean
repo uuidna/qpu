@@ -365,6 +365,8 @@ example := @textbook_shards_cover
 @[reflection] theorem textbook_shards_cover_reflected (n k : Nat) (h : 0 < n) (σ : Nat) (hσ0 : (n) ≤ σ) : σ - (n) < σ - (k % n) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_shards_cover n k h) hσ0) (textbook_shards_cover n k h)
 /-- the contrapositive of textbook_shards_cover (examples: shard-share, audit-shard) -/
 @[reflection] theorem textbook_shards_cover_contrapositive (n k : Nat) : ¬ (k % n < n) → ¬ ((0 < n)) := fun hc hh => hc (textbook_shards_cover n k hh)
+/-- the converse of textbook_shards_cover, proved (examples: shard-share, audit-shard) -/
+@[reflection] theorem textbook_shards_cover_converse (n k : Nat) : (k % n < n) → (0 < n) := fun hc => Nat.lt_of_le_of_lt (Nat.zero_le _) hc
 /-- an item belongs to one shard only: the shares never overlap (examples: shard-share, audit-shard) -/
 theorem textbook_shards_disjoint (n k i j : Nat) (hi : k % n = i) (hj : k % n = j) : i = j := by subst hi; subst hj; rfl
 example := @textbook_shards_disjoint
@@ -573,6 +575,8 @@ example := @textbook_compete_knows
 @[reflection] theorem textbook_compete_knows_reflected (c t : Nat) (hc : 0 < c) (ht : 0 < t) (σ : Nat) (hσ0 : (c * t) ≤ σ) : σ - (c * t) < σ - (0) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_compete_knows c t hc ht) hσ0) (textbook_compete_knows c t hc ht)
 /-- the contrapositive of textbook_compete_knows (examples: compete-rules) -/
 @[reflection] theorem textbook_compete_knows_contrapositive (c t : Nat) : ¬ (0 < c * t) → ¬ ((0 < c) ∧ (0 < t)) := fun hc hh => hc (textbook_compete_knows c t hh.1 hh.2)
+/-- the converse of textbook_compete_knows, proved (examples: compete-rules) -/
+@[reflection] theorem textbook_compete_knows_converse (c t : Nat) : (0 < c * t) → (0 < c) ∧ (0 < t) := fun hc => ⟨Nat.pos_of_ne_zero (fun h => by rw [h, Nat.zero_mul] at hc; exact Nat.lt_irrefl 0 hc), Nat.pos_of_ne_zero (fun h => by rw [h, Nat.mul_zero] at hc; exact Nat.lt_irrefl 0 hc)⟩
 /-- an app generated on request is the full stack's 1 files plus the Worker configuration and the environment example: 3 files, each addressed, the bundle their fold (examples: payload-app) -/
 theorem textbook_app_bundle : 1 + 2 = 3 := by decide
 /-- textbook_app_bundle reflected by its shape, equality (examples: payload-app) -/
@@ -1565,6 +1569,8 @@ example := @textbook_next_waves_ordered
 @[reflection] theorem textbook_next_waves_ordered_reflected (lanes cores heap cap w v : Nat) (hl : lanes ≤ cores) (hm : lanes * heap ≤ cap) (hw : w < v) (σ : Nat) : (σ - (cores) ≤ σ - (lanes)) ∧ (σ - (cap) ≤ σ - (lanes * heap)) ∧ (σ - (v) ≤ σ - (w + 1)) := ⟨Nat.sub_le_sub_left (textbook_next_waves_ordered lanes cores heap cap w v hl hm hw).1 σ, Nat.sub_le_sub_left (textbook_next_waves_ordered lanes cores heap cap w v hl hm hw).2.1 σ, Nat.sub_le_sub_left (textbook_next_waves_ordered lanes cores heap cap w v hl hm hw).2.2 σ⟩
 /-- the contrapositive of textbook_next_waves_ordered (examples: repository-machine-next) -/
 @[reflection] theorem textbook_next_waves_ordered_contrapositive (lanes cores heap cap w v : Nat) : ¬ (lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w + 1 ≤ v) → ¬ ((lanes ≤ cores) ∧ (lanes * heap ≤ cap) ∧ (w < v)) := fun hc hh => hc (textbook_next_waves_ordered lanes cores heap cap w v hh.1 hh.2.1 hh.2.2)
+/-- the converse of textbook_next_waves_ordered, proved (examples: repository-machine-next) -/
+@[reflection] theorem textbook_next_waves_ordered_converse (lanes cores heap cap w v : Nat) : (lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w + 1 ≤ v) → (lanes ≤ cores) ∧ (lanes * heap ≤ cap) ∧ (w < v) := fun hc => ⟨hc.1, hc.2.1, hc.2.2⟩
 /-- an action whose budget exceeds the request it is asked in cannot answer within that request: the door queues it as a job and answers the job id at once, the queue runs it in child processes for the rest of the budget (budget − request > 0), and its record is an entry when it ends; the request is never held and the app never stalls behind it (examples: repository-machine-next-long) -/
 theorem textbook_long_action_queued (budget request ms : Nat) (h : request < budget) (hr : request ≤ ms) : request < budget ∧ request ≤ ms ∧ 0 < budget - request := ⟨h, hr, Nat.sub_pos_of_lt h⟩
 example := @textbook_long_action_queued
@@ -1924,6 +1930,8 @@ example := @textbook_harmonic_default
 @[reflection] theorem textbook_harmonic_default_reflected (n k : Nat) (h : 0 < n) (σ : Nat) (hσ0 : (n) ≤ σ) : σ - (n) < σ - (k % n) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_harmonic_default n k h) hσ0) (textbook_harmonic_default n k h)
 /-- the contrapositive of textbook_harmonic_default (examples: fold-harmonic, payload-hooks-collapse) -/
 @[reflection] theorem textbook_harmonic_default_contrapositive (n k : Nat) : ¬ (k % n < n) → ¬ ((0 < n)) := fun hc hh => hc (textbook_harmonic_default n k hh)
+/-- the converse of textbook_harmonic_default, proved (examples: fold-harmonic, payload-hooks-collapse) -/
+@[reflection] theorem textbook_harmonic_default_converse (n k : Nat) : (k % n < n) → (0 < n) := fun hc => Nat.lt_of_le_of_lt (Nat.zero_le _) hc
 /-- a role sees a part of every enum's superposition: the combinations it may choose and the ones it may not make all of them, and its harmonic default is always one it may choose; in the app one predicate, admin, reads the admin role for every access function (examples: fold-harmonic-rbac) -/
 theorem textbook_rbac_options (allowed all : Nat) (h : allowed ≤ all) : all - allowed + allowed = all := Nat.sub_add_cancel h
 example := @textbook_rbac_options
