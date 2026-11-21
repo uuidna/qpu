@@ -1,6 +1,6 @@
 import type { CollectionAfterReadHook, Endpoint } from 'payload'
 
-import { fallbackGallery, fallbackImage, qrPng } from '../quantum/processing/qr'
+import { fallbackGallery, fallbackImage, qrPng } from '../utilities/qr'
 import { getServerSideURL } from '../utilities/getURL'
 
 /**

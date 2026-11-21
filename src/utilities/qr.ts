@@ -2,7 +2,7 @@
 // example, so the code of a variation encodes exactly the URL the shop opens for that variation: the product's
 // page with each chosen option and the variant, as the ecommerce template's own variant selector writes them.
 // Scanning the code opens that variation and no other. Pure: a URL in, a PNG out, no canvas and no file.
-// @ts-expect-error the encoder's core has no type declarations; its create() returns the module matrix
+// @ts-expect-error qrcode core has no types; create() returns the module matrix
 import { create } from 'qrcode/lib/core/qrcode.js'
 
 export type VariationOption = { id: number | string; type: string }

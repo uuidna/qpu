@@ -2,6 +2,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import jsQR from 'jsqr'
+// @ts-expect-error pngjs
 import { PNG } from 'pngjs'
 import { fallbackGallery, fallbackImage, qrImageUrl, qrPng, variationPath } from './qr.ts'
 
