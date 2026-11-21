@@ -72,6 +72,21 @@ def coinQubitSpace : Nat := mint hexbit
 /-- The coins are 2, the hexbit they mint is 4 qubits, and those span 16 states. -/
 theorem coin_qubit_space : coins = 2 ∧ hexbit = 4 ∧ coinQubitSpace = 16 := ⟨coins_two, rfl, rfl⟩
 
+/-- The PBKDF2 iteration counts Payload can hash a password with (`auth.passwordHashIterations`). -/
+def passwordHashChoices : List Nat := [100000, 600000]
+
+/-- The most PBKDF2 iterations the Workers runtime runs in one call. -/
+def workerHashLimit : Nat := 100000
+
+/-- The count this installation hashes a password with: the largest Payload offers that the Worker can run. Payload's
+    own default, the largest of its choices, is past the Worker's limit, so a password could not be set there. -/
+def passwordHashIterations : Nat := (passwordHashChoices.filter (· ≤ workerHashLimit)).foldl max 0
+
+/-- The count is one Payload offers, the Worker runs it, and Payload's default does not fit the Worker. -/
+theorem password_hash_fits :
+    passwordHashIterations = 100000 ∧ passwordHashChoices.contains passwordHashIterations = true ∧
+    passwordHashIterations ≤ workerHashLimit ∧ workerHashLimit < passwordHashChoices.foldl max 0 := by decide
+
 /-- The workflows the repository tool serves: the points at which the tree checks itself. -/
 def workflows : List String := ["pre-commit", "commit-msg", "pre-push", "post-commit", "post-push", "prepare-commit-msg", "ci", "pre-deploy"]
 

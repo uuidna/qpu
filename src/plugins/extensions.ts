@@ -24,6 +24,7 @@ import qpuPlugin from '@/plugins/qpu'
 import { qpuCatalogueTools } from '@/utilities/qpuCatalogue'
 import { callUuidna } from '@/utilities/uuidnaDoor'
 
+import { PASSWORD_HASH_ITERATIONS } from '../quantum/processing/config-index'
 import { isUuid } from '../quantum/uuid/index'
 
 /** plugin-mcp's access arguments (permissions for the request, and the request), as its Tool type declares them */
@@ -165,8 +166,15 @@ const uuidRowIDs: Plugin = (config: Config): Config => ({
   globals: (config.globals ?? []).map((global) => ({ ...global, fields: uuidFields(global.fields) })),
 })
 
+/** Passwords are hashed with the count Lean states: Payload's default is past what a Worker runs in one call. */
+const workerPasswordHash: Plugin = (config: Config): Config => ({
+  ...config,
+  auth: { ...config.auth, passwordHashIterations: PASSWORD_HASH_ITERATIONS as NonNullable<NonNullable<Config['auth']>['passwordHashIterations']> },
+})
+
 export const extensions: Plugin[] = [
   collectionAdditions,
+  workerPasswordHash,
   redirectsPlugin({
     collections: ['pages', 'products'],
   }),
