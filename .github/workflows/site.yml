@@ -17,31 +17,31 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Install elan
         run: |
           curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - uses: actions/cache@v4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.elan/toolchains
           key: elan-${{ hashFiles('lean-toolchain') }}
-      - uses: actions/cache@v4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .lake/packages
           key: lake-packages-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}
       - run: lake exe cache get
       # the tree's own compiled modules, shared with lean-verify: only changed modules are rebuilt
-      - uses: actions/cache@v4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .lake/build
           key: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ hashFiles('lakefile.lean', 'src/quantum/processing/unit/lean/**/*.lean') }}
           restore-keys: |
             lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: 10.34.9
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: 26
           cache: pnpm
@@ -50,7 +50,7 @@ jobs:
         run: lake run prose
       - name: Seeds and Lean write the pages, VitePress builds them
         run: lake run site
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: site
           path: site/.vitepress/dist

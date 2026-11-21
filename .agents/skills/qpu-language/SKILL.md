@@ -19,7 +19,7 @@ translate takes text, from and to and answers by vocabulary; call it without tex
 | Tool | Does | Arguments |
 | --- | --- | --- |
 | `translate` | Translation by vocabulary, offline, both ways: text, from, to. | `text`, `from`, `to`, `selftest` |
-| `prose` | Programmable prose: call a tool with its arguments and render its result as sentences in a locale — the toolbox's idea, the tool's scalar answers, the toolbox's instructions — every word from the vocabulary, every number from the tool, every unknown word reported. | `tool`, `arguments`, `locale`, `selftest` |
+| `prose` | Programmable prose: call a tool with its arguments and render its result as sentences in a locale — the toolbox's idea, the tool's scalar answers, the toolbox's instructions — every word from the vocabulary, every number from the tool, every unknown word reported. | `tool`, `arguments`, `locale`, `verify`, `selftest` |
 
 ## Examples
 

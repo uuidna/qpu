@@ -218,6 +218,13 @@ export const extensions: Plugin[] = [
     : []),
   // plugin-mcp: collections/globals via readsFor; catalogue + uuidna beside them
   mcpPlugin({
+    // the catalogue door is public, as qpu.uuidna.com/mcp has always served it: anyone may list and call the tools.
+    // beta.11 gates MCP use behind this top-level access, defaulting signed-out callers out; this opens it, per tool.
+    access: () => true,
+    // beta.11 turns OAuth on by default, so a signed-out HTTP caller gets a 401 challenge instead of the catalogue.
+    // Turn it off: anonymous callers read and call the public catalogue, and a users API-Key still authenticates
+    // a caller for the collection tools that need one (Authorization: users API-Key <key>).
+    oauth: false,
     collections: readsFor('collections', ['find', 'count']),
     globals: readsFor('globals', ['find']),
     hooks: {
