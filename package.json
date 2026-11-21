@@ -8,7 +8,7 @@
     "prepare": "git config core.hooksPath .githooks || exit 0",
     "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" payload build",
     "deploy": "pnpm run deploy:database && pnpm run deploy:app && pnpm exec cross-env NODE_ENV=production QPU_SEED_DOOR=https://qpu.uuidna.com/api/seed/hold pnpm run seed && pnpm exec cross-env NODE_ENV=production QPU_SEED_DOOR=https://qpu.uuidna.com/api/seed/hold pnpm run seed:check",
-    "deploy:app": "opennextjs-cloudflare build --env=$CLOUDFLARE_ENV && opennextjs-cloudflare deploy --env=$CLOUDFLARE_ENV",
+    "deploy:app": "opennextjs-cloudflare build --env=$CLOUDFLARE_ENV && printf %s \"$PAYLOAD_SECRET\" | wrangler secret put PAYLOAD_SECRET --env=$CLOUDFLARE_ENV && opennextjs-cloudflare deploy --env=$CLOUDFLARE_ENV",
     "deploy:database": "cross-env NODE_ENV=production PAYLOAD_SECRET=ignore payload migrate && wrangler d1 execute D1 --command 'PRAGMA optimize' --env=$CLOUDFLARE_ENV --remote",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
