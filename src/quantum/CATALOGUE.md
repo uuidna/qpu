@@ -4,7 +4,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1889 products, 2 under a declared claim context and 1887 as the author's own statement, with 1534 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1890 products, 2 under a declared claim context and 1888 as the author's own statement, with 1534 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -1775,6 +1775,17 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 Config.nibblePrimes = [2, 3, 5, 7, 11, 13]
+```
+
+### `Config.password_hash_fits`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.passwordHashIterations = 100000 ∧
+  Config.passwordHashChoices.contains Config.passwordHashIterations = true ∧
+    Config.passwordHashIterations ≤ Config.workerHashLimit ∧
+      Config.workerHashLimit < List.foldl max 0 Config.passwordHashChoices
 ```
 
 ## Qpu.General.Cross
