@@ -7,7 +7,7 @@ Lean writes the blueprint: one section for each module whose doc opens with fron
 module's prose and a table of every theorem the author declared in that module and every theorem the prose names in
 backticks, each with the statement the kernel accepted.
 
-Run from the repository root: `lake env lean src/quantum/processing/unit/lean/tools/Blueprint.lean`.
+Run from the repository root: `lake env lean lean/tools/Blueprint.lean`.
 The page is written to `.lake/build/BLUEPRINT.md`; `lake run index` installs it and `lake run check` compares it. -/
 
 open Lean Meta

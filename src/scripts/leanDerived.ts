@@ -7,7 +7,7 @@ import { join } from 'node:path'
 import { scripts } from '../quantum/processing/script-doors.ts'
 
 type Door = { path: string; text: string; says: string }
-const root = 'src/quantum/processing/unit/lean'
+const root = 'lean'
 const walk = (dir: string): string[] => readdirSync(dir, { withFileTypes: true })
   .sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
   .flatMap((entry) => entry.isDirectory() ? walk(join(dir, entry.name)) : entry.name.endsWith('.lean') ? [join(dir, entry.name)] : [])

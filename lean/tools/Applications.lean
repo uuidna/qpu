@@ -9,7 +9,7 @@ frontmatter (`component: …`); its page is made of that frontmatter, the module
 beside its theorems when there is one, and every theorem of the module with its inline doc and its statement as the
 kernel accepted it. Nothing on a page is typed outside Lean.
 
-Run from the repository root: `lake env lean src/quantum/processing/unit/lean/tools/Applications.lean`.
+Run from the repository root: `lake env lean lean/tools/Applications.lean`.
 The pages land in `site/patents/`, where the VitePress site reads them. -/
 
 open Lean Meta
@@ -123,7 +123,7 @@ def write : MetaM Unit := do
       let statement ← ppExpr info.type
       let doc := (← findDocString? env name).getD ""
       rows := rows.push { name, doc, statement := toString statement }
-    let source := "src/quantum/processing/unit/lean/" ++ (module.toString.replace "." "/") ++ ".lean"
+    let source := "lean/" ++ (module.toString.replace "." "/") ++ ".lean"
     let claim := Qpu.Claims.Extract.claims.find? (·.source == source)
     IO.FS.writeFile (outDir / (slug module ++ ".md")) (page use claim rows)
     let component := (use.front.lookup "component").getD module.toString

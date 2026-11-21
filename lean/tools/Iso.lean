@@ -8,7 +8,7 @@ theorem that witnesses it and that theorem's statement as the kernel accepted it
 each with its witness or marked open. A witness that is not a theorem the author declared stops the run: the register
 cannot be written with a clause the kernel does not carry.
 
-Run from the repository root: `lake env lean src/quantum/processing/unit/lean/tools/Iso.lean`.
+Run from the repository root: `lake env lean lean/tools/Iso.lean`.
 The index is written to `.lake/build/iso-index.ts`; `lake run index` installs it and `lake run check` compares it. -/
 
 open Lean Meta Iso

@@ -7,7 +7,7 @@ Lean writes the thousand-bit table: for each family formula, how many examples i
 examples, and its last example with that example's reflection at the bound; and the meaning of the numbers the table
 itself holds, so each family sees which other families reach its values.
 
-Run from the repository root: `lake env lean src/quantum/processing/unit/lean/tools/Thousand.lean`.
+Run from the repository root: `lake env lean lean/tools/Thousand.lean`.
 The index is written to `.lake/build/thousand-index.ts`; `lake run index` installs it and `lake run check` compares it. -/
 
 open Lean Thousand

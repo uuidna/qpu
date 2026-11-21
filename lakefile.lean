@@ -2,7 +2,7 @@ import Lake
 open Lake DSL
 
 package qpu where
-  srcDir := "src/quantum/processing/unit/lean"
+  srcDir := "lean"
   leanOptions := #[
     ⟨`autoImplicit, false⟩,
     ⟨`relaxedAutoImplicit, false⟩,
@@ -45,46 +45,46 @@ def steps (all : List (String × Array String)) : IO UInt32 := do
   return 0
 
 /-- The Lean file that writes the draft applications. -/
-def applicationsFile : String := "src/quantum/processing/unit/lean/tools/Applications.lean"
+def applicationsFile : String := "lean/tools/Applications.lean"
 
 /-- The scripts that render files from Lean, in the order they depend on each other. -/
 def renderers : List String :=
   ["src/scripts/leanDerived.ts"]
 
 /-- The Lean file that writes the prose index, where it writes it, and where the TypeScript reads it. -/
-def proseFile : String := "src/quantum/processing/unit/lean/tools/Prose.lean"
+def proseFile : String := "lean/tools/Prose.lean"
 /-- the index as Lean wrote it -/
 def proseBuilt : System.FilePath := ".lake" / "build" / "prose-index.ts"
 /-- the index the TypeScript reads -/
 def proseIndex : System.FilePath := "src" / "quantum" / "processing" / "prose-index.ts"
 
 /-- The Lean file that writes the nested catalogue, where it writes it, and where the TypeScript reads it. -/
-def nestedFile : String := "src/quantum/processing/unit/lean/tools/Nested.lean"
+def nestedFile : String := "lean/tools/Nested.lean"
 /-- the catalogue as Lean wrote it -/
 def nestedBuilt : System.FilePath := ".lake" / "build" / "nested-index.ts"
 /-- the catalogue the TypeScript reads -/
 def nestedIndex : System.FilePath := "src" / "quantum" / "processing" / "nested-index.ts"
 
 /-- The Lean file that writes the catalogue of claims. -/
-def catalogueFile : String := "src/quantum/processing/unit/lean/tools/Catalogue.lean"
+def catalogueFile : String := "lean/tools/Catalogue.lean"
 
 /-- The Lean file that writes the connector's configuration. -/
-def configFile : String := "src/quantum/processing/unit/lean/tools/Config.lean"
+def configFile : String := "lean/tools/Config.lean"
 
 /-- The Lean file that writes the register of standards. -/
-def isoFile : String := "src/quantum/processing/unit/lean/tools/Iso.lean"
+def isoFile : String := "lean/tools/Iso.lean"
 
 /-- The Lean file that writes the thousand-bit table. -/
-def thousandFile : String := "src/quantum/processing/unit/lean/tools/Thousand.lean"
+def thousandFile : String := "lean/tools/Thousand.lean"
 
 /-- The Lean file that writes the blueprint. -/
-def blueprintFile : String := "src/quantum/processing/unit/lean/tools/Blueprint.lean"
+def blueprintFile : String := "lean/tools/Blueprint.lean"
 
 /-- The Lean file that writes the textbook index. -/
-def textbookFile : String := "src/quantum/processing/unit/lean/tools/Textbook.lean"
+def textbookFile : String := "lean/tools/Textbook.lean"
 
 /-- The Lean file that writes the theorem index. -/
-def theoremsFile : String := "src/quantum/processing/unit/lean/tools/Theorems.lean"
+def theoremsFile : String := "lean/tools/Theorems.lean"
 
 /-- Compare what a Lean tool wrote with the committed file, or install it. -/
 def settle (built index : System.FilePath) (check : Bool) : IO UInt32 := do
@@ -198,18 +198,18 @@ script leanfiles do
   let listed ← IO.Process.output { cmd := "git", args := #["ls-files", "*.lean"] }
   let files := (listed.stdout.splitOn "\n").filter (· != "")
   let unchecked := files.filter fun file =>
-    !(file == "lakefile.lean" || file.startsWith "src/quantum/processing/unit/lean/Qpu/" || file == "src/quantum/processing/unit/lean/Qpu.lean" || leanTools.contains file)
+    !(file == "lakefile.lean" || file.startsWith "lean/Qpu/" || file == "lean/Qpu.lean" || leanTools.contains file)
   -- `lean/` is kept as evidence: its files are named here on every run, and nothing is removed for the kernel's sake
   let evidence := unchecked.filter (·.startsWith "lean/")
   let skipped := unchecked.filter (!·.startsWith "lean/")
   -- the root imports every module that states theorems, so the index, the catalogue and the claims see all of them;
   -- the prose modules hold sentences, and the two modules with a `main` are roots of their own
-  let root ← IO.FS.readFile "src/quantum/processing/unit/lean/Qpu.lean"
+  let root ← IO.FS.readFile "lean/Qpu.lean"
   let imported := (root.splitOn "\n").filterMap fun line => if line.startsWith "import " then some (line.drop 7).trimAscii.toString else none
   let unseen := files.filter fun file =>
-    file.startsWith "src/quantum/processing/unit/lean/Qpu/" && !file.startsWith "src/quantum/processing/unit/lean/Qpu/General/Prose"
-      && !["Qpu.Claims.Extract", "Qpu.General.ThousandMain"].contains (((file.drop "src/quantum/processing/unit/lean/".length).dropEnd 5).toString.replace "/" ".")
-      && !imported.contains (((file.drop "src/quantum/processing/unit/lean/".length).dropEnd 5).toString.replace "/" ".")
+    file.startsWith "lean/Qpu/" && !file.startsWith "lean/Qpu/General/Prose"
+      && !["Qpu.Claims.Extract", "Qpu.General.ThousandMain"].contains (((file.drop "lean/".length).dropEnd 5).toString.replace "/" ".")
+      && !imported.contains (((file.drop "lean/".length).dropEnd 5).toString.replace "/" ".")
   for file in unseen do IO.eprintln s!"{file}: the root Qpu.lean does not import this module, so its theorems are in no index and no claim"
   if !unseen.isEmpty then return 1
   for file in evidence do IO.println s!"{file}: kept as evidence, not checked by the kernel"

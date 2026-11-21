@@ -57,7 +57,7 @@ export const verifyProse = (asked: string) => {
   const name = names.find((n) => n === asked) ?? names.find((n) => PROSE[n] === asked)
   if (!name) return { phase: 'prose-verify' as const, found: false, asked, sentences: names.length, grounded: false, says: PROSE.quantumProcessingToolboxesLanguage_verify2 }
   const text = PROSE[name], stem = name.slice(0, name.lastIndexOf('_')), unit = `${stem[0]!.toUpperCase()}${stem.slice(1)}`
-  const module = `Qpu.General.Prose.${unit}`, file = `src/quantum/processing/unit/lean/Qpu/General/Prose/${unit}.lean`
+  const module = `Qpu.General.Prose.${unit}`, file = `lean/Qpu/General/Prose/${unit}.lean`
   const words = new Set(text.match(/[A-Za-z_][\w.]*/g) ?? [])
   const theorems = THEOREMS.filter((t) => /[_.]/.test(t.key) && words.has(t.key)).map((t) => ({ theorem: t.key, module: t.module, statement: t.statement, mathlib: t.module === 'Qpu.General.Meaning' }))
   const mathlib = theorems.filter((t) => t.mathlib).length
