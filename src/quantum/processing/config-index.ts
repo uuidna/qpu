@@ -17,6 +17,8 @@ export const LEAN_RESOURCE = "lean://qpu/theorems"
 export const INSERT_SCHEMA = { enum: ["EARLIEST","NEW","INLINE","NEW_THEN_INLINE"], default: "EARLIEST" }
 /** The coin qubit space, from Config.coinQubitSpace: the most remembered results a computation keeps at once. */
 export const COIN_QUBIT_SPACE = 16
+/** The PBKDF2 iterations a password is hashed with, from Config.passwordHashIterations: the largest Payload offers that a Worker runs. */
+export const PASSWORD_HASH_ITERATIONS = 100000
 /** The workflows the repository tool serves, from Config.workflows. */
 export const WORKFLOWS = ["pre-commit","commit-msg","pre-push","post-commit","post-push","prepare-commit-msg","ci","pre-deploy"] as const
 /** The workflows git starts, from Config.gitHooks. */
