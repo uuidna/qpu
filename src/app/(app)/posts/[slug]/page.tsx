@@ -12,6 +12,8 @@ import type { Post } from '@/payload-types'
 
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
+import { pageJsonLd } from '@/quantum/processing/jsonld'
+import { getServerSideURL } from '@/utilities/getURL'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/website/components/LivePreviewListener'
 
@@ -57,6 +59,11 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd({ url: `${getServerSideURL()}${url}`, title: post.meta?.title || post.title || '', description: post.meta?.description ?? '', date: post.publishedAt ?? undefined })) }}
+      />
 
       {draft && <LivePreviewListener />}
 

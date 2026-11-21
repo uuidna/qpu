@@ -9,6 +9,8 @@ import { draftMode } from 'next/headers'
 import React from 'react'
 
 import { PayloadRedirects } from '@/components/PayloadRedirects'
+import { pageJsonLd } from '@/quantum/processing/jsonld'
+import { getServerSideURL } from '@/utilities/getURL'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -58,6 +60,10 @@ export default async function Page({ params }: Args) {
     <article className="pt-16 pb-24">
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageJsonLd({ url: `${getServerSideURL()}${url}`, title: page.meta?.title || page.title || '', description: page.meta?.description ?? '' })) }}
+      />
       <RenderHero {...hero} />
       <RenderBlocks blocks={layout} />
     </article>
