@@ -5,9 +5,9 @@ import config from '@payload-config'
 import { PRODUCT_CLAIMS } from '@/products/claims'
 
 /** Develop one lead into a product and the post that publishes it, through the Local API with access and
- *  hooks running: `LEAD_PATH=legacy/src/payload.qpu.mcp.ts pnpm payload run src/scripts/developLead.ts`. The products and posts
+ *  hooks running: `LEAD_PATH=<module path> pnpm payload run src/scripts/developLead.ts`. The products and posts
  *  afterChange hooks mark the lead page developed. Acts as LEGACY_ADMIN_EMAIL (the user queueLegacyLeads resolves). */
-const leadPath = process.env.LEAD_PATH || 'legacy/src/payload.qpu.mcp.ts'
+const leadPath = process.env.LEAD_PATH || ''
 const email = process.env.LEGACY_ADMIN_EMAIL || 'legacy-leads@qpu.localhost'
 const payload = await getPayload({ config })
 

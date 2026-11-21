@@ -90,8 +90,8 @@ const extended = (collection: CollectionConfig, more: { fields?: CollectionConfi
 const additions: Record<string, (collection: CollectionConfig) => CollectionConfig> = {
   // plugin-mcp v4 authenticates MCP clients with user API keys: `Authorization: users API-Key <key>`
   users: (collection) => extended(collection, { auth: { ...(typeof collection.auth === 'object' ? collection.auth : {}), useAPIKey: true } }),
-  // A page that is a lead from the old tree: one module (or directory) of legacy/, to be developed into this
-  // installation. The trial hook fills verdict and receipt before the page is stored.
+  // A page that is a lead: one module (or directory) proposed for development into this installation.
+  // The trial hook fills verdict and receipt before the page is stored.
   pages: (collection) =>
     extended(collection, {
       fields: [

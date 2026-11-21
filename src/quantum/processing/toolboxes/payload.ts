@@ -2103,7 +2103,7 @@ const gateDocs = (ctx: Context, origin: string, devDependencies: Record<string, 
   const g = gates(ctx, origin, devDependencies, google, mcpAnswer)
   const theorem = 'textbook_gates_partition'
   const lead = new Map(ctx.leads.map((l) => [l.id, l]))
-  // a nested page is addressed by its breadcrumb path, the URL the nested-docs plugin joins from the slugs and the fork resolves
+  // a nested page is addressed by its breadcrumb path, the URL the nested-docs plugin joins from the slugs and the app resolves
   const root = { slug: websiteGate('gates', 'root').root, title: 'Gates' }
   const rootPath = `/${root.slug}`
   const rootCrumb = crumb(rootPath, root.title, root.slug)
@@ -3865,7 +3865,7 @@ const config = (kind: ConfigKind, ctx: Context, p: { version?: string; descripti
     case 'packages': return packages()
     case 'ecommerce': return ecommerce(p.rates)
     case 'adapters': if (p.port !== undefined) return typeof p.port === 'number' ? portAt(p.port) : listPorts()
-      return { ...adapters(p.env ?? []), wrangler: siteWrangler(), openNext: { config: file('root', 'open-next'), build: 'npx opennextjs-cloudflare build (the fork\'s pnpm build inside, so the build environment names PAYLOAD_SECRET and DATABASE_URI)', requires: [PROSE.quantumProcessingToolboxesPayload_s514], measured: PROSE.quantumProcessingToolboxesPayload_measured515 } }
+      return { ...adapters(p.env ?? []), wrangler: siteWrangler(), openNext: { config: file('root', 'open-next'), build: 'npx opennextjs-cloudflare build (the app\'s pnpm build inside, so the build environment names PAYLOAD_SECRET and DATABASE_URI)', requires: [PROSE.quantumProcessingToolboxesPayload_s514], measured: PROSE.quantumProcessingToolboxesPayload_measured515 } }
     case 'ui': { const u = ui('processor'); const reg = registry(); const byTool = [...new Map(ctx.examples.map((e) => [e.tool, e])).values()]; const presented = byTool.map((e) => ({ tool: e.tool, parts: presentation(uuid(e.tool + JSON.stringify(e.arguments)).replace(/-/g, '')).parts.length })); const coverage = { tools: byTool.length, covered: presented.filter((x) => x.parts === 32).length, items: PRESENTABLE_ITEMS.length, variants: 2, choicesPerNibble: PRESENTABLE_ITEMS.length * 2, combinations: PROSE.quantumProcessingToolboxesPayload_combinations516, loaded: 0, cost: PROSE.quantumProcessingToolboxesPayload_cost517, says: PROSE.quantumProcessingToolboxesPayload_says518 }; return { coverage, overlays: overlays(typeof p.hex === 'string' ? p.hex : 'a432'), core: PROSE.quantumProcessingToolboxesPayload_core519, ...(p.hex ? { presentation: presentation(p.hex) } : {}), ...(p.stream ? { stream: stream(p.stream, p.query ?? {}) } : {}), styled: { items: STYLED_ITEMS.map((i) => i.name), from: PROSE.quantumProcessingToolboxesPayload_from520, presentable: PROSE.quantumProcessingToolboxesPayload_presentable521 }, registry: { schema: 'https://ui.shadcn.com/schema/registry.json', items: (reg['registry.json'] as { items: { name: string; type: string }[] }).items.map((i) => `${i.name} (${i.type})`), add: 'npx shadcn add https://qpu.uuidna.com/r/qpu-app.json', host: PROSE.quantumProcessingToolboxesPayload_host522 }, extension: MCP_APPS.extension, mimeType: MCP_APPS.mimeType, scheme: MCP_APPS.scheme, specification: MCP_APPS.specification, tokens: UI_TOKENS.map(([token, host, fallback]) => ({ token, host, fallback })), accept: { via: 'widget' as const, control: /id="k"/.test(u.html) && /type="password"/.test(u.html) && /ui\/accept-token/.test(u.html), secretTravels: false as const, standards: ['ISO/IEC 27001:2022', 'ISO/IEC 27034'] as const }, csp: u.csp, prefersBorder: u.prefersBorder, shellBytes: u.html.length, deterministic: PROSE.quantumProcessingToolboxesPayload_deterministic523, hosted: PROSE.quantumProcessingToolboxesPayload_hosted524, rendering: PROSE.quantumProcessingToolboxesPayload_rendering525 } }
     case 'fields': return FIELDS
     case 'validations': {
@@ -3897,10 +3897,10 @@ const config = (kind: ConfigKind, ctx: Context, p: { version?: string; descripti
       ],
       minimum: PROSE.quantumProcessingToolboxesPayload_minimum540, scale: PROSE.quantumProcessingToolboxesPayload_scale541 }
     case 'fullstack': {
-      // Delivery overlay onto this repo (payloadcms/website standard in src/): QPU computes feeds/plugins; Payload delivers the site.
-      // Not a conversion into Payload — the fork is already the product surface; this kind refreshes QPU-owned overlay files.
+      // Delivery overlay onto this repo (the Payload app in src/): QPU computes feeds/plugins; Payload delivers the site.
+      // Not a conversion into Payload — the app is already the product surface; this kind refreshes QPU-owned overlay files.
       const ws = website(WEBSITE_FIXTURE)
-      // the licence layering: the fork stays MIT (Payload's copyright kept whole); what QPU adds carries QPU's licence, named in every added file and in the notice
+      // the licence: QPU's own (CC-BY-NC-ND-4.0), named in the first line of every file by the header built below
       const header = proseFill(PROSE.quantumProcessingToolboxesPayload_s542, LICENSE.attribution)
       const readmeRoot = `# Quantum Processing Unit
 

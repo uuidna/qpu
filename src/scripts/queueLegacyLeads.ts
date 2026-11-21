@@ -6,9 +6,9 @@ import { createPayloadRequest, getPayload, registerFirstUserOperation } from 'pa
 import config from '@payload-config'
 import { uuid } from '../quantum/password/address.js'
 
-/** Queue the old tree's modules as legacyLead jobs and run them: `pnpm payload run src/scripts/queueLegacyLeads.ts`.
- *  The modules are the committed legacy/ tree (the payloadcms/website fork qpu ran until this installation), read from
- *  git; each module's address is the content address of its committed text. LEGACY_LIMIT takes the first N. Every
+/** Bootstrap the admin user and queue module leads, then run them: `pnpm payload run src/scripts/queueLegacyLeads.ts`.
+ *  Modules are read from git by path (LEGACY_PATHS names them; the default tree is empty once a prior fork is removed),
+ *  each module's address being the content address of its committed text. LEGACY_LIMIT takes the first N. Every
  *  write runs as an admin user with access on (the v4 Local API default), so hooks and access decide. */
 const git = (...args: string[]) => execFileSync('git', args, { encoding: 'utf8', maxBuffer: 1 << 30 })
 const EXPORT = /export\s+(?:default\s+)?(?:async\s+)?(?:function\*?|const|let|var|class|type|interface|enum)\s+([A-Za-z0-9_$]+)/g

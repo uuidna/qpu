@@ -1,4 +1,0 @@
-packages:
-  - '.'
-  - 'preview-runtimes/*'
-  - 'src/quantum'
