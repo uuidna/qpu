@@ -68,8 +68,10 @@ def uuid (text : String) : String :=
   let variant := hex1 ((hv (low.toList.getD 0 '0') % 4) + 8)
   stamp (sl high 0 12 ++ sl high 15 16 ++ sl high 12 15 ++ variant ++ sl low 1 4 ++ sl low 4 16)
 
-/-- Sanity: the Lean fold reproduces the JavaScript output bit-for-bit. The generated TypeScript must agree. -/
-theorem uuid_x : uuid "x" = "af63f54c-8602-8170-8331-b95a7d569506" := by native_decide
+-- Sanity: the Lean fold reproduces the JavaScript output bit-for-bit (the generated TypeScript must agree).
+-- Proved by `decide` — pure kernel reduction, no trusted compiled code.
+set_option maxRecDepth 100000 in
+theorem uuid_x : uuid "x" = "af63f54c-8602-8170-8331-b95a7d569506" := by decide
 
 /-! ## Emit the TypeScript
 
