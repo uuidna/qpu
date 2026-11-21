@@ -22,7 +22,7 @@ status=$(curl -sS -o /tmp/qpu-obs.json -w '%{http_code}' -X POST \\
   -H "Authorization: Bearer \${CLOUDFLARE_API_TOKEN}" \\
   -H "Content-Type: application/json" \\
   --data "{\\"queryId\\":\\"qpu-deploy\\",\\"timeframe\\":{\\"from\\":\${from},\\"to\\":\${to}},\\"view\\":\\"events\\",\\"limit\\":5,\\"parameters\\":{\\"datasets\\":[\\"cloudflare-workers\\"],\\"filters\\":[{\\"key\\":\\"\\$metadata.service\\",\\"operation\\":\\"eq\\",\\"type\\":\\"string\\",\\"value\\":\\"qpu\\"}]}}")
-OBS_STATUS="$status" python3 -c 'import json,os,sys; status=os.environ["OBS_STATUS"]; body=json.load(open("/tmp/qpu-obs.json")); result=body.get("result") or {}; events=result.get("events"); print("observability", status, "events", len(events) if isinstance(events, list) else 0); sys.exit(0 if status=="200" and body.get("success") is True and isinstance(events, list) else 1)'`
+OBS_STATUS="$status" python3 -c 'import json,os,sys; status=os.environ["OBS_STATUS"]; body=json.load(open("/tmp/qpu-obs.json")); result=body.get("result") or {}; events=result.get("events"); events=events.get("events") if isinstance(events, dict) else events; print("observability", status, "events", len(events) if isinstance(events, list) else "none"); sys.exit(0 if status=="200" and body.get("success") is True and isinstance(events, list) else 1)'`
 
 export const DEPLOY_STAGES: readonly DeployStage[] = [
   { id: 'database', run: 'pnpm run deploy:database', says: PROSE.quantumPayloadDeploy_says1 },
