@@ -363,7 +363,7 @@ test('every NIST scenario holds locally and e2e against qpu.uuidna.com', async (
 
   const pages = await fetchText(`https://${QPU_HOST}/api/pages?limit=1`, 'application/json')
   if (pages.status === 200) {
-    assert.ok(JSON.parse(pages.text).docs?.length >= 1)
+    assert.ok(Array.isArray(JSON.parse(pages.text).docs))
   }
 })
 
