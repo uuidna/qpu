@@ -94,7 +94,7 @@ test('the Cloudflare workflow is the Payload deploy', () => {
   assert.equal(file.replace(/\n$/, ''), workflow.replace(/\n$/, ''))
   const pkg = JSON.parse(readFileSync(new URL('../../../package.json', import.meta.url), 'utf8')) as { scripts: { deploy: string } }
   assert.equal(pkg.scripts.deploy, deployCommand())
-  assert.deepEqual(DEPLOY_STAGES.map((stage) => stage.id), ['database', 'seed', 'check', 'app', 'smoke', 'logs'])
+  assert.deepEqual(DEPLOY_STAGES.map((stage) => stage.id), ['database', 'app', 'seed', 'check', 'smoke', 'logs'])
   assert.equal(workflow.includes('pnpm run deploy:app'), true)
   assert.equal(workflow.includes('query Worker logs'), true)
   assert.equal(workflow.includes('https://qpu.uuidna.com/admin'), true)

@@ -42,12 +42,12 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Payload migrate, then the D1 optimize
         run: pnpm run deploy:database
-      - name: Payload writes one wave, then the next, in one session
-        run: pnpm exec cross-env NODE_ENV=production pnpm run seed
-      - name: Payload reads the pages back and deploy is allowed when they agree
-        run: pnpm exec cross-env NODE_ENV=production pnpm run seed:check
       - name: OpenNext builds the Payload app and deploys the Worker
         run: pnpm run deploy:app
+      - name: Payload writes one wave, then the next, through the deployed Worker
+        run: pnpm exec cross-env NODE_ENV=production QPU_SEED_DOOR=https://qpu.uuidna.com/api/seed/hold pnpm run seed
+      - name: Payload reads the pages back and the deploy holds when they agree
+        run: pnpm exec cross-env NODE_ENV=production QPU_SEED_DOOR=https://qpu.uuidna.com/api/seed/hold pnpm run seed:check
       - name: smoke the admin on both hostnames
         run: |
           fail=0
