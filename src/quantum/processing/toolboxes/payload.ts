@@ -2178,25 +2178,6 @@ const site = (ctx: Context, origin: string, devDependencies: Record<string, stri
   })
   const useCases = [...new Set(docs.map((d) => d.toolbox))].map((toolbox) => ({ toolbox, pages: docs.filter((d) => d.toolbox === toolbox).length, tools: [...new Set(docs.filter((d) => d.toolbox === toolbox).map((d) => d.tool))] }))
   const gated = gateDocs(ctx, origin, devDependencies, google)
-  const leaves = docs.filter((d): d is typeof d & { uuid: string; title: string; description: string; arguments?: Record<string, unknown>; theorem: string | null } => 'uuid' in d)
-  const rootId = uuid('site:examples')
-  const boxId = (name: string) => uuid(`site:examples:${name}`)
-  const rootPath = `/${rootId}`
-  const rootCrumb = crumb(rootPath, 'Examples', rootId)
-  const boxes = [...new Set(leaves.map((d) => d.toolbox))]
-  const boxPages = boxes.map((name) => {
-    const id = boxId(name)
-    const path = `${rootPath}/${id}`
-    const kids = leaves.filter((d) => d.toolbox === name)
-    return { id, title: name, slug: `/${id}`, path, parent: rootPath, depth: 2 as const, layout: [qpuFields(id, 'payload', { toolbox: name, examples: kids.map((k) => k.id) }, 'textbook_site_documents')], meta: { title: `${name} · examples`, description: `${kids.length} examples of the ${name} toolbox` }, breadcrumbs: [rootCrumb, crumb(path, name, id)], hero: { type: 'default' as const, richText: lx.doc([lx.heading(name, 'h1'), lx.paragraph([lx.text(`${kids.length} examples.`)]), ...kids.map((k) => lx.paragraph([lx.link(`/${k.uuid}`, k.title)]))]) } }
-  })
-  const examplePages = leaves.map((d) => {
-    const parentId = boxId(d.toolbox)
-    const parentPath = `${rootPath}/${parentId}`
-    const path = `${parentPath}/${d.uuid}`
-    return { id: d.uuid, title: d.title, slug: `/${d.uuid}`, path, parent: `/${parentId}`, depth: 3 as const, layout: [qpuFields(d.uuid, d.tool, d.arguments ?? {}, d.theorem)], meta: { title: d.title, description: d.description }, breadcrumbs: [rootCrumb, crumb(parentPath, d.toolbox, parentId), crumb(path, d.title, d.uuid)], hero: { type: 'default' as const, richText: lx.doc([lx.heading(d.title, 'h1'), lx.paragraph([lx.text(d.description)]), lx.paragraph([lx.text('Nested under '), lx.link(parentPath, d.toolbox)]), qpuNode(d.uuid, d.tool, d.arguments ?? {}, d.theorem)]) } }
-  })
-  const examplesRoot = { id: rootId, title: 'Examples', slug: rootPath, path: rootPath, parent: null, depth: 1 as const, layout: [qpuFields(rootId, 'payload', { examples: leaves.length }, 'textbook_site_documents')], meta: { title: 'Examples · @uuidna/qpu', description: `${leaves.length} examples nested under ${boxes.length} toolboxes` }, breadcrumbs: [rootCrumb], hero: { type: 'default' as const, richText: lx.doc([lx.heading('Examples', 'h1'), lx.paragraph([lx.text(`${leaves.length} examples, ${boxes.length} toolboxes.`)]), ...boxPages.map((b) => lx.paragraph([lx.link(b.path, b.title)]))]) } }
   const made1000 = seededTrapdoor(1000, 1n), dec1000 = decodeImpossible(made1000.N, made1000.witness)
   const home = { id: 'home', slug: 'home', title: PROSE.quantumProcessingToolboxesPayload_title294, thousandBit: { bits: made1000.bits, N: made1000.N.toString(), p: made1000.p.toString(), q: made1000.q.toString(), witness: made1000.witness.toString(), searched: dec1000.searched.toString(), decoded: dec1000.decoded, verified: dec1000.verified, exact: made1000.p * made1000.q === made1000.N } }
   const challenges = challengeSection()

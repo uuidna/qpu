@@ -7,7 +7,7 @@ import { THEOREMS } from './theorems-index.ts'
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: no accepted theorem is left without a claim, and no claim is of a theorem the kernel lacks. */
 test('no accepted theorem is left without a claim, and no claim is of a theorem the kernel lacks', () => {
-  const [made, open = ''] = readFileSync('src/quantum/CATALOGUE.md', 'utf8').split('\n## Named and not yet proved\n')
+  const [made] = readFileSync('src/quantum/CATALOGUE.md', 'utf8').split('\n## Named and not yet proved\n')
   const sections = made!.split('\n### `').slice(1)
   const claimed = new Map(sections.map((section) => [section.slice(0, section.indexOf('`')), section]))
   const kernel = new Set(THEOREMS.map((t) => t.key))
