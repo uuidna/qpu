@@ -10,7 +10,7 @@ const ask = async () => {
   try {
     const res = await fetch('/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'fold', arguments: { qubits: 4 } } }) })
     const s = (await res.json())?.result?.structuredContent
-    live.value = { effective: s.effective, formula: s.formula, holds: s.holds === true, ms: performance.now() - t0 }
+    live.value = { effective: s.effective, formula: s.receipt.formula, holds: s.receipt.holds === true && s.delivery.holds === true, ms: performance.now() - t0 }
     liveError.value = false
   } catch {
     liveError.value = true

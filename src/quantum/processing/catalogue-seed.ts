@@ -16,8 +16,6 @@ const paragraph = (text: string) => ({ type: 'paragraph' as const, version: 1, f
 /** Lexical rich text of the lines given, one paragraph each. */
 export const richText = (lines: readonly string[]) => ({ root: { type: 'root' as const, version: 1, direction: 'ltr' as const, format: '' as const, indent: 0, children: lines.filter((line) => line.trim().length > 0).map(paragraph) } })
 
-/** Lexical rich text that opens on a heading, then the lines. */
-export const headedText = (heading: string, lines: readonly string[]) => { const body = richText(lines); return { root: { ...body.root, children: [{ type: 'heading' as const, tag: 'h1' as const, version: 1, format: '' as const, indent: 0, direction: 'ltr' as const, children: [{ type: 'text' as const, version: 1, text: heading, format: 0, mode: 'normal' as const, style: '', detail: 0 }] }, ...body.root.children] } } }
 
 /** The prose of a module doc: its title line and any frontmatter left out. */
 const proseOf = (doc: string | undefined) => {

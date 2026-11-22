@@ -3832,6 +3832,7 @@ const SENTENCES = {
   scriptsProseCheck_s2: "a sentence names a theorem the kernel does not have yet: it is a lead, a theorem to prove in Lean; nothing is removed for it",
   scriptsQueueLegacyLeads_s1: "⟦0⟧ is not a user here, and the database already has users: name an admin with LEGACY_ADMIN_EMAIL",
   scriptsQueueLegacyLeads_s2: "⟦0⟧ is not an admin: name one with LEGACY_ADMIN_EMAIL",
+  scriptsSite_proofs1: "The theorems below are stated in Lean 4 and were accepted by its kernel, each with the axioms it rests on; the page carries them as schema.org microdata an MCP client reads.",
   scriptsSite_s2: "description: \"The QPU pages and MCP catalogue, written by Lean and served beside /api/mcp\"",
   scriptsSite_s3: "This site is written from the quantum tree: the ISO/IEC 4879:2024 vocabulary, the standards it fuses, the MCP toolboxes and the theorems the Lean kernel accepted. Every tool answers live at POST /api/mcp.",
   scriptsSite_says1: "what tools/list answers, served statically; a static site answers no tools/call",

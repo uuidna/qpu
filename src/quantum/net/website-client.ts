@@ -509,17 +509,6 @@ const executableCalls = (collection: string, doc: Record<string, unknown>) => {
 
 type FindResponse = { content: { type: 'text'; text: string }[]; doc?: unknown; isError?: boolean; structuredContent?: unknown }
 
-/** A find answer as the website route and one call per document. */
-export const executableFind = (response: FindResponse, doc: Record<string, unknown>, input?: unknown): FindResponse => {
-  if (response.isError) return response
-  const slug = input && typeof input === 'object' && input !== null && 'slug' in input ? String((input as { slug?: unknown }).slug ?? '') : ''
-  const many = doc.docs
-  const docs = Array.isArray(many) ? many.filter((row): row is Record<string, unknown> => !!row && typeof row === 'object') : idOf(doc.id) ? [doc] : []
-  const calls = docs.flatMap((row) => executableCalls(slug, row))
-  // href is the website collection path; afterToolCall fuses `route` as the UUID program (dictionary entropy, then verified)
-  const body = { href: slug ? `/api/${slug}` : null, calls }
-  return { ...response, content: [{ type: 'text', text: JSON.stringify(body) }], structuredContent: body }
-}
 
 /** Function tools an LLM sends. Each one is a website route. */
 export const llmTools = () => WEBSITE_ROUTES.map((route) => ({
