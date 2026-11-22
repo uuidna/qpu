@@ -3,7 +3,11 @@ Standard enumerative combinatorics as Nat: the factorial, the binomial coefficie
 numbers (the handshake count), the small Ramsey party R(2,n) = n, and the textbook values (3! = 6, C(5,2) = 10). The
 laws that count, each checked by Lean and recomputed in TypeScript. -/
 
+/-- `Nat.factorial n` is the factorial of `n`. -/
 def factorial : Nat → Nat | 0 => 1 | n + 1 => (n + 1) * factorial n
+/-- `choose n k` is the number of `k`-element subsets in an `n`-element set. Also known as binomial
+coefficients. For the fact that this is the number of `k`-element-subsets of an `n`-element
+set, see `Finset.card_powersetCard`. -/
 def choose : Nat → Nat → Nat | _, 0 => 1 | 0, _ + 1 => 0 | n + 1, k + 1 => choose n (k + 1) + choose n k
 def triangular : Nat → Nat | 0 => 0 | n + 1 => (n + 1) + triangular n
 def ramsey22 : Nat → Nat | n => n

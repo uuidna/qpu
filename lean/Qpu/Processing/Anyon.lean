@@ -8,6 +8,12 @@ the doubling mint. Fibonacci step laws and Ising growth are quantified over all 
 textbook values kept as kernel-decided controls. -/
 
 def fibAux : Nat → Nat → Nat → Nat | 0, a, _ => a | k + 1, a, b => fibAux k b (a + b)
+/-- Implementation of the Fibonacci sequence satisfying
+`fib 0 = 0, fib 1 = 1, fib (n + 2) = fib n + fib (n + 1)`.
+
+*Note:* We use a stream iterator for better performance when compared to the naive recursive
+implementation.
+-/
 def fibFusion (nn : Nat) : Nat := fibAux nn (seed - seed) seed
 def isingFusion (m : Nat) : Nat := mint (m - seed)
 

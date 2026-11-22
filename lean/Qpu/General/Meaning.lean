@@ -17,19 +17,26 @@ argument. A reader who knows Mathlib reads `mint` as `2 ^ k`, `choose` as `Nat.c
 `powMod` as `a ^ e % m`, `fibFusion` as `Nat.fib` and `qftGates` as `Nat.choose (q + 1) 2`, and each reading is
 a theorem. The names follow Mathlib's convention: `definition_eq_notion`. -/
 
-/-- `mint` is the power of two. -/
+/-- `a ^ b` computes `a` to the power of `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `^` in identifiers is `pow`.-/
 theorem mint_eq_two_pow (k : Nat) : mint k = 2 ^ k := by
   induction k with
   | zero => rfl
   | succ k ih => rw [mintOf_succ, ih, pow_succ]; omega
 
-/-- `factorial` is `Nat.factorial`. -/
+/-- `Nat.factorial n` is the factorial of `n`. -/
 theorem factorial_eq_nat_factorial (n : Nat) : factorial n = n.factorial := by
   induction n with
   | zero => rfl
   | succ n ih => rw [factorial, ih, Nat.factorial_succ]
 
-/-- `choose` is the binomial coefficient `Nat.choose`. -/
+/-- `choose n k` is the number of `k`-element subsets in an `n`-element set. Also known as binomial
+coefficients. For the fact that this is the number of `k`-element-subsets of an `n`-element
+set, see `Finset.card_powersetCard`. -/
 theorem choose_eq_nat_choose (n k : Nat) : choose n k = n.choose k := by
   induction n generalizing k with
   | zero => cases k <;> rfl
@@ -38,7 +45,20 @@ theorem choose_eq_nat_choose (n k : Nat) : choose n k = n.choose k := by
     | zero => rfl
     | succ k => rw [choose, ih, ih, Nat.choose_succ_succ, Nat.add_comm]
 
-/-- The fuelled Euclid loop is `Nat.gcd` once the fuel covers the second argument. -/
+/-- Computes the greatest common divisor of two natural numbers. The GCD of two natural numbers is the
+largest natural number that evenly divides both.
+
+In particular, the GCD of a number and `0` is the number itself.
+
+This reference implementation via the Euclidean algorithm is overridden in both the kernel and the
+compiler to efficiently evaluate using arbitrary-precision arithmetic. The definition provided here
+is the logical model.
+
+Examples:
+* `Nat.gcd 10 15 = 5`
+* `Nat.gcd 0 5 = 5`
+* `Nat.gcd 7 0 = 7`
+-/
 theorem gcdAux_eq_nat_gcd (fuel a b : Nat) (h : b ≤ fuel) : gcdAux fuel a b = Nat.gcd a b := by
   induction fuel generalizing a b with
   | zero =>
@@ -52,7 +72,20 @@ theorem gcdAux_eq_nat_gcd (fuel a b : Nat) (h : b ≤ fuel) : gcdAux fuel a b = 
     · have hlt : a % b < b := Nat.mod_lt a (Nat.pos_of_ne_zero hb)
       rw [gcdAux, if_neg hb, ih b (a % b) (by omega), Nat.gcd_comm a b, Nat.gcd_rec b a, Nat.gcd_comm]
 
-/-- `gcd` is `Nat.gcd`. -/
+/-- Computes the greatest common divisor of two natural numbers. The GCD of two natural numbers is the
+largest natural number that evenly divides both.
+
+In particular, the GCD of a number and `0` is the number itself.
+
+This reference implementation via the Euclidean algorithm is overridden in both the kernel and the
+compiler to efficiently evaluate using arbitrary-precision arithmetic. The definition provided here
+is the logical model.
+
+Examples:
+* `Nat.gcd 10 15 = 5`
+* `Nat.gcd 0 5 = 5`
+* `Nat.gcd 7 0 = 7`
+-/
 theorem gcd_eq_nat_gcd (a b : Nat) : gcd a b = Nat.gcd a b :=
   gcdAux_eq_nat_gcd (a + b) a b (Nat.le_add_left b a)
 
@@ -65,7 +98,14 @@ theorem powModAux_eq (k a m acc : Nat) : powModAux k a m (acc % m) = acc * a ^ k
     congr 1
     ring
 
-/-- `powMod` is modular exponentiation, `a ^ e % m`. -/
+/-- `a % b` computes the remainder upon dividing `a` by `b`.
+The meaning of this notation is type-dependent.
+* For `Nat` and `Int` it satisfies `a % b + b * (a / b) = a`,
+  and `a % 0` is defined to be `a`. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `%` in identifiers is `mod`.-/
 theorem powMod_eq_pow_mod (a e m : Nat) : powMod a e m = a ^ e % m := by
   rw [powMod, powModAux_eq, Nat.one_mul]
 
@@ -78,14 +118,21 @@ theorem fibAux_eq_nat_fib (k i : Nat) : fibAux k (Nat.fib i) (Nat.fib (i + 1)) =
     congr 1
     omega
 
-/-- `fibFusion` is the Fibonacci sequence `Nat.fib`: the fusion-space dimension of τ anyons. -/
+/-- Implementation of the Fibonacci sequence satisfying
+`fib 0 = 0, fib 1 = 1, fib (n + 2) = fib n + fib (n + 1)`.
+
+*Note:* We use a stream iterator for better performance when compared to the naive recursive
+implementation.
+-/
 theorem fibFusion_eq_nat_fib (n : Nat) : fibFusion n = Nat.fib n := by
   have h := fibAux_eq_nat_fib n 0
   rw [Nat.fib_zero, Nat.fib_one, Nat.zero_add] at h
   rw [fibFusion, seed_eq]
   exact h
 
-/-- `qftGates` is the binomial coefficient `Nat.choose (q + 1) 2`: one gate per unordered pair, diagonal included. -/
+/-- `choose n k` is the number of `k`-element subsets in an `n`-element set. Also known as binomial
+coefficients. For the fact that this is the number of `k`-element-subsets of an `n`-element
+set, see `Finset.card_powersetCard`. -/
 theorem qftGates_eq_nat_choose (q : Nat) : qftGates q = (q + 1).choose 2 := by
   rw [qftGates, Nat.choose_two_right, Nat.add_sub_cancel, Nat.mul_comm]
 

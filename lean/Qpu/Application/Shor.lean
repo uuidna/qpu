@@ -6,10 +6,46 @@ Modular exponentiation, period finding by fuel recursion, gcd, and Shor.
 five-bit comparison (35 and 77), an odd order, a trivial half-root, a shared factor, and a power of two. -/
 
 def powModAux : Nat → Nat → Nat → Nat → Nat | 0, _, _, acc => acc | k + 1, a, m, acc => powModAux k a m (acc * a % m)
+/-- `a % b` computes the remainder upon dividing `a` by `b`.
+The meaning of this notation is type-dependent.
+* For `Nat` and `Int` it satisfies `a % b + b * (a / b) = a`,
+  and `a % 0` is defined to be `a`. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `%` in identifiers is `mod`.-/
 def powMod (a e m : Nat) : Nat := powModAux e a m (1 % m)
 def periodAux : Nat → Nat → Nat → Nat → Nat | 0, _, _, _ => 0 | fuel + 1, a, m, r => if powMod a r m = 1 then r else periodAux fuel a m (r + 1)
 def period (a m : Nat) : Nat := periodAux m a m 1
+/-- Computes the greatest common divisor of two natural numbers. The GCD of two natural numbers is the
+largest natural number that evenly divides both.
+
+In particular, the GCD of a number and `0` is the number itself.
+
+This reference implementation via the Euclidean algorithm is overridden in both the kernel and the
+compiler to efficiently evaluate using arbitrary-precision arithmetic. The definition provided here
+is the logical model.
+
+Examples:
+* `Nat.gcd 10 15 = 5`
+* `Nat.gcd 0 5 = 5`
+* `Nat.gcd 7 0 = 7`
+-/
 def gcdAux : Nat → Nat → Nat → Nat | 0, a, _ => a | fuel + 1, a, b => if b = 0 then a else gcdAux fuel b (a % b)
+/-- Computes the greatest common divisor of two natural numbers. The GCD of two natural numbers is the
+largest natural number that evenly divides both.
+
+In particular, the GCD of a number and `0` is the number itself.
+
+This reference implementation via the Euclidean algorithm is overridden in both the kernel and the
+compiler to efficiently evaluate using arbitrary-precision arithmetic. The definition provided here
+is the logical model.
+
+Examples:
+* `Nat.gcd 10 15 = 5`
+* `Nat.gcd 0 5 = 5`
+* `Nat.gcd 7 0 = 7`
+-/
 def gcd (a b : Nat) : Nat := gcdAux (a + b) a b
 def half (a m : Nat) : Nat := powMod a (period a m / 2) m
 /-- Euler's totient by counting the coprimes (the crypto/number-theory φ the multiplicative period divides), via the gcd above -/

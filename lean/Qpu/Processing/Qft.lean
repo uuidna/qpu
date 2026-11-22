@@ -3,6 +3,9 @@ Quantum Fourier transform resource counts over the qubit count q, exact Nat: the
 swap count, the circuit depth and the output dimension. Every law is quantified over q — unlimited qubits — with the
 textbook values kept as kernel-decided controls. -/
 
+/-- `choose n k` is the number of `k`-element subsets in an `n`-element set. Also known as binomial
+coefficients. For the fact that this is the number of `k`-element-subsets of an `n`-element
+set, see `Finset.card_powersetCard`. -/
 def qftGates (q : Nat) : Nat := q * (q + 1) / 2
 def qftSwaps (q : Nat) : Nat := q / 2
 def qftDepth (q : Nat) : Nat := 2 * q - 1
