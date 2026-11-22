@@ -46,6 +46,11 @@ def isGenerated (env : Environment) (n : Name) : Bool :=
 /-- A binding characterises a definition for every argument: its left side is the definition applied to variables. -/
 def allVars (e : Expr) : Bool := e.getAppArgs.all (·.isBVar)
 
+/-- The library notion a binding's right side names: its head constant, or, for a decision procedure, the
+    proposition that `decide` decides. -/
+def notionOf (rhs : Expr) : Option Name :=
+  if rhs.isAppOfArity ``Decidable.decide 2 then rhs.getAppArgs[0]!.getAppFn.constName? else rhs.getAppFn.constName?
+
 run_cmd do
   let env ← getEnv
   let doc (n : Name) : CommandElabM (Option String) := findDocString? env n
@@ -56,7 +61,7 @@ run_cmd do
     if (`Qpu.General.Meaning).isPrefixOf (moduleOf env n) && !isGenerated env n && (n.toString.splitOn "_eq_").length > 1 then
       if let .thmInfo ti := ci then
         if let some (_, lhs, rhs) := ti.type.getForallBody.eq? then
-          if let (some d, some m) := (lhs.getAppFn.constName?, rhs.getAppFn.constName?) then
+          if let (some d, some m) := (lhs.getAppFn.constName?, notionOf rhs) then
             if isQpu env d && isLibrary env m && allVars lhs then
               bound := bound.insert d m
               bindings := bindings.insert n
@@ -91,7 +96,7 @@ run_cmd do
     for b in bindings.toList do
       if let some (.thmInfo ti) := env.find? b then
         if let some (_, _, rhs) := ti.type.getForallBody.eq? then
-          if let some m := rhs.getAppFn.constName? then
+          if let some m := notionOf rhs then
             out := out.push (Json.mkObj [("decl", toJson b.toString), ("module", toJson (moduleOf env b).toString), ("doc", toJson ((← doc m).getD ""))])
     IO.FS.writeFile ".lake/build/meaning-bindings.json" (Json.arr out).pretty
     let body := ",\n".intercalate (current.toList.map (fun v => "  " ++ v.quote))

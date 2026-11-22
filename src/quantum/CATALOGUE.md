@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1895 products, 2 under a declared claim context and 1893 as the author's own statement, with 1540 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1897 products, 2 under a declared claim context and 1895 as the author's own statement, with 1540 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -4905,6 +4905,26 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (t : ℕ), 2 * t.choose 2 = t * (t - 1)
+```
+
+## Qpu.General.Meaning.Prime
+
+### `isPrime_eq_decide_prime`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), Config.isPrime n = decide (Nat.Prime n)
+```
+
+## Qpu.General.Meaning.Sum
+
+### `sumZ_eq_list_sum`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (l : List ℤ), Qpu.Federated.sumZ l = l.sum
 ```
 
 ## Qpu.General.Meaning.Totient

@@ -46,7 +46,12 @@ namespace Qpu.Federated
 /-- A model update: an integer vector of dimension `d`. -/
 abbrev Vec (d : Nat) := Fin d → Int
 
-/-- Sum of a list of integers. -/
+/-- Computes the sum of the elements of a list.
+
+Examples:
+* `[a, b, c].sum = a + (b + (c + 0))`
+* `[1, 2, 5].sum = 8`
+-/
 def sumZ : List Int → Int
   | [] => 0
   | x :: xs => x + sumZ xs
