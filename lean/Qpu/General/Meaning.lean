@@ -86,7 +86,7 @@ Examples:
 * `Nat.gcd 0 5 = 5`
 * `Nat.gcd 7 0 = 7`
 -/
-theorem gcd_eq_nat_gcd (a b : Nat) : gcd a b = Nat.gcd a b :=
+theorem Qpu.gcd_eq_nat_gcd (a b : Nat) : gcd a b = Nat.gcd a b :=
   gcdAux_eq_nat_gcd (a + b) a b (Nat.le_add_left b a)
 
 /-- The modular-power loop multiplies its accumulator by `a ^ k`, reduced mod `m`. -/

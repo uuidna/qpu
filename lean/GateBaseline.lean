@@ -601,7 +601,6 @@ def meaningBaseline : Array String := #[
   "definition symplectic: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",
   "definition theory: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",
   "definition thermal: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",
-  "definition totient: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",
   "definition totientAux: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",
   "definition transmon: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",
   "definition triangular: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",

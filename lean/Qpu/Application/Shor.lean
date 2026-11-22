@@ -50,6 +50,8 @@ def gcd (a b : Nat) : Nat := gcdAux (a + b) a b
 def half (a m : Nat) : Nat := powMod a (period a m / 2) m
 /-- Euler's totient by counting the coprimes (the crypto/number-theory φ the multiplicative period divides), via the gcd above -/
 def totientAux : Nat → Nat → Nat → Nat | 0, _, acc => acc | k + 1, n, acc => totientAux k n (if gcd (k + 1) n = 1 then acc + 1 else acc)
+/-- Euler's totient function. This counts the number of naturals strictly less than `n` which are
+coprime with `n`. -/
 def totient (n : Nat) : Nat := totientAux n n 0
 /-- the Shor modulus, named by the lattice: rays · (faces − seed) = 7 · 13 -/
 def shorModulus : Nat := rays * (faces - seed)

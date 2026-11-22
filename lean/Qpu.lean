@@ -1,4 +1,5 @@
 import Qpu.General.Meaning
+import Qpu.General.Meaning.Totient
 import Qpu.General.Mint
 import Qpu.General.Lattice
 import Qpu.Processing.QuantumComputer
