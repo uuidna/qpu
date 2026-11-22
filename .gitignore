@@ -75,3 +75,9 @@ site/*
 !site/.vitepress/
 site/.vitepress/*
 !site/.vitepress/config.ts
+!site/.vitepress/theme/
+!site/.vitepress/theme/**
+
+# Payload migration schema snapshots are derived dev artifacts (used only by `payload migrate:create`,
+# never at runtime); only the .ts up/down pairs are tracked and run.
+src/migrations/*.json

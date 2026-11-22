@@ -2,7 +2,7 @@
 
 The identity and the kernel. The surface is [`processing/unit`](processing/unit/index.ts), over [`uuid`](uuid/index.ts). The detailed specification is [`README.md`](README.md). The toolboxes are [`TOOLBOXES.md`](TOOLBOXES.md).
 
-The origin is `qpu.uuidna.com`. The apex is `uuidna.com`. The version is `1.4.0`. The kernel is published at `src/quantum/processing/unit/lean`.
+The origin is `qpu.uuidna.com`. The apex is `uuidna.com`. The version is `1.4.0`. The kernel is published at `lean`.
 
 `tenantAddress` reads a host and a path.
 

@@ -48,30 +48,6 @@ export const combinationVariants = (base: Record<string, number> = { eur: 900, u
     return { product: 'qpu-combination', variant: `c${i}`, sku, unit: 'tenant' as const, interval: 'month' as const, amounts: Object.fromEntries(Object.entries(base).map(([c, a]) => [c, a * on.length])), domains: 'named' as const, plugins: on.length, most, description: `combination ${i} (${sku}): ${on.length ? on.join(' + ') : 'the base app, no plugin'} — ${on.length} of ${PLUGIN_CAPABILITIES.length} across ${trinities.length ? trinities.join('/') : 'no'} trinit${trinities.length === 1 ? 'y' : 'ies'}` }
   })
 }
-const SKU_BITS = 8, SKU_BYTES = 1, SKU_CAPACITY = 256, COIN_BITS = 128
-const skuByte = (handle: string) => Number(BigInt(`0x${handle}`) & 0xffn)
-/** One variation. The coin is the address of `qpu-combination` and the index, so its handle stays the SKU. The accountable width of that SKU is one byte. The program and the tail are the rest of that coin: each nibble names an MCP tool. When the combination carries the mcp plugin, the coin can call every tool, not only the ones its nibbles name. */
-export const variationCoin = (index: number, mcpTools: readonly string[]) => {
-  const names = trinityNames()
-  const count = Number(compositions(names.map(() => 2)))
-  if (!Number.isInteger(index) || index < 0 || index >= count) throw new Error(`a variation is an index from 0 to ${count - 1}`)
-  const { on } = mergedOf(index)
-  const address = uuid(`qpu-combination\n${index}`)
-  const ch = channel(address)
-  const tools = [...new Set(mcpTools)].sort()
-  const pick = (n: number) => tools.length ? tools[n % tools.length]! : null
-  const fromProgram = ch.program.map(pick).filter((t): t is string => t !== null)
-  const fromTail = [...ch.tail].map((h) => pick(parseInt(h, 16))).filter((t): t is string => t !== null)
-  const capabilities = [...new Set([...fromProgram, ...fromTail])]
-  const viaMcp = on.includes('mcp')
-  const improved = viaMcp ? [...new Set([...capabilities, ...tools])] : capabilities
-  return {
-    phase: 'variation' as const, index, product: 'qpu-combination' as const, variant: `c${index}`, address,
-    sku: ch.sku, handle: ch.handle, skuByte: skuByte(ch.handle), program: ch.program.join(''), tail: ch.tail, skuIsHandle: ch.sku === ch.handle, bits: SKU_BITS, bytes: SKU_BYTES, capacity: SKU_CAPACITY, coinBits: COIN_BITS, utilised: seal(address).valid ? COIN_BITS : SKU_BITS, maximum: seal(address).valid,
-    on: [...on], capabilities, improved, gained: improved.length - capabilities.length, viaMcp, tools: tools.length,
-    says: proseFill(PROSE.quantumProcessingToolboxesBilling_says1, index, skuByte(ch.handle), ch.sku, SKU_BITS, SKU_CAPACITY, COIN_BITS, ch.program.join(''), ch.tail, capabilities.length, viaMcp ? proseFill(PROSE.quantumProcessingToolboxesBilling_s2, improved.length) : PROSE.quantumProcessingToolboxesBilling_s3),
-  }
-}
 /** The Stripe product and price objects a tenant's catalogue needs, as the forms Stripe takes; the tenant's key sends them. */
 const createCatalogue = (tenant: string, currencies: readonly string[] = ['eur']) => {
   // every product ISO-classified, inline and computed: UNSPSC 43230000 (software), ISO/IEC 19770 (software asset management) for the licence,

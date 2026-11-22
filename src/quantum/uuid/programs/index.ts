@@ -5,9 +5,11 @@
 // Neighbours are handled via quantum: six program-space steps (g1± g2± g3±), handle and tail kept — not listed by hand in each index.
 import { PROSE, proseFill } from '../../processing/prose-index.ts'
 import { readdirSync } from 'node:fs'
+import { availableParallelism } from 'node:os'
+import { Worker, parentPort, workerData } from 'node:worker_threads'
 import { join } from 'node:path'
 import { exists, place, write } from '../../fs/index.ts'
-import { seal, uuid, uuidFromParts } from '../../password/address.js'
+import { seal, uuid, uuidFromParts } from '../../password/address.ts'
 import { bindPhysics, channel, hexbit, reflection } from '../index.ts'
 import { physics } from './physics/index.ts'
 import { challenge } from './challenge/index.ts'
@@ -573,7 +575,18 @@ export const sealProgramProducts = (handle: string) => {
  * Files gate first (every folder indexed); then every hex leaf seals through the combination space.
  */
 /** Each leaf with its sealed products and its games, computed once: the gate and the audit both read these. */
-const sealLeaves = (dataset: string) => listProgramLeaves(dataset).map((leaf) => ({ leaf, sealed: sealProgramProducts(leaf.handle), games: competeProgramNeighbours(leaf.handle) }))
+const sealLeaf = (handle: string) => ({ sealed: sealProgramProducts(handle), games: competeProgramNeighbours(handle) })
+const sealLeaves = (dataset: string) => listProgramLeaves(dataset).map((leaf) => ({ leaf, ...sealLeaf(leaf.handle) }))
+/** sealLeaves split by UUID over workers: each idle one seals the next handle; rows rejoin in list order. */
+export const sealLeavesSplit = async (dataset = root.path) => {
+  const leaves = listProgramLeaves(dataset), queue = leaves.map((leaf) => leaf.handle), rows = new Map<string, ReturnType<typeof sealLeaf>>()
+  await Promise.all(queue.slice(0, availableParallelism()).map(() => new Promise((done, fail) => {
+    const worker = new Worker(new URL(import.meta.url), { workerData: 'sealLeaf' }), next = () => queue.length ? worker.postMessage(queue.shift()) : void worker.terminate().then(done)
+    worker.on('message', ([handle, row]) => (rows.set(handle, row), next())).once('error', fail).once('online', next)
+  })))
+  return leaves.map((leaf) => ({ leaf, ...rows.get(leaf.handle)! }))
+}
+if (workerData === 'sealLeaf') parentPort!.on('message', (handle: string) => parentPort!.postMessage([handle, sealLeaf(handle)]))
 
 export const gateProgramSeal = (dataset = root.path, computed = sealLeaves(dataset)) => {
   const files = gateProgramFiles(dataset)
@@ -658,9 +671,8 @@ export const indexProgramFolders = (dataset = root.path) => {
  * Each folder with an index covers all neighbours and self — via quantum,
  * sealed through Payload UUID product combinations (gateProgramSeal).
  */
-export const auditProgramNeighbours = (dataset = root.path) => {
+export const auditProgramNeighbours = (dataset = root.path, computed = sealLeaves(dataset)) => {
   // the products and the games of each leaf are computed once and read by the gate and by the audit
-  const computed = sealLeaves(dataset)
   const gated = gateProgramSeal(dataset, computed)
   const files = gated.files
   const rows = gated.rows.map((leaf, index) => {

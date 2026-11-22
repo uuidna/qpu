@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Install elan
         run: |
@@ -26,13 +26,13 @@ jobs:
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
       - name: Cache elan toolchains
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.elan/toolchains
           key: elan-${{ hashFiles('lean-toolchain') }}
 
       - name: Cache Lake packages
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .lake/packages
           key: lake-packages-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}
@@ -42,14 +42,14 @@ jobs:
 
       # the tree's own compiled modules: Lake rebuilds only the modules whose sources changed since the cached build
       - name: Cache the tree's Lean build
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .lake/build
-          key: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ hashFiles('lakefile.lean', 'src/quantum/processing/unit/lean/**/*.lean') }}
+          key: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ hashFiles('lakefile.lean', 'lean/**/*.lean') }}
           restore-keys: |
             lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: 26
 

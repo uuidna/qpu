@@ -12,7 +12,7 @@ import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readdirSync, readFileSync, readlinkSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { availableParallelism, homedir, tmpdir, totalmem } from 'node:os'
+import { availableParallelism, freemem, homedir, tmpdir, totalmem } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { MACHINE_ACTIONS, MACHINE_RUNNER, NEXT_STEPS, forecastTimes, redact, type NextStep } from './machine.ts'
 import { clock, stamp } from '../uuid/programs/clock/index.ts'
@@ -128,13 +128,16 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   if (s && s.holds === false) process.exitCode = 1
 }
 
+/** The lanes the runner opens, read from node:os: one per core, scaled by the share of memory free now (a V8 heap ceiling
+ *  is a limit, not what a step uses). max 1 (min cores share), which Supremacy.lanes_pos and Supremacy.lanes_le_cores bound. */
+export const lanesNow = () => Math.max(1, Math.min(availableParallelism(), Math.ceil((availableParallelism() * freemem()) / totalmem())))
+
 export type Receipt = { date: string; head: string; runner: string; offline: boolean; fast: boolean; lanes: number; steps: { name: string; status: 'green' | 'red' | 'skipped'; ms: number; via: NextStep['via']; tail: string; attempt: number }[]; green: number; red: number; skipped: number; wallMs: number; sumMs: number; speedup: number | null }
 /** next: the waves of NEXT_STEPS run at the root, each step a child, the receipt returned and printed as the last line. */
 export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolean; generators?: boolean; onLine?: (line: string) => void }): Promise<Receipt> => {
   const say = (l: string) => { console.log(l); o.onLine?.(l) }
   const wall0 = clock()
-  const heapMb = Number(/--max-old-space-size[= ](\d+)/.exec(process.env.NODE_OPTIONS ?? '')?.[1]) || 4096
-  const lanes = Math.max(1, Math.min(availableParallelism(), Math.floor(((totalmem() / 1048576) * 0.7) / heapMb)))
+  const lanes = lanesNow()
   const head = (await spawnRun('git', ['rev-parse', '--short', 'HEAD'], { cwd: o.cwd })).stdout.trim()
   // the wildcard step expanded from tools/list: every tool whose schema names selftest
   const expand = async (): Promise<NextStep[]> => {
@@ -223,7 +226,9 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   const { call } = await import('./mcp.ts') as { call: Call }, { LITERAL_ROOTS } = await import('./audit.ts')
   const ask = (a: Record<string, unknown>) => { const r = call('repository', a); if (r.error) throw new Error(r.error.message); return r.result!.structuredContent }
   const git = async (...a: string[]) => (await spawnRun('git', a, { cwd })).stdout.trim()
-  const w = ask({ workflow: name, offline: true }).workflow as { steps: { id: string; kind: string; detach?: boolean; cmd?: string; args?: string[]; files?: string[] }[] }
+  // a workflow after the act reports through the door, so its door is asked for; the others run here, offline
+  const after = (AFTER_HOOKS as readonly string[]).includes(name)
+  const w = ask({ workflow: name, offline: !after }).workflow as { steps: { id: string; kind: string; detach?: boolean; cmd?: string; args?: string[]; files?: string[] }[] }
   const facts: Record<string, unknown> = { branch: await git('branch', '--show-current') }
   let red = false
   for (const s of w.steps) {
@@ -255,7 +260,6 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   type Decision = { allowed: boolean; says?: string; rules: { rule: string; holds: boolean | null; evidence: string }[] }
   // a workflow after the act reports it: the commit, and for a push every remote-tracking ref that moved (old, new, ref, as git hands them over).
   // The report goes to the Payload app through its MCP door, which answers the decision; with no door in reach the decision is computed here.
-  const after = (AFTER_HOOKS as readonly string[]).includes(name)
   let d: Decision | null = null, source = 'here'
   if (after) {
     facts.commit = { head: await git('rev-parse', 'HEAD'), subject: await git('log', '-1', '--format=%s') }

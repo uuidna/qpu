@@ -51,7 +51,7 @@ test('pages are stored with Payload find, then create, then update', async () =>
       store.set(args.data.slug, doc as { id: string; slug: string })
       return doc
     },
-  }
+  } as unknown as Parameters<typeof savePage>[0]
   const created = await savePage(payload, text, text)
   const updated = await savePage(payload, text, text)
   const found = await findPage(payload, 'a-coil-is-one-sealed-uuid')
@@ -70,7 +70,7 @@ test('deploy is allowed when the current records agree with the seeds', async ()
     find: async (args: ReturnType<typeof findArgs>) => ({ docs: store.has(args.where.slug.equals) ? [store.get(args.where.slug.equals)!] : [] }),
     create: async (args: ReturnType<typeof writeArgs>) => { const doc = { ...args.data, id: 'page-chess', breadcrumbs: [{ url: `/${args.data.slug}`, label: args.data.title }] }; store.set(args.data.slug, doc); return doc },
     update: async (args: ReturnType<typeof writeArgs> & { id: string | number }) => { const doc = { ...args.data, id: String(args.id), breadcrumbs: [{ url: `/${args.data.slug}`, label: args.data.title }] }; store.set(args.data.slug, doc); return doc },
-  }
+  } as unknown as Parameters<typeof savePage>[0]
   const closed = await seedsSynced(payload, [page])
   const seeded = await syncSeeds(payload, [page])
   const open = await seedsSynced(payload, [page])
@@ -87,18 +87,19 @@ test('deploy is allowed when the current records agree with the seeds', async ()
   assert.equal(store.get(page.slug)?.layout[0]?.contentFields.columnOne.root.children[0]?.children[0]?.text, text)
 })
 
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: the Cloudflare workflow is the Payload deploy. */
-test('the Cloudflare workflow is the Payload deploy', () => {
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the Cloudflare workflow is the Worker deploy. */
+test('the Cloudflare workflow is the Worker deploy', () => {
   const workflow = deployWorkflow()
   const file = readFileSync(new URL('../../../.github/workflows/deploy.yml', import.meta.url), 'utf8')
   assert.equal(file.replace(/\n$/, ''), workflow.replace(/\n$/, ''))
   const pkg = JSON.parse(readFileSync(new URL('../../../package.json', import.meta.url), 'utf8')) as { scripts: { deploy: string } }
   assert.equal(pkg.scripts.deploy, deployCommand())
-  assert.deepEqual(DEPLOY_STAGES.map((stage) => stage.id), ['database', 'app', 'seed', 'check', 'smoke', 'logs'])
-  assert.equal(workflow.includes('pnpm run deploy:app'), true)
+  assert.deepEqual(DEPLOY_STAGES.map((stage) => stage.id), ['worker', 'smoke', 'logs'])
+  assert.equal(workflow.includes('pnpm run deploy'), true)
+  assert.equal(workflow.includes('lake exe cache get'), true)
   assert.equal(workflow.includes('query Worker logs'), true)
-  assert.equal(workflow.includes('https://qpu.uuidna.com/admin'), true)
-  assert.equal(workflow.includes('https://qpu.psg.bg/admin/login'), true)
+  assert.equal(workflow.includes('/api/mcp'), true)
+  assert.equal(workflow.includes('qpu.psg.bg'), true)
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: nested docs covers every MCP URL, and the website plugins read those pages. */

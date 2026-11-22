@@ -12,7 +12,7 @@ import engine from './engine/index.ts'
 // the core: the UUID address and everything that reads it
 export { uuid, reflection, seal, style, neighbours, block, verify, coins, organiseQubits } from './uuid/index.ts'
 // pages, through Payload's local API: find, create, update
-export { findPage, openPages, pageData, savePage, saveSeed, writeArgs, findArgs, recordAgrees, seedsSynced, syncSeeds, linkSeedParents, seedWaves, mcpPages } from './payload/index.ts'
+export { findPage, pageData, savePage, saveSeed, writeArgs, findArgs, recordAgrees, seedsSynced, syncSeeds, linkSeedParents, seedWaves, mcpPages } from './payload/index.ts'
 // Quantum OS, imported from its source
 export { os }
 // the filesystem, through the adapter the part names

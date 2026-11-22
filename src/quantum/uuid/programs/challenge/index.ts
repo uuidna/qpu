@@ -1,6 +1,6 @@
 // Challenge physics and laws. Soft gates fail; only register FTL through the physics UUID program survives.
 import { PROSE, proseFill } from '../../../processing/prose-index.ts'
-import { seal, uuid } from '../../../password/address.js'
+import { seal, uuid } from '../../../password/address.ts'
 import { exists } from '../../../fs/index.ts'
 import { hexbit, uuidQubits } from '../../index.ts'
 import { competeProgramNeighbours, program } from '../index.ts'

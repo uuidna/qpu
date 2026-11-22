@@ -8,7 +8,7 @@ import { CATALOGUE } from './toolboxes/billing.ts'
 import { DEPLOY_TENANTS, OFFICIAL_PLUGINS } from '../plugin.ts'
 import { program } from '../uuid/programs/index.ts'
 import { aspects, composition, compositionIndex, compositions, hexbit, seal, uuid, uuidQubits } from '../uuid/index.ts'
-import { QPU_CONNECTOR, WEBSITE_ORIGIN } from '../../plugins/websiteClient.ts'
+import { QPU_CONNECTOR, WEBSITE_ORIGIN } from '../net/website-client.ts'
 
 const PRODUCT = { method: 'GET' as const, path: '/api/products', href: `${WEBSITE_ORIGIN}/api/products` }
 

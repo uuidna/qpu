@@ -8,7 +8,6 @@ type MeasuredTheorem = { key: string; lean: string; says: string; examples: read
 import { SET_FAMILIES, SET_RADICES, SET_SPACE } from './institutions.ts'
 import { PORT_RADICES } from './port.ts'
 import { TABLES } from './tables-index.ts'
-import { THEOREMS } from './theorems-index.ts'
 import { LOCALES } from './i18n.ts'
 import { PAYLOAD_SURFACE as PS } from './payload-surface.ts'
 import { configKinds, TENANT_ROLES, OPERATIONS } from './payload-vocabulary.ts'
@@ -42,7 +41,6 @@ const LOCALE_COUNT = Object.keys(LOCALES).length
 const DATA_TYPES = count(PS.fieldTypes, (x) => x.data), COLLECTION_OPS = count(PS.operations, (o) => o.scope === 'collection'), SCOPES = (['collection', 'global', 'auth', 'access', 'preferences', 'jobs', 'custom', 'graphql'] as const).map((s) => [s, count(PS.operations, (o) => o.scope === s)] as const) // Payload's scopes in the order its docs list them
 const HOOK_LEVELS = (['root', 'collection', 'global', 'field'] as const).map((k) => (PS.hooks as Record<string, readonly unknown[]>)[k]!.length), ACCESS_LEVELS = (['collection', 'global', 'field', 'jobs'] as const).map((k) => (PS.access as Record<string, readonly unknown[]>)[k]!.length)
 const [ADB, AST, AEM] = PORT_RADICES
-import { evaluate } from './expressions.ts'
 export const MEASURED_THEOREMS: readonly MeasuredTheorem[] = [
   { key: 'textbook_plugin_combinations', get lean() { return `theorem textbook_plugin_combinations : 2 ^ ${PLUGINS()} = ${2 ** PLUGINS()} := by decide` }, get says() { return proseFill(PROSE.quantumProcessingTextbookMeasured_s2, PLUGINS(), 2 ** PLUGINS()) }, examples: ['configure-payload'] },
   { key: 'textbook_prices_are_variants_times_currencies', lean: `theorem textbook_prices_are_variants_times_currencies : ${CAT} * 2 = ${CAT * 2} := by decide`, says: proseFill(PROSE.quantumProcessingTextbookMeasured_says3, CAT, CAT * 2), examples: ['stripe-catalogue'] },

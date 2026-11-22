@@ -125,7 +125,8 @@ export const decodeE2e = (answers: readonly E2eAnswer[], tree?: TreeCopy) => {
     const erased = copies.filter((c) => c.kind)
     const syndrome = [...flipped, ...erased].map((c) => c.host)
     const errors: ErrorBlock[] = [...flipped.map((c) => ({ kind: 'flip' as const, host: c.host, got: c.value })), ...erased.map((c) => ({ kind: c.kind!, host: c.host, got: c.value }))].map((e) => ({ uuid: uuid(`e2e${e.kind}${e.host}${combo}${local}${e.got}`), ...e, tool: first.tool, combo, expected: logical, syndrome }))
-    const outcome: Decoded['outcome'] = !majority ? 'uncorrectable' : flipped.length ? 'corrected' : erased.length ? 'erased' : 'agree'
+    // majority-of-three needs three copies: below that a disagreement is only detected, never resolved to a logical error, so it is an erasure.
+    const outcome: Decoded['outcome'] = !majority ? (total >= 3 ? 'uncorrectable' : 'erased') : flipped.length ? 'corrected' : erased.length ? 'erased' : 'agree'
     // a combination with errors starts in correction with the real majority; without one, handling takes over: the involution σ, at most two swaps
     const fallback = errors.length ? handleOrCorrect(errors.map((e) => `${e.kind} at ${e.host}: ${e.got}`), majority, 'correction') : null
     // the combinatorial possibilities of an answer: every value some copies hold, with the copies that hold it (the tree is a copy too)

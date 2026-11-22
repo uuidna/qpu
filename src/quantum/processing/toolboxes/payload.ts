@@ -8,9 +8,6 @@ import { PROSE, proseFill } from '../prose-index.ts'
 import { narrowScope, createSandbox, type NarrowRequest } from '../unit/namespaces.ts'
 import { defineTool, createChecks, listTools, isObj, unlimited, type Toolbox, type Context } from '../toolbox.ts'
 import { createHash } from 'node:crypto'
-import { mkdirSync, writeFileSync } from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { hex, sha256, utf8 } from '../unit/hmac.ts'
 import { composition, compositionIndex, compositions, channel, neighbours, uuidFromParts, uuid, uuidQubits, hexbit, organiseQubits, canonicalText, entryText, style, presentation, stream, overlays, qpuHooks, seal, next as rotateProgram, livePreview, aspects as readAspects, optimise as optimiseAddress, PRESENTABLE_ITEMS, type StreamQuery } from '../../uuid/index.ts'
 import { birth, chosen, documentPath, place, read as readFile } from '../../fs/index.ts'
@@ -53,14 +50,13 @@ const ATTEST_APIS = cryptoConfig().attestApis
 
 import { CATALOGUE, combinationVariants, convertAmounts, PLUGIN_SPACE, PLUGIN_TRINITIES, RATE_SOURCES, CURRENCY_MCPS, TENANT_CURRENCY, DOMAIN_CURRENCY, plasma } from './billing.ts'
 import { inodeSuperpositions, LEADS } from '../leads.ts'
-import { ADAPTED_CONNECTORS, MCP_API_KEY, QPU_CONNECTOR, crumb, payloadMcpNext, payloadMcpRequest, readPayloadMcp } from '../../../plugins/websiteClient.ts'
+import { ADAPTED_CONNECTORS, MCP_API_KEY, QPU_CONNECTOR, crumb, payloadMcpNext, payloadMcpRequest, readPayloadMcp } from '../../net/website-client.ts'
 import { generate } from '../../generators/index.ts'
 import { checkWitnesses } from '../witnesses.ts'
 import { COIN_STANDARDS } from '../unit/coil.ts'
 import { googleChallenges, GOOGLE_CHALLENGE_IDS, GOOGLE_CHALLENGE_PAGE, type GoogleChallengeId } from './google.ts'
 import { pageSeed } from '../page-seed.ts'
 import { findArgs, manageApi, pageData, writeArgs } from '../../payload/index.ts'
-import { researchLinks } from '../../../plugins/linkResearch.ts'
 import { driftWaves, followWave, harmonicCover } from '../lead-wave.ts'
 import { driftPrograms } from '../../uuid/programs/drift/index.ts'
 import {
@@ -97,7 +93,7 @@ import { createSchemas, type PayloadCollectionInput } from './payload-schemas.ts
 import { portAt, listPorts, PORT_RADICES } from '../port.ts'
 import { getWorkspace } from '../workspace.ts'
 import { TABLES } from '../tables-index.ts'
-import { domainConfigs } from '../../../plugins/domainCover.ts'
+import { domainConfigs } from '../../net/domain-cover.ts'
 import { BATCH_ACTIONS, configKinds, TENANT_ROLES, OPERATIONS } from '../payload-vocabulary.ts'
 import { askPayloadRbac, decideApiMcp, decideBatch, grant, payloadRbacMcp, rbac } from '../api-mcp-rbac.ts'
 import { scripts, type ScriptsArgs, skill, SKILL_MCP } from '../script-doors.ts'
@@ -925,14 +921,8 @@ const morphFrameworks = (raw: unknown) => {
     { path: 'src/collections/concerns/layout.ts', text: layoutText },
     { path: 'src/collections/concerns/standards.ts', text: standardsText },
   ]
-  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..')
-  let bytes = 0
-  for (const file of files) {
-    const at = path.join(root, file.path)
-    mkdirSync(path.dirname(at), { recursive: true })
-    writeFileSync(at, file.text)
-    bytes += Buffer.byteLength(file.text)
-  }
+  // the files are answered, never written here: the app that holds the collections writes what the door answers
+  const bytes = files.reduce((n, file) => n + Buffer.byteLength(file.text), 0)
   const formula = proseFill(PROSE.quantumProcessingToolboxesPayload_s87, files.length, bytes, kept.length, added.length, removed.length, STANDARDS.length, standardsAdded.length)
   const developed = developViaHooks({ formula, product: 'framework', variant: 'merged', title: 'Rails and Payload' })
   const frameworks = chosen.map((framework) => {
@@ -1326,7 +1316,6 @@ const payload = defineTool('payload', {
   inputSchema: { type: 'object', properties: { cryptoConfig: { description: PROSE.quantumProcessingToolboxesPayload_description123 }, feeds: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description124 }, phase: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description125 }, develop: { description: PROSE.quantumProcessingToolboxesPayload_description126 }, improve: { description: PROSE.quantumProcessingToolboxesPayload_description127 }, optimise: { description: PROSE.quantumProcessingToolboxesPayload_description128 }, names: { type: 'boolean', description: PROSE.quantumProcessingToolboxesPayload_description129 }, quantum: { type: 'boolean', description: PROSE.quantumProcessingToolboxesPayload_description130 }, iso: { description: PROSE.quantumProcessingToolboxesPayload_description131 }, instance: { description: PROSE.quantumProcessingToolboxesPayload_description132 }, plugins: { type: 'boolean', description: PROSE.quantumProcessingToolboxesPayload_description133 }, aspects: { type: 'boolean', description: PROSE.quantumProcessingToolboxesPayload_description134 }, locale: { type: 'boolean', description: PROSE.quantumProcessingToolboxesPayload_description135 }, variants: { description: PROSE.quantumProcessingToolboxesPayload_description136 }, rbac: { description: PROSE.quantumProcessingToolboxesPayload_description137 }, access: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description138 }, rolesFromGroups: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description139 }, references: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description140 }, report: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description141 }, referenceIndex: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description142 }, handle: { description: PROSE.quantumProcessingToolboxesPayload_description143 }, hooks: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description144 }, google: { type: 'object', description: '{ pages, tenants, entries, keys }: the Google integration as exact pairs' }, workspace: { type: 'object', description: '{ discovery | kinds | form | forms | response | lexical | document | doc | file | answers }: Payload forms, Lexical and documents as Google Forms, Docs and Drive shape them, checked against the Discovery schemas, and the coverage' }, standardise: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description145 }, lexical: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description146 }, namespace: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description147 }, theorems: { type: 'boolean', description: PROSE.quantumProcessingToolboxesPayload_description148 }, schemas: { type: 'boolean', description: PROSE.quantumProcessingToolboxesPayload_description149 }, collection: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description150 }, payloadUrl: { type: 'string', description: PROSE.quantumProcessingToolboxesPayload_description151 }, answers: { type: 'object' }, predict: { description: PROSE.quantumProcessingToolboxesPayload_description152 }, frameworks: { type: 'array', description: PROSE.quantumProcessingToolboxesPayload_description153 }, textbooks: { description: PROSE.quantumProcessingToolboxesPayload_description154 }, morph: { description: PROSE.quantumProcessingToolboxesPayload_description155 }, related: { description: PROSE.quantumProcessingToolboxesPayload_description156 }, zenodo: { description: PROSE.quantumProcessingToolboxesPayload_description157 }, alpine: { description: PROSE.quantumProcessingToolboxesPayload_description158 }, links: { description: PROSE.quantumProcessingToolboxesPayload_description159 }, drift: { description: PROSE.quantumProcessingToolboxesPayload_description160 }, claims: { description: PROSE.quantumProcessingToolboxesPayload_description161 }, capacity: { description: PROSE.quantumProcessingToolboxesPayload_description162 }, dryClean: { description: PROSE.quantumProcessingToolboxesPayload_description163 }, idea: { description: PROSE.quantumProcessingToolboxesPayload_description164 }, seed: { description: PROSE.quantumProcessingToolboxesPayload_description165 }, website: { description: PROSE.quantumProcessingToolboxesPayload_description166 }, liveBlockTypes: { type: 'array', items: { type: 'string' } }, skills: { description: PROSE.quantumProcessingToolboxesPayload_description167 }, api: { description: PROSE.quantumProcessingToolboxesPayload_description168 }, parent: { description: PROSE.quantumProcessingToolboxesPayload_description169 }, site: { type: 'boolean', description: PROSE.quantumProcessingToolboxesPayload_description170 }, scripts: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description171 }, merge: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description172 }, devDependencies: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description173 }, app: { type: 'object', description: PROSE.quantumProcessingToolboxesPayload_description174 }, captcha: { description: PROSE.quantumProcessingToolboxesPayload_description175 }, tool: { type: 'string' }, arguments: { type: 'object' }, depth: { description: PROSE.quantumProcessingToolboxesPayload_description176 }, prev: { type: 'string', description: 'the referer block\'s uuid' }, chain: { type: 'array', items: { type: 'string' }, description: PROSE.quantumProcessingToolboxesPayload_description177 }, origin: { type: 'string' }, token: { description: PROSE.quantumProcessingToolboxesPayload_description178 }, deploy: { description: PROSE.quantumProcessingToolboxesPayload_description179 }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     if (Object.keys(args).every((k) => k === 'selftest')) return unlimited() as never
-    if (args.links !== undefined) return researchLinks(args.links) as never
     if (args.drift !== undefined) return patchIso(args.drift) as never
     if (args.token !== undefined) return acceptWidgetToken(args.token) as never
     if (args.deploy !== undefined) return deployWebsite(ctx, args.deploy) as never
@@ -2103,7 +2092,7 @@ const gateDocs = (ctx: Context, origin: string, devDependencies: Record<string, 
   const g = gates(ctx, origin, devDependencies, google, mcpAnswer)
   const theorem = 'textbook_gates_partition'
   const lead = new Map(ctx.leads.map((l) => [l.id, l]))
-  // a nested page is addressed by its breadcrumb path, the URL the nested-docs plugin joins from the slugs and the fork resolves
+  // a nested page is addressed by its breadcrumb path, the URL the nested-docs plugin joins from the slugs and the app resolves
   const root = { slug: websiteGate('gates', 'root').root, title: 'Gates' }
   const rootPath = `/${root.slug}`
   const rootCrumb = crumb(rootPath, root.title, root.slug)
@@ -3865,7 +3854,7 @@ const config = (kind: ConfigKind, ctx: Context, p: { version?: string; descripti
     case 'packages': return packages()
     case 'ecommerce': return ecommerce(p.rates)
     case 'adapters': if (p.port !== undefined) return typeof p.port === 'number' ? portAt(p.port) : listPorts()
-      return { ...adapters(p.env ?? []), wrangler: siteWrangler(), openNext: { config: file('root', 'open-next'), build: 'npx opennextjs-cloudflare build (the fork\'s pnpm build inside, so the build environment names PAYLOAD_SECRET and DATABASE_URI)', requires: [PROSE.quantumProcessingToolboxesPayload_s514], measured: PROSE.quantumProcessingToolboxesPayload_measured515 } }
+      return { ...adapters(p.env ?? []), wrangler: siteWrangler(), openNext: { config: file('root', 'open-next'), build: 'npx opennextjs-cloudflare build (the app\'s pnpm build inside, so the build environment names PAYLOAD_SECRET and DATABASE_URI)', requires: [PROSE.quantumProcessingToolboxesPayload_s514], measured: PROSE.quantumProcessingToolboxesPayload_measured515 } }
     case 'ui': { const u = ui('processor'); const reg = registry(); const byTool = [...new Map(ctx.examples.map((e) => [e.tool, e])).values()]; const presented = byTool.map((e) => ({ tool: e.tool, parts: presentation(uuid(e.tool + JSON.stringify(e.arguments)).replace(/-/g, '')).parts.length })); const coverage = { tools: byTool.length, covered: presented.filter((x) => x.parts === 32).length, items: PRESENTABLE_ITEMS.length, variants: 2, choicesPerNibble: PRESENTABLE_ITEMS.length * 2, combinations: PROSE.quantumProcessingToolboxesPayload_combinations516, loaded: 0, cost: PROSE.quantumProcessingToolboxesPayload_cost517, says: PROSE.quantumProcessingToolboxesPayload_says518 }; return { coverage, overlays: overlays(typeof p.hex === 'string' ? p.hex : 'a432'), core: PROSE.quantumProcessingToolboxesPayload_core519, ...(p.hex ? { presentation: presentation(p.hex) } : {}), ...(p.stream ? { stream: stream(p.stream, p.query ?? {}) } : {}), styled: { items: STYLED_ITEMS.map((i) => i.name), from: PROSE.quantumProcessingToolboxesPayload_from520, presentable: PROSE.quantumProcessingToolboxesPayload_presentable521 }, registry: { schema: 'https://ui.shadcn.com/schema/registry.json', items: (reg['registry.json'] as { items: { name: string; type: string }[] }).items.map((i) => `${i.name} (${i.type})`), add: 'npx shadcn add https://qpu.uuidna.com/r/qpu-app.json', host: PROSE.quantumProcessingToolboxesPayload_host522 }, extension: MCP_APPS.extension, mimeType: MCP_APPS.mimeType, scheme: MCP_APPS.scheme, specification: MCP_APPS.specification, tokens: UI_TOKENS.map(([token, host, fallback]) => ({ token, host, fallback })), accept: { via: 'widget' as const, control: /id="k"/.test(u.html) && /type="password"/.test(u.html) && /ui\/accept-token/.test(u.html), secretTravels: false as const, standards: ['ISO/IEC 27001:2022', 'ISO/IEC 27034'] as const }, csp: u.csp, prefersBorder: u.prefersBorder, shellBytes: u.html.length, deterministic: PROSE.quantumProcessingToolboxesPayload_deterministic523, hosted: PROSE.quantumProcessingToolboxesPayload_hosted524, rendering: PROSE.quantumProcessingToolboxesPayload_rendering525 } }
     case 'fields': return FIELDS
     case 'validations': {
@@ -3897,10 +3886,10 @@ const config = (kind: ConfigKind, ctx: Context, p: { version?: string; descripti
       ],
       minimum: PROSE.quantumProcessingToolboxesPayload_minimum540, scale: PROSE.quantumProcessingToolboxesPayload_scale541 }
     case 'fullstack': {
-      // Delivery overlay onto this repo (payloadcms/website standard in src/): QPU computes feeds/plugins; Payload delivers the site.
-      // Not a conversion into Payload — the fork is already the product surface; this kind refreshes QPU-owned overlay files.
+      // Delivery overlay onto this repo (the Payload app in src/): QPU computes feeds/plugins; Payload delivers the site.
+      // Not a conversion into Payload — the app is already the product surface; this kind refreshes QPU-owned overlay files.
       const ws = website(WEBSITE_FIXTURE)
-      // the licence layering: the fork stays MIT (Payload's copyright kept whole); what QPU adds carries QPU's licence, named in every added file and in the notice
+      // the licence: QPU's own (CC-BY-NC-ND-4.0), named in the first line of every file by the header built below
       const header = proseFill(PROSE.quantumProcessingToolboxesPayload_s542, LICENSE.attribution)
       const readmeRoot = `# Quantum Processing Unit
 

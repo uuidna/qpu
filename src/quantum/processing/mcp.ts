@@ -2,6 +2,7 @@
 // call. The handler does no I/O and imports nothing from Node, so the same code runs in a browser OS, where a caller
 // compiles whatever it needs by calling a tool. Tool names and figures follow Google Quantum AI (quantumai.google).
 
+import { scripts, type ScriptsArgs } from './script-doors.ts'
 import { CHAT_SHARE, CLAY_FIRST, FORMULA, INSERT_SCHEMA, LEAN_RESOURCE, NIBBLE_PRIMES, OFFICIAL_PLUGINS, PROTOCOL_VERSION } from './config-index.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 import { GOOGLE_MCPS, QPU_MCP, mcpHostList } from './discovery.ts'
@@ -15,7 +16,7 @@ import { NESTED as NESTED_CATALOGUE, NESTED_COUNTS } from './nested-index.ts'
 import { THOUSAND, THOUSAND_SHARED } from './thousand-index.ts'
 import { updateTheoremSources } from './textbook-measured.ts'
 import { builders, accessAudit, auditedSave, build, crossVerifiedFormula, websiteGate, developFindings, developViaHooks, serveViaHooks } from './toolboxes/payload.ts'
-import { ISO_QUANTUM_AI, MCP_API_KEY, isOnlineVerify } from '../../plugins/websiteClient.ts'
+import { ISO_QUANTUM_AI, MCP_API_KEY, isOnlineVerify } from '../net/website-client.ts'
 import { cryptoConfig } from './crypto/config.ts'
 import { processorsForRole, mayUseProcessor, type CryptoProcessorName } from './crypto/index.ts'
 import { askPayloadRbac } from './api-mcp-rbac.ts'
@@ -64,7 +65,7 @@ import { REPOSITORIES, PAYLOADCMS_REPOSITORIES, PAYLOADCMS_MONOREPO_PACKAGES, pa
 import { getBreakEven, codePoint, repetitionCycle, channel as qecChannel, textbookLogicalError, type ErrorChannel, type LogicalState, type RepetitionCode } from './qec.ts'
 import { BOHR_ANGSTROM, STO3G_H, TUTORIAL_ENERGIES, ansatzCircuit, energyAt, hydrogen, hydrogenHamiltonian, jordanWigner, tutorialChecks, vqeSweep, type Ladder } from './chemistry.ts'
 import { CLIFFORD_CHECK_ARITY, countResources } from './counting.ts'
-import { clock, stamp, tick } from '../uuid/programs/clock/index.ts'
+import { stamp, tick } from '../uuid/programs/clock/index.ts'
 
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
 export type Reply =
@@ -2150,8 +2151,9 @@ const nestedCatalogue = (asked: true | string) => {
 const textbook = defineTool('tree', {
   name: 'textbook',
   description: PROSE.quantumProcessingMcp_description339,
-  inputSchema: { type: 'object', properties: { nested: { description: PROSE.quantumProcessingMcp_nested1 }, mix: { type: 'array', items: { type: 'string' }, description: PROSE.quantumProcessingMcp_mix1 }, page: { type: 'integer', minimum: 1 }, receipt: { type: 'object', properties: { index: { type: 'integer', minimum: 0 }, digits: { type: 'array', items: { type: 'integer', minimum: 0 } } }, description: PROSE.quantumProcessingMcp_receipt1 }, particles: { description: PROSE.quantumProcessingMcp_description340 }, search: { type: 'string', description: PROSE.quantumProcessingMcp_description341 }, google: { description: PROSE.quantumProcessingMcp_description342 }, reflect: { description: PROSE.quantumProcessingMcp_description343 }, claims: { description: PROSE.quantumProcessingMcp_description344 }, theorem: { type: 'string', description: PROSE.quantumProcessingMcp_description345 }, institution: { type: 'object', description: PROSE.quantumProcessingMcp_description346 }, quality: { type: 'boolean', description: PROSE.quantumProcessingMcp_description347 }, verify: { type: 'boolean', description: PROSE.quantumProcessingMcp_description348 }, example: { type: 'string', description: PROSE.quantumProcessingMcp_description349 }, results: { type: 'array', items: { type: 'object' }, description: PROSE.quantumProcessingMcp_description350 }, reuse: { type: 'string', description: 'an example id to replay' }, evaluate: { type: 'object', description: PROSE.quantumProcessingMcp_description351 }, prose: { type: 'object', description: '{ texts: { name: text } }: the prose audited around the textbook — every number a text states resting on an expression a client can evaluate, or a lead; verdict words beside the Clay problems flagged' }, seo: { description: PROSE.quantumProcessingMcp_description352 }, gaps: { type: 'boolean', description: PROSE.quantumProcessingMcp_description353 }, axioms: { type: 'boolean', description: PROSE.quantumProcessingMcp_description354 }, chat: { description: PROSE.quantumProcessingMcp_description355 }, theorems: { type: 'boolean', description: PROSE.quantumProcessingMcp_description356 }, category: { type: 'string', enum: ['toolbox', 'tool', 'theorem', 'module'], description: PROSE.quantumProcessingMcp_description357 } } },
-  run: (args) => {
+  inputSchema: { type: 'object', properties: { scripts: { type: 'object', description: PROSE.quantumProcessingMcp_scripts1 }, nested: { description: PROSE.quantumProcessingMcp_nested1 }, mix: { type: 'array', items: { type: 'string' }, description: PROSE.quantumProcessingMcp_mix1 }, page: { type: 'integer', minimum: 1 }, receipt: { type: 'object', properties: { index: { type: 'integer', minimum: 0 }, digits: { type: 'array', items: { type: 'integer', minimum: 0 } } }, description: PROSE.quantumProcessingMcp_receipt1 }, particles: { description: PROSE.quantumProcessingMcp_description340 }, search: { type: 'string', description: PROSE.quantumProcessingMcp_description341 }, google: { description: PROSE.quantumProcessingMcp_description342 }, reflect: { description: PROSE.quantumProcessingMcp_description343 }, claims: { description: PROSE.quantumProcessingMcp_description344 }, theorem: { type: 'string', description: PROSE.quantumProcessingMcp_description345 }, institution: { type: 'object', description: PROSE.quantumProcessingMcp_description346 }, quality: { type: 'boolean', description: PROSE.quantumProcessingMcp_description347 }, verify: { type: 'boolean', description: PROSE.quantumProcessingMcp_description348 }, example: { type: 'string', description: PROSE.quantumProcessingMcp_description349 }, results: { type: 'array', items: { type: 'object' }, description: PROSE.quantumProcessingMcp_description350 }, reuse: { type: 'string', description: 'an example id to replay' }, evaluate: { type: 'object', description: PROSE.quantumProcessingMcp_description351 }, prose: { type: 'object', description: '{ texts: { name: text } }: the prose audited around the textbook — every number a text states resting on an expression a client can evaluate, or a lead; verdict words beside the Clay problems flagged' }, seo: { description: PROSE.quantumProcessingMcp_description352 }, gaps: { type: 'boolean', description: PROSE.quantumProcessingMcp_description353 }, axioms: { type: 'boolean', description: PROSE.quantumProcessingMcp_description354 }, chat: { description: PROSE.quantumProcessingMcp_description355 }, theorems: { type: 'boolean', description: PROSE.quantumProcessingMcp_description356 }, category: { type: 'string', enum: ['toolbox', 'tool', 'theorem', 'module'], description: PROSE.quantumProcessingMcp_description357 } } },
+  run: (args, ctx) => {
+    if (isObj(args.scripts)) return scripts(args.scripts as ScriptsArgs, ctx) as never
     if (Array.isArray(args.mix)) return mixTextbooks(args.mix, args.page, args.receipt) as never
     if (args.nested === true || typeof args.nested === 'string') return nestedCatalogue(args.nested) as never
     if (typeof args.search === 'string') return searchTextbookPrograms(args.search, EXAMPLES) as never

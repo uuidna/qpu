@@ -202,21 +202,4 @@ export const syncSeeds = async (payload: PagesApi, pages: readonly Addressed[]) 
   return { pages: rows.length, written: rows.filter((row) => row.written).length, synced, rows, allowsDeploy: synced, parents }
 }
 
-let opening: Promise<PagesApi> | null = null
-
-/** Payload's local API, the same getPayload({ config }) the website uses. */
-export const openPages = (): Promise<PagesApi> => {
-  opening ??= (async () => {
-    const { default: config } = await import('../../payload.config.ts')
-    const { getPayload } = await import('payload')
-    const payload = await getPayload({ config })
-    return {
-      find: (args: FindArgs) => payload.find(args as never) as unknown as Promise<{ docs: PageDoc[] }>,
-      create: (args: WriteArgs) => payload.create(args as never) as unknown as Promise<PageDoc>,
-      update: (args: WriteArgs & { id: string | number }) => payload.update(args as never) as unknown as Promise<PageDoc>,
-    }
-  })()
-  return opening
-}
-
 export { payloadPlugin as plugin } from '../plugin.ts'

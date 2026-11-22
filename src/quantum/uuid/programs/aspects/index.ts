@@ -1,7 +1,7 @@
 // Every Payload configuration and every deploy stage is one UUID program.
 // The filesystem places the handle: eight nibble levels, depth 7. A deploy command is named here. This call does not run it and does not write.
 import { PROSE, proseFill } from '../../../processing/prose-index.ts'
-import { seal, uuid } from '../../../password/address.js'
+import { seal, uuid } from '../../../password/address.ts'
 import { DEPLOY_STAGES } from '../../../payload/deploy.ts'
 import { configKinds } from '../../../processing/payload-vocabulary.ts'
 import { program } from '../index.ts'

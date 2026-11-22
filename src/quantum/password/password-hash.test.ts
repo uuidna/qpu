@@ -3,7 +3,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { pbkdf2Sync } from 'node:crypto'
-import { qpuPasswordDigest, qpuPasswordVerify, isQpuPasswordHash, PASSWORD_ITERATIONS, QPU_PASSWORD_PREFIX } from './password-hash.js'
+import { qpuPasswordDigest, qpuPasswordVerify, isQpuPasswordHash, PASSWORD_ITERATIONS, QPU_PASSWORD_PREFIX } from './password-hash.ts'
 import { mintTokenCoil } from '../processing/unit/coil.ts'
 import { hex, hkdfExpand, hkdfExtract, utf8 } from '../processing/unit/hmac.ts'
 

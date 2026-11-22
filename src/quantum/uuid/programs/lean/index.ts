@@ -5,9 +5,9 @@ import { birth, exists, read } from '../../../fs/index.ts'
 import { next, uuid } from '../../index.ts'
 import { program } from '../index.ts'
 
-const ROOT = 'src/quantum/processing/unit/lean/Qpu.lean'
+const ROOT = 'lean/Qpu.lean'
 
-const sourceOf = (module: string) => module === 'Qpu' ? ROOT : `src/quantum/processing/unit/lean/${module.replaceAll('.', '/')}.lean`
+const sourceOf = (module: string) => module === 'Qpu' ? ROOT : `lean/${module.replaceAll('.', '/')}.lean`
 
 const importsOf = (text: string) => [...text.matchAll(/^import (Qpu(?:\.[A-Za-z0-9]+)+)$/gm)].map((row) => row[1]!)
 

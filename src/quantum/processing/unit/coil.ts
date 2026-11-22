@@ -3,7 +3,7 @@
 // (ISO 22739:2024 transfer, ISO 20022, ISO 4217). A later transaction unfolds one coin into the next coil,
 // and the blocks chain by the content address of the previous block (ISO 22739 hash link). Pure.
 
-import { tokenCoilAddresses } from '../../password/address.js'
+import { tokenCoilAddresses } from '../../password/address.ts'
 import { channel, reflection, seal, uuidFromParts } from '../../uuid/index.ts'
 import { coins, rays } from '../clay-register.ts'
 import { mergeWitnesses } from '../witnesses.ts'

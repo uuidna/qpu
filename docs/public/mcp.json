@@ -2082,6 +2082,10 @@
       "inputSchema": {
         "type": "object",
         "properties": {
+          "scripts": {
+            "type": "object",
+            "description": "the files Lean writes, answered by the textbook (no new tools/list door)"
+          },
           "nested": {
             "description": "true"
           },

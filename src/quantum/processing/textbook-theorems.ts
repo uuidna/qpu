@@ -68,9 +68,22 @@ const reflection = (t: TextbookTheorem): Reflection => {
   const search = (k: number, at: Record<string, bigint>): Record<string, bigint> | null => (k === vars.length ? (holds(concl, at) && !holds(hp, at) ? at : null) : lits.reduce<Record<string, bigint> | null>((f, x) => f ?? search(k + 1, { ...at, [vars[k]!]: x }), null))
   const found = search(0, {})
   if (found) { lean.push(`theorem ${t.key}_converse_refuted : ¬ ${vars.length ? `∀ ${own}, ` : ''}${parens(concl)} → ${hp} := fun h => absurd (h ${vars.map((v) => found[v]!.toString()).join(' ')} (by decide)) (by decide)`); return { key: t.key, shape, lean, converse: 'refuted', counterexample: Object.fromEntries(Object.entries(found).map(([k, v]) => [k, v.toString()])) } }
-  if (/([A-Za-z_][\w']*|\))\s*[*/%^]\s*[A-Za-z_(]|[\d)]\s*\^\s*[A-Za-z_(]/.test(`${hp} ${concl}`)) return { key: t.key, shape, lean, converse: 'open', counterexample: null }
+  if (/([A-Za-z_][\w']*|\))\s*[*/%^]\s*[A-Za-z_(]|[\d)]\s*\^\s*[A-Za-z_(]/.test(`${hp} ${concl}`)) {
+    // not linear: omega does not decide it, so the converse is open unless a proof is held for it, which the kernel checks like any other
+    const proof = NONLINEAR_CONVERSES[t.key]
+    if (!proof) return { key: t.key, shape, lean, converse: 'open', counterexample: null }
+    lean.push(`theorem ${t.key}_converse ${own} : ${parens(concl)} → ${hp} := ${proof}`)
+    return { key: t.key, shape, lean, converse: 'proved', counterexample: null }
+  }
   lean.push(`theorem ${t.key}_converse ${own} : ${parens(concl)} → ${hp} := fun hc => ${premises.length > 1 ? `⟨${premises.map(() => 'by omega').join(', ')}⟩` : 'by omega'}`)
   return { key: t.key, shape, lean, converse: 'proved', counterexample: null }
+}
+/** The converses that are not linear arithmetic, each with the proof the kernel accepts. A converse of that kind without an entry stays open. */
+const NONLINEAR_CONVERSES: Readonly<Record<string, string>> = {
+  textbook_shards_cover: 'fun hc => Nat.lt_of_le_of_lt (Nat.zero_le _) hc',
+  textbook_harmonic_default: 'fun hc => Nat.lt_of_le_of_lt (Nat.zero_le _) hc',
+  textbook_compete_knows: 'fun hc => ⟨Nat.pos_of_ne_zero (fun h => by rw [h, Nat.zero_mul] at hc; exact Nat.lt_irrefl 0 hc), Nat.pos_of_ne_zero (fun h => by rw [h, Nat.mul_zero] at hc; exact Nat.lt_irrefl 0 hc)⟩',
+  textbook_next_waves_ordered: 'fun hc => ⟨hc.1, hc.2.1, hc.2.2⟩',
 }
 let reflections: Reflection[] | undefined
 /** Every textbook theorem reflected by its shape, once: the Lean each one generates, and its converse decided where it is an implication. */
@@ -148,5 +161,8 @@ export const searchTextbookPrograms = (
 /** A sentence made safe inside a Lean doc comment: Lean block comments nest, so an opening /- or a closing -/ in the prose would open or end one early; both are parted by a space. */
 export const escapeLeanDoc = (s: string) => s.replace(/\/-/g, '/ -').replace(/-\//g, '- /')
 
+// proven: serveMcp GET POST OPTIONS — the package's own Streamable-HTTP transport (serveMcp) and the /api/mcp route handlers (GET, POST, OPTIONS) that delegate to it, exercised by src/quantum/net/mcp-http_test.ts: it frames tools/list, answers a notification with 202, and prices a paid tools/call by the qubits it uses below the fused quantum market floor.
 // proven (slice lies-merges): entryText (textbook_entry_canonical), typeOk (moved, one check for the site's examples, payload-site, and the qpu block's save), tree and witness (textbook_e2e_tree_dissent) — the one canonical addressing and the tree's recomputed copy.
 // proven: the crypto primitives backing seal/attest/verify — planEncapsulation planEd25519 planSlhDsa planEcdsaP256 merkleLeafHash merkleRoot merkleProof merkleVerify pbkdf2Sha256 hkdfExtract hkdfExpand sha3_256 sha3_512 shake128 shake256 aes256gcmEncrypt aes256gcmDecrypt x25519 chacha20poly1305Encrypt sha1 md5 rsaModPow — and the unit address resolver — QPU_ORIGIN QPU_APEX QPU_LEAN RESERVED_SEGMENTS tenantAddress isUnscoped — are exercised by the seal, attest, verify and payload examples and their theorems.
+// proven: sealLeavesSplit — the program-leaf seal split by UUID over worker threads, rows rejoined in list order, exercised by src/quantum/uuid/programs/index.test.ts, which recomputes a leaf in-thread and requires it equal to its worker's row before the neighbour audit reads the split; the audit, the gate and every synchronous door keep the serial sealLeaves, so a door's answer never becomes a promise.
+// proven: lanesNow — the runner's lanes read from node:os (cores scaled by the share of memory free), exercised by src/quantum/processing/machine-run.test.ts, which checks the live value lies between one and the cores, the bounds the kernel proves as Supremacy.lanes_pos and Supremacy.lanes_le_cores.
