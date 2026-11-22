@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1902 products, 2 under a declared claim context and 1900 as the author's own statement, with 1540 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1904 products, 2 under a declared claim context and 1902 as the author's own statement, with 1540 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -14704,6 +14704,24 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (m n : ℕ), (Vocabulary.basis (m + n)).length = (Vocabulary.basis m).length * (Vocabulary.basis n).length
+```
+
+## Qpu.General.Witness
+
+### `Witness.split_unique`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {p q d e : ℕ}, Nat.Prime p → Nat.Prime q → p ≤ q → d ≤ e → d * e = p * q → 1 < d → d = p ∧ e = q
+```
+
+### `Witness.witness_unique`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {p q a b : ℕ}, Nat.Prime p → Nat.Prime q → p ≤ q → (a - b) * (a + b) = p * q → 1 < a - b → a - b = p ∧ a + b = q
 ```
 
 ## Qpu.Information.PhysicalQubit.Coil

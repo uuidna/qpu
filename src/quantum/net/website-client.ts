@@ -507,7 +507,6 @@ const executableCalls = (collection: string, doc: Record<string, unknown>) => {
   return calls
 }
 
-type FindResponse = { content: { type: 'text'; text: string }[]; doc?: unknown; isError?: boolean; structuredContent?: unknown }
 
 
 /** Function tools an LLM sends. Each one is a website route. */

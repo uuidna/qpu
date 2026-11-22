@@ -56,12 +56,32 @@ def proofHead : Expr → Option Name
 def notionOf (rhs : Expr) : Option Name :=
   if rhs.isAppOfArity ``Decidable.decide 2 then rhs.getAppArgs[0]!.getAppFn.constName? else rhs.getAppFn.constName?
 
+/-- The theorems a proof uses, looking through the compiler's auxiliary proofs (`_proof_`, `match_`, equation lemmas)
+    of the tree, so a composed proof is judged by the theorems it really applies. -/
+partial def theoremDeps (env : Environment) (roots : List Name) (visited : Std.HashSet Name := {})
+    (acc : Array Name := #[]) : Array Name :=
+  match roots with
+  | [] => acc
+  | c :: rest =>
+    if visited.contains c then theoremDeps env rest visited acc else
+    let visited := visited.insert c
+    match env.find? c with
+    | some (.thmInfo ti) =>
+      if isQpu env c && isGenerated env c then theoremDeps env (ti.value.getUsedConstants.toList ++ rest) visited acc
+      else theoremDeps env rest visited (acc.push c)
+    | some (.defnInfo di) =>
+      if isQpu env c && isGenerated env c then theoremDeps env (di.value.getUsedConstants.toList ++ rest) visited acc
+      else theoremDeps env rest visited acc
+    | _ => theoremDeps env rest visited acc
+
 run_cmd do
   let env ← getEnv
   let doc (n : Name) : CommandElabM (Option String) := findDocString? env n
   let mut bound : Std.HashMap Name Name := {}
   let mut bindings : Std.HashSet Name := {}
   let mut violations : Array String := #[]
+  let mut headed : Std.HashMap Name String := {}
+  let mut clean : Std.HashSet Name := {}
   for (n, ci) in env.constants.toList do
     if (`Qpu.General.Meaning).isPrefixOf (moduleOf env n) && !isGenerated env n && (n.toString.splitOn "_eq_").length > 1 then
       if let .thmInfo ti := ci then
@@ -87,11 +107,33 @@ run_cmd do
           | some h =>
             if isMathlib env h then
               if (← doc n) != (← doc h) then
-                violations := violations.push s!"theorem {n}: prose is not the docstring of {h}"
+                headed := headed.insert n s!"theorem {n}: prose is not the docstring of {h}"
             else
-              violations := violations.push s!"theorem {n}: meaning not from Mathlib (proof head {h})"
-          | none => violations := violations.push s!"theorem {n}: meaning not from Mathlib (no applied theorem)"
+              headed := headed.insert n s!"theorem {n}: meaning not from Mathlib (proof head {h})"
+          | none => headed := headed.insert n s!"theorem {n}: meaning not from Mathlib (no applied theorem)"
+          clean := if headed.contains n then clean else clean.insert n
       | _ => pure ()
+  for b in bindings.toList do clean := clean.insert b
+  -- A COMPOSED PROOF CARRIES MATHLIB MEANING TOO: a theorem the head rule refuses passes when every theorem its proof
+  -- uses is a library theorem or a Qpu theorem that is itself clean, at least one Mathlib theorem is reached, and its
+  -- prose names every Mathlib and Qpu theorem it uses. Evaluated to a fixed point, so a chain of composed theorems
+  -- passes link by link and a cycle never does.
+  let mut changed := true
+  while changed do
+    changed := false
+    for (n, _) in headed.toList do
+      if clean.contains n then continue
+      let some (.thmInfo ti) := env.find? n | continue
+      let deps := theoremDeps env ti.value.getUsedConstants.toList
+      let named := deps.filter (fun d => isMathlib env d || isQpu env d)
+      let reachesMathlib := deps.any (fun d => isMathlib env d || (isQpu env d && clean.contains d))
+      let allClean := deps.all (fun d => isLibrary env d || (isQpu env d && clean.contains d))
+      let prose := (← doc n).getD ""
+      if allClean && reachesMathlib && !named.isEmpty && named.all (fun d => (prose.splitOn d.toString).length > 1) then
+        clean := clean.insert n
+        changed := true
+  for (n, v) in headed.toList do
+    if !clean.contains n then violations := violations.push v
   let current := violations.qsort (· < ·)
   if (← IO.getEnv "MEANING_RATCHET").isSome then
     -- the binding data for the mechanical prose placement: each bound definition and binding, with its notion's docstring
