@@ -21,7 +21,7 @@ const stretch = async (password: string, salt: string) => {
   }
 }
 
-export const isQpuPasswordHash = (hash: unknown) => typeof hash === 'string' && hash.startsWith(QPU_PASSWORD_PREFIX)
+export const isQpuPasswordHash = (hash: unknown): hash is string => typeof hash === 'string' && hash.startsWith(QPU_PASSWORD_PREFIX)
 
 /** Seal the stretched block: a QPU token coil of the salt mixed by HKDF-SHA256 under the Worker
  *  `PAYLOAD_SECRET`, read at call time so the build bakes no secret and a database copy carries none. */

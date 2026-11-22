@@ -4,7 +4,7 @@ import { IDEA_HOME } from './collisions.ts'
 import { ISO_EXIT } from './iso-exit.ts'
 import { quantumVocabulary } from './quantum-vocabulary.ts'
 import { uuid } from '../uuid/index.ts'
-import { ISO_QUANTUM_AI, MCP_API_KEY, QPU_CONNECTOR, WEBSITE_ORIGIN, payloadMcpNext, payloadMcpOnline, payloadMcpRequest } from '../../plugins/websiteClient.ts'
+import { ISO_QUANTUM_AI, MCP_API_KEY, QPU_CONNECTOR, WEBSITE_ORIGIN, payloadMcpNext, payloadMcpOnline, payloadMcpRequest } from '../net/website-client.ts'
 import { TABLES } from './tables-index.ts'
 
 const IDEA_INBOX = `${IDEA_HOME}/leads` as const

@@ -55,7 +55,7 @@ def applicationsFile : String := "lean/tools/Applications.lean"
 
 /-- The scripts that render files from Lean, in the order they depend on each other. -/
 def renderers : List String :=
-  ["src/scripts/leanDerived.ts"]
+  ["scripts/leanDerived.ts"]
 
 /-- The Lean file that writes the prose index, where it writes it, and where the TypeScript reads it. -/
 def proseFile : String := "lean/tools/Prose.lean"
@@ -193,7 +193,7 @@ script hooks do
 
 /-- `lake run prose`: fail when a sentence is typed in TypeScript instead of written in Lean. -/
 script prose do
-  steps [("node", #["src/scripts/proseCheck.ts"])]
+  steps [("node", #["scripts/proseCheck.ts"])]
 
 /-- `lake run applications`: Lean writes one draft application per theoretical use into `site/patents`. -/
 script applications do
@@ -240,7 +240,7 @@ script verify do
 /-- `lake run seed`: write the VitePress pages from the seeds Payload writes, and the draft applications and the
 prose pages from Lean. -/
 script seed do
-  steps [("node", #["src/scripts/site.ts"]), ("lake", #["run", "applications"]), ("lake", #["env", "lean", proseFile])]
+  steps [("node", #["scripts/site.ts"]), ("lake", #["run", "applications"]), ("lake", #["env", "lean", proseFile])]
 
 /-- `lake run site`: write the pages, then build the VitePress site. -/
 script site do

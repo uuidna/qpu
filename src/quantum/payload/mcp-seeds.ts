@@ -2,7 +2,7 @@
 // SEO, search, redirects, import-export, the form builder, Stripe, and the MCP plugin read those pages.
 // Nothing is written here.
 import { PROSE } from '../processing/prose-index.ts'
-import { WEBSITE_MCP_COLLECTIONS, WEBSITE_MCP_GLOBALS } from '../../plugins/websiteCatalogue.ts'
+import { WEBSITE_MCP_COLLECTIONS, WEBSITE_MCP_GLOBALS } from '../net/website-catalogue.ts'
 import { formatSlug, nestedUrl, pageSeed } from '../processing/page-seed.ts'
 import { canonicalText, uuid } from '../uuid/index.ts'
 

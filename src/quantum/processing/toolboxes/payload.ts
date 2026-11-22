@@ -53,7 +53,7 @@ const ATTEST_APIS = cryptoConfig().attestApis
 
 import { CATALOGUE, combinationVariants, convertAmounts, PLUGIN_SPACE, PLUGIN_TRINITIES, RATE_SOURCES, CURRENCY_MCPS, TENANT_CURRENCY, DOMAIN_CURRENCY, plasma } from './billing.ts'
 import { inodeSuperpositions, LEADS } from '../leads.ts'
-import { ADAPTED_CONNECTORS, MCP_API_KEY, QPU_CONNECTOR, crumb, payloadMcpNext, payloadMcpRequest, readPayloadMcp } from '../../../plugins/websiteClient.ts'
+import { ADAPTED_CONNECTORS, MCP_API_KEY, QPU_CONNECTOR, crumb, payloadMcpNext, payloadMcpRequest, readPayloadMcp } from '../../net/website-client.ts'
 import { generate } from '../../generators/index.ts'
 import { checkWitnesses } from '../witnesses.ts'
 import { COIN_STANDARDS } from '../unit/coil.ts'
@@ -96,7 +96,7 @@ import { createSchemas, type PayloadCollectionInput } from './payload-schemas.ts
 import { portAt, listPorts, PORT_RADICES } from '../port.ts'
 import { getWorkspace } from '../workspace.ts'
 import { TABLES } from '../tables-index.ts'
-import { domainConfigs } from '../../../plugins/domainCover.ts'
+import { domainConfigs } from '../../net/domain-cover.ts'
 import { BATCH_ACTIONS, configKinds, TENANT_ROLES, OPERATIONS } from '../payload-vocabulary.ts'
 import { askPayloadRbac, decideApiMcp, decideBatch, grant, payloadRbacMcp, rbac } from '../api-mcp-rbac.ts'
 import { scripts, type ScriptsArgs, skill, SKILL_MCP } from '../script-doors.ts'

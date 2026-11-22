@@ -1,37 +1,44 @@
-# Deploy Worker qpu from main, or when started by hand. Payload names the stages. The runner decides nothing.
-# Waves, one session: games, home, standards, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, cicd. Each wave improves the next, and cicd improves home.
-# Secrets, by name only: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, PAYLOAD_SECRET, and for the first admin QPU_ADMIN_EMAIL, QPU_ADMIN_PASSWORD.
+# Deploy Worker qpu from main, or when started by hand: Lean writes the site, VitePress builds it, Wrangler deploys the
+# Worker that serves it beside /api/mcp. Secrets, by name only: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
 name: deploy
 on:
   push:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      modules:
-        description: Lean modules to seed and check, comma separated. Empty seeds the whole catalogue.
-        type: string
-        default: ''
 permissions:
   contents: read
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
-    # a newer deploy carries everything an older one would write, and the seed and the migration skip what already agrees:
-    # the newer one takes over instead of waiting
     concurrency:
       group: deploy
       cancel-in-progress: true
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
-      QPU_ADMIN_EMAIL: ${{ secrets.QPU_ADMIN_EMAIL }}
-      QPU_ADMIN_PASSWORD: ${{ secrets.QPU_ADMIN_PASSWORD }}
-      # a deploy started by hand may seed and check only the modules it names; a push seeds the whole catalogue
-      SEED_MODULES: ${{ inputs.modules }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.elan/toolchains
+          key: elan-${{ hashFiles('lean-toolchain') }}
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .lake/packages
+          key: lake-packages-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}
+      - run: lake exe cache get
+      # the tree's own compiled modules, shared with lean-verify: only changed modules are rebuilt
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .lake/build
+          key: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ hashFiles('lakefile.lean', 'lean/**/*.lean') }}
+          restore-keys: |
+            lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: 10.34.9
@@ -40,26 +47,17 @@ jobs:
           node-version: 26
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Payload migrate, then the D1 optimize
-        run: pnpm run deploy:database
-      - name: OpenNext builds the Payload app and deploys the Worker
-        run: pnpm run deploy:app
-      - name: Payload writes one wave, then the next, through the deployed Worker
-        run: pnpm exec cross-env NODE_ENV=production QPU_SEED_DOOR=https://qpu.uuidna.com/api/seed/hold pnpm run seed
-      - name: Payload reads the pages back and the deploy holds when they agree
-        run: pnpm exec cross-env NODE_ENV=production QPU_SEED_DOOR=https://qpu.uuidna.com/api/seed/hold pnpm run seed:check
-      - name: smoke the admin on both hostnames
+      - name: Lean writes the pages, VitePress builds them, Wrangler deploys the Worker
+        run: pnpm run deploy
+      - name: smoke /api/mcp and the site on both hostnames
         run: |
           fail=0
-          for url in \
-            https://qpu.uuidna.com/admin \
-            https://qpu.uuidna.com/admin/login \
-            https://qpu.psg.bg/admin \
-            https://qpu.psg.bg/admin/login
+          for host in qpu.uuidna.com qpu.psg.bg
           do
-            code=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "$url")
-            echo "$code $url"
-            if [ "$code" != "200" ]; then fail=1; fi
+            site=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "https://$host/")
+            mcp=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "https://$host/api/mcp")
+            echo "site $site mcp $mcp $host"
+            if [ "$site" != "200" ] || [ "$mcp" != "200" ]; then fail=1; fi
           done
           exit "$fail"
       - name: query Worker logs

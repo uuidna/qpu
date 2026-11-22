@@ -129,41 +129,51 @@ export const seedWaves = (examples: readonly string[] = []) => {
   return [home, standards, ...quantum, cicd]
 }
 
-/** The GitHub workflow, as the Payload stages name it. The pins stay. The seed is one session. */
-export const deployWorkflow = (waves = seedWaves()) => `# Deploy Worker qpu from main, or when started by hand. Payload names the stages. The runner decides nothing.
-# Waves, one session: games, ${waves.map((wave) => wave.name).join(', ')}. Each wave improves the next, and cicd improves home.
-# Secrets, by name only: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, PAYLOAD_SECRET, and for the first admin QPU_ADMIN_EMAIL, QPU_ADMIN_PASSWORD.
+/** The Lean toolchain and Mathlib cache the site build needs, the same steps and pins as the site workflow. */
+const LEAN_STEPS = `      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.elan/toolchains
+          key: elan-\${{ hashFiles('lean-toolchain') }}
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .lake/packages
+          key: lake-packages-\${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}
+      - run: lake exe cache get
+      # the tree's own compiled modules, shared with lean-verify: only changed modules are rebuilt
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .lake/build
+          key: lake-build-\${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-\${{ hashFiles('lakefile.lean', 'lean/**/*.lean') }}
+          restore-keys: |
+            lake-build-\${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-`
+
+/** The GitHub workflow, as the deploy stages name it. The pins stay. */
+export const deployWorkflow = () => `# Deploy Worker qpu from main, or when started by hand: Lean writes the site, VitePress builds it, Wrangler deploys the
+# Worker that serves it beside /api/mcp. Secrets, by name only: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
 name: deploy
 on:
   push:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      modules:
-        description: Lean modules to seed and check, comma separated. Empty seeds the whole catalogue.
-        type: string
-        default: ''
 permissions:
   contents: read
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
-    # a newer deploy carries everything an older one would write, and the seed and the migration skip what already agrees:
-    # the newer one takes over instead of waiting
     concurrency:
       group: deploy
       cancel-in-progress: true
     env:
       CLOUDFLARE_API_TOKEN: \${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: \${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      PAYLOAD_SECRET: \${{ secrets.PAYLOAD_SECRET }}
-      QPU_ADMIN_EMAIL: \${{ secrets.QPU_ADMIN_EMAIL }}
-      QPU_ADMIN_PASSWORD: \${{ secrets.QPU_ADMIN_PASSWORD }}
-      # a deploy started by hand may seed and check only the modules it names; a push seeds the whole catalogue
-      SEED_MODULES: \${{ inputs.modules }}
     steps:
       - uses: ${CHECKOUT}
+${LEAN_STEPS}
       - uses: ${PNPM}
         with:
           version: 10.34.9

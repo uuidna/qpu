@@ -5,6 +5,7 @@ import { serveMcp } from './mcp-http.ts'
 const post = (body: unknown, env: Record<string, string | undefined> = {}) =>
   serveMcp(new Request('https://qpu.uuidna.com/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env)
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: serveMcp frames tools/list, suppresses a notification, and prices a paid call below the quantum market. */
 test('serveMcp frames tools/list, suppresses a notification, and prices a paid call below the quantum market', async () => {
   const list = await post({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} })
   const listed = await list.json()

@@ -3,7 +3,7 @@
 // request the client fetches, the answer read back whether JSON or an event stream. Outward, this catalogue is expressed as
 // the registration any MCP client mounts (tools/list as every client receives it, the mcpServers fragment). Pure: no fetch.
 import { PROSE, proseFill } from '../prose-index.ts'
-import { ADAPTED_CONNECTORS, QPU_CONNECTOR, WEBSITE_CLIENT, WEBSITE_ROUTES, llmTools } from '../../../plugins/websiteClient.ts'
+import { ADAPTED_CONNECTORS, QPU_CONNECTOR, WEBSITE_CLIENT, WEBSITE_ROUTES, llmTools } from '../../net/website-client.ts'
 import { TABLES } from '../tables-index.ts'
 import { defineTool, isObj, createChecks, listTools, type Toolbox, type Context } from '../toolbox.ts'
 import { toDoor, getEventData, rpcBody, DEFAULT_MCP_HOSTS, CLOUDFLARE_MCP, CLOUDFLARE_DOCS_MCP, QPU_MCP, KNOWN_MCP, CLAUDE_API, GEMINI_API, OPEN_MCP_BASELINES, compareToolsLists, createCoverageRequest, getCoverage, mcpHostList, type Door } from '../discovery.ts'

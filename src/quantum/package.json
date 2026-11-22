@@ -1,7 +1,7 @@
 {
   "name": "@uuidna/qpu",
   "description": "An exact quantum processing unit served over MCP",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "license": "CC-BY-NC-ND-4.0",
   "private": true,
   "type": "module",
@@ -19,6 +19,20 @@
     "./machine": "./processing/machine.ts",
     "./machine-run": "./processing/machine-run.ts",
     "./payload-api": "./payload/index.ts",
-    "./payload": "./processing/toolboxes/payload.ts"
+    "./payload": "./processing/toolboxes/payload.ts",
+    "./prose": "./processing/prose-index.ts",
+    "./address": "./password/address.ts",
+    "./jsonld": "./processing/jsonld.ts",
+    "./tenants": "./processing/unit/tenants.ts",
+    "./theorems": "./processing/theorems-index.ts",
+    "./script-doors": "./processing/script-doors.ts",
+    "./release": "./processing/release.ts",
+    "./payload-vocabulary": "./processing/payload-vocabulary.ts",
+    "./discovery": "./processing/discovery.ts",
+    "./config": "./processing/config-index.ts",
+    "./catalogue-seed": "./processing/catalogue-seed.ts",
+    "./engine": "./engine/index.ts",
+    "./website-client": "./net/website-client.ts",
+    "./seed-waves": "./payload/seed-waves.ts"
   }
 }
