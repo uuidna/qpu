@@ -8,6 +8,7 @@ import { PROSE, proseFill } from '../prose-index.ts'
 import type { Context } from '../toolbox.ts'
 import { PAYLOAD_SURFACE } from '../payload-surface.ts'
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.ts'
+import { closedOf } from '../expressions.ts'
 import type { Lead } from '../leads.ts'
 
 type PayloadFieldConfig = { name?: string; type: string; required?: boolean; hasMany?: boolean; fields?: PayloadFieldConfig[]; blocks?: { slug: string; fields: PayloadFieldConfig[] }[]; tabs?: { name?: string; fields: PayloadFieldConfig[] }[]; options?: (string | { value: string })[]; relationTo?: string | string[]; label?: string }
@@ -45,7 +46,7 @@ const listDimensions = (ctx: Context) => {
   const keys: Record<keyof typeof counts, string> = { fieldTypes: 'textbook_payload_field_types', operations: 'textbook_payload_operations', schemas: 'textbook_payload_schemas', queries: 'textbook_payload_queries', hooks: 'textbook_payload_hooks', access: 'textbook_payload_access', coordination: 'textbook_payload_coordination' }
   return (Object.keys(counts) as (keyof typeof counts)[]).map((dimension) => {
     const key = keys[dimension], theorem = TEXTBOOK_THEOREMS.find((t) => t.key === key)
-    const computed = counts[dimension].numbers, stated = theorem ? numbersOfTheorem(theorem.lean) : []
+    const computed = counts[dimension].numbers, stated = theorem ? numbersOfTheorem(closedOf(key) ?? theorem.lean) : []
     const agrees = theorem !== undefined && stated.length === computed.length && stated.every((n, i) => n === computed[i])
     const decided = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement: key.replace(/_/g, ' ') } } }) as { result?: { structuredContent?: { verdict?: string; theorem?: string } }; error?: { message: string } }
     const verdict = decided.result?.structuredContent?.verdict ?? 'unknown', served = decided.result?.structuredContent?.theorem === key

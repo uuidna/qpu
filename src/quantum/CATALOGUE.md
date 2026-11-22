@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1898 products, 2 under a declared claim context and 1896 as the author's own statement, with 1531 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1681 products, 2 under a declared claim context and 1679 as the author's own statement, with 1227 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -841,7 +841,7 @@ Witness: `Vocabulary.linear_system_solved`.
 Witness: `textbook_grover_search`.
 
 ```lean
-∀ m < 4, ∀ r < 4, QuantumAlgorithm.grover m r ≠ 0 ↔ r = m
+∀ (k : ℕ), (2 ^ (2 * k)).sqrt = 2 ^ k
 ```
 
 ### 3.5.7 hidden subgroup
@@ -849,7 +849,7 @@ Witness: `textbook_grover_search`.
 Witness: `textbook_simon`.
 
 ```lean
-List.filter (fun y => (y / 2 + y % 2) % 2 == 0) (List.range 4) = [0, 3]
+∀ {G H : Type} [inst : AddGroup G] [inst_1 : AddGroup H] (φ : G →+ H), Nat.card ↥φ.ker * Nat.card ↥φ.range = Nat.card G
 ```
 
 ### 3.5.8 boson sampling
@@ -5508,7 +5508,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-access-abilities, payload-roles-from-groups.
 
 ```lean
-∀ (can cannot : Bool), (can && !cannot) = true → can = true ∧ cannot = false
+∀ {α : Type u_1} [inst : BooleanAlgebra α] (can cannot : α), can ⊓ cannotᶜ = ⊤ → can = ⊤ ∧ cannot = ⊥
 ```
 
 ### `textbook_abilities_merge_reflected`
@@ -5516,7 +5516,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-access-abilities, payload-roles-from-groups.
 
 ```lean
-∀ (can cannot : Bool), ¬(can = true ∧ cannot = false) → ¬(can && !cannot) = true
+∀ {α : Type u_1} [inst : BooleanAlgebra α] (can cannot : α), ¬(can = ⊤ ∧ cannot = ⊥) → ¬can ⊓ cannotᶜ = ⊤
 ```
 
 ### `textbook_access_combinations`
@@ -5524,7 +5524,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-access.
 
 ```lean
-3 * 3 * 4 = 36
+∀ (a b c : ℕ), Fintype.card (Fin a × Fin b × Fin c) = a * b * c
 ```
 
 ### `textbook_access_combinations_reflected`
@@ -5532,7 +5532,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-access.
 
 ```lean
-∀ (σ : ℕ), σ - 36 = σ - 3 * 3 * 4
+∀ (a b c : ℕ), a * b * c = Fintype.card (Fin a × Fin b × Fin c)
 ```
 
 ### `textbook_actions_experience`
@@ -5540,7 +5540,27 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-actions.
 
 ```lean
-(2 * 507 * 100 + 546) / (2 * 546) = 93 ∧ max 120 (max 140 110) = 140 ∧ 1000 / 140 = 7
+∀ (a b c budget : ℕ),
+  0 < max a (max b c) →
+    a ≤ max a (max b c) ∧
+      b ≤ max a (max b c) ∧
+        c ≤ max a (max b c) ∧
+          budget / max a (max b c) * max a (max b c) ≤ budget ∧
+            budget < (budget / max a (max b c) + 1) * max a (max b c)
+```
+
+### `textbook_actions_experience_contrapositive`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-actions.
+
+```lean
+∀ (a b c budget : ℕ),
+  ¬(a ≤ max a (max b c) ∧
+        b ≤ max a (max b c) ∧
+          c ≤ max a (max b c) ∧
+            budget / max a (max b c) * max a (max b c) ≤ budget ∧
+              budget < (budget / max a (max b c) + 1) * max a (max b c)) →
+    ¬0 < max a (max b c)
 ```
 
 ### `textbook_actions_experience_reflected`
@@ -5548,7 +5568,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-actions.
 
 ```lean
-∀ (σ : ℕ), σ - 93 = σ - (2 * 507 * 100 + 546) / (2 * 546) ∧ σ - 140 = σ - max 120 (max 140 110) ∧ σ - 7 = σ - 1000 / 140
+∀ (a b c budget : ℕ),
+  0 < max a (max b c) →
+    ∀ (σ : ℕ),
+      (budget / max a (max b c) + 1) * max a (max b c) ≤ σ →
+        σ - max a (max b c) ≤ σ - a ∧
+          σ - max a (max b c) ≤ σ - b ∧
+            σ - max a (max b c) ≤ σ - c ∧
+              σ - budget ≤ σ - budget / max a (max b c) * max a (max b c) ∧
+                σ - (budget / max a (max b c) + 1) * max a (max b c) < σ - budget
 ```
 
 ### `textbook_actions_pinned`
@@ -5556,23 +5584,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-actions-tag-pinned, repository-actions-sha-pinned.
 
 ```lean
-∀ (u p : ℕ), u = 0 → p = 0 → u + p = 0
-```
-
-### `textbook_actions_pinned_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-actions-tag-pinned, repository-actions-sha-pinned.
-
-```lean
-∀ (u p : ℕ), ¬u + p = 0 → ¬(u = 0 ∧ p = 0)
-```
-
-### `textbook_actions_pinned_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-actions-tag-pinned, repository-actions-sha-pinned.
-
-```lean
-∀ (u p : ℕ), u + p = 0 → u = 0 ∧ p = 0
+∀ (u p : ℕ), u + p = 0 ↔ u = 0 ∧ p = 0
 ```
 
 ### `textbook_actions_pinned_reflected`
@@ -5580,7 +5592,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-actions-tag-pinned, repository-actions-sha-pinned.
 
 ```lean
-∀ (u p : ℕ), u = 0 → p = 0 → ∀ (σ : ℕ), σ - 0 = σ - (u + p)
+∀ (u p : ℕ), u = 0 ∧ p = 0 ↔ u + p = 0
 ```
 
 ### `textbook_adapter_combinations`
@@ -5588,7 +5600,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-adapters.
 
 ```lean
-5 * 5 * 3 = 75
+∀ (a b c : ℕ), Fintype.card (Fin a × Fin b × Fin c) = a * (b * c)
 ```
 
 ### `textbook_adapter_combinations_reflected`
@@ -5596,7 +5608,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-adapters.
 
 ```lean
-∀ (σ : ℕ), σ - 75 = σ - 5 * 5 * 3
+∀ (a b c : ℕ), a * (b * c) = Fintype.card (Fin a × Fin b × Fin c)
 ```
 
 ### `textbook_address_retrieval`
@@ -5604,7 +5616,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: raid-binding0-mirror.
 
 ```lean
-1 < 1000000 ∧ 1 * 1 = 1
+∀ {α β : Type} (f : α ↪ β) (a b : α), f a = f b ↔ a = b
 ```
 
 ### `textbook_address_retrieval_reflected`
@@ -5612,7 +5624,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: raid-binding0-mirror.
 
 ```lean
-∀ (σ : ℕ), 1000000 ≤ σ → σ - 1000000 < σ - 1 ∧ σ - 1 = σ - 1 * 1
+∀ {α β : Type} (f : α ↪ β) (a b : α), a = b ↔ f a = f b
 ```
 
 ### `textbook_advantage_unbounded`
@@ -5620,15 +5632,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-access, metrics-advantage, payload-predict.
 
 ```lean
-∀ (verified : ℕ), verified < verified + 1
-```
-
-### `textbook_advantage_unbounded_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-access, metrics-advantage, payload-predict.
-
-```lean
-∀ (verified σ : ℕ), verified + 1 ≤ σ → σ - (verified + 1) < σ - verified
+∀ (verified : ℕ), ∃ more, verified < more
 ```
 
 ### `textbook_aead_sizes`
@@ -5636,7 +5640,9 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-aead.
 
 ```lean
-32 * 8 = 256 ∧ 12 * 8 = 96 ∧ 16 * 8 = 128 ∧ 2 * 10 = 20
+∀ (n : ℕ),
+  Fintype.card (Fin n → Fin 8 → Bool) = 2 ^ (8 * n) ∧
+    Fintype.card (Fin n → Fin 256) = Fintype.card (Fin (2 * n) → Fin 16)
 ```
 
 ### `textbook_aead_sizes_reflected`
@@ -5644,7 +5650,9 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-aead.
 
 ```lean
-∀ (σ : ℕ), σ - 256 = σ - 32 * 8 ∧ σ - 96 = σ - 12 * 8 ∧ σ - 128 = σ - 16 * 8 ∧ σ - 20 = σ - 2 * 10
+∀ (n : ℕ),
+  2 ^ (8 * n) = Fintype.card (Fin n → Fin 8 → Bool) ∧
+    Fintype.card (Fin (2 * n) → Fin 16) = Fintype.card (Fin n → Fin 256)
 ```
 
 ### `textbook_alpine_ported`
@@ -5655,29 +5663,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (ported halfway gaps total : ℕ), ported + halfway + gaps = total → total - ported = halfway + gaps
 ```
 
-### `textbook_alpine_ported_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-alpine.
-
-```lean
-∀ (ported halfway gaps total : ℕ), ¬total - ported = halfway + gaps → ¬ported + halfway + gaps = total
-```
-
-### `textbook_alpine_ported_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-alpine.
-
-```lean
-¬∀ (ported halfway gaps total : ℕ), total - ported = halfway + gaps → ported + halfway + gaps = total
-```
-
 ### `textbook_alpine_ported_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-alpine.
 
 ```lean
-∀ (ported halfway gaps total : ℕ),
-  ported + halfway + gaps = total → ∀ (σ : ℕ), σ - (halfway + gaps) = σ - (total - ported)
+∀ (ported halfway gaps total : ℕ), ported + halfway + gaps = total → halfway + gaps = total - ported
 ```
 
 ### `textbook_alpine_refused`
@@ -5701,7 +5692,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-alpine-run.
 
 ```lean
-1 + 1 = 2 ∧ 1 < 2
+∀ (count : ℕ), count < count + 1
 ```
 
 ### `textbook_alpine_runs_reflected`
@@ -5709,7 +5700,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-alpine-run.
 
 ```lean
-∀ (σ : ℕ), 2 ≤ σ → σ - 2 = σ - (1 + 1) ∧ σ - 2 < σ - 1
+∀ (count σ : ℕ), count + 1 ≤ σ → σ - (count + 1) < σ - count
 ```
 
 ### `textbook_ancient_law`
@@ -5717,7 +5708,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: legal-ancient.
 
 ```lean
-4 + 5 = 9
+∀ (a b : ℕ), Fintype.card (Fin a ⊕ Fin b) = a + b
 ```
 
 ### `textbook_ancient_law_reflected`
@@ -5725,7 +5716,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: legal-ancient.
 
 ```lean
-∀ (σ : ℕ), σ - 9 = σ - (4 + 5)
+∀ (a b : ℕ), a + b = Fintype.card (Fin a ⊕ Fin b)
 ```
 
 ### `textbook_antimatter_total`
@@ -5733,7 +5724,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-antimatter-total.
 
 ```lean
-12 - 12 = 0
+∀ (n : ℕ), n - n = 0
 ```
 
 ### `textbook_antimatter_total_reflected`
@@ -5741,7 +5732,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-antimatter-total.
 
 ```lean
-∀ (σ : ℕ), σ - 0 = σ - (12 - 12)
+∀ (n : ℕ), 0 = n - n
 ```
 
 ### `textbook_app_bundle`
@@ -5749,7 +5740,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-app.
 
 ```lean
-1 + 2 = 3
+∀ (a b : ℕ), Fintype.card (Fin a ⊕ Fin b) = a + b
 ```
 
 ### `textbook_app_bundle_reflected`
@@ -5757,7 +5748,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-app.
 
 ```lean
-∀ (σ : ℕ), σ - 3 = σ - (1 + 2)
+∀ (a b : ℕ), a + b = Fintype.card (Fin a ⊕ Fin b)
 ```
 
 ### `textbook_app_doc_blocks`
@@ -5765,7 +5756,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-app-lexical.
 
 ```lean
-3 + 1 = 4
+∀ (File : Type) [inst : Fintype File], Fintype.card (Option File) = Fintype.card File + 1
 ```
 
 ### `textbook_app_doc_blocks_reflected`
@@ -5773,7 +5764,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-app-lexical.
 
 ```lean
-∀ (σ : ℕ), σ - 4 = σ - (3 + 1)
+∀ (File : Type) [inst : Fintype File], Fintype.card File + 1 = Fintype.card (Option File)
 ```
 
 ### `textbook_app_fields_validated`
@@ -5781,7 +5772,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-app-validate.
 
 ```lean
-3 + 1 = 4 ∧ 2 + 1 = 3
+∀ {α : Type u_1} (s : Finset α) (p : α → Prop) [inst : DecidablePred p],
+  (Finset.filter p s).card + {a ∈ s | ¬p a}.card = s.card
 ```
 
 ### `textbook_app_fields_validated_reflected`
@@ -5789,7 +5781,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-app-validate.
 
 ```lean
-∀ (σ : ℕ), σ - 4 = σ - (3 + 1) ∧ σ - 3 = σ - (2 + 1)
+∀ {α : Type u_1} (s : Finset α) (p : α → Prop) [inst : DecidablePred p],
+  s.card = (Finset.filter p s).card + {a ∈ s | ¬p a}.card
 ```
 
 ### `textbook_artifacts_verified`
@@ -5801,31 +5794,13 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
   verified + mismatched + unreached = total → mismatched = 0 → total - unreached = verified
 ```
 
-### `textbook_artifacts_verified_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-artifacts.
-
-```lean
-∀ (verified mismatched unreached total : ℕ),
-  ¬total - unreached = verified → ¬(verified + mismatched + unreached = total ∧ mismatched = 0)
-```
-
-### `textbook_artifacts_verified_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-artifacts.
-
-```lean
-¬∀ (verified mismatched unreached total : ℕ),
-    total - unreached = verified → verified + mismatched + unreached = total ∧ mismatched = 0
-```
-
 ### `textbook_artifacts_verified_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-artifacts.
 
 ```lean
 ∀ (verified mismatched unreached total : ℕ),
-  verified + mismatched + unreached = total → mismatched = 0 → ∀ (σ : ℕ), σ - verified = σ - (total - unreached)
+  verified + mismatched + unreached = total → mismatched = 0 → verified = total - unreached
 ```
 
 ### `textbook_association_fields`
@@ -5833,7 +5808,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: rails-associations-overview, rails-associations-types, rails-associations-choosing, rails-associations-advanced, rails-associations-sti, rails-associations-delegated, rails-associations-tips, rails-associations-references.
 
 ```lean
-5 + 4 + 1 = 10
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → s.card = ∑ k ∈ t, {x ∈ s | f x = k}.card
 ```
 
 ### `textbook_association_fields_reflected`
@@ -5841,7 +5817,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: rails-associations-overview, rails-associations-types, rails-associations-choosing, rails-associations-advanced, rails-associations-sti, rails-associations-delegated, rails-associations-tips, rails-associations-references.
 
 ```lean
-∀ (σ : ℕ), σ - 10 = σ - (5 + 4 + 1)
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → ∑ k ∈ t, {x ∈ s | f x = k}.card = s.card
 ```
 
 ### `textbook_attest_facets`
@@ -5849,7 +5826,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: dashboard-attest.
 
 ```lean
-4 - 1 = 3 ∧ 2 * 1 * 1 = 2
+∀ {ι : Type} [inst : Fintype ι] [inst_1 : DecidableEq ι] (space : ι → Type) [inst_2 : (i : ι) → Fintype (space i)]
+  (facets : Finset ι),
+  ∀ free ∈ facets,
+    Fintype.card ((i : ι) → space i) = ∏ i, Fintype.card (space i) ∧ (facets.erase free).card = facets.card - 1
 ```
 
 ### `textbook_attest_facets_reflected`
@@ -5857,7 +5837,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: dashboard-attest.
 
 ```lean
-∀ (σ : ℕ), σ - 3 = σ - (4 - 1) ∧ σ - 2 = σ - 2 * 1 * 1
+∀ {ι : Type} [inst : Fintype ι] [inst_1 : DecidableEq ι] (space : ι → Type) [inst_2 : (i : ι) → Fintype (space i)]
+  (facets : Finset ι),
+  ∀ free ∈ facets,
+    ∏ i, Fintype.card (space i) = Fintype.card ((i : ι) → space i) ∧ facets.card - 1 = (facets.erase free).card
 ```
 
 ### `textbook_attest_requests`
@@ -5865,7 +5848,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: attest-plan.
 
 ```lean
-8 + 1 = 9
+∀ (n : ℕ), Fintype.card (Option (Fin n)) = n + 1
 ```
 
 ### `textbook_attest_requests_reflected`
@@ -5873,7 +5856,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: attest-plan.
 
 ```lean
-∀ (σ : ℕ), σ - 9 = σ - (8 + 1)
+∀ (n : ℕ), n + 1 = Fintype.card (Option (Fin n))
 ```
 
 ### `textbook_audit_all_pass`
@@ -5884,28 +5867,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (passed failed total : ℕ), passed + failed = total → failed = 0 → passed = total
 ```
 
-### `textbook_audit_all_pass_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-self.
-
-```lean
-∀ (passed failed total : ℕ), ¬passed = total → ¬(passed + failed = total ∧ failed = 0)
-```
-
-### `textbook_audit_all_pass_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-self.
-
-```lean
-¬∀ (passed failed total : ℕ), passed = total → passed + failed = total ∧ failed = 0
-```
-
 ### `textbook_audit_all_pass_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-self.
 
 ```lean
-∀ (passed failed total : ℕ), passed + failed = total → failed = 0 → ∀ (σ : ℕ), σ - total = σ - passed
+∀ (passed failed total : ℕ), passed + failed = total → failed = 0 → total = passed
 ```
 
 ### `textbook_authorship_tracked`
@@ -5940,14 +5907,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (examples linked : ℕ), ¬examples - linked = 0 → ¬linked = examples
 ```
 
-### `textbook_axioms_linked_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-axioms.
-
-```lean
-¬∀ (examples linked : ℕ), examples - linked = 0 → linked = examples
-```
-
 ### `textbook_axioms_linked_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-axioms.
@@ -5961,7 +5920,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-theorems-update.
 
 ```lean
-1 + 1 = 2 ∧ 2 - 1 = 1
+∀ {α : Type u_1} [inst : DecidableEq α] (S T : Finset α), T ⊆ S → (S \ T).card = S.card - T.card
 ```
 
 ### `textbook_axioms_replaced_reflected`
@@ -5969,7 +5928,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-theorems-update.
 
 ```lean
-∀ (σ : ℕ), σ - 2 = σ - (1 + 1) ∧ σ - 1 = σ - (2 - 1)
+∀ {α : Type u_1} [inst : DecidableEq α] (S T : Finset α), T ⊆ S → S.card - T.card = (S \ T).card
 ```
 
 ### `textbook_bch_code`
@@ -5977,7 +5936,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-2 ^ 4 - 1 = 15 ∧ 15 - 7 = 8 ∧ (5 - 1) / 2 = 2
+∀ {ι : Type u_1} [inst : Fintype ι] {β : ι → Type u_2} [inst_1 : (i : ι) → DecidableEq (β i)] (d : ℕ),
+  0 < d →
+    ∀ (c₁ c₂ r : (i : ι) → β i),
+      (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → hammingDist c₁ r ≤ (d - 1) / 2 → hammingDist c₂ r ≤ (d - 1) / 2 → c₁ = c₂
 ```
 
 ### `textbook_bch_code_reflected`
@@ -5985,7 +5947,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-∀ (σ : ℕ), σ - 15 = σ - (2 ^ 4 - 1) ∧ σ - 8 = σ - (15 - 7) ∧ σ - 2 = σ - (5 - 1) / 2
+∀ {ι : Type u_1} [inst : Fintype ι] {β : ι → Type u_2} [inst_1 : (i : ι) → DecidableEq (β i)] (d : ℕ),
+  0 < d →
+    ∀ (c₁ c₂ r : (i : ι) → β i),
+      (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → hammingDist c₁ r ≤ (d - 1) / 2 → hammingDist c₂ r ≤ (d - 1) / 2 → c₂ = c₁
 ```
 
 ### `textbook_beacon_period`
@@ -5993,15 +5958,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-∀ (t : ℕ), t + 60000 - t = 60000
+∀ (t p : ℕ), t + p - t = p
 ```
 
 ### `textbook_beacon_period_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: .
 
 ```lean
-∀ (t σ : ℕ), σ - 60000 = σ - (t + 60000 - t)
+∀ (t p σ : ℕ), σ - p = σ - (t + p - t)
 ```
 
 ### `textbook_bernstein_vazirani`
@@ -6009,14 +5974,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-bernstein-vazirani.
 
 ```lean
-List.filter
-      (fun t =>
-        (List.range 8).all fun x =>
-          (t / 4 * (x / 4) + t / 2 % 2 * (x / 2 % 2) + t % 2 * (x % 2)) % 2 ==
-            (5 / 4 * (x / 4) + 5 / 2 % 2 * (x / 2 % 2) + 5 % 2 * (x % 2)) % 2)
-      (List.range 8) =
-    [5] ∧
-  1 < 3
+∀ {n : ℕ} (s t : Fin n → ZMod 2), (∀ (x : Fin n → ZMod 2), s ⬝ᵥ x = t ⬝ᵥ x) → s = t
 ```
 
 ### `textbook_bernstein_vazirani_reflected`
@@ -6024,16 +5982,7 @@ List.filter
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-bernstein-vazirani.
 
 ```lean
-∀ (σ : ℕ),
-  3 ≤ σ →
-    [5] =
-        List.filter
-          (fun t =>
-            (List.range 8).all fun x =>
-              (t / 4 * (x / 4) + t / 2 % 2 * (x / 2 % 2) + t % 2 * (x % 2)) % 2 ==
-                (5 / 4 * (x / 4) + 5 / 2 % 2 * (x / 2 % 2) + 5 % 2 * (x % 2)) % 2)
-          (List.range 8) ∧
-      σ - 3 < σ - 1
+∀ {n : ℕ} (s t : Fin n → ZMod 2), (∀ (x : Fin n → ZMod 2), s ⬝ᵥ x = t ⬝ᵥ x) → t = s
 ```
 
 ### `textbook_bilinear_symmetry`
@@ -6041,7 +5990,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-9 * 6 = 6 * 9 ∧ 7 * 4 = 4 * 7
+∀ (a b : ℕ), a * b = b * a
 ```
 
 ### `textbook_bilinear_symmetry_reflected`
@@ -6049,7 +5998,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-∀ (σ : ℕ), σ - 6 * 9 = σ - 9 * 6 ∧ σ - 4 * 7 = σ - 7 * 4
+∀ (a b σ : ℕ), σ - b * a = σ - a * b
 ```
 
 ### `textbook_bill_covered`
@@ -6060,28 +6009,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (price cost : ℕ), cost ≤ price → price - cost + cost = price
 ```
 
-### `textbook_bill_covered_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy, textbook-bill-covered.
-
-```lean
-∀ (price cost : ℕ), ¬price - cost + cost = price → ¬cost ≤ price
-```
-
-### `textbook_bill_covered_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy, textbook-bill-covered.
-
-```lean
-∀ (price cost : ℕ), price - cost + cost = price → cost ≤ price
-```
-
 ### `textbook_bill_covered_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy, textbook-bill-covered.
 
 ```lean
-∀ (price cost : ℕ), cost ≤ price → ∀ (σ : ℕ), σ - price = σ - (price - cost + cost)
+∀ (price cost : ℕ), cost ≤ price → price = price - cost + cost
 ```
 
 ### `textbook_billing_complete`
@@ -6105,7 +6038,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: raid-binding0-mirror, raid-binding0-restore.
 
 ```lean
-4 + 1 + 4 + 1 + 4 + 1 + 36 = 51 ∧ 16 * 16 * 16 * 16 = 65536
+∀ (k : ℕ), Fintype.card (Fin k → Fin 16) = 16 ^ k
 ```
 
 ### `textbook_binding_zero_hex_path_reflected`
@@ -6113,7 +6046,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: raid-binding0-mirror, raid-binding0-restore.
 
 ```lean
-∀ (σ : ℕ), σ - 51 = σ - (4 + 1 + 4 + 1 + 4 + 1 + 36) ∧ σ - 65536 = σ - 16 * 16 * 16 * 16
+∀ (k : ℕ), 16 ^ k = Fintype.card (Fin k → Fin 16)
 ```
 
 ### `textbook_bindings_bound`
@@ -6121,23 +6054,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy, configure-cloudflare-adapters.
 
 ```lean
-∀ (needed declared missing : ℕ), declared + missing = needed → missing = 0 → declared = needed
-```
-
-### `textbook_bindings_bound_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy, configure-cloudflare-adapters.
-
-```lean
-∀ (needed declared missing : ℕ), ¬declared = needed → ¬(declared + missing = needed ∧ missing = 0)
-```
-
-### `textbook_bindings_bound_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy, configure-cloudflare-adapters.
-
-```lean
-¬∀ (needed declared missing : ℕ), declared = needed → declared + missing = needed ∧ missing = 0
+∀ {M : Type u_1} [inst : AddMonoid M] [IsLeftCancelAdd M] (needed declared missing : M),
+  declared + missing = needed → (declared = needed ↔ missing = 0)
 ```
 
 ### `textbook_bindings_bound_reflected`
@@ -6145,7 +6063,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy, configure-cloudflare-adapters.
 
 ```lean
-∀ (needed declared missing : ℕ), declared + missing = needed → missing = 0 → ∀ (σ : ℕ), σ - needed = σ - declared
+∀ {M : Type u_1} [inst : AddMonoid M] [IsLeftCancelAdd M] (needed declared missing : M),
+  declared + missing = needed → (missing = 0 ↔ declared = needed)
 ```
 
 ### `textbook_bindings_named_not_valued`
@@ -6161,7 +6080,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-connectors, configure-bindings, configure-tenant-missing.
 
 ```lean
-∀ (names σ : ℕ), σ - 0 = σ - names * 0
+∀ (names : ℕ), 0 = names * 0
 ```
 
 ### `textbook_bindings_used_google`
@@ -6180,14 +6099,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (used idle total paired : ℕ), ¬(used = total ∧ paired = used) → ¬(used + idle = total ∧ idle = 0 ∧ paired = total)
 ```
 
-### `textbook_bindings_used_google_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-bindings-google.
-
-```lean
-¬∀ (used idle total paired : ℕ), used = total ∧ paired = used → used + idle = total ∧ idle = 0 ∧ paired = total
-```
-
 ### `textbook_bindings_used_google_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-bindings-google.
@@ -6202,7 +6113,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: circuit-bit-flip-noise.
 
 ```lean
-1 * 1 + 9 * 9 = 82 ∧ 1 + 9 = 10 ∧ 10 * 10 = 100
+∀ {R : Type} [inst : CommRing R] (p q : R), p + q = 1 → p ^ 2 + q ^ 2 = 1 - 2 * p * q
 ```
 
 ### `textbook_bit_flip_purity_reflected`
@@ -6210,7 +6121,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: circuit-bit-flip-noise.
 
 ```lean
-∀ (σ : ℕ), σ - 82 = σ - (1 * 1 + 9 * 9) ∧ σ - 10 = σ - (1 + 9) ∧ σ - 100 = σ - 10 * 10
+∀ {R : Type} [inst : CommRing R] (p q : R), p + q = 1 → 1 - 2 * p * q = p ^ 2 + q ^ 2
 ```
 
 ### `textbook_blockchain_hash_links`
@@ -6218,23 +6129,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-genesis, verify-blockchain-linked, verify-radar.
 
 ```lean
-∀ (n : ℕ), 1 ≤ n → n - 1 + 1 = n ∧ 1 - 1 = 0
-```
-
-### `textbook_blockchain_hash_links_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-genesis, verify-blockchain-linked, verify-radar.
-
-```lean
-∀ (n : ℕ), ¬(n - 1 + 1 = n ∧ 1 - 1 = 0) → ¬1 ≤ n
-```
-
-### `textbook_blockchain_hash_links_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-genesis, verify-blockchain-linked, verify-radar.
-
-```lean
-∀ (n : ℕ), n - 1 + 1 = n ∧ 1 - 1 = 0 → 1 ≤ n
+∀ {V : Type u_1} (G : SimpleGraph V) {u v : V} (p : G.Walk u v),
+  p.support.length = p.length + 1 ∧ SimpleGraph.Walk.nil.length = 0
 ```
 
 ### `textbook_blockchain_hash_links_reflected`
@@ -6242,7 +6138,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-genesis, verify-blockchain-linked, verify-radar.
 
 ```lean
-∀ (n : ℕ), 1 ≤ n → ∀ (σ : ℕ), σ - n = σ - (n - 1 + 1) ∧ σ - 0 = σ - (1 - 1)
+∀ {V : Type u_1} (G : SimpleGraph V) {u v : V} (p : G.Walk u v),
+  p.length + 1 = p.support.length ∧ 0 = SimpleGraph.Walk.nil.length
 ```
 
 ### `textbook_blockchain_tamper_evident`
@@ -6250,31 +6147,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-tampered.
 
 ```lean
-∀ (n i : ℕ), i < n → i + (n - i) = n ∧ 1 ≤ n - i
-```
-
-### `textbook_blockchain_tamper_evident_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-tampered.
-
-```lean
-∀ (n i : ℕ), ¬(i + (n - i) = n ∧ 1 ≤ n - i) → ¬i < n
-```
-
-### `textbook_blockchain_tamper_evident_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-tampered.
-
-```lean
-∀ (n i : ℕ), i + (n - i) = n ∧ 1 ≤ n - i → i < n
-```
-
-### `textbook_blockchain_tamper_evident_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-tampered.
-
-```lean
-∀ (n i : ℕ), i < n → ∀ (σ : ℕ), σ - n = σ - (i + (n - i)) ∧ σ - (n - i) ≤ σ - 1
+∀ (n i : ℕ), i < n → i + (n - i) = n ∧ 0 < n - i
 ```
 
 ### `textbook_blockchain_transfer_once`
@@ -6282,7 +6155,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-transfer-once.
 
 ```lean
-∀ (a b : ℕ), 1 ≤ a → a - 1 + (b + 1) = a + b ∧ 1 < 2
+∀ (a b k : ℕ), k ≤ a → a - k + (b + k) = a + b
 ```
 
 ### `textbook_blockchain_transfer_once_contrapositive`
@@ -6290,15 +6163,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-transfer-once.
 
 ```lean
-∀ (a b : ℕ), ¬(a - 1 + (b + 1) = a + b ∧ 1 < 2) → ¬1 ≤ a
-```
-
-### `textbook_blockchain_transfer_once_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-transfer-once.
-
-```lean
-∀ (a b : ℕ), a - 1 + (b + 1) = a + b ∧ 1 < 2 → 1 ≤ a
+∀ (a b k : ℕ), ¬a - k + (b + k) = a + b → ¬k ≤ a
 ```
 
 ### `textbook_blockchain_transfer_once_reflected`
@@ -6306,7 +6171,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-transfer-once.
 
 ```lean
-∀ (a b : ℕ), 1 ≤ a → ∀ (σ : ℕ), 2 ≤ σ → σ - (a + b) = σ - (a - 1 + (b + 1)) ∧ σ - 2 < σ - 1
+∀ (a b k : ℕ), k ≤ a → ∀ (σ : ℕ), σ - (a + b) = σ - (a - k + (b + k))
 ```
 
 ### `textbook_branding_sources`
@@ -6314,7 +6179,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-branding-user.
 
 ```lean
-3 + 2 = 5
+∀ (Defined Computed : Type) [inst : Fintype Defined] [inst_1 : Fintype Computed],
+  Fintype.card (Defined ⊕ Computed) = Fintype.card Defined + Fintype.card Computed
 ```
 
 ### `textbook_branding_sources_reflected`
@@ -6322,7 +6188,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-branding-user.
 
 ```lean
-∀ (σ : ℕ), σ - 5 = σ - (3 + 2)
+∀ (Defined Computed : Type) [inst : Fintype Defined] [inst_1 : Fintype Computed],
+  Fintype.card Defined + Fintype.card Computed = Fintype.card (Defined ⊕ Computed)
 ```
 
 ### `textbook_build_fresh`
@@ -6330,23 +6197,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy.
 
 ```lean
-∀ (built source : ℕ), source ≤ built → built - source + source = built
-```
-
-### `textbook_build_fresh_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy.
-
-```lean
-∀ (built source : ℕ), ¬built - source + source = built → ¬source ≤ built
-```
-
-### `textbook_build_fresh_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy.
-
-```lean
-∀ (built source : ℕ), built - source + source = built → source ≤ built
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] (built source : α), source ≤ built → built - source + source = built
 ```
 
 ### `textbook_build_fresh_reflected`
@@ -6354,7 +6206,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy.
 
 ```lean
-∀ (built source : ℕ), source ≤ built → ∀ (σ : ℕ), σ - built = σ - (built - source + source)
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] (built source : α), source ≤ built → built = built - source + source
 ```
 
 ### `textbook_bulgarian_statement_words`
@@ -6389,14 +6242,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (served saved total : ℕ), ¬total - saved = served → ¬served + saved = total
 ```
 
-### `textbook_cache_saves_cost_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-reference-index.
-
-```lean
-¬∀ (served saved total : ℕ), total - saved = served → served + saved = total
-```
-
 ### `textbook_cache_saves_cost_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-reference-index.
@@ -6410,7 +6255,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-access-waive.
 
 ```lean
-∀ (can : Bool), (can && !true) = false
+∀ {α : Type} [inst : BooleanAlgebra α] (can cannot : α), cannot = ⊤ → can ⊓ cannotᶜ = ⊥
 ```
 
 ### `textbook_cannot_binds_reflected`
@@ -6418,7 +6263,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-access-waive.
 
 ```lean
-∀ (can : Bool), false = (can && !true)
+∀ {α : Type} [inst : BooleanAlgebra α] (can cannot : α), cannot = ⊤ → ⊥ = can ⊓ cannotᶜ
 ```
 
 ### `textbook_capacity_conserved`
@@ -6426,23 +6271,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-capacity.
 
 ```lean
-∀ (capacity used : ℕ), used ≤ capacity → used + (capacity - used) = capacity
-```
-
-### `textbook_capacity_conserved_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-capacity.
-
-```lean
-∀ (capacity used : ℕ), ¬used + (capacity - used) = capacity → ¬used ≤ capacity
-```
-
-### `textbook_capacity_conserved_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-capacity.
-
-```lean
-∀ (capacity used : ℕ), used + (capacity - used) = capacity → used ≤ capacity
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] (capacity used : α), used ≤ capacity → used + (capacity - used) = capacity
 ```
 
 ### `textbook_capacity_conserved_reflected`
@@ -6450,7 +6280,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-capacity.
 
 ```lean
-∀ (capacity used : ℕ), used ≤ capacity → ∀ (σ : ℕ), σ - capacity = σ - (used + (capacity - used))
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] (capacity used : α), used ≤ capacity → capacity = used + (capacity - used)
 ```
 
 ### `textbook_caps_removed`
@@ -6458,32 +6289,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-uncap.
 
 ```lean
-∀ (caps removed kept : ℕ), removed + kept = caps → kept ≤ caps → caps - removed = kept ∧ removed ≤ caps
-```
-
-### `textbook_caps_removed_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-uncap.
-
-```lean
-∀ (caps removed kept : ℕ), ¬(caps - removed = kept ∧ removed ≤ caps) → ¬(removed + kept = caps ∧ kept ≤ caps)
-```
-
-### `textbook_caps_removed_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-uncap.
-
-```lean
-∀ (caps removed kept : ℕ), caps - removed = kept ∧ removed ≤ caps → removed + kept = caps ∧ kept ≤ caps
-```
-
-### `textbook_caps_removed_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-uncap.
-
-```lean
-∀ (caps removed kept : ℕ),
-  removed + kept = caps → kept ≤ caps → ∀ (σ : ℕ), σ - kept = σ - (caps - removed) ∧ σ - caps ≤ σ - removed
+∀ (caps removed kept : ℕ), removed + kept = caps → caps - removed = kept ∧ removed ≤ caps
 ```
 
 ### `textbook_carry_release`
@@ -6502,14 +6308,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (version carried : ℕ), ¬version + 1 + carried = version + 1 → ¬carried = 0
 ```
 
-### `textbook_carry_release_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-workflow.
-
-```lean
-∀ (version carried : ℕ), version + 1 + carried = version + 1 → carried = 0
-```
-
 ### `textbook_carry_release_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-workflow.
@@ -6523,7 +6321,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: jsonld-catalogue.
 
 ```lean
-1 + 3 + 2 + 3 = 9
+∀ {Kind : Type} [inst : Fintype Kind] (Offer : Kind → Type) [inst_1 : (k : Kind) → Fintype (Offer k)],
+  Fintype.card ((k : Kind) × Offer k) = ∑ k, Fintype.card (Offer k)
 ```
 
 ### `textbook_catalogue_offers_reflected`
@@ -6531,7 +6330,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: jsonld-catalogue.
 
 ```lean
-∀ (σ : ℕ), σ - 9 = σ - (1 + 3 + 2 + 3)
+∀ {Kind : Type} [inst : Fintype Kind] (Offer : Kind → Type) [inst_1 : (k : Kind) → Fintype (Offer k)],
+  ∑ k, Fintype.card (Offer k) = Fintype.card ((k : Kind) × Offer k)
 ```
 
 ### `textbook_catalogue_prices`
@@ -6539,7 +6339,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-ecommerce.
 
 ```lean
-9 * 3 = 27
+∀ (v c : ℕ), Fintype.card (Fin v × Fin c) = v * c
 ```
 
 ### `textbook_catalogue_prices_reflected`
@@ -6547,7 +6347,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-ecommerce.
 
 ```lean
-∀ (σ : ℕ), σ - 27 = σ - 9 * 3
+∀ (v c : ℕ), v * c = Fintype.card (Fin v × Fin c)
 ```
 
 ### `textbook_cells_text`
@@ -6558,28 +6358,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (links escaped : ℕ), escaped = links → links - escaped = 0
 ```
 
-### `textbook_cells_text_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: widgets-cell-text.
-
-```lean
-∀ (links escaped : ℕ), ¬links - escaped = 0 → ¬escaped = links
-```
-
-### `textbook_cells_text_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: widgets-cell-text.
-
-```lean
-¬∀ (links escaped : ℕ), links - escaped = 0 → escaped = links
-```
-
 ### `textbook_cells_text_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: widgets-cell-text.
 
 ```lean
-∀ (links escaped : ℕ), escaped = links → ∀ (σ : ℕ), σ - 0 = σ - (links - escaped)
+∀ (links escaped : ℕ), escaped = links → 0 = links - escaped
 ```
 
 ### `textbook_cert_validity_bound`
@@ -6587,23 +6371,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: attest-read.
 
 ```lean
-∀ (a b : ℕ), b - a ≤ 398 → b - a ≤ 398
-```
-
-### `textbook_cert_validity_bound_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: attest-read.
-
-```lean
-∀ (a b : ℕ), ¬b - a ≤ 398 → ¬b - a ≤ 398
-```
-
-### `textbook_cert_validity_bound_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: attest-read.
-
-```lean
-∀ (a b : ℕ), b - a ≤ 398 → b - a ≤ 398
+∀ (a b L : ℕ), b - a ≤ L ↔ b ≤ a + L
 ```
 
 ### `textbook_cert_validity_bound_reflected`
@@ -6611,7 +6379,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: attest-read.
 
 ```lean
-∀ (a b : ℕ), b - a ≤ 398 → ∀ (σ : ℕ), σ - 398 ≤ σ - (b - a)
+∀ (a b L : ℕ), b ≤ a + L ↔ b - a ≤ L
 ```
 
 ### `textbook_chain_bits`
@@ -6619,7 +6387,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-scan.
 
 ```lean
-32 * 4 = 128
+∀ (k : ℕ), 16 ^ k = 2 ^ (4 * k)
 ```
 
 ### `textbook_chain_bits_reflected`
@@ -6627,7 +6395,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-scan.
 
 ```lean
-∀ (σ : ℕ), σ - 128 = σ - 32 * 4
+∀ (k : ℕ), 2 ^ (4 * k) = 16 ^ k
 ```
 
 ### `textbook_chain_index_steps`
@@ -6635,15 +6403,17 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-∀ (i : ℕ), i + 1 - i = 1
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (i k : α), i + k - i = k
 ```
 
 ### `textbook_chain_index_steps_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: .
 
 ```lean
-∀ (i σ : ℕ), σ - 1 = σ - (i + 1 - i)
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (i k : α), k = i + k - i
 ```
 
 ### `textbook_chat_call_or_question`
@@ -6694,15 +6464,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```lean
 ∀ (passed contradicted missing total : ℕ),
   ¬(total - missing = passed + contradicted ∧ passed ≤ total - missing) → ¬passed + contradicted + missing = total
-```
-
-### `textbook_check_three_states_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-neighbours-asserted, verify-neighbours-witnessed, verify-neighbours-contradicted, seal-artifacts-digest-alone.
-
-```lean
-¬∀ (passed contradicted missing total : ℕ),
-    total - missing = passed + contradicted ∧ passed ≤ total - missing → passed + contradicted + missing = total
 ```
 
 ### `textbook_check_three_states_reflected`
@@ -6779,14 +6540,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (d x : ℕ), ¬(d - (d - x) = x ∧ x * 1 = x ∧ x * 0 = 0 ∧ d - x + x = d) → ¬x ≤ d
 ```
 
-### `textbook_claim_prove_involution_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
-
-```lean
-∀ (d x : ℕ), d - (d - x) = x ∧ x * 1 = x ∧ x * 0 = 0 ∧ d - x + x = d → x ≤ d
-```
-
 ### `textbook_claim_prove_involution_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
@@ -6801,10 +6554,60 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
 
 ```lean
+∀ {α : Type u_1} [inst : AddCommMonoid α] [inst_1 : PartialOrder α] [inst_2 : Sub α] [OrderedSub α] [ExistsAddOfLE α]
+  [AddLeftMono α] [AddLeftReflectLE α] (d x : α), x ≤ d → d - (d - x) = x ∧ d - x + x = d ∧ d - 0 = d ∧ d - d = 0
+```
+
+### `textbook_clay_bridge_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
+
+```lean
+∀ {α : Type u_1} [inst : AddCommMonoid α] [inst_1 : PartialOrder α] [inst_2 : Sub α] [OrderedSub α] [ExistsAddOfLE α]
+  [AddLeftMono α] [AddLeftReflectLE α] (d x : α), x ≤ d → x = d - (d - x) ∧ d = d - x + x ∧ d = d - 0 ∧ 0 = d - d
+```
+
+### `textbook_clay_conditions`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-rules.
+
+```lean
+∀ {α : Type u_1} [inst : SemilatticeInf α] [inst_1 : OrderTop α] (a b c : α), a ⊓ b ⊓ c = ⊤ → a = ⊤ ∧ b = ⊤ ∧ c = ⊤
+```
+
+### `textbook_clay_conditions_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-rules.
+
+```lean
+∀ {α : Type u_1} [inst : SemilatticeInf α] [inst_1 : OrderTop α] (a b c : α), ¬(a = ⊤ ∧ b = ⊤ ∧ c = ⊤) → ¬a ⊓ b ⊓ c = ⊤
+```
+
+### `textbook_clay_register_width`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), (2 ^ k).size = k + 1
+```
+
+### `textbook_clay_register_width_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: .
+
+```lean
+∀ (k : ℕ), k + 1 = (2 ^ k).size
+```
+
+### `textbook_clock_clone_involution`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
+
+```lean
 ∀ (d x : ℕ), x ≤ d → d - (d - x) = x ∧ d - x + x = d ∧ d - 0 = d ∧ d - d = 0
 ```
 
-### `textbook_clay_bridge_contrapositive`
+### `textbook_clock_clone_involution_contrapositive`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
 
@@ -6812,15 +6615,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (d x : ℕ), ¬(d - (d - x) = x ∧ d - x + x = d ∧ d - 0 = d ∧ d - d = 0) → ¬x ≤ d
 ```
 
-### `textbook_clay_bridge_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
-
-```lean
-∀ (d x : ℕ), d - (d - x) = x ∧ d - x + x = d ∧ d - 0 = d ∧ d - d = 0 → x ≤ d
-```
-
-### `textbook_clay_bridge_reflected`
+### `textbook_clock_clone_involution_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
 
@@ -6829,68 +6624,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
   x ≤ d → ∀ (σ : ℕ), σ - x = σ - (d - (d - x)) ∧ σ - d = σ - (d - x + x) ∧ σ - d = σ - (d - 0) ∧ σ - 0 = σ - (d - d)
 ```
 
-### `textbook_clay_conditions`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-rules.
-
-```lean
-∀ (a b c : Bool), (a && b && c) = true → a = true ∧ b = true ∧ c = true
-```
-
-### `textbook_clay_conditions_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-rules.
-
-```lean
-∀ (a b c : Bool), ¬(a = true ∧ b = true ∧ c = true) → ¬(a && b && c) = true
-```
-
-### `textbook_clay_register_width`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-2 ^ 32 = 4294967296 ∧ 4294967296 < 2 ^ 33 ∧ 2 * 16 < 33 ∧ 33 ≤ 3 * 16
-```
-
-### `textbook_clay_register_width_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (σ : ℕ),
-  2 ^ 33 ≤ σ →
-    33 ≤ σ → σ - 4294967296 = σ - 2 ^ 32 ∧ σ - 2 ^ 33 < σ - 4294967296 ∧ σ - 33 < σ - 2 * 16 ∧ σ - 3 * 16 ≤ σ - 33
-```
-
-### `textbook_clock_clone_involution`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
-
-```lean
-12 - (12 - 3) = 3 ∧
-  12 - (12 - 9) = 9 ∧ 12 - (12 - 6) = 6 ∧ 12 - 6 = 6 ∧ 3 + 9 = 12 ∧ 12 - 3 + 3 = 12 ∧ 12 - 0 = 12 ∧ 12 - 12 = 0
-```
-
-### `textbook_clock_clone_involution_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
-
-```lean
-∀ (σ : ℕ),
-  σ - 3 = σ - (12 - (12 - 3)) ∧
-    σ - 9 = σ - (12 - (12 - 9)) ∧
-      σ - 6 = σ - (12 - (12 - 6)) ∧
-        σ - 6 = σ - (12 - 6) ∧
-          σ - 12 = σ - (3 + 9) ∧ σ - 12 = σ - (12 - 3 + 3) ∧ σ - 12 = σ - (12 - 0) ∧ σ - 0 = σ - (12 - 12)
-```
-
 ### `textbook_clone_slots`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-self-clone.
 
 ```lean
-12 * 25 = 300
+∀ (f s : ℕ), Fintype.card (Fin f × Fin s) = f * s
 ```
 
 ### `textbook_clone_slots_reflected`
@@ -6898,7 +6637,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-self-clone.
 
 ```lean
-∀ (σ : ℕ), σ - 300 = σ - 12 * 25
+∀ (f s : ℕ), f * s = Fintype.card (Fin f × Fin s)
 ```
 
 ### `textbook_cloudflare_cost_gate`
@@ -6906,13 +6645,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: apis-cost-lead-run, apis-cost-sampled, apis-zone-counts.
 
 ```lean
-(915000000 - 20000000) * 60 / 100 = 537000000 ∧
-  (67000000000 - 25000000000) / 1000 = 42000000 ∧
-    (915000000 - 10000000) * 30 / 100 = 271500000 ∧
-      271500000 + 42000000 + 537000000 = 850500000 ∧
-        915000000 * 10 / 1000 = 9150000 ∧
-          9150000 - 20000000 = 0 ∧
-            271500000 + 42000000 + 0 = 313500000 ∧ 7 + 3 = 10 ∧ 9 + 1 = 10 ∧ 6 + 4 = 10 ∧ 5 + 5 = 10 ∧ 8 + 2 = 10
+∀ (used included rate : ℕ), used ≤ included → (used - included) * rate = 0
 ```
 
 ### `textbook_cloudflare_cost_gate_reflected`
@@ -6920,16 +6653,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: apis-cost-lead-run, apis-cost-sampled, apis-zone-counts.
 
 ```lean
-∀ (σ : ℕ),
-  σ - 537000000 = σ - (915000000 - 20000000) * 60 / 100 ∧
-    σ - 42000000 = σ - (67000000000 - 25000000000) / 1000 ∧
-      σ - 271500000 = σ - (915000000 - 10000000) * 30 / 100 ∧
-        σ - 850500000 = σ - (271500000 + 42000000 + 537000000) ∧
-          σ - 9150000 = σ - 915000000 * 10 / 1000 ∧
-            σ - 0 = σ - (9150000 - 20000000) ∧
-              σ - 313500000 = σ - (271500000 + 42000000 + 0) ∧
-                σ - 10 = σ - (7 + 3) ∧
-                  σ - 10 = σ - (9 + 1) ∧ σ - 10 = σ - (6 + 4) ∧ σ - 10 = σ - (5 + 5) ∧ σ - 10 = σ - (8 + 2)
+∀ (used included rate : ℕ), used ≤ included → 0 = (used - included) * rate
 ```
 
 ### `textbook_codata_g_ppb`
@@ -6964,14 +6688,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (s a r : ℕ), ¬s + a - r ≤ s → ¬(a ≤ r ∧ r ≤ s)
 ```
 
-### `textbook_code_folds_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes.
-
-```lean
-¬∀ (s a r : ℕ), s + a - r ≤ s → a ≤ r ∧ r ≤ s
-```
-
 ### `textbook_code_folds_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes.
@@ -6985,7 +6701,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: codes-plan.
 
 ```lean
-1 + 10 = 11
+∀ (n : ℕ), Fintype.card (Option (Fin n)) = n + 1
 ```
 
 ### `textbook_codes_locales_reflected`
@@ -6993,7 +6709,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: codes-plan.
 
 ```lean
-∀ (σ : ℕ), σ - 11 = σ - (1 + 10)
+∀ (n : ℕ), n + 1 = Fintype.card (Option (Fin n))
 ```
 
 ### `textbook_coil_green`
@@ -7044,14 +6760,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (coins coils debits credits : ℕ), ¬debits - credits = 0 → ¬(debits = coins + coils ∧ credits = coins + coils)
 ```
 
-### `textbook_coins_coils_balanced_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-reactor, repository-plasma, chat-account.
-
-```lean
-¬∀ (coins coils debits credits : ℕ), debits - credits = 0 → debits = coins + coils ∧ credits = coins + coils
-```
-
 ### `textbook_coins_coils_balanced_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-reactor, repository-plasma, chat-account.
@@ -7066,31 +6774,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-collide.
 
 ```lean
-∀ (k : ℕ), 2 ≤ k → 1 < k ∧ 1 ≤ k - 1
-```
-
-### `textbook_collision_solves_many_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-collide.
-
-```lean
-∀ (k : ℕ), ¬(1 < k ∧ 1 ≤ k - 1) → ¬2 ≤ k
-```
-
-### `textbook_collision_solves_many_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-collide.
-
-```lean
-∀ (k : ℕ), 1 < k ∧ 1 ≤ k - 1 → 2 ≤ k
-```
-
-### `textbook_collision_solves_many_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-collide.
-
-```lean
-∀ (k : ℕ), 2 ≤ k → ∀ (σ : ℕ), k ≤ σ → σ - k < σ - 1 ∧ σ - (k - 1) ≤ σ - 1
+∀ {α : Type u_1} [inst : DecidableEq α] (s : Finset α), ∀ a ∈ s, 2 ≤ s.card → 1 ≤ (s.erase a).card
 ```
 
 ### `textbook_color_code_d5`
@@ -7098,7 +6782,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-(5 - 1) / 2 = 2 ∧ 2 * 2 + 1 = 5 ∧ 5 - 2 = 3
+∀ {ι : Type u_1} [inst : Fintype ι] {β : ι → Type u_2} [inst_1 : (i : ι) → DecidableEq (β i)] (d : ℕ),
+  0 < d →
+    ∀ (c₁ c₂ r : (i : ι) → β i),
+      (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → hammingDist c₁ r ≤ (d - 1) / 2 → hammingDist c₂ r ≤ (d - 1) / 2 → c₁ = c₂
 ```
 
 ### `textbook_color_code_d5_reflected`
@@ -7106,7 +6793,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-∀ (σ : ℕ), σ - 2 = σ - (5 - 1) / 2 ∧ σ - 5 = σ - (2 * 2 + 1) ∧ σ - 3 = σ - (5 - 2)
+∀ {ι : Type u_1} [inst : Fintype ι] {β : ι → Type u_2} [inst_1 : (i : ι) → DecidableEq (β i)] (d : ℕ),
+  0 < d →
+    ∀ (c₁ c₂ r : (i : ι) → β i),
+      (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → hammingDist c₁ r ≤ (d - 1) / 2 → hammingDist c₂ r ≤ (d - 1) / 2 → c₂ = c₁
 ```
 
 ### `textbook_commit_green`
@@ -7141,14 +6831,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (c t : ℕ), ¬0 < c * t → ¬(0 < c ∧ 0 < t)
 ```
 
-### `textbook_compete_knows_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-rules.
-
-```lean
-∀ (c t : ℕ), 0 < c * t → 0 < c ∧ 0 < t
-```
-
 ### `textbook_compete_knows_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-rules.
@@ -7162,7 +6844,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-7 * 7 = 49 ∧ 3 * 3 = 9 ∧ (9 - 1) / 2 = 4 ∧ 1 * 1 = 1
+∀ (n₁ n₂ : ℕ), Fintype.card (Fin n₁ × Fin n₂) = n₁ * n₂
 ```
 
 ### `textbook_concatenated_code_reflected`
@@ -7170,7 +6852,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-∀ (σ : ℕ), σ - 49 = σ - 7 * 7 ∧ σ - 9 = σ - 3 * 3 ∧ σ - 4 = σ - (9 - 1) / 2 ∧ σ - 1 = σ - 1 * 1
+∀ (n₁ n₂ : ℕ), n₁ * n₂ = Fintype.card (Fin n₁ × Fin n₂)
 ```
 
 ### `textbook_configs_partition`
@@ -7178,7 +6860,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-files, configure-policies.
 
 ```lean
-8 + 2 + 15 = 25
+∀ {α : Type u_1} {k : ℕ} (s : Finset α) (kind : α → Fin k), s.card = ∑ j, {x ∈ s | kind x = j}.card
 ```
 
 ### `textbook_configs_partition_reflected`
@@ -7186,7 +6868,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-files, configure-policies.
 
 ```lean
-∀ (σ : ℕ), σ - 25 = σ - (8 + 2 + 15)
+∀ {α : Type u_1} {k : ℕ} (s : Finset α) (kind : α → Fin k), ∑ j, {x ∈ s | kind x = j}.card = s.card
 ```
 
 ### `textbook_configurations_closed`
@@ -7203,14 +6885,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (tested kinds : ℕ), ¬kinds - tested = 0 → ¬tested = kinds
-```
-
-### `textbook_configurations_closed_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-all.
-
-```lean
-¬∀ (tested kinds : ℕ), kinds - tested = 0 → tested = kinds
 ```
 
 ### `textbook_configurations_closed_reflected`
@@ -7237,14 +6911,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (full kept : ℕ), ¬full - kept + kept = full → ¬kept ≤ full
 ```
 
-### `textbook_context_balanced_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: extend-out-balanced.
-
-```lean
-∀ (full kept : ℕ), full - kept + kept = full → kept ≤ full
-```
-
 ### `textbook_context_balanced_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: extend-out-balanced.
@@ -7258,31 +6924,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: e2e-corrected-by-majority.
 
 ```lean
-∀ (votes total : ℕ), total < 2 * votes → total - votes < votes
-```
-
-### `textbook_correction_by_majority_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: e2e-corrected-by-majority.
-
-```lean
-∀ (votes total : ℕ), ¬total - votes < votes → ¬total < 2 * votes
-```
-
-### `textbook_correction_by_majority_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: e2e-corrected-by-majority.
-
-```lean
-∀ (votes total : ℕ), total - votes < votes → total < 2 * votes
-```
-
-### `textbook_correction_by_majority_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: e2e-corrected-by-majority.
-
-```lean
-∀ (votes total : ℕ), total < 2 * votes → ∀ (σ : ℕ), votes ≤ σ → σ - votes < σ - (total - votes)
+∀ {α : Type u_1} [inst : DecidableEq α] (s A : Finset α), A ⊆ s → s.card < 2 * A.card → (s \ A).card < A.card
 ```
 
 ### `textbook_court_audits_repo`
@@ -7291,30 +6933,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (n : ℕ), 2 ≤ n → 1 < n
-```
-
-### `textbook_court_audits_repo_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: legal-court-repo-audit.
-
-```lean
-∀ (n : ℕ), ¬1 < n → ¬2 ≤ n
-```
-
-### `textbook_court_audits_repo_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: legal-court-repo-audit.
-
-```lean
-∀ (n : ℕ), 1 < n → 2 ≤ n
-```
-
-### `textbook_court_audits_repo_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: legal-court-repo-audit.
-
-```lean
-∀ (n : ℕ), 2 ≤ n → ∀ (σ : ℕ), n ≤ σ → σ - n < σ - 1
 ```
 
 ### `textbook_coverage_bounded`
@@ -7333,14 +6951,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (doors total : ℕ), ¬doors * 100 / total ≤ 100 → ¬doors ≤ total
 ```
 
-### `textbook_coverage_bounded_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: extend-coverage.
-
-```lean
-¬∀ (doors total : ℕ), doors * 100 / total ≤ 100 → doors ≤ total
-```
-
 ### `textbook_coverage_bounded_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: extend-coverage.
@@ -7354,15 +6964,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: css-create.
 
 ```lean
-432 % 360 = 72
-```
-
-### `textbook_create_hue_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: css-create.
-
-```lean
-∀ (σ : ℕ), σ - 72 = σ - 432 % 360
+∀ (h : ℕ), 360 + h ≡ h [MOD 360]
 ```
 
 ### `textbook_css_one_source`
@@ -7370,7 +6972,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: css-one-source, fold-hex-one-source.
 
 ```lean
-23963508 % 360 = 108 ∧ 108 = 108
+∀ (n : ℕ), (↑n).val = n % 360
 ```
 
 ### `textbook_css_one_source_reflected`
@@ -7378,7 +6980,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: css-one-source, fold-hex-one-source.
 
 ```lean
-∀ (σ : ℕ), σ - 108 = σ - 23963508 % 360 ∧ σ - 108 = σ - 108
+∀ (n : ℕ), n % 360 = (↑n).val
 ```
 
 ### `textbook_cuboctahedron_faces`
@@ -7386,7 +6988,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-witnesses, fold-next.
 
 ```lean
-8 + 6 = 14
+∀ {α : Type u_1} (faces : Finset α) (triangle : α → Prop) [inst : DecidablePred triangle],
+  (Finset.filter triangle faces).card + {x ∈ faces | ¬triangle x}.card = faces.card
 ```
 
 ### `textbook_cuboctahedron_faces_reflected`
@@ -7394,7 +6997,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-witnesses, fold-next.
 
 ```lean
-∀ (σ : ℕ), σ - 14 = σ - (8 + 6)
+∀ {α : Type u_1} (faces : Finset α) (triangle : α → Prop) [inst : DecidablePred triangle],
+  faces.card = (Finset.filter triangle faces).card + {x ∈ faces | ¬triangle x}.card
 ```
 
 ### `textbook_cvss_bounded`
@@ -7402,31 +7006,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-∀ s ≤ 100, s ≤ 100
-```
-
-### `textbook_cvss_bounded_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (s : ℕ), ¬s ≤ 100 → ¬s ≤ 100
-```
-
-### `textbook_cvss_bounded_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ s ≤ 100, s ≤ 100
+∀ (s : ℕ), s ∈ Finset.range 101 ↔ s ≤ 100
 ```
 
 ### `textbook_cvss_bounded_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: .
 
 ```lean
-∀ s ≤ 100, ∀ (σ : ℕ), σ - 100 ≤ σ - s
+∀ (s : ℕ), s ≤ 100 ↔ s ∈ Finset.range 101
 ```
 
 ### `textbook_dashboard_algorithm_combinations`
@@ -7434,7 +7022,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-pattern-dashboard.
 
 ```lean
-7 * 19 * 1 * 2 * 6 * 1 * 1 * 8 * 2 * 11 = 280896 ∧ 1000 < 280896
+∀ {Facet : Type} [inst : Fintype Facet] [inst_1 : DecidableEq Facet] (space : Facet → Type)
+  [inst_2 : (f : Facet) → Fintype (space f)], Fintype.card ((f : Facet) → space f) = ∏ f, Fintype.card (space f)
 ```
 
 ### `textbook_dashboard_algorithm_combinations_reflected`
@@ -7442,7 +7031,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-pattern-dashboard.
 
 ```lean
-∀ (σ : ℕ), 280896 ≤ σ → σ - 280896 = σ - 7 * 19 * 1 * 2 * 6 * 1 * 1 * 8 * 2 * 11 ∧ σ - 280896 < σ - 1000
+∀ {Facet : Type} [inst : Fintype Facet] [inst_1 : DecidableEq Facet] (space : Facet → Type)
+  [inst_2 : (f : Facet) → Fintype (space f)], ∏ f, Fintype.card (space f) = Fintype.card ((f : Facet) → space f)
 ```
 
 ### `textbook_dashboard_spaces`
@@ -7450,7 +7040,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: dashboard-index.
 
 ```lean
-2 * 2 * 2 * 2 * 5 = 80 ∧ 7 * 19 * 1 * 2 * 6 * 1 * 1 * 8 * 2 * 11 = 280896
+∀ (k : ℕ) (f : Fin k → ℕ), Fintype.card ((i : Fin k) → Fin (f i)) = ∏ i, f i
 ```
 
 ### `textbook_dashboard_spaces_reflected`
@@ -7458,7 +7048,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: dashboard-index.
 
 ```lean
-∀ (σ : ℕ), σ - 80 = σ - 2 * 2 * 2 * 2 * 5 ∧ σ - 280896 = σ - 7 * 19 * 1 * 2 * 6 * 1 * 1 * 8 * 2 * 11
+∀ (k : ℕ) (f : Fin k → ℕ), ∏ i, f i = Fintype.card ((i : Fin k) → Fin (f i))
 ```
 
 ### `textbook_dates_ordered`
@@ -7509,14 +7099,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (fixed found : ℕ), ¬fixed + (found - fixed) = found → ¬fixed ≤ found
 ```
 
-### `textbook_dead_removed_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-dead.
-
-```lean
-∀ (fixed found : ℕ), fixed + (found - fixed) = found → fixed ≤ found
-```
-
 ### `textbook_dead_removed_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-dead.
@@ -7565,14 +7147,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (code : ℕ), ¬code - 400 + 400 = code → ¬400 ≤ code
 ```
 
-### `textbook_denier_identified_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: legal-court-denier.
-
-```lean
-∀ (code : ℕ), code - 400 + 400 = code → 400 ≤ code
-```
-
 ### `textbook_denier_identified_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: legal-court-denier.
@@ -7586,7 +7160,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-wrangler-set, configure-deploy-sets.
 
 ```lean
-2 * 8 = 16
+∀ (t p : ℕ), Fintype.card (Fin t × Fin p) = t * p
 ```
 
 ### `textbook_deploy_sets_reflected`
@@ -7594,7 +7168,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-wrangler-set, configure-deploy-sets.
 
 ```lean
-∀ (σ : ℕ), σ - 16 = σ - 2 * 8
+∀ (t p : ℕ), t * p = Fintype.card (Fin t × Fin p)
 ```
 
 ### `textbook_deposit_paid`
@@ -7605,28 +7179,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (coins price : ℕ), price ≤ coins → coins - price + price = coins
 ```
 
-### `textbook_deposit_paid_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-zenodo-account.
-
-```lean
-∀ (coins price : ℕ), ¬coins - price + price = coins → ¬price ≤ coins
-```
-
-### `textbook_deposit_paid_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-zenodo-account.
-
-```lean
-∀ (coins price : ℕ), coins - price + price = coins → price ≤ coins
-```
-
 ### `textbook_deposit_paid_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-zenodo-account.
 
 ```lean
-∀ (coins price : ℕ), price ≤ coins → ∀ (σ : ℕ), σ - coins = σ - (coins - price + price)
+∀ (coins price : ℕ), price ≤ coins → coins = coins - price + price
 ```
 
 ### `textbook_deutsch_jozsa`
@@ -7634,9 +7192,17 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-deutsch-jozsa.
 
 ```lean
-∀ f < 16,
-  (QuantumAlgorithm.constant f = true → (QuantumAlgorithm.dj f 0).normSq = 16) ∧
-    (QuantumAlgorithm.balanced f = true → QuantumAlgorithm.dj f 0 = 0)
+∀ {α : Type} [inst : Fintype α] (f : α → Bool),
+  {x | f x = true}.card = {x | ¬f x = true}.card → (∑ x, if f x = true then -1 else 1) = 0
+```
+
+### `textbook_deutsch_jozsa_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-deutsch-jozsa.
+
+```lean
+∀ {α : Type} [inst : Fintype α] (f : α → Bool),
+  {x | f x = true}.card = {x | ¬f x = true}.card → 0 = ∑ x, if f x = true then -1 else 1
 ```
 
 ### `textbook_difference_leads`
@@ -7655,14 +7221,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (a b c : ℕ), ¬a - c + (b - c) = a + b - 2 * c → ¬(c ≤ a ∧ c ≤ b)
 ```
 
-### `textbook_difference_leads_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-difference.
-
-```lean
-¬∀ (a b c : ℕ), a - c + (b - c) = a + b - 2 * c → c ≤ a ∧ c ≤ b
-```
-
 ### `textbook_difference_leads_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-difference.
@@ -7676,36 +7234,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-call, verify-call-no-round-trip.
 
 ```lean
-∀ (digests roundTrips checked : ℕ),
-  digests = roundTrips → roundTrips ≤ checked → digests ≤ checked ∧ checked - digests = checked - roundTrips
-```
-
-### `textbook_digest_on_round_trip_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-call, verify-call-no-round-trip.
-
-```lean
-∀ (digests roundTrips checked : ℕ),
-  ¬(digests ≤ checked ∧ checked - digests = checked - roundTrips) → ¬(digests = roundTrips ∧ roundTrips ≤ checked)
-```
-
-### `textbook_digest_on_round_trip_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-call, verify-call-no-round-trip.
-
-```lean
-¬∀ (digests roundTrips checked : ℕ),
-    digests ≤ checked ∧ checked - digests = checked - roundTrips → digests = roundTrips ∧ roundTrips ≤ checked
-```
-
-### `textbook_digest_on_round_trip_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-call, verify-call-no-round-trip.
-
-```lean
-∀ (digests roundTrips checked : ℕ),
-  digests = roundTrips →
-    roundTrips ≤ checked → ∀ (σ : ℕ), σ - checked ≤ σ - digests ∧ σ - (checked - roundTrips) = σ - (checked - digests)
+∀ {α : Type u_1} [inst : DecidableEq α] (D R C : Finset α),
+  D = R → R ⊆ C → D.card ≤ C.card ∧ (C \ D).card = C.card - R.card
 ```
 
 ### `textbook_digit_reflection`
@@ -7713,8 +7243,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
 
 ```lean
-0 + 10 = 10 ∧
-  1 + 9 = 10 ∧ 2 + 8 = 10 ∧ 3 + 7 = 10 ∧ 4 + 6 = 10 ∧ 5 + 5 = 10 ∧ 6 + 4 = 10 ∧ 7 + 3 = 10 ∧ 8 + 2 = 10 ∧ 9 + 1 = 10
+∀ (n d : ℕ), d ≤ n → d + (n - d) = n ∧ n - (n - d) = d
 ```
 
 ### `textbook_digit_reflection_reflected`
@@ -7722,14 +7251,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
 
 ```lean
-∀ (σ : ℕ),
-  σ - 10 = σ - (0 + 10) ∧
-    σ - 10 = σ - (1 + 9) ∧
-      σ - 10 = σ - (2 + 8) ∧
-        σ - 10 = σ - (3 + 7) ∧
-          σ - 10 = σ - (4 + 6) ∧
-            σ - 10 = σ - (5 + 5) ∧
-              σ - 10 = σ - (6 + 4) ∧ σ - 10 = σ - (7 + 3) ∧ σ - 10 = σ - (8 + 2) ∧ σ - 10 = σ - (9 + 1)
+∀ (n d : ℕ), d ≤ n → n = d + (n - d) ∧ d = n - (n - d)
 ```
 
 ### `textbook_discovery_requests`
@@ -7737,7 +7259,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: discover-requests.
 
 ```lean
-1 + 1 + 1 + 52 = 55
+∀ (a b : ℕ), Fintype.card (Fin a ⊕ Fin b) = a + b
 ```
 
 ### `textbook_discovery_requests_reflected`
@@ -7745,7 +7267,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: discover-requests.
 
 ```lean
-∀ (σ : ℕ), σ - 55 = σ - (1 + 1 + 1 + 52)
+∀ (a b : ℕ), a + b = Fintype.card (Fin a ⊕ Fin b)
 ```
 
 ### `textbook_div_zero`
@@ -7753,7 +7275,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-div-zero.
 
 ```lean
-∀ (x : ℕ) (z : ℤ), x / Nat.zero = Nat.zero ∧ x % Nat.zero = x ∧ z / ↑Nat.zero = ↑Nat.zero
+∀ (x : ℕ) (z : ℤ) (q : ℚ), x / 0 = 0 ∧ x % 0 = x ∧ z / 0 = 0 ∧ q / 0 = 0
 ```
 
 ### `textbook_div_zero_reflected`
@@ -7761,7 +7283,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-div-zero.
 
 ```lean
-∀ (x : ℕ) (z : ℤ), Nat.zero = x / Nat.zero ∧ x = x % Nat.zero ∧ ↑Nat.zero = z / ↑Nat.zero
+∀ (x : ℕ) (z : ℤ) (q : ℚ) (σ : ℕ), σ - 0 = σ - x / 0 ∧ σ - x = σ - x % 0 ∧ 0 = z / 0 ∧ 0 = q / 0
 ```
 
 ### `textbook_dna_base4`
@@ -7769,7 +7291,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-dna, fold-dna-decode.
 
 ```lean
-4 * 4 = 16 ∧ 0 * 4 + 1 = 1 ∧ 2 * 4 + 3 = 11 ∧ 11 / 4 = 2 ∧ 11 % 4 = 3 ∧ 1 / 4 = 0 ∧ 1 % 4 = 1
+∀ (m n : ℕ) (x : Fin m × Fin n), finProdFinEquiv.symm (finProdFinEquiv x) = x ∧ ↑(finProdFinEquiv x) = ↑x.2 + n * ↑x.1
 ```
 
 ### `textbook_dna_base4_reflected`
@@ -7777,10 +7299,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-dna, fold-dna-decode.
 
 ```lean
-∀ (σ : ℕ),
-  σ - 16 = σ - 4 * 4 ∧
-    σ - 1 = σ - (0 * 4 + 1) ∧
-      σ - 11 = σ - (2 * 4 + 3) ∧ σ - 2 = σ - 11 / 4 ∧ σ - 3 = σ - 11 % 4 ∧ σ - 0 = σ - 1 / 4 ∧ σ - 1 = σ - 1 % 4
+∀ (m n : ℕ) (x : Fin m × Fin n), x = finProdFinEquiv.symm (finProdFinEquiv x) ∧ ↑x.2 + n * ↑x.1 = ↑(finProdFinEquiv x)
 ```
 
 ### `textbook_doi_related`
@@ -7788,7 +7307,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-doi-related.
 
 ```lean
-4 - 2 = 2
+∀ {α : Type u_1} [inst : DecidableEq α] (collections verified : Finset α),
+  verified ⊆ collections → (collections \ verified).card = collections.card - verified.card
 ```
 
 ### `textbook_doi_related_reflected`
@@ -7796,7 +7316,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-doi-related.
 
 ```lean
-∀ (σ : ℕ), σ - 2 = σ - (4 - 2)
+∀ {α : Type u_1} [inst : DecidableEq α] (collections verified : Finset α),
+  verified ⊆ collections → collections.card - verified.card = (collections \ verified).card
 ```
 
 ### `textbook_double_entry`
@@ -7813,14 +7334,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (debits credits : ℕ), ¬(debits - credits = 0 ∧ credits - debits = 0) → ¬debits = credits
-```
-
-### `textbook_double_entry_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-ledger, compete-economics, verify-radar.
-
-```lean
-∀ (debits credits : ℕ), debits - credits = 0 ∧ credits - debits = 0 → debits = credits
 ```
 
 ### `textbook_double_entry_reflected`
@@ -7852,7 +7365,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: e2e-requests.
 
 ```lean
-3 + 3 + 7 = 13 ∧ 6 + 7 = 13
+∀ {α : Type u_1} {β : Type u_2} [inst : DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β),
+  (∀ x ∈ s, f x ∈ t) → s.card = ∑ b ∈ t, {a ∈ s | f a = b}.card
 ```
 
 ### `textbook_e2e_combos_reflected`
@@ -7860,7 +7374,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: e2e-requests.
 
 ```lean
-∀ (σ : ℕ), σ - 13 = σ - (3 + 3 + 7) ∧ σ - 13 = σ - (6 + 7)
+∀ {α : Type u_1} {β : Type u_2} [inst : DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β),
+  (∀ x ∈ s, f x ∈ t) → ∑ b ∈ t, {a ∈ s | f a = b}.card = s.card
 ```
 
 ### `textbook_e2e_tree_dissent`
@@ -7868,15 +7383,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: e2e-tree-outvoted.
 
 ```lean
-2 * 2 > 3 ∧ 3 - 2 = 1 ∧ 1 + 1 = 2 ∧ 0 = 0
-```
-
-### `textbook_e2e_tree_dissent_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: e2e-tree-outvoted.
-
-```lean
-∀ (σ : ℕ), 2 * 2 ≤ σ → σ - 2 * 2 < σ - 3 ∧ σ - 1 = σ - (3 - 2) ∧ σ - 2 = σ - (1 + 1) ∧ σ - 0 = σ - 0
+∀ {α : Type u_1} [inst : DecidableEq α] (voters A B : Finset α),
+  A ⊆ voters →
+    B ⊆ voters →
+      voters.card < 2 * A.card → voters.card < 2 * B.card → (A ∩ B).Nonempty ∧ (voters \ A).card = voters.card - A.card
 ```
 
 ### `textbook_eastin_knill`
@@ -7884,7 +7394,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-eastin-knill.
 
 ```lean
-6 * 4 = 24 ∧ 1 < 24
+∀ (a b : ℕ), Fintype.card (Fin a × Fin b) = a * b
 ```
 
 ### `textbook_eastin_knill_reflected`
@@ -7892,7 +7402,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-eastin-knill.
 
 ```lean
-∀ (σ : ℕ), 24 ≤ σ → σ - 24 = σ - 6 * 4 ∧ σ - 24 < σ - 1
+∀ (a b : ℕ), a * b = Fintype.card (Fin a × Fin b)
 ```
 
 ### `textbook_echo_qubits_within_willow`
@@ -7900,15 +7410,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: echo-benchmark.
 
 ```lean
-65 ≤ 103 ∧ 103 ≤ 105
-```
-
-### `textbook_echo_qubits_within_willow_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: echo-benchmark.
-
-```lean
-∀ (σ : ℕ), σ - 103 ≤ σ - 65 ∧ σ - 105 ≤ σ - 103
+∀ {Q : Type} (figure text willow : Finset Q),
+  figure ⊆ text → text ⊆ willow → figure.card ≤ text.card ∧ text.card ≤ willow.card ∧ figure ⊆ willow
 ```
 
 ### `textbook_ed25519_sizes`
@@ -7916,7 +7419,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-ed25519.
 
 ```lean
-2 * 32 = 64
+∀ (n : ℕ), Fintype.card (Fin n ⊕ Fin n) = 2 * n
 ```
 
 ### `textbook_ed25519_sizes_reflected`
@@ -7924,7 +7427,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-ed25519.
 
 ```lean
-∀ (σ : ℕ), σ - 64 = σ - 2 * 32
+∀ (n : ℕ), 2 * n = Fintype.card (Fin n ⊕ Fin n)
 ```
 
 ### `textbook_edit_collides`
@@ -7932,7 +7435,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-realtime.
 
 ```lean
-∀ (p q : ℕ), p = q ∨ p ≠ q
+∀ {α : Type u_1} (p q : α), p = q ∨ p ≠ q
 ```
 
 ### `textbook_edit_collides_reflected`
@@ -7940,7 +7443,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-realtime.
 
 ```lean
-∀ (p q : ℕ), p ≠ q ∨ p = q
+∀ {α : Type u_1} (p q : α), p ≠ q ∨ p = q
 ```
 
 ### `textbook_editorial_posts`
@@ -7957,14 +7460,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (posts backlog items : ℕ), ¬items - backlog = posts → ¬posts + backlog = items
-```
-
-### `textbook_editorial_posts_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-editorial.
-
-```lean
-¬∀ (posts backlog items : ℕ), items - backlog = posts → posts + backlog = items
 ```
 
 ### `textbook_editorial_posts_reflected`
@@ -7996,7 +7491,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: mongo-insert-canonical.
 
 ```lean
-3 - 1 = 2 ∧ 2 * 1 = 2
+∀ (n : ℕ), Fintype.card (Equiv.Perm (Fin n)) = n.factorial
 ```
 
 ### `textbook_entry_canonical_reflected`
@@ -8004,7 +7499,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: mongo-insert-canonical.
 
 ```lean
-∀ (σ : ℕ), σ - 2 = σ - (3 - 1) ∧ σ - 2 = σ - 2 * 1
+∀ (n : ℕ), n.factorial = Fintype.card (Equiv.Perm (Fin n))
 ```
 
 ### `textbook_entry_operations`
@@ -8012,7 +7507,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-access.
 
 ```lean
-3 + 1 = 4
+∀ {α : Type u_1} (ops : Finset α) (byRole : α → Prop) [inst : DecidablePred byRole],
+  (Finset.filter byRole ops).card + {x ∈ ops | ¬byRole x}.card = ops.card
 ```
 
 ### `textbook_entry_operations_reflected`
@@ -8020,7 +7516,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-access.
 
 ```lean
-∀ (σ : ℕ), σ - 4 = σ - (3 + 1)
+∀ {α : Type u_1} (ops : Finset α) (byRole : α → Prop) [inst : DecidablePred byRole],
+  ops.card = (Finset.filter byRole ops).card + {x ∈ ops | ¬byRole x}.card
 ```
 
 ### `textbook_error_remedies`
@@ -8037,14 +7534,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (e r : ℕ), ¬e - r + r = e → ¬r ≤ e
-```
-
-### `textbook_error_remedies_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-remedies.
-
-```lean
-∀ (e r : ℕ), e - r + r = e → r ≤ e
 ```
 
 ### `textbook_error_remedies_reflected`
@@ -8069,14 +7558,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (a q x : ℕ), ¬a * x + (q - a) * x = q * x → ¬a ≤ q
-```
-
-### `textbook_eta_from_receipts_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-status-eta, repository-status-forecast.
-
-```lean
-¬∀ (a q x : ℕ), a * x + (q - a) * x = q * x → a ≤ q
 ```
 
 ### `textbook_eta_from_receipts_reflected`
@@ -8124,23 +7605,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-exploit-repair.
 
 ```lean
-∀ (served downtime : ℕ), downtime = 0 → served + downtime = served
-```
-
-### `textbook_exploit_refuses_to_patch_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-exploit-repair.
-
-```lean
-∀ (served downtime : ℕ), ¬served + downtime = served → ¬downtime = 0
-```
-
-### `textbook_exploit_refuses_to_patch_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-exploit-repair.
-
-```lean
-∀ (served downtime : ℕ), served + downtime = served → downtime = 0
+∀ {M : Type u_1} [inst : AddMonoid M] [IsLeftCancelAdd M] (served downtime : M),
+  served + downtime = served ↔ downtime = 0
 ```
 
 ### `textbook_exploit_refuses_to_patch_reflected`
@@ -8148,7 +7614,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-exploit-repair.
 
 ```lean
-∀ (served downtime : ℕ), downtime = 0 → ∀ (σ : ℕ), σ - served = σ - (served + downtime)
+∀ {M : Type u_1} [inst : AddMonoid M] [IsLeftCancelAdd M] (served downtime : M),
+  downtime = 0 ↔ served + downtime = served
 ```
 
 ### `textbook_expressions_evaluate`
@@ -8159,28 +7626,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (closed held : ℕ), held = closed → closed - held = 0
 ```
 
-### `textbook_expressions_evaluate_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-expressions, textbook-prose.
-
-```lean
-∀ (closed held : ℕ), ¬closed - held = 0 → ¬held = closed
-```
-
-### `textbook_expressions_evaluate_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-expressions, textbook-prose.
-
-```lean
-¬∀ (closed held : ℕ), closed - held = 0 → held = closed
-```
-
 ### `textbook_expressions_evaluate_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-expressions, textbook-prose.
 
 ```lean
-∀ (closed held : ℕ), held = closed → ∀ (σ : ℕ), σ - 0 = σ - (closed - held)
+∀ (closed held : ℕ), held = closed → 0 = closed - held
 ```
 
 ### `textbook_extend_inward`
@@ -8236,15 +7687,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-fallbacks.
 
 ```lean
-∀ (m : Bool), (!!m) = m
-```
-
-### `textbook_fallback_involution_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-fallbacks.
-
-```lean
-∀ (m : Bool), m = !!m
+Function.Involutive not
 ```
 
 ### `textbook_fibonacci`
@@ -8252,7 +7695,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-5 + 8 = 13 ∧ 8 + 13 = 21 ∧ 13 + 21 = 34
+∀ (n : ℕ), Nat.fib (n + 2) = Nat.fib n + Nat.fib (n + 1)
 ```
 
 ### `textbook_fibonacci_reflected`
@@ -8260,7 +7703,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-∀ (σ : ℕ), σ - 13 = σ - (5 + 8) ∧ σ - 21 = σ - (8 + 13) ∧ σ - 34 = σ - (13 + 21)
+∀ (n : ℕ), Nat.fib n + Nat.fib (n + 1) = Nat.fib (n + 2)
 ```
 
 ### `textbook_fold_mirror`
@@ -8279,14 +7722,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (n i : ℕ), ¬i + (n - i) = n → ¬i ≤ n
 ```
 
-### `textbook_fold_mirror_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-ledger.
-
-```lean
-∀ (n i : ℕ), i + (n - i) = n → i ≤ n
-```
-
 ### `textbook_fold_mirror_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-ledger.
@@ -8300,17 +7735,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-pattern-fold.
 
 ```lean
-10 + 7 + 11 + 12 = 40 ∧ 40 - 12 = 28 ∧ 10 ≤ 12 ∧ 7 ≤ 12 ∧ 11 ≤ 12 ∧ 12 ≤ 12
-```
-
-### `textbook_fold_pieces_under_bound_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-pattern-fold.
-
-```lean
-∀ (σ : ℕ),
-  σ - 40 = σ - (10 + 7 + 11 + 12) ∧
-    σ - 28 = σ - (40 - 12) ∧ σ - 12 ≤ σ - 10 ∧ σ - 12 ≤ σ - 7 ∧ σ - 12 ≤ σ - 11 ∧ σ - 12 ≤ σ - 12
+∀ {ι : Type} (pieces : Finset ι) (len : ι → ℕ) (B : ℕ),
+  (∀ i ∈ pieces, len i ≤ B) → ∑ i ∈ pieces, len i ≤ pieces.card * B
 ```
 
 ### `textbook_fold_slices`
@@ -8318,15 +7744,9 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-slices-exact, fold-unfold-exact.
 
 ```lean
-2 + 3 + 2 + 2 + 2 = 11 ∧ 5 * 3 ≥ 11 ∧ 2 + 3 + 3 = 8
-```
-
-### `textbook_fold_slices_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-slices-exact, fold-unfold-exact.
-
-```lean
-∀ (σ : ℕ), σ - 11 = σ - (2 + 3 + 2 + 2 + 2) ∧ σ - 5 * 3 ≤ σ - 11 ∧ σ - 8 = σ - (2 + 3 + 3)
+∀ {ι : Type u_1} {α : Type u_2} [inst : DecidableEq α] (s : Finset ι) (t : ι → Finset α),
+  (↑s).PairwiseDisjoint t →
+    ∀ (b : ℕ), (∀ i ∈ s, (t i).card ≤ b) → (s.biUnion t).card = ∑ i ∈ s, (t i).card ∧ (s.biUnion t).card ≤ s.card * b
 ```
 
 ### `textbook_foreign_door_name`
@@ -8350,7 +7770,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-foreign-verdict.
 
 ```lean
-2 + 1 + 3 = 6
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → s.card = ∑ k ∈ t, {x ∈ s | f x = k}.card
 ```
 
 ### `textbook_foreign_verdicts_reflected`
@@ -8358,7 +7779,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-foreign-verdict.
 
 ```lean
-∀ (σ : ℕ), σ - 6 = σ - (2 + 1 + 3)
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → ∑ k ∈ t, {x ∈ s | f x = k}.card = s.card
 ```
 
 ### `textbook_fractal_scales`
@@ -8366,7 +7788,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-branding.
 
 ```lean
-7 - 1 = 6
+∀ {α : Type} (scales : List α), (scales.zip scales.tail).length = scales.length - 1
 ```
 
 ### `textbook_fractal_scales_reflected`
@@ -8374,7 +7796,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-branding.
 
 ```lean
-∀ (σ : ℕ), σ - 6 = σ - (7 - 1)
+∀ {α : Type} (scales : List α), scales.length - 1 = (scales.zip scales.tail).length
 ```
 
 ### `textbook_free_or_coil`
@@ -8382,23 +7804,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: metrics-bill, repository-penalty-way.
 
 ```lean
-∀ (calls free : ℕ), free ≤ calls → calls - free + free = calls
-```
-
-### `textbook_free_or_coil_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: metrics-bill, repository-penalty-way.
-
-```lean
-∀ (calls free : ℕ), ¬calls - free + free = calls → ¬free ≤ calls
-```
-
-### `textbook_free_or_coil_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: metrics-bill, repository-penalty-way.
-
-```lean
-∀ (calls free : ℕ), calls - free + free = calls → free ≤ calls
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] (calls free : α), free ≤ calls → calls - free + free = calls
 ```
 
 ### `textbook_free_or_coil_reflected`
@@ -8406,7 +7813,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: metrics-bill, repository-penalty-way.
 
 ```lean
-∀ (calls free : ℕ), free ≤ calls → ∀ (σ : ℕ), σ - calls = σ - (calls - free + free)
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] (calls free : α), free ≤ calls → calls = calls - free + free
 ```
 
 ### `textbook_ftqc_t_counts`
@@ -8430,7 +7838,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-fullstack, configure-fullstack-readme.
 
 ```lean
-0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 1 = 1
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → s.card = ∑ k ∈ t, {x ∈ s | f x = k}.card
 ```
 
 ### `textbook_fullstack_files_by_role_reflected`
@@ -8438,7 +7847,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-fullstack, configure-fullstack-readme.
 
 ```lean
-∀ (σ : ℕ), σ - 1 = σ - (0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 1)
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → ∑ k ∈ t, {x ∈ s | f x = k}.card = s.card
 ```
 
 ### `textbook_fullstack_hooks`
@@ -8446,7 +7856,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-hooks.
 
 ```lean
-3 + 2 = 5
+∀ (OnEntries OnPages : Type) [inst : Fintype OnEntries] [inst_1 : Fintype OnPages],
+  Fintype.card (OnEntries ⊕ OnPages) = Fintype.card OnEntries + Fintype.card OnPages
 ```
 
 ### `textbook_fullstack_hooks_reflected`
@@ -8454,7 +7865,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-hooks.
 
 ```lean
-∀ (σ : ℕ), σ - 5 = σ - (3 + 2)
+∀ (OnEntries OnPages : Type) [inst : Fintype OnEntries] [inst_1 : Fintype OnPages],
+  Fintype.card OnEntries + Fintype.card OnPages = Fintype.card (OnEntries ⊕ OnPages)
 ```
 
 ### `textbook_gate_adapters`
@@ -8462,7 +7874,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-gates.
 
 ```lean
-∀ (parts : List ℕ) (a b total : ℕ), a + b = parts.sum → total = parts.sum → total - b = a
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (a b total : α), a + b = total → total - b = a
 ```
 
 ### `textbook_gate_adapters_reflected`
@@ -8470,7 +7883,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-gates.
 
 ```lean
-∀ (parts : List ℕ) (a b total : ℕ), a + b = parts.sum → total = parts.sum → ∀ (σ : ℕ), σ - a = σ - (total - b)
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (a b total : α), a + b = total → a = total - b
 ```
 
 ### `textbook_gates_by_kind`
@@ -8486,7 +7900,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-gates.
 
 ```lean
-∀ (parts : List ℕ) (a b total : ℕ), a + b = parts.sum → total = parts.sum → ∀ (σ : ℕ), σ - a = σ - (total - b)
+∀ (parts : List ℕ) (a b total : ℕ), a + b = parts.sum → total = parts.sum → a = total - b
 ```
 
 ### `textbook_gates_partition`
@@ -8510,7 +7924,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-2 * 10 = 4 * 5 ∧ 2 * 36 = 8 * 9 ∧ 2 * 28 = 7 * 8
+∀ (n : ℕ), (∑ i ∈ Finset.range (n + 1), i) * 2 = (n + 1) * n
 ```
 
 ### `textbook_gauss_triangular_reflected`
@@ -8518,7 +7932,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-∀ (σ : ℕ), σ - 4 * 5 = σ - 2 * 10 ∧ σ - 8 * 9 = σ - 2 * 36 ∧ σ - 7 * 8 = σ - 2 * 28
+∀ (n : ℕ), (n + 1) * n = (∑ i ∈ Finset.range (n + 1), i) * 2
 ```
 
 ### `textbook_glagolitic_fifteen`
@@ -8542,7 +7956,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-speak.
 
 ```lean
-10 + 1 = 11 ∧ 10 + 2 = 12 ∧ 10 + 3 = 13 ∧ 10 + 4 = 14 ∧ 10 + 5 = 15
+∀ (d : ℕ), 10 ≤ d → 10 + (d - 10) = d
 ```
 
 ### `textbook_glagolitic_round_trip_reflected`
@@ -8550,8 +7964,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-speak.
 
 ```lean
-∀ (σ : ℕ),
-  σ - 11 = σ - (10 + 1) ∧ σ - 12 = σ - (10 + 2) ∧ σ - 13 = σ - (10 + 3) ∧ σ - 14 = σ - (10 + 4) ∧ σ - 15 = σ - (10 + 5)
+∀ (d : ℕ), 10 ≤ d → d = 10 + (d - 10)
 ```
 
 ### `textbook_gltf_required_extensions`
@@ -8575,7 +7988,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-23 - 12 = 11 ∧ (7 - 1) / 2 = 3 ∧ 2 ^ 11 = 2048
+∀ (r : ℕ), Fintype.card (Fin r → Bool) = 2 ^ r
 ```
 
 ### `textbook_golay_code_reflected`
@@ -8583,7 +7996,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-∀ (σ : ℕ), σ - 11 = σ - (23 - 12) ∧ σ - 3 = σ - (7 - 1) / 2 ∧ σ - 2048 = σ - 2 ^ 11
+∀ (r : ℕ), 2 ^ r = Fintype.card (Fin r → Bool)
 ```
 
 ### `textbook_google_api_surfaces`
@@ -8591,7 +8004,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-google-apis.
 
 ```lean
-1 + 1 + 1 = 3 ∧ 1 + 1 = 2
+∀ {α : Type u_1} {β : Type u_2} [inst : Fintype α] [inst_1 : Fintype β] (e : α ≃ β), Fintype.card α = Fintype.card β
 ```
 
 ### `textbook_google_api_surfaces_reflected`
@@ -8599,7 +8012,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-google-apis.
 
 ```lean
-∀ (σ : ℕ), σ - 3 = σ - (1 + 1 + 1) ∧ σ - 2 = σ - (1 + 1)
+∀ {α : Type u_1} {β : Type u_2} [inst : Fintype α] [inst_1 : Fintype β] (e : α ≃ β), Fintype.card β = Fintype.card α
 ```
 
 ### `textbook_google_call_schema`
@@ -8623,7 +8036,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-gates.
 
 ```lean
-15 + 3 = 18
+∀ (a b : ℕ), Fintype.card (Fin a ⊕ Fin b) = a + b
 ```
 
 ### `textbook_google_mcps_reflected`
@@ -8631,7 +8044,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-gates.
 
 ```lean
-∀ (σ : ℕ), σ - 18 = σ - (15 + 3)
+∀ (a b : ℕ), a + b = Fintype.card (Fin a ⊕ Fin b)
 ```
 
 ### `textbook_google_measured`
@@ -8639,23 +8052,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-google-measured.
 
 ```lean
-∀ (a r n : ℕ), a + r = n → n - r = a
-```
-
-### `textbook_google_measured_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-google-measured.
-
-```lean
-∀ (a r n : ℕ), ¬n - r = a → ¬a + r = n
-```
-
-### `textbook_google_measured_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-google-measured.
-
-```lean
-¬∀ (a r n : ℕ), n - r = a → a + r = n
+∀ {Call : Type} [inst : DecidableEq Call] (calls refused : Finset Call),
+  refused ⊆ calls → (calls \ refused).card = calls.card - refused.card
 ```
 
 ### `textbook_google_measured_reflected`
@@ -8663,7 +8061,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-google-measured.
 
 ```lean
-∀ (a r n : ℕ), a + r = n → ∀ (σ : ℕ), σ - a = σ - (n - r)
+∀ {Call : Type} [inst : DecidableEq Call] (calls refused : Finset Call),
+  refused ⊆ calls → calls.card - refused.card = (calls \ refused).card
 ```
 
 ### `textbook_google_one_door`
@@ -8703,7 +8102,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
 
 ```lean
-3 * 60 = 180 ∧ 2 * 90 = 180 ∧ 360 - 180 = 180 ∧ 360 / 60 = 6 ∧ 360 / 90 = 4 ∧ 360 / 180 = 2 ∧ 180 * 2 = 360
+∀ (n x c : ℕ), x ≤ n → n - (n - x) = x ∧ c + c - c = c
+```
+
+### `textbook_gravity_torus_sigma_contrapositive`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
+
+```lean
+∀ (n x c : ℕ), ¬(n - (n - x) = x ∧ c + c - c = c) → ¬x ≤ n
 ```
 
 ### `textbook_gravity_torus_sigma_reflected`
@@ -8711,11 +8118,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
 
 ```lean
-∀ (σ : ℕ),
-  σ - 180 = σ - 3 * 60 ∧
-    σ - 180 = σ - 2 * 90 ∧
-      σ - 180 = σ - (360 - 180) ∧
-        σ - 6 = σ - 360 / 60 ∧ σ - 4 = σ - 360 / 90 ∧ σ - 2 = σ - 360 / 180 ∧ σ - 360 = σ - 180 * 2
+∀ (n x c : ℕ), x ≤ n → ∀ (σ : ℕ), σ - x = σ - (n - (n - x)) ∧ σ - c = σ - (c + c - c)
 ```
 
 ### `textbook_grover_one_iteration`
@@ -8723,7 +8126,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-grover.
 
 ```lean
-∀ m < 4, ∀ r < 4, QuantumAlgorithm.grover m r ≠ 0 ↔ r = m
+∀ (k : ℕ) (θ : ℝ), (2 * ↑k + 1) * θ = Real.pi / 2 → Real.sin ((2 * ↑k + 1) * θ) ^ 2 = 1
+```
+
+### `textbook_grover_one_iteration_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-grover.
+
+```lean
+∀ (k : ℕ) (θ : ℝ), (2 * ↑k + 1) * θ = Real.pi / 2 → 1 = Real.sin ((2 * ↑k + 1) * θ) ^ 2
 ```
 
 ### `textbook_grover_search`
@@ -8731,7 +8142,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-∀ m < 4, ∀ r < 4, QuantumAlgorithm.grover m r ≠ 0 ↔ r = m
+∀ (k : ℕ), (2 ^ (2 * k)).sqrt = 2 ^ k
+```
+
+### `textbook_grover_search_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
+
+```lean
+∀ (k : ℕ), 2 ^ k = (2 ^ (2 * k)).sqrt
 ```
 
 ### `textbook_h2_below_hartree_fock`
@@ -8755,7 +8174,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: circuit-hadamard-amplitudes.
 
 ```lean
-Operator.Same 2 (Operator.mm 2 QuantumGate.H (Operator.dag QuantumGate.H)) (Operator.smul 2 Operator.idm)
+∀ (n : ℕ), n ≠ 0 → ∑ _i ∈ Finset.range n, (1 / √↑n) ^ 2 = 1
+```
+
+### `textbook_hadamard_amplitudes_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: circuit-hadamard-amplitudes.
+
+```lean
+∀ (n : ℕ), n ≠ 0 → 1 = ∑ _i ∈ Finset.range n, (1 / √↑n) ^ 2
 ```
 
 ### `textbook_hadamard_histogram`
@@ -8763,7 +8190,8 @@ Operator.Same 2 (Operator.mm 2 QuantumGate.H (Operator.dag QuantumGate.H)) (Oper
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: circuit-hadamard-sampled.
 
 ```lean
-207 + 193 = 400
+∀ {Shot : Type} (shots : Finset Shot) (reads : Shot → Bool),
+  {s ∈ shots | reads s = true}.card + {s ∈ shots | ¬reads s = true}.card = shots.card
 ```
 
 ### `textbook_hadamard_histogram_reflected`
@@ -8771,7 +8199,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: circuit-hadamard-sampled.
 
 ```lean
-∀ (σ : ℕ), σ - 400 = σ - (207 + 193)
+∀ {Shot : Type} (shots : Finset Shot) (reads : Shot → Bool),
+  shots.card = {s ∈ shots | reads s = true}.card + {s ∈ shots | ¬reads s = true}.card
 ```
 
 ### `textbook_hamming_code`
@@ -8779,7 +8208,9 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-2 ^ 3 - 1 = 7 ∧ 7 - 3 = 4 ∧ (3 - 1) / 2 = 1 ∧ 2 ^ 4 = 16
+∀ {ι : Type u_1} [inst : Fintype ι] {β : ι → Type u_2} [inst_1 : (i : ι) → DecidableEq (β i)] (d : ℕ)
+  (c₁ c₂ y : (i : ι) → β i),
+  (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → hammingDist y c₁ ≤ (d - 1) / 2 → hammingDist y c₂ ≤ (d - 1) / 2 → c₁ = c₂
 ```
 
 ### `textbook_hamming_code_reflected`
@@ -8787,7 +8218,9 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-∀ (σ : ℕ), σ - 7 = σ - (2 ^ 3 - 1) ∧ σ - 4 = σ - (7 - 3) ∧ σ - 1 = σ - (3 - 1) / 2 ∧ σ - 16 = σ - 2 ^ 4
+∀ {ι : Type u_1} [inst : Fintype ι] {β : ι → Type u_2} [inst_1 : (i : ι) → DecidableEq (β i)] (d : ℕ)
+  (c₁ c₂ y : (i : ι) → β i),
+  (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → hammingDist y c₁ ≤ (d - 1) / 2 → hammingDist y c₂ ≤ (d - 1) / 2 → c₂ = c₁
 ```
 
 ### `textbook_handle_scales`
@@ -8795,7 +8228,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-handle-capacity.
 
 ```lean
-∀ (k : ℕ), 16 ^ (k + 1) = 16 * 16 ^ k ∧ 4 * (k + 1) = 4 * k + 4 ∧ 16 ^ 8 = 2 ^ 32
+∀ (k : ℕ), 16 ^ (k + 1) = 16 * 16 ^ k ∧ 4 * (k + 1) = 4 * k + 4 ∧ (2 ^ 4) ^ k = 2 ^ (4 * k)
 ```
 
 ### `textbook_handle_scales_reflected`
@@ -8803,7 +8236,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-handle-capacity.
 
 ```lean
-∀ (k σ : ℕ), σ - 16 * 16 ^ k = σ - 16 ^ (k + 1) ∧ σ - (4 * k + 4) = σ - 4 * (k + 1) ∧ σ - 2 ^ 32 = σ - 16 ^ 8
+∀ (k : ℕ), 16 * 16 ^ k = 16 ^ (k + 1) ∧ 4 * k + 4 = 4 * (k + 1) ∧ 2 ^ (4 * k) = (2 ^ 4) ^ k
 ```
 
 ### `textbook_harmonic_default`
@@ -8811,31 +8244,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-harmonic, payload-hooks-collapse.
 
 ```lean
-∀ (n k : ℕ), 0 < n → k % n < n
-```
-
-### `textbook_harmonic_default_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-harmonic, payload-hooks-collapse.
-
-```lean
-∀ (n k : ℕ), ¬k % n < n → ¬0 < n
-```
-
-### `textbook_harmonic_default_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-harmonic, payload-hooks-collapse.
-
-```lean
-∀ (n k : ℕ), k % n < n → 0 < n
-```
-
-### `textbook_harmonic_default_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-harmonic, payload-hooks-collapse.
-
-```lean
-∀ (n k : ℕ), 0 < n → ∀ (σ : ℕ), n ≤ σ → σ - n < σ - k % n
+∀ (n k : ℕ), 0 < n → k % n ∈ Finset.range n
 ```
 
 ### `textbook_hash_bits`
@@ -8843,15 +8252,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-512 / 4 = 128
+∀ (k : ℕ), Fintype.card (Fin k → Fin 16) = Fintype.card (Fin (4 * k) → Bool)
 ```
 
 ### `textbook_hash_bits_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: .
 
 ```lean
-∀ (σ : ℕ), σ - 128 = σ - 512 / 4
+∀ (k : ℕ), Fintype.card (Fin (4 * k) → Bool) = Fintype.card (Fin k → Fin 16)
 ```
 
 ### `textbook_hex_presentations`
@@ -8859,7 +8268,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-ui-hex, fold-hex.
 
 ```lean
-8 * 2 = 16
+∀ (a b : ℕ), Fintype.card (Fin a × Fin b) = Fintype.card (Fin (a * b))
 ```
 
 ### `textbook_hex_presentations_reflected`
@@ -8867,7 +8276,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-ui-hex, fold-hex.
 
 ```lean
-∀ (σ : ℕ), σ - 16 = σ - 8 * 2
+∀ (a b : ℕ), Fintype.card (Fin (a * b)) = Fintype.card (Fin a × Fin b)
 ```
 
 ### `textbook_hexbit_gateway_ftl`
@@ -8891,7 +8300,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-holevo.
 
 ```lean
-2 ^ 1 = 2 ∧ 2 ^ 2 > 2
+∀ (k : ℕ), Nat.log 2 (2 ^ k) = k
 ```
 
 ### `textbook_holevo_reflected`
@@ -8899,7 +8308,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-holevo.
 
 ```lean
-∀ (σ : ℕ), 2 ^ 2 ≤ σ → σ - 2 = σ - 2 ^ 1 ∧ σ - 2 ^ 2 < σ - 2
+∀ (k : ℕ), k = Nat.log 2 (2 ^ k)
 ```
 
 ### `textbook_hologram_rotations`
@@ -8907,15 +8316,17 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-10 * 11 = 110
+∀ (Rotation Locale : Type) [inst : Fintype Rotation] [inst_1 : Fintype Locale],
+  Fintype.card (Rotation × Locale) = Fintype.card Rotation * Fintype.card Locale
 ```
 
 ### `textbook_hologram_rotations_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: .
 
 ```lean
-∀ (σ : ℕ), σ - 110 = σ - 10 * 11
+∀ (Rotation Locale : Type) [inst : Fintype Rotation] [inst_1 : Fintype Locale],
+  Fintype.card Rotation * Fintype.card Locale = Fintype.card (Rotation × Locale)
 ```
 
 ### `textbook_hook_steps_monotone`
@@ -8923,31 +8334,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-steps-reused, repository-steps-changed.
 
 ```lean
-∀ (run changed uncacheable : ℕ), run ≤ changed + uncacheable → run - uncacheable ≤ changed
-```
-
-### `textbook_hook_steps_monotone_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-steps-reused, repository-steps-changed.
-
-```lean
-∀ (run changed uncacheable : ℕ), ¬run - uncacheable ≤ changed → ¬run ≤ changed + uncacheable
-```
-
-### `textbook_hook_steps_monotone_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-steps-reused, repository-steps-changed.
-
-```lean
-∀ (run changed uncacheable : ℕ), run - uncacheable ≤ changed → run ≤ changed + uncacheable
-```
-
-### `textbook_hook_steps_monotone_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-steps-reused, repository-steps-changed.
-
-```lean
-∀ (run changed uncacheable : ℕ), run ≤ changed + uncacheable → ∀ (σ : ℕ), σ - changed ≤ σ - (run - uncacheable)
+∀ {α : Type u_1} [inst : LE α] [inst_1 : Add α] [inst_2 : Sub α] [OrderedSub α] (run changed uncacheable : α),
+  run ≤ changed + uncacheable → run - uncacheable ≤ changed
 ```
 
 ### `textbook_hook_workflows`
@@ -8987,7 +8375,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: css-rays.
 
 ```lean
-16 * 45 = 2 * 360
+∀ (n step : ℕ), ∑ _i ∈ Finset.range n, step = n * step
 ```
 
 ### `textbook_hue_steps_reflected`
@@ -8995,7 +8383,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: css-rays.
 
 ```lean
-∀ (σ : ℕ), σ - 2 * 360 = σ - 16 * 45
+∀ (n step : ℕ), n * step = ∑ _i ∈ Finset.range n, step
 ```
 
 ### `textbook_idle_priced_by_remaining`
@@ -9027,7 +8415,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-idle-scheduled.
 
 ```lean
-∀ (i r σ : ℕ), σ - (r - i) = σ - (r - min i r)
+∀ (i r : ℕ), r - i = r - min i r
 ```
 
 ### `textbook_imagine_verdicts`
@@ -9035,7 +8423,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: imagine-two.
 
 ```lean
-0 + 2 + 0 = 2 ∧ 169 + 20 = 189
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → s.card = ∑ k ∈ t, {x ∈ s | f x = k}.card
 ```
 
 ### `textbook_imagine_verdicts_reflected`
@@ -9043,7 +8432,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: imagine-two.
 
 ```lean
-∀ (σ : ℕ), σ - 2 = σ - (0 + 2 + 0) ∧ σ - 189 = σ - (169 + 20)
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → ∑ k ∈ t, {x ∈ s | f x = k}.card = s.card
 ```
 
 ### `textbook_impossible_sent_to_leads`
@@ -9051,7 +8441,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-impossible-involution, algorithm-factor-minus, algorithm-factor-word.
 
 ```lean
-∀ (d x : ℕ), x ≤ d → d - (d - x) = x
+∀ (d : ℕ), Function.Involutive Fin.rev
 ```
 
 ### `textbook_impossible_trapdoor`
@@ -9083,31 +8473,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-institution.
 
 ```lean
-∀ (u c p : ℕ), u ≤ c → u * p ≤ c * p
-```
-
-### `textbook_institution_bill_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-institution.
-
-```lean
-∀ (u c p : ℕ), ¬u * p ≤ c * p → ¬u ≤ c
-```
-
-### `textbook_institution_bill_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-institution.
-
-```lean
-¬∀ (u c p : ℕ), u * p ≤ c * p → u ≤ c
-```
-
-### `textbook_institution_bill_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-institution.
-
-```lean
-∀ (u c p : ℕ), u ≤ c → ∀ (σ : ℕ), σ - c * p ≤ σ - u * p
+∀ {α : Type u_1} [inst : Mul α] [inst_1 : Zero α] [inst_2 : Preorder α] [MulPosMono α] (u c p : α),
+  u ≤ c → 0 ≤ p → u * p ≤ c * p
 ```
 
 ### `textbook_integers_first`
@@ -9131,7 +8498,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: extend-in-request.
 
 ```lean
-34 + 1 = 35
+∀ (a b : ℕ), Fintype.card (Fin a ⊕ Fin b) = a + b
 ```
 
 ### `textbook_integrations_are_thirty_five_reflected`
@@ -9139,7 +8506,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: extend-in-request.
 
 ```lean
-∀ (σ : ℕ), σ - 35 = σ - (34 + 1)
+∀ (a b : ℕ), a + b = Fintype.card (Fin a ⊕ Fin b)
 ```
 
 ### `textbook_involution_decoder`
@@ -9163,7 +8530,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-2 ^ 6 = 64 ∧ 2 ^ 13 = 8192
+∀ (n : ℕ), Fintype.card (Fin n → Bool) = 2 ^ n
 ```
 
 ### `textbook_ising_fusion_reflected`
@@ -9171,7 +8538,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-∀ (σ : ℕ), σ - 64 = σ - 2 ^ 6 ∧ σ - 8192 = σ - 2 ^ 13
+∀ (n : ℕ), 2 ^ n = Fintype.card (Fin n → Bool)
 ```
 
 ### `textbook_iso_22739_hash_function`
@@ -9198,28 +8565,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (confirmed orphans : ℕ), orphans ≤ confirmed → confirmed - orphans + orphans = confirmed
 ```
 
-### `textbook_iso_22739_orphan_blocks_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-iso-22739-terms-read.
-
-```lean
-∀ (confirmed orphans : ℕ), ¬confirmed - orphans + orphans = confirmed → ¬orphans ≤ confirmed
-```
-
-### `textbook_iso_22739_orphan_blocks_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-iso-22739-terms-read.
-
-```lean
-∀ (confirmed orphans : ℕ), confirmed - orphans + orphans = confirmed → orphans ≤ confirmed
-```
-
 ### `textbook_iso_22739_orphan_blocks_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-iso-22739-terms-read.
 
 ```lean
-∀ (confirmed orphans : ℕ), orphans ≤ confirmed → ∀ (σ : ℕ), σ - confirmed = σ - (confirmed - orphans + orphans)
+∀ (confirmed orphans : ℕ), orphans ≤ confirmed → confirmed = confirmed - orphans + orphans
 ```
 
 ### `textbook_iso_22739_terms_read`
@@ -9227,7 +8578,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-iso-22739-terms-read.
 
 ```lean
-99 + 0 + 0 = 99 ∧ 99 - 99 = 0
+∀ (read cut unread total : ℕ), read + cut + unread = total → cut = 0 → unread = 0 → read = total
+```
+
+### `textbook_iso_22739_terms_read_contrapositive`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-iso-22739-terms-read.
+
+```lean
+∀ (read cut unread total : ℕ), ¬read = total → ¬(read + cut + unread = total ∧ cut = 0 ∧ unread = 0)
 ```
 
 ### `textbook_iso_22739_terms_read_reflected`
@@ -9235,7 +8594,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-iso-22739-terms-read.
 
 ```lean
-∀ (σ : ℕ), σ - 99 = σ - (99 + 0 + 0) ∧ σ - 0 = σ - (99 - 99)
+∀ (read cut unread total : ℕ), read + cut + unread = total → cut = 0 → unread = 0 → ∀ (σ : ℕ), σ - total = σ - read
 ```
 
 ### `textbook_iso_22739_wallet`
@@ -9243,7 +8602,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-iso-22739-terms-read.
 
 ```lean
-99 + 1 = 100
+∀ {Term : Type} [inst : DecidableEq Term] (terms : Finset Term),
+  ∀ wallet ∉ terms, (insert wallet terms).card = terms.card + 1
 ```
 
 ### `textbook_iso_22739_wallet_reflected`
@@ -9251,7 +8611,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-iso-22739-terms-read.
 
 ```lean
-∀ (σ : ℕ), σ - 100 = σ - (99 + 1)
+∀ {Term : Type} [inst : DecidableEq Term] (terms : Finset Term),
+  ∀ wallet ∉ terms, terms.card + 1 = (insert wallet terms).card
 ```
 
 ### `textbook_iso_classify`
@@ -9259,23 +8620,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: validate-iso-classify.
 
 ```lean
-∀ (cited files : ℕ), cited ≤ files → cited + (files - cited) = files
-```
-
-### `textbook_iso_classify_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: validate-iso-classify.
-
-```lean
-∀ (cited files : ℕ), ¬cited + (files - cited) = files → ¬cited ≤ files
-```
-
-### `textbook_iso_classify_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: validate-iso-classify.
-
-```lean
-∀ (cited files : ℕ), cited + (files - cited) = files → cited ≤ files
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] (cited files : α), cited ≤ files → cited + (files - cited) = files
 ```
 
 ### `textbook_iso_classify_reflected`
@@ -9283,7 +8629,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: validate-iso-classify.
 
 ```lean
-∀ (cited files : ℕ), cited ≤ files → ∀ (σ : ℕ), σ - files = σ - (cited + (files - cited))
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] (cited files : α), cited ≤ files → files = cited + (files - cited)
 ```
 
 ### `textbook_iso_rows_verified`
@@ -9292,14 +8639,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (asked verified : ℕ), verified ≤ asked → asked - verified = 0 → verified = asked
-```
-
-### `textbook_iso_rows_verified_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: standards-iso-online, standards-iso-page, standards-iso-joined.
-
-```lean
-∀ (asked verified : ℕ), verified = asked → asked - verified = 0
 ```
 
 ### `textbook_iso_rows_verified_reflected`
@@ -9315,7 +8654,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-validations.
 
 ```lean
-26 + 1 = 27
+∀ (α : Type) [inst : Fintype α], Fintype.card (Option α) = Fintype.card α + 1
 ```
 
 ### `textbook_kind_alphabet_reflected`
@@ -9323,7 +8662,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-validations.
 
 ```lean
-∀ (σ : ℕ), σ - 27 = σ - (26 + 1)
+∀ (α : Type) [inst : Fintype α], Fintype.card α + 1 = Fintype.card (Option α)
 ```
 
 ### `textbook_kwh_joules`
@@ -9347,7 +8686,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-6 - 3 = 3 ∧ 2 * 3 = 6 ∧ 3 + 3 = 6
+∀ {α : Type u_1} {β : Type u_2} (r : α → β → Prop) [inst : (a : α) → (b : β) → Decidable (r a b)] (s : Finset α)
+  (t : Finset β) (m n : ℕ),
+  (∀ a ∈ s, (Finset.bipartiteAbove r t a).card = m) →
+    (∀ b ∈ t, (Finset.bipartiteBelow r s b).card = n) → s.card * m = t.card * n
 ```
 
 ### `textbook_ldpc_code_reflected`
@@ -9355,7 +8697,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-∀ (σ : ℕ), σ - 3 = σ - (6 - 3) ∧ σ - 6 = σ - 2 * 3 ∧ σ - 6 = σ - (3 + 3)
+∀ {α : Type u_1} {β : Type u_2} (r : α → β → Prop) [inst : (a : α) → (b : β) → Decidable (r a b)] (s : Finset α)
+  (t : Finset β) (m n : ℕ),
+  (∀ a ∈ s, (Finset.bipartiteAbove r t a).card = m) →
+    (∀ b ∈ t, (Finset.bipartiteBelow r s b).card = n) → t.card * n = s.card * m
 ```
 
 ### `textbook_lead_cells`
@@ -9363,43 +8708,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-combinations.
 
 ```lean
-∀ i < 432,
-  2 ^ 4 * 3 ^ 3 = 432 ∧
-    2 * 2 * 2 * 2 * 3 * 3 * 3 = 432 ∧
-      432 % 432 = 0 ∧
-        i % 2 + 2 * (i / 2 % 2) + 4 * (i / 4 % 2) + 8 * (i / 8 % 2) + 16 * (i / 16 % 3) + 48 * (i / 48 % 3) +
-            144 * (i / 144 % 3) =
-          i
-```
-
-### `textbook_lead_cells_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-combinations.
-
-```lean
-∀ (i : ℕ),
-  ¬(2 ^ 4 * 3 ^ 3 = 432 ∧
-        2 * 2 * 2 * 2 * 3 * 3 * 3 = 432 ∧
-          432 % 432 = 0 ∧
-            i % 2 + 2 * (i / 2 % 2) + 4 * (i / 4 % 2) + 8 * (i / 8 % 2) + 16 * (i / 16 % 3) + 48 * (i / 48 % 3) +
-                144 * (i / 144 % 3) =
-              i) →
-    ¬i < 432
-```
-
-### `textbook_lead_cells_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-combinations.
-
-```lean
-∀ (i : ℕ),
-  2 ^ 4 * 3 ^ 3 = 432 ∧
-      2 * 2 * 2 * 2 * 3 * 3 * 3 = 432 ∧
-        432 % 432 = 0 ∧
-          i % 2 + 2 * (i / 2 % 2) + 4 * (i / 4 % 2) + 8 * (i / 8 % 2) + 16 * (i / 16 % 3) + 48 * (i / 48 % 3) +
-              144 * (i / 144 % 3) =
-            i →
-    i < 432
+∀ (a b : ℕ) (i : Fin (a * b)), finProdFinEquiv (i.divNat, i.modNat) = i
 ```
 
 ### `textbook_lead_cells_reflected`
@@ -9407,15 +8716,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-combinations.
 
 ```lean
-∀ i < 432,
-  ∀ (σ : ℕ),
-    σ - 432 = σ - 2 ^ 4 * 3 ^ 3 ∧
-      σ - 432 = σ - 2 * 2 * 2 * 2 * 3 * 3 * 3 ∧
-        σ - 0 = σ - 432 % 432 ∧
-          σ - i =
-            σ -
-              (i % 2 + 2 * (i / 2 % 2) + 4 * (i / 4 % 2) + 8 * (i / 8 % 2) + 16 * (i / 16 % 3) + 48 * (i / 48 % 3) +
-                144 * (i / 144 % 3))
+∀ (a b : ℕ) (i : Fin (a * b)), i = finProdFinEquiv (i.divNat, i.modNat)
 ```
 
 ### `textbook_leads_addressed`
@@ -9439,26 +8740,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-all.
 
 ```lean
-∀ (served partly blocked outside opened total : ℕ),
-  served + partly + blocked + outside + opened = total → total - opened = served + partly + blocked + outside
-```
-
-### `textbook_leads_by_status_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-all.
-
-```lean
-∀ (served partly blocked outside opened total : ℕ),
-  ¬total - opened = served + partly + blocked + outside → ¬served + partly + blocked + outside + opened = total
-```
-
-### `textbook_leads_by_status_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-all.
-
-```lean
-¬∀ (served partly blocked outside opened total : ℕ),
-    total - opened = served + partly + blocked + outside → served + partly + blocked + outside + opened = total
+∀ {Lead : Type} [inst : DecidableEq Lead] (leads opened : Finset Lead),
+  opened ⊆ leads → (leads \ opened).card = leads.card - opened.card
 ```
 
 ### `textbook_leads_by_status_reflected`
@@ -9466,9 +8749,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-all.
 
 ```lean
-∀ (served partly blocked outside opened total : ℕ),
-  served + partly + blocked + outside + opened = total →
-    ∀ (σ : ℕ), σ - (served + partly + blocked + outside) = σ - (total - opened)
+∀ {Lead : Type} [inst : DecidableEq Lead] (leads opened : Finset Lead),
+  opened ⊆ leads → leads.card - opened.card = (leads \ opened).card
 ```
 
 ### `textbook_leads_consistent`
@@ -9476,7 +8758,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-consistent, leads-consistent-control.
 
 ```lean
-∀ (total : ℕ), total - 0 = total ∧ 5 - 3 = 2
+∀ {α : Type u_1} [DecidableEq α] (s : Finset α) (p : α → Prop) [inst : DecidablePred p],
+  {a ∈ s | ¬p a}.card = s.card - (Finset.filter p s).card
 ```
 
 ### `textbook_leads_consistent_reflected`
@@ -9484,7 +8767,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-consistent, leads-consistent-control.
 
 ```lean
-∀ (total σ : ℕ), σ - total = σ - (total - 0) ∧ σ - 2 = σ - (5 - 3)
+∀ {α : Type u_1} [DecidableEq α] (s : Finset α) (p : α → Prop) [inst : DecidablePred p],
+  s.card - (Finset.filter p s).card = {a ∈ s | ¬p a}.card
 ```
 
 ### `textbook_leaks_redacted`
@@ -9495,28 +8779,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (found redacted : ℕ), redacted = found → found - redacted = 0
 ```
 
-### `textbook_leaks_redacted_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-leaks, audit-leak-allowed.
-
-```lean
-∀ (found redacted : ℕ), ¬found - redacted = 0 → ¬redacted = found
-```
-
-### `textbook_leaks_redacted_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-leaks, audit-leak-allowed.
-
-```lean
-¬∀ (found redacted : ℕ), found - redacted = 0 → redacted = found
-```
-
 ### `textbook_leaks_redacted_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-leaks, audit-leak-allowed.
 
 ```lean
-∀ (found redacted : ℕ), redacted = found → ∀ (σ : ℕ), σ - 0 = σ - (found - redacted)
+∀ (found redacted : ℕ), redacted = found → 0 = found - redacted
 ```
 
 ### `textbook_lean_served_whole`
@@ -9556,7 +8824,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-url-fallback.
 
 ```lean
-∀ (n : ℕ), n + 1 - 1 = n
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (n k : α), n + k - k = n
 ```
 
 ### `textbook_licence_chain_reflected`
@@ -9564,7 +8833,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-url-fallback.
 
 ```lean
-∀ (n σ : ℕ), σ - n = σ - (n + 1 - 1)
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (n k : α), n = n + k - k
 ```
 
 ### `textbook_lie_collides`
@@ -9606,7 +8876,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-next-long.
 
 ```lean
-∀ (budget request ms : ℕ), request < budget → request ≤ ms → request < budget ∧ request ≤ ms ∧ 0 < budget - request
+∀ (budget request : ℕ), request < budget → 0 < budget - request
 ```
 
 ### `textbook_long_action_queued_contrapositive`
@@ -9614,16 +8884,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-next-long.
 
 ```lean
-∀ (budget request ms : ℕ),
-  ¬(request < budget ∧ request ≤ ms ∧ 0 < budget - request) → ¬(request < budget ∧ request ≤ ms)
-```
-
-### `textbook_long_action_queued_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-next-long.
-
-```lean
-∀ (budget request ms : ℕ), request < budget ∧ request ≤ ms ∧ 0 < budget - request → request < budget ∧ request ≤ ms
+∀ (budget request : ℕ), ¬0 < budget - request → ¬request < budget
 ```
 
 ### `textbook_long_action_queued_reflected`
@@ -9631,12 +8892,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-next-long.
 
 ```lean
-∀ (budget request ms : ℕ),
-  request < budget →
-    request ≤ ms →
-      ∀ (σ : ℕ),
-        budget ≤ σ →
-          budget - request ≤ σ → σ - budget < σ - request ∧ σ - ms ≤ σ - request ∧ σ - (budget - request) < σ - 0
+∀ (budget request : ℕ), request < budget → ∀ (σ : ℕ), budget - request ≤ σ → σ - (budget - request) < σ - 0
 ```
 
 ### `textbook_machine_allow_list`
@@ -9655,14 +8911,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (asked allowed : ℕ), ¬asked - allowed + allowed = asked → ¬allowed ≤ asked
 ```
 
-### `textbook_machine_allow_list_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-actions, repository-machine-refused, repository-machine-push-unconfirmed, repository-machine-worktree-unconfirmed, repository-machine-tag-confirmed, repository-machine-commit-deferred.
-
-```lean
-∀ (asked allowed : ℕ), asked - allowed + allowed = asked → allowed ≤ asked
-```
-
 ### `textbook_machine_allow_list_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-actions, repository-machine-refused, repository-machine-push-unconfirmed, repository-machine-worktree-unconfirmed, repository-machine-tag-confirmed, repository-machine-commit-deferred.
@@ -9676,7 +8924,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45 ∧ 45 / 3 = 15 ∧ 3 * 15 = 45
+∀ (n : ℕ), (∑ i ∈ Finset.range (n ^ 2 + 1), i) * 2 = (n ^ 2 + 1) * n ^ 2
 ```
 
 ### `textbook_magic_constant_reflected`
@@ -9684,7 +8932,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-∀ (σ : ℕ), σ - 45 = σ - (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) ∧ σ - 15 = σ - 45 / 3 ∧ σ - 45 = σ - 3 * 15
+∀ (n : ℕ), (n ^ 2 + 1) * n ^ 2 = (∑ i ∈ Finset.range (n ^ 2 + 1), i) * 2
 ```
 
 ### `textbook_majority_of_three`
@@ -9692,15 +8940,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-2 * 2 > 3
-```
-
-### `textbook_majority_of_three_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (σ : ℕ), 2 * 2 ≤ σ → σ - 2 * 2 < σ - 3
+∀ {α : Type u_1} [inst : DecidableEq α] (copies A B : Finset α),
+  A ⊆ copies → B ⊆ copies → copies.card < 2 * A.card → copies.card < 2 * B.card → (A ∩ B).Nonempty
 ```
 
 ### `textbook_margin_makes_price`
@@ -9717,14 +8958,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (price cost : ℕ), ¬price - cost + cost = price → ¬cost ≤ price
-```
-
-### `textbook_margin_makes_price_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-margins.
-
-```lean
-∀ (price cost : ℕ), price - cost + cost = price → cost ≤ price
 ```
 
 ### `textbook_margin_makes_price_reflected`
@@ -9756,7 +8989,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: discover-lead-registry, discover-directories-keyed.
 
 ```lean
-2 + 1 + 1 + 2 + 1 = 7
+∀ {α : Type u_1} {β : Type u_2} [inst : DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β),
+  (∀ x ∈ s, f x ∈ t) → s.card = ∑ b ∈ t, {a ∈ s | f a = b}.card
 ```
 
 ### `textbook_mcp_directories_reflected`
@@ -9764,7 +8998,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: discover-lead-registry, discover-directories-keyed.
 
 ```lean
-∀ (σ : ℕ), σ - 7 = σ - (2 + 1 + 1 + 2 + 1)
+∀ {α : Type u_1} {β : Type u_2} [inst : DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β),
+  (∀ x ∈ s, f x ∈ t) → ∑ b ∈ t, {a ∈ s | f a = b}.card = s.card
 ```
 
 ### `textbook_mcp_install_rows`
@@ -9775,20 +9010,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (held : ℕ), held ≤ held + 1 ∧ held + 1 - 1 = held
 ```
 
-### `textbook_mcp_install_rows_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: extend-install.
-
-```lean
-∀ (held σ : ℕ), σ - (held + 1) ≤ σ - held ∧ σ - held = σ - (held + 1 - 1)
-```
-
 ### `textbook_mcp_search_limit`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: discover-search-request, discover-search-servers.
 
 ```lean
-1 ≤ 10 ∧ 10 ≤ 100
+∀ (x : ℕ), 1 ≤ max 1 (min x 100) ∧ max 1 (min x 100) ≤ 100
 ```
 
 ### `textbook_mcp_search_limit_reflected`
@@ -9796,7 +9023,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: discover-search-request, discover-search-servers.
 
 ```lean
-∀ (σ : ℕ), σ - 10 ≤ σ - 1 ∧ σ - 100 ≤ σ - 10
+∀ (x σ : ℕ), σ - max 1 (min x 100) ≤ σ - 1 ∧ σ - 100 ≤ σ - max 1 (min x 100)
 ```
 
 ### `textbook_mcp_tools_by_toolbox`
@@ -9804,7 +9031,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets, extend-out.
 
 ```lean
-13 + 11 + 6 + 2 + 1 + 2 + 3 + 1 + 3 + 2 + 1 + 3 = 48
+∀ {Toolbox : Type} [inst : Fintype Toolbox] (Tool : Toolbox → Type) [inst_1 : (b : Toolbox) → Fintype (Tool b)],
+  Fintype.card ((b : Toolbox) × Tool b) = ∑ b, Fintype.card (Tool b)
 ```
 
 ### `textbook_mcp_tools_by_toolbox_reflected`
@@ -9812,7 +9040,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets, extend-out.
 
 ```lean
-∀ (σ : ℕ), σ - 48 = σ - (13 + 11 + 6 + 2 + 1 + 2 + 3 + 1 + 3 + 2 + 1 + 3)
+∀ {Toolbox : Type} [inst : Fintype Toolbox] (Tool : Toolbox → Type) [inst_1 : (b : Toolbox) → Fintype (Tool b)],
+  ∑ b, Fintype.card (Tool b) = Fintype.card ((b : Toolbox) × Tool b)
 ```
 
 ### `textbook_member_in_collection`
@@ -9820,31 +9049,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-rails-admin.
 
 ```lean
-∀ (n : ℕ), 0 < n → 1 ≤ n
-```
-
-### `textbook_member_in_collection_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-rails-admin.
-
-```lean
-∀ (n : ℕ), ¬1 ≤ n → ¬0 < n
-```
-
-### `textbook_member_in_collection_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-rails-admin.
-
-```lean
-∀ (n : ℕ), 1 ≤ n → 0 < n
-```
-
-### `textbook_member_in_collection_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-rails-admin.
-
-```lean
-∀ (n : ℕ), 0 < n → ∀ (σ : ℕ), σ - n ≤ σ - 1
+∀ {α : Type u_1} (s : Finset α), ∀ a ∈ s, 1 ≤ s.card
 ```
 
 ### `textbook_memo_identity`
@@ -9870,7 +9075,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-mentions.
 
 ```lean
-3 + 2 + 0 = 5 ∧ 2 + 1 = 3
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → s.card = ∑ k ∈ t, {x ∈ s | f x = k}.card
 ```
 
 ### `textbook_mentions_by_source_reflected`
@@ -9878,7 +9084,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-mentions.
 
 ```lean
-∀ (σ : ℕ), σ - 5 = σ - (3 + 2 + 0) ∧ σ - 3 = σ - (2 + 1)
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → ∑ k ∈ t, {x ∈ s | f x = k}.card = s.card
 ```
 
 ### `textbook_merge_collision`
@@ -9886,7 +9093,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-merge-collision, payload-merge-collision-reversed, payload-merge-edit-stands.
 
 ```lean
-1 + 1 + 0 = 2 ∧ 2 = 2 ∧ 2 - 1 = 1 ∧ 1 + 1 + 0 = 2
+∀ {Address : Type} [inst : DecidableEq Address] (a b : Finset Address), a ∪ b = b ∪ a ∧ a ∩ b = b ∩ a
 ```
 
 ### `textbook_merge_collision_reflected`
@@ -9894,7 +9101,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-merge-collision, payload-merge-collision-reversed, payload-merge-edit-stands.
 
 ```lean
-∀ (σ : ℕ), σ - 2 = σ - (1 + 1 + 0) ∧ σ - 2 = σ - 2 ∧ σ - 1 = σ - (2 - 1) ∧ σ - 2 = σ - (1 + 1 + 0)
+∀ {Address : Type} [inst : DecidableEq Address] (a b : Finset Address), b ∪ a = a ∪ b ∧ b ∩ a = a ∩ b
 ```
 
 ### `textbook_merge_commutes`
@@ -9921,29 +9128,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (d x : ℕ), x ≤ d → d - (d - x) = x ∧ d - (d - (d - x)) = d - x ∧ d - x + x = d
 ```
 
-### `textbook_mind_sigma_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
-
-```lean
-∀ (d x : ℕ), ¬(d - (d - x) = x ∧ d - (d - (d - x)) = d - x ∧ d - x + x = d) → ¬x ≤ d
-```
-
-### `textbook_mind_sigma_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
-
-```lean
-∀ (d x : ℕ), d - (d - x) = x ∧ d - (d - (d - x)) = d - x ∧ d - x + x = d → x ≤ d
-```
-
 ### `textbook_mind_sigma_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
 
 ```lean
-∀ (d x : ℕ),
-  x ≤ d → ∀ (σ : ℕ), σ - x = σ - (d - (d - x)) ∧ σ - (d - x) = σ - (d - (d - (d - x))) ∧ σ - d = σ - (d - x + x)
+∀ (d x : ℕ), x ≤ d → x = d - (d - x) ∧ d - x = d - (d - (d - x)) ∧ d = d - x + x
 ```
 
 ### `textbook_mixed_radix`
@@ -9951,23 +9141,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-queneau, fold-rosetta, leads-scientific-domains, payload-domain-configs, css-shadcn.
 
 ```lean
-∀ (q r d : ℕ), d < r → (d + r * q) % r = d ∧ (d + r * q) / r = q
-```
-
-### `textbook_mixed_radix_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-queneau, fold-rosetta, leads-scientific-domains, payload-domain-configs, css-shadcn.
-
-```lean
-∀ (q r d : ℕ), ¬((d + r * q) % r = d ∧ (d + r * q) / r = q) → ¬d < r
-```
-
-### `textbook_mixed_radix_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-queneau, fold-rosetta, leads-scientific-domains, payload-domain-configs, css-shadcn.
-
-```lean
-¬∀ (q r d : ℕ), (d + r * q) % r = d ∧ (d + r * q) / r = q → d < r
+∀ (m n : ℕ) (x : Fin m × Fin n), ↑(finProdFinEquiv x) = ↑x.2 + n * ↑x.1 ∧ finProdFinEquiv.symm (finProdFinEquiv x) = x
 ```
 
 ### `textbook_mixed_radix_reflected`
@@ -9975,7 +9149,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-queneau, fold-rosetta, leads-scientific-domains, payload-domain-configs, css-shadcn.
 
 ```lean
-∀ (q r d : ℕ), d < r → ∀ (σ : ℕ), σ - d = σ - (d + r * q) % r ∧ σ - q = σ - (d + r * q) / r
+∀ (m n : ℕ) (x : Fin m × Fin n), ↑x.2 + n * ↑x.1 = ↑(finProdFinEquiv x) ∧ x = finProdFinEquiv.symm (finProdFinEquiv x)
 ```
 
 ### `textbook_ml_dsa_fips_204`
@@ -9983,7 +9157,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-block-sign-ml-dsa-44.
 
 ```lean
-1312 + 2420 = 3732 ∧ 1952 + 3309 = 5261 ∧ 2592 + 4627 = 7219 ∧ 3732 < 5261 ∧ 5261 < 7219
+∀ (pk₁ sig₁ pk₂ sig₂ : ℕ), pk₁ < pk₂ → sig₁ < sig₂ → pk₁ + sig₁ < pk₂ + sig₂
+```
+
+### `textbook_ml_dsa_fips_204_contrapositive`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-block-sign-ml-dsa-44.
+
+```lean
+∀ (pk₁ sig₁ pk₂ sig₂ : ℕ), ¬pk₁ + sig₁ < pk₂ + sig₂ → ¬(pk₁ < pk₂ ∧ sig₁ < sig₂)
 ```
 
 ### `textbook_ml_dsa_fips_204_reflected`
@@ -9991,11 +9173,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-block-sign-ml-dsa-44.
 
 ```lean
-∀ (σ : ℕ),
-  5261 ≤ σ →
-    7219 ≤ σ →
-      σ - 3732 = σ - (1312 + 2420) ∧
-        σ - 5261 = σ - (1952 + 3309) ∧ σ - 7219 = σ - (2592 + 4627) ∧ σ - 5261 < σ - 3732 ∧ σ - 7219 < σ - 5261
+∀ (pk₁ sig₁ pk₂ sig₂ : ℕ), pk₁ < pk₂ → sig₁ < sig₂ → ∀ (σ : ℕ), pk₂ + sig₂ ≤ σ → σ - (pk₂ + sig₂) < σ - (pk₁ + sig₁)
 ```
 
 ### `textbook_model_table`
@@ -10003,7 +9181,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-rails-model.
 
 ```lean
-5 + 5 = 10 ∧ 4 + 1 = 5
+∀ (p w : FreeMonoid Char) (c : Char), (p * w).length = p.length + w.length ∧ (w * FreeMonoid.of c).length = w.length + 1
 ```
 
 ### `textbook_model_table_reflected`
@@ -10011,7 +9189,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-rails-model.
 
 ```lean
-∀ (σ : ℕ), σ - 10 = σ - (5 + 5) ∧ σ - 5 = σ - (4 + 1)
+∀ (p w : FreeMonoid Char) (c : Char), p.length + w.length = (p * w).length ∧ w.length + 1 = (w * FreeMonoid.of c).length
 ```
 
 ### `textbook_mongo_find_filter`
@@ -10019,7 +9197,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: mongo-find.
 
 ```lean
-1 + 2 = 3 ∧ 60 ≤ 105 ∧ 54 < 60
+∀ {α : Type u_1} (scanned : Finset α) (hit : α → Prop) [inst : DecidablePred hit],
+  (Finset.filter hit scanned).card + {x ∈ scanned | ¬hit x}.card = scanned.card
 ```
 
 ### `textbook_mongo_find_filter_reflected`
@@ -10027,7 +9206,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: mongo-find.
 
 ```lean
-∀ (σ : ℕ), 60 ≤ σ → σ - 3 = σ - (1 + 2) ∧ σ - 105 ≤ σ - 60 ∧ σ - 60 < σ - 54
+∀ {α : Type u_1} (scanned : Finset α) (hit : α → Prop) [inst : DecidablePred hit],
+  scanned.card = (Finset.filter hit scanned).card + {x ∈ scanned | ¬hit x}.card
 ```
 
 ### `textbook_mongo_update_inc`
@@ -10062,14 +9242,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (started ended : ℕ), ¬ended - started + started = ended → ¬started ≤ ended
 ```
 
-### `textbook_monotonic_tick_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: metrics-served-calls.
-
-```lean
-∀ (started ended : ℕ), ended - started + started = ended → started ≤ ended
-```
-
 ### `textbook_monotonic_tick_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: metrics-served-calls.
@@ -10083,7 +9255,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-validations.
 
 ```lean
-26 + 10 + 1 = 37
+∀ (a d : ℕ), Fintype.card (Option (Fin a ⊕ Fin d)) = a + d + 1
 ```
 
 ### `textbook_name_alphabets_reflected`
@@ -10091,7 +9263,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-validations.
 
 ```lean
-∀ (σ : ℕ), σ - 37 = σ - (26 + 10 + 1)
+∀ (a d : ℕ), a + d + 1 = Fintype.card (Option (Fin a ⊕ Fin d))
 ```
 
 ### `textbook_namespace_narrows`
@@ -10099,15 +9271,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-namespace-sandbox, payload-namespace-narrow, leads-client.
 
 ```lean
-∀ (named held : Bool), (named && held) = true → held = true
-```
-
-### `textbook_namespace_narrows_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-namespace-sandbox, payload-namespace-narrow, leads-client.
-
-```lean
-∀ (named held : Bool), ¬held = true → ¬(named && held) = true
+∀ {α : Type u_1} [inst : SemilatticeInf α] (named held : α), named ⊓ held ≤ held
 ```
 
 ### `textbook_neighbour_step`
@@ -10115,23 +9279,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-neighbours.
 
 ```lean
-∀ (x y : ℕ), x < 65536 → y < 4096 → ((x + 1) % 65536 + 65535) % 65536 = x ∧ ((y + 1) % 4096 + 4095) % 4096 = y
-```
-
-### `textbook_neighbour_step_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-neighbours.
-
-```lean
-∀ (x y : ℕ), ¬(((x + 1) % 65536 + 65535) % 65536 = x ∧ ((y + 1) % 4096 + 4095) % 4096 = y) → ¬(x < 65536 ∧ y < 4096)
-```
-
-### `textbook_neighbour_step_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-neighbours.
-
-```lean
-∀ (x y : ℕ), ((x + 1) % 65536 + 65535) % 65536 = x ∧ ((y + 1) % 4096 + 4095) % 4096 = y → x < 65536 ∧ y < 4096
+∀ (n : ℕ) (x : ZMod n), x + 1 - 1 = x
 ```
 
 ### `textbook_neighbour_step_reflected`
@@ -10139,9 +9287,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-neighbours.
 
 ```lean
-∀ (x y : ℕ),
-  x < 65536 →
-    y < 4096 → ∀ (σ : ℕ), σ - x = σ - ((x + 1) % 65536 + 65535) % 65536 ∧ σ - y = σ - ((y + 1) % 4096 + 4095) % 4096
+∀ (n : ℕ) (x : ZMod n), x = x + 1 - 1
 ```
 
 ### `textbook_new_doors_proven`
@@ -10160,14 +9306,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (news proven : ℕ), ¬proven = news → ¬(proven ≤ news ∧ news - proven = 0)
 ```
 
-### `textbook_new_doors_proven_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-commit-folds, repository-commit-grows.
-
-```lean
-∀ (news proven : ℕ), proven = news → proven ≤ news ∧ news - proven = 0
-```
-
 ### `textbook_new_doors_proven_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-commit-folds, repository-commit-grows.
@@ -10181,7 +9319,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-news-plan.
 
 ```lean
-4 + 3 = 7
+∀ {α : Type u_1} [inst : DecidableEq α] (A B : Finset α), Disjoint A B → (A ∪ B).card = A.card + B.card
 ```
 
 ### `textbook_news_adapters_reflected`
@@ -10189,7 +9327,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-news-plan.
 
 ```lean
-∀ (σ : ℕ), σ - 7 = σ - (4 + 3)
+∀ {α : Type u_1} [inst : DecidableEq α] (A B : Finset α), Disjoint A B → A.card + B.card = (A ∪ B).card
 ```
 
 ### `textbook_news_problems`
@@ -10200,29 +9338,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (served impossible unknown total : ℕ), served + impossible + unknown = total → total - impossible - unknown = served
 ```
 
-### `textbook_news_problems_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-news.
-
-```lean
-∀ (served impossible unknown total : ℕ), ¬total - impossible - unknown = served → ¬served + impossible + unknown = total
-```
-
-### `textbook_news_problems_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-news.
-
-```lean
-¬∀ (served impossible unknown total : ℕ), total - impossible - unknown = served → served + impossible + unknown = total
-```
-
 ### `textbook_news_problems_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-news.
 
 ```lean
-∀ (served impossible unknown total : ℕ),
-  served + impossible + unknown = total → ∀ (σ : ℕ), σ - served = σ - (total - impossible - unknown)
+∀ (served impossible unknown total : ℕ), served + impossible + unknown = total → served = total - impossible - unknown
 ```
 
 ### `textbook_next_waves_ordered`
@@ -10230,26 +9351,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-next.
 
 ```lean
-∀ (lanes cores heap cap w v : ℕ),
-  lanes ≤ cores → lanes * heap ≤ cap → w < v → lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w + 1 ≤ v
-```
-
-### `textbook_next_waves_ordered_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-next.
-
-```lean
-∀ (lanes cores heap cap w v : ℕ),
-  ¬(lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w + 1 ≤ v) → ¬(lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w < v)
-```
-
-### `textbook_next_waves_ordered_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-next.
-
-```lean
-∀ (lanes cores heap cap w v : ℕ),
-  lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w + 1 ≤ v → lanes ≤ cores ∧ lanes * heap ≤ cap ∧ w < v
+∀ (w v : ℕ), w + 1 ≤ v ↔ w < v
 ```
 
 ### `textbook_next_waves_ordered_reflected`
@@ -10257,9 +9359,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-next.
 
 ```lean
-∀ (lanes cores heap cap w v : ℕ),
-  lanes ≤ cores →
-    lanes * heap ≤ cap → w < v → ∀ (σ : ℕ), σ - cores ≤ σ - lanes ∧ σ - cap ≤ σ - lanes * heap ∧ σ - v ≤ σ - (w + 1)
+∀ (w v : ℕ), w < v ↔ w + 1 ≤ v
 ```
 
 ### `textbook_no_cloning`
@@ -10267,10 +9367,19 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-no-cloning.
 
 ```lean
-∀ (u : Operator.Mat),
-  (∀ r < 4, Operator.ap 4 u (HilbertSpace.basis 0) r = HilbertSpace.basis 0 r) →
-    (∀ r < 4, Operator.ap 4 u (HilbertSpace.basis 2) r = HilbertSpace.basis 3 r) →
-      Operator.ap 4 u (fun r => HilbertSpace.basis 0 r + HilbertSpace.basis 2 r) 1 ≠ 1
+∀ {K V : Type} [inst : CommRing K] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module K V]
+  (f : V →ₗ[K] TensorProduct K V V) (a b : V),
+  f a = a ⊗ₜ[K] a → f b = b ⊗ₜ[K] b → f (a + b) = (a + b) ⊗ₜ[K] (a + b) → a ⊗ₜ[K] b + b ⊗ₜ[K] a = 0
+```
+
+### `textbook_no_cloning_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-no-cloning.
+
+```lean
+∀ {K V : Type} [inst : CommRing K] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module K V]
+  (f : V →ₗ[K] TensorProduct K V V) (a b : V),
+  f a = a ⊗ₜ[K] a → f b = b ⊗ₜ[K] b → f (a + b) = (a + b) ⊗ₜ[K] (a + b) → 0 = a ⊗ₜ[K] b + b ⊗ₜ[K] a
 ```
 
 ### `textbook_novelty_claimed`
@@ -10278,7 +9387,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-novelty.
 
 ```lean
-2 - 1 = 1 ∧ 0 < 1
+∀ {α : Type u_1} (s : Finset α) (prior : α → ℕ), {a ∈ s | prior a = 0}.card + {a ∈ s | ¬prior a = 0}.card = s.card
 ```
 
 ### `textbook_novelty_claimed_reflected`
@@ -10286,7 +9395,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-novelty.
 
 ```lean
-∀ (σ : ℕ), 1 ≤ σ → σ - 1 = σ - (2 - 1) ∧ σ - 1 < σ - 0
+∀ {α : Type u_1} (s : Finset α) (prior : α → ℕ), s.card = {a ∈ s | prior a = 0}.card + {a ∈ s | ¬prior a = 0}.card
 ```
 
 ### `textbook_number_operator`
@@ -10321,14 +9430,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (errors requests : ℕ), ¬errors ≤ requests → ¬errors * 1000 ≤ requests
 ```
 
-### `textbook_observed_errors_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy.
-
-```lean
-¬∀ (errors requests : ℕ), errors ≤ requests → errors * 1000 ≤ requests
-```
-
 ### `textbook_observed_errors_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy.
@@ -10353,14 +9454,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (k : ℕ), ¬k - (k - 1) = 1 → ¬1 ≤ k
 ```
 
-### `textbook_one_holder_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-shapes-one-holder.
-
-```lean
-∀ (k : ℕ), k - (k - 1) = 1 → 1 ≤ k
-```
-
 ### `textbook_one_holder_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-shapes-one-holder.
@@ -10374,7 +9467,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-proven.
 
 ```lean
-1000 / 8 = 125 ∧ 125 * 8 = 1000 ∧ 1000 % 71 = 6 ∧ 14 * 71 + 6 = 1000 ∧ 5 - 5 = 0
+∀ (w d : ℤ), d * (w / d) + w % d = w
 ```
 
 ### `textbook_only_the_proven_is_admitted_reflected`
@@ -10382,9 +9475,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-proven.
 
 ```lean
-∀ (σ : ℕ),
-  σ - 125 = σ - 1000 / 8 ∧
-    σ - 1000 = σ - 125 * 8 ∧ σ - 6 = σ - 1000 % 71 ∧ σ - 1000 = σ - (14 * 71 + 6) ∧ σ - 0 = σ - (5 - 5)
+∀ (w d : ℤ), w = d * (w / d) + w % d
 ```
 
 ### `textbook_openapi_contract`
@@ -10400,7 +9491,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-api.
 
 ```lean
-∀ (tools σ : ℕ), σ - tools = σ - (tools + 2 - 2)
+∀ (tools : ℕ), tools = tools + 2 - 2
 ```
 
 ### `textbook_orcid_digits`
@@ -10408,7 +9499,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: jsonld-block.
 
 ```lean
-4 * 4 + 3 = 19
+∀ (k g d : ℕ), Fintype.card (Fin k × Fin g ⊕ Fin d) = k * g + d
 ```
 
 ### `textbook_orcid_digits_reflected`
@@ -10416,7 +9507,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: jsonld-block.
 
 ```lean
-∀ (σ : ℕ), σ - 19 = σ - (4 * 4 + 3)
+∀ (k g d : ℕ), k * g + d = Fintype.card (Fin k × Fin g ⊕ Fin d)
 ```
 
 ### `textbook_order_finding`
@@ -10432,15 +9523,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-builtin-words, chat-builtin-words, translate-builtin-words, chat-cirq-constructors.
 
 ```lean
-∀ (own hit : Bool), (hit = true → own = true) → hit = true → own = true
-```
-
-### `textbook_own_keys_only_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-builtin-words, chat-builtin-words, translate-builtin-words, chat-cirq-constructors.
-
-```lean
-∀ (own hit : Bool), (hit = true → own = true) → hit = true → true = own
+∀ {α : Type} {β : α → Type} [inst : DecidableEq α] (table : Finmap β) (word : α) (v : β word),
+  Finmap.lookup word table = some v → word ∈ table
 ```
 
 ### `textbook_packages_partition`
@@ -10448,7 +9532,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-packages.
 
 ```lean
-12 + 5 + 5 + 2 + 1 + 3 + 17 = 45
+∀ {α : Type u_1} {β : Type u_2} [inst : DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β),
+  (∀ x ∈ s, f x ∈ t) → s.card = ∑ b ∈ t, {a ∈ s | f a = b}.card
 ```
 
 ### `textbook_packages_partition_reflected`
@@ -10456,7 +9541,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-packages.
 
 ```lean
-∀ (σ : ℕ), σ - 45 = σ - (12 + 5 + 5 + 2 + 1 + 3 + 17)
+∀ {α : Type u_1} {β : Type u_2} [inst : DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β),
+  (∀ x ∈ s, f x ∈ t) → ∑ b ∈ t, {a ∈ s | f a = b}.card = s.card
 ```
 
 ### `textbook_parse_microdata_deep`
@@ -10480,7 +9566,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-particles, textbook-particles-control.
 
 ```lean
-6 * 4 = 24 ∧ 6 * 4 ≠ 25
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → s.card = ∑ k ∈ t, {x ∈ s | f x = k}.card
 ```
 
 ### `textbook_particles_classes_reflected`
@@ -10488,7 +9575,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-particles, textbook-particles-control.
 
 ```lean
-∀ (σ : ℕ), σ - 24 = σ - 6 * 4 ∧ 25 ≠ 6 * 4
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → ∑ k ∈ t, {x ∈ s | f x = k}.card = s.card
 ```
 
 ### `textbook_pascal_rule`
@@ -10496,7 +9584,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-56 = 35 + 21 ∧ 28 = 21 + 7 ∧ 35 = 20 + 15
+∀ (n k : ℕ), (n + 1).choose (k + 1) = n.choose k + n.choose (k + 1)
 ```
 
 ### `textbook_pascal_rule_reflected`
@@ -10504,7 +9592,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-∀ (σ : ℕ), σ - (35 + 21) = σ - 56 ∧ σ - (21 + 7) = σ - 28 ∧ σ - (20 + 15) = σ - 35
+∀ (n k : ℕ), n.choose k + n.choose (k + 1) = (n + 1).choose (k + 1)
 ```
 
 ### `textbook_patent_apis_partition`
@@ -10512,7 +9600,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: patents-plan.
 
 ```lean
-2 + 5 = 7
+∀ {α : Type u_1} (s : Finset α) (keyed : α → Prop) [inst : DecidablePred keyed],
+  (Finset.filter keyed s).card + {a ∈ s | ¬keyed a}.card = s.card
 ```
 
 ### `textbook_patent_apis_partition_reflected`
@@ -10520,7 +9609,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: patents-plan.
 
 ```lean
-∀ (σ : ℕ), σ - 7 = σ - (2 + 5)
+∀ {α : Type u_1} (s : Finset α) (keyed : α → Prop) [inst : DecidablePred keyed],
+  s.card = (Finset.filter keyed s).card + {a ∈ s | ¬keyed a}.card
 ```
 
 ### `textbook_patent_dates_ordered`
@@ -10528,31 +9618,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: patents-read.
 
 ```lean
-∀ (p f g : ℕ), p ≤ f → f ≤ g → p ≤ g
-```
-
-### `textbook_patent_dates_ordered_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: patents-read.
-
-```lean
-∀ (p f g : ℕ), ¬p ≤ g → ¬(p ≤ f ∧ f ≤ g)
-```
-
-### `textbook_patent_dates_ordered_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: patents-read.
-
-```lean
-¬∀ (p f g : ℕ), p ≤ g → p ≤ f ∧ f ≤ g
-```
-
-### `textbook_patent_dates_ordered_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: patents-read.
-
-```lean
-∀ (p f g : ℕ), p ≤ f → f ≤ g → ∀ (σ : ℕ), σ - g ≤ σ - p
+∀ {α : Type u_1} [inst : Preorder α] (p f g : α), p ≤ f → f ≤ g → p ≤ g
 ```
 
 ### `textbook_patent_number_well_formed`
@@ -10560,15 +9626,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-2 + 7 + 2 = 11
+∀ (a b c : ℕ), Fintype.card (Fin a ⊕ Fin b ⊕ Fin c) = a + b + c
 ```
 
 ### `textbook_patent_number_well_formed_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: .
 
 ```lean
-∀ (σ : ℕ), σ - 11 = σ - (2 + 7 + 2)
+∀ (a b c : ℕ), a + b + c = Fintype.card (Fin a ⊕ Fin b ⊕ Fin c)
 ```
 
 ### `textbook_patent_term_twenty_years`
@@ -10576,15 +9642,23 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-∀ (f : ℕ), f < f + 20
+∀ (f term : ℕ), 0 < term → f < f + term
+```
+
+### `textbook_patent_term_twenty_years_contrapositive`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: .
+
+```lean
+∀ (f term : ℕ), ¬f < f + term → ¬0 < term
 ```
 
 ### `textbook_patent_term_twenty_years_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: .
 
 ```lean
-∀ (f σ : ℕ), f + 20 ≤ σ → σ - (f + 20) < σ - f
+∀ (f term : ℕ), 0 < term → ∀ (σ : ℕ), f + term ≤ σ → σ - (f + term) < σ - f
 ```
 
 ### `textbook_payload_access`
@@ -10592,7 +9666,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-7 + 3 + 3 + 3 = 16
+∀ {α : Type u_1} {β : Type u_2} [inst : DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β),
+  (∀ x ∈ s, f x ∈ t) → s.card = ∑ b ∈ t, {a ∈ s | f a = b}.card
 ```
 
 ### `textbook_payload_access_reflected`
@@ -10600,7 +9675,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-∀ (σ : ℕ), σ - 16 = σ - (7 + 3 + 3 + 3)
+∀ {α : Type u_1} {β : Type u_2} [inst : DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β),
+  (∀ x ∈ s, f x ∈ t) → ∑ b ∈ t, {a ∈ s | f a = b}.card = s.card
 ```
 
 ### `textbook_payload_coordination`
@@ -10608,7 +9684,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-8 * 50 = 400
+∀ (a b : ℕ), Fintype.card (Fin a × Fin b) = a * b
 ```
 
 ### `textbook_payload_coordination_reflected`
@@ -10616,7 +9692,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-∀ (σ : ℕ), σ - 400 = σ - 8 * 50
+∀ (a b : ℕ), a * b = Fintype.card (Fin a × Fin b)
 ```
 
 ### `textbook_payload_field_types`
@@ -10624,7 +9700,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-19 + 4 = 23
+∀ (a b : ℕ), Fintype.card (Fin a ⊕ Fin b) = a + b
 ```
 
 ### `textbook_payload_field_types_reflected`
@@ -10632,7 +9708,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-∀ (σ : ℕ), σ - 23 = σ - (19 + 4)
+∀ (a b : ℕ), a + b = Fintype.card (Fin a ⊕ Fin b)
 ```
 
 ### `textbook_payload_hooks`
@@ -10640,7 +9716,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-1 + 18 + 6 + 5 = 30
+∀ {Level : Type} [inst : Fintype Level] (Hook : Level → Type) [inst_1 : (l : Level) → Fintype (Hook l)],
+  Fintype.card ((l : Level) × Hook l) = ∑ l, Fintype.card (Hook l)
 ```
 
 ### `textbook_payload_hooks_reflected`
@@ -10648,7 +9725,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-∀ (σ : ℕ), σ - 30 = σ - (1 + 18 + 6 + 5)
+∀ {Level : Type} [inst : Fintype Level] (Hook : Level → Type) [inst_1 : (l : Level) → Fintype (Hook l)],
+  ∑ l, Fintype.card (Hook l) = Fintype.card ((l : Level) × Hook l)
 ```
 
 ### `textbook_payload_operations`
@@ -10656,7 +9734,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-17 + 7 + 12 + 3 + 3 + 6 + 1 + 1 = 50
+∀ {α : Type u_1} {β : Type u_2} [inst : DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β),
+  (∀ x ∈ s, f x ∈ t) → s.card = ∑ b ∈ t, {a ∈ s | f a = b}.card
 ```
 
 ### `textbook_payload_operations_reflected`
@@ -10664,7 +9743,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-∀ (σ : ℕ), σ - 50 = σ - (17 + 7 + 12 + 3 + 3 + 6 + 1 + 1)
+∀ {α : Type u_1} {β : Type u_2} [inst : DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β),
+  (∀ x ∈ s, f x ∈ t) → ∑ b ∈ t, {a ∈ s | f a = b}.card = s.card
 ```
 
 ### `textbook_payload_queries`
@@ -10672,7 +9752,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-16 * 19 = 304
+∀ (a b : ℕ), Fintype.card (Fin a × Fin b) = a * b
 ```
 
 ### `textbook_payload_queries_reflected`
@@ -10680,7 +9760,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-∀ (σ : ℕ), σ - 304 = σ - 16 * 19
+∀ (a b : ℕ), a * b = Fintype.card (Fin a × Fin b)
 ```
 
 ### `textbook_payload_schemas`
@@ -10688,7 +9768,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-19 * 17 = 323
+∀ (a b : ℕ), Fintype.card (Fin a × Fin b) = a * b
 ```
 
 ### `textbook_payload_schemas_reflected`
@@ -10696,7 +9776,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-schemas.
 
 ```lean
-∀ (σ : ℕ), σ - 323 = σ - 19 * 17
+∀ (a b : ℕ), a * b = Fintype.card (Fin a × Fin b)
 ```
 
 ### `textbook_pbkdf2_blocks`
@@ -10704,7 +9784,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-pbkdf2.
 
 ```lean
-(32 + 32 - 1) / 32 = 1
+∀ (len h c : ℕ), 0 < h → ((len + h - 1) / h ≤ c ↔ len ≤ h * c)
 ```
 
 ### `textbook_pbkdf2_blocks_reflected`
@@ -10712,7 +9792,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-pbkdf2.
 
 ```lean
-∀ (σ : ℕ), σ - 1 = σ - (32 + 32 - 1) / 32
+∀ (len h c : ℕ), 0 < h → (len ≤ h * c ↔ (len + h - 1) / h ≤ c)
 ```
 
 ### `textbook_peg_is_fixed`
@@ -10744,7 +9824,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-annihilate.
 
 ```lean
-∀ (t p σ : ℕ), σ - p = σ - (t + p - t)
+∀ (t p : ℕ), p = t + p - t
 ```
 
 ### `textbook_penalty_balanced`
@@ -10761,14 +9841,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (d c : ℕ), ¬d - c = 0 → ¬d = c
-```
-
-### `textbook_penalty_balanced_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty.
-
-```lean
-¬∀ (d c : ℕ), d - c = 0 → d = c
 ```
 
 ### `textbook_penalty_balanced_reflected`
@@ -10800,31 +9872,17 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-∀ (opened cleared openNow : ℕ), cleared + openNow = opened → opened - cleared = openNow
-```
-
-### `textbook_penalty_conserved_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (opened cleared openNow : ℕ), ¬opened - cleared = openNow → ¬cleared + openNow = opened
-```
-
-### `textbook_penalty_conserved_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-¬∀ (opened cleared openNow : ℕ), opened - cleared = openNow → cleared + openNow = opened
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (opened cleared openNow : α), cleared + openNow = opened → opened - cleared = openNow
 ```
 
 ### `textbook_penalty_conserved_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: .
 
 ```lean
-∀ (opened cleared openNow : ℕ), cleared + openNow = opened → ∀ (σ : ℕ), σ - openNow = σ - (opened - cleared)
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (opened cleared openNow : α), cleared + openNow = opened → openNow = opened - cleared
 ```
 
 ### `textbook_penalty_free_under_budget`
@@ -10835,28 +9893,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (b w c : ℕ), w ≤ b → c ≤ b → w - b + (c - b) = 0
 ```
 
-### `textbook_penalty_free_under_budget_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-under-budget.
-
-```lean
-∀ (b w c : ℕ), ¬w - b + (c - b) = 0 → ¬(w ≤ b ∧ c ≤ b)
-```
-
-### `textbook_penalty_free_under_budget_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-under-budget.
-
-```lean
-∀ (b w c : ℕ), w - b + (c - b) = 0 → w ≤ b ∧ c ≤ b
-```
-
 ### `textbook_penalty_free_under_budget_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-under-budget.
 
 ```lean
-∀ (b w c : ℕ), w ≤ b → c ≤ b → ∀ (σ : ℕ), σ - 0 = σ - (w - b + (c - b))
+∀ (b w c : ℕ), w ≤ b → c ≤ b → 0 = w - b + (c - b)
 ```
 
 ### `textbook_penalty_harmonic`
@@ -10873,14 +9915,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (cost price : ℕ), ¬(price - cost = 0 ∧ cost - price = 0) → ¬price = cost
-```
-
-### `textbook_penalty_harmonic_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-harmonic.
-
-```lean
-∀ (cost price : ℕ), price - cost = 0 ∧ cost - price = 0 → price = cost
 ```
 
 ### `textbook_penalty_harmonic_reflected`
@@ -10912,15 +9946,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-no-cliff.
 
 ```lean
-∀ (b w c : ℕ), w + 1 - b + (c - b) ≤ w - b + (c - b) + 1
-```
-
-### `textbook_penalty_no_cliff_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-no-cliff.
-
-```lean
-∀ (b w c σ : ℕ), σ - (w - b + (c - b) + 1) ≤ σ - (w + 1 - b + (c - b))
+∀ {α : Type u_1} [inst : Preorder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α] [AddLeftMono α]
+  (b w e c : α), c + (w + e - b) ≤ c + (w - b + e)
 ```
 
 ### `textbook_penalty_no_punishment`
@@ -10944,23 +9971,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-once.
 
 ```lean
-∀ (a b : ℕ), a = b → a = b
-```
-
-### `textbook_penalty_once_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-once.
-
-```lean
-∀ (a b : ℕ), ¬a = b → ¬a = b
-```
-
-### `textbook_penalty_once_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-once.
-
-```lean
-∀ (a b : ℕ), a = b → a = b
+∀ {α : Type} [inst : DecidableEq α] (s : Finset α), ∀ a ∈ s, insert a s = s
 ```
 
 ### `textbook_penalty_once_reflected`
@@ -10968,7 +9979,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-once.
 
 ```lean
-∀ (a b : ℕ), a = b → ∀ (σ : ℕ), σ - b = σ - a
+∀ {α : Type} [inst : DecidableEq α] (s : Finset α), ∀ a ∈ s, s = insert a s
 ```
 
 ### `textbook_penalty_proportional`
@@ -10992,16 +10003,9 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-annihilate.
 
 ```lean
-∀ (b s s' c : ℕ), s ≤ s' → s - b + (c - b) ≤ s' - b + (c - b) ∧ (s ≤ b → c ≤ b → s - b + (c - b) = 0)
-```
-
-### `textbook_penalty_time_burned_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-annihilate.
-
-```lean
-∀ (b s s' c : ℕ),
-  s ≤ s' → ∀ (σ : ℕ), σ - (s' - b + (c - b)) ≤ σ - (s - b + (c - b)) ∧ (¬s - b + (c - b) = 0 → ¬(s ≤ b ∧ c ≤ b))
+∀ {α : Type u_1} [inst : AddCommMonoid α] [inst_1 : PartialOrder α] [CanonicallyOrderedAdd α] [inst_3 : Sub α]
+  [OrderedSub α] [AddLeftMono α] (b s s' c : α),
+  s ≤ s' → c - b + (s - b) ≤ c - b + (s' - b) ∧ (s ≤ b → c ≤ b → c - b + (s - b) = 0)
 ```
 
 ### `textbook_penalty_time_heat_monotone`
@@ -11012,60 +10016,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (b w w' c c' : ℕ), w ≤ w' → c ≤ c' → w - b + (c - b) ≤ w' - b + (c' - b)
 ```
 
-### `textbook_penalty_time_heat_monotone_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-waiting.
-
-```lean
-∀ (b w w' c c' : ℕ), ¬w - b + (c - b) ≤ w' - b + (c' - b) → ¬(w ≤ w' ∧ c ≤ c')
-```
-
-### `textbook_penalty_time_heat_monotone_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-waiting.
-
-```lean
-¬∀ (b w w' c c' : ℕ), w - b + (c - b) ≤ w' - b + (c' - b) → w ≤ w' ∧ c ≤ c'
-```
-
-### `textbook_penalty_time_heat_monotone_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-waiting.
-
-```lean
-∀ (b w w' c c' : ℕ), w ≤ w' → c ≤ c' → ∀ (σ : ℕ), σ - (w' - b + (c' - b)) ≤ σ - (w - b + (c - b))
-```
-
 ### `textbook_penalty_tokens_bound`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty.
 
 ```lean
-∀ (b : ℕ), 0 < b → (b + 3) / 4 ≤ b
-```
-
-### `textbook_penalty_tokens_bound_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty.
-
-```lean
-∀ (b : ℕ), ¬(b + 3) / 4 ≤ b → ¬0 < b
-```
-
-### `textbook_penalty_tokens_bound_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty.
-
-```lean
-¬∀ (b : ℕ), (b + 3) / 4 ≤ b → 0 < b
-```
-
-### `textbook_penalty_tokens_bound_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty.
-
-```lean
-∀ (b : ℕ), 0 < b → ∀ (σ : ℕ), σ - b ≤ σ - (b + 3) / 4
+∀ (b : ℕ), 0 < b → b ⌈/⌉ 4 ≤ b
 ```
 
 ### `textbook_penalty_visibility_harmonic`
@@ -11089,15 +10045,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-entropy.
 
 ```lean
-2 ^ 11 ≤ 3888 ∧ 3888 < 2 ^ 12
-```
-
-### `textbook_phase_bits_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-entropy.
-
-```lean
-∀ (σ : ℕ), 2 ^ 12 ≤ σ → σ - 3888 ≤ σ - 2 ^ 11 ∧ σ - 2 ^ 12 < σ - 3888
+∀ (n : ℕ), n ≠ 0 → 2 ^ Nat.log 2 n ≤ n ∧ n < 2 ^ (Nat.log 2 n + 1)
 ```
 
 ### `textbook_phase_estimation`
@@ -11105,9 +10053,17 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-phase-estimation.
 
 ```lean
-∀ k < 8,
-  ∀ r < 8,
-    (QuantumAlgorithm.sum8 fun j => QuantumAlgorithm.iqft r j * QuantumAlgorithm.wPow (j * k)) = if r = k then 8 else 0
+∀ {K : Type u_1} [inst : Field K] {ζ : K} {N m : ℕ},
+  IsPrimitiveRoot ζ N → ¬N ∣ m → ∑ j ∈ Finset.range N, (ζ ^ m) ^ j = 0
+```
+
+### `textbook_phase_estimation_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-phase-estimation.
+
+```lean
+∀ {K : Type u_1} [inst : Field K] {ζ : K} {N m : ℕ},
+  IsPrimitiveRoot ζ N → ¬N ∣ m → 0 = ∑ j ∈ Finset.range N, (ζ ^ m) ^ j
 ```
 
 ### `textbook_phase_three_bits`
@@ -11115,7 +10071,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-phase-estimation.
 
 ```lean
-2 * 4 = 2 ^ 3 ∧ 2 < 2 ^ 3
+∀ (n : ℕ), Fintype.card (Fin n → Bool) = 2 ^ n
 ```
 
 ### `textbook_phase_three_bits_reflected`
@@ -11123,7 +10079,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-phase-estimation.
 
 ```lean
-∀ (σ : ℕ), 2 ^ 3 ≤ σ → σ - 2 ^ 3 = σ - 2 * 4 ∧ σ - 2 ^ 3 < σ - 2
+∀ (n : ℕ), 2 ^ n = Fintype.card (Fin n → Bool)
 ```
 
 ### `textbook_physical_evidence`
@@ -11131,7 +10087,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: validate-physical-measured, validate-physical-unmeasured.
 
 ```lean
-∀ (identified read : Bool), (identified && read) = true → identified = true ∧ read = true
+∀ {α : Type} [inst : Lattice α] [inst_1 : OrderTop α] (identified read : α),
+  identified ⊓ read = ⊤ → identified = ⊤ ∧ read = ⊤
 ```
 
 ### `textbook_physical_evidence_reflected`
@@ -11139,7 +10096,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: validate-physical-measured, validate-physical-unmeasured.
 
 ```lean
-∀ (identified read : Bool), (identified && read) = true → true = identified ∧ true = read
+∀ {α : Type} [inst : Lattice α] [inst_1 : OrderTop α] (identified read : α),
+  identified ⊓ read = ⊤ → ⊤ = identified ∧ ⊤ = read
 ```
 
 ### `textbook_plugin_combinations`
@@ -11147,7 +10105,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-payload.
 
 ```lean
-2 ^ 9 = 512
+∀ (n : ℕ), Fintype.card (Fin n → Bool) = 2 ^ n
 ```
 
 ### `textbook_plugin_combinations_reflected`
@@ -11155,7 +10113,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-payload.
 
 ```lean
-∀ (σ : ℕ), σ - 512 = σ - 2 ^ 9
+∀ (n : ℕ), 2 ^ n = Fintype.card (Fin n → Bool)
 ```
 
 ### `textbook_plugins_by_capability`
@@ -11164,30 +10122,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (m n : ℕ), m < n → m + 1 ≤ n
-```
-
-### `textbook_plugins_by_capability_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-plugins-by-capability.
-
-```lean
-∀ (m n : ℕ), ¬m + 1 ≤ n → ¬m < n
-```
-
-### `textbook_plugins_by_capability_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-plugins-by-capability.
-
-```lean
-∀ (m n : ℕ), m + 1 ≤ n → m < n
-```
-
-### `textbook_plugins_by_capability_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-plugins-by-capability.
-
-```lean
-∀ (m n : ℕ), m < n → ∀ (σ : ℕ), σ - n ≤ σ - (m + 1)
 ```
 
 ### `textbook_poles_pyramid`
@@ -11211,23 +10145,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-adapters-port.
 
 ```lean
-∀ (complete blocked total : ℕ), complete + blocked = total → total - blocked = complete
-```
-
-### `textbook_ports_cover_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-adapters-port.
-
-```lean
-∀ (complete blocked total : ℕ), ¬total - blocked = complete → ¬complete + blocked = total
-```
-
-### `textbook_ports_cover_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-adapters-port.
-
-```lean
-¬∀ (complete blocked total : ℕ), total - blocked = complete → complete + blocked = total
+∀ {Combination : Type} [inst : DecidableEq Combination] (combinations blocked : Finset Combination),
+  blocked ⊆ combinations → (combinations \ blocked).card = combinations.card - blocked.card
 ```
 
 ### `textbook_ports_cover_reflected`
@@ -11235,7 +10154,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-adapters-port.
 
 ```lean
-∀ (complete blocked total : ℕ), complete + blocked = total → ∀ (σ : ℕ), σ - complete = σ - (total - blocked)
+∀ {Combination : Type} [inst : DecidableEq Combination] (combinations blocked : Finset Combination),
+  blocked ⊆ combinations → combinations.card - blocked.card = (combinations \ blocked).card
 ```
 
 ### `textbook_postings_parity`
@@ -11259,7 +10179,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-2 ^ 3 = 8 ∧ 2 ^ 8 = 256 ∧ 2 ^ 4 = 2 * 2 ^ 3
+∀ (n : ℕ), 2 ^ (n + 1) = 2 * 2 ^ n
 ```
 
 ### `textbook_power_of_two_reflected`
@@ -11267,7 +10187,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-∀ (σ : ℕ), σ - 8 = σ - 2 ^ 3 ∧ σ - 256 = σ - 2 ^ 8 ∧ σ - 2 * 2 ^ 3 = σ - 2 ^ 4
+∀ (n : ℕ), 2 * 2 ^ n = 2 ^ (n + 1)
 ```
 
 ### `textbook_pqc_standards_three`
@@ -11300,7 +10220,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-catalogue.
 
 ```lean
-9 * 2 = 18
+∀ (Variant Currency : Type) [inst : Fintype Variant] [inst_1 : Fintype Currency],
+  Fintype.card (Variant × Currency) = Fintype.card Variant * Fintype.card Currency
 ```
 
 ### `textbook_prices_are_variants_times_currencies_reflected`
@@ -11308,7 +10229,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-catalogue.
 
 ```lean
-∀ (σ : ℕ), σ - 18 = σ - 9 * 2
+∀ (Variant Currency : Type) [inst : Fintype Variant] [inst_1 : Fintype Currency],
+  Fintype.card Variant * Fintype.card Currency = Fintype.card (Variant × Currency)
 ```
 
 ### `textbook_prizes_computable`
@@ -11316,29 +10238,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-prizes.
 
 ```lean
-∀ (purse fund perproblem invested none total winnable : ℕ),
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (purse fund perproblem invested none total winnable : α),
   purse + fund + perproblem + invested + none = total →
     winnable = purse + fund + perproblem → total - invested - none = winnable
-```
-
-### `textbook_prizes_computable_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-prizes.
-
-```lean
-∀ (purse fund perproblem invested none total winnable : ℕ),
-  ¬total - invested - none = winnable →
-    ¬(purse + fund + perproblem + invested + none = total ∧ winnable = purse + fund + perproblem)
-```
-
-### `textbook_prizes_computable_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-prizes.
-
-```lean
-¬∀ (purse fund perproblem invested none total winnable : ℕ),
-    total - invested - none = winnable →
-      purse + fund + perproblem + invested + none = total ∧ winnable = purse + fund + perproblem
 ```
 
 ### `textbook_prizes_computable_reflected`
@@ -11346,9 +10249,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-prizes.
 
 ```lean
-∀ (purse fund perproblem invested none total winnable : ℕ),
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (purse fund perproblem invested none total winnable : α),
   purse + fund + perproblem + invested + none = total →
-    winnable = purse + fund + perproblem → ∀ (σ : ℕ), σ - winnable = σ - (total - invested - none)
+    winnable = purse + fund + perproblem → winnable = total - invested - none
 ```
 
 ### `textbook_processor_cells`
@@ -11356,7 +10260,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: dashboard-processor.
 
 ```lean
-3 ^ 1 = 3 ∧ 3 - 3 = 0
+∀ (f k : ℕ), Fintype.card (Fin f → Fin k) = k ^ f ∧ k ^ f - k ^ f = 0
 ```
 
 ### `textbook_processor_cells_reflected`
@@ -11364,7 +10268,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: dashboard-processor.
 
 ```lean
-∀ (σ : ℕ), σ - 3 = σ - 3 ^ 1 ∧ σ - 0 = σ - (3 - 3)
+∀ (f k : ℕ), k ^ f = Fintype.card (Fin f → Fin k) ∧ 0 = k ^ f - k ^ f
 ```
 
 ### `textbook_programs_partition`
@@ -11383,14 +10287,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (programs files : ℕ), ¬programs + (files - programs) = files → ¬programs ≤ files
 ```
 
-### `textbook_programs_partition_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-programs.
-
-```lean
-∀ (programs files : ℕ), programs + (files - programs) = files → programs ≤ files
-```
-
 ### `textbook_programs_partition_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-programs.
@@ -11404,7 +10300,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-migration.
 
 ```lean
-2 + 1 = 3
+∀ (Tenant : Type) [inst : Fintype Tenant], Fintype.card (Option Tenant) = Fintype.card Tenant + 1
 ```
 
 ### `textbook_providers_are_tenants_plus_operator_reflected`
@@ -11412,7 +10308,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-migration.
 
 ```lean
-∀ (σ : ℕ), σ - 3 = σ - (2 + 1)
+∀ (Tenant : Type) [inst : Fintype Tenant], Fintype.card Tenant + 1 = Fintype.card (Option Tenant)
 ```
 
 ### `textbook_qaoa_params`
@@ -11420,7 +10316,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-relation-14.
 
 ```lean
-∀ (p : ℕ), 2 * (p + 1) = 2 * p + 2 ∧ 2 * 7 = 14
+∀ (p : ℕ), 2 * (p + 1) = 2 * p + 2
 ```
 
 ### `textbook_qaoa_params_reflected`
@@ -11428,7 +10324,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-relation-14.
 
 ```lean
-∀ (p σ : ℕ), σ - (2 * p + 2) = σ - 2 * (p + 1) ∧ σ - 14 = σ - 2 * 7
+∀ (p σ : ℕ), σ - (2 * p + 2) = σ - 2 * (p + 1)
 ```
 
 ### `textbook_qaoa_random_cut`
@@ -11436,7 +10332,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-qaoa.
 
 ```lean
-409 + 191 + 80 + 91 + 337 + 439 + 269 + 332 + 161 + 71 + 338 + 280 + 109 + 92 + 176 = 3375 ∧ 33750 = 2 * 16875
+∀ {ι : Type u_1} (edges : Finset ι) (w : ι → ℚ), ∑ e ∈ edges, w e * (1 / 2) = (∑ e ∈ edges, w e) * (1 / 2)
 ```
 
 ### `textbook_qaoa_random_cut_reflected`
@@ -11444,9 +10340,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-qaoa.
 
 ```lean
-∀ (σ : ℕ),
-  σ - 3375 = σ - (409 + 191 + 80 + 91 + 337 + 439 + 269 + 332 + 161 + 71 + 338 + 280 + 109 + 92 + 176) ∧
-    σ - 2 * 16875 = σ - 33750
+∀ {ι : Type u_1} (edges : Finset ι) (w : ι → ℚ), (∑ e ∈ edges, w e) * (1 / 2) = ∑ e ∈ edges, w e * (1 / 2)
 ```
 
 ### `textbook_qft_three_amplitudes`
@@ -11454,9 +10348,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-qft-3.
 
 ```lean
-∀ j < 8,
-  ∀ k < 8,
-    (QuantumAlgorithm.sum8 fun i => QuantumAlgorithm.qft j i * QuantumAlgorithm.iqft i k) = if j = k then 8 else 0
+∀ (n : ℕ), n ≠ 0 → ∑ _i ∈ Finset.range n, 1 / ↑n = 1
+```
+
+### `textbook_qft_three_amplitudes_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-qft-3.
+
+```lean
+∀ (n : ℕ), n ≠ 0 → 1 = ∑ _i ∈ Finset.range n, 1 / ↑n
 ```
 
 ### `textbook_qpu_fields`
@@ -11464,7 +10364,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-fields.
 
 ```lean
-6 + 9 = 15
+∀ (EntryField BlockField : Type) [inst : Fintype EntryField] [inst_1 : Fintype BlockField],
+  Fintype.card (EntryField ⊕ BlockField) = Fintype.card EntryField + Fintype.card BlockField
 ```
 
 ### `textbook_qpu_fields_reflected`
@@ -11472,7 +10373,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-fields.
 
 ```lean
-∀ (σ : ℕ), σ - 15 = σ - (6 + 9)
+∀ (EntryField BlockField : Type) [inst : Fintype EntryField] [inst_1 : Fintype BlockField],
+  Fintype.card EntryField + Fintype.card BlockField = Fintype.card (EntryField ⊕ BlockField)
 ```
 
 ### `textbook_queneau_compositions`
@@ -11480,7 +10382,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-queneau, textbook-prose-queneau, fold-combinatorics.
 
 ```lean
-10 ^ 14 = 100000000000000 ∧ 365 * 24 * 60 = 525600 ∧ 10 ^ 14 / 525600 = 190258751 ∧ 10 ^ 14 % 525600 = 474400
+∀ (n k : ℕ), Fintype.card (Fin n → Fin k) = k ^ n
 ```
 
 ### `textbook_queneau_compositions_reflected`
@@ -11488,9 +10390,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-queneau, textbook-prose-queneau, fold-combinatorics.
 
 ```lean
-∀ (σ : ℕ),
-  σ - 100000000000000 = σ - 10 ^ 14 ∧
-    σ - 525600 = σ - 365 * 24 * 60 ∧ σ - 190258751 = σ - 10 ^ 14 / 525600 ∧ σ - 474400 = σ - 10 ^ 14 % 525600
+∀ (n k : ℕ), k ^ n = Fintype.card (Fin n → Fin k)
 ```
 
 ### `textbook_questions_matched`
@@ -11501,28 +10401,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (decided leads total : ℕ), decided + leads = total → total - leads = decided
 ```
 
-### `textbook_questions_matched_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-questions.
-
-```lean
-∀ (decided leads total : ℕ), ¬total - leads = decided → ¬decided + leads = total
-```
-
-### `textbook_questions_matched_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-questions.
-
-```lean
-¬∀ (decided leads total : ℕ), total - leads = decided → decided + leads = total
-```
-
 ### `textbook_questions_matched_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-questions.
 
 ```lean
-∀ (decided leads total : ℕ), decided + leads = total → ∀ (σ : ℕ), σ - decided = σ - (total - leads)
+∀ (decided leads total : ℕ), decided + leads = total → decided = total - leads
 ```
 
 ### `textbook_raid_bit_zero_verify`
@@ -11539,14 +10423,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (v m d b : ℕ), ¬(m + d + v = b ∧ m + d < b) → ¬(v + m + d = b ∧ 1 ≤ v)
-```
-
-### `textbook_raid_bit_zero_verify_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: raid-bit-zero-verify.
-
-```lean
-∀ (v m d b : ℕ), m + d + v = b ∧ m + d < b → v + m + d = b ∧ 1 ≤ v
 ```
 
 ### `textbook_raid_bit_zero_verify_reflected`
@@ -11573,14 +10449,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (covered missing total : ℕ), ¬covered = total → ¬(covered + missing = total ∧ missing = 0)
 ```
 
-### `textbook_raid_no_missing_store_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: raid-bit-zero-verify.
-
-```lean
-¬∀ (covered missing total : ℕ), covered = total → covered + missing = total ∧ missing = 0
-```
-
 ### `textbook_raid_no_missing_store_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: raid-bit-zero-verify.
@@ -11594,23 +10462,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-harmonic-rbac.
 
 ```lean
-∀ (allowed all : ℕ), allowed ≤ all → all - allowed + allowed = all
-```
-
-### `textbook_rbac_options_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-harmonic-rbac.
-
-```lean
-∀ (allowed all : ℕ), ¬all - allowed + allowed = all → ¬allowed ≤ all
-```
-
-### `textbook_rbac_options_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-harmonic-rbac.
-
-```lean
-∀ (allowed all : ℕ), all - allowed + allowed = all → allowed ≤ all
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] (allowed all : α), allowed ≤ all → all - allowed + allowed = all
 ```
 
 ### `textbook_rbac_options_reflected`
@@ -11618,7 +10471,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-harmonic-rbac.
 
 ```lean
-∀ (allowed all : ℕ), allowed ≤ all → ∀ (σ : ℕ), σ - all = σ - (all - allowed + allowed)
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] (allowed all : α), allowed ≤ all → all = all - allowed + allowed
 ```
 
 ### `textbook_readiness_judged`
@@ -11629,29 +10483,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (served refuted trial leads : ℕ), served + refuted + trial = leads → leads - trial = served + refuted
 ```
 
-### `textbook_readiness_judged_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: readiness-plan.
-
-```lean
-∀ (served refuted trial leads : ℕ), ¬leads - trial = served + refuted → ¬served + refuted + trial = leads
-```
-
-### `textbook_readiness_judged_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: readiness-plan.
-
-```lean
-¬∀ (served refuted trial leads : ℕ), leads - trial = served + refuted → served + refuted + trial = leads
-```
-
 ### `textbook_readiness_judged_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: readiness-plan.
 
 ```lean
-∀ (served refuted trial leads : ℕ),
-  served + refuted + trial = leads → ∀ (σ : ℕ), σ - (served + refuted) = σ - (leads - trial)
+∀ (served refuted trial leads : ℕ), served + refuted + trial = leads → served + refuted = leads - trial
 ```
 
 ### `textbook_receipt_binds_sha256`
@@ -11659,7 +10496,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-factor-order-composite, algorithm-impossible-decode-wrong-witness, algorithm-factor-test-integer.
 
 ```lean
-256 / 4 = 64 ∧ 64 / 2 = 32 ∧ 256 / 2 = 128 ∧ 2 ^ 32 < 2 ^ 128
+∀ (n : ℕ), Fintype.card (Fin n → Fin (2 ^ 4)) = 2 ^ (4 * n)
 ```
 
 ### `textbook_receipt_binds_sha256_reflected`
@@ -11667,7 +10504,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-factor-order-composite, algorithm-impossible-decode-wrong-witness, algorithm-factor-test-integer.
 
 ```lean
-∀ (σ : ℕ), 2 ^ 128 ≤ σ → σ - 64 = σ - 256 / 4 ∧ σ - 32 = σ - 64 / 2 ∧ σ - 128 = σ - 256 / 2 ∧ σ - 2 ^ 128 < σ - 2 ^ 32
+∀ (n : ℕ), 2 ^ (4 * n) = Fintype.card (Fin n → Fin (2 ^ 4))
 ```
 
 ### `textbook_receipts_partitioned`
@@ -11675,7 +10512,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-receipts.
 
 ```lean
-1 + 1 + 1 = 3 ∧ 3 - 1 = 1 + 1 ∧ 0 < 1 ∧ 1 < 3
+∀ {Receipt : Type} [inst : DecidableEq Receipt] (receipts holds : Finset Receipt),
+  holds ⊆ receipts → (receipts \ holds).card = receipts.card - holds.card
 ```
 
 ### `textbook_receipts_partitioned_reflected`
@@ -11683,7 +10521,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-receipts.
 
 ```lean
-∀ (σ : ℕ), 1 ≤ σ → 3 ≤ σ → σ - 3 = σ - (1 + 1 + 1) ∧ σ - (1 + 1) = σ - (3 - 1) ∧ σ - 1 < σ - 0 ∧ σ - 3 < σ - 1
+∀ {Receipt : Type} [inst : DecidableEq Receipt] (receipts holds : Finset Receipt),
+  holds ⊆ receipts → receipts.card - holds.card = (receipts \ holds).card
 ```
 
 ### `textbook_redact_before_publish`
@@ -11691,23 +10530,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: machine-redact.
 
 ```lean
-∀ (leaks redacted : ℕ), redacted = leaks → leaks - redacted = 0
-```
-
-### `textbook_redact_before_publish_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: machine-redact.
-
-```lean
-∀ (leaks redacted : ℕ), ¬leaks - redacted = 0 → ¬redacted = leaks
-```
-
-### `textbook_redact_before_publish_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: machine-redact.
-
-```lean
-¬∀ (leaks redacted : ℕ), leaks - redacted = 0 → redacted = leaks
+∀ {α : Type u_1} [inst : AddCommMonoid α] [inst_1 : PartialOrder α] [CanonicallyOrderedAdd α] [inst_3 : Sub α]
+  [OrderedSub α] (leaks redacted : α), redacted = leaks → leaks - redacted = 0
 ```
 
 ### `textbook_redact_before_publish_reflected`
@@ -11715,7 +10539,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: machine-redact.
 
 ```lean
-∀ (leaks redacted : ℕ), redacted = leaks → ∀ (σ : ℕ), σ - 0 = σ - (leaks - redacted)
+∀ {α : Type u_1} [inst : AddCommMonoid α] [inst_1 : PartialOrder α] [CanonicallyOrderedAdd α] [inst_3 : Sub α]
+  [OrderedSub α] (leaks redacted : α), redacted = leaks → 0 = leaks - redacted
 ```
 
 ### `textbook_reed_muller`
@@ -11723,7 +10548,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-2 ^ 3 = 8 ∧ 1 + 3 = 4 ∧ 2 ^ (3 - 1) = 4 ∧ (4 - 1) / 2 = 1
+∀ {ι : Type u_1} [inst : Fintype ι] {β : ι → Type u_2} [inst_1 : (i : ι) → DecidableEq (β i)] (d : ℕ),
+  0 < d →
+    ∀ (c₁ c₂ r : (i : ι) → β i),
+      (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → hammingDist c₁ r ≤ (d - 1) / 2 → hammingDist c₂ r ≤ (d - 1) / 2 → c₁ = c₂
 ```
 
 ### `textbook_reed_muller_reflected`
@@ -11731,7 +10559,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-∀ (σ : ℕ), σ - 8 = σ - 2 ^ 3 ∧ σ - 4 = σ - (1 + 3) ∧ σ - 4 = σ - 2 ^ (3 - 1) ∧ σ - 1 = σ - (4 - 1) / 2
+∀ {ι : Type u_1} [inst : Fintype ι] {β : ι → Type u_2} [inst_1 : (i : ι) → DecidableEq (β i)] (d : ℕ),
+  0 < d →
+    ∀ (c₁ c₂ r : (i : ι) → β i),
+      (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → hammingDist c₁ r ≤ (d - 1) / 2 → hammingDist c₂ r ≤ (d - 1) / 2 → c₂ = c₁
 ```
 
 ### `textbook_reed_solomon_mds`
@@ -11739,7 +10570,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-255 - 223 + 1 = 33 ∧ (33 - 1) / 2 = 16 ∧ 255 - 33 + 1 = 223
+∀ {F : Type} [inst : DecidableEq F] {n : ℕ} (d t : ℕ) (c₁ c₂ x : Fin n → F),
+  (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → 2 * t < d → hammingDist c₁ x ≤ t → hammingDist x c₂ ≤ t → c₁ = c₂
 ```
 
 ### `textbook_reed_solomon_mds_reflected`
@@ -11747,7 +10579,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-∀ (σ : ℕ), σ - 33 = σ - (255 - 223 + 1) ∧ σ - 16 = σ - (33 - 1) / 2 ∧ σ - 223 = σ - (255 - 33 + 1)
+∀ {F : Type} [inst : DecidableEq F] {n : ℕ} (d t : ℕ) (c₁ c₂ x : Fin n → F),
+  (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → 2 * t < d → hammingDist c₁ x ≤ t → hammingDist x c₂ ≤ t → c₂ = c₁
 ```
 
 ### `textbook_reference_index_cached`
@@ -11755,23 +10588,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-reference-index.
 
 ```lean
-∀ (distinct hits total : ℕ), distinct + hits = total → total - hits = distinct
-```
-
-### `textbook_reference_index_cached_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-reference-index.
-
-```lean
-∀ (distinct hits total : ℕ), ¬total - hits = distinct → ¬distinct + hits = total
-```
-
-### `textbook_reference_index_cached_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-reference-index.
-
-```lean
-¬∀ (distinct hits total : ℕ), total - hits = distinct → distinct + hits = total
+∀ {Reference : Type} [inst : DecidableEq Reference] (references hits : Finset Reference),
+  hits ⊆ references → (references \ hits).card = references.card - hits.card
 ```
 
 ### `textbook_reference_index_cached_reflected`
@@ -11779,7 +10597,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-reference-index.
 
 ```lean
-∀ (distinct hits total : ℕ), distinct + hits = total → ∀ (σ : ℕ), σ - distinct = σ - (total - hits)
+∀ {Reference : Type} [inst : DecidableEq Reference] (references hits : Finset Reference),
+  hits ⊆ references → references.card - hits.card = (references \ hits).card
 ```
 
 ### `textbook_references_acyclic`
@@ -11787,23 +10606,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-references.
 
 ```lean
-∀ (k n : ℕ), k ≤ n → n - k + k = n
-```
-
-### `textbook_references_acyclic_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-references.
-
-```lean
-∀ (k n : ℕ), ¬n - k + k = n → ¬k ≤ n
-```
-
-### `textbook_references_acyclic_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-references.
-
-```lean
-∀ (k n : ℕ), n - k + k = n → k ≤ n
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] (k n : α), k ≤ n → n - k + k = n
 ```
 
 ### `textbook_references_acyclic_reflected`
@@ -11811,7 +10615,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-references.
 
 ```lean
-∀ (k n : ℕ), k ≤ n → ∀ (σ : ℕ), σ - n = σ - (n - k + k)
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] (k n : α), k ≤ n → n = n - k + k
 ```
 
 ### `textbook_references_name_collision`
@@ -11835,7 +10640,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-referer.
 
 ```lean
-32 * 8 + 0 = 256
+∀ (α : Type) [inst : Fintype α], Fintype.card (α × Unit) = Fintype.card α
 ```
 
 ### `textbook_referer_binds_not_entropy_reflected`
@@ -11843,7 +10648,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-referer.
 
 ```lean
-∀ (σ : ℕ), σ - 256 = σ - (32 * 8 + 0)
+∀ (α : Type) [inst : Fintype α], Fintype.card α = Fintype.card (α × Unit)
 ```
 
 ### `textbook_reflect_widths`
@@ -11851,7 +10656,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-reflect-widths.
 
 ```lean
-20 / 14 * 14 + 20 % 14 = 20 ∧ 20 % 14 < 14
+∀ (t n : ℕ), 0 < n → (n - t % n) * (t / n) + t % n * (t / n + 1) = t
+```
+
+### `textbook_reflect_widths_contrapositive`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-reflect-widths.
+
+```lean
+∀ (t n : ℕ), ¬(n - t % n) * (t / n) + t % n * (t / n + 1) = t → ¬0 < n
 ```
 
 ### `textbook_reflect_widths_reflected`
@@ -11859,7 +10672,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-reflect-widths.
 
 ```lean
-∀ (σ : ℕ), 14 ≤ σ → σ - 20 = σ - (20 / 14 * 14 + 20 % 14) ∧ σ - 14 < σ - 20 % 14
+∀ (t n : ℕ), 0 < n → ∀ (σ : ℕ), σ - t = σ - ((n - t % n) * (t / n) + t % n * (t / n + 1))
 ```
 
 ### `textbook_reflection_by_shape`
@@ -11867,15 +10680,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-reflected.
 
 ```lean
-∀ (d a b : ℕ), a ≤ b → ∀ (P Q : Prop), (P → Q) → d - b ≤ d - a ∧ (¬Q → ¬P)
-```
-
-### `textbook_reflection_by_shape_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-reflected.
-
-```lean
-∀ (d a b : ℕ), a ≤ b → ∀ (P Q : Prop), (P → Q) → ∀ (σ : ℕ), σ - (d - a) ≤ σ - (d - b) ∧ (¬¬P → ¬¬Q)
+∀ {α : Type u_1} [inst : Preorder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α] [AddLeftMono α]
+  (d a b : α), a ≤ b → ∀ (P Q : Prop), (P → Q) → d - b ≤ d - a ∧ (¬Q → ¬P)
 ```
 
 ### `textbook_reflection_sums_to_ten`
@@ -11886,28 +10692,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ s ≤ 10, s + (10 - s) = 10
 ```
 
-### `textbook_reflection_sums_to_ten_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: css-stylesheet, configure-all.
-
-```lean
-∀ (s : ℕ), ¬s + (10 - s) = 10 → ¬s ≤ 10
-```
-
-### `textbook_reflection_sums_to_ten_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: css-stylesheet, configure-all.
-
-```lean
-∀ (s : ℕ), s + (10 - s) = 10 → s ≤ 10
-```
-
 ### `textbook_reflection_sums_to_ten_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: css-stylesheet, configure-all.
 
 ```lean
-∀ s ≤ 10, ∀ (σ : ℕ), σ - 10 = σ - (s + (10 - s))
+∀ s ≤ 10, 10 = s + (10 - s)
 ```
 
 ### `textbook_refuse_is_refuse`
@@ -11915,18 +10705,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-shor-odd-order.
 
 ```lean
-4 ^ 3 % 21 = 1 ∧ 3 % 2 = 1 ∧ 2 ^ 6 % 21 = 1 ∧ 6 % 2 = 0 ∧ (2 ^ 3 - 1).gcd 21 = 7 ∧ (2 ^ 3 + 1).gcd 21 = 3
-```
-
-### `textbook_refuse_is_refuse_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-shor-odd-order.
-
-```lean
-∀ (σ : ℕ),
-  σ - 1 = σ - 4 ^ 3 % 21 ∧
-    σ - 1 = σ - 3 % 2 ∧
-      σ - 1 = σ - 2 ^ 6 % 21 ∧ σ - 0 = σ - 6 % 2 ∧ σ - 7 = σ - (2 ^ 3 - 1).gcd 21 ∧ σ - 3 = σ - (2 ^ 3 + 1).gcd 21
+∀ (N x : ℕ), N ∣ x ^ 2 - 1 → N ∣ (x + 1) * (x - 1)
 ```
 
 ### `textbook_register_held`
@@ -11945,14 +10724,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (w : ℕ), ¬30 * w + 0 + (w - 2) = 32 * w - w - 2 → ¬2 ≤ w
 ```
 
-### `textbook_register_held_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: processor-register.
-
-```lean
-¬∀ (w : ℕ), 30 * w + 0 + (w - 2) = 32 * w - w - 2 → 2 ≤ w
-```
-
 ### `textbook_register_held_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: processor-register.
@@ -11966,15 +10737,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: discover-lead-registry.
 
 ```lean
-3 * 10 = 30
-```
-
-### `textbook_registry_words_searched_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: discover-lead-registry.
-
-```lean
-∀ (σ : ℕ), σ - 30 = σ - 3 * 10
+∀ {ι : Type u_1} {α : Type u_2} [inst : DecidableEq α] (s : Finset ι) (t : ι → Finset α) (b : ℕ),
+  (∀ i ∈ s, (t i).card ≤ b) → (s.biUnion t).card ≤ s.card * b
 ```
 
 ### `textbook_relation_rsa`
@@ -11993,28 +10757,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (kernel pkg : ℕ), pkg ≤ kernel → max pkg kernel = kernel
 ```
 
-### `textbook_repair_kernel_top_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-repair.
-
-```lean
-∀ (kernel pkg : ℕ), ¬max pkg kernel = kernel → ¬pkg ≤ kernel
-```
-
-### `textbook_repair_kernel_top_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-repair.
-
-```lean
-∀ (kernel pkg : ℕ), max pkg kernel = kernel → pkg ≤ kernel
-```
-
 ### `textbook_repair_kernel_top_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-repair.
 
 ```lean
-∀ (kernel pkg : ℕ), pkg ≤ kernel → ∀ (σ : ℕ), σ - kernel = σ - max pkg kernel
+∀ (kernel pkg : ℕ), pkg ≤ kernel → kernel = max pkg kernel
 ```
 
 ### `textbook_repair_live_sla`
@@ -12033,14 +10781,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (served failed requests : ℕ), ¬served = requests → ¬(served + failed = requests ∧ failed = 0)
 ```
 
-### `textbook_repair_live_sla_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-repair.
-
-```lean
-¬∀ (served failed requests : ℕ), served = requests → served + failed = requests ∧ failed = 0
-```
-
 ### `textbook_repair_live_sla_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-repair.
@@ -12054,23 +10794,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-repair.
 
 ```lean
-∀ (fixable unfixable total : ℕ), fixable + unfixable = total → total - unfixable = fixable
-```
-
-### `textbook_repair_partitions_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-repair.
-
-```lean
-∀ (fixable unfixable total : ℕ), ¬total - unfixable = fixable → ¬fixable + unfixable = total
-```
-
-### `textbook_repair_partitions_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-repair.
-
-```lean
-¬∀ (fixable unfixable total : ℕ), total - unfixable = fixable → fixable + unfixable = total
+∀ {Advisory : Type} [inst : DecidableEq Advisory] (advisories unfixable : Finset Advisory),
+  unfixable ⊆ advisories → (advisories \ unfixable).card = advisories.card - unfixable.card
 ```
 
 ### `textbook_repair_partitions_reflected`
@@ -12078,7 +10803,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-repair.
 
 ```lean
-∀ (fixable unfixable total : ℕ), fixable + unfixable = total → ∀ (σ : ℕ), σ - fixable = σ - (total - unfixable)
+∀ {Advisory : Type} [inst : DecidableEq Advisory] (advisories unfixable : Finset Advisory),
+  unfixable ⊆ advisories → advisories.card - unfixable.card = (advisories \ unfixable).card
 ```
 
 ### `textbook_repetition_code_tenth`
@@ -12105,28 +10831,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (reused recomputed total : ℕ), reused + recomputed = total → total - recomputed = reused
 ```
 
-### `textbook_report_refactors_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-report.
-
-```lean
-∀ (reused recomputed total : ℕ), ¬total - recomputed = reused → ¬reused + recomputed = total
-```
-
-### `textbook_report_refactors_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-report.
-
-```lean
-¬∀ (reused recomputed total : ℕ), total - recomputed = reused → reused + recomputed = total
-```
-
 ### `textbook_report_refactors_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-report.
 
 ```lean
-∀ (reused recomputed total : ℕ), reused + recomputed = total → ∀ (σ : ℕ), σ - reused = σ - (total - recomputed)
+∀ (reused recomputed total : ℕ), reused + recomputed = total → reused = total - recomputed
 ```
 
 ### `textbook_repositories_by_language`
@@ -12134,7 +10844,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repositories.
 
 ```lean
-11 + 3 + 1 = 15
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → s.card = ∑ k ∈ t, {x ∈ s | f x = k}.card
 ```
 
 ### `textbook_repositories_by_language_reflected`
@@ -12142,7 +10853,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repositories.
 
 ```lean
-∀ (σ : ℕ), σ - 15 = σ - (11 + 3 + 1)
+∀ {ι κ : Type} [inst : DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ),
+  (∀ x ∈ s, f x ∈ t) → ∑ k ∈ t, {x ∈ s | f x = k}.card = s.card
 ```
 
 ### `textbook_repository_watch_leads`
@@ -12150,7 +10862,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-watch.
 
 ```lean
-3 + 3 + 3 + 2 + 1 + 1 + 1 = 14
+∀ {Kind : Type} [inst : Fintype Kind] (Lead : Kind → Type) [inst_1 : (k : Kind) → Fintype (Lead k)],
+  Fintype.card ((k : Kind) × Lead k) = ∑ k, Fintype.card (Lead k)
 ```
 
 ### `textbook_repository_watch_leads_reflected`
@@ -12158,7 +10871,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-watch.
 
 ```lean
-∀ (σ : ℕ), σ - 14 = σ - (3 + 3 + 3 + 2 + 1 + 1 + 1)
+∀ {Kind : Type} [inst : Fintype Kind] (Lead : Kind → Type) [inst_1 : (k : Kind) → Fintype (Lead k)],
+  ∑ k, Fintype.card (Lead k) = Fintype.card ((k : Kind) × Lead k)
 ```
 
 ### `textbook_rest_rbac`
@@ -12166,7 +10880,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-gates.
 
 ```lean
-2 * 3 = 6
+∀ (r : ℕ), Fintype.card (Bool × Fin r) = 2 * r
 ```
 
 ### `textbook_rest_rbac_reflected`
@@ -12174,7 +10888,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-gates.
 
 ```lean
-∀ (σ : ℕ), σ - 6 = σ - 2 * 3
+∀ (r : ℕ), 2 * r = Fintype.card (Bool × Fin r)
 ```
 
 ### `textbook_retry_supersedes`
@@ -12198,7 +10912,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: roadmap-all.
 
 ```lean
-100 * 10 ^ 4 = 1000000 ∧ 1 + 5 = 6 ∧ 50000 * 10 ^ 3 = 50000000
+∀ (b m n : ℕ), b ^ m * b ^ n = b ^ (m + n)
 ```
 
 ### `textbook_roadmap_decades_reflected`
@@ -12206,7 +10920,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: roadmap-all.
 
 ```lean
-∀ (σ : ℕ), σ - 1000000 = σ - 100 * 10 ^ 4 ∧ σ - 6 = σ - (1 + 5) ∧ σ - 50000000 = σ - 50000 * 10 ^ 3
+∀ (b m n : ℕ), b ^ (m + n) = b ^ m * b ^ n
 ```
 
 ### `textbook_roadmap_milestone_three`
@@ -12230,20 +10944,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-rosetta.
 
 ```lean
-∀ (n : ℕ),
-  (n % 10 + (10 - n % 10) % 10) % 10 = 0 ∧
-    1 + (n - 1) % 9 + (10 - (1 + (n - 1) % 9)) = 10 ∧ 3432 % 9 = 3 ∧ 3432 % 10 = 2 ∧ 15 % 9 ≠ 15 % 10
-```
-
-### `textbook_rosetta_conventions_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-rosetta.
-
-```lean
-∀ (n σ : ℕ),
-  σ - 0 = σ - (n % 10 + (10 - n % 10) % 10) % 10 ∧
-    σ - 10 = σ - (1 + (n - 1) % 9 + (10 - (1 + (n - 1) % 9))) ∧
-      σ - 3 = σ - 3432 % 9 ∧ σ - 2 = σ - 3432 % 10 ∧ 15 % 10 ≠ 15 % 9
+∀ (n : ℕ), n ≡ (Nat.digits 10 n).sum [MOD 9] ∧ ↑n + -↑n = 0
 ```
 
 ### `textbook_route_or_lead`
@@ -12294,14 +10995,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (f p x : ℕ), ¬(p + x = f ∧ f - p - x = 0) → ¬(p ≤ f ∧ x = f - p)
 ```
 
-### `textbook_royalty_conserved_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-royalty, stripe-royalty-escrow.
-
-```lean
-∀ (f p x : ℕ), p + x = f ∧ f - p - x = 0 → p ≤ f ∧ x = f - p
-```
-
 ### `textbook_royalty_conserved_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-royalty, stripe-royalty-escrow.
@@ -12315,42 +11008,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-royalty.
 
 ```lean
-∀ (f p s r : ℕ),
-  2 * p ≤ 108 * r →
-    s * 110 ≤ p * 2 → f * 2 / 110 ≤ f ∧ 2 * (f * 2 / 110) ≤ 108 * (f - f * 2 / 110) ∧ s ≤ r ∧ 2 * s ≤ 108 * (r - s)
-```
-
-### `textbook_royalty_fractal_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-royalty.
-
-```lean
-∀ (f p s r : ℕ),
-  ¬(f * 2 / 110 ≤ f ∧ 2 * (f * 2 / 110) ≤ 108 * (f - f * 2 / 110) ∧ s ≤ r ∧ 2 * s ≤ 108 * (r - s)) →
-    ¬(2 * p ≤ 108 * r ∧ s * 110 ≤ p * 2)
-```
-
-### `textbook_royalty_fractal_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-royalty.
-
-```lean
-¬∀ (f p s r : ℕ),
-    f * 2 / 110 ≤ f ∧ 2 * (f * 2 / 110) ≤ 108 * (f - f * 2 / 110) ∧ s ≤ r ∧ 2 * s ≤ 108 * (r - s) →
-      2 * p ≤ 108 * r ∧ s * 110 ≤ p * 2
-```
-
-### `textbook_royalty_fractal_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-royalty.
-
-```lean
-∀ (f p s r : ℕ),
-  2 * p ≤ 108 * r →
-    s * 110 ≤ p * 2 →
-      ∀ (σ : ℕ),
-        σ - f ≤ σ - f * 2 / 110 ∧
-          σ - 108 * (f - f * 2 / 110) ≤ σ - 2 * (f * 2 / 110) ∧ σ - r ≤ σ - s ∧ σ - 108 * (r - s) ≤ σ - 2 * s
+∀ (f q : ℚ) (n : ℕ), 0 ≤ f → 0 ≤ q → q < 1 → ∑ i ∈ Finset.Ico 1 n, f * q ^ i ≤ f * (q ^ 1 / (1 - q))
 ```
 
 ### `textbook_rsa_beyond_bound`
@@ -12366,7 +11024,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-runnable.
 
 ```lean
-∀ (unserved door : Bool), (unserved && door) = true → unserved = true ∧ door = true
+∀ {α : Type u_1} [inst : SemilatticeInf α] [inst_1 : OrderTop α] (unserved door : α),
+  unserved ⊓ door = ⊤ → unserved = ⊤ ∧ door = ⊤
 ```
 
 ### `textbook_runnable_leads_reflected`
@@ -12374,7 +11033,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-runnable.
 
 ```lean
-∀ (unserved door : Bool), ¬(unserved = true ∧ door = true) → ¬(unserved && door) = true
+∀ {α : Type u_1} [inst : SemilatticeInf α] [inst_1 : OrderTop α] (unserved door : α),
+  ¬(unserved = ⊤ ∧ door = ⊤) → ¬unserved ⊓ door = ⊤
 ```
 
 ### `textbook_scan_links`
@@ -12382,7 +11042,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-scan, verify-scan-one-frame.
 
 ```lean
-36 - 1 = 35
+∀ {α : Type} (l : List α), (l.zip l.tail).length = l.length - 1
 ```
 
 ### `textbook_scan_links_reflected`
@@ -12390,7 +11050,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-scan, verify-scan-one-frame.
 
 ```lean
-∀ (σ : ℕ), σ - 35 = σ - (36 - 1)
+∀ {α : Type} (l : List α), l.length - 1 = (l.zip l.tail).length
 ```
 
 ### `textbook_scan_stream`
@@ -12414,7 +11074,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-scopes.
 
 ```lean
-3 * 4 = 12 ∧ 3 + 3 = 6
+∀ (t c r s : ℕ), Fintype.card (Fin t × Fin c) = t * c ∧ Fintype.card (Fin r ⊕ Fin s) = r + s
 ```
 
 ### `textbook_scopes_tenants_collections_reflected`
@@ -12422,7 +11082,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-scopes.
 
 ```lean
-∀ (σ : ℕ), σ - 12 = σ - 3 * 4 ∧ σ - 6 = σ - (3 + 3)
+∀ (t c r s : ℕ), t * c = Fintype.card (Fin t × Fin c) ∧ r + s = Fintype.card (Fin r ⊕ Fin s)
 ```
 
 ### `textbook_seal_and_content_decided`
@@ -12430,7 +11090,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-seal-and-content.
 
 ```lean
-31 + 1 = 32 ∧ 2 + 2 = 4 ∧ 1889612825 + 2405354470 = 4294967295
+∀ (m x : ℕ), x ≤ m → x + (m - x) = m
 ```
 
 ### `textbook_seal_and_content_decided_reflected`
@@ -12438,7 +11098,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-seal-and-content.
 
 ```lean
-∀ (σ : ℕ), σ - 32 = σ - (31 + 1) ∧ σ - 4 = σ - (2 + 2) ∧ σ - 4294967295 = σ - (1889612825 + 2405354470)
+∀ (m x : ℕ), x ≤ m → m = x + (m - x)
 ```
 
 ### `textbook_search_proven`
@@ -12455,14 +11115,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (proven unproven total : ℕ), ¬total - unproven = proven → ¬proven + unproven = total
-```
-
-### `textbook_search_proven_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-search, textbook-search-programs.
-
-```lean
-¬∀ (proven unproven total : ℕ), total - unproven = proven → proven + unproven = total
 ```
 
 ### `textbook_search_proven_reflected`
@@ -12510,23 +11162,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-session.
 
 ```lean
-∀ c < 4, c = 0 ∨ c = 1 ∨ c = 2 ∨ c = 3
-```
-
-### `textbook_session_partition_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-session.
-
-```lean
-∀ (c : ℕ), ¬(c = 0 ∨ c = 1 ∨ c = 2 ∨ c = 3) → ¬c < 4
-```
-
-### `textbook_session_partition_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-session.
-
-```lean
-∀ (c : ℕ), c = 0 ∨ c = 1 ∨ c = 2 ∨ c = 3 → c < 4
+∀ {α : Type u_1} (directives : Finset α) (cls : α → Fin 4), directives.card = ∑ j, {x ∈ directives | cls x = j}.card
 ```
 
 ### `textbook_session_partition_reflected`
@@ -12534,7 +11170,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-session.
 
 ```lean
-∀ c < 4, (c = 1 ∨ c = 2 ∨ c = 3) ∨ c = 0
+∀ {α : Type u_1} (directives : Finset α) (cls : α → Fin 4), ∑ j, {x ∈ directives | cls x = j}.card = directives.card
 ```
 
 ### `textbook_set_address_canonical`
@@ -12542,31 +11178,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets-given.
 
 ```lean
-∀ (n r a b i u : ℕ), r ≤ n → u + i = a + b → n - r + r = n ∧ u = a + b - i
-```
-
-### `textbook_set_address_canonical_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets-given.
-
-```lean
-∀ (n r a b i u : ℕ), ¬(n - r + r = n ∧ u = a + b - i) → ¬(r ≤ n ∧ u + i = a + b)
-```
-
-### `textbook_set_address_canonical_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets-given.
-
-```lean
-¬∀ (n r a b i u : ℕ), n - r + r = n ∧ u = a + b - i → r ≤ n ∧ u + i = a + b
-```
-
-### `textbook_set_address_canonical_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets-given.
-
-```lean
-∀ (n r a b i u : ℕ), r ≤ n → u + i = a + b → ∀ (σ : ℕ), σ - n = σ - (n - r + r) ∧ σ - (a + b - i) = σ - u
+∀ {α : Type} [inst : DecidableEq α] (l : List α) (a b : Finset α),
+  l.toFinset.card ≤ l.length ∧ (a ∪ b).card = a.card + b.card - (a ∩ b).card
 ```
 
 ### `textbook_set_union`
@@ -12574,23 +11187,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets.
 
 ```lean
-∀ (a b c : ℕ), c ≤ a → c ≤ b → a + b - c = a - c + (b - c) + c
-```
-
-### `textbook_set_union_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets.
-
-```lean
-∀ (a b c : ℕ), ¬a + b - c = a - c + (b - c) + c → ¬(c ≤ a ∧ c ≤ b)
-```
-
-### `textbook_set_union_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets.
-
-```lean
-∀ (a b c : ℕ), a + b - c = a - c + (b - c) + c → c ≤ a ∧ c ≤ b
+∀ {α : Type} [inst : DecidableEq α] (a b : Finset α), (a ∪ b).card + (a ∩ b).card = a.card + b.card
 ```
 
 ### `textbook_set_union_reflected`
@@ -12598,7 +11195,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets.
 
 ```lean
-∀ (a b c : ℕ), c ≤ a → c ≤ b → ∀ (σ : ℕ), σ - (a - c + (b - c) + c) = σ - (a + b - c)
+∀ {α : Type} [inst : DecidableEq α] (a b : Finset α), a.card + b.card = (a ∪ b).card + (a ∩ b).card
 ```
 
 ### `textbook_sha256_fips_180_4`
@@ -12606,7 +11203,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-block-sha256.
 
 ```lean
-256 / 8 = 32 ∧ 256 / 4 = 64 ∧ 512 / 32 = 16 ∧ 2 * 256 = 512
+∀ (m k : ℕ), Fintype.card (Fin (m * k) → Bool) = Fintype.card (Fin m → Fin k → Bool)
 ```
 
 ### `textbook_sha256_fips_180_4_reflected`
@@ -12614,7 +11211,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-block-sha256.
 
 ```lean
-∀ (σ : ℕ), σ - 32 = σ - 256 / 8 ∧ σ - 64 = σ - 256 / 4 ∧ σ - 16 = σ - 512 / 32 ∧ σ - 512 = σ - 2 * 256
+∀ (m k : ℕ), Fintype.card (Fin m → Fin k → Bool) = Fintype.card (Fin (m * k) → Bool)
 ```
 
 ### `textbook_sha256_is_64`
@@ -12622,7 +11219,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-validations, seal-text, match-pattern-seal.
 
 ```lean
-256 / 4 = 64
+∀ (n : ℕ), (2 ^ 4) ^ n = 2 ^ (4 * n)
 ```
 
 ### `textbook_sha256_is_64_reflected`
@@ -12630,7 +11227,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-validations, seal-text, match-pattern-seal.
 
 ```lean
-∀ (σ : ℕ), σ - 64 = σ - 256 / 4
+∀ (n : ℕ), 2 ^ (4 * n) = (2 ^ 4) ^ n
 ```
 
 ### `textbook_sha3_fips_202`
@@ -12654,31 +11251,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: shard-share, audit-shard.
 
 ```lean
-∀ (n k : ℕ), 0 < n → k % n < n
-```
-
-### `textbook_shards_cover_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: shard-share, audit-shard.
-
-```lean
-∀ (n k : ℕ), ¬k % n < n → ¬0 < n
-```
-
-### `textbook_shards_cover_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: shard-share, audit-shard.
-
-```lean
-∀ (n k : ℕ), k % n < n → 0 < n
-```
-
-### `textbook_shards_cover_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: shard-share, audit-shard.
-
-```lean
-∀ (n k : ℕ), 0 < n → ∀ (σ : ℕ), n ≤ σ → σ - n < σ - k % n
+∀ (n : ℕ) [NeZero n] (k : ℕ), (↑k).val = k % n ∧ (↑k).val < n
 ```
 
 ### `textbook_shards_disjoint`
@@ -12686,31 +11259,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: shard-share, audit-shard.
 
 ```lean
-∀ (n k i j : ℕ), k % n = i → k % n = j → i = j
-```
-
-### `textbook_shards_disjoint_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: shard-share, audit-shard.
-
-```lean
-∀ (n k i j : ℕ), ¬i = j → ¬(k % n = i ∧ k % n = j)
-```
-
-### `textbook_shards_disjoint_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: shard-share, audit-shard.
-
-```lean
-¬∀ (n k i j : ℕ), i = j → k % n = i ∧ k % n = j
-```
-
-### `textbook_shards_disjoint_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: shard-share, audit-shard.
-
-```lean
-∀ (n k i j : ℕ), k % n = i → k % n = j → ∀ (σ : ℕ), σ - j = σ - i
+∀ (n : ℕ), Pairwise (Function.onFun Disjoint fun i => (fun k => k % n) ⁻¹' {i})
 ```
 
 ### `textbook_shared_verbs`
@@ -12718,7 +11267,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-declarations.
 
 ```lean
-2 + 2 + 1 + 1 = 6
+∀ {α : Type u_1} {k : ℕ} (decls : Finset α) (kind : α → Fin k), decls.card = ∑ j, {x ∈ decls | kind x = j}.card
 ```
 
 ### `textbook_shared_verbs_reflected`
@@ -12726,7 +11275,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-declarations.
 
 ```lean
-∀ (σ : ℕ), σ - 6 = σ - (2 + 2 + 1 + 1)
+∀ {α : Type u_1} {k : ℕ} (decls : Finset α) (kind : α → Fin k), ∑ j, {x ∈ decls | kind x = j}.card = decls.card
 ```
 
 ### `textbook_shor_fifteen_order`
@@ -12742,7 +11291,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: dashboard-algorithm-narrowed.
 
 ```lean
-21 - 3 + 1 = 19 ∧ 100000 < 280896
+∀ (a b : ℕ), (Finset.Icc a b).card = b + 1 - a
 ```
 
 ### `textbook_shor_narrowed_cells_reflected`
@@ -12750,7 +11299,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: dashboard-algorithm-narrowed.
 
 ```lean
-∀ (σ : ℕ), 280896 ≤ σ → σ - 19 = σ - (21 - 3 + 1) ∧ σ - 280896 < σ - 100000
+∀ (a b : ℕ), b + 1 - a = (Finset.Icc a b).card
 ```
 
 ### `textbook_shor_nine_code`
@@ -12758,20 +11307,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-(∀ a < 9,
-    QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks a ≠
-        QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks 9 ∧
-      ∀ b < 9,
-        QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks a =
-            QuantumErrorCorrection.flags QuantumErrorCorrection.bitChecks b →
-          a = b) ∧
-  ∀ a < 9,
-    QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks a ≠
-        QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks 9 ∧
-      ∀ b < 9,
-        QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks a =
-            QuantumErrorCorrection.flags QuantumErrorCorrection.phaseChecks b ↔
-          a / 3 = b / 3
+∀ {n : ℕ} (x y w : Fin n → Bool) (t : ℕ),
+  2 * t + 1 ≤ hammingDist x y → hammingDist w x ≤ t → hammingDist w y ≤ t → False
 ```
 
 ### `textbook_shor_reduction`
@@ -12813,23 +11350,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-witnesses, verify-witnesses-merge, verify-radar.
 
 ```lean
-∀ x ≤ 15, 15 - (15 - x) = x
-```
-
-### `textbook_sigma_involution_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-witnesses, verify-witnesses-merge, verify-radar.
-
-```lean
-∀ (x : ℕ), ¬15 - (15 - x) = x → ¬x ≤ 15
-```
-
-### `textbook_sigma_involution_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-witnesses, verify-witnesses-merge, verify-radar.
-
-```lean
-∀ (x : ℕ), 15 - (15 - x) = x → x ≤ 15
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] [AddLeftReflectLE α] (d x : α), x ≤ d → d - (d - x) = x
 ```
 
 ### `textbook_sigma_involution_reflected`
@@ -12837,7 +11359,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-witnesses, verify-witnesses-merge, verify-radar.
 
 ```lean
-∀ x ≤ 15, ∀ (σ : ℕ), σ - x = σ - (15 - (15 - x))
+∀ {α : Type u_1} [inst : AddCommSemigroup α] [inst_1 : PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
+  [inst_4 : Sub α] [OrderedSub α] [AddLeftReflectLE α] (d x : α), x ≤ d → x = d - (d - x)
 ```
 
 ### `textbook_signature_over_digest`
@@ -12845,7 +11368,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-sign.
 
 ```lean
-32 * 8 = 256
+∀ (n : ℕ), (2 ^ 8) ^ n = 2 ^ (8 * n)
 ```
 
 ### `textbook_signature_over_digest_reflected`
@@ -12853,7 +11376,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-sign.
 
 ```lean
-∀ (σ : ℕ), σ - 256 = σ - 32 * 8
+∀ (n : ℕ), 2 ^ (8 * n) = (2 ^ 8) ^ n
 ```
 
 ### `textbook_simon`
@@ -12861,7 +11384,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-simon.
 
 ```lean
-List.filter (fun y => (y / 2 + y % 2) % 2 == 0) (List.range 4) = [0, 3]
+∀ {G H : Type} [inst : AddGroup G] [inst_1 : AddGroup H] (φ : G →+ H), Nat.card ↥φ.ker * Nat.card ↥φ.range = Nat.card G
 ```
 
 ### `textbook_simon_reflected`
@@ -12869,7 +11392,7 @@ List.filter (fun y => (y / 2 + y % 2) % 2 == 0) (List.range 4) = [0, 3]
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-simon.
 
 ```lean
-[0, 3] = List.filter (fun y => (y / 2 + y % 2) % 2 == 0) (List.range 4)
+∀ {G H : Type} [inst : AddGroup G] [inst_1 : AddGroup H] (φ : G →+ H), Nat.card G = Nat.card ↥φ.ker * Nat.card ↥φ.range
 ```
 
 ### `textbook_site_documents`
@@ -12888,14 +11411,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (pages gates categories docs : ℕ), ¬docs - pages = gates + categories + 1 → ¬docs = pages + (gates + categories + 1)
 ```
 
-### `textbook_site_documents_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-site.
-
-```lean
-∀ (pages gates categories docs : ℕ), docs - pages = gates + categories + 1 → docs = pages + (gates + categories + 1)
-```
-
 ### `textbook_site_documents_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-site.
@@ -12910,15 +11425,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-50000 * 50000 = 2500000000
+∀ (i u : ℕ), Fintype.card (Fin i × Fin u) = i * u
 ```
 
 ### `textbook_sitemap_capacity_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: .
 
 ```lean
-∀ (σ : ℕ), σ - 2500000000 = σ - 50000 * 50000
+∀ (i u : ℕ), i * u = Fintype.card (Fin i × Fin u)
 ```
 
 ### `textbook_sitemap_leads`
@@ -12926,23 +11441,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-sitemap.
 
 ```lean
-∀ (u v c l : ℕ), v + (u - v) = u → c + l = v → c + l + (u - v) = u
-```
-
-### `textbook_sitemap_leads_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-sitemap.
-
-```lean
-∀ (u v c l : ℕ), ¬c + l + (u - v) = u → ¬(v + (u - v) = u ∧ c + l = v)
-```
-
-### `textbook_sitemap_leads_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-sitemap.
-
-```lean
-¬∀ (u v c l : ℕ), c + l + (u - v) = u → v + (u - v) = u ∧ c + l = v
+∀ (u v c l : ℕ), v ≤ u → c + l = v → c + l + (u - v) = u
 ```
 
 ### `textbook_sitemap_leads_reflected`
@@ -12950,7 +11449,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-sitemap.
 
 ```lean
-∀ (u v c l : ℕ), v + (u - v) = u → c + l = v → ∀ (σ : ℕ), σ - u = σ - (c + l + (u - v))
+∀ (u v c l : ℕ), v ≤ u → c + l = v → u = c + l + (u - v)
 ```
 
 ### `textbook_size_ratio_bound`
@@ -12958,15 +11457,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: css-compare, extend-compare.
 
 ```lean
-∀ (framework qpu : ℕ), framework / qpu * qpu ≤ framework
-```
-
-### `textbook_size_ratio_bound_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: css-compare, extend-compare.
-
-```lean
-∀ (framework qpu σ : ℕ), σ - framework ≤ σ - framework / qpu * qpu
+∀ (framework qpu : ℕ), ↑(framework / qpu) ≤ ↑framework / ↑qpu
 ```
 
 ### `textbook_skills_complete`
@@ -12987,15 +11478,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
   ¬(skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms) → ¬(skilled = boxes ∧ named ≤ terms)
 ```
 
-### `textbook_skills_complete_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-scripts-skills.
-
-```lean
-∀ (boxes skilled terms named : ℕ),
-  skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms → skilled = boxes ∧ named ≤ terms
-```
-
 ### `textbook_skills_complete_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-scripts-skills.
@@ -13011,7 +11493,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-skills.
 
 ```lean
-2 + 12 = 14
+∀ (a b : ℕ), Fintype.card (Fin a ⊕ Fin b) = a + b
 ```
 
 ### `textbook_skills_documents_reflected`
@@ -13019,7 +11501,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-skills.
 
 ```lean
-∀ (σ : ℕ), σ - 14 = σ - (2 + 12)
+∀ (a b : ℕ), a + b = Fintype.card (Fin a ⊕ Fin b)
 ```
 
 ### `textbook_software_cirq_implemented`
@@ -13027,7 +11509,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: software.
 
 ```lean
-1 + 4 = 5
+∀ {α : Type u_1} (tools : Finset α) (implemented : α → Prop) [inst : DecidablePred implemented],
+  (Finset.filter implemented tools).card + {x ∈ tools | ¬implemented x}.card = tools.card
 ```
 
 ### `textbook_software_cirq_implemented_reflected`
@@ -13035,7 +11518,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: software.
 
 ```lean
-∀ (σ : ℕ), σ - 5 = σ - (1 + 4)
+∀ {α : Type u_1} (tools : Finset α) (implemented : α → Prop) [inst : DecidablePred implemented],
+  tools.card = (Finset.filter implemented tools).card + {x ∈ tools | ¬implemented x}.card
 ```
 
 ### `textbook_solovay_kitaev`
@@ -13043,7 +11527,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-solovay-kitaev.
 
 ```lean
-2 ^ 3 = 8 ∧ 2 ^ 2 < 2 ^ 3
+∀ (n : ℕ), n ≠ 0 → orderOf (Complex.exp (2 * ↑Real.pi * Complex.I / ↑n)) = n
 ```
 
 ### `textbook_solovay_kitaev_reflected`
@@ -13051,7 +11535,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-solovay-kitaev.
 
 ```lean
-∀ (σ : ℕ), 2 ^ 3 ≤ σ → σ - 8 = σ - 2 ^ 3 ∧ σ - 2 ^ 3 < σ - 2 ^ 2
+∀ (n : ℕ), n ≠ 0 → n = orderOf (Complex.exp (2 * ↑Real.pi * Complex.I / ↑n))
 ```
 
 ### `textbook_stale_receipt_refuses_deploy`
@@ -13059,15 +11543,9 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy-receipts.
 
 ```lean
-1 + 1 + 0 = 2 ∧ 2 - 1 = 1 + 0 ∧ 0 < 2 - 1
-```
-
-### `textbook_stale_receipt_refuses_deploy_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-predeploy-receipts.
-
-```lean
-∀ (σ : ℕ), 2 - 1 ≤ σ → σ - 2 = σ - (1 + 1 + 0) ∧ σ - (1 + 0) = σ - (2 - 1) ∧ σ - (2 - 1) < σ - 0
+∀ {Receipt : Type} [inst : DecidableEq Receipt] (receipts holds : Finset Receipt),
+  holds ⊆ receipts →
+    holds.card < receipts.card → (receipts \ holds).card = receipts.card - holds.card ∧ 0 < (receipts \ holds).card
 ```
 
 ### `textbook_standards_sliced`
@@ -13075,23 +11553,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: standards-validate, textbook-education, payload-iso-connector, payload-iso-connector-auth, payload-iso-connector-id.
 
 ```lean
-∀ (covered uncovered total : ℕ), covered + uncovered = total → total - uncovered = covered
-```
-
-### `textbook_standards_sliced_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: standards-validate, textbook-education, payload-iso-connector, payload-iso-connector-auth, payload-iso-connector-id.
-
-```lean
-∀ (covered uncovered total : ℕ), ¬total - uncovered = covered → ¬covered + uncovered = total
-```
-
-### `textbook_standards_sliced_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: standards-validate, textbook-education, payload-iso-connector, payload-iso-connector-auth, payload-iso-connector-id.
-
-```lean
-¬∀ (covered uncovered total : ℕ), total - uncovered = covered → covered + uncovered = total
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (covered uncovered total : α), covered + uncovered = total → total - uncovered = covered
 ```
 
 ### `textbook_standards_sliced_reflected`
@@ -13099,7 +11562,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: standards-validate, textbook-education, payload-iso-connector, payload-iso-connector-auth, payload-iso-connector-id.
 
 ```lean
-∀ (covered uncovered total : ℕ), covered + uncovered = total → ∀ (σ : ℕ), σ - covered = σ - (total - uncovered)
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (covered uncovered total : α), covered + uncovered = total → covered = total - uncovered
 ```
 
 ### `textbook_statements_one_topic`
@@ -13107,7 +11571,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: statements-cirq.
 
 ```lean
-1 + 41 = 42
+∀ {α : Type u_1} [inst : DecidableEq α] (statements : Finset α),
+  ∀ a ∈ statements, 1 + (statements.erase a).card = statements.card
 ```
 
 ### `textbook_statements_one_topic_reflected`
@@ -13115,7 +11580,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: statements-cirq.
 
 ```lean
-∀ (σ : ℕ), σ - 42 = σ - (1 + 41)
+∀ {α : Type u_1} [inst : DecidableEq α] (statements : Finset α),
+  ∀ a ∈ statements, statements.card = 1 + (statements.erase a).card
 ```
 
 ### `textbook_steane`
@@ -13123,7 +11589,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-steane.
 
 ```lean
-∀ i < 7, QuantumErrorCorrection.syndrome i = i + 1
+∀ {F : Type} [inst : DecidableEq F] {n : ℕ} (d t : ℕ) (c₁ c₂ x : Fin n → F),
+  (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → 2 * t < d → hammingDist c₁ x ≤ t → hammingDist x c₂ ≤ t → c₁ = c₂
 ```
 
 ### `textbook_steane_css`
@@ -13131,12 +11598,16 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-∀ a < 3,
-  ∀ b < 3,
-    (List.filter (fun i => QuantumErrorCorrection.hamming a i && QuantumErrorCorrection.hamming b i)
-            (List.range 7)).length %
-        2 =
-      0
+∀ {n : ℕ} (x y w : Fin n → Bool) (t : ℕ), 2 * t + 1 ≤ hammingDist x y → hammingDist w x ≤ t → t < hammingDist w y
+```
+
+### `textbook_steane_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-steane.
+
+```lean
+∀ {F : Type} [inst : DecidableEq F] {n : ℕ} (d t : ℕ) (c₁ c₂ x : Fin n → F),
+  (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → 2 * t < d → hammingDist c₁ x ≤ t → hammingDist x c₂ ≤ t → c₂ = c₁
 ```
 
 ### `textbook_step_cache_sound`
@@ -13163,28 +11634,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (n f : ℕ), f ≤ n → n - (n - f) = f
 ```
 
-### `textbook_stream_filter_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-stream, configure-ui-stream.
-
-```lean
-∀ (n f : ℕ), ¬n - (n - f) = f → ¬f ≤ n
-```
-
-### `textbook_stream_filter_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-stream, configure-ui-stream.
-
-```lean
-∀ (n f : ℕ), n - (n - f) = f → f ≤ n
-```
-
 ### `textbook_stream_filter_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-stream, configure-ui-stream.
 
 ```lean
-∀ (n f : ℕ), f ≤ n → ∀ (σ : ℕ), σ - f = σ - (n - (n - f))
+∀ (n f : ℕ), f ≤ n → f = n - (n - f)
 ```
 
 ### `textbook_stream_no_silence`
@@ -13203,14 +11658,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (gap beat : ℕ), ¬gap ≤ 1000 → ¬(gap ≤ beat ∧ beat ≤ 1000)
 ```
 
-### `textbook_stream_no_silence_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-status-no-silence.
-
-```lean
-¬∀ (gap beat : ℕ), gap ≤ 1000 → gap ≤ beat ∧ beat ≤ 1000
-```
-
 ### `textbook_stream_no_silence_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-status-no-silence.
@@ -13224,15 +11671,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-scope, payload-merge.
 
 ```lean
-360 / 60 = 6 ∧ 360 / 90 = 4 ∧ 4 ≤ 6
-```
-
-### `textbook_streams_cover_gateways_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-scope, payload-merge.
-
-```lean
-∀ (σ : ℕ), σ - 6 = σ - 360 / 60 ∧ σ - 4 = σ - 360 / 90 ∧ σ - 6 ≤ σ - 4
+∀ (turn small large : ℚ), 0 ≤ turn → 0 < small → small ≤ large → turn / large ≤ turn / small
 ```
 
 ### `textbook_surface_distance_ladder`
@@ -13240,7 +11679,21 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-∀ (d t e₁ e₂ : ℕ), 2 * t + 1 ≤ d → e₁ ≤ t → e₂ ≤ t → e₁ + e₂ < d
+∀ {ι : Type u_1} [inst : Fintype ι] {β : ι → Type u_2} [inst_1 : (i : ι) → DecidableEq (β i)] (d t : ℕ),
+  2 * t + 1 ≤ d →
+    ∀ (c₁ c₂ y : (i : ι) → β i),
+      (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → hammingDist y c₁ ≤ t → hammingDist y c₂ ≤ t → c₁ = c₂
+```
+
+### `textbook_surface_distance_ladder_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
+
+```lean
+∀ {ι : Type u_1} [inst : Fintype ι] {β : ι → Type u_2} [inst_1 : (i : ι) → DecidableEq (β i)] (d t : ℕ),
+  2 * t + 1 ≤ d →
+    ∀ (c₁ c₂ y : (i : ι) → β i),
+      (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → hammingDist y c₁ ≤ t → hammingDist y c₂ ≤ t → c₂ = c₁
 ```
 
 ### `textbook_sycamore_couplers`
@@ -13248,15 +11701,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: processor-sycamore.
 
 ```lean
-2 * 88 = 176 ∧ 176 ≤ 4 * 54
-```
-
-### `textbook_sycamore_couplers_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: processor-sycamore.
-
-```lean
-∀ (σ : ℕ), σ - 176 = σ - 2 * 88 ∧ σ - 4 * 54 ≤ σ - 176
+∀ {V : Type u_1} [inst : Fintype V] [DecidableEq V] (G : SimpleGraph V) [inst_2 : DecidableRel G.Adj],
+  (∀ (v : V), G.degree v ≤ 4) → 2 * G.edgeFinset.card ≤ Fintype.card V * 4
 ```
 
 ### `textbook_tamper_detected`
@@ -13296,23 +11742,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-navigate.
 
 ```lean
-∀ (axes : ℕ), axes = 3 → 2 * axes = 6 ∧ 1 + 2 * axes = 7
-```
-
-### `textbook_teamwork_navigation_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-navigate.
-
-```lean
-∀ (axes : ℕ), ¬(2 * axes = 6 ∧ 1 + 2 * axes = 7) → ¬axes = 3
-```
-
-### `textbook_teamwork_navigation_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-navigate.
-
-```lean
-∀ (axes : ℕ), 2 * axes = 6 ∧ 1 + 2 * axes = 7 → axes = 3
+∀ (n : ℕ), Fintype.card (Option (Fin n × Bool)) = n * 2 + 1
 ```
 
 ### `textbook_teamwork_navigation_reflected`
@@ -13320,7 +11750,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-navigate.
 
 ```lean
-∀ (axes : ℕ), axes = 3 → ∀ (σ : ℕ), σ - 6 = σ - 2 * axes ∧ σ - 7 = σ - (1 + 2 * axes)
+∀ (n : ℕ), n * 2 + 1 = Fintype.card (Option (Fin n × Bool))
 ```
 
 ### `textbook_teleport_three_qubits`
@@ -13336,7 +11766,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-categories.
 
 ```lean
-∀ (examples toolboxes : ℕ), 49 ≤ examples → 8 ≤ toolboxes → toolboxes ≤ 12 → 1 + 1 + 1 + 1 = 4 ∧ toolboxes ≤ examples
+∀ (examples toolboxes t e : ℕ), toolboxes ≤ t → t ≤ e → e ≤ examples → toolboxes ≤ examples
 ```
 
 ### `textbook_textbook_categories_contrapositive`
@@ -13344,16 +11774,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-categories.
 
 ```lean
-∀ (examples toolboxes : ℕ),
-  ¬(1 + 1 + 1 + 1 = 4 ∧ toolboxes ≤ examples) → ¬(49 ≤ examples ∧ 8 ≤ toolboxes ∧ toolboxes ≤ 12)
-```
-
-### `textbook_textbook_categories_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-categories.
-
-```lean
-¬∀ (examples toolboxes : ℕ), 1 + 1 + 1 + 1 = 4 ∧ toolboxes ≤ examples → 49 ≤ examples ∧ 8 ≤ toolboxes ∧ toolboxes ≤ 12
+∀ (examples toolboxes t e : ℕ), ¬toolboxes ≤ examples → ¬(toolboxes ≤ t ∧ t ≤ e ∧ e ≤ examples)
 ```
 
 ### `textbook_textbook_categories_reflected`
@@ -13361,8 +11782,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-categories.
 
 ```lean
-∀ (examples toolboxes : ℕ),
-  49 ≤ examples → 8 ≤ toolboxes → toolboxes ≤ 12 → ∀ (σ : ℕ), σ - 4 = σ - (1 + 1 + 1 + 1) ∧ σ - examples ≤ σ - toolboxes
+∀ (examples toolboxes t e : ℕ), toolboxes ≤ t → t ≤ e → e ≤ examples → ∀ (σ : ℕ), σ - examples ≤ σ - toolboxes
 ```
 
 ### `textbook_textbooks_partition`
@@ -13386,7 +11806,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-theme.
 
 ```lean
-∀ (templates parts : ℕ), templates + parts + 2 - 2 = templates + parts
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (templates parts k : α), templates + parts + k - k = templates + parts
 ```
 
 ### `textbook_theme_developed_reflected`
@@ -13394,7 +11815,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-theme.
 
 ```lean
-∀ (templates parts σ : ℕ), σ - (templates + parts) = σ - (templates + parts + 2 - 2)
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (templates parts k : α), templates + parts = templates + parts + k - k
 ```
 
 ### `textbook_theorems_plan_steps`
@@ -13402,32 +11824,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-theorems-plan.
 
 ```lean
-∀ (theorems backed : ℕ), 10 ≤ theorems → 10 ≤ backed → 1 + 1 + 1 + 1 = 4 ∧ 20 ≤ theorems + backed
-```
-
-### `textbook_theorems_plan_steps_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-theorems-plan.
-
-```lean
-∀ (theorems backed : ℕ), ¬(1 + 1 + 1 + 1 = 4 ∧ 20 ≤ theorems + backed) → ¬(10 ≤ theorems ∧ 10 ≤ backed)
-```
-
-### `textbook_theorems_plan_steps_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-theorems-plan.
-
-```lean
-¬∀ (theorems backed : ℕ), 1 + 1 + 1 + 1 = 4 ∧ 20 ≤ theorems + backed → 10 ≤ theorems ∧ 10 ≤ backed
-```
-
-### `textbook_theorems_plan_steps_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-theorems-plan.
-
-```lean
-∀ (theorems backed : ℕ),
-  10 ≤ theorems → 10 ≤ backed → ∀ (σ : ℕ), σ - 4 = σ - (1 + 1 + 1 + 1) ∧ σ - (theorems + backed) ≤ σ - 20
+∀ (theorems backed : ℕ), 10 ≤ theorems → 10 ≤ backed → 10 + 10 ≤ theorems + backed
 ```
 
 ### `textbook_thermal_time_sigma`
@@ -13435,8 +11832,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
 
 ```lean
-10 - (10 - 3) = 3 ∧
-  10 - (10 - 7) = 7 ∧ 10 - (10 - 5) = 5 ∧ 10 - 5 = 5 ∧ 3 + 7 = 10 ∧ 6 + 4 = 10 ∧ 9 + 1 = 10 ∧ 2 + 8 = 10
+∀ (n x : ℕ), x ≤ n → n - (n - x) = x ∧ x + (n - x) = n
+```
+
+### `textbook_thermal_time_sigma_contrapositive`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
+
+```lean
+∀ (n x : ℕ), ¬(n - (n - x) = x ∧ x + (n - x) = n) → ¬x ≤ n
 ```
 
 ### `textbook_thermal_time_sigma_reflected`
@@ -13444,11 +11848,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
 
 ```lean
-∀ (σ : ℕ),
-  σ - 3 = σ - (10 - (10 - 3)) ∧
-    σ - 7 = σ - (10 - (10 - 7)) ∧
-      σ - 5 = σ - (10 - (10 - 5)) ∧
-        σ - 5 = σ - (10 - 5) ∧ σ - 10 = σ - (3 + 7) ∧ σ - 10 = σ - (6 + 4) ∧ σ - 10 = σ - (9 + 1) ∧ σ - 10 = σ - (2 + 8)
+∀ (n x : ℕ), x ≤ n → ∀ (σ : ℕ), σ - x = σ - (n - (n - x)) ∧ σ - n = σ - (x + (n - x))
 ```
 
 ### `textbook_thousand_bit_three_divides`
@@ -13456,15 +11856,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-factor-1000-bit, payload-predict.
 
 ```lean
-(2 ^ 999 + 1) % 3 = 0
-```
-
-### `textbook_thousand_bit_three_divides_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-factor-1000-bit, payload-predict.
-
-```lean
-∀ (σ : ℕ), σ - 0 = σ - (2 ^ 999 + 1) % 3
+∀ (n : ℕ), Odd n → 3 ∣ 2 ^ n + 1
 ```
 
 ### `textbook_thousand_bit_width`
@@ -13472,7 +11864,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-factor-1000-bit, fold-speak-thousand, chat-thousand.
 
 ```lean
-2 ^ 999 ≤ 2 ^ 999 + 1 ∧ 2 ^ 999 + 1 ≤ 2 ^ 1000
+∀ (n : ℕ), 1 ≤ n → Nat.log 2 (2 ^ n + 1) = n
 ```
 
 ### `textbook_thousand_bit_width_reflected`
@@ -13480,7 +11872,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-factor-1000-bit, fold-speak-thousand, chat-thousand.
 
 ```lean
-∀ (σ : ℕ), σ - (2 ^ 999 + 1) ≤ σ - 2 ^ 999 ∧ σ - 2 ^ 1000 ≤ σ - (2 ^ 999 + 1)
+∀ (n : ℕ), 1 ≤ n → n = Nat.log 2 (2 ^ n + 1)
 ```
 
 ### `textbook_tools_listed`
@@ -13504,7 +11896,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-2 * 3 * 3 = 18 ∧ 360 / 180 = 2 ∧ (3 - 1) / 2 = 1 ∧ 2 * 1 + 1 = 3
+∀ {F : Type} [inst : DecidableEq F] {n : ℕ} (d t : ℕ) (c₁ c₂ x : Fin n → F),
+  (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → 2 * t < d → hammingDist c₁ x ≤ t → hammingDist x c₂ ≤ t → c₁ = c₂
 ```
 
 ### `textbook_toric_torus_code_reflected`
@@ -13512,7 +11905,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-∀ (σ : ℕ), σ - 18 = σ - 2 * 3 * 3 ∧ σ - 2 = σ - 360 / 180 ∧ σ - 1 = σ - (3 - 1) / 2 ∧ σ - 3 = σ - (2 * 1 + 1)
+∀ {F : Type} [inst : DecidableEq F] {n : ℕ} (d t : ℕ) (c₁ c₂ x : Fin n → F),
+  (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → 2 * t < d → hammingDist c₁ x ≤ t → hammingDist x c₂ ≤ t → c₂ = c₁
 ```
 
 ### `textbook_translate_phrases`
@@ -13520,7 +11914,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: translate-bg.
 
 ```lean
-5 + 1 + 0 = 6
+∀ (Translated Kept Untranslated : Type) [inst : Fintype Translated] [inst_1 : Fintype Kept]
+  [inst_2 : Fintype Untranslated],
+  Fintype.card (Translated ⊕ Kept ⊕ Untranslated) =
+    Fintype.card Translated + (Fintype.card Kept + Fintype.card Untranslated)
 ```
 
 ### `textbook_translate_phrases_reflected`
@@ -13528,7 +11925,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: translate-bg.
 
 ```lean
-∀ (σ : ℕ), σ - 6 = σ - (5 + 1 + 0)
+∀ (Translated Kept Untranslated : Type) [inst : Fintype Translated] [inst_1 : Fintype Kept]
+  [inst_2 : Fintype Untranslated],
+  Fintype.card Translated + (Fintype.card Kept + Fintype.card Untranslated) =
+    Fintype.card (Translated ⊕ Kept ⊕ Untranslated)
 ```
 
 ### `textbook_tree_size_positive`
@@ -13536,17 +11936,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-merkle.
 
 ```lean
-0 < 3 ∧ 3 ≤ 2 ^ 2 ∧ 2 ^ 1 < 3 ∧ 2 ^ 2 - 1 = 3 ∧ (3 + 1) / 2 = 2
-```
-
-### `textbook_tree_size_positive_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-merkle.
-
-```lean
-∀ (σ : ℕ),
-  3 ≤ σ →
-    3 ≤ σ → σ - 3 < σ - 0 ∧ σ - 2 ^ 2 ≤ σ - 3 ∧ σ - 3 < σ - 2 ^ 1 ∧ σ - 3 = σ - (2 ^ 2 - 1) ∧ σ - 2 = σ - (3 + 1) / 2
+∀ (n : ℕ), 1 < n → 2 ^ (Nat.clog 2 n).pred < n ∧ n ≤ 2 ^ Nat.clog 2 n
 ```
 
 ### `textbook_trotter`
@@ -13570,7 +11960,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-chsh.
 
 ```lean
-(fun p q => (p.1 * q.1 + 2 * p.2 * q.2, p.1 * q.2 + p.2 * q.1)) (0, 2) (0, 2) = (8, 0) ∧ 2 * 2 < 8
+∀ (a x : ℝ), 0 ≤ x → (a * √x) ^ 2 = a ^ 2 * x
 ```
 
 ### `textbook_tsirelson_reflected`
@@ -13578,8 +11968,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-chsh.
 
 ```lean
-∀ (σ : ℕ),
-  8 ≤ σ → (8, 0) = (fun p q => (p.1 * q.1 + 2 * p.2 * q.2, p.1 * q.2 + p.2 * q.1)) (0, 2) (0, 2) ∧ σ - 8 < σ - 2 * 2
+∀ (a x : ℝ), 0 ≤ x → a ^ 2 * x = (a * √x) ^ 2
 ```
 
 ### `textbook_tuning_ratio`
@@ -13630,7 +12019,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-standardise.
 
 ```lean
-∀ (n σ : ℕ), σ - min n 1 = σ - min (min n 1) 1
+∀ (n : ℕ), min n 1 = min (min n 1) 1
 ```
 
 ### `textbook_ui_deterministic`
@@ -13670,7 +12059,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-url-fallback.
 
 ```lean
-2 ^ 4 - 1 = 15
+∀ {α : Type u_1} [inst : DecidableEq α] (s : Finset α), (s.powerset.erase ∅).card = 2 ^ s.card - 1
 ```
 
 ### `textbook_url_combinations_reflected`
@@ -13678,7 +12067,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-url-fallback.
 
 ```lean
-∀ (σ : ℕ), σ - 15 = σ - (2 ^ 4 - 1)
+∀ {α : Type u_1} [inst : DecidableEq α] (s : Finset α), 2 ^ s.card - 1 = (s.powerset.erase ∅).card
 ```
 
 ### `textbook_use_completes`
@@ -13689,20 +12078,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (n k : ℕ), n ≤ n + k
 ```
 
-### `textbook_use_completes_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: leads-sources-plan.
-
-```lean
-∀ (n k σ : ℕ), σ - (n + k) ≤ σ - n
-```
-
 ### `textbook_uuid_core`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-hex, match-pattern-uuid, imagine-all, fold-speak-thousand, chat-thousand.
 
 ```lean
-8 + 10 + 12 + 2 = 32
+∀ (a b c d : ℕ), Fintype.card (Fin a ⊕ Fin b ⊕ Fin c ⊕ Fin d) = a + b + c + d
 ```
 
 ### `textbook_uuid_core_reflected`
@@ -13710,7 +12091,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-hex, match-pattern-uuid, imagine-all, fold-speak-thousand, chat-thousand.
 
 ```lean
-∀ (σ : ℕ), σ - 32 = σ - (8 + 10 + 12 + 2)
+∀ (a b c d : ℕ), a + b + c + d = Fintype.card (Fin a ⊕ Fin b ⊕ Fin c ⊕ Fin d)
 ```
 
 ### `textbook_uuid_is_36`
@@ -13718,7 +12099,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-doc, legal-audit-offline.
 
 ```lean
-32 + 4 = 36
+∀ (a b : ℕ), Fintype.card (Fin a ⊕ Fin b) = a + b
 ```
 
 ### `textbook_uuid_is_36_reflected`
@@ -13726,7 +12107,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-doc, legal-audit-offline.
 
 ```lean
-∀ (σ : ℕ), σ - 36 = σ - (32 + 4)
+∀ (a b : ℕ), a + b = Fintype.card (Fin a ⊕ Fin b)
 ```
 
 ### `textbook_uuid_overlays`
@@ -13750,7 +12131,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-factor-test-integer.
 
 ```lean
-7 + 2 = 9
+∀ {α : Type u_1} (layouts : Finset α) (versioned : α → Prop) [inst : DecidablePred versioned],
+  (Finset.filter versioned layouts).card + {x ∈ layouts | ¬versioned x}.card = layouts.card
 ```
 
 ### `textbook_uuid_schemas_reflected`
@@ -13758,7 +12140,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-factor-test-integer.
 
 ```lean
-∀ (σ : ℕ), σ - 9 = σ - (7 + 2)
+∀ {α : Type u_1} (layouts : Finset α) (versioned : α → Prop) [inst : DecidablePred versioned],
+  layouts.card = (Finset.filter versioned layouts).card + {x ∈ layouts | ¬versioned x}.card
 ```
 
 ### `textbook_uuid_time_space`
@@ -13766,7 +12149,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-split.
 
 ```lean
-48 + 4 + 2 + 74 = 128
+∀ (a b c d : ℕ), Fintype.card (Fin a ⊕ Fin b ⊕ Fin c ⊕ Fin d) = a + b + c + d
 ```
 
 ### `textbook_uuid_time_space_reflected`
@@ -13774,7 +12157,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-split.
 
 ```lean
-∀ (σ : ℕ), σ - 128 = σ - (48 + 4 + 2 + 74)
+∀ (a b c d : ℕ), a + b + c + d = Fintype.card (Fin a ⊕ Fin b ⊕ Fin c ⊕ Fin d)
 ```
 
 ### `textbook_validation_helpers`
@@ -13782,7 +12165,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: rails-validations-overview, rails-validations-helpers, rails-validations-options, rails-validations-conditional, rails-validations-strict, rails-validations-listing, rails-validations-custom, rails-validations-errors.
 
 ```lean
-5 + 9 = 14
+∀ (ByOption ByFunction : Type) [inst : Fintype ByOption] [inst_1 : Fintype ByFunction],
+  Fintype.card (ByOption ⊕ ByFunction) = Fintype.card ByOption + Fintype.card ByFunction
 ```
 
 ### `textbook_validation_helpers_reflected`
@@ -13790,7 +12174,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: rails-validations-overview, rails-validations-helpers, rails-validations-options, rails-validations-conditional, rails-validations-strict, rails-validations-listing, rails-validations-custom, rails-validations-errors.
 
 ```lean
-∀ (σ : ℕ), σ - 14 = σ - (5 + 9)
+∀ (ByOption ByFunction : Type) [inst : Fintype ByOption] [inst_1 : Fintype ByFunction],
+  Fintype.card ByOption + Fintype.card ByFunction = Fintype.card (ByOption ⊕ ByFunction)
 ```
 
 ### `textbook_version_sequential`
@@ -13798,7 +12183,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-versions.
 
 ```lean
-∀ (n : ℕ), n + 1 - 1 = n
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (n k : α), n + k - k = n
 ```
 
 ### `textbook_version_sequential_reflected`
@@ -13806,7 +12192,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-versions.
 
 ```lean
-∀ (n σ : ℕ), σ - n = σ - (n + 1 - 1)
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (n k : α), n = n + k - k
 ```
 
 ### `textbook_vocabulary_measured`
@@ -13817,28 +12204,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (terms known : ℕ), known ≤ terms → terms - known + known = terms
 ```
 
-### `textbook_vocabulary_measured_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: translate-coverage.
-
-```lean
-∀ (terms known : ℕ), ¬terms - known + known = terms → ¬known ≤ terms
-```
-
-### `textbook_vocabulary_measured_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: translate-coverage.
-
-```lean
-∀ (terms known : ℕ), terms - known + known = terms → known ≤ terms
-```
-
 ### `textbook_vocabulary_measured_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: translate-coverage.
 
 ```lean
-∀ (terms known : ℕ), known ≤ terms → ∀ (σ : ℕ), σ - terms = σ - (terms - known + known)
+∀ (terms known : ℕ), known ≤ terms → terms = terms - known + known
 ```
 
 ### `textbook_vqe`
@@ -13846,15 +12217,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-vqe, circuit-phased-xz.
 
 ```lean
-0 + 1 = 1 ∧ 1 ≤ 1
-```
-
-### `textbook_vqe_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-vqe, circuit-phased-xz.
-
-```lean
-∀ (σ : ℕ), σ - 1 = σ - (0 + 1) ∧ σ - 1 ≤ σ - 1
+∀ (p₀ p₁ : ℝ), 0 ≤ p₀ → p₀ + p₁ = 1 → -1 ≤ p₀ - p₁
 ```
 
 ### `textbook_wave_requests_by_lead`
@@ -13862,7 +12225,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: wave-requests.
 
 ```lean
-3 + 2 + 7 * 3 + 1 + 1 = 28
+∀ {Lead : Type} [inst : Fintype Lead] (Request : Lead → Type) [inst_1 : (l : Lead) → Fintype (Request l)],
+  Fintype.card ((l : Lead) × Request l) = ∑ l, Fintype.card (Request l)
 ```
 
 ### `textbook_wave_requests_by_lead_reflected`
@@ -13870,7 +12234,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: wave-requests.
 
 ```lean
-∀ (σ : ℕ), σ - 28 = σ - (3 + 2 + 7 * 3 + 1 + 1)
+∀ {Lead : Type} [inst : Fintype Lead] (Request : Lead → Type) [inst_1 : (l : Lead) → Fintype (Request l)],
+  ∑ l, Fintype.card (Request l) = Fintype.card ((l : Lead) × Request l)
 ```
 
 ### `textbook_webhook_tolerance`
@@ -13878,7 +12243,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-webhook.
 
 ```lean
-1700000100 - 1700000000 = 100 ∧ 100 ≤ 300
+∀ {α : Type u_1} [inst : Preorder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  (signed checked tol : α), checked - signed ≤ tol ↔ checked ≤ signed + tol
 ```
 
 ### `textbook_webhook_tolerance_reflected`
@@ -13886,7 +12252,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-webhook.
 
 ```lean
-∀ (σ : ℕ), σ - 100 = σ - (1700000100 - 1700000000) ∧ σ - 300 ≤ σ - 100
+∀ {α : Type u_1} [inst : Preorder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  (signed checked tol : α), checked ≤ signed + tol ↔ checked - signed ≤ tol
 ```
 
 ### `textbook_website_plugins_partition`
@@ -13894,7 +12261,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-website.
 
 ```lean
-4 + 4 + 1 = 9
+∀ {α : Type u_1} (plugins : Finset α) (cls : α → Fin 3), plugins.card = ∑ j, {x ∈ plugins | cls x = j}.card
 ```
 
 ### `textbook_website_plugins_partition_reflected`
@@ -13902,7 +12269,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-website.
 
 ```lean
-∀ (σ : ℕ), σ - 9 = σ - (4 + 4 + 1)
+∀ {α : Type u_1} (plugins : Finset α) (cls : α → Fin 3), ∑ j, {x ∈ plugins | cls x = j}.card = plugins.card
 ```
 
 ### `textbook_widget_skilled_tools`
@@ -13910,23 +12277,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets.
 
 ```lean
-∀ (w s : ℕ), w = s → min w s = w
-```
-
-### `textbook_widget_skilled_tools_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets.
-
-```lean
-∀ (w s : ℕ), ¬min w s = w → ¬w = s
-```
-
-### `textbook_widget_skilled_tools_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets.
-
-```lean
-¬∀ (w s : ℕ), min w s = w → w = s
+∀ {α : Type} [inst : DecidableEq α] (w s : Finset α), w = s → w ∩ s = w
 ```
 
 ### `textbook_widget_skilled_tools_reflected`
@@ -13934,7 +12285,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-sets.
 
 ```lean
-∀ (w s : ℕ), w = s → ∀ (σ : ℕ), σ - w = σ - min w s
+∀ {α : Type} [inst : DecidableEq α] (w s : Finset α), w = s → w = w ∩ s
 ```
 
 ### `textbook_widgets_cover_mcp`
@@ -13942,7 +12293,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-ui-coverage.
 
 ```lean
-8 * 2 = 16
+∀ (Item Variant : Type) [inst : Fintype Item] [inst_1 : Fintype Variant],
+  Fintype.card (Item × Variant) = Fintype.card Item * Fintype.card Variant
 ```
 
 ### `textbook_widgets_cover_mcp_reflected`
@@ -13950,7 +12302,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-ui-coverage.
 
 ```lean
-∀ (σ : ℕ), σ - 16 = σ - 8 * 2
+∀ (Item Variant : Type) [inst : Fintype Item] [inst_1 : Fintype Variant],
+  Fintype.card Item * Fintype.card Variant = Fintype.card (Item × Variant)
 ```
 
 ### `textbook_willow_connectivity`
@@ -13958,7 +12311,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: processor-willow.
 
 ```lean
-(2 * 182 * 100 + 52) / 105 = 347
+∀ {V : Type u_1} [inst : Fintype V] [DecidableEq V] (G : SimpleGraph V) [inst_2 : DecidableRel G.Adj],
+  ∑ v, G.degree v = 2 * G.edgeFinset.card
 ```
 
 ### `textbook_willow_connectivity_reflected`
@@ -13966,7 +12320,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: processor-willow.
 
 ```lean
-∀ (σ : ℕ), σ - 347 = σ - (2 * 182 * 100 + 52) / 105
+∀ {V : Type u_1} [inst : Fintype V] [DecidableEq V] (G : SimpleGraph V) [inst_2 : DecidableRel G.Adj],
+  2 * G.edgeFinset.card = ∑ v, G.degree v
 ```
 
 ### `textbook_willow_distance_seven`
@@ -14017,14 +12372,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (n p m c k : ℕ), ¬(k + m + c = n ∧ k ≤ n - m - c) → ¬(p + m + c = n ∧ k = p)
 ```
 
-### `textbook_witness_books_nothing_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-mint-witnesses, stripe-idea-contribution, stripe-royalty-escrow, verify-witnesses-merge.
-
-```lean
-¬∀ (n p m c k : ℕ), k + m + c = n ∧ k ≤ n - m - c → p + m + c = n ∧ k = p
-```
-
 ### `textbook_witness_books_nothing_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-mint-witnesses, stripe-idea-contribution, stripe-royalty-escrow, verify-witnesses-merge.
@@ -14038,8 +12385,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-witness-move.
 
 ```lean
-2 * 7 = 14 ∧
-  14 - 2 = 12 ∧ 14 + 2 = 16 ∧ 2 * 6 = 12 ∧ 2 * 8 = 16 ∧ 2 * 12 = 24 ∧ 2 * 55 = 110 ∧ 110 - 2 = 108 ∧ 110 + 2 = 112
+∀ (k : ℕ), 2 * (k + 1) = 2 * k + 2 ∧ 2 * (k - 1) = 2 * k - 2
 ```
 
 ### `textbook_witness_clock_move_reflected`
@@ -14047,13 +12393,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-witness-move.
 
 ```lean
-∀ (σ : ℕ),
-  σ - 14 = σ - 2 * 7 ∧
-    σ - 12 = σ - (14 - 2) ∧
-      σ - 16 = σ - (14 + 2) ∧
-        σ - 12 = σ - 2 * 6 ∧
-          σ - 16 = σ - 2 * 8 ∧
-            σ - 24 = σ - 2 * 12 ∧ σ - 110 = σ - 2 * 55 ∧ σ - 108 = σ - (110 - 2) ∧ σ - 112 = σ - (110 + 2)
+∀ (k σ : ℕ), σ - (2 * k + 2) = σ - 2 * (k + 1) ∧ σ - (2 * k - 2) = σ - 2 * (k - 1)
 ```
 
 ### `textbook_witness_gates_decode`
@@ -14075,28 +12415,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
       (2 * (k + 1) - 2 * k) / 2 = 1 ∧ (2 * (k + 1) - 2 * k) / 2 - (2 * k - 2 * (k - 1)) / 2 = 0
 ```
 
-### `textbook_witness_move_computed_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-witness-move, verify-witness-move-110.
-
-```lean
-∀ (k : ℕ),
-  ¬((2 * k - 2 * (k - 1)) / 2 = 1 ∧
-        (2 * (k + 1) - 2 * k) / 2 = 1 ∧ (2 * (k + 1) - 2 * k) / 2 - (2 * k - 2 * (k - 1)) / 2 = 0) →
-    ¬1 ≤ k
-```
-
-### `textbook_witness_move_computed_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-witness-move, verify-witness-move-110.
-
-```lean
-∀ (k : ℕ),
-  (2 * k - 2 * (k - 1)) / 2 = 1 ∧
-      (2 * (k + 1) - 2 * k) / 2 = 1 ∧ (2 * (k + 1) - 2 * k) / 2 - (2 * k - 2 * (k - 1)) / 2 = 0 →
-    1 ≤ k
-```
-
 ### `textbook_witness_move_computed_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-witness-move, verify-witness-move-110.
@@ -14104,9 +12422,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```lean
 ∀ (k : ℕ),
   1 ≤ k →
-    ∀ (σ : ℕ),
-      σ - 1 = σ - (2 * k - 2 * (k - 1)) / 2 ∧
-        σ - 1 = σ - (2 * (k + 1) - 2 * k) / 2 ∧ σ - 0 = σ - ((2 * (k + 1) - 2 * k) / 2 - (2 * k - 2 * (k - 1)) / 2)
+    1 = (2 * k - 2 * (k - 1)) / 2 ∧
+      1 = (2 * (k + 1) - 2 * k) / 2 ∧ 0 = (2 * (k + 1) - 2 * k) / 2 - (2 * k - 2 * (k - 1)) / 2
 ```
 
 ### `textbook_witness_pair`
@@ -14145,16 +12462,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
     ¬(present + missing + contradicted = witnesses ∧ missing + contradicted = 0)
 ```
 
-### `textbook_witness_states_converse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-witness-p-np, match-witness-planck, match-witness-planck-value, match-witness-negation, match-witness-willow, match-witness-willow-wrong, match-search-witnessed, chat-witness-planck, chat-witness-computed, match-witness-loose.
-
-```lean
-∀ (present missing contradicted witnesses : ℕ),
-  present = witnesses ∧ contradicted = 0 ∧ missing = 0 →
-    present + missing + contradicted = witnesses ∧ missing + contradicted = 0
-```
-
 ### `textbook_witness_states_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-witness-p-np, match-witness-planck, match-witness-planck-value, match-witness-negation, match-witness-willow, match-witness-willow-wrong, match-search-witnessed, chat-witness-planck, chat-witness-computed, match-witness-loose.
@@ -14170,23 +12477,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-workspace-coverage.
 
 ```lean
-∀ (held missing kinds : ℕ), held + missing = kinds → kinds - missing = held
-```
-
-### `textbook_workspace_coverage_contrapositive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-workspace-coverage.
-
-```lean
-∀ (held missing kinds : ℕ), ¬kinds - missing = held → ¬held + missing = kinds
-```
-
-### `textbook_workspace_coverage_converse_refuted`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-workspace-coverage.
-
-```lean
-¬∀ (held missing kinds : ℕ), kinds - missing = held → held + missing = kinds
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (held missing kinds : α), held + missing = kinds → kinds - missing = held
 ```
 
 ### `textbook_workspace_coverage_reflected`
@@ -14194,7 +12486,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-workspace-coverage.
 
 ```lean
-∀ (held missing kinds : ℕ), held + missing = kinds → ∀ (σ : ℕ), σ - held = σ - (kinds - missing)
+∀ {α : Type u_1} [inst : PartialOrder α] [inst_1 : AddCommSemigroup α] [inst_2 : Sub α] [OrderedSub α]
+  [AddLeftReflectLE α] (held missing kinds : α), held + missing = kinds → held = kinds - missing
 ```
 
 ### `textbook_workspace_docs_round_trip`
@@ -14202,7 +12495,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-workspace-docs, payload-workspace-docs-lost.
 
 ```lean
-∀ (shape back : ℕ → ℕ), (∀ (x : ℕ), shape (back x) = shape x) → ∀ (x : ℕ), shape (back (back x)) = shape x
+∀ {α : Type u_1} {β : Type u_2} (shape : α → β) (back : α → α),
+  (∀ (x : α), shape (back x) = shape x) → ∀ (n : ℕ) (x : α), shape (back^[n] x) = shape x
 ```
 
 ### `textbook_workspace_docs_round_trip_reflected`
@@ -14210,7 +12504,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-workspace-docs, payload-workspace-docs-lost.
 
 ```lean
-∀ (shape back : ℕ → ℕ), (∀ (x : ℕ), shape (back x) = shape x) → ∀ (x : ℕ), shape x = shape (back (back x))
+∀ {α : Type u_1} {β : Type u_2} (shape : α → β) (back : α → α),
+  (∀ (x : α), shape (back x) = shape x) → ∀ (n : ℕ) (x : α), shape x = shape (back^[n] x)
 ```
 
 ### `textbook_workspace_drive`
@@ -14218,7 +12513,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-workspace-drive, payload-workspace-drive-answers.
 
 ```lean
-∀ (p : Bool), (if (if p = true then true else false) = true then true else false) = p
+∀ {α β : Type} (e : α ≃ β) (x : α), e.symm (e x) = x
 ```
 
 ### `textbook_workspace_drive_reflected`
@@ -14226,7 +12521,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-workspace-drive, payload-workspace-drive-answers.
 
 ```lean
-∀ (p : Bool), p = if (if p = true then true else false) = true then true else false
+∀ {α β : Type} (e : α ≃ β) (x : α), x = e.symm (e x)
 ```
 
 ### `textbook_workspace_round_trip`
@@ -14234,7 +12529,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-workspace-form, payload-workspace-form-violations, payload-workspace-response.
 
 ```lean
-∀ {α β : Type} (f : α → β) (g : β → α), (∀ (b : β), f (g b) = b) → ∀ (b : β), f (g (f (g b))) = b
+∀ {α β : Type} (f : α → β) (g : β → α), Function.LeftInverse f g → (f ∘ g) ∘ f ∘ g = id
 ```
 
 ### `textbook_workspace_round_trip_reflected`
@@ -14242,7 +12537,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-workspace-form, payload-workspace-form-violations, payload-workspace-response.
 
 ```lean
-∀ {α β : Type} (f : α → β) (g : β → α), (∀ (b : β), f (g b) = b) → ∀ (b : β), b = f (g (f (g b)))
+∀ {α β : Type} (f : α → β) (g : β → α), Function.LeftInverse f g → id = (f ∘ g) ∘ f ∘ g
 ```
 
 ### `textbook_workspace_sets`
@@ -14250,7 +12545,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-sets, textbook-set.
 
 ```lean
-3 * 3 * 3 * 3 * 3 * 3 * 2 * 3 * 2 * 3 = 26244 ∧ 3 = 3
+∀ (k : ℕ) (r : Fin k → ℕ), Fintype.card ((i : Fin k) → Fin (r i)) = ∏ i, r i
 ```
 
 ### `textbook_workspace_sets_reflected`
@@ -14258,7 +12553,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: textbook-sets, textbook-set.
 
 ```lean
-∀ (σ : ℕ), σ - 26244 = σ - 3 * 3 * 3 * 3 * 3 * 3 * 2 * 3 * 2 * 3 ∧ σ - 3 = σ - 3
+∀ (k : ℕ) (r : Fin k → ℕ), ∏ i, r i = Fintype.card ((i : Fin k) → Fin (r i))
 ```
 
 ### `textbook_wrangler_drift`
@@ -14266,7 +12561,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-wrangler-drift.
 
 ```lean
-12 - 2 = 10 ∧ 5 ≤ 10
+∀ {α : Type u_1} [inst : DecidableEq α] (paths agreed : Finset α),
+  agreed ⊆ paths → (paths \ agreed).card = paths.card - agreed.card
 ```
 
 ### `textbook_wrangler_drift_reflected`
@@ -14274,7 +12570,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: configure-wrangler-drift.
 
 ```lean
-∀ (σ : ℕ), σ - 10 = σ - (12 - 2) ∧ σ - 10 ≤ σ - 5
+∀ {α : Type u_1} [inst : DecidableEq α] (paths agreed : Finset α),
+  agreed ⊆ paths → paths.card - agreed.card = (paths \ agreed).card
 ```
 
 ### `textbook_x25519_sizes`
@@ -14282,7 +12579,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-x25519.
 
 ```lean
-32 * 8 = 256 ∧ 2 ^ 255 - 19 < 2 ^ 256
+∀ (n : ℕ), Fintype.card (Fin n → Fin (2 ^ 8)) = 2 ^ (8 * n)
 ```
 
 ### `textbook_x25519_sizes_reflected`
@@ -14290,7 +12587,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: seal-x25519.
 
 ```lean
-∀ (σ : ℕ), 2 ^ 256 ≤ σ → σ - 256 = σ - 32 * 8 ∧ σ - 2 ^ 256 < σ - (2 ^ 255 - 19)
+∀ (n : ℕ), 2 ^ (8 * n) = Fintype.card (Fin n → Fin (2 ^ 8))
 ```
 
 ### `textbook_xeb`
@@ -14298,7 +12595,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-xeb.
 
 ```lean
-2 * 16 > 16 + 1 ∧ 16 + 1 > 16
+∀ (D : ℕ), 1 < D → D + 1 < 2 * D ∧ D < D + 1
+```
+
+### `textbook_xeb_contrapositive`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-xeb.
+
+```lean
+∀ (D : ℕ), ¬(D + 1 < 2 * D ∧ D < D + 1) → ¬1 < D
 ```
 
 ### `textbook_xeb_reflected`
@@ -14306,7 +12611,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-xeb.
 
 ```lean
-∀ (σ : ℕ), 2 * 16 ≤ σ → 16 + 1 ≤ σ → σ - 2 * 16 < σ - (16 + 1) ∧ σ - (16 + 1) < σ - 16
+∀ (D : ℕ), 1 < D → ∀ (σ : ℕ), 2 * D ≤ σ → D + 1 ≤ σ → σ - 2 * D < σ - (D + 1) ∧ σ - (D + 1) < σ - D
 ```
 
 ## Qpu.General.Thousand

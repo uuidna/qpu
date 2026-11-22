@@ -763,7 +763,8 @@ const clayCaseTheorems = (r: { name: string; statement: string }) => {
   return [...names].flatMap((nm) => { const key = 'textbook_' + nm, tb = TEXTBOOK_THEOREMS.find((t) => t.key === key), k = THEOREMS.find((t) => t.key === key), b = nm.replace(/_/g, '-'); return k ? [{ theorem: key, case: b.endsWith(v) ? b : `${b}-${v}`, proof: tb?.lean ?? k.statement, docs: tb?.says ?? '', kernelAccepted: true }] : [] })
 }
 
-const scientificTheorem = (key: string) => { const t = TEXTBOOK_THEOREMS.find((x) => x.key === key); return !!t && !key.includes('relation_') && (t.says.includes('The textbook meaning of') || t.says.includes("Shor's reduction")) }
+// a scientific theorem is the textbook meaning of a Clay function, as the register's function table names it
+const scientificTheorem = (key: string) => TEXTBOOK_THEOREMS.some((t) => t.key === key) && Object.values(CLAY_THEOREM_FN).some((nm) => `textbook_${nm}` === key)
 let educationCache: { scientific: string[]; proved: { theorem: string; relations: string[] }[]; removed: string[]; category: Record<string, string[]>; namesFor: (theorem: string | undefined, exampleId: string) => string[] } | null = null
 
 const educationProof = () => {

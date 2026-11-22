@@ -5,6 +5,7 @@
 // Google Roadmap, Google Discovery One-Door & Named Endpoints, Google Workspace Forms/Docs/Drive &
 // 26,244 Institution Sets, Google Cloud MCPs & RBAC Standards, Google Patents/Gemini/XPRIZE/Sitemap)
 // via the pure QPU/Google toolbox doors and exposes content-addressed receipts through Payload API.
+import { TEXTBOOK_THEOREMS } from '../textbook-theorems.ts'
 import { PROSE, proseFill } from '../prose-index.ts'
 import { canonicalText, channel, entryText, hexbit, seal, uuid, uuidQubits } from '../../uuid/index.ts'
 import { hex, sha256, utf8 } from '../unit/hmac.ts'
@@ -174,7 +175,9 @@ const agrees = (formula: string, value: number): boolean => {
   return sides.length > 1 && sides.every((side) => readSide(side) === value)
 }
 const kernelHolds = (key: string): boolean => {
-  const statement = THEOREMS.find((row) => row.key === key)?.statement
+  // a general theorem is read at the closed instance its kernel-checked example states
+  const closed = TEXTBOOK_THEOREMS.find((row) => row.key === key)?.example?.split('\n').map((l) => /^example\s*:\s*([\s\S]+?)\s*:=\s*by decide$/.exec(l)?.[1]).find(Boolean)
+  const statement = closed ?? THEOREMS.find((row) => row.key === key)?.statement
   if (!statement || !THEOREM_KEYS.has(key)) return false
   return statement.split('∧').every((part) => {
     const text = part.trim()
