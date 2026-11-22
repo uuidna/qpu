@@ -1496,7 +1496,7 @@ example : 100 * 10 ^ 4 = 1000000 ∧ 1 + 5 = 6 ∧ 50000 * 10 ^ 3 = 50000000 := 
 theorem textbook_roadmap_milestone_three : 10 ^ 3 = 1000 ∧ 3 ≤ 6 ∧ 50000 * 10 ^ 3 = 50000000 := by decide
 /-- textbook_roadmap_milestone_three reflected by its shape, conjunction (examples: roadmap-milestone-3) -/
 @[reflection] theorem textbook_roadmap_milestone_three_reflected (σ : Nat) : (σ - (1000) = σ - (10 ^ 3)) ∧ (σ - (6) ≤ σ - (3)) ∧ (σ - (50000000) = σ - (50000 * 10 ^ 3)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_roadmap_milestone_three).1), Nat.sub_le_sub_left (textbook_roadmap_milestone_three).2.1 σ, congrArg (σ - ·) (Eq.symm (textbook_roadmap_milestone_three).2.2)⟩
-/-- the order of every unit a modulo n divides φ(n), the number of units, so the order Shor's algorithm measures (4 for 7 modulo 15, dividing φ(15) = 8) is a divisor of the totient. From Mathlib's `orderOf_dvd_card` and `ZMod.card_units_eq_totient` (examples: algorithm-shor-15) -/
+/-- the order of every unit a modulo n divides φ(n), the number of units, so the order Shor's algorithm measures divides the totient: the powers of 7 modulo 15 run 7, 4, 13, 1: the order is 4, which divides φ(15) = 8. From Mathlib's `orderOf_dvd_card` and `ZMod.card_units_eq_totient` (examples: algorithm-shor-15) -/
 theorem textbook_shor_fifteen_order (n : Nat) [NeZero n] (a : (ZMod n)ˣ) : orderOf a ∣ Nat.totient n :=
   ZMod.card_units_eq_totient n ▸ orderOf_dvd_card
 example := @textbook_shor_fifteen_order

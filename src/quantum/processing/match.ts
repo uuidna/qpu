@@ -48,9 +48,9 @@ const KERNEL = new Set(THEOREMS.map((t) => t.key))
 export const evaluateRouted = (theorem: string, statement: string) => {
   const t = TEXTBOOK_THEOREMS.find((x) => x.key === theorem), nums = numbers(statement).filter((n) => /^\d+$/.test(n)); if (!t) return null
   const values: Record<string, string> = Object.fromEntries(getStatement(t.lean).variables.flatMap((v, i) => (nums[i] ? [[v, nums[i]]] : []))), ok = (v: Record<string, string>) => { const ev = evaluateTheorem(theorem, v) as { evaluable?: boolean; needs?: string[] }; return ev.evaluable && !ev.needs?.length }
-  // a general theorem the statement's numbers cannot bind is computed at the closed instance its example states
+  // a general theorem the numbers cannot bind: its example's closed instance
   const closed = closedOf(theorem), lean = Object.keys(values).length ? t.lean : (closed ?? t.lean)
-  return ok(values) ? { theorem, lean, values } : closed && ok({}) ? { theorem, lean: closed, values: {} } : null
+  return ok(values) ? { theorem, lean, values } : closed && ok({}) ? { theorem, lean: `theorem ${theorem} ${closed}`, values: {} } : null
 }
 /** A number read exactly as digits × 10^e (6.62607015e-34 is 662607015e-42); a stated one agrees with a witness's when equal, a decimal to the
  *  places it is written to (3.5 agrees with 3.47). */
