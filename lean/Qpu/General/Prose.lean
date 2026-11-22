@@ -46,6 +46,7 @@ import Qpu.General.Prose.QuantumProcessingMachine
 import Qpu.General.Prose.QuantumProcessingMachineRun
 import Qpu.General.Prose.QuantumProcessingMatch
 import Qpu.General.Prose.QuantumProcessingMcp
+import Qpu.General.Prose.QuantumProcessingMcpApps
 import Qpu.General.Prose.QuantumProcessingMicrodata
 import Qpu.General.Prose.QuantumProcessingPayloadVocabulary
 import Qpu.General.Prose.QuantumProcessingPort

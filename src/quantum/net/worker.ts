@@ -1,5 +1,4 @@
-// The qpu Worker: /api/mcp answers through the package's own Streamable-HTTP transport (serveMcp), every other path
-// is the Lean-written VitePress site built into the Worker's static assets.
+// The qpu Worker: /api/mcp through serveMcp, every other path from the site's static assets.
 import { serveMcp } from './mcp-http.ts'
 
 type Env = Record<string, string | undefined> & { ASSETS: { fetch: (request: Request) => Promise<Response> } }

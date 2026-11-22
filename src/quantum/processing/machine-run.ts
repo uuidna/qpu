@@ -128,8 +128,7 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   if (s && s.holds === false) process.exitCode = 1
 }
 
-/** The lanes the runner opens, read from node:os: one per core, scaled by the share of memory free now (a V8 heap ceiling
- *  is a limit, not what a step uses). max 1 (min cores share), which Supremacy.lanes_pos and Supremacy.lanes_le_cores bound. */
+/** The runner's lanes from node:os: the cores scaled by the free share of memory (Supremacy.lanes_pos, lanes_le_cores). */
 export const lanesNow = () => Math.max(1, Math.min(availableParallelism(), Math.ceil((availableParallelism() * freemem()) / totalmem())))
 
 export type Receipt = { date: string; head: string; runner: string; offline: boolean; fast: boolean; lanes: number; steps: { name: string; status: 'green' | 'red' | 'skipped'; ms: number; via: NextStep['via']; tail: string; attempt: number }[]; green: number; red: number; skipped: number; wallMs: number; sumMs: number; speedup: number | null }

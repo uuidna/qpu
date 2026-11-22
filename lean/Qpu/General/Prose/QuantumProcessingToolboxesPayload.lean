@@ -340,7 +340,6 @@ def quantumProcessingToolboxesPayload_description333 : String := "the config set
 def quantumProcessingToolboxesPayload_description334 : String := "The host of an MCP App: reads a tool's ui://qpu/<tool> resource over the MCP endpoint and hosts it through the MCP Apps protocol in a sandboxed frame."
 def quantumProcessingToolboxesPayload_description335 : String := "The chat as an MCP App: <QpuApp /> with no tool hosts ui://qpu/chat, every turn a tools/call through the app's MCP."
 def quantumProcessingToolboxesPayload_description336 : String := "The qpu block of UUID logic for Payload's lexical editor: the shape every tools/call result carries in _meta.payload."
-def quantumProcessingToolboxesPayload_s337 : String := "waiting for the tool's result"
 def quantumProcessingToolboxesPayload_says338 : String := "⟦0⟧ databases × ⟦1⟧ storages × ⟦2⟧ email adapters = ⟦3⟧ combinations; chosen by what the environment names. ⟦4⟧"
 def quantumProcessingToolboxesPayload_s339 : String := "plugin-ecommerce (Stripe over HTTP)"
 def quantumProcessingToolboxesPayload_s340 : String := "db-postgres (Cloud SQL: DATABASE_URI)"
