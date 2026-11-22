@@ -1,6 +1,6 @@
 // The address functions. The fold/stamp/uuid core is generated from Lean (lean/tools/Address.lean → address-core.ts),
 // where the kernel proves it reproduces the JavaScript; the coil functions below build on it.
-import { PROSE, proseFill } from '../processing/prose-index.ts'
+import { PROSE } from '../processing/prose-index.ts'
 import { uuid, stamp, version } from './address-core.ts'
 export { uuid, stamp }
 export const uuidFromParts = (handle: string, program: readonly number[], tail: string) => {

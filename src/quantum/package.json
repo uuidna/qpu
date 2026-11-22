@@ -32,7 +32,6 @@
     "./config": "./processing/config-index.ts",
     "./catalogue-seed": "./processing/catalogue-seed.ts",
     "./engine": "./engine/index.ts",
-    "./website-client": "./net/website-client.ts",
-    "./seed-waves": "./payload/seed-waves.ts"
+    "./website-client": "./net/website-client.ts"
   }
 }
