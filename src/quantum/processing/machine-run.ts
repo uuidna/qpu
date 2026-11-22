@@ -128,13 +128,16 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   if (s && s.holds === false) process.exitCode = 1
 }
 
+/** The lanes the runner opens, read from node:os: one per core, scaled by the share of memory free now (a V8 heap ceiling
+ *  is a limit, not what a step uses). max 1 (min cores share), which Supremacy.lanes_pos and Supremacy.lanes_le_cores bound. */
+export const lanesNow = () => Math.max(1, Math.min(availableParallelism(), Math.ceil((availableParallelism() * freemem()) / totalmem())))
+
 export type Receipt = { date: string; head: string; runner: string; offline: boolean; fast: boolean; lanes: number; steps: { name: string; status: 'green' | 'red' | 'skipped'; ms: number; via: NextStep['via']; tail: string; attempt: number }[]; green: number; red: number; skipped: number; wallMs: number; sumMs: number; speedup: number | null }
 /** next: the waves of NEXT_STEPS run at the root, each step a child, the receipt returned and printed as the last line. */
 export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolean; generators?: boolean; onLine?: (line: string) => void }): Promise<Receipt> => {
   const say = (l: string) => { console.log(l); o.onLine?.(l) }
   const wall0 = clock()
-  // one lane per core, scaled by the share of memory free now: a V8 heap ceiling is a limit, not what a step uses
-  const lanes = Math.max(1, Math.min(availableParallelism(), Math.ceil((availableParallelism() * freemem()) / totalmem())))
+  const lanes = lanesNow()
   const head = (await spawnRun('git', ['rev-parse', '--short', 'HEAD'], { cwd: o.cwd })).stdout.trim()
   // the wildcard step expanded from tools/list: every tool whose schema names selftest
   const expand = async (): Promise<NextStep[]> => {

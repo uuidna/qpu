@@ -4,7 +4,6 @@ The prose of `src/quantum/processing/toolboxes/billing.ts`. Each definition is o
 
 namespace Prose
 
-def quantumProcessingToolboxesBilling_says1 : String := "variation c⟦0⟧: SKU byte ⟦1⟧ of the handle ⟦2⟧. A variation takes one byte, ⟦3⟧ bits, and every coin has that same ⟦4⟧. The ⟦5⟧ bits of the coin are full only because this address is a crypto UUID. The program ⟦6⟧ and the tail ⟦7⟧ name ⟦8⟧ MCP tool(s). ⟦9⟧"
 def quantumProcessingToolboxesBilling_s2 : String := "mcp is on, so the coin can call ⟦0⟧."
 def quantumProcessingToolboxesBilling_s3 : String := "mcp is off, so the coin keeps the tools its program and tail name."
 def quantumProcessingToolboxesBilling_s4 : String := "ISO/IEC 19770 software asset management; priced ISO 4217; dated ISO 8601"

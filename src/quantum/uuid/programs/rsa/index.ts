@@ -116,12 +116,3 @@ const compute = () => {
 /** Every RSA case, each one UUID program. The thousand-bit mint is the example. */
 export const rsaPrograms = () => cached ??= compute()
 
-/** One case when a name is passed. true is every case. */
-export const rsaDoor = (asked: unknown) => {
-  const all = rsaPrograms()
-  if (asked === true) return all
-  const id = typeof asked === 'string' ? asked : ''
-  const row = all.rows.find((item) => item.id === id)
-  if (!row) throw new Error(`rsa takes true or one of ${all.rows.map((item) => item.id).join(', ')}`)
-  return { ...all, cases: 1, rows: [row], holds: row.holds, says: row.holds ? proseFill(PROSE.quantumUuidProgramsRsaIndex_s3, id) : PROSE.quantumUuidProgramsRsaIndex_s2 }
-}

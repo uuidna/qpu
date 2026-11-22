@@ -94,7 +94,6 @@ import Qpu.General.Prose.QuantumUuidProgramsChallengeIndex
 import Qpu.General.Prose.QuantumUuidProgramsDriftIndex
 import Qpu.General.Prose.QuantumUuidProgramsIndex
 import Qpu.General.Prose.QuantumUuidProgramsLeanIndex
-import Qpu.General.Prose.QuantumUuidProgramsPatchesIndex
 import Qpu.General.Prose.QuantumUuidProgramsPhysicsIndex
 import Qpu.General.Prose.QuantumUuidProgramsRsaIndex
 import Qpu.General.Prose.QuantumUuidProgramsShadcnIndex
