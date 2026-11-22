@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1904 products, 2 under a declared claim context and 1902 as the author's own statement, with 1540 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1898 products, 2 under a declared claim context and 1896 as the author's own statement, with 1531 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -7530,7 +7530,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-decode, fold-decode-one-way.
 
 ```lean
-14 < 10 ^ 14 ∧ 14 * 1 = 14
+∀ (n b : ℕ), 1 < b → Fintype.card (Fin n → Fin b) = b ^ n ∧ n < b ^ n
 ```
 
 ### `textbook_decode_not_search_reflected`
@@ -7538,7 +7538,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-decode, fold-decode-one-way.
 
 ```lean
-∀ (σ : ℕ), 10 ^ 14 ≤ σ → σ - 10 ^ 14 < σ - 14 ∧ σ - 14 = σ - 14 * 1
+∀ (n b : ℕ), 1 < b → ∀ (σ : ℕ), b ^ n ≤ σ → b ^ n = Fintype.card (Fin n → Fin b) ∧ σ - b ^ n < σ - n
 ```
 
 ### `textbook_decode_rows_tested`
@@ -7546,17 +7546,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-factor-order-composite.
 
 ```lean
-2 ^ 12 % 105 = 1 ∧ (2 ^ 6 - 1).gcd 105 = 21 ∧ (2 ^ 6 + 1).gcd 105 = 5 ∧ 5 * 21 = 105 ∧ 3 * 7 = 21
-```
-
-### `textbook_decode_rows_tested_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-factor-order-composite.
-
-```lean
-∀ (σ : ℕ),
-  σ - 1 = σ - 2 ^ 12 % 105 ∧
-    σ - 21 = σ - (2 ^ 6 - 1).gcd 105 ∧ σ - 5 = σ - (2 ^ 6 + 1).gcd 105 ∧ σ - 105 = σ - 5 * 21 ∧ σ - 21 = σ - 3 * 7
+∀ (d : ℕ), 2 ≤ d → ¬Nat.Prime d → ∃ m, Nat.Prime m ∧ m ∣ d ∧ m < d
 ```
 
 ### `textbook_denier_identified`
@@ -8102,7 +8092,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-2 ^ 6 % 7 = 1 ∧ 3 ^ 4 % 5 = 1 ∧ 2 ^ 4 % 5 = 1
+∀ (p : ℕ) [inst : Fact (Nat.Prime p)] (a : ZMod p), a ≠ 0 → a ^ (p - 1) = 1
 ```
 
 ### `textbook_euler_fermat_reflected`
@@ -8110,7 +8100,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-∀ (σ : ℕ), σ - 1 = σ - 2 ^ 6 % 7 ∧ σ - 1 = σ - 3 ^ 4 % 5 ∧ σ - 1 = σ - 2 ^ 4 % 5
+∀ (p : ℕ) [inst : Fact (Nat.Prime p)] (a : ZMod p), a ≠ 0 → 1 = a ^ (p - 1)
 ```
 
 ### `textbook_euler_totient`
@@ -8118,7 +8108,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-37 - 1 = 36 ∧ 2 * 37 = 74
+∀ (p : ℕ), Nat.Prime p → p ≠ 2 → (2 * p).totient = p - 1
 ```
 
 ### `textbook_euler_totient_reflected`
@@ -8126,7 +8116,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-∀ (σ : ℕ), σ - 36 = σ - (37 - 1) ∧ σ - 74 = σ - 2 * 37
+∀ (p : ℕ), Nat.Prime p → p ≠ 2 → p - 1 = (2 * p).totient
 ```
 
 ### `textbook_exploit_refuses_to_patch`
@@ -8214,15 +8204,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-factor-15, algorithm-one-door.
 
 ```lean
-15 = 3 * 5 ∧ 15 / 3 = 5
-```
-
-### `textbook_factor_parse_list_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-factor-15, algorithm-one-door.
-
-```lean
-∀ (σ : ℕ), σ - 3 * 5 = σ - 15 ∧ σ - 5 = σ - 15 / 3
+∀ (n : ℕ), n ≠ 0 → n.primeFactorsList.prod = n ∧ ∀ p ∈ n.primeFactorsList, Nat.Prime p
 ```
 
 ### `textbook_factorial`
@@ -8230,7 +8212,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-1 * 2 * 3 * 4 = 24 ∧ 5 * 24 = 120
+∀ (n : ℕ), (n + 1).factorial = (n + 1) * n.factorial
 ```
 
 ### `textbook_factorial_reflected`
@@ -8238,7 +8220,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-∀ (σ : ℕ), σ - 24 = σ - 1 * 2 * 3 * 4 ∧ σ - 120 = σ - 5 * 24
+∀ (n : ℕ), (n + 1) * n.factorial = (n + 1).factorial
 ```
 
 ### `textbook_factors_divide`
@@ -9077,7 +9059,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-impossible-create, algorithm-impossible-decode.
 
 ```lean
-(9 - 4) * (9 + 4) = 65 ∧ 9 * 9 - 4 * 4 = 65 ∧ 2 * 9 - 5 = 13 ∧ 9 - 4 = 5 ∧ 9 + 4 = 13
+∀ (a b : ℕ), b ≤ a → (a - b) * (a + b) = a ^ 2 - b ^ 2 ∧ 2 * a - (a - b) = a + b
+```
+
+### `textbook_impossible_trapdoor_contrapositive`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-impossible-create, algorithm-impossible-decode.
+
+```lean
+∀ (a b : ℕ), ¬((a - b) * (a + b) = a ^ 2 - b ^ 2 ∧ 2 * a - (a - b) = a + b) → ¬b ≤ a
 ```
 
 ### `textbook_impossible_trapdoor_reflected`
@@ -9085,9 +9075,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-impossible-create, algorithm-impossible-decode.
 
 ```lean
-∀ (σ : ℕ),
-  σ - 65 = σ - (9 - 4) * (9 + 4) ∧
-    σ - 65 = σ - (9 * 9 - 4 * 4) ∧ σ - 13 = σ - (2 * 9 - 5) ∧ σ - 5 = σ - (9 - 4) ∧ σ - 13 = σ - (9 + 4)
+∀ (a b : ℕ), b ≤ a → ∀ (σ : ℕ), σ - (a ^ 2 - b ^ 2) = σ - (a - b) * (a + b) ∧ σ - (a + b) = σ - (2 * a - (a - b))
 ```
 
 ### `textbook_institution_bill`
@@ -9159,7 +9147,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-12 - (12 - 5) = 5 ∧ 2 * 1 + 1 = 3 ∧ (3 - 1) / 2 = 1
+∀ (d x : ℤ) (t : ℕ), d - (d - x) = x ∧ (2 * t + 1 - 1) / 2 = t
 ```
 
 ### `textbook_involution_decoder_reflected`
@@ -9167,7 +9155,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: ftqc-all.
 
 ```lean
-∀ (σ : ℕ), σ - 5 = σ - (12 - (12 - 5)) ∧ σ - 3 = σ - (2 * 1 + 1) ∧ σ - 1 = σ - (3 - 1) / 2
+∀ (d x : ℤ) (t σ : ℕ), x = d - (d - x) ∧ σ - t = σ - (2 * t + 1 - 1) / 2
 ```
 
 ### `textbook_ising_fusion`
@@ -10436,15 +10424,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-discover, algorithm-order, algorithm-factor-find.
 
 ```lean
-2 ^ 4 % 15 = 1 ∧ 2 ^ 1 % 15 ≠ 1 ∧ 2 ^ 2 % 15 ≠ 1 ∧ 2 ^ 3 % 15 ≠ 1 ∧ 4 = 2 * 2 - 0
-```
-
-### `textbook_order_finding_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-discover, algorithm-order, algorithm-factor-find.
-
-```lean
-∀ (σ : ℕ), σ - 1 = σ - 2 ^ 4 % 15 ∧ 1 ≠ 2 ^ 1 % 15 ∧ 1 ≠ 2 ^ 2 % 15 ∧ 1 ≠ 2 ^ 3 % 15 ∧ σ - (2 * 2 - 0) = σ - 4
+∀ (N : ℕ) (x : ZMod N), x ^ orderOf x = 1 ∧ ∀ (k : ℕ), 0 < k → k < orderOf x → x ^ k ≠ 1
 ```
 
 ### `textbook_own_keys_only`
@@ -12002,16 +11982,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-relation-rsa.
 
 ```lean
-(8 ^ 2 - 1).gcd 91 = 7 ∧ (8 ^ 2 + 1).gcd 91 = 13 ∧ 7 * 13 = 91 ∧ 8 ^ 4 % 91 = 1
-```
-
-### `textbook_relation_rsa_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-relation-rsa.
-
-```lean
-∀ (σ : ℕ),
-  σ - 7 = σ - (8 ^ 2 - 1).gcd 91 ∧ σ - 13 = σ - (8 ^ 2 + 1).gcd 91 ∧ σ - 91 = σ - 7 * 13 ∧ σ - 1 = σ - 8 ^ 4 % 91
+∀ (x n : ℕ), x.Coprime n → x ^ n.totient ≡ 1 [MOD n]
 ```
 
 ### `textbook_repair_kernel_top`
@@ -12387,15 +12358,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-rsa-2048.
 
 ```lean
-2 ^ 4 < 21 ∧ 21 < 2 ^ 5 ∧ 5 < 2048
-```
-
-### `textbook_rsa_beyond_bound_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-rsa-2048.
-
-```lean
-∀ (σ : ℕ), 21 ≤ σ → 2 ^ 5 ≤ σ → 2048 ≤ σ → σ - 21 < σ - 2 ^ 4 ∧ σ - 2 ^ 5 < σ - 21 ∧ σ - 2048 < σ - 5
+∀ (n : ℕ), n ≠ 0 → 2 ^ Nat.log 2 n ≤ n ∧ n < 2 ^ (Nat.log 2 n + 1)
 ```
 
 ### `textbook_runnable_leads`
@@ -12771,20 +12734,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-shor-15.
 
 ```lean
-7 ^ 1 % 15 = 7 ∧
-  7 ^ 2 % 15 = 4 ∧ 7 ^ 3 % 15 = 13 ∧ 7 ^ 4 % 15 = 1 ∧ (4 - 1).gcd 15 = 3 ∧ (4 + 1).gcd 15 = 5 ∧ 3 * 5 = 15
-```
-
-### `textbook_shor_fifteen_order_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-shor-15.
-
-```lean
-∀ (σ : ℕ),
-  σ - 7 = σ - 7 ^ 1 % 15 ∧
-    σ - 4 = σ - 7 ^ 2 % 15 ∧
-      σ - 13 = σ - 7 ^ 3 % 15 ∧
-        σ - 1 = σ - 7 ^ 4 % 15 ∧ σ - 3 = σ - (4 - 1).gcd 15 ∧ σ - 5 = σ - (4 + 1).gcd 15 ∧ σ - 15 = σ - 3 * 5
+∀ (n : ℕ) [NeZero n] (a : (ZMod n)ˣ), orderOf a ∣ n.totient
 ```
 
 ### `textbook_shor_narrowed_cells`
@@ -12829,7 +12779,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-shor-reduction, algorithm-shor-beyond-bound.
 
 ```lean
-7 ^ 4 % 15 = 1 ∧ 7 ^ 2 % 15 = 4 ∧ (4 - 1).gcd 15 = 3 ∧ (4 + 1).gcd 15 = 5
+∀ (N a s : ℕ),
+  a ^ (2 * s) ≡ 1 [MOD N] → 1 ≤ a ^ s → ¬N ∣ a ^ s - 1 → ¬N ∣ a ^ s + 1 → (a ^ s - 1).gcd N ≠ 1 ∧ (a ^ s - 1).gcd N ≠ N
 ```
 
 ### `textbook_shor_reduction_reflected`
@@ -12837,7 +12788,8 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-shor-reduction, algorithm-shor-beyond-bound.
 
 ```lean
-∀ (σ : ℕ), σ - 1 = σ - 7 ^ 4 % 15 ∧ σ - 4 = σ - 7 ^ 2 % 15 ∧ σ - 3 = σ - (4 - 1).gcd 15 ∧ σ - 5 = σ - (4 + 1).gcd 15
+∀ (N a s : ℕ),
+  a ^ (2 * s) ≡ 1 [MOD N] → 1 ≤ a ^ s → ¬N ∣ a ^ s - 1 → ¬N ∣ a ^ s + 1 → 1 ≠ (a ^ s - 1).gcd N ∧ N ≠ (a ^ s - 1).gcd N
 ```
 
 ### `textbook_shor_sigma_root`
@@ -12845,8 +12797,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-shor-91, clay-relation-rsa.
 
 ```lean
-64 ^ 2 % 91 = 1 ∧
-  64 ≠ 1 ∧ 64 ≠ 90 ∧ (64 - 1) * (64 + 1) % 91 = 0 ∧ (64 - 1).gcd 91 = 7 ∧ (64 + 1).gcd 91 = 13 ∧ 7 * 13 = 91
+∀ (N x : ℕ), N ∣ (x - 1) * (x + 1) → ¬N ∣ x - 1 → ¬N ∣ x + 1 → (x - 1).gcd N ≠ 1 ∧ (x - 1).gcd N ≠ N
 ```
 
 ### `textbook_shor_sigma_root_reflected`
@@ -12854,12 +12805,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-shor-91, clay-relation-rsa.
 
 ```lean
-∀ (σ : ℕ),
-  σ - 1 = σ - 64 ^ 2 % 91 ∧
-    1 ≠ 64 ∧
-      90 ≠ 64 ∧
-        σ - 0 = σ - (64 - 1) * (64 + 1) % 91 ∧
-          σ - 7 = σ - (64 - 1).gcd 91 ∧ σ - 13 = σ - (64 + 1).gcd 91 ∧ σ - 91 = σ - 7 * 13
+∀ (N x : ℕ), N ∣ (x - 1) * (x + 1) → ¬N ∣ x - 1 → ¬N ∣ x + 1 → 1 ≠ (x - 1).gcd N ∧ N ≠ (x - 1).gcd N
 ```
 
 ### `textbook_sigma_involution`
@@ -14115,15 +14061,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-impossible-decode-small, algorithm-impossible-decode-wrong-witness.
 
 ```lean
-4 * 4 - 15 = 1 * 1 ∧ (4 - 1) * (4 + 1) = 15 ∧ ∀ b < 6, b * b ≠ 7 * 7 - 15
-```
-
-### `textbook_witness_gates_decode_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-impossible-decode-small, algorithm-impossible-decode-wrong-witness.
-
-```lean
-∀ (σ : ℕ), σ - 1 * 1 = σ - (4 * 4 - 15) ∧ σ - 15 = σ - (4 - 1) * (4 + 1) ∧ ∀ (b : ℕ), ¬b * b ≠ 7 * 7 - 15 → ¬b < 6
+∀ {p q a b : ℕ}, Nat.Prime p → Nat.Prime q → p ≤ q → (a - b) * (a + b) = p * q → 1 < a - b → a - b = p ∧ a + b = q
 ```
 
 ### `textbook_witness_move_computed`

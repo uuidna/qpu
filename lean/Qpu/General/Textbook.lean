@@ -1,6 +1,11 @@
+import Mathlib.Data.Nat.Factorization.Basic
+import Mathlib.Data.Nat.Totient
+import Mathlib.Data.Nat.Log
+import Mathlib.FieldTheory.Finite.Basic
 import Qpu.Claims.Reflection
 import Qpu.Communication.QuantumCommunication
 import Qpu.General.Sigma
+import Qpu.General.Witness
 import Qpu.Information.QuantumInformation
 import Qpu.Processing.QuantumAlgorithm
 import Qpu.Processing.QuantumErrorCorrection
@@ -1307,10 +1312,10 @@ theorem textbook_roadmap_decades : 100 * 10 ^ 4 = 1000000 ∧ 1 + 5 = 6 ∧ 5000
 theorem textbook_roadmap_milestone_three : 10 ^ 3 = 1000 ∧ 3 ≤ 6 ∧ 50000 * 10 ^ 3 = 50000000 := by decide
 /-- textbook_roadmap_milestone_three reflected by its shape, conjunction (examples: roadmap-milestone-3) -/
 @[reflection] theorem textbook_roadmap_milestone_three_reflected (σ : Nat) : (σ - (1000) = σ - (10 ^ 3)) ∧ (σ - (6) ≤ σ - (3)) ∧ (σ - (50000000) = σ - (50000 * 10 ^ 3)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_roadmap_milestone_three).1), Nat.sub_le_sub_left (textbook_roadmap_milestone_three).2.1 σ, congrArg (σ - ·) (Eq.symm (textbook_roadmap_milestone_three).2.2)⟩
-/-- the powers of 7 modulo 15 run 7, 4, 13, 1: the order is 4, and gcd(7² − 1, 15) = 3 and gcd(7² + 1, 15) = 5 are the factors, 3 × 5 = 15 (examples: algorithm-shor-15) -/
-theorem textbook_shor_fifteen_order : 7 ^ 1 % 15 = 7 ∧ 7 ^ 2 % 15 = 4 ∧ 7 ^ 3 % 15 = 13 ∧ 7 ^ 4 % 15 = 1 ∧ Nat.gcd (4 - 1) 15 = 3 ∧ Nat.gcd (4 + 1) 15 = 5 ∧ 3 * 5 = 15 := by decide
-/-- textbook_shor_fifteen_order reflected by its shape, conjunction (examples: algorithm-shor-15) -/
-@[reflection] theorem textbook_shor_fifteen_order_reflected (σ : Nat) : (σ - (7) = σ - (7 ^ 1 % 15)) ∧ (σ - (4) = σ - (7 ^ 2 % 15)) ∧ (σ - (13) = σ - (7 ^ 3 % 15)) ∧ (σ - (1) = σ - (7 ^ 4 % 15)) ∧ (σ - (3) = σ - (Nat.gcd (4 - 1) 15)) ∧ (σ - (5) = σ - (Nat.gcd (4 + 1) 15)) ∧ (σ - (15) = σ - (3 * 5)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).1), congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_fifteen_order).2.2.2.2.2.2)⟩
+/-- the order of every unit a modulo n divides φ(n), the number of units, so the order Shor's algorithm measures (4 for 7 modulo 15, dividing φ(15) = 8) is a divisor of the totient. From Mathlib's `orderOf_dvd_card` and `ZMod.card_units_eq_totient` (examples: algorithm-shor-15) -/
+theorem textbook_shor_fifteen_order (n : Nat) [NeZero n] (a : (ZMod n)ˣ) : orderOf a ∣ Nat.totient n :=
+  ZMod.card_units_eq_totient n ▸ orderOf_dvd_card
+example := @textbook_shor_fifteen_order
 /-- the QFT on three qubits has 2³ = 8 amplitudes, each of probability 12.50%: eight times 1250 basis points make the whole (examples: algorithm-qft-3) -/
 theorem textbook_qft_three_amplitudes : type_of% @QuantumAlgorithm.qft_unitary := @QuantumAlgorithm.qft_unitary
 /-- two qubits hold 2² = 4 items, the start sits 30° from the unmarked plane, and one iteration turns it by (2·1 + 1)·30° = 90°: the marked |00⟩ with certainty (examples: algorithm-grover) -/
@@ -1442,10 +1447,10 @@ theorem textbook_fold_pieces_under_bound : 10 + 7 + 11 + 12 = 40 ∧ 40 - 12 = 2
 theorem textbook_dashboard_algorithm_combinations : 7 * 19 * 1 * 2 * 6 * 1 * 1 * 8 * 2 * 11 = 280896 ∧ 1000 < 280896 := by decide
 /-- textbook_dashboard_algorithm_combinations reflected by its shape, conjunction (examples: match-pattern-dashboard) -/
 @[reflection] theorem textbook_dashboard_algorithm_combinations_reflected (σ : Nat) (hσ0 : (280896) ≤ σ) : (σ - (280896) = σ - (7 * 19 * 1 * 2 * 6 * 1 * 1 * 8 * 2 * 11)) ∧ (σ - (280896) < σ - (1000)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_dashboard_algorithm_combinations).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_dashboard_algorithm_combinations).2 hσ0) (textbook_dashboard_algorithm_combinations).2⟩
-/-- 21 sits between 2^4 and 2^5, and 5 < 2048: a five-bit comparison, not a register ceiling (examples: match-rsa-2048) -/
-theorem textbook_rsa_beyond_bound : 2 ^ 4 < 21 ∧ 21 < 2 ^ 5 ∧ 5 < 2048 := by decide
-/-- textbook_rsa_beyond_bound reflected by its shape, conjunction (examples: match-rsa-2048) -/
-@[reflection] theorem textbook_rsa_beyond_bound_reflected (σ : Nat) (hσ0 : (21) ≤ σ) (hσ1 : (2 ^ 5) ≤ σ) (hσ2 : (2048) ≤ σ) : (σ - (21) < σ - (2 ^ 4)) ∧ (σ - (2 ^ 5) < σ - (21)) ∧ (σ - (2048) < σ - (5)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_rsa_beyond_bound).1 hσ0) (textbook_rsa_beyond_bound).1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_rsa_beyond_bound).2.1 hσ1) (textbook_rsa_beyond_bound).2.1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_rsa_beyond_bound).2.2 hσ2) (textbook_rsa_beyond_bound).2.2⟩
+/-- every positive integer n sits between 2^k and 2^(k+1) for k = log₂ n, so its bit length is k + 1 and a comparison of widths is a comparison of these powers, not a register ceiling. From Mathlib's `Nat.pow_log_le_self` and `Nat.lt_pow_succ_log_self` (examples: match-rsa-2048) -/
+theorem textbook_rsa_beyond_bound (n : Nat) (h : n ≠ 0) : 2 ^ Nat.log 2 n ≤ n ∧ n < 2 ^ (Nat.log 2 n + 1) :=
+  ⟨Nat.pow_log_le_self 2 h, Nat.lt_pow_succ_log_self Nat.one_lt_two n⟩
+example := @textbook_rsa_beyond_bound
 /-- the audit replays every check: when none fails every check passes, however many checks the tree has grown to (examples: audit-self) -/
 theorem textbook_audit_all_pass (passed failed total : Nat) (h : passed + failed = total) (h0 : failed = 0) : passed = total := by omega
 example := @textbook_audit_all_pass
@@ -1518,10 +1523,12 @@ example := @textbook_mixed_radix
 @[reflection] theorem textbook_mixed_radix_contrapositive (q r d : Nat) : ¬ ((d + r * q) % r = d ∧ (d + r * q) / r = q) → ¬ ((d < r)) := fun hc hh => hc (textbook_mixed_radix q r d hh)
 /-- the converse of textbook_mixed_radix, refuted by a counterexample the kernel decides (examples: fold-queneau, fold-rosetta, leads-scientific-domains, payload-domain-configs, css-shadcn) -/
 @[reflection] theorem textbook_mixed_radix_converse_refuted : ¬ ∀ (q r d : Nat), ((d + r * q) % r = d ∧ (d + r * q) / r = q) → (d < r) := fun h => absurd (h 0 0 0 (by decide)) (by decide)
-/-- decoding is algebra, not search: a composition of fourteen positions of ten choices is decoded in fourteen steps, one per position, where trying candidates would take up to 10^14; a one-way address is never searched, and the formulas that decode are free for all (examples: fold-decode, fold-decode-one-way) -/
-theorem textbook_decode_not_search : 14 < 10 ^ 14 ∧ 14 * 1 = 14 := by decide
+/-- decoding is algebra, not search: a composition of n positions of b choices is one of b^n candidates, and decoding takes n steps, one per position, with n < b^n for every b > 1. From Mathlib's `Fintype.card_fun` and `Fintype.card_fin` (examples: fold-decode, fold-decode-one-way) -/
+theorem textbook_decode_not_search (n b : Nat) (hb : 1 < b) : Fintype.card (Fin n → Fin b) = b ^ n ∧ n < b ^ n :=
+  ⟨by rw [Fintype.card_fun, Fintype.card_fin, Fintype.card_fin], Nat.lt_pow_self hb⟩
+example := @textbook_decode_not_search
 /-- textbook_decode_not_search reflected by its shape, conjunction (examples: fold-decode, fold-decode-one-way) -/
-@[reflection] theorem textbook_decode_not_search_reflected (σ : Nat) (hσ0 : (10 ^ 14) ≤ σ) : (σ - (10 ^ 14) < σ - (14)) ∧ (σ - (14) = σ - (14 * 1)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_decode_not_search).1 hσ0) (textbook_decode_not_search).1, congrArg (σ - ·) (Eq.symm (textbook_decode_not_search).2)⟩
+@[reflection] theorem textbook_decode_not_search_reflected (n b : Nat) (hb : 1 < b) (σ : Nat) (hσ0 : (b ^ n) ≤ σ) : ((b ^ n) = (Fintype.card (Fin n → Fin b))) ∧ (σ - (b ^ n) < σ - (n)) := ⟨Eq.symm (textbook_decode_not_search n b hb).1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_decode_not_search n b hb).2 hσ0) (textbook_decode_not_search n b hb).2⟩
 /-- tampering is covered by the digest, not by refusing to search: a block's SHA-256 has 256 bits, so even a crafted collision takes about 2^128 trials, more than 10^38, while any modified copy is caught by one comparison and answered with the court's case (examples: seal-tamper-authentic) -/
 theorem textbook_tamper_detected : 256 / 2 = 128 ∧ 10 ^ 38 < 2 ^ 128 := by decide
 /-- textbook_tamper_detected reflected by its shape, conjunction (examples: seal-tamper-authentic) -/
@@ -1666,21 +1673,28 @@ example := @textbook_bill_covered
 @[reflection] theorem textbook_bill_covered_contrapositive (price cost : Nat) : ¬ (price - cost + cost = price) → ¬ ((cost ≤ price)) := fun hc hh => hc (textbook_bill_covered price cost hh)
 /-- the converse of textbook_bill_covered, proved (examples: repository-predeploy, textbook-bill-covered) -/
 @[reflection] theorem textbook_bill_covered_converse (price cost : Nat) : (price - cost + cost = price) → (cost ≤ price) := fun hc => by omega
-/-- Shor's reduction, factoring as order-finding: with the order r of a mod N (a^r ≡ 1), r even and a^(r/2) ≢ ±1 mod N, the square root of one splits N by gcd(a^(r/2) ± 1, N) — exact at any size over BigInt (shorReduction); the register that measures the order has no width ceiling (examples: algorithm-shor-reduction, algorithm-shor-beyond-bound) -/
-theorem textbook_shor_reduction : (7 ^ 4) % 15 = 1 ∧ (7 ^ 2) % 15 = 4 ∧ Nat.gcd (4 - 1) 15 = 3 ∧ Nat.gcd (4 + 1) 15 = 5 := by decide
+/-- Shor's reduction, factoring as order-finding: if a^(2s) ≡ 1 (mod N) and N divides neither a^s − 1 nor a^s + 1, then gcd(a^s − 1, N) is a factor of N other than 1 and N, since (a^s − 1)(a^s + 1) = a^(2s) − 1. From Mathlib's `Nat.modEq_iff_dvd'`, `Nat.ModEq.symm`, `pow_mul'`, `mul_comm`, `Nat.sq_sub_sq`, `one_pow` and `Nat.Coprime.dvd_mul_left` (examples: algorithm-shor-reduction, algorithm-shor-beyond-bound) -/
+theorem textbook_shor_reduction (N a s : Nat) (h : a ^ (2 * s) ≡ 1 [MOD N]) (ha : 1 ≤ a ^ s)
+    (h1 : ¬ N ∣ a ^ s - 1) (h2 : ¬ N ∣ a ^ s + 1) : Nat.gcd (a ^ s - 1) N ≠ 1 ∧ Nat.gcd (a ^ s - 1) N ≠ N := by
+  have hp : 1 ≤ a ^ (2 * s) := by rw [pow_mul']; exact Nat.one_le_pow _ _ ha
+  have hd : N ∣ a ^ (2 * s) - 1 := (Nat.modEq_iff_dvd' hp).mp h.symm
+  have he : (a ^ s - 1) * (a ^ s + 1) = a ^ (2 * s) - 1 := by rw [pow_mul', mul_comm, ← Nat.sq_sub_sq, one_pow]
+  rw [← he] at hd
+  exact ⟨fun hg => h2 ((Nat.Coprime.dvd_mul_left (Nat.Coprime.symm hg)).mp hd), fun hg => h1 (hg ▸ Nat.gcd_dvd_left (a ^ s - 1) N)⟩
+example := @textbook_shor_reduction
 /-- textbook_shor_reduction reflected by its shape, conjunction (examples: algorithm-shor-reduction, algorithm-shor-beyond-bound) -/
-@[reflection] theorem textbook_shor_reduction_reflected (σ : Nat) : (σ - (1) = σ - ((7 ^ 4) % 15)) ∧ (σ - (4) = σ - ((7 ^ 2) % 15)) ∧ (σ - (3) = σ - (Nat.gcd (4 - 1) 15)) ∧ (σ - (5) = σ - (Nat.gcd (4 + 1) 15)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_reduction).2.2.2)⟩
-/-- order-finding completed over the UUID quantum space and the RAID controller: the order of a mod N is the least r with a^r ≡ 1 (for a = 2, N = 15 it is 4 — 2^1, 2^2, 2^3 are not 1, 2^4 is), found by baby-step giant-step as r = m·i − j from the content-addressed power table (here m = 2, i = 2, j = 0, so 4 = 2·2 − 0). The meet-in-the-middle is O(√r) time and space, cheap over a content-addressed store; the order feeds Shor's reduction (textbook_shor_reduction) to factor. Found exactly when r fits the budget; beyond it, bounded — order-finding at RSA scale is the one step a physical quantum backend computes (textbook_rsa_beyond_bound) (examples: algorithm-discover, algorithm-order, algorithm-factor-find) -/
-theorem textbook_order_finding : 2 ^ 4 % 15 = 1 ∧ 2 ^ 1 % 15 ≠ 1 ∧ 2 ^ 2 % 15 ≠ 1 ∧ 2 ^ 3 % 15 ≠ 1 ∧ 4 = 2 * 2 - 0 := by decide
-/-- textbook_order_finding reflected by its shape, conjunction (examples: algorithm-discover, algorithm-order, algorithm-factor-find) -/
-@[reflection] theorem textbook_order_finding_reflected (σ : Nat) : (σ - (1) = σ - (2 ^ 4 % 15)) ∧ ((1) ≠ (2 ^ 1 % 15)) ∧ ((1) ≠ (2 ^ 2 % 15)) ∧ ((1) ≠ (2 ^ 3 % 15)) ∧ (σ - (2 * 2 - 0) = σ - (4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_order_finding).1), Ne.symm (textbook_order_finding).2.1, Ne.symm (textbook_order_finding).2.2.1, Ne.symm (textbook_order_finding).2.2.2.1, congrArg (σ - ·) (Eq.symm (textbook_order_finding).2.2.2.2)⟩
+@[reflection] theorem textbook_shor_reduction_reflected (N a s : Nat) (h : a ^ (2 * s) ≡ 1 [MOD N]) (ha : 1 ≤ a ^ s) (h1 : ¬ N ∣ a ^ s - 1) (h2 : ¬ N ∣ a ^ s + 1) : ((1) ≠ (Nat.gcd (a ^ s - 1) N)) ∧ ((N) ≠ (Nat.gcd (a ^ s - 1) N)) := ⟨Ne.symm (textbook_shor_reduction N a s h ha h1 h2).1, Ne.symm (textbook_shor_reduction N a s h ha h1 h2).2⟩
+/-- order-finding: the order r of x in ZMod N is the least positive power that is one, x^r = 1 and x^k ≠ 1 for every 0 < k < r, the witness baby-step giant-step checks. From Mathlib's `pow_orderOf_eq_one`, `pow_ne_one_of_lt_orderOf` and `LT.lt.ne'` (examples: algorithm-discover, algorithm-order, algorithm-factor-find) -/
+theorem textbook_order_finding (N : Nat) (x : ZMod N) : x ^ orderOf x = 1 ∧ ∀ k, 0 < k → k < orderOf x → x ^ k ≠ 1 :=
+  ⟨pow_orderOf_eq_one x, fun _ hk hlt => pow_ne_one_of_lt_orderOf hk.ne' hlt⟩
+example := @textbook_order_finding
 /-- a part found of an integer, multiplied by the rest, gives the integer back, so it divides it: the classical door checks every factor it finds by that product (readInteger and writeInteger, testPrimality, findFactors), at any size; the σ-involution reflection N = a² − b² = (a − b)(a + b) reads a factor pair off when a² − N is a square (reflectShift) (examples: algorithm-factor-1000-bit, algorithm-factor-observe, algorithm-factor-mersenne, payload-predict) -/
 theorem textbook_factors_divide (f c n : Nat) (h : f * c = n) : f ∣ n := ⟨c, h.symm⟩
 example := @textbook_factors_divide
-/-- getInteger reads an integer of any size from its decimal string (never a float, a fallback when absent) and listFactors returns the prime factors whose product is the integer: fifteen parses and lists as three times five, dividing back exactly (examples: algorithm-factor-15, algorithm-one-door) -/
-theorem textbook_factor_parse_list : 15 = 3 * 5 ∧ 15 / 3 = 5 := by decide
-/-- textbook_factor_parse_list reflected by its shape, conjunction (examples: algorithm-factor-15, algorithm-one-door) -/
-@[reflection] theorem textbook_factor_parse_list_reflected (σ : Nat) : (σ - (3 * 5) = σ - (15)) ∧ (σ - (5) = σ - (15 / 3)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_factor_parse_list).1), congrArg (σ - ·) (Eq.symm (textbook_factor_parse_list).2)⟩
+/-- listFactors returns the prime factorisation: for every n ≠ 0 the list of prime factors multiplies back to n and each is prime, fifteen listing as three times five. From Mathlib's `Nat.prod_primeFactorsList` and `Nat.prime_of_mem_primeFactorsList` (examples: algorithm-factor-15, algorithm-one-door) -/
+theorem textbook_factor_parse_list (n : Nat) (h : n ≠ 0) : n.primeFactorsList.prod = n ∧ ∀ p ∈ n.primeFactorsList, p.Prime :=
+  ⟨Nat.prod_primeFactorsList h, fun _ hp => Nat.prime_of_mem_primeFactorsList hp⟩
+example := @textbook_factor_parse_list
 /-- no missing scenario in the RAID: its five stores (filesystem, R2, KV, D1 the SQLite system db, Postgres) and their composite partition the storage choices, each exercised by a test running the same CRUD and both id types (Mongo text, Postgres number), so covered and missing make the whole and the missing are none — qpuRaidDb is one db over every store (examples: raid-bit-zero-verify) -/
 theorem textbook_raid_no_missing_store (covered missing total : Nat) (h : covered + missing = total) (h0 : missing = 0) : covered = total := by omega
 example := @textbook_raid_no_missing_store
@@ -1694,19 +1708,26 @@ example := @textbook_raid_no_missing_store
 theorem textbook_address_retrieval : 1 < 1000000 ∧ 1 * 1 = 1 := by decide
 /-- textbook_address_retrieval reflected by its shape, conjunction (examples: raid-binding0-mirror) -/
 @[reflection] theorem textbook_address_retrieval_reflected (σ : Nat) (hσ0 : (1000000) ≤ σ) : (σ - (1000000) < σ - (1)) ∧ (σ - (1) = σ - (1 * 1)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_address_retrieval).1 hσ0) (textbook_address_retrieval).1, congrArg (σ - ·) (Eq.symm (textbook_address_retrieval).2)⟩
-/-- relation_7 proven structurally, not by assertion: on the register's crypto modulus 91 (= rays × (faces − seed)), half = 8^2 = 64 is a σ-involution square root of one — 64² ≡ 1 mod 91 and 64 ∉ {1, 90}, so it is a nontrivial root, the σ-reflection σ₉₁(x) = 91 − x fixing neither ±1 image — hence the reflected pair (64 − seed)(64 + seed) ≡ 0 mod 91, and its two σ cases split 91 exactly: gcd(64 − 1, 91) = 7 = rays (the −seed case), gcd(64 + 1, 91) = 13 = faces − seed (the +seed case), 7 × 13 = 91; the clay crypto relation holds because the involution forces the split, Shor's reduction as a theorem rather than a search (examples: algorithm-shor-91, clay-relation-rsa) -/
-theorem textbook_shor_sigma_root : 64 ^ 2 % 91 = 1 ∧ 64 ≠ 1 ∧ 64 ≠ 90 ∧ (64 - 1) * (64 + 1) % 91 = 0 ∧ Nat.gcd (64 - 1) 91 = 7 ∧ Nat.gcd (64 + 1) 91 = 13 ∧ 7 * 13 = 91 := by decide
+/-- a nontrivial square root of one splits its modulus: if N divides (x − 1)(x + 1) but neither x − 1 nor x + 1, then gcd(x − 1, N) is neither 1 nor N, as 64 is for 91 = 7 · 13. From Mathlib's `Nat.Coprime.dvd_mul_left` (examples: algorithm-shor-91, clay-relation-rsa) -/
+theorem textbook_shor_sigma_root (N x : Nat) (h : N ∣ (x - 1) * (x + 1)) (h1 : ¬ N ∣ x - 1) (h2 : ¬ N ∣ x + 1) :
+    Nat.gcd (x - 1) N ≠ 1 ∧ Nat.gcd (x - 1) N ≠ N :=
+  ⟨fun hg => h2 ((Nat.Coprime.dvd_mul_left (Nat.Coprime.symm hg)).mp h), fun hg => h1 (hg ▸ Nat.gcd_dvd_left (x - 1) N)⟩
+example := @textbook_shor_sigma_root
 /-- textbook_shor_sigma_root reflected by its shape, conjunction (examples: algorithm-shor-91, clay-relation-rsa) -/
-@[reflection] theorem textbook_shor_sigma_root_reflected (σ : Nat) : (σ - (1) = σ - (64 ^ 2 % 91)) ∧ ((1) ≠ (64)) ∧ ((90) ≠ (64)) ∧ (σ - (0) = σ - ((64 - 1) * (64 + 1) % 91)) ∧ (σ - (7) = σ - (Nat.gcd (64 - 1) 91)) ∧ (σ - (13) = σ - (Nat.gcd (64 + 1) 91)) ∧ (σ - (91) = σ - (7 * 13)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).1), Ne.symm (textbook_shor_sigma_root).2.1, Ne.symm (textbook_shor_sigma_root).2.2.1, congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_shor_sigma_root).2.2.2.2.2.2)⟩
+@[reflection] theorem textbook_shor_sigma_root_reflected (N x : Nat) (h : N ∣ (x - 1) * (x + 1)) (h1 : ¬ N ∣ x - 1) (h2 : ¬ N ∣ x + 1) : ((1) ≠ (Nat.gcd (x - 1) N)) ∧ ((N) ≠ (Nat.gcd (x - 1) N)) := ⟨Ne.symm (textbook_shor_sigma_root N x h h1 h2).1, Ne.symm (textbook_shor_sigma_root N x h h1 h2).2⟩
 /-- a search resumed from the centre it reached covers the same centres as one search of both budgets: k centres from start, then m from start + k, is k + m from start, so a remainder handed on as the next lead loses and repeats nothing (examples: algorithm-factor-continues) -/
 theorem textbook_search_resumes (start k m : Nat) : (start + k) + m = start + (k + m) := by omega
 example := @textbook_search_resumes
 /-- textbook_search_resumes reflected by its shape, equality (examples: algorithm-factor-continues) -/
 @[reflection] theorem textbook_search_resumes_reflected (start k m : Nat) (σ : Nat) : σ - (start + (k + m)) = σ - ((start + k) + m) := congrArg (σ - ·) (Eq.symm (textbook_search_resumes start k m))
-/-- the impossible-integer trapdoor, the same zero-bit σ-reflection as the crypto σ-root (textbook_shor_sigma_root) read as a create/decode key: a semiprime N = p·q is minted with its witness the centre a = (p + q)/2 and gap b = (q − p)/2, so N = (a − b)(a + b) = a² − b² and q = σ_{2a}(p) = 2a − p (shown at p = 5, q = 13: a = 9, b = 4, 65 = (9 − 4)(9 + 4) = 81 − 16, 9 − 4 = 5, 9 + 4 = 13, 2·9 − 5 = 13). Blind, the reflection climbs a − ⌈√N⌉ + 1 centres (about b²/2a for close primes, about a for distant ones) — out of reach when b ≫ √a; with the witness a, one reflection decodes N. The clay cluster publishes the witness as a cross-UUID address (uuid N, a): the integer is hard to split yet trivial to decode by its address — a trapdoor the create/decode doors mint and open, never a factoring of an integer whose witness is unknown (the RSA-class decline of textbook_rsa_beyond_bound stands); built on sigma_involution and textbook_factors_divide (examples: algorithm-impossible-create, algorithm-impossible-decode) -/
-theorem textbook_impossible_trapdoor : (9 - 4) * (9 + 4) = 65 ∧ 9 * 9 - 4 * 4 = 65 ∧ 2 * 9 - 5 = 13 ∧ 9 - 4 = 5 ∧ 9 + 4 = 13 := by decide
+/-- the impossible-integer trapdoor: a semiprime minted as N = (a − b)(a + b) with centre a and gap b ≤ a is a² − b², and its second factor is the reflection 2a − (a − b) = a + b of the first. From Mathlib's `Nat.sq_sub_sq` and `mul_comm` (examples: algorithm-impossible-create, algorithm-impossible-decode) -/
+theorem textbook_impossible_trapdoor (a b : Nat) (h : b ≤ a) : (a - b) * (a + b) = a ^ 2 - b ^ 2 ∧ 2 * a - (a - b) = a + b :=
+  ⟨by rw [Nat.sq_sub_sq, mul_comm], by omega⟩
+example := @textbook_impossible_trapdoor
 /-- textbook_impossible_trapdoor reflected by its shape, conjunction (examples: algorithm-impossible-create, algorithm-impossible-decode) -/
-@[reflection] theorem textbook_impossible_trapdoor_reflected (σ : Nat) : (σ - (65) = σ - ((9 - 4) * (9 + 4))) ∧ (σ - (65) = σ - (9 * 9 - 4 * 4)) ∧ (σ - (13) = σ - (2 * 9 - 5)) ∧ (σ - (5) = σ - (9 - 4)) ∧ (σ - (13) = σ - (9 + 4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_impossible_trapdoor).1), congrArg (σ - ·) (Eq.symm (textbook_impossible_trapdoor).2.1), congrArg (σ - ·) (Eq.symm (textbook_impossible_trapdoor).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_impossible_trapdoor).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_impossible_trapdoor).2.2.2.2)⟩
+@[reflection] theorem textbook_impossible_trapdoor_reflected (a b : Nat) (h : b ≤ a) (σ : Nat) : (σ - (a ^ 2 - b ^ 2) = σ - ((a - b) * (a + b))) ∧ (σ - (a + b) = σ - (2 * a - (a - b))) := ⟨congrArg (σ - ·) (Eq.symm (textbook_impossible_trapdoor a b h).1), congrArg (σ - ·) (Eq.symm (textbook_impossible_trapdoor a b h).2)⟩
+/-- the contrapositive of textbook_impossible_trapdoor (examples: algorithm-impossible-create, algorithm-impossible-decode) -/
+@[reflection] theorem textbook_impossible_trapdoor_contrapositive (a b : Nat) : ¬ ((a - b) * (a + b) = a ^ 2 - b ^ 2 ∧ 2 * a - (a - b) = a + b) → ¬ ((b ≤ a)) := fun hc hh => hc (textbook_impossible_trapdoor a b hh)
 /-- the physics unlock, companion to the crypto σ-root (textbook_shor_sigma_root): the zero-bit σ-involution σ₁₀(x) = 10 − x relates temperature and time, splitting in space and vice versa, through the trinity combinations (clay-register.ts trinityFor: 3-6-9 ↔ 7-4-1 and 2-5-8 pair by σ₁₀, as 3+7 = 6+4 = 9+1 = 2+8 = 10), also reflecting the ordered clay sequence (its cases pair by digital-root seed-sum-10, fixed at seed 5, as reflectionOfRegister computes), and holding at all times — σ₁₀(σ₁₀(x)) = x is time-invariant, a σ-conservation law (the same involution that splits the RSA modulus in relation_7, the crypto↔physics symmetry); built on sigma_involution and textbook_reflection_sums_to_ten (examples: clay-reflection) -/
 theorem textbook_thermal_time_sigma : 10 - (10 - 3) = 3 ∧ 10 - (10 - 7) = 7 ∧ 10 - (10 - 5) = 5 ∧ 10 - 5 = 5 ∧ 3 + 7 = 10 ∧ 6 + 4 = 10 ∧ 9 + 1 = 10 ∧ 2 + 8 = 10 := by decide
 /-- textbook_thermal_time_sigma reflected by its shape, conjunction (examples: clay-reflection) -/
@@ -1776,10 +1797,12 @@ theorem textbook_bch_code : 2 ^ 4 - 1 = 15 ∧ 15 - 7 = 8 ∧ (5 - 1) / 2 = 2 :=
 @[reflection] theorem textbook_bch_code_reflected (σ : Nat) : (σ - (15) = σ - (2 ^ 4 - 1)) ∧ (σ - (8) = σ - (15 - 7)) ∧ (σ - (2) = σ - ((5 - 1) / 2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_bch_code).1), congrArg (σ - ·) (Eq.symm (textbook_bch_code).2.1), congrArg (σ - ·) (Eq.symm (textbook_bch_code).2.2)⟩
 /-- the Steane code [[7, 1, 3]]: a CSS stabilizer code built from two copies of Hamming(7, 4) (textbook_hamming_code), with 7 physical qubits encoding 1 logical qubit (7 − 2·3, the two classical parity sets), distance 3, correcting ⌊(3−1)/2⌋ = 1 error — the smallest colour code and the CSS / stabilizer family representative; threshold bound at the proven distance (examples: ftqc-all) -/
 theorem textbook_steane_css : type_of% @QuantumErrorCorrection.steane_css := @QuantumErrorCorrection.steane_css
-/-- the convert-slow-to-fast law: the σ-involution decoder recovers by one reflection (σ₁₂(σ₁₂(5)) = 5, σ² = id — content-addressed reflect-and-restore, not an O(n·copies) rescan), which is why it is the fastest of the five e2e codes while the odd-repetition consensus (2·1 + 1 = 3 copies correcting ⌊(3−1)/2⌋ = 1) is kept as the soundness bar — fastest-correct-wins drops no code. The σ-code family; the speedup itself stays a measured e2e claim, the recovery a proven involution (examples: ftqc-all) -/
-theorem textbook_involution_decoder : 12 - (12 - 5) = 5 ∧ 2 * 1 + 1 = 3 ∧ (3 - 1) / 2 = 1 := by decide
+/-- the σ-involution decoder recovers by one reflection: σ_d(σ_d(x)) = d − (d − x) = x for every integer, and a repetition code of distance 2t + 1 corrects (2t + 1 − 1)/2 = t errors. From Mathlib's `sub_sub_cancel` (examples: ftqc-all) -/
+theorem textbook_involution_decoder (d x : Int) (t : Nat) : d - (d - x) = x ∧ (2 * t + 1 - 1) / 2 = t :=
+  ⟨sub_sub_cancel d x, by omega⟩
+example := @textbook_involution_decoder
 /-- textbook_involution_decoder reflected by its shape, conjunction (examples: ftqc-all) -/
-@[reflection] theorem textbook_involution_decoder_reflected (σ : Nat) : (σ - (5) = σ - (12 - (12 - 5))) ∧ (σ - (3) = σ - (2 * 1 + 1)) ∧ (σ - (1) = σ - ((3 - 1) / 2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_involution_decoder).1), congrArg (σ - ·) (Eq.symm (textbook_involution_decoder).2.1), congrArg (σ - ·) (Eq.symm (textbook_involution_decoder).2.2)⟩
+@[reflection] theorem textbook_involution_decoder_reflected (d x : Int) (t : Nat) (σ : Nat) : ((x) = (d - (d - x))) ∧ (σ - (t) = σ - ((2 * t + 1 - 1) / 2)) := ⟨Eq.symm (textbook_involution_decoder d x t).1, congrArg (σ - ·) (Eq.symm (textbook_involution_decoder d x t).2)⟩
 /-- a (3, 6)-regular Gallager LDPC code: each bit sits in 3 parity checks and each check joins 6 bits, a sparse parity-check matrix with design rate 1 − 3/6 = 1/2 (k = 3 data of n = 6), decoded near the Shannon limit by belief propagation on the sparse Tanner graph; the LDPC family, the modern capacity-approaching code (examples: ftqc-all) -/
 theorem textbook_ldpc_code : 6 - 3 = 3 ∧ 2 * 3 = 6 ∧ 3 + 3 = 6 := by decide
 /-- textbook_ldpc_code reflected by its shape, conjunction (examples: ftqc-all) -/
@@ -1816,26 +1839,31 @@ theorem textbook_gauss_triangular : 2 * 10 = 4 * 5 ∧ 2 * 36 = 8 * 9 ∧ 2 * 28
 theorem textbook_power_of_two : 2 ^ 3 = 8 ∧ 2 ^ 8 = 256 ∧ 2 ^ 4 = 2 * 2 ^ 3 := by decide
 /-- textbook_power_of_two reflected by its shape, conjunction (examples: clay-register) -/
 @[reflection] theorem textbook_power_of_two_reflected (σ : Nat) : (σ - (8) = σ - (2 ^ 3)) ∧ (σ - (256) = σ - (2 ^ 8)) ∧ (σ - (2 * 2 ^ 3) = σ - (2 ^ 4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_power_of_two).1), congrArg (σ - ·) (Eq.symm (textbook_power_of_two).2.1), congrArg (σ - ·) (Eq.symm (textbook_power_of_two).2.2)⟩
-/-- Fermat's little theorem, a^(p−1) ≡ 1 (mod p) for a prime p (the p−1 case of Euler's theorem): 2⁶≡1 mod 7, 3⁴≡1 mod 5, 2⁴≡1 mod 5. The textbook meaning of the clay relations over powMod (modular exponentiation); each named euler-fermat-<value> (examples: clay-register) -/
-theorem textbook_euler_fermat : 2 ^ 6 % 7 = 1 ∧ 3 ^ 4 % 5 = 1 ∧ 2 ^ 4 % 5 = 1 := by decide
-/-- textbook_euler_fermat reflected by its shape, conjunction (examples: clay-register) -/
-@[reflection] theorem textbook_euler_fermat_reflected (σ : Nat) : (σ - (1) = σ - (2 ^ 6 % 7)) ∧ (σ - (1) = σ - (3 ^ 4 % 5)) ∧ (σ - (1) = σ - (2 ^ 4 % 5)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_euler_fermat).1), congrArg (σ - ·) (Eq.symm (textbook_euler_fermat).2.1), congrArg (σ - ·) (Eq.symm (textbook_euler_fermat).2.2)⟩
+/-- Fermat's little theorem: a^(p − 1) = 1 in ZMod p for a prime p and every a ≠ 0, the textbook meaning of the clay relations over powMod. From Mathlib's `ZMod.pow_card_sub_one_eq_one` (examples: clay-register) -/
+theorem textbook_euler_fermat (p : Nat) [Fact p.Prime] (a : ZMod p) (ha : a ≠ 0) : a ^ (p - 1) = 1 :=
+  ZMod.pow_card_sub_one_eq_one ha
+example := @textbook_euler_fermat
+/-- textbook_euler_fermat reflected by its shape, equality (examples: clay-register) -/
+@[reflection] theorem textbook_euler_fermat_reflected (p : Nat) [Fact p.Prime] (a : ZMod p) (ha : a ≠ 0) : (1) = (a ^ (p - 1)) := Eq.symm (textbook_euler_fermat p a ha)
 /-- the commutative law a·b = b·a, the symmetry of a bilinear form: 9·6=6·9, 7·4=4·7. The textbook meaning of the clay relations qaoaZz a b = qaoaZz b a and qaoaZz = qaoaX (the ZZ/X mixer symmetry); each named bilinear-symmetry-<value> (examples: clay-register) -/
 theorem textbook_bilinear_symmetry : 9 * 6 = 6 * 9 ∧ 7 * 4 = 4 * 7 := by decide
 /-- textbook_bilinear_symmetry reflected by its shape, conjunction (examples: clay-register) -/
 @[reflection] theorem textbook_bilinear_symmetry_reflected (σ : Nat) : (σ - (6 * 9) = σ - (9 * 6)) ∧ (σ - (4 * 7) = σ - (7 * 4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_bilinear_symmetry).1), congrArg (σ - ·) (Eq.symm (textbook_bilinear_symmetry).2)⟩
-/-- Euler's totient at twice a prime, φ(2p) = p − 1: φ(74) = φ(2·37) = 37 − 1 = 36, the degree of the cyclotomic factor Φ₇₄ of the thousand-bit integer 2^999+1. The textbook meaning of relation_36; named euler-totient-36 (examples: clay-register) -/
-theorem textbook_euler_totient : 37 - 1 = 36 ∧ 2 * 37 = 74 := by decide
-/-- textbook_euler_totient reflected by its shape, conjunction (examples: clay-register) -/
-@[reflection] theorem textbook_euler_totient_reflected (σ : Nat) : (σ - (36) = σ - (37 - 1)) ∧ (σ - (74) = σ - (2 * 37)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_euler_totient).1), congrArg (σ - ·) (Eq.symm (textbook_euler_totient).2)⟩
+/-- Euler's totient at twice an odd prime, φ(2p) = p − 1: φ(74) = 36, the degree of the cyclotomic factor Φ₇₄ of 2^999 + 1 and the meaning of relation_36. From Mathlib's `Nat.totient_mul`, `Nat.coprime_primes`, `Nat.prime_two`, `Nat.totient_two`, `Nat.totient_prime` and `one_mul` (examples: clay-register) -/
+theorem textbook_euler_totient (p : Nat) (hp : p.Prime) (h2 : p ≠ 2) : Nat.totient (2 * p) = p - 1 := by
+  rw [Nat.totient_mul ((Nat.coprime_primes Nat.prime_two hp).mpr h2.symm), Nat.totient_two, Nat.totient_prime hp, one_mul]
+example := @textbook_euler_totient
+/-- textbook_euler_totient reflected by its shape, equality (examples: clay-register) -/
+@[reflection] theorem textbook_euler_totient_reflected (p : Nat) (hp : p.Prime) (h2 : p ≠ 2) : (p - 1) = (Nat.totient (2 * p)) := Eq.symm (textbook_euler_totient p hp h2)
 /-- the Fibonacci recurrence F(n) = F(n−1) + F(n−2): 5+8=13, 8+13=21, 13+21=34. The textbook meaning of the clay relations over fibFusion; each named fibonacci-<value> (examples: clay-register) -/
 theorem textbook_fibonacci : 5 + 8 = 13 ∧ 8 + 13 = 21 ∧ 13 + 21 = 34 := by decide
 /-- textbook_fibonacci reflected by its shape, conjunction (examples: clay-register) -/
 @[reflection] theorem textbook_fibonacci_reflected (σ : Nat) : (σ - (13) = σ - (5 + 8)) ∧ (σ - (21) = σ - (8 + 13)) ∧ (σ - (34) = σ - (13 + 21)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_fibonacci).1), congrArg (σ - ·) (Eq.symm (textbook_fibonacci).2.1), congrArg (σ - ·) (Eq.symm (textbook_fibonacci).2.2)⟩
-/-- the factorial n! = n·(n−1)!: 1·2·3·4 = 24 = 4!, 5·24 = 120 = 5!. The textbook meaning of the clay relations over factorial; each named factorial-<value> (examples: clay-register) -/
-theorem textbook_factorial : 1 * 2 * 3 * 4 = 24 ∧ 5 * 24 = 120 := by decide
-/-- textbook_factorial reflected by its shape, conjunction (examples: clay-register) -/
-@[reflection] theorem textbook_factorial_reflected (σ : Nat) : (σ - (24) = σ - (1 * 2 * 3 * 4)) ∧ (σ - (120) = σ - (5 * 24)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_factorial).1), congrArg (σ - ·) (Eq.symm (textbook_factorial).2)⟩
+/-- the factorial (n + 1)! = (n + 1) · n!, the textbook meaning of the clay relations over factorial. From Mathlib's `Nat.factorial_succ` (examples: clay-register) -/
+theorem textbook_factorial (n : Nat) : Nat.factorial (n + 1) = (n + 1) * Nat.factorial n := Nat.factorial_succ n
+example := @textbook_factorial
+/-- textbook_factorial reflected by its shape, equality (examples: clay-register) -/
+@[reflection] theorem textbook_factorial_reflected (n : Nat) : ((n + 1) * Nat.factorial n) = (Nat.factorial (n + 1)) := Eq.symm (textbook_factorial n)
 /-- the magic constant of the order-3 magic square, (1 + … + 9) / 3 = 15 (the common row, column and diagonal sum): Σ₁⁹ = 45, 45/3 = 15. The textbook meaning of relation_15 (magicBlock = glProd hexbit seed); named magic-constant-15 (examples: clay-register) -/
 theorem textbook_magic_constant : 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 = 45 ∧ 45 / 3 = 15 ∧ 3 * 15 = 45 := by decide
 /-- textbook_magic_constant reflected by its shape, conjunction (examples: clay-register) -/
@@ -2003,10 +2031,9 @@ example := @textbook_raid_bit_zero_verify
 theorem textbook_reflection_by_shape (d a b : Nat) (h : a ≤ b) (P Q : Prop) (hpq : P → Q) : d - b ≤ d - a ∧ (¬ Q → ¬ P) := ⟨Nat.sub_le_sub_left h d, fun hq hp => hq (hpq hp)⟩
 /-- textbook_reflection_by_shape reflected by its shape, conjunction (examples: textbook-reflected) -/
 @[reflection] theorem textbook_reflection_by_shape_reflected (d a b : Nat) (h : a ≤ b) (P Q : Prop) (hpq : P → Q) (σ : Nat) : (σ - (d - a) ≤ σ - (d - b)) ∧ (¬ (¬ P) → ¬ ((¬ Q))) := ⟨Nat.sub_le_sub_left (textbook_reflection_by_shape d a b h P Q hpq).1 σ, fun hc hh => hc ((textbook_reflection_by_shape d a b h P Q hpq).2 hh)⟩
-/-- the RSA cross-formula relation_rsa holds on the register's own constants shorBase 8 and shorModulus 91: 8^4 ≡ 1 (mod 91) so 8^2 = 64 is a square root of one, and gcd(64 − 1, 91) = 7, gcd(64 + 1, 91) = 13, 7 · 13 = 91 — Shor's reduction in exact integers, the shorBase/shorModulus pair the clay register carries (examples: clay-relation-rsa) -/
-theorem textbook_relation_rsa : Nat.gcd (8 ^ 2 - 1) 91 = 7 ∧ Nat.gcd (8 ^ 2 + 1) 91 = 13 ∧ 7 * 13 = 91 ∧ 8 ^ 4 % 91 = 1 := by decide
-/-- textbook_relation_rsa reflected by its shape, conjunction (examples: clay-relation-rsa) -/
-@[reflection] theorem textbook_relation_rsa_reflected (σ : Nat) : (σ - (7) = σ - (Nat.gcd (8 ^ 2 - 1) 91)) ∧ (σ - (13) = σ - (Nat.gcd (8 ^ 2 + 1) 91)) ∧ (σ - (91) = σ - (7 * 13)) ∧ (σ - (1) = σ - (8 ^ 4 % 91)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_relation_rsa).1), congrArg (σ - ·) (Eq.symm (textbook_relation_rsa).2.1), congrArg (σ - ·) (Eq.symm (textbook_relation_rsa).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_relation_rsa).2.2.2)⟩
+/-- Euler's theorem, the law RSA rests on: x^φ(n) ≡ 1 (mod n) for every x coprime to n, of which the register's shorBase 8 and shorModulus 91 are one case. From Mathlib's `Nat.ModEq.pow_totient` (examples: clay-relation-rsa) -/
+theorem textbook_relation_rsa (x n : Nat) (h : x.Coprime n) : x ^ Nat.totient n ≡ 1 [MOD n] := Nat.ModEq.pow_totient h
+example := @textbook_relation_rsa
 /-- the ancient foundation fused into the court is four codes (Ur-Nammu, Hammurabi, the Twelve Tables, the Corpus Juris Civilis) and five maxims (audi alteram partem, nemo iudex in causa sua, nulla poena sine lege, ei incumbit probatio, res judicata) = nine entries of ANCIENT_LAW, and the burden-of-proof maxim ei incumbit probatio is exactly this tree's duty legal_only_the_proven_is_admitted (examples: legal-ancient) -/
 theorem textbook_ancient_law : 4 + 5 = 9 := by decide
 /-- textbook_ancient_law reflected by its shape, equality (examples: legal-ancient) -/
@@ -2058,14 +2085,13 @@ example : (7 : Nat) / 0 = 0 ∧ (7 : Nat) % 0 = 7 ∧ (-7 : Int) / 0 = 0 := text
 theorem textbook_receipt_binds_sha256 : 256 / 4 = 64 ∧ 64 / 2 = 32 ∧ 256 / 2 = 128 ∧ 2 ^ 32 < 2 ^ 128 := by decide
 /-- textbook_receipt_binds_sha256 reflected by its shape, conjunction (examples: algorithm-factor-order-composite, algorithm-impossible-decode-wrong-witness, algorithm-factor-test-integer) -/
 @[reflection] theorem textbook_receipt_binds_sha256_reflected (σ : Nat) (hσ0 : (2 ^ 128) ≤ σ) : (σ - (64) = σ - (256 / 4)) ∧ (σ - (32) = σ - (64 / 2)) ∧ (σ - (128) = σ - (256 / 2)) ∧ (σ - (2 ^ 128) < σ - (2 ^ 32)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_receipt_binds_sha256).1), congrArg (σ - ·) (Eq.symm (textbook_receipt_binds_sha256).2.1), congrArg (σ - ·) (Eq.symm (textbook_receipt_binds_sha256).2.2.1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_receipt_binds_sha256).2.2.2 hσ0) (textbook_receipt_binds_sha256).2.2.2⟩
-/-- a decode row says prime only after Miller–Rabin: the order of 2 mod 105 is 12 (2^12 ≡ 1), and Shor's reduction gcd(2^6 ∓ 1, 105) splits 105 into 21 and 5 — a factor of the reduction is a divisor, not a prime, and 21 = 3 · 7 is composite (examples: algorithm-factor-order-composite) -/
-theorem textbook_decode_rows_tested : 2 ^ 12 % 105 = 1 ∧ Nat.gcd (2 ^ 6 - 1) 105 = 21 ∧ Nat.gcd (2 ^ 6 + 1) 105 = 5 ∧ 5 * 21 = 105 ∧ 3 * 7 = 21 := by decide
-/-- textbook_decode_rows_tested reflected by its shape, conjunction (examples: algorithm-factor-order-composite) -/
-@[reflection] theorem textbook_decode_rows_tested_reflected (σ : Nat) : (σ - (1) = σ - (2 ^ 12 % 105)) ∧ (σ - (21) = σ - (Nat.gcd (2 ^ 6 - 1) 105)) ∧ (σ - (5) = σ - (Nat.gcd (2 ^ 6 + 1) 105)) ∧ (σ - (105) = σ - (5 * 21)) ∧ (σ - (21) = σ - (3 * 7)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_decode_rows_tested).1), congrArg (σ - ·) (Eq.symm (textbook_decode_rows_tested).2.1), congrArg (σ - ·) (Eq.symm (textbook_decode_rows_tested).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_decode_rows_tested).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_decode_rows_tested).2.2.2.2)⟩
-/-- the witness gates the decode: at the centre a = 4, a² − N = 16 − 15 = 1 = 1², so N = (a − b)(a + b) = 3 · 5; at the wrong centre a = 7, a² − N = 34 is no square (no b below 6 squares to it), so the reflection at the witness decodes nothing and no other route may answer in its name (examples: algorithm-impossible-decode-small, algorithm-impossible-decode-wrong-witness) -/
-theorem textbook_witness_gates_decode : 4 * 4 - 15 = 1 * 1 ∧ (4 - 1) * (4 + 1) = 15 ∧ (∀ b, b < 6 → b * b ≠ 7 * 7 - 15) := by decide
-/-- textbook_witness_gates_decode reflected by its shape, conjunction (examples: algorithm-impossible-decode-small, algorithm-impossible-decode-wrong-witness) -/
-@[reflection] theorem textbook_witness_gates_decode_reflected (σ : Nat) : (σ - (1 * 1) = σ - (4 * 4 - 15)) ∧ (σ - (15) = σ - ((4 - 1) * (4 + 1))) ∧ (∀ b, ¬ (b * b ≠ 7 * 7 - 15) → ¬ ((b < 6))) := ⟨congrArg (σ - ·) (Eq.symm (textbook_witness_gates_decode).1), congrArg (σ - ·) (Eq.symm (textbook_witness_gates_decode).2.1), fun b => fun hc hh => hc (((textbook_witness_gates_decode).2.2 b) hh)⟩
+/-- a decode row says prime only after testing: a factor d ≥ 2 that is not prime has a prime factor m < d, so a divisor the reduction returns, such as 21 of 105, is split further. From Mathlib's `Nat.exists_prime_and_dvd` and `lt_of_le_of_ne` (examples: algorithm-factor-order-composite) -/
+theorem textbook_decode_rows_tested (d : Nat) (h1 : 2 ≤ d) (hd : ¬ d.Prime) : ∃ m, m.Prime ∧ m ∣ d ∧ m < d := by
+  obtain ⟨m, hm, hmd⟩ := Nat.exists_prime_and_dvd (show d ≠ 1 by omega)
+  exact ⟨m, hm, hmd, lt_of_le_of_ne (Nat.le_of_dvd (by omega) hmd) (fun e => hd (e ▸ hm))⟩
+example := @textbook_decode_rows_tested
+/-- the witness gates the decode: for primes p ≤ q, a centre a and gap b with (a − b)(a + b) = p · q and 1 < a − b have a − b = p and a + b = q, so only the true witness decodes and every other candidate decodes nothing. From Witness.witness_unique (examples: algorithm-impossible-decode-small, algorithm-impossible-decode-wrong-witness) -/
+theorem textbook_witness_gates_decode : type_of% @Witness.witness_unique := @Witness.witness_unique
 /-- a check has three states — passed (recomputed now), contradicted (a witness present and disagreeing) and missing (the witness not supplied, null) — so the decided checks are all but the missing ones and a pass is one of them: a neighbour link of caller strings, a decode without its address and an artifact without its bytes are missing, never passed (examples: verify-neighbours-asserted, verify-neighbours-witnessed, verify-neighbours-contradicted, seal-artifacts-digest-alone) -/
 theorem textbook_check_three_states (passed contradicted missing total : Nat) (h : passed + contradicted + missing = total) : total - missing = passed + contradicted ∧ passed ≤ total - missing := by omega
 example := @textbook_check_three_states
