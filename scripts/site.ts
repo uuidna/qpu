@@ -1,48 +1,44 @@
-// The VitePress site, from the same seeds Payload writes. Each seed page becomes one Markdown page at its
-// breadcrumb URL, the MCP catalogue becomes static JSON, and the sidebar lists the waves. When Payload or its
-// database is down, this site still serves every page and the catalogue. A static site answers no tools/call:
-// mcp.json is what tools/list answers, and the live door stays POST /api/mcp.
+// The VitePress site, from the quantum tree itself: one section per clause of the ISO/IEC 4879:2024 vocabulary, one for
+// the standards it fuses, and one page per MCP toolbox with its tools. The MCP catalogue becomes static JSON beside it. A
+// static site answers no tools/call: mcp.json is what tools/list answers, and the live door stays POST /api/mcp.
 import { PROSE } from '../src/quantum/processing/prose-index.ts'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { TOOLBOXES, handle } from '../src/quantum/processing/mcp.ts'
-import { allSeedWaves } from '../src/quantum/payload/seed-waves.ts'
+import { QUANTUM_TERMS } from '../src/quantum/processing/quantum-vocabulary.ts'
+import { ISO_DIMENSIONS } from '../src/quantum/processing/iso-index.ts'
 
-type Text = { text?: string; children?: Text[] }
-type Page = {
-  title: string
-  slug: string
-  meta: { title: string; description: string }
-  breadcrumbs: { url: string; label: string }[]
-  layout: { contentFields: { columnOne: { root: { children: Text[] } } } }[]
-}
+type Page = { title: string; url: string; description: string; lines: string[] }
+type Section = { name: string; pages: Page[] }
 
 const out = 'site'
 const yaml = (text: string) => JSON.stringify(text.replace(/\s+/g, ' ').trim())
 /** Markdown and Vue read the page as text: no tag, no interpolation, no accidental markup. */
 const plain = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\{\{/g, '&#123;&#123;').replace(/([\\`*_|#[\]])/g, '\\$1')
-const textOf = (node: Text): string => node.text ?? (node.children ?? []).map(textOf).join('')
+const slug = (text: string) => text.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-|-$/g, '')
 const write = (path: string, text: string) => { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, text) }
 
-const waves = allSeedWaves() as unknown as { name: string; pages: Page[] }[]
-const seen = new Map<string, string>()
+const clauses = [...new Set(QUANTUM_TERMS.map((term) => term.clause.split('.').slice(0, 2).join('.')))]
+const sections: Section[] = [
+  ...clauses.map((clause) => ({
+    name: clause,
+    pages: QUANTUM_TERMS.filter((term) => term.clause.startsWith(`${clause}.`)).map((term) => ({ title: `${term.clause} ${term.name}`, url: `/${slug(`${term.clause} ${term.name}`)}`, description: `${term.standard} ${term.clause}`, lines: [`${term.standard} ${term.clause}: ${term.name}`] })),
+  })),
+  { name: 'standards', pages: ISO_DIMENSIONS.map((dimension) => ({ title: dimension, url: `/standards/${slug(dimension)}`, description: dimension, lines: [dimension] })) },
+  {
+    name: 'mcp',
+    pages: TOOLBOXES.map((box) => ({ title: box.name, url: `/mcp/${slug(box.name)}`, description: box.idea, lines: [box.idea, ...box.tools.map((tool) => `${tool.name}: ${tool.description}`)] })),
+  },
+]
+
 const sidebar: { text: string; collapsed: boolean; items: { text: string; link: string }[] }[] = []
-for (const wave of waves) {
-  const items: { text: string; link: string }[] = []
-  for (const page of wave.pages) {
-    const url = page.breadcrumbs.at(-1)?.url ?? `/${page.slug}`
-    // the home page of a wave and the site's own index must not collide with another seed at the same URL
-    if (seen.has(url)) continue
-    seen.set(url, wave.name)
-    const paragraphs = page.layout.flatMap((block) => block.contentFields.columnOne.root.children.map(textOf)).filter((line) => line.length > 0)
-    const trail = page.breadcrumbs.slice(0, -1).map((crumb) => `[${plain(crumb.label)}](${crumb.url})`).join(' / ')
-    write(join(out, `${url}.md`), [
-      '---', `title: ${yaml(page.meta.title || page.title)}`, `description: ${yaml(page.meta.description)}`, `wave: ${yaml(wave.name)}`, '---', '',
-      `# ${plain(page.title)}`, '', ...(trail ? [trail, ''] : []), ...paragraphs.flatMap((line) => [plain(line), '']),
-    ].join('\n'))
-    items.push({ text: page.title, link: url })
+let pages = 0
+for (const section of sections) {
+  for (const page of section.pages) {
+    write(join(out, `${page.url}.md`), ['---', `title: ${yaml(page.title)}`, `description: ${yaml(page.description)}`, `section: ${yaml(section.name)}`, '---', '', `# ${plain(page.title)}`, '', ...page.lines.flatMap((line) => [plain(line), ''])].join('\n'))
+    pages += 1
   }
-  sidebar.push({ text: wave.name, collapsed: true, items })
+  sidebar.push({ text: section.name, collapsed: true, items: section.pages.map((page) => ({ text: page.title, link: page.url })) })
 }
 
 // the catalogue of claims Lean writes, as a page of the site
@@ -56,10 +52,10 @@ write(join(out, 'index.md'), [
   '---', 'title: "Quantum Processing Unit"', PROSE.scriptsSite_s2, '---', '',
   '# Quantum Processing Unit', '',
   PROSE.scriptsSite_s3, '',
-  `- ${seen.size} pages in ${waves.length} waves, listed in the sidebar`,
+  `- ${pages} pages in ${sections.length} sections, listed in the sidebar`,
   `- [The MCP catalogue](/mcp.json): ${tools.length} tools in ${TOOLBOXES.length} toolboxes, as \`tools/list\` answers them. Calls go to \`POST /api/mcp\` on the live site.`,
   '- [Catalogue of claims](/catalogue): every theorem the kernel accepted, as a product claimed by its author',
   '- [Draft applications](/patents/): one draft per theoretical use, written by Lean from its inline docs and frontmatter',
   '- [Prose](/prose/): every sentence, by the Lean definition that states it; [prose.json](/prose.json) is the same list for a client', '',
 ].join('\n'))
-console.log(JSON.stringify({ pages: seen.size, waves: waves.length, tools: tools.length, out }))
+console.log(JSON.stringify({ pages, sections: sections.length, tools: tools.length, out }))

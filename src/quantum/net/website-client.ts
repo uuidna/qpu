@@ -1,3 +1,4 @@
+import { PROSE, proseFill } from '../processing/prose-index.ts'
 // The website's own routes are the interface. MCP, the LLMs, and the connectors call these
 // paths. A find answer is the same route again, one call per document, plus any qpu block the
 // document already holds. SEO is read from the instance, including its lexical text. Media
@@ -164,20 +165,20 @@ const payloadPagesNext = (raw: unknown = undefined, origin = WEBSITE_ORIGIN, col
   const findName = route?.name ?? `find_${collection.replace(/-/g, '_')}`
   const base = { phase: 'next' as const, via: 'payload-api' as const, plugin: 'qpuMcpPlugin' as const, src: false as const, fetched: false as const, method: 'GET' as const, url, collection }
   if (raw === undefined || raw === null || raw === false || raw === true) {
-    return { ...base, calls: [] as PageCall[], refused: false as const, says: `Next is GET ${url}. The client hands the documents back. Each document is that route again, plus any qpu block it already holds. SEO is read from that instance, and each relation is the following find. src is not a door. Nothing is fetched.` }
+    return { ...base, calls: [] as PageCall[], refused: false as const, says: proseFill(PROSE.quantumNetWebsiteClient_p1, url) }
   }
   let value: unknown = raw
   if (typeof raw === 'string') {
-    try { value = JSON.parse(raw) } catch { return { ...base, calls: [] as PageCall[], refused: true as const, says: 'The pages answer is not JSON. Nothing is fetched.' } }
+    try { value = JSON.parse(raw) } catch { return { ...base, calls: [] as PageCall[], refused: true as const, says: PROSE.quantumNetWebsiteClient_p2 } }
   }
   const docs = docsOf(value)
-  if (!docs) return { ...base, calls: [] as PageCall[], refused: true as const, says: 'The pages answer has no documents. Nothing is fetched.' }
+  if (!docs) return { ...base, calls: [] as PageCall[], refused: true as const, says: PROSE.quantumNetWebsiteClient_p3 }
   const follows = followIndex(value)
   const calls = docs.flatMap((doc) => executableCalls(collection, doc).map((call) => {
     const named = pageCall(call, url, findName)
     return { ...named, next: named.name === findName ? payloadSeoNext(doc, origin, follows) : null }
   }))
-  return { ...base, calls, refused: false as const, says: `${docs.length} document(s). Each is GET ${url} again, plus any qpu block it already holds. SEO is read from that instance. src is not a door. Nothing is fetched.` }
+  return { ...base, calls, refused: false as const, says: proseFill(PROSE.quantumNetWebsiteClient_p4, docs.length, url) }
 }
 
 /** The call after tools/list. Each door is tools/call on the same Payload API with a payload-mcp-api-keys Bearer. Without that key, next is refused. findDocuments continues as GET /api/pages, then one call per document. src is not a door. */
@@ -201,14 +202,14 @@ export const payloadMcpNext = (doors: readonly { name: string }[] = [], origin =
   const keyed = headers !== null
   const sent: Record<string, string> = headers ?? { [MCP_API_KEY.header]: `${MCP_API_KEY.scheme} <${MCP_API_KEY.named}>` }
   const state = keyed ? { keyed: true as const, refused: false as const } : { keyed: false as const, refused: true as const }
-  const bearer = keyed ? 'with a payload-mcp-api-keys Bearer' : `refused until ${MCP_API_KEY.named} names a payload-mcp-api-keys Bearer, then run as named`
+  const bearer = keyed ? PROSE.quantumNetWebsiteClient_p5 : proseFill(PROSE.quantumNetWebsiteClient_p6, MCP_API_KEY.named)
   if (doors.length === 0) {
     const list = payloadMcpRequest(origin)
     return {
       ...base,
       ...state,
       calls: [{ name: 'tools/list' as const, method: list.method, url: list.api, headers: sent, body: list.body, route: null, next: null, src: false as const, fetched: false as const, plugin: MCP_API_KEY.plugin, api }],
-      says: `Next is tools/list on the Payload API, ${bearer}. src is not a door. Nothing is fetched.`,
+      says: proseFill(PROSE.quantumNetWebsiteClient_p7, bearer),
     }
   }
   const calls = doors.map((door) => {
@@ -225,7 +226,7 @@ export const payloadMcpNext = (doors: readonly { name: string }[] = [], origin =
     ...base,
     ...state,
     calls,
-    says: `${calls.length} tools/call requests on the Payload API, ${bearer}. findDocuments continues as GET /api/pages, and each document is that route again. SEO is read from that instance. Media continues as the file the upload names. src is not a door. Nothing is fetched.`,
+    says: proseFill(PROSE.quantumNetWebsiteClient_p8, calls.length, bearer),
   }
 }
 
@@ -242,7 +243,7 @@ export const payloadMcpOnline = (doors: readonly string[] = [...ISO_QUANTUM_AI.o
   const state = keyed ? { keyed: true as const, refused: false as const } : { keyed: false as const, refused: true as const }
   const wanted = doors.filter(isOnlineVerify)
   const names = wanted.length ? wanted : [...ISO_QUANTUM_AI.online]
-  const bearer = keyed ? 'with a payload-mcp-api-keys Bearer' : `refused until ${MCP_API_KEY.named} names a payload-mcp-api-keys Bearer`
+  const bearer = keyed ? PROSE.quantumNetWebsiteClient_p9 : proseFill(PROSE.quantumNetWebsiteClient_p10, MCP_API_KEY.named)
   const calls = names.map((name) => ({
     name,
     plugin: MCP_API_KEY.plugin,
@@ -270,14 +271,14 @@ export const payloadMcpOnline = (doors: readonly string[] = [...ISO_QUANTUM_AI.o
     doors: names,
     ...state,
     calls,
-    says: `ISO quantum AI online verification: ${names.length} door(s) on ${MCP_API_KEY.plugin}, ${bearer}. Pure formulated plans need no key; live Next/online verify refuses without it. Nothing is fetched.`,
+    says: proseFill(PROSE.quantumNetWebsiteClient_p11, names.length, MCP_API_KEY.plugin, bearer),
   }
 }
 
 export const WEBSITE_ROUTES = [
-  { name: 'find_pages', method: 'GET' as const, path: '/api/pages', collection: 'pages', description: 'Find pages. meta.title and meta.description are the page, including its lexical text.' },
-  { name: 'find_posts', method: 'GET' as const, path: '/api/posts', collection: 'posts', description: 'Find posts. meta is the post, including its lexical text.' },
-  { name: 'find_case_studies', method: 'GET' as const, path: '/api/case-studies', collection: 'case-studies', description: 'Find case studies. meta is the study, including its lexical text.' },
+  { name: 'find_pages', method: 'GET' as const, path: '/api/pages', collection: 'pages', description: PROSE.quantumNetWebsiteClient_p12 },
+  { name: 'find_posts', method: 'GET' as const, path: '/api/posts', collection: 'posts', description: PROSE.quantumNetWebsiteClient_p13 },
+  { name: 'find_case_studies', method: 'GET' as const, path: '/api/case-studies', collection: 'case-studies', description: PROSE.quantumNetWebsiteClient_p14 },
   { name: 'find_media', method: 'GET' as const, path: '/api/media', collection: 'media', description: 'Find media uploads.' },
 ] as const
 
@@ -405,14 +406,14 @@ const fileUrl = (rawUrl: string | null, filename: string | null, root: string): 
 const payloadMediaNext = (doc: Record<string, unknown> | undefined, origin = WEBSITE_ORIGIN, id = '') => {
   const root = origin.replace(/\/$/, '')
   const base = { phase: 'next' as const, via: 'payload-api' as const, plugin: 'qpuMcpPlugin' as const, collection: 'media' as const, src: false as const, fetched: false as const }
-  if (!doc) return { ...base, file: null, calls: [] as { name: 'media-file'; method: 'GET'; url: string; src: false; fetched: false }[], refused: false as const, says: `Next is the file media ${id} names. The client hands the upload back. Nothing is fetched.` }
+  if (!doc) return { ...base, file: null, calls: [] as { name: 'media-file'; method: 'GET'; url: string; src: false; fetched: false }[], refused: false as const, says: proseFill(PROSE.quantumNetWebsiteClient_p15, id) }
   const filename = typeof doc.filename === 'string' && doc.filename.length > 0 ? doc.filename : null
   const mimeType = typeof doc.mimeType === 'string' && doc.mimeType.length > 0 ? doc.mimeType : null
   const rawUrl = typeof doc.url === 'string' && doc.url.length > 0 ? doc.url : null
   const url = fileUrl(rawUrl, filename, root)
   const file = { filename, mimeType, url }
-  if (!url) return { ...base, file, calls: [] as { name: 'media-file'; method: 'GET'; url: string; src: false; fetched: false; next: null }[], refused: true as const, says: 'The upload names no file. Nothing is fetched.' }
-  return { ...base, file, calls: [{ name: 'media-file' as const, method: 'GET' as const, url, src: false as const, fetched: false as const, next: payloadFileNext(doc, origin, url) }], refused: false as const, says: `Next is GET ${url}. The sizes that file names follow. src is not a door. Nothing is fetched.` }
+  if (!url) return { ...base, file, calls: [] as { name: 'media-file'; method: 'GET'; url: string; src: false; fetched: false; next: null }[], refused: true as const, says: PROSE.quantumNetWebsiteClient_p16 }
+  return { ...base, file, calls: [{ name: 'media-file' as const, method: 'GET' as const, url, src: false as const, fetched: false as const, next: payloadFileNext(doc, origin, url) }], refused: false as const, says: proseFill(PROSE.quantumNetWebsiteClient_p17, url) }
 }
 
 /** The call after the file. Each size the upload names is another file GET. src is not a door. */
@@ -438,7 +439,7 @@ const payloadFileNext = (doc: Record<string, unknown>, origin: string, current: 
   if (typeof doc.thumbnailURL === 'string') push(doc.thumbnailURL, null)
   return {
     phase: 'next' as const, via: 'payload-api' as const, plugin: 'qpuMcpPlugin' as const, src: false as const, fetched: false as const, alt, calls,
-    says: calls.length > 0 ? `${calls.length} size(s) the upload names. src is not a door. Nothing is fetched.` : 'The upload names no further size. src is not a door. Nothing is fetched.',
+    says: calls.length > 0 ? proseFill(PROSE.quantumNetWebsiteClient_p18, calls.length) : PROSE.quantumNetWebsiteClient_p19,
   }
 }
 
@@ -449,13 +450,13 @@ const payloadDocumentNext = (collection: string, doc: Record<string, unknown> | 
   const url = `${root}${route?.path ?? `/api/${collection}`}`
   const findName = route?.name ?? `find_${collection.replace(/-/g, '_')}`
   const base = { phase: 'next' as const, via: 'payload-api' as const, plugin: 'qpuMcpPlugin' as const, collection, src: false as const, fetched: false as const, method: 'GET' as const, url }
-  if (!doc) return { ...base, calls: [] as (ReturnType<typeof pageCall> & { next: null })[], refused: false as const, says: `Next is GET ${url}. The client hands ${id} back. That document is the route again. Nothing is fetched.` }
+  if (!doc) return { ...base, calls: [] as (ReturnType<typeof pageCall> & { next: null })[], refused: false as const, says: proseFill(PROSE.quantumNetWebsiteClient_p20, url, id) }
   const calls = executableCalls(collection, doc).map((call) => {
     const named = pageCall(call, url, findName)
     const seo = named.name === findName && depth === 0 ? payloadSeoNext(doc, origin, follows, depth + 1) : null
     return { ...named, next: seo }
   })
-  return { ...base, calls, refused: false as const, says: `${calls.length} call(s). The document is GET ${url} again, plus any qpu block it already holds. SEO is read once. src is not a door. Nothing is fetched.` }
+  return { ...base, calls, refused: false as const, says: proseFill(PROSE.quantumNetWebsiteClient_p21, calls.length, url) }
 }
 
 /** The call after one document. SEO is the instance. An image is GET /api/media. A relation is that collection again. src is not a door. */
@@ -477,7 +478,7 @@ const payloadSeoNext = (doc: Record<string, unknown>, origin = WEBSITE_ORIGIN, f
     phase: 'next' as const, via: 'payload-api' as const, plugin: 'qpuMcpPlugin' as const, src: false as const, fetched: false as const,
     seo: { title: seo.title, description: seo.description, image: seo.image },
     calls,
-    says: calls.length > 0 ? `${calls.length} find(s) read from the instance. Media continues as the file the upload names, then its sizes. A related document is that route again, and its SEO is read once. src is not a door. Nothing is fetched.` : 'SEO is read from the instance. No relation and no image name a further find. src is not a door. Nothing is fetched.',
+    says: calls.length > 0 ? proseFill(PROSE.quantumNetWebsiteClient_p22, calls.length) : PROSE.quantumNetWebsiteClient_p23,
   }
 }
 

@@ -1,5 +1,6 @@
 // Every scientific domain, one product, carried by the UUID of every Payload config.
 // The address functions are the website copy. They match the quantum register.
+import { PROSE, proseFill } from '../processing/prose-index.ts'
 import { canonicalText, compositions, seal, uuid } from '../password/address.ts'
 import { configKinds } from '../processing/payload-vocabulary.ts'
 import { TENANTS } from '../processing/unit/tenants.ts'
@@ -63,9 +64,9 @@ export const domainConfigs = (raw?: unknown) => {
     product: cover.product,
     domains: cover,
     says: improved
-      ? `${rows.length} Payload config UUIDs carry the cover of ${cover.domains} scientific domains: ${cover.product}. One stream, ${address}. The hosts are ${hosts.join(' and ')}. No domain was fetched alone.`
+      ? proseFill(PROSE.quantumNetDomainCover_p1, rows.length, cover.domains, cover.product, address, hosts.join(' and '))
       : cover.ran
-        ? 'the page is not the whole set of scientific domains, so the Payload configs do not carry the cover'
-        : `${rows.length} Payload configs are one UUID stream. All scientific domains are the product those configs carry. One domains page is the whole set. A domain is not fetched alone.`,
+        ? PROSE.quantumNetDomainCover_p2
+        : proseFill(PROSE.quantumNetDomainCover_p3, rows.length),
   }
 }

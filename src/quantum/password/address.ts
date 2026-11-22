@@ -1,9 +1,10 @@
 // The address functions. The fold/stamp/uuid core is generated from Lean (lean/tools/Address.lean → address-core.ts),
 // where the kernel proves it reproduces the JavaScript; the coil functions below build on it.
+import { PROSE, proseFill } from '../processing/prose-index.ts'
 import { uuid, stamp, version } from './address-core.ts'
 export { uuid, stamp }
 export const uuidFromParts = (handle: string, program: readonly number[], tail: string) => {
-  if (!/^[0-9a-f]{8}$/.test(handle) || program.length !== 10 || program.some((n) => !Number.isInteger(n) || n < 0 || n > 15) || !/^[0-9a-f]{12}$/.test(tail)) throw new Error('a handle is 8 hex, a program ten nibbles 0..15, a tail 12 hex')
+  if (!/^[0-9a-f]{8}$/.test(handle) || program.length !== 10 || program.some((n) => !Number.isInteger(n) || n < 0 || n > 15) || !/^[0-9a-f]{12}$/.test(tail)) throw new Error(PROSE.quantumPasswordAddress_p1)
   const p = program.map((n) => n.toString(16))
   const middle = `${p.slice(0, 4).join('')}0${p.slice(4, 7).join('')}8${p.slice(7, 10).join('')}`
   return stamp(`${handle}${middle}${tail}`)

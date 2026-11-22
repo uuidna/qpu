@@ -3,12 +3,13 @@
 // request answers; a batch answers in kind; a malformed body is a parse error; and where a tenant names a wallet a
 // tools/call is paid through Cloudflare x402 first. Price is the qubits the call uses times the fused real quantum
 // market floor, held below the cheapest real quantum call — a derived figure, never typed, off by default.
+import { PROSE, proseFill } from '../processing/prose-index.ts'
 import { handle, type Rpc, type Reply } from '../processing/mcp.ts'
 
 const CORS: Record<string, string> = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST, OPTIONS',
-  'access-control-allow-headers': 'content-type, authorization, mcp-protocol-version, mcp-session-id, x-payment',
+  'access-control-allow-headers': PROSE.quantumNetMcpHttp_p1,
   'access-control-expose-headers': 'mcp-session-id, x-payment-response',
 }
 const json = (body: unknown, status = 200, extra: Record<string, string> = {}): Response =>
@@ -49,7 +50,7 @@ const x402Of = (env: Record<string, string | undefined>): X402 | null => {
   if (!recipient) return null
   return { recipient, network: env.QPU_X402_NETWORK ?? 'base-sepolia', facilitator: (env.QPU_X402_FACILITATOR ?? 'https://x402.org/facilitator').replace(/\/$/, ''), asset: env.QPU_X402_ASSET ?? '' }
 }
-const requirements = (cfg: X402, resource: string, tool: string, qubits: number) => ({ scheme: 'exact' as const, network: cfg.network, maxAmountRequired: priceBaseUnits(qubits).toString(), resource, description: `QPU MCP tool ${tool}: ${qubits} qubits at the fused quantum market floor, below competition`, mimeType: 'application/json', payTo: cfg.recipient, maxTimeoutSeconds: 60, asset: cfg.asset, extra: { tool, qubits, marketFloorPerQubitUsd: marketFloorPerQubitUsd(), cheapestRealCallUsd: cheapestRealCallUsd(), market: QUANTUM_MARKET } })
+const requirements = (cfg: X402, resource: string, tool: string, qubits: number) => ({ scheme: 'exact' as const, network: cfg.network, maxAmountRequired: priceBaseUnits(qubits).toString(), resource, description: proseFill(PROSE.quantumNetMcpHttp_p2, tool, qubits), mimeType: 'application/json', payTo: cfg.recipient, maxTimeoutSeconds: 60, asset: cfg.asset, extra: { tool, qubits, marketFloorPerQubitUsd: marketFloorPerQubitUsd(), cheapestRealCallUsd: cheapestRealCallUsd(), market: QUANTUM_MARKET } })
 const challenge = (reqs: ReturnType<typeof requirements>, error = 'X-PAYMENT header is required') => ({ x402Version: 1, accepts: [reqs], error })
 const verify = async (cfg: X402, proof: string, reqs: ReturnType<typeof requirements>): Promise<{ isValid: boolean; invalidReason?: string }> => {
   let payload: unknown
