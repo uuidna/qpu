@@ -28,6 +28,7 @@ import Qpu.General.Pi
 import Qpu.General.Primes
 import Qpu.General.Program
 import Qpu.General.Sigma
+import Qpu.General.Supremacy
 import Qpu.General.Textbook
 import Qpu.Processing.Surfacecode
 import Qpu.General.MachineLearning.CausalInference

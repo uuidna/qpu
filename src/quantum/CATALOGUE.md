@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1897 products, 2 under a declared claim context and 1895 as the author's own statement, with 1540 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1902 products, 2 under a declared claim context and 1900 as the author's own statement, with 1540 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -5457,6 +5457,48 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 0 + 10 = 10 ∧ 3 + 7 = 10 ∧ 6 + 4 = 10 ∧ 9 + 1 = 10 ∧ 2 + 8 = 10 ∧ 5 + 5 = 10
+```
+
+## Qpu.General.Supremacy
+
+### `Supremacy.lanes_le_cores`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {cores : ℕ} (share : ℕ), 1 ≤ cores → max 1 (min cores share) ≤ cores
+```
+
+### `Supremacy.lanes_pos`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (share : ℕ), 1 ≤ max 1 share
+```
+
+### `Supremacy.separation`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {tq b tc : ℕ}, tq ≤ b → b < tc → tq < tc
+```
+
+### `Supremacy.sycamore_rcs_within`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+15 * 3600 ≤ 13787000000 * 31557600
+```
+
+### `Supremacy.willow_rcs`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+300 < 10 ^ 25 * 31557600
 ```
 
 ## Qpu.General.Textbook

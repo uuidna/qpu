@@ -46,6 +46,11 @@ def isGenerated (env : Environment) (n : Name) : Bool :=
 /-- A binding characterises a definition for every argument: its left side is the definition applied to variables. -/
 def allVars (e : Expr) : Bool := e.getAppArgs.all (·.isBVar)
 
+/-- The theorem a proof applies: the head of its body under every binder, since a proof with arguments is a λ. -/
+def proofHead : Expr → Option Name
+  | .lam _ _ body _ => proofHead body
+  | e => e.getAppFn.constName?
+
 /-- The library notion a binding's right side names: its head constant, or, for a decision procedure, the
     proposition that `decide` decides. -/
 def notionOf (rhs : Expr) : Option Name :=
@@ -78,7 +83,7 @@ run_cmd do
             violations := violations.push s!"definition {n}: prose is not the docstring of {m}"
       | .thmInfo ti =>
         if !bindings.contains n then
-          match ti.value.getAppFn.constName? with
+          match proofHead ti.value with
           | some h =>
             if isMathlib env h then
               if (← doc n) != (← doc h) then

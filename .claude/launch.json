@@ -8,19 +8,6 @@
         "dev"
       ],
       "port": 3000
-    },
-    {
-      "name": "qpu-3001",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": [
-        "exec",
-        "next",
-        "dev",
-        "--webpack",
-        "-p",
-        "3001"
-      ],
-      "port": 3001
     }
   ]
 }

@@ -8,9 +8,6 @@ import { PROSE, proseFill } from '../prose-index.ts'
 import { narrowScope, createSandbox, type NarrowRequest } from '../unit/namespaces.ts'
 import { defineTool, createChecks, listTools, isObj, unlimited, type Toolbox, type Context } from '../toolbox.ts'
 import { createHash } from 'node:crypto'
-import { mkdirSync, writeFileSync } from 'node:fs'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { hex, sha256, utf8 } from '../unit/hmac.ts'
 import { composition, compositionIndex, compositions, channel, neighbours, uuidFromParts, uuid, uuidQubits, hexbit, organiseQubits, canonicalText, entryText, style, presentation, stream, overlays, qpuHooks, seal, next as rotateProgram, livePreview, aspects as readAspects, optimise as optimiseAddress, PRESENTABLE_ITEMS, type StreamQuery } from '../../uuid/index.ts'
 import { birth, chosen, documentPath, place, read as readFile } from '../../fs/index.ts'
@@ -924,14 +921,8 @@ const morphFrameworks = (raw: unknown) => {
     { path: 'src/collections/concerns/layout.ts', text: layoutText },
     { path: 'src/collections/concerns/standards.ts', text: standardsText },
   ]
-  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..')
-  let bytes = 0
-  for (const file of files) {
-    const at = path.join(root, file.path)
-    mkdirSync(path.dirname(at), { recursive: true })
-    writeFileSync(at, file.text)
-    bytes += Buffer.byteLength(file.text)
-  }
+  // the files are answered, never written here: the app that holds the collections writes what the door answers
+  const bytes = files.reduce((n, file) => n + Buffer.byteLength(file.text), 0)
   const formula = proseFill(PROSE.quantumProcessingToolboxesPayload_s87, files.length, bytes, kept.length, added.length, removed.length, STANDARDS.length, standardsAdded.length)
   const developed = developViaHooks({ formula, product: 'framework', variant: 'merged', title: 'Rails and Payload' })
   const frameworks = chosen.map((framework) => {
