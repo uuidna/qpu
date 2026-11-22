@@ -346,7 +346,7 @@ export const REPOSITORY: Toolbox = {
   idea: PROSE.quantumProcessingToolboxesRepository_idea124,
   tools: [repository],
   examples: [
-    { id: 'repository-watch', tool: 'repository', arguments: { local: LOCAL, answers: ANSWERS }, shows: PROSE.quantumProcessingToolboxesRepository_shows125, expect: (s) => (s.phase === 'watch' && s.leads === 14 && s.watch.npm.behind === true && s.watch.runs.red.join() === 'publish' && s.watch.workflows.onlyRemote.join() === 'publish.yml,codeql.yml' && s.watch.tags.mismatch.join() === 'v1.4.0' && s.watch.releases.withoutTag.join() === 'v0.9.0' && s.watch.zenodo.withoutRelease.join() === '1.1.1' ? null : `${s.phase} ${s.leads} leads: ${s.watch?.leads.map((l: { id: string }) => l.id).join(', ')}`) },
+    { id: 'repository-watch', tool: 'repository', theorem: 'textbook_repository_watch_leads', arguments: { local: LOCAL, answers: ANSWERS }, shows: PROSE.quantumProcessingToolboxesRepository_shows125, expect: (s) => (s.phase === 'watch' && s.leads === 14 && s.watch.npm.behind === true && s.watch.runs.red.join() === 'publish' && s.watch.workflows.onlyRemote.join() === 'publish.yml,codeql.yml' && s.watch.tags.mismatch.join() === 'v1.4.0' && s.watch.releases.withoutTag.join() === 'v0.9.0' && s.watch.zenodo.withoutRelease.join() === '1.1.1' ? null : `${s.phase} ${s.leads} leads: ${s.watch?.leads.map((l: { id: string }) => l.id).join(', ')}`) },
   ],
   skill: {
     instructions: PROSE.quantumProcessingToolboxesRepository_instructions126,
