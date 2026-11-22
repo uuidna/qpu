@@ -22,7 +22,7 @@ import { KEY, hue, ANGLES, createTheme, coilColour } from '../unit/theme.ts'
 import { MCP_APPS, UI_TOKENS, build, ui } from '../mcp-apps.ts'
 import { VERSION } from '../unit/version.ts'
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.ts'
-import { quantumVocabulary, quantumTermNames } from '../quantum-vocabulary.ts'
+import { quantumVocabulary, quantumTerm, quantumTermNames } from '../quantum-vocabulary.ts'
 import { CLAY_RELATIONS } from '../clay-statements.ts'
 import { LIFE_PER_SECOND, PROCESS_LIFE, ideaFilesFromLeads, isoApprovedMcp, lifeBound, nextIdeas, openQuantum, placeInIdea } from '../ideas.ts'
 import { THEOREMS } from '../theorems-index.ts'
@@ -1669,11 +1669,8 @@ const qpuNode = (uuid: string, tool: string, args: Record<string, unknown>, theo
 /** A quantum call as the ISO term its address picks and the website page that term is. The program index chooses the term. The same address is the page, the content block, and the product. The audit accepts both creates. */
 export const quantumRecord = (p: { uuid: string; tool: string; arguments: Record<string, unknown> }) => {
   const ch = channel(p.uuid)
-  const names = quantumTermNames()
-  const term = names[Number(BigInt(ch.combination.index) % BigInt(names.length))]!
-  const formula = `${term.clause} ${term.name}`
-  const span = ch.combination.radix - 1
-  const amplitudes = ch.program.map((digit, place) => ({ place, digit, amp: digit / span, to: (span - digit) / span }))
+  const term = quantumTerm(p.uuid)
+  const { formula, amplitudes } = term
   const developed = developViaHooks({ formula, product: p.tool, variant: term.clause, title: formula, theorem: 'textbook_standards_sliced' })
   const node = qpuNode(p.uuid, p.tool, p.arguments, 'textbook_standards_sliced', { clause: term.clause, name: term.name, amplitudes })
   const links = presentation(p.uuid).parts.map((part) => lx.paragraph([lx.link(`qpu://tools/${p.tool}#${part.at}`, part.item)]))
@@ -1688,7 +1685,7 @@ export const quantumRecord = (p: { uuid: string; tool: string; arguments: Record
   }
   const page = auditedSave({ collection: 'pages', override: false, data })
   const product = auditedSave({ collection: 'products', override: false, data: { title: formula, product: p.tool, variant: term.clause, iso: developed.iso, docs: developed.docs } })
-  return { standard: 'ISO/IEC 4879:2024' as const, via: 'uuid' as const, clause: term.clause, name: term.name, formula, amplitudes, holds: page.saved && product.saved && page.audit.holds && product.audit.holds, page, product }
+  return { ...term, holds: page.saved && product.saved && page.audit.holds && product.audit.holds, page, product }
 }
 export const blocks = (doc: LexicalDoc): QpuNode[] => doc.root.children.filter((n): n is QpuNode => typeof n === 'object' && n !== null && (n as { type?: string }).type === 'block' && (n as { fields?: { blockType?: string } }).fields?.blockType === 'qpu')
 const ISO_PHRASES: Record<string, string> = { 'ISO/IEC': 'ИСО/МЕК', 'ISO/TR': 'ИСО/ТД', ISO: 'ИСО' }

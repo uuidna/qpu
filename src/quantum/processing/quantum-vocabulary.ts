@@ -30,7 +30,7 @@ import {
 import { energyAt, hydrogen, hydrogenHamiltonian, vqeSweep } from './chemistry.ts'
 import { codePoint } from './qec.ts'
 import { WILLOW, isBelowThreshold } from './processor.ts'
-import { canonicalText, seal, uuid } from '../uuid/index.ts'
+import { canonicalText, channel, seal, uuid } from '../uuid/index.ts'
 
 const near = (a: number, b: number, eps = 1e-9) => Math.abs(a - b) <= eps
 const probAt = (state: { amplitudes: [number, number][] }, i: number) => {
@@ -258,6 +258,13 @@ export const quantumStandards = () => {
 
 /** The clause and the English name of every quantum term. No simulator run. */
 export const quantumTermNames = (): readonly { clause: string; name: string }[] => TERMS.map(([clause, name]) => ({ clause, name }))
+/** The quantum term an address picks: its program index chooses the clause, and each digit of the program is an amplitude. */
+export const quantumTerm = (id: string) => {
+  const ch = channel(id)
+  const [clause, name] = TERMS[Number(BigInt(ch.combination.index) % BigInt(TERMS.length))]!
+  const span = ch.combination.radix - 1
+  return { standard: STANDARD, via: 'uuid' as const, clause, name, formula: `${clause} ${name}`, amplitudes: ch.program.map((digit, place) => ({ place, digit, amp: digit / span, to: (span - digit) / span })) }
+}
 
 const pageSlug = (title: string) => (title.replace(/ /g, '-').replace(/[^\w-]+/g, '').toLowerCase() || 'idea')
 

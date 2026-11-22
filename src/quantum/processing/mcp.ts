@@ -15,7 +15,7 @@ import { TEXTBOOK_THEOREMS, getReflections, searchTextbookPrograms } from './tex
 import { NESTED as NESTED_CATALOGUE, NESTED_COUNTS } from './nested-index.ts'
 import { THOUSAND, THOUSAND_SHARED } from './thousand-index.ts'
 import { updateTheoremSources } from './textbook-measured.ts'
-import { builders, accessAudit, auditedSave, crossVerifiedFormula, websiteGate, developFindings, developViaHooks, serveViaHooks } from './toolboxes/payload.ts'
+import { builders, accessAudit, auditedSave, crossVerifiedFormula, developFindings, developViaHooks, serveViaHooks } from './toolboxes/payload.ts'
 import { ISO_QUANTUM_AI, MCP_API_KEY, isOnlineVerify } from '../net/website-client.ts'
 import { cryptoConfig } from './crypto/config.ts'
 import { processorsForRole, mayUseProcessor, type CryptoProcessorName } from './crypto/index.ts'
@@ -686,8 +686,9 @@ import { BILLING, orderUsage, ALGEBRA_TOOLS, fuseCall, accountCoins, accountByte
 import { LEGAL, summonCourt } from './toolboxes/legal.ts'
 import { REPOSITORY } from './toolboxes/repository.ts'
 import { STANDARDS_BOX } from './toolboxes/standards.ts'
-import { PAYLOAD, payloadDoc, quantumRecord, qpuFields, doc, getAccess, type Ability } from './toolboxes/payload.ts'
+import { PAYLOAD, qpuFields, doc, getAccess, type Ability } from './toolboxes/payload.ts'
 import { MCP_APPS, build, ui } from './mcp-apps.ts'
+import { quantumTerm } from './quantum-vocabulary.ts'
 import { EXTENSION } from './toolboxes/extension.ts'
 import { extractFacts, createVerifyRequests } from './verifiers.ts'
 import { CRYPTO } from './toolboxes/crypto.ts'
@@ -2669,7 +2670,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       if (!asked.access) return { jsonrpc: '2.0', id, error: { code: INVALID_PARAMS, message: proseFill(PROSE.quantumProcessingMcp_message421, asked.role, asked.action), data: { rbac: asked } } }
       askedFirst = { server: asked.server, one: asked.one, first: asked.first, asked: asked.asked, tool: asked.tool }
     }
-    if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online], law: MCP_API_KEY.law, auth: MCP_API_KEY }, website: { collection: 'pages', path: websiteGate('gates', 'root').rootPath }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
+    if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online], law: MCP_API_KEY.law, auth: MCP_API_KEY }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
     // every tool declares its UI resource (MCP Apps, _meta.ui.resourceUri): a host that negotiates the extension renders the tool's result through it
     // every tool listed widget-skilled: its UI resource (the widget) and its toolbox's skill (the instructions a client follows, the directions it tests in)
     if (message.method === 'tools/list') {
@@ -2701,7 +2702,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
         const properties = Object.fromEntries(Object.entries(x.properties ?? {}).filter(([k]) => !h.withheld.includes(k)).map(([k, p]) => [k, { ...p, ...(Array.isArray(p.enum) && role ? { enum: h.options[k] } : {}), ...(k in h.defaults ? { default: h.defaults[k] } : {}) }]))
         return { ...x, properties, ...(x.required ? { required: x.required.filter((r) => !h.withheld.includes(r)) } : {}), 'x-harmonic': stamp }
       }
-      const list = chosen.map(({ name, description, inputSchema, toolbox }) => { const box = TOOLBOXES.find((b) => b.name === toolbox); const online = isOnlineVerify(name); return { name, description: brief(description), inputSchema: harmonic(name, briefSchema(inputSchema), toolbox === 'google'), annotations: { title: name, readOnlyHint: true, idempotentHint: true, openWorldHint: online }, _meta: { toolbox, experience: ISO_QUANTUM_AI.experience, online, ...(online ? { auth: MCP_API_KEY, law: MCP_API_KEY.law } : {}), website: websiteGate(toolbox, name), skill: { ...(full ? { instructions: box?.skill.instructions ?? '' } : {}), directions: box?.skill.directions.length ?? 0 }, ...(full && toolbox === 'google' ? { specific: a432Specific(name) } : {}), ...(full && box ? { lean: toolboxLean(box) } : {}), ui: { resourceUri: `ui://qpu/${name}`, visibility: ['model', 'app'] } } } })
+      const list = chosen.map(({ name, description, inputSchema, toolbox }) => { const box = TOOLBOXES.find((b) => b.name === toolbox); const online = isOnlineVerify(name); return { name, description: brief(description), inputSchema: harmonic(name, briefSchema(inputSchema), toolbox === 'google'), annotations: { title: name, readOnlyHint: true, idempotentHint: true, openWorldHint: online }, _meta: { toolbox, experience: ISO_QUANTUM_AI.experience, online, ...(online ? { auth: MCP_API_KEY, law: MCP_API_KEY.law } : {}), skill: { ...(full ? { instructions: box?.skill.instructions ?? '' } : {}), directions: box?.skill.directions.length ?? 0 }, ...(full && toolbox === 'google' ? { specific: a432Specific(name) } : {}), ...(full && box ? { lean: toolboxLean(box) } : {}), ui: { resourceUri: `ui://qpu/${name}`, visibility: ['model', 'app'] } } } })
       const listed = accountBytes([JSON.stringify(list)]), whole = accountBytes([JSON.stringify(CONTRACTS)])
       const efficiency = measureContext(listed, whole)
       const kept = efficiency.tokens, fullTokens = efficiency.full, saved = efficiency.saved
@@ -2753,15 +2754,15 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       const view = meta.view
       const full = JSON.stringify(structured), canon = canonicalText(structured), digest = hex(sha256(utf8(canon)))
       const cheapest = view === 'cheapest' ? JSON.stringify({ address: rendered.id, sha256: digest, recompute: { tool: found.name, arguments: args }, tamper: { collision: '2^128', secondPreimage: '2^256' }, coins: ALGEBRA_TOOLS.includes(found.name) ? 0 : (CATALOGUE.find((v) => v.product === 'qpu-metered')?.amounts.eur ?? 0) / 1000, unlock: 'If-None-Match: address -> 304', theorem: 'textbook_advantage_unbounded', licence: LICENSE.spdx, commercial: ALGEBRA_TOOLS.includes(found.name) ? 'free under attribution' : 'a licence of the catalogue', tokens: account.tokens }) : null
-      const reply = { content: [{ type: 'text', text: cheapest !== null && cheapest.length < full.length ? cheapest : full }], structuredContent: structured, isError: false, _meta: { jsonLd: blockJsonLd({ tool: found.name, id: rendered.id, description: found.description, toolbox: found.toolbox, url: `urn:uuid:${rendered.id}` }), payload: found.name === 'payload' ? undefined : { ...payloadDoc({ uuid: rendered.id, tool: found.name, arguments: args, description: found.description, openGraph: rendered.openGraph as unknown as Record<string, string>, prev: prev ?? null }), ...(found.toolbox === 'google' ? { quantum: quantumRecord({ uuid: rendered.id, tool: found.name, arguments: args }) } : {}) }, widget: rendered.html, openGraph: { ...rendered.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: rendered.shadcn, theme: rendered.theme, license: LICENSE, fusion: fuseCall(found.name), account, integrity: { address: uuid(canon), sha256: digest, of: 'the canonical text of structuredContent', check: PROSE.quantumProcessingMcp_check430, says: PROSE.quantumProcessingMcp_says431 }, ...(prev ? { prev } : {}) } }
+      const reply = { content: [{ type: 'text', text: cheapest !== null && cheapest.length < full.length ? cheapest : full }], structuredContent: structured, isError: false, _meta: { jsonLd: blockJsonLd({ tool: found.name, id: rendered.id, description: found.description, toolbox: found.toolbox, url: `urn:uuid:${rendered.id}` }), ...(found.toolbox === 'google' ? { quantum: quantumTerm(rendered.id) } : {}), widget: rendered.html, openGraph: { ...rendered.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: rendered.shadcn, theme: rendered.theme, license: LICENSE, fusion: fuseCall(found.name), account, integrity: { address: uuid(canon), sha256: digest, of: 'the canonical text of structuredContent', check: PROSE.quantumProcessingMcp_check430, says: PROSE.quantumProcessingMcp_says431 }, ...(prev ? { prev } : {}) } }
       // arguments echoed into the envelope (the payload block, the cheapest view) are sealed with the same formula
       const envelope = sealTokenLeaks(JSON.stringify(reply))
       // the website gate, the leak proof and the bytes are added once the envelope is sealed
-      const body: typeof reply & { _meta: { website?: ReturnType<typeof websiteGate>; leaks?: ReturnType<typeof leakProof>; bytes?: ReturnType<typeof accountBytes> } } = envelope.found === 0 ? reply : JSON.parse(envelope.text)
+      const body: typeof reply & { _meta: { leaks?: ReturnType<typeof leakProof>; bytes?: ReturnType<typeof accountBytes> } } = envelope.found === 0 ? reply : JSON.parse(envelope.text)
       const foundTokens = carried.found + envelope.found, redactedTokens = carried.redacted + envelope.redacted
       const sent = body.content[0]?.text ?? ''
       const bytes = accountBytes([canonicalText(args), sent, widget, canon])
-      body._meta = { ...body._meta, website: websiteGate(found.toolbox, found.name), leaks: leakProof(foundTokens, redactedTokens), bytes }
+      body._meta = { ...body._meta, leaks: leakProof(foundTokens, redactedTokens), bytes }
       return ok(body)
       }
       const ran = cached ?? found.call(args, records(args))

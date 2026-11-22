@@ -320,6 +320,7 @@ test('every device the processor tool names is served, and Sycamore23 has 23 qub
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the repositories tool serves the seventeen quantumlib repositories, filters by language, and exposes the consolidated payloadcms repository matrix. */
 test('the repositories tool serves the seventeen quantumlib repositories, filters by language, and exposes the consolidated payloadcms repository matrix', () => {
   const all = call('repositories', {})
+  assert.match((all as { result: { _meta: { quantum: { formula: string } } } }).result._meta.quantum.formula, /^\d+(\.\d+)* \S/, 'a google call carries the ISO/IEC 4879:2024 term its address picks')
   assert.ok('result' in all && (all.result as { structuredContent: { repositories: unknown[]; total: number; payloadcms: { holds: boolean; counts: { repositories: number; mountedPackages: number } } } }).structuredContent.total === 15)
   const sc = (all.result as { structuredContent: { payloadcms: { holds: boolean; counts: { repositories: number; mountedPackages: number; monorepoPackagesTotal: number } } } }).structuredContent
   assert.equal(sc.payloadcms.holds, true)
