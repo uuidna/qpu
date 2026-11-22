@@ -12,7 +12,7 @@ import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readdirSync, readFileSync, readlinkSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { availableParallelism, homedir, tmpdir, totalmem } from 'node:os'
+import { availableParallelism, freemem, homedir, tmpdir, totalmem } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { MACHINE_ACTIONS, MACHINE_RUNNER, NEXT_STEPS, forecastTimes, redact, type NextStep } from './machine.ts'
 import { clock, stamp } from '../uuid/programs/clock/index.ts'
@@ -133,8 +133,8 @@ export type Receipt = { date: string; head: string; runner: string; offline: boo
 export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolean; generators?: boolean; onLine?: (line: string) => void }): Promise<Receipt> => {
   const say = (l: string) => { console.log(l); o.onLine?.(l) }
   const wall0 = clock()
-  const heapMb = Number(/--max-old-space-size[= ](\d+)/.exec(process.env.NODE_OPTIONS ?? '')?.[1]) || 4096
-  const lanes = Math.max(1, Math.min(availableParallelism(), Math.floor(((totalmem() / 1048576) * 0.7) / heapMb)))
+  // one lane per core, scaled by the share of memory free now: a V8 heap ceiling is a limit, not what a step uses
+  const lanes = Math.max(1, Math.min(availableParallelism(), Math.ceil((availableParallelism() * freemem()) / totalmem())))
   const head = (await spawnRun('git', ['rev-parse', '--short', 'HEAD'], { cwd: o.cwd })).stdout.trim()
   // the wildcard step expanded from tools/list: every tool whose schema names selftest
   const expand = async (): Promise<NextStep[]> => {

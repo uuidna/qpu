@@ -1,12 +1,16 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { auditProgramNeighbours, challenge, competeProgramNeighbours, gateProgramFiles, guardUpstream, indexProgramFolders, productCombinations, program, programPlugin, reflectProgramNeighbours, sealProgramProducts } from './index.ts'
+import { auditProgramNeighbours, sealLeavesSplit, challenge, competeProgramNeighbours, gateProgramFiles, guardUpstream, indexProgramFolders, productCombinations, program, programPlugin, reflectProgramNeighbours, sealProgramProducts } from './index.ts'
 
 /** Challenge physics and laws under adversarial register pressure. */
 /** The neighbour audit, computed once for the tests that read it. */
-let audited: ReturnType<typeof auditProgramNeighbours> | undefined
-const neighbours = () => (audited ??= auditProgramNeighbours())
+let audited: Promise<ReturnType<typeof auditProgramNeighbours>> | undefined
+const neighbours = () => (audited ??= sealLeavesSplit().then((computed) => {
+  const { leaf, sealed, games } = computed[computed.length >> 1]! // a leaf recomputed here equals its worker's row
+  assert.deepEqual({ sealed, games }, { sealed: sealProgramProducts(leaf.handle), games: competeProgramNeighbours(leaf.handle) })
+  return auditProgramNeighbours(undefined, computed)
+}))
 
 void test('challenge physics and laws under adversarial register pressure', () => {
   const hit = challenge()
@@ -26,8 +30,8 @@ void test('challenge physics and laws under adversarial register pressure', () =
 })
 
 /** Neighbours reflect and test each other in games and competitions online. */
-void test('neighbours reflect and test each other in games and competitions online', () => {
-  const audit = neighbours()
+void test('neighbours reflect and test each other in games and competitions online', async () => {
+  const audit = await neighbours()
   assert.equal(audit.law, 'neighbours reflect and test each other in games and competitions online')
   assert.equal(audit.via, 'online')
   assert.equal(audit.holds, true, audit.says + (audit.failed[0] ? ` first=${audit.failed[0].handle}` : ''))
@@ -50,13 +54,13 @@ void test('neighbours reflect and test each other in games and competitions onli
   assert.ok(one.games.every((game) => game.tests.every((row) => row.solution.ftl && row.solution.gateway === 2 && row.solution.walked === false && row.solution.holds)))
 })
 
-void test('programs tree: every folder has index.*; neighbours reflect and compete online', () => {
+void test('programs tree: every folder has index.*; neighbours reflect and compete online', async () => {
   const finish = indexProgramFolders()
   assert.equal(finish.holds, true, finish.says + (finish.gate.refused[0] ? ` first=${finish.gate.refused[0]}` : ''))
   const files = gateProgramFiles()
   assert.equal(files.holds, true, files.says + (files.refused[0] ? ` first=${files.refused[0]}` : ''))
   // the gate is the one the audit sealed: the tree is walked once for both tests
-  const gate = neighbours().seal
+  const gate = (await neighbours()).seal
   assert.equal(gate.holds, true, gate.says + (gate.refused[0] ? ` first=${gate.refused[0]}` : ''))
   assert.equal(gate.refused.length, 0)
   assert.equal(gate.entropy, 0)

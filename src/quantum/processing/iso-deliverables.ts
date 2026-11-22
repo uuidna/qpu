@@ -34,34 +34,7 @@ export const ISO_ENTROPY = {
   theorem: 'textbook_entropy_fusion' as const,
 } as const
 
-export const ENTROPY_LAW = ISO_ENTROPY.law
 
-/**
- * MCP / structuredContent surface for entropy. Dictionary first, then ISO verify.
- * Wrong meaning here misleads the user — a security issue. Never a bare 0|1 alone.
- * `ordered` true → vacuum W = 1, S = 0 (disorder cleared). false → W ≥ 2, S = ln W.
- */
-export const entropySurface = (ordered: boolean) => {
-  const verified = isoEntropyOf(ordered ? 1 : 2)
-  return {
-    law: ENTROPY_LAW,
-    dictionary: ISO_ENTROPY.dictionary,
-    verified: {
-      standard: verified.standard,
-      definition: verified.definition,
-      W: verified.W,
-      S: verified.S,
-      vacuum: verified.vacuum,
-      holds: verified.holds,
-    },
-    S: verified.S,
-    ordered: ordered && verified.holds,
-    holds: ordered && verified.holds,
-    says: ordered && verified.holds
-      ? `${ENTROPY_LAW}: ${ISO_ENTROPY.dictionary.means}; verified vacuum S = 0 (${verified.definition})`
-      : `${ENTROPY_LAW}: ${ISO_ENTROPY.dictionary.means}; verified S = ${verified.S} (${verified.definition}, W = ${verified.W}) — disorder remains`,
-  }
-}
 
 /** ISO 80000-5 Boltzmann entropy in natural units (k = 1): verifies dictionary disorder as S = ln W; vacuum W = 1 → S = 0. */
 export const isoEntropyOf = (W: number) => {
@@ -138,14 +111,6 @@ export const ISO_OPEN_DATA = 'https://www.iso.org/open-data.html'
 /** NIST and CERN as producers (ISO/IEC 19770-6 tag-producer role): each open source yields the ISO standards it produces. */
 export const ISO_PRODUCERS = TABLES.ISO_PRODUCERS
 
-/** Every ISO source this tree can name: the Open Data page, each catalogue page, each successor, the DOI ecosystem, and NIST/CERN producers. */
-export const isoOnlineSources = () => [
-  ISO_OPEN_DATA,
-  ...ISO_OPEN_DEFINITIONS.map((row) => `https://www.iso.org/standard/${row.id}.html`),
-  ...ISO_OPEN_SUCCESSORS.map((row) => `https://www.iso.org/standard/${row.id}.html`),
-  ...isoResearch().ecosystem.map((row) => row.url),
-  ...ISO_PRODUCERS.flatMap((producer) => producer.sources.map((source) => source.url)),
-]
 
 const isoKey = (dimension: string) => dimension.replace(/\s*\(.*$/, '').trim()
 const isoYear = (reference: string) => { const at = reference.lastIndexOf(':'); const digits = reference.slice(at + 1, at + 5); return /^\d{4}$/.test(digits) ? Number(digits) : 0 }
@@ -156,8 +121,6 @@ const fileOnPage = (text: string): string | null => {
   try { return new URL(href[1], ISO_OPEN_DATA).href } catch { return null }
 }
 
-/** The JSONLines file an Open Data page names. Null when the page does not name one. */
-export const isoDatasetHref = (text: string) => fileOnPage(text)
 
 /** Research and citations. ISO 690 names the elements of a citation. ISO 26324 names the identifier. Both are asked of the DOI ecosystem. */
 export const isoResearch = () => ({
