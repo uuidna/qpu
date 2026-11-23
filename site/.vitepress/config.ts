@@ -3,6 +3,8 @@ import { dirname, join } from 'node:path'
 import { SUPPORTED_PROTOCOL_VERSIONS } from '@modelcontextprotocol/server'
 import { defineConfig, type HeadConfig } from 'vitepress'
 import { VERSION } from '../../src/quantum/processing/unit/version.ts'
+import { PRECEDENCE } from '../../src/quantum/processing/unit/license.ts'
+import { UNIT_CONCEPT_DOI } from '../../src/quantum/processing/release.ts'
 
 // The sidebar is written beside this file by scripts/site.ts from the seed waves; the theme beside it
 // (./theme) registers the Vue components the generated pages use — the live MCP console and the qubit-price
@@ -16,7 +18,18 @@ const REPOSITORY = 'https://github.com/uuidna/qpu'
 const IMAGE = { url: `${HOST}/og.png`, width: 1200, height: 630, alt: NAME }
 const WEBSITE = `${HOST}/#website`
 const ORGANIZATION = `${HOST}/#organization`
-const AUTHOR = { '@type': 'Person', name: 'Tsvetan Rouschev', sameAs: 'https://orcid.org/0009-0000-7312-9778' }
+const ORCID = 'https://orcid.org/0009-0000-7312-9778'
+const LICENSE = 'https://creativecommons.org/licenses/by-nc-nd/4.0/'
+const AUTHOR = { '@type': 'Person', '@id': ORCID, name: 'Tsvetan Rouschev', url: ORCID, sameAs: ORCID, identifier: { '@type': 'PropertyValue', propertyID: 'ORCID', value: ORCID.slice(ORCID.lastIndexOf('/') + 1) } }
+// A DOI as schema.org states one: the identifier, and the address that resolves it.
+const doi = (value: string) => ({ identifier: { '@type': 'PropertyValue', propertyID: 'DOI', value }, sameAs: `https://doi.org/${value}` })
+// The software as a citable work: its concept DOI names every version (release.ts), and the author's other records
+// in the precedence table are what it cites, each by its own DOI.
+const SOFTWARE = {
+  '@type': 'SoftwareSourceCode', '@id': `${HOST}/#software`, name: '@uuidna/qpu', description: DESCRIPTION, url: `${HOST}/`, codeRepository: REPOSITORY,
+  version: VERSION, license: LICENSE, programmingLanguage: ['Lean', 'TypeScript'], author: AUTHOR, publisher: { '@id': ORGANIZATION }, ...doi(UNIT_CONCEPT_DOI),
+  citation: PRECEDENCE.filter((r) => !r.title.startsWith('@uuidna/qpu')).map((r) => ({ '@type': 'ScholarlyArticle', name: r.title, author: AUTHOR, datePublished: String(r.year), ...doi(r.doi) })),
+}
 
 // Search engines show about 160 characters of a description: a longer one is cut at its last whole sentence (or word),
 // and a page that states none is described by its first paragraph, never by the site default twice.
@@ -60,6 +73,11 @@ export default defineConfig({
   head: [
     ['link', { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' }],
     ['meta', { name: 'theme-color', content: '#1b1b2a' }],
+    ['meta', { name: 'author', content: AUTHOR.name }],
+    // FAIR Signposting (signposting.org): the author, the persistent identifier to cite, and the licence, as typed links
+    ['link', { rel: 'author', href: ORCID }],
+    ['link', { rel: 'cite-as', href: SOFTWARE.sameAs }],
+    ['link', { rel: 'license', href: LICENSE }],
     ['meta', { property: 'og:site_name', content: NAME }],
     ['meta', { property: 'og:locale', content: 'en_US' }],
     ['meta', { property: 'og:image', content: IMAGE.url }],
@@ -106,6 +124,7 @@ export default defineConfig({
       { '@type': 'WebSite', '@id': WEBSITE, url: `${HOST}/`, name: NAME, description: DESCRIPTION, inLanguage: 'en', publisher: { '@id': ORGANIZATION }, author: AUTHOR },
       { '@type': 'Organization', '@id': ORGANIZATION, name: 'uuidna', url: 'https://uuidna.com', logo: `${HOST}/favicon.svg`, sameAs: ['https://github.com/uuidna'] },
       { '@type': 'WebAPI', '@id': `${MCP}#api`, name: `${NAME} MCP server`, url: MCP, description: 'Model Context Protocol server over Streamable HTTP; tools/call is paid through x402', documentation: `${HOST}/llms.txt`, provider: { '@id': ORGANIZATION } },
+      SOFTWARE,
     ] : []
     return [
       ['meta', { name: 'robots', content: 'index, follow, max-image-preview:large' }],
@@ -161,6 +180,8 @@ export default defineConfig({
       `- [Tool catalogue](${HOST}/mcp.json): every tool with its input schema, as tools/list answers`,
       `- Connect: add a remote (Streamable HTTP) MCP server with the URL ${MCP} in any MCP client, e.g. \`claude mcp add --transport http qpu ${MCP}\``, '',
       ...[...sections].flatMap(([section, list]) => [`## ${section}`, '', ...list.map(([, p]) => `- [${p.title}](${p.url}): ${p.description}`), '']),
+      '## Cite', '', `- [Author](${ORCID}): ${AUTHOR.name}, ORCID ${AUTHOR.identifier.value}`, `- [${SOFTWARE.name}](${SOFTWARE.sameAs}): DOI ${UNIT_CONCEPT_DOI}, every version`,
+      ...SOFTWARE.citation.map((c) => `- [${c.name}](${c.sameAs}): DOI ${c.identifier.value}, cited as the author's own record`), '',
       '## Optional', '', `- [llms-full.txt](${HOST}/llms-full.txt): the Markdown source of every page`, `- [Source](${REPOSITORY}): the repository`, '',
     ].join('\n'))
     out('llms-full.txt', sorted.map(([path, p]) => `<!-- ${p.url} -->\n${readFileSync(join(siteConfig.srcDir, path), 'utf8').replace(/^---\n[\s\S]*?\n---\n/, '').trim()}\n`).join('\n'))
