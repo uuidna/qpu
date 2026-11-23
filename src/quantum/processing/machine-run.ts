@@ -6,7 +6,6 @@
 // door answers, each process step the command the table names; a step past its budget is killed with its process group and recorded red; the
 // red steps are retried once after the generators ran; the receipt is the last line, `RECEIPT {json}`, the body of the machine's entry.
 import { AFTER_HOOKS } from './config-index.ts'
-import { doorEndpoints, forward } from './door.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -128,8 +127,7 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   if (s && s.holds === false) process.exitCode = 1
 }
 
-/** The lanes the runner opens, read from node:os: one per core, scaled by the share of memory free now (a V8 heap ceiling
- *  is a limit, not what a step uses). max 1 (min cores share), which Supremacy.lanes_pos and Supremacy.lanes_le_cores bound. */
+/** The runner's lanes from node:os: the cores scaled by the free share of memory (Supremacy.lanes_pos, lanes_le_cores). */
 export const lanesNow = () => Math.max(1, Math.min(availableParallelism(), Math.ceil((availableParallelism() * freemem()) / totalmem())))
 
 export type Receipt = { date: string; head: string; runner: string; offline: boolean; fast: boolean; lanes: number; steps: { name: string; status: 'green' | 'red' | 'skipped'; ms: number; via: NextStep['via']; tail: string; attempt: number }[]; green: number; red: number; skipped: number; wallMs: number; sumMs: number; speedup: number | null }
@@ -219,6 +217,15 @@ export const runMachine = async (args: Record<string, unknown>, cwd: string, onP
   return { plan, record, answer: { plan: { action: plan.action, command: plan.command, decision: plan.decision?.says ?? null }, eta, record: { says: record.says, ok: record.ok, redacted: record.redacted, entry: record.entry }, ...(receipt ? { receipt: { green: receipt.green, red: receipt.red, skipped: receipt.skipped, wallMs: receipt.wallMs, red_steps: receipt.steps.filter((s) => s.status === 'red').map((s) => s.name) } } : {}) } }
 }
 
+/** The local Worker the e2e step replays against: kept when it answers on :3000, else started and stopped after. */
+const serveLocal = async (cwd: string) => {
+  const answers = async () => { try { return (await fetch('http://localhost:3000/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream' }, body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}', signal: AbortSignal.timeout(5000) })).ok } catch { return false } }
+  if (await answers()) return null
+  const child = spawn('npm', ['run', '-s', 'dev'], { cwd, detached: true, stdio: 'ignore' })
+  for (let i = 0; i < 90 && !(await answers()); i++) await new Promise((r) => setTimeout(r, 1000))
+  return () => { try { process.kill(-child.pid!, 'SIGTERM') } catch { /* gone */ } }
+}
+
 /** A git hook as the client of its workflow (repository { workflow }): its steps walked as the door answers them (next run here, a command spawned,
  *  the generated files compared before they are staged), the facts read (the receipt, the staged diff of the hand-written roots, the workflow files,
  *  the message, the packed package, the gate's decoding) and the decision obeyed: a refused rule or a red step ends the hook with status 1. */
@@ -242,7 +249,9 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
       continue
     }
     if (s.args?.[1] === 'next') { const r = await runNext({ cwd, offline: s.args.includes('--offline'), fast: s.args.includes('--fast') }); facts.receipt = r; red = r.red > 0; continue }
+    const served = s.id === 'e2e' ? await serveLocal(cwd) : null
     const r = await spawnRun(s.cmd!, s.args ?? [], { cwd, onLine: (l) => console.log(l) }); red = r.status !== 0
+    served?.()
     if (s.id === 'e2e') { const m = /\{.*\}\s*$/.exec(r.stdout.trim().split('\n').pop() ?? ''); facts.e2e = m ? JSON.parse(m[0]) : null }
   }
   const flows = join(cwd, '.github/workflows')
@@ -258,20 +267,14 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
     facts.npm = { name: pkg.name, version: pkg.version, license: pkg.license, description: pkg.description, exports: pkg.exports, packed }
   }
   type Decision = { allowed: boolean; says?: string; rules: { rule: string; holds: boolean | null; evidence: string }[] }
-  // a workflow after the act reports it: the commit, and for a push every remote-tracking ref that moved (old, new, ref, as git hands them over).
-  // The report goes to the Payload app through its MCP door, which answers the decision; with no door in reach the decision is computed here.
-  let d: Decision | null = null, source = 'here'
+  // a workflow after the act reports it to the door: the commit, and for a push every remote-tracking ref that moved (old, new, ref, as git hands them over)
   if (after) {
     facts.commit = { head: await git('rev-parse', 'HEAD'), subject: await git('log', '-1', '--format=%s') }
     if (name === 'post-push') facts.pushed = Array.from({ length: Math.floor(rest.length / 3) }, (_, i) => ({ from: rest[3 * i]!, to: rest[3 * i + 1]!, ref: rest[3 * i + 2]! }))
-    const door = w.steps.find((s) => s.id === 'report') as { tool?: string; url?: string } | undefined
-    const reached = door?.tool ? await forward({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: door.tool, arguments: { workflow: name, facts } } }, { budgetMs: 5000, endpoints: doorEndpoints(process.env.QPU_APP_MCP ?? door.url) }) : null
-    const answered = (reached?.reply?.result as { structuredContent?: { decision?: Decision } } | undefined)?.structuredContent?.decision
-    if (answered && Array.isArray(answered.rules)) { d = answered; source = reached!.source }
   }
-  d ??= ask({ workflow: name, facts }).decision as Decision
+  const d = ask({ workflow: name, facts }).decision as Decision
   for (const r of d.rules) console.log(`${r.holds === true ? '✓' : r.holds === false ? '✗' : '?'} ${r.rule}: ${r.evidence}`)
-  console.log(`hook ${name}: ${after ? `reported (${source})` : d.allowed && !red ? 'allowed' : 'refused'}${d.says ? `: ${d.says}` : ''}`)
+  console.log(`hook ${name}: ${after ? 'reported' : d.allowed && !red ? 'allowed' : 'refused'}${d.says ? `: ${d.says}` : ''}`)
   // the act has already happened: a workflow after it reports and never refuses
   return !after && (red || !d.allowed) ? 1 : 0
 }

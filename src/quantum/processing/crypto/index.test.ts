@@ -15,10 +15,6 @@ import {
   aead,
   merkleTree,
   derivePbkdf2,
-  planEncapsulation,
-  planSlhDsa,
-  planSignature,
-  planEcdsaP256,
   cryptoHosts,
   processorsForRole,
   BEACON_LAST,
@@ -27,9 +23,7 @@ import {
   CERN,
 } from './index.ts'
 import { cryptoConfig } from './config.ts'
-import { sha256 as sha256Bytes, utf8, hex } from '../unit/hmac.ts'
 
-const digest = (text: string) => hex(sha256Bytes(utf8(text)))
 const cfg = () => cryptoConfig()
 const hosts = () => cryptoHosts(cfg())
 const QPU_HOST = () => hosts().qpu
@@ -162,12 +156,6 @@ test('local NIST reverse doors open, verify and recompute', () => {
   assert.equal(once.derived, again.derived)
   assert.equal(once.derived, '120fb6cffcf8b32c43e7225256c4f837a86548c92ccc35480805987cb70be17b')
 
-  const kem = planEncapsulation('ML-KEM-768', cfg())
-  assert.equal(kem.fips, 203)
-  assert.equal(kem.webcrypto.flag, WEBCRYPTO_FLAG())
-  assert.equal(planSlhDsa(true).fips, 205)
-  assert.equal(planSignature(digest('nist'), 'ML-DSA-65', cfg()).fips, 204)
-  assert.equal(planEcdsaP256(digest('nist')).fips, '186-5')
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: NIST and CERN Open Data fixtures are sealed records with well-formed DOIs. */

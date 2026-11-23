@@ -4,8 +4,8 @@ import { IDEA_HOME } from './collisions.ts'
 import { ISO_EXIT } from './iso-exit.ts'
 import { quantumVocabulary } from './quantum-vocabulary.ts'
 import { uuid } from '../uuid/index.ts'
-import { ISO_QUANTUM_AI, MCP_API_KEY, QPU_CONNECTOR, WEBSITE_ORIGIN, payloadMcpNext, payloadMcpOnline, payloadMcpRequest } from '../net/website-client.ts'
 import { TABLES } from './tables-index.ts'
+import { QPU_CONNECTOR } from '../net/connector.ts'
 
 const IDEA_INBOX = `${IDEA_HOME}/leads` as const
 
@@ -22,33 +22,6 @@ export const PROCESS_LIFE = [
 
 export const LIFE_PER_SECOND = 1000000000
 export const lifeBound = (lives: boolean, clause: string, count: number) => `${lives ? 'live' : 'exit'}\n${clause}\n${count}`
-
-export const isoApprovedMcp = (apiKey?: string) => {
-  const list = payloadMcpRequest()
-  const next = payloadMcpNext([{ name: 'findDocuments' }], WEBSITE_ORIGIN, undefined, apiKey)
-  const online = payloadMcpOnline(undefined, WEBSITE_ORIGIN, apiKey)
-  const call = next.calls[0]
-  const keyed = next.keyed === true && next.refused === false && !!call
-  const planned = {
-    method: 'POST' as const,
-    name: 'findDocuments' as const,
-    body: { jsonrpc: '2.0' as const, id: 1, method: 'tools/call' as const, params: { name: 'findDocuments', arguments: { slug: 'pages' } } },
-    route: { method: 'GET' as const, url: `${WEBSITE_ORIGIN}/api/pages`, src: false as const, fetched: false as const },
-    headers: call?.headers ?? null,
-  }
-  return {
-    name: QPU_CONNECTOR.name, plugin: QPU_CONNECTOR.plugin, api: QPU_CONNECTOR.api, via: QPU_CONNECTOR.via,
-    approved: true as const, only: true as const, src: false as const, fetched: false as const,
-    experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary,
-    keyed, refused: next.refused, law: MCP_API_KEY.law, auth: MCP_API_KEY,
-    list: { method: list.method, url: list.api, body: list.body },
-    call: planned,
-    online: { doors: online.doors, keyed: online.keyed, refused: online.refused, law: online.law, calls: online.calls.length },
-    says: keyed
-      ? proseFill(PROSE.quantumProcessingIdeas_s1, online.doors.join(', '))
-      : proseFill(PROSE.quantumProcessingIdeas_s2, QPU_CONNECTOR.plugin, QPU_CONNECTOR.api, ISO_QUANTUM_AI.experience, next.says, online.says),
-  }
-}
 
 const ZENODO = 'https://github.com/zenodo/zenodo-rdm'
 const DOI = 'https://www.doi.org/the-identifier/resources/'
@@ -221,7 +194,7 @@ const inboxPath = (path: string) => {
 const lifeIdeaFiles = (): IdeaFile[] => {
   const living = PROCESS_LIFE.find((row) => row.computesNext)!
   const liveId = uuid(lifeBound(true, living.clause, LIFE_PER_SECOND))
-  const mcp = isoApprovedMcp()
+  const mcp = QPU_CONNECTOR
   const parent = proseFill(PROSE.quantumProcessingIdeas_s100, living.clause, liveId, LIFE_PER_SECOND, mcp.plugin, mcp.api)
   const lines = PROCESS_LIFE.filter((row) => !row.computesNext).map((row) => proseFill(PROSE.quantumProcessingIdeas_s101, row.clause, uuid(lifeBound(false, row.clause, 1)), mcp.plugin, mcp.api))
   const path = `${IDEA_INBOX}/life/next.txt`
@@ -315,7 +288,7 @@ const written = (read: { source: string; title: string; statement: string }, dev
   return `source: ${read.source}\ntitle: ${read.title}\nstandard: ${standard}\ndocumented: ${documented}\n\n${read.statement}${more}\n`
 }
 
-type IdeaLead = { id: string; path: string; source: string; statement: string; status: 'open'; tool: 'payload'; reason: string; run: { tool: 'payload'; arguments: { develop: { formula: string; product: string; variant: string; title: string } } }; developed: Developed }
+type IdeaLead = { id: string; path: string; source: string; statement: string; status: 'open'; tool: 'leads'; reason: string; run: { tool: 'leads'; arguments: { develop: { formula: string; product: string; variant: string; title: string } } }; developed: Developed }
 
 export const developIdeas = (raw: unknown, develop: Develop) => {
   const placed = placeInIdea(raw)
@@ -335,7 +308,7 @@ export const developIdeas = (raw: unknown, develop: Develop) => {
     if (!read.statement) { left.push(file.path); continue }
     const developed = develop({ formula: read.statement, product: read.product, variant: read.variant, title: read.title })
     const id = `idea-${file.path.slice(`${IDEA_INBOX}/`.length).replace(/\.txt$/, '').replace(/\//g, '-')}`
-    leads.push({ id, path: file.path, source: read.source, statement: read.statement, status: 'open' as const, tool: 'payload' as const, reason: PROSE.quantumProcessingIdeas_reason103, run: { tool: 'payload' as const, arguments: { develop: { formula: read.statement, product: read.product, variant: read.variant, title: read.title } } }, developed })
+    leads.push({ id, path: file.path, source: read.source, statement: read.statement, status: 'open' as const, tool: 'leads' as const, reason: PROSE.quantumProcessingIdeas_reason103, run: { tool: 'leads' as const, arguments: { develop: { formula: read.statement, product: read.product, variant: read.variant, title: read.title } } }, developed })
   }
   const outside = files.filter((file) => !underIdea(file.path)).map((file) => file.path)
   const counts = { served: 0, partial: 0, blocked: 0, out_of_scope: 0, open: leads.length }
@@ -361,7 +334,7 @@ export const nextIdeas = (raw: unknown, develop: Develop) => {
     const developed = develop({ formula: tree.statement, product: read.product, variant: read.variant, title: read.title })
     drained.push({ path: file.path, text: written({ source: read.source, title: read.title, statement: tree.statement }, developed, tree.children) })
     const id = `idea-${file.path.slice(`${IDEA_INBOX}/`.length).replace(/\.txt$/, '').replace(/\//g, '-')}`
-    leads.push({ id, path: file.path, source: read.source, statement: tree.statement, status: 'open', tool: 'payload', reason: 'developed in .idea and removed', depth: file.at, run: { tool: 'payload', arguments: { develop: { formula: tree.statement, product: read.product, variant: read.variant, title: read.title } } }, developed })
+    leads.push({ id, path: file.path, source: read.source, statement: tree.statement, status: 'open', tool: 'leads', reason: 'developed in .idea and removed', depth: file.at, run: { tool: 'leads', arguments: { develop: { formula: tree.statement, product: read.product, variant: read.variant, title: read.title } } }, developed })
     if (file.at > depth) depth = file.at
     for (const child of tree.children) {
       const path = childPath(file.path, child.statement)
@@ -374,6 +347,6 @@ export const nextIdeas = (raw: unknown, develop: Develop) => {
   const outside = placed.filter((file) => !underIdea(file.path)).map((file) => file.path)
   const counts = { served: 0, partial: 0, blocked: 0, out_of_scope: 0, open: leads.length }
   const empty = files.length === 0 && outside.length === 0
-  const mcp = raw === 'life' ? isoApprovedMcp() : null
+  const mcp = raw === 'life' ? { ...QPU_CONNECTOR, src: false as const, fetched: false as const } : null
   return { phase: 'next' as const, recursive: true as const, home: IDEA_HOME, inbox: IDEA_INBOX, depth, empty, files, drained, dropped, leads, left: files.map((file) => file.path), outside, counts, total: leads.length, ...(mcp ? { mcp } : {}), ...ISO_EXIT, says: empty ? proseFill(PROSE.quantumProcessingIdeas_s105, IDEA_HOME, leads.length, ISO_EXIT.count, ISO_EXIT.cover.entries.length, ISO_EXIT.cover.exits, mcp ? ` The only door is ${mcp.plugin}.` : '') : proseFill(PROSE.quantumProcessingIdeas_s106, files.length, IDEA_HOME, ISO_EXIT.cover.entries.length, ISO_EXIT.cover.exits) }
 }

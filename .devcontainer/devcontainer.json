@@ -1,0 +1,7 @@
+{
+  "name": "qpu (Alpine)",
+  "build": { "dockerfile": "../alpine/Dockerfile", "context": "..", "target": "runtime" },
+  "workspaceFolder": "/qpu",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/qpu,type=bind",
+  "postCreateCommand": "pnpm install --frozen-lockfile && lake exe cache get"
+}

@@ -2,6 +2,7 @@ import Lean
 import Qpu
 import Qpu.General.Meaning
 import GateBaseline
+import Qpu.Claims.Novelty
 /-! # Gate — every meaning comes from Mathlib
 
 Built by default, so `lake build` — and with it every commit, push and CI run — fails on any violation of textbook
@@ -11,7 +12,13 @@ meaning. The rule, read from the kernel environment and never from prose written
   argument, to a library notion (a declaration of Mathlib, Batteries, Std or Init), and both the definition and that
   binding carry the notion's own docstring, verbatim;
 * a `Qpu` theorem is meaningful only when its proof applies a Mathlib theorem and it carries that theorem's own
-  docstring, verbatim; a proof by decision procedure carries no textbook meaning.
+  docstring, verbatim; a proof by decision procedure carries no textbook meaning;
+* a composed proof is meaningful when every theorem it uses is a verified library theorem or a meaningful `Qpu`
+  theorem, it reaches a Mathlib theorem or a named theorem of Lean core, Batteries or Std (Lean verified beyond Mathlib,
+  never the logic and decision machinery), and its prose names every Mathlib and `Qpu` theorem it uses;
+* a `@[novelty]` theorem, one with no Mathlib equivalent, is meaningful as its own statement: the kernel accepts it on
+  the standard axioms alone, it uses only verified library theorems and meaningful `Qpu` theorems, it is not an
+  instance of a Mathlib theorem, and its prose cites its prior-art dossier (`Prior art: <address>`). Every novelty is listed: what qpu can give to Mathlib.
 
 The standing violations are named in `GateBaseline`, which this module writes when `MEANING_RATCHET=1` is set. The
 gate fails on any violation not named there and on any named one that no longer stands: no violation can enter, and
@@ -32,6 +39,11 @@ def isLibrary (env : Environment) (n : Name) : Bool :=
   (`Mathlib).isPrefixOf m || (`Batteries).isPrefixOf m || (`Std).isPrefixOf m || (`Init).isPrefixOf m
 
 def isMathlib (env : Environment) (n : Name) : Bool := (`Mathlib).isPrefixOf (moduleOf env n)
+
+/-- The logic and decision machinery of the libraries: it checks a proof, it states no textbook meaning. -/
+def isMachinery (n : Name) : Bool :=
+  [`Eq, `Iff, `And, `Or, `Not, `Decidable, `Classical, `Lean, `HEq, `True, `False, `Exists, `Subtype].any (·.isPrefixOf n) ||
+  [`absurd, `id, `of_decide_eq_true, `of_eq_true, `rfl, `congrArg, `congrFun, `congr, `cast, `trivial, `propext, `funext].contains n
 
 /-- Compiler- and elaborator-generated names are not authored declarations: equation lemmas, structure and
     inductive machinery, projections, auxiliary proofs. -/
@@ -115,9 +127,11 @@ run_cmd do
       | _ => pure ()
   for b in bindings.toList do clean := clean.insert b
   -- A COMPOSED PROOF CARRIES MATHLIB MEANING TOO: a theorem the head rule refuses passes when every theorem its proof
-  -- uses is a library theorem or a Qpu theorem that is itself clean, at least one Mathlib theorem is reached, and its
-  -- prose names every Mathlib and Qpu theorem it uses. Evaluated to a fixed point, so a chain of composed theorems
-  -- passes link by link and a cycle never does.
+  -- uses is a library theorem or a Qpu theorem that is itself clean, it reaches a Mathlib theorem or a named theorem of
+  -- Lean core, Batteries or Std that is not machinery, and its prose names every Mathlib and Qpu theorem it uses. A
+  -- NOVELTY passes as its own statement: standard axioms only, verified library and clean Qpu theorems only, and not a
+  -- Mathlib theorem applied. Evaluated to a fixed point, so a chain passes link by link and a cycle never does.
+  let mut novelties : Array Name := #[]
   let mut changed := true
   while changed do
     changed := false
@@ -126,10 +140,21 @@ run_cmd do
       let some (.thmInfo ti) := env.find? n | continue
       let deps := theoremDeps env ti.value.getUsedConstants.toList
       let named := deps.filter (fun d => isMathlib env d || isQpu env d)
-      let reachesMathlib := deps.any (fun d => isMathlib env d || (isQpu env d && clean.contains d))
-      let allClean := deps.all (fun d => isLibrary env d || (isQpu env d && clean.contains d))
       let prose := (← doc n).getD ""
-      if allClean && reachesMathlib && !named.isEmpty && named.all (fun d => (prose.splitOn d.toString).length > 1) then
+      let named_ (d : Name) := (prose.splitOn d.toString).length > 1
+      let reachesMathlib := deps.any (fun d => isMathlib env d || (isQpu env d && clean.contains d) || (isLibrary env d && !isMachinery d && named_ d))
+      let allClean := deps.all (fun d => isLibrary env d || (isQpu env d && clean.contains d))
+      if noveltyAttr.hasTag env n then
+        let standard := (← collectAxioms n).all ([``propext, ``Classical.choice, ``Quot.sound].contains ·)
+        -- an induction or recursion principle is a method of proof, not a statement the novelty would restate
+        let method (h : Name) := match h with | .str _ s => (s.splitOn "induction").length > 1 || s.startsWith "rec" | _ => false
+        let dossier := (prose.splitOn "Prior art: ").length > 1
+        if standard && allClean && dossier && !(proofHead ti.value).any (fun h => isMathlib env h && !method h) then
+          clean := clean.insert n
+          novelties := novelties.push n
+          changed := true
+        continue
+      if allClean && reachesMathlib && named.all named_ then
         clean := clean.insert n
         changed := true
   for (n, v) in headed.toList do
@@ -146,6 +171,7 @@ run_cmd do
           if let some m := notionOf rhs then
             out := out.push (Json.mkObj [("decl", toJson b.toString), ("module", toJson (moduleOf env b).toString), ("doc", toJson ((← doc m).getD ""))])
     IO.FS.writeFile ".lake/build/meaning-bindings.json" (Json.arr out).pretty
+    IO.FS.writeFile ".lake/build/novelties.json" (Json.arr (novelties.qsort (·.toString < ·.toString) |>.map (toJson ·.toString))).pretty
     let body := ",\n".intercalate (current.toList.map (fun v => "  " ++ v.quote))
     IO.FS.writeFile "lean/GateBaseline.lean" <|
       "/-! # GateBaseline\nGENERATED by `MEANING_RATCHET=1 lake env lean lean/Gate.lean` — never edited by hand. " ++

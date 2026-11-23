@@ -123,7 +123,7 @@
 | `QuantumAlgorithm.grover_search` | Qpu.Processing.QuantumAlgorithm | `∀ m < 4, ∀ r < 4, QuantumAlgorithm.grover m r ≠ 0 ↔ r = m` |
 | `QuantumAlgorithm.phase_estimation_exact` | Qpu.Processing.QuantumAlgorithm | `∀ k < 8, ∀ r < 8, (QuantumAlgorithm.sum8 fun j => QuantumAlgorithm.iqft r j * QuantumAlgorithm.wPow (j * k)) = if r = k then 8 else 0` |
 | `QuantumAlgorithm.qft_unitary` | Qpu.Processing.QuantumAlgorithm | `∀ j < 8, ∀ k < 8, (QuantumAlgorithm.sum8 fun i => QuantumAlgorithm.qft j i * QuantumAlgorithm.iqft i k) = if j = k then 8 else 0` |
-| `textbook_shor_sigma_root` | Qpu.General.Textbook | `64 ^ 2 % 91 = 1 ∧ 64 ≠ 1 ∧ 64 ≠ 90 ∧ (64 - 1) * (64 + 1) % 91 = 0 ∧ (64 - 1).gcd 91 = 7 ∧ (64 + 1).gcd 91 = 13 ∧ 7 * 13 = 91` |
+| `textbook_shor_sigma_root` | Qpu.General.Textbook | `∀ (N x : ℕ), N ∣ (x - 1) * (x + 1) → ¬N ∣ x - 1 → ¬N ∣ x + 1 → (x - 1).gcd N ≠ 1 ∧ (x - 1).gcd N ≠ N` |
 
 ## quantum circuit (ISO/IEC 4879:2024 3.4.5)
 

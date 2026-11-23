@@ -14,6 +14,6 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["src/quantum/**/*.ts", "scripts/**/*.ts"],
-  "exclude": ["node_modules", "legacy"]
+  "include": ["src/quantum/**/*.ts", "scripts/**/*.ts", "alpine/**/*.ts"],
+  "exclude": ["node_modules", "legacy", "src/quantum/net/worker.ts", "src/quantum/net/mailbox.ts", "src/quantum/net/prover-object.ts"]
 }

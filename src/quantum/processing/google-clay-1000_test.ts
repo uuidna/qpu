@@ -50,7 +50,7 @@ test('Google Quantum AI challenges hold through the 1000-bit Clay algorithms', (
   assert.equal(rsa.relations.length, 1)
   assert.equal(rsa.relations[0].holds, true)
 
-  const google = content('payload', { google: true })
+  const google = content('google', { challenges: true })
   assert.equal(google.phase, 'google-challenges')
   assert.equal(google.total, GOOGLE_CHALLENGE_IDS.length)
   assert.equal(google.holding, GOOGLE_CHALLENGE_IDS.length)

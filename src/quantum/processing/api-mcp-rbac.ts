@@ -1,7 +1,7 @@
 // Payload MCP RBAC for every API and every MCP. A read is anyone's, a create is an editor or a writer, an update or a delete
 // is manage (tenant-admin, admin). The decision is getAccess, the same CanCanCan table the MCP plugin asks first.
 import { BATCH_ACTIONS, OPERATIONS } from './payload-vocabulary.ts'
-import { getAccess, type Ability } from './toolboxes/payload.ts'
+import { getAccess, type Ability } from './access.ts'
 
 const ROLES = ['viewer', 'reader', 'editor', 'writer', 'tenant-admin', 'admin'] as const
 const ABILITIES: Ability[] = (['apis', 'mcps'] as const).flatMap((subject) => [
@@ -62,10 +62,4 @@ export const payloadRbacMcp = (hosts: readonly { name: string; url: string }[]) 
     grant: grant('mcps'), hosts: doors.length, doors,
     merged: doors.length > 0 && urls.size === doors.length && doors.every((door) => door.rbac.managedBy === 'payload-mcp' && door.rbac.subject === 'mcps' && door.rbac.access),
   }
-}
-
-/** The batch actions for one role: each operation over many documents, allowed exactly when that operation is allowed. */
-export const decideBatch = (subject: 'apis' | 'mcps', role: string) => {
-  const calls = BATCH_ACTIONS.map((batch) => ({ action: batch.action, rest: batch.rest, mcp: batch.mcp, where: batch.where, access: decideApiMcp(subject, batch.action, role) }))
-  return { subject, action: 'batch' as const, role, calls, access: calls.every((c) => c.access), managedBy: 'payload-mcp' as const, ...(subject === 'mcps' ? { server: 'payload-rbac' as const, one: true as const, first: true as const } : {}) }
 }

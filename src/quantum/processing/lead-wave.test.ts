@@ -90,8 +90,8 @@ test('following a runnable lead and a wave request carry that signal', () => {
   assert.equal(asked?.follow?.signal?.mcp?.api, 'https://qpu.uuidna.com/api/mcp')
 })
 
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: the ISO patch covers every drift with a harmonic and leaves the note on afterRead. */
-test('the ISO patch covers every drift with a harmonic and leaves the note on afterRead', () => {
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the harmonic cover covers every drift with a harmonic and leaves its note. */
+test('the harmonic cover covers every drift with a harmonic and leaves its note', () => {
   const cover = harmonicCover()
   assert.equal(cover.holds, true)
   assert.deepEqual(cover.series, [432, 216, 108, 54, 27])
@@ -108,38 +108,6 @@ test('the ISO patch covers every drift with a harmonic and leaves the note on af
   assert.equal(cover.note.text.includes('proton-ratio-integer'), true)
   assert.equal(cover.note.text.includes('covered by the harmonic 432'), true)
   assert.equal(cover.note.text.includes('covered by the harmonic 54'), true)
-  const patch = call('payload', { drift: true }).result?.structuredContent
-  assert.equal(patch?.phase, 'patch')
-  assert.equal(patch?.holds, true)
-  assert.equal(patch?.harmonic, true)
-  assert.deepEqual(patch?.hooks, ['beforeChange', 'afterChange', 'afterRead'])
-  assert.equal(patch?.beforeChange?.records?.[0]?.stated, 440)
-  assert.equal(patch?.afterChange?.patched?.[0]?.harmonic, 432)
-  assert.equal(patch?.afterChange?.patched?.[1]?.harmonic, 54)
-  assert.equal(patch?.afterRead?.note?.text, patch?.note?.text)
-  assert.equal(patch?.note?.text, cover.note.text)
-  assert.equal(patch?.says, cover.note.text)
-  assert.equal(patch?.audit?.holds, true)
-  assert.equal(patch?.next?.decision, 'accept')
-  assert.equal(patch?.change?.holds, true)
-  assert.equal(patch?.fetched, false)
-  assert.equal(patch?.written, true)
-  const stated = call('payload', { drift: 'the pitch is 440 Hz' }).result?.structuredContent
-  assert.equal(stated?.holds, true)
-  assert.equal(stated?.covered?.some((row: { id: string; stated: number; harmonic: number }) => row.id === 'stated' && row.stated === 440 && row.harmonic === 432), true)
-  assert.equal(stated?.afterRead?.note?.text.includes('stated: stated 440, covered by the harmonic 432'), true)
-  assert.equal(patch?.waves?.holds, true)
-  assert.equal(patch?.waves?.families, 19)
-  assert.equal(patch?.afterRead?.waves?.rows?.[0]?.family, 'Annealing')
-  assert.equal(patch?.afterRead?.waves?.rows?.[0]?.next, 'Anyon')
-  assert.equal(patch?.afterRead?.waves?.rows?.every((row: { hz: number; solved: boolean; open: boolean; closed: boolean }) => row.hz === 432 && row.solved === false && row.open === false && row.closed === true), true)
-  assert.equal(patch?.programs?.holds, true)
-  assert.equal(patch?.programs?.via, 'uuid')
-  assert.equal(patch?.programs?.written, true)
-  assert.equal(patch?.afterRead?.programs?.rows?.[0]?.params?.hz, 432)
-  assert.equal(patch?.afterRead?.programs?.rows?.[0]?.schema?.[0]?.type, 'string')
-  assert.equal(patch?.afterRead?.programs?.rows?.[0]?.schema?.[1]?.type, 'number')
-  assert.equal(patch?.afterRead?.programs?.rows?.[0]?.file, true)
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: a drift wave runs in every Clay family and names the next family. */

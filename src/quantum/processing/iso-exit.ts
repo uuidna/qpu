@@ -1,9 +1,22 @@
 /** Every exit code, starting at 0 and including 0. Each code is a case. Code 0 leaves as a conforming ISO 9001 output. Every other code leaves as a nonconforming ISO 9001 output: it is reported and it does not stop the walk. Each case is a document: its address is the UUID of the parent address and the formula, and the SHA-256 of that text sits beside it. One further document follows 255, so the depth has no maximum. Verbosity is the byte length of that report. */
 import { PROSE } from './prose-index.ts'
-import { aspects, seal, uuid } from '../uuid/index.ts'
-import { entriesCover } from '../payload/index.ts'
+import { aspects, entryText, seal, uuid } from '../uuid/index.ts'
 import { hex, sha256, utf8 } from './unit/hmac.ts'
 import { decodeImpossible, seededTrapdoor } from './algorithms.ts'
+
+/** One entry per exit. Covered plus uncovered are the exits (textbook_standards_sliced). Nothing is written. */
+export const entriesCover = (exits: readonly { from: string; body: Record<string, unknown> }[]) => {
+  const entries = exits.map((exit) => {
+    const kind = 'exit' as const
+    const from = exit.from
+    const body = { ...exit.body, exited: false as const }
+    const data = { id: uuid(entryText({ kind, from, body })), kind, from, body }
+    return data
+  })
+  const covered = entries.filter((entry) => exits.some((exit) => exit.from === entry.from)).length
+  const uncovered = exits.length - covered
+  return { entries, exits: exits.length, covered, uncovered, holds: covered + uncovered === exits.length && exits.length - uncovered === covered, theorem: 'textbook_standards_sliced' as const }
+}
 
 /** The six theorems whose combination is the 1000-bit answer. None of them states that integer. Together they are the decode. */
 export const DECODE_THEOREMS = ['textbook_factors_divide', 'textbook_double_torus', 'textbook_order_finding', 'textbook_shor_reduction', 'textbook_rsa_beyond_bound', 'textbook_impossible_trapdoor'] as const

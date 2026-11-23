@@ -1,33 +1,18 @@
-// The one QPU MCP over stdio: a proxy of the Payload app's /api/mcp, so a client that speaks stdio reaches the same
-// tools the app serves. Each line read is one JSON-RPC message; it is forwarded to the deployed app when
-// QPU_APP_MCP names one, else to the local app, and the answer is written back as one line.
-// The key is read from the keychain alone and travels only in the Authorization header: it is never printed,
-// and a key in the environment is not used.
-import { createInterface } from 'node:readline'
+// The QPU MCP over stdio: the Worker's server on the MCP SDK's stdio door, so a harness that starts a command reaches
+// the same tools as one given the URL; and this machine's git through the machine allow-list, which the Worker never holds.
+import { serveStdio } from '@modelcontextprotocol/server/stdio'
+import { z } from 'zod'
+import { mcpServer } from '../src/quantum/net/mcp-http.ts'
+import { MACHINE_ACTIONS } from '../src/quantum/processing/machine.ts'
+import { runMachine } from '../src/quantum/processing/machine-run.ts'
+import { PROSE } from '../src/quantum/processing/prose-index.ts'
 
-import { DOOR_ENDPOINTS as ENDPOINTS, forward, type DoorMessage as Message } from '../src/quantum/processing/door.ts'
-import { PROSE, proseFill } from '../src/quantum/processing/prose-index.ts'
-
-const asked = ENDPOINTS.map((endpoint) => endpoint.url).join(', ')
-const write = (id: Message['id'], body: { result: unknown } | { error: unknown }) => process.stdout.write(JSON.stringify({ jsonrpc: '2.0', id, ...body }) + '\n')
-
-const answer = async (message: Message): Promise<void> => {
-  const reached = await forward(message)
-  if (message.id === undefined) return
-  if (reached?.reply) {
-    if (reached.reply.error !== undefined) return void write(message.id, { error: reached.reply.error })
-    const result = reached.reply.result
-    const sourced = message.method === 'tools/call' && result !== null && typeof result === 'object' ? { ...result, _meta: { ...(result as { _meta?: object })._meta, source: reached.source } } : result
-    return void write(message.id, { result: sourced })
-  }
-  if (message.method === 'initialize') return void write(message.id, { result: { protocolVersion: '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'qpu', version: '0' } } })
-  if (message.method === 'tools/list') return void write(message.id, { result: { tools: [{ name: 'probe', description: proseFill(PROSE.scriptsStdio_probe, asked), inputSchema: { type: 'object' } }] } })
-  write(message.id, { error: { code: -32000, message: proseFill(PROSE.scriptsStdio_unreached, asked) } })
-}
-
-// one message at a time, in the order read, so the answers keep the order of the questions
-let queue: Promise<void> = Promise.resolve()
-createInterface({ input: process.stdin }).on('line', (line) => {
-  if (!line.trim()) return
-  queue = queue.then(() => answer(JSON.parse(line) as Message))
+serveStdio(async () => {
+  const server = await mcpServer(process.env)
+  const inputSchema = z.object({ action: z.enum(MACHINE_ACTIONS.map((a) => a.id) as [string, ...string[]]).describe(PROSE.scriptsStdio_action), files: z.array(z.string()).optional().describe(PROSE.scriptsStdio_files), message: z.string().optional().describe(PROSE.scriptsStdio_message), confirm: z.boolean().optional().describe(PROSE.scriptsStdio_confirm), branch: z.string().optional() })
+  server.registerTool('machine', { description: PROSE.scriptsStdio_machine, inputSchema, annotations: { title: 'machine', readOnlyHint: false, openWorldHint: true } }, async (args) => {
+    const answer = (await runMachine(args, process.cwd())).answer as { allowed?: boolean; record?: { ok?: boolean } }
+    return { content: [{ type: 'text', text: JSON.stringify(answer) }], structuredContent: answer, isError: answer.allowed === false || answer.record?.ok === false }
+  })
+  return server
 })

@@ -41,7 +41,4 @@ test('the quantum advantage is unlimited by default and needs no interaction to 
   const list = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; inputSchema: { properties?: Record<string, unknown> } }[] } }).result.tools
   const schema = list.find((t) => t.name === 'metrics')!.inputSchema.properties ?? {}
   assert.deepEqual(Object.keys(schema), ['artefacts'], 'the metric takes the run and nothing else: no token, no approval')
-  const access = (call('audit', { access: true }) as { result: { structuredContent: { checks: { id: string; passed: boolean; evidence: string }[]; failed: number } } }).result.structuredContent
-  assert.equal(access.failed, 0, JSON.stringify(access.checks.filter((c) => !c.passed)))
-  assert.ok(access.checks.some((c) => c.id === 'client:advantage-unlimited-no-interaction' && c.passed))
 })

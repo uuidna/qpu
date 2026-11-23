@@ -29,8 +29,8 @@ const getNat = (src: string): number | null => {
   const add = (): number | null => { let v = mul(); while (v !== null && (s[i] === '+' || s[i] === '-')) { const op = s[i++]; const r = mul(); if (r === null) return null; v = op === '+' ? v + r : Math.max(0, v - r) } return v }
   const v = add(); return v !== null && i === s.length && Number.isSafeInteger(v) ? v : null
 }
-/** The textbook's closed equations: a theorem `name : <closed expression> = <n> := by decide` is a question whose answer the kernel decided. */
-const listQuestions = () => TEXTBOOK_THEOREMS.flatMap((t) => { const m = /^theorem\s+(\S+)\s*:\s*(.+?)\s*=\s*(\d+)\s*:=\s*by decide$/.exec(t.lean); if (!m) return []; const v = getNat(m[2]!); return v === null ? [] : [{ theorem: t.key, ask: `${m[2]} = ?`, answer: Number(m[3]), recomputed: v, says: t.says }] })
+/** The textbook's closed equations: a theorem or the example under it, `: <closed expression> = <n> := by decide`, is a question whose answer the kernel decided. */
+const listQuestions = () => TEXTBOOK_THEOREMS.flatMap((t) => { const m = [t.lean, ...(t.example ?? '').split('\n')].map((l) => /^(?:theorem\s+\S+|example)\s*:\s*(.+?)\s*=\s*(\d+)\s*:=\s*by decide$/.exec(l)).find(Boolean); if (!m) return []; const v = getNat(m[1]!); return v === null ? [] : [{ theorem: t.key, ask: `${m[1]} = ?`, answer: Number(m[2]), recomputed: v, says: t.says }] })
 
 type InstitutionRequest = { /** the tenant (its id) every page and entry is assigned to: tenant-scoped collections refuse a record without one */ tenant?: string; sets?: boolean; set?: { index?: number | string; family?: string; doors?: Record<string, string> }; edition?: string; users?: number; theorems?: string[]; course?: string; answers?: { theorem: string; answer: number | string }[] }
 /** An institution's whole plan: its edition and bill under the cap, the Workspace doors it opens and how each lands, the textbook's

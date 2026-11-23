@@ -10,7 +10,7 @@ import { listNumerals, translate } from './i18n.ts'
 import { THEOREMS } from './theorems-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { TABLES } from './tables-index.ts'
-import { evaluate, evaluateTheorem, getStatement, numbers, sides } from './expressions.ts'
+import { closedOf, evaluate, evaluateTheorem, getStatement, numbers, sides } from './expressions.ts'
 import { listFactors, testPrimality } from './algorithms.ts'
 
 /** A prompt routed to the kernel-accepted theorems by the weight of the words it shares with them (a word weighs ln(theorems / theorems using
@@ -47,8 +47,10 @@ const KERNEL = new Set(THEOREMS.map((t) => t.key))
  *  for a theorem quantified or needing a value the statement lacks. */
 export const evaluateRouted = (theorem: string, statement: string) => {
   const t = TEXTBOOK_THEOREMS.find((x) => x.key === theorem), nums = numbers(statement).filter((n) => /^\d+$/.test(n)); if (!t) return null
-  const values: Record<string, string> = Object.fromEntries(getStatement(t.lean).variables.flatMap((v, i) => (nums[i] ? [[v, nums[i]]] : []))), ev = evaluateTheorem(theorem, values) as { evaluable?: boolean; needs?: string[] }
-  return ev.evaluable && !ev.needs?.length ? { theorem, lean: t.lean, values } : null
+  const values: Record<string, string> = Object.fromEntries(getStatement(t.lean).variables.flatMap((v, i) => (nums[i] ? [[v, nums[i]]] : []))), ok = (v: Record<string, string>) => { const ev = evaluateTheorem(theorem, v) as { evaluable?: boolean; needs?: string[] }; return ev.evaluable && !ev.needs?.length }
+  // a general theorem the numbers cannot bind: its example's closed instance
+  const closed = closedOf(theorem), lean = Object.keys(values).length ? t.lean : (closed ?? t.lean)
+  return ok(values) ? { theorem, lean, values } : closed && ok({}) ? { theorem, lean: `theorem ${theorem} ${closed}`, values: {} } : null
 }
 /** A number read exactly as digits × 10^e (6.62607015e-34 is 662607015e-42); a stated one agrees with a witness's when equal, a decimal to the
  *  places it is written to (3.5 agrees with 3.47). */
@@ -209,9 +211,9 @@ export const reflectStatement = (statement: string): string[] => {
 const slug = (text: string): string => tokens(text).slice(0, 6).join('-') || 'statement'
 
 /** Tools the matcher never calls to serve a statement: itself, the judges and layouts, the doors that run any tool they are handed (prose,
- *  payload) and every toolbox that fetches, bills or audits. A pattern may still open any door by name. */
-const META = new Set(['match', 'audit', 'verify', 'metrics', 'textbook', 'dashboard', 'clone', 'css', 'prose', 'payload'])
-const META_TOOLBOXES = new Set(['flow', 'legal', 'repository', 'billing', 'standards', 'payload', 'extension'])
+ *  the google door) and every toolbox that fetches, bills or audits. A pattern may still open any door by name. */
+const META = new Set(['match', 'audit', 'verify', 'metrics', 'textbook', 'dashboard', 'clone', 'css', 'prose', 'google'])
+const META_TOOLBOXES = new Set(['flow', 'legal', 'repository', 'billing', 'standards', 'extension'])
 
 /** Shor's factoring of a small N on the simulator is deterministic: once per process; a matcher's index is built once. */
 const SHOR = new Map<number, any>()
@@ -236,7 +238,6 @@ export const PATTERNS: readonly Pattern[] = [
   { name: 'scan', test: /\bscan\b[^[]*(\[[\s\S]*\])/i, tool: 'verify', args: (m) => { try { return { scan: JSON.parse(m[1]!) } } catch { return { scan: [] } } }, shows: PROSE.quantumProcessingMatch_shows6 },
   { name: 'metrics', test: /\b(metrics|how many (?:tools|examples|theorems|leads)|coins paid)\b/i, tool: 'metrics', args: () => ({}), shows: 'the tree\'s metrics now' },
   { name: 'textbook', test: /\b(?:reuse|replay) (?:example )?([a-z0-9-]+)/i, tool: 'textbook', args: (m) => ({ reuse: m[1]!.toLowerCase() }), shows: 'an example reused by id' },
-  { name: 'first-user', test: /\badmin\b[\s/-]*create[\s/-]*first[\s/-]*user\b/i, tool: 'configure', args: () => ({ kind: 'hooks' }), shows: PROSE.quantumProcessingMatch_shows7 },
   { name: 'shor', test: /\bfactor(?:ise|ize)?\s+(\d+)\b/i, tool: 'algorithm', args: (m) => ({ name: 'factor', integer: m[1]! }), shows: PROSE.quantumProcessingMatch_shows8 },
   { name: 'prime', test: /\bis\s+(\d+)\s+(?:a\s+)?prime\b/i, tool: 'algorithm', args: (m) => ({ name: 'factor', integer: m[1]! }), shows: PROSE.quantumProcessingMatch_shows9 },
   // an exploit is re-fused to patching: a hack, vulnerability, breach or CVE opens audit { repair } (a live patch, or a remediation lead), never a denial

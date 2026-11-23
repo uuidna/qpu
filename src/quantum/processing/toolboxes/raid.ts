@@ -10,10 +10,55 @@ import { defineTool, isObj, createChecks, type Toolbox } from '../toolbox.ts'
 import { documentPath } from '../../fs/index.ts'
 import { uuid, canonicalText } from '../../uuid/index.ts'
 import { flowWidget } from '../widgets.ts'
-import { createAssociation, createValidation, valueAt, type Association, type Validation } from './payload.ts'
+import { valueAt } from '../access.ts'
 
 type Doc = Record<string, unknown>
 type Filter = Record<string, unknown>
+
+type Field = Record<string, unknown>
+export type Association = { type: 'belongs_to' | 'has_one' | 'has_many' | 'has_many_through' | 'has_one_through' | 'has_and_belongs_to_many' | 'polymorphic' | 'self_join' | 'sti' | 'delegated_type'; owner: string; name: string; target?: string; targets?: readonly string[]; through?: string; on?: string; inverse?: string; optional?: boolean; subtypes?: Readonly<Record<string, readonly Field[]>>; dependent?: 'destroy'; counterCache?: string; touch?: boolean }
+export const createAssociation = (a: Association) => {
+  // the key a has_many or has_one is joined on: Rails' convention, the owner's singular name on the target (authors has_many books: books.author)
+  const t = a.target ?? '', on = a.on ?? a.owner.replace(/ies$/, 'y').replace(/s$/, ''), rel = (name: string, to: string | readonly string[], extra: Field = {}): Field => ({ name, type: 'relationship', relationTo: to, ...extra }), join = (name: string, collection: string, by: string, extra: Field = {}): Field => ({ name, type: 'join', collection, on: by, ...extra })
+  const sides: { owner: Field[]; target?: Field[]; through?: Field[] } =
+    a.type === 'belongs_to' ? { owner: [rel(a.name, t, { required: !a.optional, index: true })] }
+    : a.type === 'has_one' ? { owner: [join(a.name, t, on, { defaultLimit: 1 })], target: [rel(on, a.owner, { unique: true, index: true })] }
+    : a.type === 'has_many' ? { owner: [join(a.name, t, on)], target: [rel(on, a.owner, { index: true })] }
+    : a.type === 'has_many_through' || a.type === 'has_one_through' ? { owner: [join(a.name, a.through ?? '', on, a.type === 'has_one_through' ? { defaultLimit: 1 } : {})], through: [rel(on, a.owner, { required: true, index: true }), rel(a.inverse ?? t, t, { required: true, index: true })] }
+    : a.type === 'has_and_belongs_to_many' ? { owner: [rel(a.name, t, { hasMany: true })], target: [join(a.inverse ?? a.owner, a.owner, a.name)] }
+    : a.type === 'polymorphic' ? { owner: [rel(a.name, a.targets ?? [])] }
+    : a.type === 'self_join' ? { owner: [rel(a.name, a.owner, { hasMany: true }), join(a.inverse ?? `${a.name}By`, a.owner, a.name)] }
+    : a.type === 'sti' ? { owner: [{ name: a.name, type: 'select', required: true, options: Object.keys(a.subtypes ?? {}) }, ...Object.entries(a.subtypes ?? {}).flatMap(([sub, fs]) => fs.map((f) => ({ ...f, admin: { condition: `(data) => data?.${a.name} === '${sub}'` } })))] }
+    : { owner: [rel(a.name, a.targets ?? [], { required: true })], target: (a.targets ?? []).map((x) => join(a.inverse ?? a.owner, a.owner, a.name)) }
+  // the association options as Payload hooks, their source for the generator to write
+  const hooks = [...(a.dependent === 'destroy' ? [{ on: a.owner, hook: 'afterDelete', source: `async ({ doc, req }) => { await req.payload.delete({ collection: '${t}', where: { ${on}: { equals: doc.id } }, req }) }` }] : []), ...(a.counterCache ? [{ on: t || a.owner, hook: 'afterChange', source: `async ({ doc, req }) => { const parent = doc.${on}; if (parent) await req.payload.update({ collection: '${a.owner}', id: typeof parent === 'object' ? parent.id : parent, data: { ${a.counterCache}: (await req.payload.count({ collection: '${t}', where: { ${on}: { equals: typeof parent === 'object' ? parent.id : parent } }, req })).totalDocs }, req }) }` }] : []), ...(a.touch ? [{ on: t || a.owner, hook: 'afterChange', source: `async ({ doc, req }) => { const parent = doc.${on}; if (parent) await req.payload.update({ collection: '${a.owner}', id: typeof parent === 'object' ? parent.id : parent, data: {}, req }) }` }] : [])]
+  return { phase: 'association' as const, rails: a.type, ...sides, hooks, theorem: 'textbook_association_fields' }
+}
+
+export type Validation = { name: string; helper: 'absence' | 'acceptance' | 'confirmation' | 'comparison' | 'format' | 'inclusion' | 'exclusion' | 'length' | 'numericality' | 'presence' | 'uniqueness' | 'validates_associated' | 'validates_each' | 'validates_with'; options?: { with?: string; in?: readonly (string | number)[]; minimum?: number; maximum?: number; is?: number; onlyInteger?: boolean; greaterThan?: number | string; lessThan?: number | string; allowNil?: boolean; allowBlank?: boolean; message?: string; on?: 'create' | 'update'; if?: string; unless?: string; validator?: string } }
+export const createValidation = (v: Validation) => {
+  const o = v.options ?? {}, say = (m: string) => JSON.stringify(o.message ?? `${v.name} ${m}`), field: Field = {}
+  const test: string | null =
+    v.helper === 'presence' ? (field.required = true, null)
+    : v.helper === 'uniqueness' ? (field.unique = true, field.index = true, null)
+    : v.helper === 'validates_associated' ? null // Payload refuses a relationship to a document that is not there
+    : v.helper === 'length' && o.is === undefined ? (o.minimum !== undefined && (field.minLength = o.minimum), o.maximum !== undefined && (field.maxLength = o.maximum), null)
+    : v.helper === 'inclusion' && !o.message ? (field.options = o.in ?? [], null)
+    : v.helper === 'absence' ? `(value == null || value === '') || ${say('must be blank')}`
+    : v.helper === 'acceptance' ? `value === true || ${say('must be accepted')}`
+    : v.helper === 'confirmation' ? `value === siblingData?.${v.name}Confirmation || ${say('doesn\'t match confirmation')}`
+    : v.helper === 'comparison' ? `(${o.greaterThan !== undefined ? `value > ${typeof o.greaterThan === 'string' ? `siblingData?.${o.greaterThan}` : o.greaterThan}` : 'true'} && ${o.lessThan !== undefined ? `value < ${typeof o.lessThan === 'string' ? `siblingData?.${o.lessThan}` : o.lessThan}` : 'true'}) || ${say('is out of comparison')}`
+    : v.helper === 'format' ? `new RegExp(${JSON.stringify(o.with ?? '.*')}).test(String(value ?? '')) || ${say('is invalid')}`
+    : v.helper === 'inclusion' ? `${JSON.stringify(o.in ?? [])}.includes(value) || ${say('is not included in the list')}`
+    : v.helper === 'exclusion' ? `!${JSON.stringify(o.in ?? [])}.includes(value) || ${say('is reserved')}`
+    : v.helper === 'length' ? `String(value ?? '').length === ${o.is} || ${say(proseFill(PROSE.quantumProcessingToolboxesRaid_s24, o.is))}`
+    : v.helper === 'numericality' ? (field.type = 'number', o.minimum !== undefined && (field.min = o.minimum), o.maximum !== undefined && (field.max = o.maximum), o.onlyInteger ? `Number.isInteger(value) || ${say('must be an integer')}` : null)
+    : `(${o.validator ?? '() => true'})(value, siblingData)` // validates_each and validates_with: the tenant's own validator
+  // the options wrap the test: empty values pass when allowed, the operation and the condition decide whether it runs
+  const guards = [...(o.allowNil || o.allowBlank ? [`value == null${o.allowBlank ? ` || value === ''` : ''}`] : []), ...(o.on ? [`operation !== '${o.on}'`] : []), ...(o.if ? [`!(${o.if})`] : []), ...(o.unless ? [`(${o.unless})`] : [])]
+  const validate = test ? `(value, { siblingData, operation }) => ${guards.length ? `(${guards.join(' || ')}) || ` : ''}(${test})` : null
+  return { phase: 'validation' as const, rails: v.helper, field: { name: v.name, ...field }, validate, theorem: 'textbook_validation_helpers' }
+}
 
 const cmp = (a: unknown, b: unknown): number => (typeof a === 'number' && typeof b === 'number' ? a - b : String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0)
 const same = (a: unknown, b: unknown): boolean => JSON.stringify(a) === JSON.stringify(b)
@@ -145,8 +190,8 @@ export const RAID: Toolbox = {
   idea: PROSE.quantumProcessingToolboxesRaid_idea11,
   tools: [mongo],
   examples: [
-    { id: 'mongo-find', tool: 'mongo', arguments: { op: 'find', collection: 'processors', docs: SAMPLE, filter: { qubits: { $gte: 60 }, tags: 'processor' }, sort: { qubits: -1 } }, shows: PROSE.quantumProcessingToolboxesRaid_shows12, expect: (s) => (s.matched === 1 && s.docs[0]?._id === 'a' ? null : `${s.matched} matched: ${s.docs.map((d: Doc) => d._id)}`) },
-    { id: 'mongo-update', tool: 'mongo', arguments: { op: 'update', collection: 'processors', docs: SAMPLE, filter: { _id: 'b' }, update: { $set: { 'meta.year': 2020 }, $inc: { qubits: 1 }, $push: { tags: 'updated' } } }, shows: PROSE.quantumProcessingToolboxesRaid_shows13, expect: (s) => (s.matched === 1 && s.changes[0]?.to.body.qubits === 55 && s.changes[0]?.to.body.meta.year === 2020 && s.changes[0]?.to.links[0] === 'b' ? null : JSON.stringify(s.changes)) },
+    { id: 'mongo-find', tool: 'mongo', theorem: 'textbook_mongo_find_filter', arguments: { op: 'find', collection: 'processors', docs: SAMPLE, filter: { qubits: { $gte: 60 }, tags: 'processor' }, sort: { qubits: -1 } }, shows: PROSE.quantumProcessingToolboxesRaid_shows12, expect: (s) => (s.matched === 1 && s.docs[0]?._id === 'a' ? null : `${s.matched} matched: ${s.docs.map((d: Doc) => d._id)}`) },
+    { id: 'mongo-update', tool: 'mongo', theorem: 'textbook_mongo_update_inc', arguments: { op: 'update', collection: 'processors', docs: SAMPLE, filter: { _id: 'b' }, update: { $set: { 'meta.year': 2020 }, $inc: { qubits: 1 }, $push: { tags: 'updated' } } }, shows: PROSE.quantumProcessingToolboxesRaid_shows13, expect: (s) => (s.matched === 1 && s.changes[0]?.to.body.qubits === 55 && s.changes[0]?.to.body.meta.year === 2020 && s.changes[0]?.to.links[0] === 'b' ? null : JSON.stringify(s.changes)) },
   ],
   skill: {
     instructions: PROSE.quantumProcessingToolboxesRaid_instructions14,

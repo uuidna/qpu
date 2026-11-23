@@ -17,7 +17,7 @@ import { CLAIMS } from '../claims-index.ts'
 import { listLiterals, listManualDocs, ERROR_REMEDIES, FALLBACKS, ENTROPY_KINDS } from '../audit.ts'
 import { uuid } from '../../uuid/index.ts'
 import { GOOGLE_HOST, QPU_MCP } from '../discovery.ts'
-import { checkAccess, type Ability, type ScopedRole } from './payload.ts'
+import { checkAccess, type Ability, type ScopedRole } from '../access.ts'
 import { PAYLOADCMS_WORKSPACE_ALIGNMENT } from '../repositories.ts'
 import { LICENSE } from '../unit/license.ts'
 import { TABLES } from '../tables-index.ts'
@@ -49,7 +49,7 @@ const NEEDED_BINDINGS = ['ASSETS', 'D1', 'R2', 'KV', 'QPU', 'AI'] as const
 const NEEDED_FLAGS = ['nodejs_compat', 'webcrypto_modern_algorithms'] as const
 /** The strict rules of when to commit and when to push, each decided by a theorem over the facts the client hands over (the receipt it just
  *  wrote, the approval the configs step recorded, the gate's decoding): a commit needs the flow green (no red step: textbook_commit_green);
- *  a push needs that, the version sequential and representing the package (textbook_version_sequential), the gate decoded with nothing
+ *  a push needs that, the version sequential and representing the package, the gate decoded with nothing
  *  uncorrectable (textbook_majority_of_three), and the packed npm package complete and ISO verified; a release needs nothing carried
  *  (textbook_carry_release). A release is tagged and pushed only when that package gate holds. A violated rule is a case the court computes. */
 /** A waiver of one rule, asked by someone through Payload: honoured only when the rule abilities let their roles waive that rule here. */
@@ -206,13 +206,13 @@ const getWorkflow = (name: WorkflowName, o: { offline?: boolean } = {}) => {
   // the act reported through the Payload app's MCP door: the same tool, asked there, answers the decision the app holds
   const report = (workflow: WorkflowName) => ({ id: 'report', kind: 'mcp' as const, tool: 'repository', url: QPU_MCP, arguments: { workflow }, says: PROSE.quantumProcessingToolboxesRepository_report })
   const by: Record<WorkflowName, { says: string; steps: { id: string; kind: 'run' | 'mcp' | 'raid' | 'imprint' | 'trailers' | 'stage'; strict?: boolean; detach?: boolean; cmd?: string; args?: string[]; tool?: string; arguments?: Record<string, unknown>; url?: string; auth?: string; files?: string[]; says: string }[] }> = {
-    'pre-commit': { says: PROSE.quantumProcessingToolboxesRepository_says54, steps: [next(['--offline', '--fast', '--strict']), { id: 'stage', kind: 'stage', files: ['docs/public/mcp.json', 'docs/mcp.md', 'docs/.vitepress/config.mts', 'src/quantum/processing/clay-statements.ts', 'README.md', 'docs/public/manifest.webmanifest', 'docs/public/configs.json'], says: PROSE.quantumProcessingToolboxesRepository_says55 }] },
+    'pre-commit': { says: PROSE.quantumProcessingToolboxesRepository_says54, steps: [next(['--offline', '--fast', '--strict']), { id: 'stage', kind: 'stage', files: ['docs/public/mcp.json', 'docs/mcp.md', 'docs/.vitepress/config.mts', 'src/quantum/processing/clay-statements.ts', 'src/quantum/STATUS.md', 'README.md', 'docs/public/manifest.webmanifest', 'docs/public/configs.json'], says: PROSE.quantumProcessingToolboxesRepository_says55 }] },
     'commit-msg': { says: PROSE.quantumProcessingToolboxesRepository_says56, steps: [] },
     'pre-push': { says: PROSE.quantumProcessingToolboxesRepository_says57, steps: [next(['--offline', '--fast', '--strict']), { id: 'e2e', kind: 'run', strict: true, cmd: 'node', args: ['--max-old-space-size=16384', MACHINE_RUNNER, 'step', 'e2e', JSON.stringify({ hosts: ['http://localhost:3000/api/mcp'] })], says: PROSE.quantumProcessingToolboxesRepository_says58 }] },
     'post-commit': { says: PROSE.quantumProcessingToolboxesRepository_says59, steps: [{ id: 'imprint', kind: 'imprint', says: PROSE.quantumProcessingToolboxesRepository_says60 }, report('post-commit')] },
     'post-push': { says: PROSE.quantumProcessingToolboxesRepository_postPush, steps: [report('post-push')] },
     'prepare-commit-msg': { says: PROSE.quantumProcessingToolboxesRepository_says63, steps: [{ id: 'sign', kind: 'mcp', tool: 'sign_commit', url: 'https://uuidna.com/mcp', arguments: { theorems: ['sealed_theorem_not_forged', 'honesty_gate_is_theorem_not_oracle'] }, says: PROSE.quantumProcessingToolboxesRepository_says64 }, { id: 'trailers', kind: 'trailers', says: PROSE.quantumProcessingToolboxesRepository_says65 }] },
-    'pre-deploy': { says: PROSE.quantumProcessingToolboxesRepository_says66, steps: [{ id: 'build', kind: 'run', strict: true, cmd: 'scripts/site-local.sh', args: ['exec', 'opennextjs-cloudflare', 'build'], says: 'the OpenNext bundle' }, { id: 'dry-run', kind: 'run', strict: true, cmd: 'scripts/site-local.sh', args: ['exec', 'wrangler', 'deploy', '--dry-run'], says: PROSE.quantumProcessingToolboxesRepository_says67 }, { id: 'docket', kind: 'raid', tool: 'findEntries', url: 'http://localhost:3000/api/mcp', auth: 'payload-mcp-api-keys', arguments: { where: JSON.stringify({ kind: { equals: 'document' } }), pagination: false }, says: PROSE.quantumProcessingToolboxesRepository_says68 }] },
+    'pre-deploy': { says: PROSE.quantumProcessingToolboxesRepository_says66, steps: [{ id: 'build', kind: 'run', strict: true, cmd: 'lake', args: ['run', 'site'], says: PROSE.quantumProcessingToolboxesRepository_build }, { id: 'dry-run', kind: 'run', strict: true, cmd: 'npx', args: ['wrangler', 'deploy', '--dry-run'], says: PROSE.quantumProcessingToolboxesRepository_says67 }] },
     ci: { says: PROSE.quantumProcessingToolboxesRepository_says69, steps: [{ id: 'checkout', kind: 'run', cmd: 'actions/checkout@v5', says: 'the tree' }, { id: 'node', kind: 'run', cmd: 'actions/setup-node@v5', args: ['node-version=26', 'cache=npm'], says: 'node 26' }, { id: 'install', kind: 'run', cmd: 'npm', args: ['ci'], says: 'the dependencies' }, { id: 'elan', kind: 'run', cmd: 'elan-init', args: ['-y', '--default-toolchain', 'none'], says: PROSE.quantumProcessingToolboxesRepository_says70 }, { ...next([]), strict: true }, { id: 'deliver', kind: 'run', cmd: 'node', args: ['scripts/ci.ts'], says: PROSE.quantumProcessingToolboxesRepository_says71 }, { id: 'receipt', kind: 'run', cmd: 'actions/upload-artifact@v4', args: ['docs/public/receipt.json', 'docs/public/verification.json', 'docs/public/ci.json', 'docs/.vitepress/dist'], says: 'the receipt uploaded' }] },
   }
   const w = by[name]
@@ -346,7 +346,7 @@ export const REPOSITORY: Toolbox = {
   idea: PROSE.quantumProcessingToolboxesRepository_idea124,
   tools: [repository],
   examples: [
-    { id: 'repository-watch', tool: 'repository', arguments: { local: LOCAL, answers: ANSWERS }, shows: PROSE.quantumProcessingToolboxesRepository_shows125, expect: (s) => (s.phase === 'watch' && s.leads === 14 && s.watch.npm.behind === true && s.watch.runs.red.join() === 'publish' && s.watch.workflows.onlyRemote.join() === 'publish.yml,codeql.yml' && s.watch.tags.mismatch.join() === 'v1.4.0' && s.watch.releases.withoutTag.join() === 'v0.9.0' && s.watch.zenodo.withoutRelease.join() === '1.1.1' ? null : `${s.phase} ${s.leads} leads: ${s.watch?.leads.map((l: { id: string }) => l.id).join(', ')}`) },
+    { id: 'repository-watch', tool: 'repository', theorem: 'textbook_repository_watch_leads', arguments: { local: LOCAL, answers: ANSWERS }, shows: PROSE.quantumProcessingToolboxesRepository_shows125, expect: (s) => (s.phase === 'watch' && s.leads === 14 && s.watch.npm.behind === true && s.watch.runs.red.join() === 'publish' && s.watch.workflows.onlyRemote.join() === 'publish.yml,codeql.yml' && s.watch.tags.mismatch.join() === 'v1.4.0' && s.watch.releases.withoutTag.join() === 'v0.9.0' && s.watch.zenodo.withoutRelease.join() === '1.1.1' ? null : `${s.phase} ${s.leads} leads: ${s.watch?.leads.map((l: { id: string }) => l.id).join(', ')}`) },
   ],
   skill: {
     instructions: PROSE.quantumProcessingToolboxesRepository_instructions126,

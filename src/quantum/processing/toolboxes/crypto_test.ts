@@ -46,7 +46,7 @@ const refuse = (name: string, args: Record<string, unknown>, pattern: RegExp) =>
 }
 
 const develop = (formula: string, product: string, variant: string) =>
-  invoke('payload', { develop: { formula, product, variant, title: `${product} ${variant}` } })
+  invoke('leads', { develop: { formula, product, variant, title: `${product} ${variant}` } })
 
 const throughEnd = (developed: any, formula: string) => {
   assert.equal(developed.phase, 'develop')
@@ -168,21 +168,21 @@ test('every crypto door answers through Payload MCP, develops through the hooks,
     { tool: 'seal', id: 'merkle-verify', args: { merkle: { leaf: 'b', proof: proof.proof, root: proof.root } }, says: 'the proof verifies against the root', ok: (s) => s.direction === 'verify' && s.verified === true },
     { tool: 'seal', id: 'merkle-tampered', args: { merkle: { leaf: 'x', proof: proof.proof, root: proof.root } }, says: 'a different leaf fails the proof', ok: (s) => s.verified === false },
     { tool: 'seal', id: 'fips180', args: { text: 'nist', fips180: true }, says: 'FIPS 180-4 digests of one text', ok: (s) => s.phase === 'fips180' && s.sha1.length === 40 && s.sha256.length === 64 && s.sha512.length === 128 },
-    { tool: 'seal', id: 'kem-ML-KEM-512', args: { kem: 'ML-KEM-512' }, says: 'ML-KEM-512 names its sizes and stays on the host', ok: (s) => s.phase === 'kem' && s.plan.algorithm === 'ML-KEM-512' && s.plan.fips === 203 && s.plan.sizes.ciphertext === 768 },
-    { tool: 'seal', id: 'kem-ML-KEM-768', args: { kem: 'ML-KEM-768' }, says: 'ML-KEM-768 names its sizes and stays on the host', ok: (s) => s.phase === 'kem' && s.plan.fips === 203 && s.plan.sizes.sharedSecret === 32 },
-    { tool: 'seal', id: 'kem-ML-KEM-1024', args: { kem: 'ML-KEM-1024' }, says: 'ML-KEM-1024 names its sizes and stays on the host', ok: (s) => s.phase === 'kem' && s.plan.algorithm === 'ML-KEM-1024' && s.plan.sizes.encapsulationKey === 1568 },
-    { tool: 'seal', id: 'kem-refused', args: { kem: 'RSA' }, says: 'a name outside FIPS 203 is refused', pattern: /FIPS 203/ },
-    { tool: 'seal', id: 'slh-SLH-DSA-SHA2-128s', args: { slh: 'SLH-DSA-SHA2-128s' }, says: 'SLH-DSA-SHA2-128s names its public key and signature', ok: (s) => s.plan.fips === 205 && s.plan.sizes.signature === 7856 },
-    { tool: 'seal', id: 'slh-SLH-DSA-SHA2-128f', args: { slh: 'SLH-DSA-SHA2-128f' }, says: 'SLH-DSA-SHA2-128f names its public key and signature', ok: (s) => s.plan.algorithm === 'SLH-DSA-SHA2-128f' && s.plan.sizes.signature === 17088 },
-    { tool: 'seal', id: 'slh-SLH-DSA-SHA2-192s', args: { slh: 'SLH-DSA-SHA2-192s' }, says: 'SLH-DSA-SHA2-192s names its public key and signature', ok: (s) => s.plan.algorithm === 'SLH-DSA-SHA2-192s' && s.plan.sizes.publicKey === 48 },
-    { tool: 'seal', id: 'slh-SLH-DSA-SHA2-256s', args: { slh: 'SLH-DSA-SHA2-256s' }, says: 'SLH-DSA-SHA2-256s names its public key and signature', ok: (s) => s.plan.algorithm === 'SLH-DSA-SHA2-256s' && s.plan.sizes.signature === 29792 },
-    { tool: 'seal', id: 'slh-refused', args: { slh: 'RSA' }, says: 'a name outside FIPS 205 is refused', pattern: /FIPS 205/ },
-    { tool: 'seal', id: 'ed25519', args: { ed25519: 'nist' }, says: 'Ed25519 names a 32-byte key and a 64-byte signature', ok: (s) => s.plan.rfc === 8032 && s.plan.sizes.signature === 64 },
-    { tool: 'seal', id: 'ecdsa', args: { text: 'nist', ecdsa: true }, says: 'ECDSA P-256 signs the SHA-256 of the text', ok: (s) => s.ecdsa.curve === 'P-256' && s.ecdsa.message === s.sha256 },
-    { tool: 'seal', id: 'sign-ML-DSA-44', args: { text: 'qpu', sign: 'ML-DSA-44' }, says: 'ML-DSA-44 plans a signature over the digest', ok: (s) => s.signature.algorithm === 'ML-DSA-44' && s.signature.sizes.signature === 2420 },
-    { tool: 'seal', id: 'sign-ML-DSA-65', args: { text: 'qpu', sign: 'ML-DSA-65' }, says: 'ML-DSA-65 plans a signature over the digest', ok: (s) => s.signature.fips === 204 && s.signature.executedBy === 'host' },
-    { tool: 'seal', id: 'sign-ML-DSA-87', args: { text: 'qpu', sign: 'ML-DSA-87' }, says: 'ML-DSA-87 plans a signature over the digest', ok: (s) => s.signature.algorithm === 'ML-DSA-87' && s.signature.sizes.publicKey === 2592 },
-    { tool: 'seal', id: 'sign-refused', args: { text: 'qpu', sign: 'RSA' }, says: 'a name outside FIPS 204 is refused', pattern: /FIPS 204/ },
+    { tool: 'seal', id: 'kem-ML-KEM-512', args: { kem: 'ML-KEM-512' }, says: 'ML-KEM-512 round-trips', ok: (s) => s.phase === 'kem' && s.algorithm === 'ML-KEM-512' && s.fips === 203 && s.agrees === true && s.cipherText.length === 2 * 768 },
+    { tool: 'seal', id: 'kem-ML-KEM-768', args: { kem: 'ML-KEM-768' }, says: 'ML-KEM-768 round-trips', ok: (s) => s.phase === 'kem' && s.fips === 203 && s.agrees === true && s.sizes.sharedSecret === 32 },
+    { tool: 'seal', id: 'kem-ML-KEM-1024', args: { kem: 'ML-KEM-1024' }, says: 'ML-KEM-1024 round-trips', ok: (s) => s.phase === 'kem' && s.algorithm === 'ML-KEM-1024' && s.agrees === true && s.publicKey.length === 2 * 1568 },
+    { tool: 'seal', id: 'kem-refused', args: { kem: 'RSA' }, says: 'a name outside FIPS 203 is refused', pattern: /ML-KEM-512, ML-KEM-768, ML-KEM-1024/ },
+    { tool: 'seal', id: 'slh-SLH-DSA-SHA2-128s', args: { slh: 'SLH-DSA-SHA2-128s' }, says: 'SLH-DSA-SHA2-128s derives its key', ok: (s) => s.fips === 205 && s.publicKey.length === 2 * 32 && s.sizes.signature === 7856 },
+    { tool: 'seal', id: 'slh-SLH-DSA-SHA2-128f', args: { text: 'qpu', slh: 'SLH-DSA-SHA2-128f' }, says: 'SLH-DSA-SHA2-128f signs and verifies', ok: (s) => s.algorithm === 'SLH-DSA-SHA2-128f' && s.verified && s.refusesChanged && s.signature.length === 2 * 17088 },
+    { tool: 'seal', id: 'slh-SLH-DSA-SHA2-192s', args: { slh: 'SLH-DSA-SHA2-192s' }, says: 'SLH-DSA-SHA2-192s derives its key', ok: (s) => s.algorithm === 'SLH-DSA-SHA2-192s' && s.publicKey.length === 2 * 48 },
+    { tool: 'seal', id: 'slh-SLH-DSA-SHA2-256s', args: { slh: 'SLH-DSA-SHA2-256s' }, says: 'SLH-DSA-SHA2-256s derives its key', ok: (s) => s.algorithm === 'SLH-DSA-SHA2-256s' && s.sizes.signature === 29792 },
+    { tool: 'seal', id: 'slh-refused', args: { slh: 'RSA' }, says: 'a name outside FIPS 205 is refused', pattern: /SLH-DSA-SHA2-128s, SLH-DSA-SHA2-128f/ },
+    { tool: 'seal', id: 'ed25519', args: { ed25519: 'nist' }, says: 'Ed25519 signs and verifies', ok: (s) => s.rfc === 8032 && s.verified && s.signature.length === 2 * 64 },
+    { tool: 'seal', id: 'ecdsa', args: { text: 'nist', ecdsa: true }, says: 'ECDSA P-256 signs the SHA-256 of the text and verifies', ok: (s) => s.ecdsa.fips === '186-5' && s.ecdsa.verified && s.ecdsa.publicKey.length === 2 * 65 },
+    { tool: 'seal', id: 'sign-ML-DSA-44', args: { text: 'qpu', sign: 'ML-DSA-44' }, says: 'ML-DSA-44 signs and verifies', ok: (s) => s.signature.algorithm === 'ML-DSA-44' && s.signature.verified === true && s.signature.signature.length === 2 * 2420 },
+    { tool: 'seal', id: 'sign-ML-DSA-65', args: { text: 'qpu', sign: 'ML-DSA-65' }, says: 'ML-DSA-65 signs and verifies', ok: (s) => s.signature.fips === 204 && s.signature.verified === true && s.signature.refusesChanged === true },
+    { tool: 'seal', id: 'sign-ML-DSA-87', args: { text: 'qpu', sign: 'ML-DSA-87' }, says: 'ML-DSA-87 signs and verifies', ok: (s) => s.signature.algorithm === 'ML-DSA-87' && s.signature.verified === true && s.signature.publicKey.length === 2 * 2592 },
+    { tool: 'seal', id: 'sign-refused', args: { text: 'qpu', sign: 'RSA' }, says: 'a name outside FIPS 204 is refused', pattern: /ML-DSA-44, ML-DSA-65, ML-DSA-87/ },
     { tool: 'seal', id: 'nist', args: { nist: true }, says: 'every NIST scenario is named for qpu.uuidna.com and nothing is fetched', ok: (s) => s.phase === 'nist' && s.host === QPU_HOST && s.holds === true && s.fetched === false && s.scenarios.length >= 20 },
     { tool: 'seal', id: 'nist-reverse-cern', args: { nist: { reverse: true, via: 'cern' } }, says: 'every NIST scenario reverses via CERN and nothing is fetched', ok: (s) => s.phase === 'nist-reverse' && s.via === 'cern' && s.host === CERN_HOST && s.holds === true && s.requests[0]?.id === 'cern-opendata' && s.scenarios.every((row: { returns: boolean }) => row.returns) },
     { tool: 'attest', id: 'experience-cern', args: { op: 'experience', cern: { hits: { total: 1, hits: [{ id: '5209', metadata: { title: 'Higgs to two photons from 2011', relations: [{ doi: '10.7483/OPENDATA.CMS.N9MJ.QEEC' }] } }] } } }, says: 'one CERN record is sealed and its DOI well formed', ok: (s) => s.phase === 'experience' && s.source === 'cern-opendata' && s.holds === true && s.rows[0].sealed === true },
@@ -292,9 +292,9 @@ test('every NIST scenario holds locally and e2e against qpu.uuidna.com', async (
       continue
     }
     const answer = invoke(row.tool, row.arguments)
-    if (row.id.startsWith('fips-203-')) assert.equal(answer.plan.fips, 203)
+    if (row.id.startsWith('fips-203-')) assert.equal(answer.fips, 203)
     else if (row.id.startsWith('fips-204-')) assert.equal(answer.signature.fips, 204)
-    else if (row.id.startsWith('fips-205-')) assert.equal(answer.plan.fips, 205)
+    else if (row.id.startsWith('fips-205-')) assert.equal(answer.fips, 205)
     else if (row.id === 'fips-180-4') assert.equal(answer.phase, 'fips180')
     else if (row.id === 'fips-202-shake') assert.equal(answer.phase, 'shake')
     else if (row.id === 'sp-800-132-pbkdf2') assert.equal(answer.derived, '120fb6cffcf8b32c43e7225256c4f837a86548c92ccc35480805987cb70be17b')
@@ -387,9 +387,9 @@ test('every NIST scenario reverses via CERN and e2e against opendata.cern.ch', a
     if (row.id === 'sp-800-38d-aes-gcm') assert.equal(answer.verified === true && answer.text === 'functional', true)
     else if (row.id === 'rfc-6962-merkle') assert.equal(answer.verified, true)
     else if (row.id === 'fips-180-4') assert.equal(answer.phase, 'fips180')
-    else if (row.id.startsWith('fips-203-')) assert.equal(answer.plan.fips, 203)
+    else if (row.id.startsWith('fips-203-')) assert.equal(answer.fips, 203)
     else if (row.id.startsWith('fips-204-')) assert.equal(answer.signature.fips, 204)
-    else if (row.id.startsWith('fips-205-')) assert.equal(answer.plan.fips, 205)
+    else if (row.id.startsWith('fips-205-')) assert.equal(answer.fips, 205)
   }
 
   const developed = develop(plan.says, 'seal', 'nist-reverse-cern')

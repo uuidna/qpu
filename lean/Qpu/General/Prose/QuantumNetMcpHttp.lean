@@ -4,7 +4,7 @@ The prose of `src/quantum/net/mcp-http.ts`. Each definition is one sentence, rea
 
 namespace Prose
 
-def quantumNetMcpHttp_p1 : String := "content-type, authorization, mcp-protocol-version, mcp-session-id, x-payment"
-def quantumNetMcpHttp_p2 : String := "QPU MCP tool ⟦0⟧: ⟦1⟧ qubits at the fused quantum market floor, below competition"
+
+def quantumNetMcpHttp_recipientRefused : String := "QPU_X402_RECIPIENT is not an EVM address: name a wallet of 0x and 40 hex digits, or none to serve free."
 
 end Prose

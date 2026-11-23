@@ -18,8 +18,5 @@ def quantumUuidProgramsIndex_s11 : String := "handle ⟦0⟧: product-combinatio
 def quantumUuidProgramsIndex_s12 : String := "⟦0⟧/⟦1⟧ leaves: neighbours reflect and test each other across ⟦2⟧ online competitions; sealed via ⟦3⟧ product combinations"
 def quantumUuidProgramsIndex_s13 : String := "⟦0⟧/⟦1⟧ leaves seal and compete online; ⟦2⟧ refused"
 def quantumUuidProgramsIndex_s14 : String := "⟦0⟧/⟦1⟧ folders: neighbours reflect and test each other across ⟦2⟧ online competitions"
-def quantumUuidProgramsIndex_s15 : String := "program ⟦0⟧: self + 6 neighbours → utilise ⟦1⟧/⟦2⟧, left 0, navigate 6, space unwalked"
-def quantumUuidProgramsIndex_s16 : String := "program ⟦0⟧: capacity utilisation did not hold"
-def quantumUuidProgramsIndex_s17 : String := "⟦0⟧/⟦1⟧ program folders: self + 6 neighbours → ⟦2⟧/⟦3⟧ qubits utilised, left 0, navigate degree 6, combination space unwalked"
 
 end Prose

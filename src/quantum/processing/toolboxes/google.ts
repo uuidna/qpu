@@ -5,18 +5,24 @@
 // Google Roadmap, Google Discovery One-Door & Named Endpoints, Google Workspace Forms/Docs/Drive &
 // 26,244 Institution Sets, Google Cloud MCPs & RBAC Standards, Google Patents/Gemini/XPRIZE/Sitemap)
 // via the pure QPU/Google toolbox doors and exposes content-addressed receipts through Payload API.
+import { TEXTBOOK_THEOREMS } from '../textbook-theorems.ts'
 import { PROSE, proseFill } from '../prose-index.ts'
 import { canonicalText, channel, entryText, hexbit, seal, uuid, uuidQubits } from '../../uuid/index.ts'
 import { hex, sha256, utf8 } from '../unit/hmac.ts'
 import { LICENSE } from '../unit/license.ts'
 import { evaluate, recomputeClay } from '../clay-register.ts'
 import { THEOREM_KEYS, THEOREMS } from '../theorems-index.ts'
-import { ISO_OPEN_DEFINITIONS } from './payload.ts'
+import { ISO_OPEN_DEFINITIONS } from '../iso-deliverables.ts'
 import { DEVICES, WILLOW, getAverageConnectivity, isBelowThreshold } from '../processor.ts'
 import { QUANTUM_ECHOES } from '../echo.ts'
 import { APPLICATIONS, ROADMAP } from '../roadmap.ts'
-import { GOOGLE_DISCOVERY, GOOGLE_DOCUMENTS, GOOGLE_ENDPOINTS, GEMINI_API, WORKSPACE_MCP } from '../discovery.ts'
+import { GOOGLE_DISCOVERY, GOOGLE_DOCUMENTS, GOOGLE_ENDPOINTS, GOOGLE_HOST, GEMINI_API, WORKSPACE_MCP } from '../discovery.ts'
+import { rbac } from '../api-mcp-rbac.ts'
+import { checkAccess, getAccess, listRolesFromGroups, type Ability } from '../access.ts'
+import { getWorkspace } from '../workspace.ts'
 import { TABLES } from '../tables-index.ts'
+import { defineTool, isObj, listTools } from '../toolbox.ts'
+import { flowWidget } from '../widgets.ts'
 
 // the handler's call, bound by mcp.ts once it is defined: a toolbox imports nothing from the handler, so the chooser's import of raid
 // (raid → payload → google) no longer pulls the handler and its examples in while raid is still loading (the cycle that threw on RAID)
@@ -24,6 +30,38 @@ type Call = (name: string, args: unknown) => { result?: { structuredContent?: an
 let boundCall: Call | null = null
 export const bindGoogleCall = (c: Call): void => { boundCall = c }
 const call: Call = (name, args) => { if (!boundCall) throw new Error(PROSE.quantumProcessingToolboxesGoogle_s1); return boundCall(name, args) }
+
+const discoveryMethods = (d: any): any[] => { const out: any[] = [], level = [d]; while (level.length) { const r = level.pop(); out.push(...Object.values(r?.methods ?? {})); level.push(...Object.values(r?.resources ?? {})) } return out }
+// One Google call as the qpu-google-call job runs it: a Google page or MCP endpoint by its host, or an API method validated against its Discovery
+// document (the method by id, every parameter known, the required present, enums and patterns held, no credential from the caller); without the
+// document the plan names where the job reads it, keyless
+export const googleCall = (c: { api?: string; version?: string; method?: string; params?: Record<string, unknown>; body?: unknown; url?: string; httpMethod?: string; endpoint?: string; discovery?: any; role?: string }) => {
+  const claimed = typeof c.role === 'string' ? c.role : undefined
+  const guard = <T extends { allowed: boolean | null }>(answer: T, httpMethod: string): T & { rbac: ReturnType<typeof rbac>; allowed: boolean | null; why?: string } => {
+    const access = rbac('apis', httpMethod, claimed)
+    if (answer.allowed === true && !access.access) return { ...answer, allowed: false, why: proseFill(PROSE.quantumProcessingToolboxesGoogle_why41, access.role, access.action), rbac: access }
+    return { ...answer, rbac: access }
+  }
+  const no = (why: string, httpMethod = 'GET') => guard({ phase: 'google-call' as const, allowed: false as const, why }, httpMethod), ok = (method: string, url: string, httpMethod: string, scopes: string[]) => guard({ phase: 'google-call' as const, allowed: true as const, method, request: { url, httpMethod, body: c.body ?? null, scopes }, ...(scopes.length ? { token: GOOGLE_DISCOVERY.token } : {}) }, httpMethod)
+  if (c.url) { const u = URL.canParse(c.url) ? new URL(c.url) : null; return u?.protocol === 'https:' && GOOGLE_HOST.test(u.hostname) ? (/[?&](key|access_token|secret|api_secret)=/.test(u.search) ? no(`${u.hostname}: a credential is the server's to add`) : ok(u.hostname, u.href, c.httpMethod ?? 'GET', [])) : no(proseFill(PROSE.quantumProcessingToolboxesGoogle_s42, c.url)) }
+  // a named endpoint outside Discovery: its URL and method from the registry, its secret the server's
+  if (c.endpoint) { const e = Object.hasOwn(GOOGLE_ENDPOINTS, c.endpoint) ? GOOGLE_ENDPOINTS[c.endpoint] : null; if (!e) return no(`${c.endpoint} is not a named Google endpoint`); const p = c.params ?? {}; return e.secret.param in p ? no(`${c.endpoint}: ${e.secret.param} is the server's credential`) : { ...ok(c.endpoint, `${e.url}?${new URLSearchParams(Object.entries(p).map(([k, v]) => [k, String(v)]))}`, e.httpMethod, []), secret: e.secret } }
+  const d = c.discovery
+  if (!d) return guard({ phase: 'google-call' as const, allowed: null, discovery: GOOGLE_DISCOVERY.rest.replace('{api}', () => encodeURIComponent(c.api ?? '')).replace('{version}', () => encodeURIComponent(c.version ?? '')) }, 'GET')
+  const m = discoveryMethods(d).find((x) => x.id === c.method || x.id === `${d.name}.${c.method}`)
+  if (!m) return no(`${c.method} is not a method of ${d.name} ${d.version}`, 'GET')
+  const known: Record<string, { required?: boolean; enum?: string[]; pattern?: string; location?: string }> = { ...d.parameters, ...m.parameters }, p = c.params ?? {}, list = (v: unknown) => [v].flat().map(String)
+  const bad = [...Object.keys(p).filter((k) => !known[k] || /^(key|access_token|oauth_token)$/.test(k)).map((k) => (known[k] ? `${k} is the server's credential` : `${k} unknown`)), ...Object.entries(known).filter(([k, s]) => s.required && p[k] == null).map(([k]) => `${k} required`), ...Object.entries(p).filter(([k, v]) => known[k]?.enum && !list(v).every((x) => known[k]!.enum!.includes(x))).map(([k]) => `${k} not in its enum`), ...Object.entries(p).filter(([k, v]) => known[k]?.pattern && !list(v).every((x) => new RegExp(known[k]!.pattern!).test(x))).map(([k]) => `${k} does not match ${known[k]!.pattern}`), ...(c.body != null && !m.request ? ['the method takes no body'] : [])]
+  if (bad.length) return no(`${m.id}: ${bad.join(', ')}`, m.httpMethod)
+  const q = new URLSearchParams(Object.entries(p).filter(([k]) => known[k]!.location === 'query').flatMap(([k, v]) => list(v).map((x) => [k, x])))
+  return ok(m.id, `${d.rootUrl}${d.servicePath ?? ''}${String(m.path).replace(/\{(\+?)(\w+)\}/g, (_, plus: string, k: string) => (plus ? String(p[k]) : encodeURIComponent(String(p[k]))))}${q.size ? `?${q}` : ''}`, m.httpMethod, m.scopes ?? [])
+}
+/** The Google pages, tenants, calls and keys the docket holds, measured: what is published, parented, answered and refused. */
+export const measureGoogle = (g: { pages?: any[]; tenants?: object[]; entries?: any[]; keys?: object[] }, tools: string[]) => {
+  const names = (x: unknown) => { const t = JSON.stringify(x); return /google/i.test(t) || tools.some((n) => t.includes(`"${n}":true`)) }, pair = (xs: unknown[] = [], p: (x: any) => unknown) => ({ live: xs.filter(p).length, of: xs.length })
+  const jobs = (g.entries ?? []).filter((e) => e.from === 'qpu-google-call' && e.body), pages = (g.pages ?? []).filter((p) => /google/i.test(p.fullTitle ?? p.title) || p.layout?.some((b: { tool: string }) => tools.includes(b.tool))), answered = pair((g.entries ?? []).filter((e) => e.kind === 'call' && tools.includes(e.body?.tool)), (e) => e.result?.error === undefined)
+  return { pages: { published: pair(pages, (p) => p._status === 'published'), parented: pair(pages, (p) => p.parent), blocks: pages.flatMap((p) => p.layout ?? []).reduce((a: Record<string, number>, b: { tool: string }) => ({ ...a, [b.tool]: (a[b.tool] ?? 0) + 1 }), {}) }, tenants: pair(g.tenants, names), calls: { answered, refused: answered.of - answered.live, job: pair(jobs.filter((e) => 'allowed' in e.body), (e) => e.body.allowed && e.body.status < 400), queued: jobs.filter((e) => !('allowed' in e.body)).length, elsewhere: (g.entries ?? []).filter((e) => e.from !== 'qpu-google-call' && URL.canParse(e.body?.url) && GOOGLE_HOST.test(new URL(e.body.url).hostname)).length }, keys: pair(g.keys, names), theorem: 'textbook_google_measured' }
+}
 
 export const GOOGLE_CHALLENGE_IDS = [
   'willow-connectivity',
@@ -43,24 +81,6 @@ export const GOOGLE_CHALLENGE_IDS = [
 ] as const
 
 export type GoogleChallengeId = (typeof GOOGLE_CHALLENGE_IDS)[number]
-
-/** The page each challenge is: the product is its category, the variant is its id. */
-export const GOOGLE_CHALLENGE_PAGE: Record<GoogleChallengeId, { category: GoogleChallengeCategory; title: string }> = {
-  'willow-connectivity': { category: 'quantum-hardware', title: PROSE.quantumProcessingToolboxesGoogle_title2 },
-  'sycamore-topology': { category: 'quantum-hardware', title: PROSE.quantumProcessingToolboxesGoogle_title3 },
-  'surface-code-qec': { category: 'quantum-error-correction', title: PROSE.quantumProcessingToolboxesGoogle_title4 },
-  'rcs-xeb-beyond-classical': { category: 'quantum-algorithms', title: PROSE.quantumProcessingToolboxesGoogle_title5 },
-  'quantum-echoes-otoc': { category: 'quantum-algorithms', title: PROSE.quantumProcessingToolboxesGoogle_title6 },
-  'cirq-qvm-simulation': { category: 'quantum-hardware', title: PROSE.quantumProcessingToolboxesGoogle_title7 },
-  'recirq-qaoa-shor-algorithms': { category: 'quantum-algorithms', title: PROSE.quantumProcessingToolboxesGoogle_title8 },
-  'openfermion-chemistry-h2': { category: 'quantum-algorithms', title: PROSE.quantumProcessingToolboxesGoogle_title9 },
-  'qualtran-ftqc-magic-state': { category: 'quantum-error-correction', title: PROSE.quantumProcessingToolboxesGoogle_title10 },
-  'google-quantum-roadmap-catalog': { category: 'quantum-hardware', title: PROSE.quantumProcessingToolboxesGoogle_title11 },
-  'google-discovery-one-door': { category: 'google-apis-discovery', title: PROSE.quantumProcessingToolboxesGoogle_title12 },
-  'google-workspace-roundtrip-sets': { category: 'google-workspace-cloud', title: PROSE.quantumProcessingToolboxesGoogle_title13 },
-  'google-cloud-mcp-bindings-rbac': { category: 'google-workspace-cloud', title: PROSE.quantumProcessingToolboxesGoogle_title14 },
-  'google-patents-gemini-xprize-sitemap': { category: 'google-apis-discovery', title: PROSE.quantumProcessingToolboxesGoogle_title15 },
-}
 
 type GoogleChallengeCategory =
   | 'quantum-hardware'
@@ -174,7 +194,9 @@ const agrees = (formula: string, value: number): boolean => {
   return sides.length > 1 && sides.every((side) => readSide(side) === value)
 }
 const kernelHolds = (key: string): boolean => {
-  const statement = THEOREMS.find((row) => row.key === key)?.statement
+  // a general theorem is read at the closed instance its kernel-checked example states
+  const closed = TEXTBOOK_THEOREMS.find((row) => row.key === key)?.example?.split('\n').map((l) => /^example\s*:\s*([\s\S]+?)\s*:=\s*by decide$/.exec(l)?.[1]).find(Boolean)
+  const statement = closed ?? THEOREMS.find((row) => row.key === key)?.statement
   if (!statement || !THEOREM_KEYS.has(key)) return false
   return statement.split('∧').every((part) => {
     const text = part.trim()
@@ -720,9 +742,9 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
   },
   'google-discovery-one-door': () => {
     const door = {
-      tool: 'payload',
+      tool: 'google',
       arguments: {
-        googleCall: {
+        call: {
           api: 'books',
           version: 'v1',
           method: 'volumes.list',
@@ -753,18 +775,11 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
       },
     }
     const validCall = getToolResult(door.tool, door.arguments)
-    const endpointCall = getToolResult('payload', {
-      googleCall: { endpoint: 'recaptcha.siteverify', params: { response: 'token-1' } },
-    })
-    const refusedCall = getToolResult('payload', {
-      googleCall: {
-        ...door.arguments.googleCall,
-        params: { orderBy: 'oldest', key: 'caller-secret' },
-      },
-    })
+    const endpointCall = googleCall({ endpoint: 'recaptcha.siteverify', params: { response: 'token-1' } }) as Record<string, any>
+    const refusedCall = googleCall({ ...door.arguments.call, params: { orderBy: 'oldest', key: 'caller-secret' } })
     const rewrite = getToolResult('textbook', { google: { documentId: 'textbook' } })
-    const measured = getToolResult('payload', {
-      google: {
+    const measured = getToolResult('google', {
+      measured: {
         pages: [
           { title: 'Google Quantum AI', _status: 'published', parent: 'g', layout: [{ tool: 'processor' }] },
           { title: 'Quantum Echoes', _status: 'published', parent: 'g', layout: [{ tool: 'echo' }] },
@@ -815,10 +830,10 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     const fixtures = Object.fromEntries(Object.entries(TABLES.WORKSPACE_FIXTURES).map(([k, v]) => [k, JSON.parse(v)])) as Record<string, any>
     const door = { tool: 'textbook', arguments: { institution: { sets: true } } }
     const sets = getToolResult(door.tool, door.arguments)
-    const cov = getToolResult('payload', { workspace: { discovery: fixtures.discovery } })
-    const formRt = getToolResult('payload', { workspace: { form: fixtures.form, discovery: { forms: fixtures.discovery.forms } } })
-    const docsRt = getToolResult('payload', { workspace: { lexical: fixtures.lexical, discovery: { docs: fixtures.discovery.docs } } })
-    const driveRt = getToolResult('payload', { workspace: { doc: fixtures.doc, discovery: { drive: fixtures.discovery.drive } } })
+    const cov = (getWorkspace({ discovery: fixtures.discovery }) as Record<string, any>)
+    const formRt = (getWorkspace({ form: fixtures.form, discovery: { forms: fixtures.discovery.forms } }) as Record<string, any>)
+    const docsRt = (getWorkspace({ lexical: fixtures.lexical, discovery: { docs: fixtures.discovery.docs } }) as Record<string, any>)
+    const driveRt = (getWorkspace({ doc: fixtures.doc, discovery: { drive: fixtures.discovery.drive } }) as Record<string, any>)
     const inst = getToolResult('textbook', {
       institution: {
         edition: 'nonprofits-business-standard',
@@ -876,70 +891,35 @@ const getChallengeSolvers = (): Record<GoogleChallengeId, () => GoogleChallengeR
     })
   },
   'google-cloud-mcp-bindings-rbac': () => {
-    const door = { tool: 'configure', arguments: { kind: 'bindings', env: ['DATABASE_URI'] } }
-    const bindings = getToolResult(door.tool, door.arguments)
-    const adapters = getToolResult('configure', {
-      kind: 'adapters',
-      env: ['GOOGLE_CLOUD_PROJECT', 'GCS_BUCKET', 'GCS_PROJECT_ID', 'DATABASE_URI', 'GMAIL_USER'],
-    })
-    const roles = getToolResult('payload', {
-      rolesFromGroups: {
-        mapping: [
-          { group: 'readability-ts@acme.example', name: 'readability', resourceType: 'rules', resource: 'gts' },
-          { group: 'aip-reviewers@acme.example', name: 'aip-reviewer', resourceType: 'rules', resource: 'aip' },
-          { group: 'slsa-attestors@acme.example', name: 'slsa-attestor', resourceType: 'rules', resource: 'slsa' },
-          { group: 'slo-owners@acme.example', name: 'slo-owner', resourceType: 'rules', resource: 'slo' },
-        ],
-        groups: [
-          { email: 'readability-ts@acme.example' },
-          { email: 'aip-reviewers@acme.example' },
-          { email: 'slsa-attestors@acme.example' },
-          { email: 'slo-owners@acme.example' },
-        ],
-      },
-    })
-    const access = getToolResult('payload', {
-      access: {
-        abilities: [
-          { role: 'admin', can: ['manage'], subject: 'rules' },
-          { role: 'readability', can: ['approve', 'clear'], subject: 'rules', where: { rule: { equals: 'gts' } } },
-          { role: 'all', can: ['waive'], subject: 'rules', cannot: true, where: { rule: { in: ['folded', 'proven'] }, branch: { equals: 'main' } } },
-        ],
-        roles: [{ name: 'admin' }, ...roles.roles],
-        subject: 'rules',
-        action: 'waive',
-        doc: { rule: 'folded', branch: 'main' },
-      },
-    })
-    const bindingRoles = (bindings.config?.roles ?? []) as { idle: boolean }[]
-    const holds =
-      bindingRoles.length === 5 &&
-      bindingRoles.every((r) => r.idle === false) &&
-      adapters.config?.chosen?.profile === 'google' &&
-      adapters.config?.chosen?.database === 'db-postgres' &&
-      adapters.config?.chosen?.storage === 'storage-gcs' &&
-      adapters.config?.chosen?.email === 'email-nodemailer' &&
-      roles.roles?.length === 4 &&
-      access.may === false
+    const mapping = [
+      { group: 'readability-ts@acme.example', name: 'readability', resourceType: 'rules', resource: 'gts' },
+      { group: 'aip-reviewers@acme.example', name: 'aip-reviewer', resourceType: 'rules', resource: 'aip' },
+      { group: 'slsa-attestors@acme.example', name: 'slsa-attestor', resourceType: 'rules', resource: 'slsa' },
+      { group: 'slo-owners@acme.example', name: 'slo-owner', resourceType: 'rules', resource: 'slo' },
+    ]
+    const door = { tool: 'google', arguments: { call: { api: 'admin', version: 'directory_v1', method: 'groups.list', params: { userKey: mapping[0]!.group } } } }
+    const roles = listRolesFromGroups(mapping, mapping.map((m) => ({ email: m.group }))) as { roles: { name: string }[] }
+    const abilities: Ability[] = [
+      { role: 'admin', can: ['manage'], subject: 'rules' },
+      { role: 'readability', can: ['approve', 'clear'], subject: 'rules', where: { rule: { equals: 'gts' } } },
+      { role: 'all', can: ['waive'], subject: 'rules', cannot: true, where: { rule: { in: ['folded', 'proven'] }, branch: { equals: 'main' } } },
+    ]
+    const may = checkAccess(abilities, [{ name: 'admin' }, ...roles.roles], 'rules', 'waive', { rule: 'folded', branch: 'main' })
+    const granted = getAccess(abilities, [{ name: 'admin' }, ...roles.roles], 'rules', 'waive') !== false
+    const holds = roles.roles.length === 4 && granted && may === false && TABLES.GOOGLE_MCP.length > 0
     return createReceipt({
       id: 'google-cloud-mcp-bindings-rbac',
       category: 'google-workspace-cloud',
       title: PROSE.quantumProcessingToolboxesGoogle_title14,
       googleApi: PROSE.quantumProcessingToolboxesGoogle_googleApi34,
       door,
-      theorem: 'textbook_bindings_used_google',
-      relatedTheorems: ['textbook_bindings_used_google', 'textbook_google_mcps', 'textbook_abilities_merge', 'textbook_cannot_binds'],
+      theorem: 'textbook_abilities_merge',
+      relatedTheorems: ['textbook_abilities_merge', 'textbook_google_mcps', 'textbook_cannot_binds'],
       formula: PROSE.quantumProcessingToolboxesGoogle_formula35,
       value: {
-        profile: adapters.config.chosen.profile,
-        database: adapters.config.chosen.database,
-        storage: adapters.config.chosen.storage,
-        email: adapters.config.chosen.email,
-        pairedCloudRoles: bindingRoles.length,
-        idleRoles: bindingRoles.filter((r) => r.idle).length,
         googleCloudMcps: TABLES.GOOGLE_MCP.length,
         directoryRolesMapped: roles.roles.length,
-        mainFoldWaiverAllowed: access.may,
+        mainFoldWaiverAllowed: may,
       },
       holds,
     })
@@ -1059,3 +1039,18 @@ export const googleChallenges = (
   if (!wanted) cachedAll = report
   return report
 }
+
+/** The one Google door: the 14 Google challenges solved and sealed, a Google call validated against its Discovery document, and the Google
+ *  pages, tenants, calls and keys the docket holds measured; Google Workspace forms, documents and files read both ways. */
+export const GOOGLE_DOOR = defineTool('google', {
+  name: 'google',
+  description: PROSE.quantumProcessingToolboxesGoogle_description43,
+  inputSchema: { type: 'object', properties: { challenges: { description: PROSE.quantumProcessingToolboxesGoogle_description44 }, call: { type: 'object', description: PROSE.quantumProcessingToolboxesGoogle_description45 }, measured: { type: 'object', description: PROSE.quantumProcessingToolboxesGoogle_description46 }, workspace: { type: 'object', description: PROSE.quantumProcessingToolboxesGoogle_description47 } } },
+  run: (args, ctx) => {
+    if (isObj(args.call)) return googleCall(args.call as Parameters<typeof googleCall>[0]) as Record<string, unknown>
+    if (isObj(args.workspace)) return { phase: 'workspace' as const, ...getWorkspace(args.workspace as Parameters<typeof getWorkspace>[0]) }
+    if (isObj(args.measured)) return { phase: 'google' as const, ...measureGoogle(args.measured as Parameters<typeof measureGoogle>[0], listTools(ctx).filter((t) => t._meta?.toolbox === 'google').map((t) => t.name)) }
+    return googleChallenges(isObj(args.challenges) ? args.challenges as { challenge?: string; challenges?: readonly string[] | boolean } : {}) as unknown as Record<string, unknown>
+  },
+  widget: flowWidget,
+})

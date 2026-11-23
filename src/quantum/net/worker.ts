@@ -1,9 +1,12 @@
-// The qpu Worker: /api/mcp answers through the package's own Streamable-HTTP transport (serveMcp), every other path
-// is the Lean-written VitePress site built into the Worker's static assets.
-import { serveMcp } from './mcp-http.ts'
+// The qpu Worker: an MCP request (at /, /mcp or /api/mcp) through serveMcp with the rooms and the Lean prover bound, every other request from the site's static assets.
+import { isMcp, serveMcp } from './mcp-http.ts'
+import type { MailboxNamespace } from './messaging.ts'
+import type { ProverNamespace } from './prover.ts'
+export { Mailbox } from './mailbox.ts'
+export { Prover } from './prover-object.ts'
 
-type Env = Record<string, string | undefined> & { ASSETS: { fetch: (request: Request) => Promise<Response> } }
+type Env = Record<string, string | undefined> & { ASSETS: { fetch: (request: Request) => Promise<Response> }; MAILBOX: MailboxNamespace; PROVER: ProverNamespace }
 
 export default {
-  fetch: (request: Request, env: Env): Promise<Response> => (new URL(request.url).pathname === '/api/mcp' ? serveMcp(request, env) : env.ASSETS.fetch(request)),
+  fetch: (request: Request, env: Env): Promise<Response> => (isMcp(request) ? serveMcp(request, env) : env.ASSETS.fetch(request)),
 }

@@ -8,7 +8,7 @@ The integer \(2^{999}+1\) and the 1000-bit trapdoor. The check is `crypto1000Bit
 
 `algorithm { name: 'shor', N }` on this integer returns that list. The bit length is 1000. The integer is not prime. `left` is empty, `complete` is true, and `verified` is true. The factors multiply back to \(2^{999}+1\). Three is one of them, and there are at least twenty. Order-finding is not required once nothing composite remains. `relation_36` is \(\varphi(74) = 36\), the cyclotomic degree that check names. The Shor, QAOA, QFT, and Grover families of the Clay register all hold.
 
-A general integer has no cyclotomic split. Trial runs below \(2^{16}\), then Miller–Rabin, then the σ-reflection. `textbook_rsa_beyond_bound` is the comparison \(2^{4} < 21 < 2^{5}\) and \(5 < 2048\). It is a five-bit comparison. An unknown semiprime is not given factors. `createImpossible` mints \(N = p \cdot q\) together with the witness \(a = (p+q)/2\). `decodeImpossible` splits \(N\) in one reflection when that witness is given. A wrong witness decodes nothing.
+A general integer has no cyclotomic split. Trial runs below \(2^{16}\), then Miller–Rabin, then the σ-reflection. `textbook_rsa_beyond_bound`: every \(n > 0\) lies in \([2^{k}, 2^{k+1})\), \(k = \lfloor\log_2 n\rfloor\). `textbook_shor_reduction`: if \(a^{2s} \equiv 1 \pmod N\) and \(N \nmid a^{s} \pm 1\), \(\gcd(a^{s}-1, N)\) is a proper factor. An unknown semiprime is not given factors. `createImpossible` mints \(N = p \cdot q\) together with the witness \(a = (p+q)/2\). `decodeImpossible` splits \(N\) in one reflection when that witness is given. A wrong witness decodes nothing: by `Witness.witness_unique`, only \(a-b = p\), \(a+b = q\) split \(N\).
 
 `N1000` is the reflection integer. Bit 999 is set, and so are bits 877, 613, and 251, with the low value 123456789 added. It has 1000 bits. `reflect1000Bit` cuts its hex into 14 faces, seven pairs. Each pair is rebuilt by \(N = u \cdot v\) and \(d = u + v\). The call returns 14 reflections, the rebuild exact.
 
@@ -22,3 +22,10 @@ A general integer has no cyclotomic split. Trial runs below \(2^{16}\), then Mil
 - The factoring of \(2^{999}+1\) multiplies back, `relation_36` is 36, and every Clay relation holds.
 
 The phase is `qpu-crypto-1000-bit`. The address is the UUID of that record, and the seal holds. The lattice on the record is 2 coins, 7 rays, 14 faces, and plane 28.
+
+## Post-quantum
+
+- Transport: Cloudflare negotiates hybrid X25519MLKEM768 whenever the client offers it.
+- Keys and signatures: `seal { pqc | kem | sign | slh }` computes X-Wing, ML-KEM (FIPS 203), ML-DSA (FIPS 204) and SLH-DSA (FIPS 205). X25519, Ed25519 and ECDSA alone fall to Shor's algorithm.
+- Symmetric keys and hashes: Grover halves their strength; AES-256, ChaCha20 and SHA-256 keep 128 bits.
+- Payments: x402 authorises each payment with an EVM ECDSA signature, which Shor's algorithm breaks, until the chains it settles on adopt post-quantum signatures.

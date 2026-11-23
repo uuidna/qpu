@@ -1,7 +1,13 @@
 {
   "mcpServers": {
     "qpu": {
+      "type": "http",
       "url": "https://qpu.uuidna.com/api/mcp"
+    },
+    "qpu-local": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["scripts/stdio.ts"]
     }
   }
 }

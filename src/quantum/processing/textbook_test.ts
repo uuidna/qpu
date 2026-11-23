@@ -49,9 +49,6 @@ test('textbook seo is a website content seed, and the coins are the formula UUID
     assert.ok(blocks.has(p.seed.layout[0]!.blockType))
     assert.equal(p.seed.hero.type, 'default')
     assert.equal(p.seed.layout[0]!.contentFields.layout, 'oneColumn')
-    assert.equal(p.create.data.layout[0]!.blockType, 'content')
-    assert.equal('id' in p.create.data, false)
-    assert.equal('breadcrumbs' in p.create.data, false)
     const text = p.seed.layout[0]!.contentFields.columnOne.root.children.map((c) => c.children[0]!.text).join('\n')
     assert.ok(text.includes(p.formula), p.relation)
     assert.ok(text.includes(':='), p.relation)
@@ -78,7 +75,7 @@ test('combinatorics microdata is what its inline docs state', () => {
   assert.match(doc, /count is the product/)
   assert.match(doc, /neither stores a composition/)
   const says = TEXTBOOK_THEOREMS.find((t) => t.key === 'textbook_queneau_compositions')!.says
-  assert.match(says, /ten choices on each of fourteen strips are 10\^14 compositions/)
+  assert.match(says, /k choices on each of n strips are k\^n compositions/)
   const ev = (call('textbook', { evaluate: { theorem: 'textbook_queneau_compositions' } }) as { result?: { structuredContent: { holds: boolean; conclusion: { parts: { text: string; left: string; right: string }[] } } } }).result?.structuredContent
   if (!ev) throw new Error('no evaluation')
   assert.equal(ev.holds, true)
@@ -124,6 +121,6 @@ test('the numbers Lean states are the numbers the data hold', async () => {
   const { MEASURED_THEOREMS } = await import('./textbook-measured.ts')
   const written = new Map(TEXTBOOK_THEOREMS.map((t) => [t.key, t]))
   assert.ok(MEASURED_THEOREMS.length > 0)
-  const differs = MEASURED_THEOREMS.filter((m) => { const t = written.get(m.key); return !t || t.lean !== m.lean || t.says !== m.says || (m.example !== undefined && t.example !== m.example) }).map((m) => m.key)
+  const differs = MEASURED_THEOREMS.filter((m) => { const t = written.get(m.key); return !t || (m.lean !== undefined && (t.lean !== m.lean || t.says !== m.says)) || (m.example !== undefined && !(t.example ?? '').split('\n').includes(m.example)) }).map((m) => m.key)
   assert.deepEqual(differs, [], `the data moved away from what Lean states; change the theorem in ${TEXTBOOK_LEAN_PATH}: ${differs.join(', ')}`)
 })

@@ -20,7 +20,7 @@ test('tools/list serves the forty-eight tools in twelve toolboxes with input sch
   const byToolbox: Record<string, string[]> = {}
   for (const t of tools as { name: string; _meta?: { toolbox?: string } }[]) (byToolbox[t._meta?.toolbox ?? 'none'] ??= []).push(t.name)
   assert.deepEqual(byToolbox, {
-    google: ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap', 'algorithm', 'software', 'statements', 'repositories', 'quantumlib', 'quantum-error-correction', 'chemistry-simulation', 'fault-tolerant-design'],
+    google: ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap', 'algorithm', 'software', 'statements', 'repositories', 'quantumlib', 'quantum-error-correction', 'chemistry-simulation', 'fault-tolerant-design', 'google'],
     tree: ['clay', 'match', 'verify', 'leads', 'audit', 'metrics', 'textbook', 'css', 'dashboard', 'clone', 'apis'], // the Clay set first
     flow: ['discover', 'wave', 'readiness', 'imagine', 'e2e', 'shard'],
     language: ['translate', 'prose'],
@@ -29,10 +29,9 @@ test('tools/list serves the forty-eight tools in twelve toolboxes with input sch
     legal: ['legal', 'compete', 'patents'],
     repository: ['repository'],
     standards: ['jsonld', 'codes', 'validate'],
-    payload: ['payload', 'configure'],
     extension: ['extend'],
     crypto: ['fold', 'seal', 'attest'],
-  }, 'every tool names its toolbox in _meta, and the twelve toolboxes hold the forty-eight tools')
+  }, 'every tool names its toolbox in _meta, and the eleven toolboxes hold the forty-seven tools')
   for (const t of tools) assert.equal(typeof t.inputSchema, 'object')
 })
 
@@ -317,25 +316,13 @@ test('every device the processor tool names is served, and Sycamore23 has 23 qub
   }
 })
 
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: the repositories tool serves the seventeen quantumlib repositories, filters by language, and exposes the consolidated payloadcms repository matrix. */
-test('the repositories tool serves the seventeen quantumlib repositories, filters by language, and exposes the consolidated payloadcms repository matrix', () => {
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the repositories tool serves the quantumlib repositories and filters by language. */
+test('the repositories tool serves the quantumlib repositories and filters by language', () => {
   const all = call('repositories', {})
-  assert.ok('result' in all && (all.result as { structuredContent: { repositories: unknown[]; total: number; payloadcms: { holds: boolean; counts: { repositories: number; mountedPackages: number } } } }).structuredContent.total === 15)
-  const sc = (all.result as { structuredContent: { payloadcms: { holds: boolean; counts: { repositories: number; mountedPackages: number; monorepoPackagesTotal: number } } } }).structuredContent
-  assert.equal(sc.payloadcms.holds, true)
-  assert.equal(sc.payloadcms.counts.repositories, 3)
-  assert.equal(sc.payloadcms.counts.mountedPackages, 21)
-  assert.equal(sc.payloadcms.counts.monorepoPackagesTotal, 45)
+  assert.match((all as { result: { _meta: { quantum: { formula: string } } } }).result._meta.quantum.formula, /^\d+(\.\d+)* \S/, 'a google call carries the ISO/IEC 4879:2024 term its address picks')
+  assert.ok('result' in all && (all.result as { structuredContent: { repositories: unknown[]; total: number } }).structuredContent.total === 15)
   const py = call('repositories', { language: 'Python' })
   assert.ok('result' in py && (py.result as { structuredContent: { repositories: { language: string }[] } }).structuredContent.repositories.every((r) => r.language === 'Python'))
-  const pcms = call('repositories', { organization: 'payloadcms' })
-  assert.ok('result' in pcms)
-  const pcmsData = (pcms.result as { structuredContent: { total: number; holds: boolean; repositories: { name: string }[] } }).structuredContent
-  assert.equal(pcmsData.total, 3)
-  assert.equal(pcmsData.holds, true)
-  assert.deepEqual(pcmsData.repositories.map((r) => r.name), ['payloadcms/website', 'payloadcms/payload', 'payloadcms/skills'])
-  const viaPayload = call('payload', { repos: true })
-  assert.ok('result' in viaPayload && (viaPayload.result as { structuredContent: { holds: boolean; counts: { mountedPackages: number } } }).structuredContent.holds === true)
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: a cleanup lead parses to the subjects whose absence settles it: paths or git branches, and nothing else parses. */
@@ -352,12 +339,11 @@ test('a cleanup lead parses to the subjects whose absence settles it: paths or g
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: a tools/call publishes a token only as its kind, and the Lean formula found - redacted = 0 holds. */
 test('a tools/call publishes a token only as its kind, and the Lean formula found - redacted = 0 holds', () => {
   const token = 'gh' + 'p_' + 'b'.repeat(20)
-  const r = call('payload', { report: { tool: 'fold', arguments: { note: token }, result: { note: token } } })
+  const r = call('translate', { text: `note ${token}` })
   assert.ok('result' in r)
   assert.equal(JSON.stringify(r).includes(token), false)
-  const body = r.result as { structuredContent: { result: { note: string } }; _meta: { leaks: { theorem: string; publish: string; lean: string; found: number; redacted: number; holds: boolean } } }
+  const body = r.result as { _meta: { leaks: { theorem: string; publish: string; lean: string; found: number; redacted: number; holds: boolean } } }
   const proof = body._meta.leaks
-  assert.equal(body.structuredContent.result.note, '[token]')
   assert.equal(proof.theorem, 'textbook_leaks_redacted')
   assert.equal(proof.publish, 'textbook_redact_before_publish')
   assert.equal(proof.lean, 'found - redacted = 0')
@@ -369,11 +355,11 @@ test('a tools/call publishes a token only as its kind, and the Lean formula foun
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the cheapest view: an LLM reads only the cheapest way to have the answer and what tampering with it would cost, the full answer kept in structuredContent. */
 test('the cheapest view: an LLM reads only the cheapest way to have the answer and what tampering with it would cost, the full answer kept in structuredContent', () => {
-  const call = (meta?: Record<string, unknown>) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'configure', arguments: { kind: 'adapters', port: 32 }, ...(meta ? { _meta: meta } : {}) } }) as { result: { content: { text: string }[]; structuredContent: unknown; _meta: { block: { meta: { id: string } } } } }
+  const call = (meta?: Record<string, unknown>) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'processor', arguments: {}, ...(meta ? { _meta: meta } : {}) } }) as { result: { content: { text: string }[]; structuredContent: unknown; _meta: { block: { meta: { id: string } } } } }
   const full = call(), cheap = call({ view: 'cheapest' })
   const v = JSON.parse(cheap.result.content[0]!.text) as { address: string; sha256: string; recompute: { tool: string }; tamper: { collision: string }; coins: number; unlock: string; theorem: string; tokens: number }
   assert.equal(v.address, full.result._meta.block.meta.id, 'the same address: the answer is the same block')
-  assert.equal(v.recompute.tool, 'configure')
+  assert.equal(v.recompute.tool, 'processor')
   assert.equal(v.sha256.length, 64)
   assert.equal(v.tamper.collision, '2^128')
   assert.ok(v.coins > 0 && v.unlock.startsWith('If-None-Match') && v.theorem === 'textbook_advantage_unbounded', 'a coil names its price in coins a call and how the address unlocks the unbounded advantage')

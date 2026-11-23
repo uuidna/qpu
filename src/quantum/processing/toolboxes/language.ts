@@ -92,8 +92,8 @@ export const LANGUAGE: Toolbox = {
   idea: PROSE.quantumProcessingToolboxesLanguage_idea5,
   tools: [translate, prose],
   examples: [
-    { id: 'translate-bg', tool: 'translate', arguments: { text: PROSE.quantumProcessingToolboxesLanguage_text6, from: 'en', to: 'bg' }, shows: PROSE.quantumProcessingToolboxesLanguage_shows7, expect: (s) => (s.phase === 'translated' && /следата|следа/.test(s.text) && /обслужена/.test(s.text) && /неизвестно/.test(s.text) ? null : `${s.text} (${s.untranslatedWords})`) },
-    { id: 'translate-coverage', tool: 'translate', arguments: {}, shows: PROSE.quantumProcessingToolboxesLanguage_shows8, expect: (s) => (s.phase === 'coverage' && s.terms === SURFACE_TERMS.length && s.coverage.find((c: { locale: string }) => c.locale === 'bg')?.filled === true ? null : `${s.phase}: ${s.terms} terms, ${s.filled} filled`) },
+    { id: 'translate-bg', tool: 'translate', theorem: 'textbook_translate_phrases', arguments: { text: PROSE.quantumProcessingToolboxesLanguage_text6, from: 'en', to: 'bg' }, shows: PROSE.quantumProcessingToolboxesLanguage_shows7, expect: (s) => (s.phase === 'translated' && /следата|следа/.test(s.text) && /обслужена/.test(s.text) && /неизвестно/.test(s.text) ? null : `${s.text} (${s.untranslatedWords})`) },
+    { id: 'translate-coverage', tool: 'translate', theorem: 'textbook_vocabulary_measured', arguments: {}, shows: PROSE.quantumProcessingToolboxesLanguage_shows8, expect: (s) => (s.phase === 'coverage' && s.terms === SURFACE_TERMS.length && s.coverage.find((c: { locale: string }) => c.locale === 'bg')?.filled === true ? null : `${s.phase}: ${s.terms} terms, ${s.filled} filled`) },
   ],
   skill: {
     instructions: PROSE.quantumProcessingToolboxesLanguage_instructions9,

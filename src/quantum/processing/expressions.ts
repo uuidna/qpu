@@ -111,14 +111,18 @@ export const evaluate = (src: string, env: Env, mode?: { proposition?: boolean; 
 const FUNCTION_TYPE = /^(?:Nat|Bool|Int|Prop)(?:\s*→\s*(?:Nat|Bool|Int|Prop))+$/
 /** A theorem's statement read back: its variables, its hypotheses and its conclusion, from the Lean text alone. */
 export const getStatement = (lean: string) => {
-  const head = lean.replace(/^theorem\s+\S+\s*/, '').replace(/\s*:=[\s\S]*$/, '')
+  const head = lean.replace(/ℕ/g, 'Nat').replace(/ℤ/g, 'Int').replace(/^theorem\s+\S+\s*/, '').replace(/\s*:=[\s\S]*$/, '')
   const variables: string[] = [], bools: string[] = [], functions: string[] = [], hypotheses: { name: string; text: string }[] = []
   let rest = head.trim()
+  // an implicit type binder ({α : Type*}) is read at ℕ, among its models; an instance binder ([OrderedSub α]) is the model's
+  const models: string[] = []
   for (;;) {
+    const implicit = /^(?:\{([^{}:]+):\s*Type\*?\}|\[[^[\]]*(?:\[[^[\]]*\][^[\]]*)*\])\s*/.exec(rest)
+    if (implicit) { models.push(...(implicit[1]?.trim().split(/\s+/) ?? [])); rest = rest.slice(implicit[0].length); continue }
     const m = /^\(([^():]+):\s*([^()]*(?:\([^()]*\)[^()]*)*)\)\s*/.exec(rest)
     if (!m) break
     const names = m[1]!.trim().split(/\s+/), type = m[2]!.trim()
-    if (type === 'Nat' || type === 'Int') variables.push(...names)
+    if (type === 'Nat' || type === 'Int' || models.includes(type)) variables.push(...names)
     else if (type === 'Bool' || type === 'Prop') { variables.push(...names); bools.push(...names) }
     else if (FUNCTION_TYPE.test(type)) functions.push(...names)
     else if (!/^List\b/.test(type)) hypotheses.push({ name: names[0]!, text: type })
@@ -130,11 +134,15 @@ export const getStatement = (lean: string) => {
   return { variables, bools, functions, hypotheses, conclusion, quantified: /∃/.test(conclusion) || (/∀/.test(conclusion) && !bounded) }
 }
 
+/** The closed instance a general theorem's example lines state, the numbers the kernel checked (`: 2 ^ 9 = 512 := by decide`). */
+export const closedOf = (key?: string) => (TEXTBOOK_THEOREMS.find((x) => x.key === key)?.example ?? '').split('\n').map((l) => /^example\s*(:[\s\S]*)$/.exec(l)?.[1]).find((x) => x && /:=\s*by decide$/.test(x))
 /** Any textbook theorem evaluated as a tool: values for its variables in, each hypothesis and conjunct computed out, what is missing named. */
 export const evaluateTheorem = (key: string, values: Readonly<Record<string, number | string>> = {}) => {
   const t = TEXTBOOK_THEOREMS.find((x) => x.key === key)
   if (!t) throw new Error(`no textbook theorem ${key}`)
-  const s = getStatement(t.lean)
+  // a general theorem asked without values is evaluated at the closed instance its example states
+  const instance = Object.keys(values).length ? undefined : closedOf(key)
+  const s = getStatement(instance ?? t.lean)
   const env: Env = {}
   for (const [k, v] of Object.entries(values)) { if (!s.variables.includes(k)) continue; const raw = String(v); env[k] = s.bools.includes(k) && (raw === 'true' || raw === 'false') ? raw === 'true' : BigInt(raw) }
   const needs = s.variables.filter((v) => !(v in env))
@@ -209,7 +217,7 @@ export const getProse = (texts: Readonly<Record<string, string>>, examples: read
       // a number rests on the first routed theorem when that theorem computes it, never on a numeral it merely contains
       const route = routeStatement(sentence, examples, 1).theorems
       for (const n of numerals) {
-        const byRoute = route.find((t) => sides(t.lean).includes(n))?.theorem
+        const byRoute = route.find((t) => sides(closedOf(t.theorem) ?? t.lean).includes(n))?.theorem
         rows.push({ text: name, sentence, number: n, expression: byRoute ?? null, by: byRoute ? 'route' : null })
       }
     }

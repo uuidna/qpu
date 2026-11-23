@@ -1,28 +1,27 @@
-// The one QPU MCP over stdio, a proxy of Payload: the keychain mocked by a security on the PATH, the local app a stub (or a closed port).
+// The QPU MCP over stdio: the kernel's own server on the SDK's stdio door, answering a harness that starts a command.
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { createServer } from 'node:http'
-import { mkdtempSync, writeFileSync, chmodSync } from 'node:fs'
-import { tmpdir } from 'node:os'
-import { join } from 'node:path'
 import { spawn } from 'node:child_process'
 
-const proxied = async (port: number, stub?: (m: any, auth?: string) => unknown) => {
-  const bin = mkdtempSync(join(tmpdir(), 'qpu-')); writeFileSync(join(bin, 'security'), '#!/bin/sh\necho k-from-keychain\n'); chmodSync(join(bin, 'security'), 0o755)
-  const server = stub && createServer((req, res) => { let b = ''; req.on('data', (c) => (b += c)).on('end', () => { const m = JSON.parse(b); res.setHeader('content-type', 'application/json'); res.end(m.id === undefined ? '' : JSON.stringify({ jsonrpc: '2.0', id: m.id, result: stub(m, req.headers.authorization) })) }) }).listen(port)
-  const child = spawn('node', ['scripts/stdio.ts'], { env: { ...process.env, PATH: bin + ':' + process.env.PATH, QPU_LOCAL_MCP: `http://127.0.0.1:${port}/api/mcp`, QPU_APP_MCP: '', QPU_APP_KEY: 'env-key' } })
-  let out = ''; child.stdout.on('data', (c) => (out += c)); child.stdin.end(['initialize', 'tools/list', 'tools/call'].map((method, id) => JSON.stringify({ jsonrpc: '2.0', id, method, params: method === 'tools/call' ? { name: 'findPages', arguments: { text: 'x' } } : {} })).join('\n') + '\n')
-  await new Promise((r) => child.on('close', r)); server?.close()
-  return { out, replies: out.split('\n').filter((l) => l.trim()).map((l) => JSON.parse(l)) }
-}
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: with no Payload app, tools/list names the probe in one entry and a call is an error naming it. */
-test('with no Payload app, tools/list names the probe in one entry and a call is an error naming it', async () => {
-  const { replies } = await proxied(39741)
-  assert.deepEqual([replies[1].result.tools.length, /site-local\.sh start/.test(replies[1].result.tools[0].description), /QPU_APP_MCP/.test(replies[2].error.message)], [1, true, true])
-})
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: with a Payload endpoint it lists that endpoint's tools and forwards a call, the key from the keychain alone and never printed. */
-test('with a Payload endpoint it lists that endpoint\'s tools and forwards a call, the key from the keychain alone and never printed', async () => {
-  const seen: (string | undefined)[] = [], { out, replies } = await proxied(39742, (m, auth) => (seen.push(auth), m.method === 'tools/list' ? { tools: [{ name: 'findPages', inputSchema: { type: 'object' } }] } : m.method === 'tools/call' ? { content: [{ type: 'text', text: 'found ' + m.params.arguments.text }] } : {}))
-  assert.deepEqual([replies[1].result.tools.map((t: { name: string }) => t.name), replies[2].result.content[0].text, replies[2].result._meta.source], [['findPages'], 'found x', 'local'])
-  assert.ok(seen.length >= 3 && seen.every((a) => a === 'users API-Key k-from-keychain') && !out.includes('k-from-keychain'))
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: started as a command, it initializes, lists every tool, answers a call, and runs this machine's git only through the allow-list. */
+test('started as a command, it initializes, lists every tool, answers a call, and runs this machine\'s git only through the allow-list', async () => {
+  const child = spawn('node', ['scripts/stdio.ts'], { env: { ...process.env, QPU_X402_RECIPIENT: '' } })
+  const lines: Record<string, any>[] = []
+  let out = ''
+  const answered = new Promise<void>((done) => child.stdout.on('data', (c) => { out += c; const all = out.split('\n'); out = all.pop()!; for (const l of all) if (l.trim()) lines.push(JSON.parse(l)); if ([2, 3, 4, 5, 6].every((id) => lines.some((m) => m.id === id))) done() }))
+  const send = (m: object) => child.stdin.write(JSON.stringify({ jsonrpc: '2.0', ...m }) + '\n')
+  send({ id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'harness', version: '1' } } })
+  send({ method: 'notifications/initialized' })
+  send({ id: 2, method: 'tools/list' })
+  send({ id: 3, method: 'tools/call', params: { name: 'currency', arguments: { selftest: true } } })
+  send({ id: 4, method: 'tools/call', params: { name: 'machine', arguments: { action: 'status' } } })
+  send({ id: 5, method: 'tools/call', params: { name: 'machine', arguments: { action: 'push' } } })
+  send({ id: 6, method: 'tools/call', params: { name: 'machine', arguments: { action: 'stage' } } })
+  await answered
+  child.kill()
+  const by = (id: number) => lines.find((m) => m.id === id)!
+  assert.deepEqual([by(1).result.serverInfo.name, by(2).result.tools.length > 40, by(3).result.isError ?? false], ['qpu', true, false])
+  // this machine's git, through the allow-list: a read runs and is recorded, a push without confirmation and a stage without paths are refused
+  const status = by(4).result.structuredContent, push = by(5).result.structuredContent, stage = by(6).result.structuredContent
+  assert.deepEqual([by(2).result.tools.some((t: { name: string }) => t.name === 'machine'), status.record.ok, status.plan.command.args[0], push.allowed, push.court.rule, stage.allowed], [true, true, 'status', false, 'role', false])
 })

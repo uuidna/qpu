@@ -13,13 +13,27 @@
   "assets": {
     "directory": "site/.vitepress/dist",
     "binding": "ASSETS",
+    "run_worker_first": ["/", "/mcp"],
   },
   // The live qpu Worker holds these Durable Object migration tags (v2 deleted its only class); a deploy under the
   // same name repeats them.
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["DocketObject"] },
     { "tag": "v2", "deleted_classes": ["DocketObject"] },
+    { "tag": "v3", "new_sqlite_classes": ["Mailbox"] },
+    { "tag": "v4", "new_sqlite_classes": ["Prover"] },
   ],
+  // Lean with Mathlib behind the Worker: the prover stage of the Alpine image (Lean built from source, Mathlib's cache),
+  // started by the Prover Durable Object with no internet. Mathlib loaded is some 3 GiB a check, the image some 10 GB.
+  // Local development runs the Worker without the prover: its image builds Lean from source and fetches Mathlib, hours of
+  // work, and src/quantum/net/prover_test.ts checks the prover's server against this checkout's own Lean instead.
+  "dev": { "enable_containers": false },
+  "containers": [
+    { "class_name": "Prover", "image": "./alpine/Dockerfile", "image_build_context": ".", "instance_type": "standard-4", "max_instances": 2 },
+  ],
+  "durable_objects": {
+    "bindings": [{ "name": "MAILBOX", "class_name": "Mailbox" }, { "name": "PROVER", "class_name": "Prover" }],
+  },
   "observability": {
     "enabled": true,
     "head_sampling_rate": 0.1,

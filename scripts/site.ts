@@ -1,5 +1,4 @@
-// The site from the quantum tree: the ISO/IEC 4879:2024 clauses, the standards and the MCP toolboxes, each page with its
-// kernel-checked proofs as schema.org microdata (a DefinedTerm, subjectOf the Lean SoftwareSourceCode) an MCP client reads.
+// The site from the quantum tree, each page with its kernel-checked proofs as schema.org microdata.
 import { PROSE } from '../src/quantum/processing/prose-index.ts'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'

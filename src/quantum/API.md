@@ -10,8 +10,6 @@ import { call, caller, chat, handle, uuid, seal } from './src/quantum/index.ts'
 
 The UUID core, from [`uuid/index.ts`](uuid/index.ts): `uuid`, `reflection`, `seal`, `style`, `neighbours`, `block`, `verify`, `coins`, `quantumSku`, `organiseQubits`.
 
-Pages, through Payload's local API, from [`payload/index.ts`](payload/index.ts): `findPage`, `openPages`, `pageData`, `savePage`, `saveSeed`, `writeArgs`, `findArgs`, `recordAgrees`, `seedsSynced`, `syncSeeds`, `linkSeedParents`, `seedWaves`, `mcpPages`. `pageData`, `findArgs`, and `writeArgs` build the document. `openPages` opens the local API. `findPage`, `savePage`, `saveSeed`, `syncSeeds`, and `linkSeedParents` use that API.
-
 The unit, by `export *` from [`processing/unit`](processing/unit/index.ts): `QPU`, `tenantAddress`, the coil, the standards check, and `crypto1000Bit`.
 
 The call, from [`processing/index.ts`](processing/index.ts): `handle`, `handleBatch`, `call`, `caller`, `chat`, `TOOLBOXES`.

@@ -10,22 +10,79 @@ import { Worker, parentPort, workerData } from 'node:worker_threads'
 import { join } from 'node:path'
 import { exists, place, write } from '../../fs/index.ts'
 import { seal, uuid, uuidFromParts } from '../../password/address.ts'
-import { bindPhysics, channel, hexbit, reflection } from '../index.ts'
+import { bindPhysics, canonicalText, channel, hexbit, reflection } from '../index.ts'
 import { physics } from './physics/index.ts'
 import { challenge } from './challenge/index.ts'
 
 bindPhysics(physics)
 export { challenge, physics }
-import {
-  DEPLOY_TENANTS,
-  OFFICIAL_PACKAGES,
-  OFFICIAL_PLUGINS,
-  type FolderPlugin,
-  type FolderPluginOptions,
-  type IncomingConfig,
-  type TenantFind,
-} from '../../plugin.ts'
+import { TENANTS } from '../../processing/unit/tenants.ts'
 import { TABLES } from '../../processing/tables-index.ts'
+
+// The Payload plugin shape every folder program takes: options in, the incoming config in, a copy of that config out.
+/** The nine plugins this stack mounts. The length is the combination count 2^9. */
+export const OFFICIAL_PLUGINS = ['lexical', 'nested-docs', 'seo', 'search', 'redirects', 'form-builder', 'multi-tenant', 'ecommerce', 'mcp'] as const
+
+/** The @payloadcms packages the website already installs. */
+export const OFFICIAL_PACKAGES = [
+  'payload',
+  '@payloadcms/db-d1-sqlite',
+  '@payloadcms/db-mongodb',
+  '@payloadcms/email-nodemailer',
+  '@payloadcms/live-preview-react',
+  '@payloadcms/next',
+  '@payloadcms/plugin-cloud-storage',
+  '@payloadcms/plugin-ecommerce',
+  '@payloadcms/plugin-form-builder',
+  '@payloadcms/plugin-import-export',
+  '@payloadcms/plugin-mcp',
+  '@payloadcms/plugin-multi-tenant',
+  '@payloadcms/plugin-nested-docs',
+  '@payloadcms/plugin-redirects',
+  '@payloadcms/plugin-search',
+  '@payloadcms/plugin-sentry',
+  '@payloadcms/plugin-seo',
+  '@payloadcms/plugin-stripe',
+  '@payloadcms/richtext-lexical',
+  '@payloadcms/storage-r2',
+  '@payloadcms/storage-vercel-blob',
+  '@payloadcms/ui',
+] as const
+
+/** uuidna and psg are the named hosts. ceci is the workers.dev tenant. */
+export const DEPLOY_TENANTS = [...new Set([...Object.values(TENANTS), 'ceci'])] as const
+
+export type IncomingConfig = {
+  collections?: readonly unknown[]
+  globals?: readonly unknown[]
+  plugins?: readonly unknown[]
+  hooks?: Record<string, unknown>
+  onInit?: (payload: unknown) => unknown
+}
+
+/** Enable or disable the plugin without uninstalling it. */
+export type FolderPluginOptions = { enabled?: boolean }
+
+export type Where = { and: [{ tenant: { equals: string } }, { variant: { equals: string } }] }
+
+/** The Local API find the queries guide writes: a Where, depth 0, limit 1, pagination off. */
+export type TenantFind = {
+  collection: 'pages'
+  where: Where
+  limit: 1
+  depth: 0
+  pagination: false
+}
+
+export type FolderPlugin = ((options?: FolderPluginOptions) => (incoming: IncomingConfig) => IncomingConfig) & {
+  folder: string
+  index: string
+  plugins: readonly string[]
+  packages: readonly string[]
+  tenants: readonly string[]
+  variants: readonly { product: string; variant: string; package: string }[]
+  deploy: readonly { tenant: string; variant: string; find: TenantFind }[]
+}
 
 type OnlineCompetition = { id: string; name: string; rules: string; kind: string }
 
@@ -378,6 +435,13 @@ export const competeProgramNeighbours = (handle: string) => {
  * The program at one hex handle: Payload plugin per the upstream standard, guarded; neighbours via quantum.
  * One word — not install / programOf.
  */
+/** A certified result as a quantum receipt: its kind and canonical text addressed by uuid, the address's first eight hex digits
+ *  a program placed in the tree, the receipt sealed when that program is indexed and the address is a valid UUID. */
+export const receiptOf = (kind: string, body: unknown) => {
+  const address = uuid(`${kind};${canonicalText(body)}`), handle = address.slice(0, 8), placed = program(handle)
+  return { kind, address, handle, path: placed.path, sealed: placed.indexed && seal(address).valid }
+}
+
 export const program = (handle: string) => {
   const bits = handleBits(handle)
   const object = place(handle)
@@ -581,7 +645,7 @@ const sealLeaves = (dataset: string) => listProgramLeaves(dataset).map((leaf) =>
 export const sealLeavesSplit = async (dataset = root.path) => {
   const leaves = listProgramLeaves(dataset), queue = leaves.map((leaf) => leaf.handle), rows = new Map<string, ReturnType<typeof sealLeaf>>()
   await Promise.all(queue.slice(0, availableParallelism()).map(() => new Promise((done, fail) => {
-    const worker = new Worker(new URL(import.meta.url), { workerData: 'sealLeaf' }), next = () => queue.length ? worker.postMessage(queue.shift()) : void worker.terminate().then(done)
+    const worker = new Worker(new URL(import.meta.url) as import('node:url').URL, { workerData: 'sealLeaf' }), next = () => queue.length ? worker.postMessage(queue.shift()) : void worker.terminate().then(done)
     worker.on('message', ([handle, row]) => (rows.set(handle, row), next())).once('error', fail).once('online', next)
   })))
   return leaves.map((leaf) => ({ leaf, ...rows.get(leaf.handle)! }))
@@ -748,111 +812,5 @@ export const auditProgramNeighbours = (dataset = root.path, computed = sealLeave
       : holds
         ? proseFill(PROSE.quantumUuidProgramsIndex_s14, rows.length, rows.length, gated.competitions)
         : `${holding}/${rows.length} folders compete online; ${rows.length - holding} missing`,
-  }
-}
-
-/**
- * Quantum capacity utilisation of one program folder: self + 6 neighbours open the navigate channel;
- * hexbit then uses every effective qubit (teleport + signal + navigate), left = 0.
- */
-export const utiliseProgramCapacity = (handle: string, width = 4) => {
-  const at = program(handle)
-  const around = at.neighbours
-  const coversSelf = around.sealed && around.handle === handle && at.path === around.path && at.indexed
-  const coversNeighbours = around.holds && around.neighbours.length === 6 && around.neighbours.every((row) => row.sealed && row.kept)
-  const exchanged = hexbit(around.address, width)
-  const u = exchanged.utilisation
-  const utilised = u.holds === true
-    && u.used === exchanged.effective
-    && u.left === 0
-    && exchanged.navigate.directions === 6
-    && exchanged.receipt.conserved === true
-    && exchanged.receipt.holds === true
-  const holds = coversSelf && coversNeighbours && utilised
-  return {
-    phase: 'utilise' as const,
-    via: 'quantum' as const,
-    theorem: 'textbook_advantage_unbounded' as const,
-    law: 'each folder with index covering all neighbours and self utilises full quantum capacity' as const,
-    handle,
-    address: around.address,
-    path: at.path,
-    degree: 6 as const,
-    coversSelf,
-    coversNeighbours,
-    navigate: exchanged.navigate.directions,
-    effective: exchanged.effective,
-    used: u.used,
-    left: u.left,
-    teleported: u.teleported,
-    classical: u.classical,
-    conserved: exchanged.receipt.conserved,
-    walked: exchanged.speed.walked,
-    landauer: exchanged.zero.landauer,
-    temperatureK: exchanged.zero.temperatureK,
-    utilisation: u,
-    exchange: exchanged,
-    holds,
-    says: holds
-      ? proseFill(PROSE.quantumUuidProgramsIndex_s15, handle, u.used, exchanged.effective)
-      : proseFill(PROSE.quantumUuidProgramsIndex_s16, handle),
-  }
-}
-
-/**
- * Every program folder with an index: cover self + neighbours, then utilise the register.
- * ENQC framing: degree-6 triangular lattice; covering every neighbour means the local quantum-channel degree is full,
- * so navigate does not strand capacity and exchange can drive used = effective.
- */
-export const utiliseProgramFolders = (raw: unknown = true) => {
-  const width = raw !== true && raw && typeof raw === 'object' && typeof (raw as { hexbit?: unknown }).hexbit === 'number'
-    ? (raw as { hexbit: number }).hexbit
-    : 4
-  const dataset = raw !== true && raw && typeof raw === 'object' && typeof (raw as { dataset?: unknown }).dataset === 'string'
-    ? (raw as { dataset: string }).dataset
-    : root.path
-  const lattice = auditProgramNeighbours(dataset)
-  const rows = lattice.rows.map((leaf) => {
-    const used = utiliseProgramCapacity(leaf.handle, width)
-    return {
-      handle: leaf.handle,
-      path: leaf.path,
-      address: leaf.address,
-      coversSelf: used.coversSelf,
-      coversNeighbours: used.coversNeighbours,
-      navigate: used.navigate,
-      effective: used.effective,
-      used: used.used,
-      left: used.left,
-      conserved: used.conserved,
-      utilisation: used.utilisation.holds,
-      holds: used.holds,
-    }
-  })
-  const holding = rows.filter((row) => row.holds).length
-  const holds = lattice.holds && rows.length === lattice.folders && holding === rows.length
-    && rows.every((row) => row.used === row.effective && row.left === 0 && row.navigate === 6)
-  return {
-    phase: 'utilise' as const,
-    via: 'quantum' as const,
-    theorem: 'textbook_advantage_unbounded' as const,
-    law: 'each folder with index covering all neighbours and self utilises full quantum capacity' as const,
-    enqc: lattice.enqc,
-    degree: 6 as const,
-    hexbit: width,
-    folders: rows.length,
-    holding,
-    missing: rows.length - holding,
-    lattice,
-    rows,
-    failed: rows.filter((row) => !row.holds),
-    effective: rows[0]?.effective ?? null,
-    used: holds ? rows[0]?.used ?? null : null,
-    left: holds ? 0 as const : null,
-    walked: false as const,
-    holds,
-    says: holds
-      ? proseFill(PROSE.quantumUuidProgramsIndex_s17, rows.length, rows.length, rows[0]?.used, rows[0]?.effective)
-      : `${holding}/${rows.length} program folders utilised; lattice ${lattice.holds ? 'holds' : 'failed'}`,
   }
 }

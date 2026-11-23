@@ -31,7 +31,6 @@ export const rename = (from: string, to: string) => chosen('io').rename(from, to
 export const list = (dir: string) => chosen('io').list(dir)
 export const exists = (file: string) => chosen('io').exists(file)
 
-export { fsPlugin as plugin } from '../plugin.ts'
 
 const fs = { adapters: ADAPTERS, chosen, place, birth, documentPath, read, write, rename, list, exists }
 export default fs
