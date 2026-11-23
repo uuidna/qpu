@@ -54,9 +54,9 @@ export const planMachine = (r: MachineRequest, decide: Decide) => {
     return { allowed: true as const, action: a.id, kind: a.kind, command: { cmd: a.cmd, args }, input: null, worktree, decision: null, says: a.says, theorems: ['textbook_machine_allow_list'] }
   }
   const decision = a.workflow ? decide(a.workflow, r.facts ?? {}) : null
-  // a commit runs the pre-commit hook itself, which reads the facts only the staged tree holds (the generated files compared, the staged literals)
-  // and decides the same rules strictly: a rule unknown here is deferred to it, a rule violated here refuses at once; a push decides here, all of it
-  const deferred = a.workflow === 'pre-commit' && decision && !decision.allowed && decision.violated.length === 0
+  // a commit and a push run their git hook, which reads the facts only it holds (the staged tree, the receipt, the package) and
+  // decides the same rules strictly: a rule unknown here is deferred to it, one violated here refuses at once; dispatch runs no hook
+  const deferred = (a.workflow === 'pre-commit' || a.id === 'push') && decision && !decision.allowed && decision.violated.length === 0
   if (decision && !decision.allowed && !deferred) return { ...refuse('collision', `the ${a.workflow} rules refuse it: ${decision.says}`, { action: a.id, violated: decision.violated, unknown: decision.unknown }), decision }
   return { allowed: true as const, action: a.id, kind: a.kind, command: { cmd: a.cmd, args: a.needs === 'branch' ? [...a.args, r.branch!] : [...a.args, ...param, ...(a.needs === 'message' && paths ? paths : [])] }, input: a.needs === 'message' ? r.message : a.needs === 'patch' ? r.patch : null, worktree, decision, deferred: deferred ? decision!.unknown : [], says: a.says, theorems: ['textbook_machine_allow_list'] }
 }
