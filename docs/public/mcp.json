@@ -84,18 +84,6 @@
         "toolbox": "tree",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "tree",
-          "categorySlug": "f48af913-c350-32d2-b49c-1e6a98283c83",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83",
-          "gate": "c78279d0-4516-5ae6-baf2-2b3826c0205c",
-          "id": "clay",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/c78279d0-4516-5ae6-baf2-2b3826c0205c",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/c78279d0-4516-5ae6-baf2-2b3826c0205c"
-        },
         "skill": {
           "directions": 2
         },
@@ -183,18 +171,6 @@
         "toolbox": "tree",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "tree",
-          "categorySlug": "f48af913-c350-32d2-b49c-1e6a98283c83",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83",
-          "gate": "6073a5a5-968d-2a6c-8bed-de0a5d1a9314",
-          "id": "match",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/6073a5a5-968d-2a6c-8bed-de0a5d1a9314",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/6073a5a5-968d-2a6c-8bed-de0a5d1a9314"
-        },
         "skill": {
           "directions": 2
         },
@@ -305,18 +281,6 @@
           "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
         },
         "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "tree",
-          "categorySlug": "f48af913-c350-32d2-b49c-1e6a98283c83",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83",
-          "gate": "59b0ec6b-e314-2d29-b2a8-5bfdfa259198",
-          "id": "verify",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/59b0ec6b-e314-2d29-b2a8-5bfdfa259198",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/59b0ec6b-e314-2d29-b2a8-5bfdfa259198"
-        },
         "skill": {
           "directions": 2
         },
@@ -372,18 +336,6 @@
         "toolbox": "google",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "google",
-          "categorySlug": "706e1996-d892-6b51-b47d-87a0badc0018",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018",
-          "gate": "c9d3584f-2009-6171-b7b9-86bfa069b191",
-          "id": "processor",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/c9d3584f-2009-6171-b7b9-86bfa069b191",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/c9d3584f-2009-6171-b7b9-86bfa069b191"
-        },
         "skill": {
           "directions": 1
         },
@@ -705,18 +657,6 @@
         "toolbox": "google",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "google",
-          "categorySlug": "706e1996-d892-6b51-b47d-87a0badc0018",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018",
-          "gate": "0682c3db-5878-47fb-b99f-c41d768ae8b2",
-          "id": "circuit",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/0682c3db-5878-47fb-b99f-c41d768ae8b2",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/0682c3db-5878-47fb-b99f-c41d768ae8b2"
-        },
         "skill": {
           "directions": 1
         },
@@ -948,18 +888,6 @@
         "toolbox": "google",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "google",
-          "categorySlug": "706e1996-d892-6b51-b47d-87a0badc0018",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018",
-          "gate": "b25cf0e1-e3ff-8d51-8c76-2c6c23d70224",
-          "id": "echo",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/b25cf0e1-e3ff-8d51-8c76-2c6c23d70224",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/b25cf0e1-e3ff-8d51-8c76-2c6c23d70224"
-        },
         "skill": {
           "directions": 1
         },
@@ -995,18 +923,6 @@
         "toolbox": "google",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "google",
-          "categorySlug": "706e1996-d892-6b51-b47d-87a0badc0018",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018",
-          "gate": "a498f3ab-73ab-8434-a7b8-ea20543d6b94",
-          "id": "echo_benchmark",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/a498f3ab-73ab-8434-a7b8-ea20543d6b94",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/a498f3ab-73ab-8434-a7b8-ea20543d6b94"
-        },
         "skill": {
           "directions": 1
         },
@@ -1048,18 +964,6 @@
         "toolbox": "google",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "google",
-          "categorySlug": "706e1996-d892-6b51-b47d-87a0badc0018",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018",
-          "gate": "6e0f5375-72d1-6dbe-8aa1-4c2734c94155",
-          "id": "roadmap",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/6e0f5375-72d1-6dbe-8aa1-4c2734c94155",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/6e0f5375-72d1-6dbe-8aa1-4c2734c94155"
-        },
         "skill": {
           "directions": 1
         },
@@ -1271,18 +1175,6 @@
         "toolbox": "google",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "google",
-          "categorySlug": "706e1996-d892-6b51-b47d-87a0badc0018",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018",
-          "gate": "3f23ec2c-06d9-770b-a698-4ae29b5c2578",
-          "id": "algorithm",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/3f23ec2c-06d9-770b-a698-4ae29b5c2578",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/3f23ec2c-06d9-770b-a698-4ae29b5c2578"
-        },
         "skill": {
           "directions": 1
         },
@@ -1318,18 +1210,6 @@
         "toolbox": "google",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "google",
-          "categorySlug": "706e1996-d892-6b51-b47d-87a0badc0018",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018",
-          "gate": "a9f0b06a-01a6-1315-b861-982952062650",
-          "id": "software",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/a9f0b06a-01a6-1315-b861-982952062650",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/a9f0b06a-01a6-1315-b861-982952062650"
-        },
         "skill": {
           "directions": 1
         },
@@ -1412,18 +1292,6 @@
         "toolbox": "google",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "google",
-          "categorySlug": "706e1996-d892-6b51-b47d-87a0badc0018",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018",
-          "gate": "5b53b7df-3674-313a-a40c-9af57ded8f03",
-          "id": "statements",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/5b53b7df-3674-313a-a40c-9af57ded8f03",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/5b53b7df-3674-313a-a40c-9af57ded8f03"
-        },
         "skill": {
           "directions": 1
         },
@@ -1464,18 +1332,6 @@
         "toolbox": "google",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "google",
-          "categorySlug": "706e1996-d892-6b51-b47d-87a0badc0018",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018",
-          "gate": "faaaf1a5-a2a4-2235-b994-db915b10455d",
-          "id": "repositories",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/faaaf1a5-a2a4-2235-b994-db915b10455d",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/faaaf1a5-a2a4-2235-b994-db915b10455d"
-        },
         "skill": {
           "directions": 1
         },
@@ -1520,18 +1376,6 @@
         "toolbox": "google",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "google",
-          "categorySlug": "706e1996-d892-6b51-b47d-87a0badc0018",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018",
-          "gate": "276aa690-4651-3475-baa0-d0cce618cce9",
-          "id": "quantumlib",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/276aa690-4651-3475-baa0-d0cce618cce9",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/276aa690-4651-3475-baa0-d0cce618cce9"
-        },
         "skill": {
           "directions": 1
         },
@@ -1607,18 +1451,6 @@
         "toolbox": "google",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "google",
-          "categorySlug": "706e1996-d892-6b51-b47d-87a0badc0018",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018",
-          "gate": "db958c8b-f403-5f5c-97a7-f78a8e48a3c0",
-          "id": "quantum-error-correction",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/db958c8b-f403-5f5c-97a7-f78a8e48a3c0",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/db958c8b-f403-5f5c-97a7-f78a8e48a3c0"
-        },
         "skill": {
           "directions": 1
         },
@@ -1700,18 +1532,6 @@
         "toolbox": "google",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "google",
-          "categorySlug": "706e1996-d892-6b51-b47d-87a0badc0018",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018",
-          "gate": "451aca91-152f-7102-9676-e82a317b863b",
-          "id": "chemistry-simulation",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/451aca91-152f-7102-9676-e82a317b863b",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/451aca91-152f-7102-9676-e82a317b863b"
-        },
         "skill": {
           "directions": 1
         },
@@ -1780,18 +1600,6 @@
         "toolbox": "google",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "google",
-          "categorySlug": "706e1996-d892-6b51-b47d-87a0badc0018",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018",
-          "gate": "da8e7789-778b-2a0f-9097-31919e6e764e",
-          "id": "fault-tolerant-design",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/da8e7789-778b-2a0f-9097-31919e6e764e",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/706e1996-d892-6b51-b47d-87a0badc0018/da8e7789-778b-2a0f-9097-31919e6e764e"
-        },
         "skill": {
           "directions": 1
         },
@@ -1900,18 +1708,6 @@
         "toolbox": "tree",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "tree",
-          "categorySlug": "f48af913-c350-32d2-b49c-1e6a98283c83",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83",
-          "gate": "8d741440-270f-42db-9e11-d4b8339fc4b6",
-          "id": "leads",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/8d741440-270f-42db-9e11-d4b8339fc4b6",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/8d741440-270f-42db-9e11-d4b8339fc4b6"
-        },
         "skill": {
           "directions": 2
         },
@@ -2006,18 +1802,6 @@
         "toolbox": "tree",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "tree",
-          "categorySlug": "f48af913-c350-32d2-b49c-1e6a98283c83",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83",
-          "gate": "e2b785c2-8e01-57a5-958e-f560e5778016",
-          "id": "audit",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/e2b785c2-8e01-57a5-958e-f560e5778016",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/e2b785c2-8e01-57a5-958e-f560e5778016"
-        },
         "skill": {
           "directions": 2
         },
@@ -2052,18 +1836,6 @@
         "toolbox": "tree",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "tree",
-          "categorySlug": "f48af913-c350-32d2-b49c-1e6a98283c83",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83",
-          "gate": "331a9545-a4fc-7afb-9cff-26db554713f0",
-          "id": "metrics",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/331a9545-a4fc-7afb-9cff-26db554713f0",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/331a9545-a4fc-7afb-9cff-26db554713f0"
-        },
         "skill": {
           "directions": 2
         },
@@ -2218,18 +1990,6 @@
         "toolbox": "tree",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "tree",
-          "categorySlug": "f48af913-c350-32d2-b49c-1e6a98283c83",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83",
-          "gate": "2dff798e-640b-1b27-927e-66a3072bef8b",
-          "id": "textbook",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/2dff798e-640b-1b27-927e-66a3072bef8b",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/2dff798e-640b-1b27-927e-66a3072bef8b"
-        },
         "skill": {
           "directions": 2
         },
@@ -2288,18 +2048,6 @@
         "toolbox": "tree",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "tree",
-          "categorySlug": "f48af913-c350-32d2-b49c-1e6a98283c83",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83",
-          "gate": "060e253e-45a8-3927-bb62-b610bf293bce",
-          "id": "css",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/060e253e-45a8-3927-bb62-b610bf293bce",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/060e253e-45a8-3927-bb62-b610bf293bce"
-        },
         "skill": {
           "directions": 2
         },
@@ -2341,18 +2089,6 @@
         "toolbox": "tree",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "tree",
-          "categorySlug": "f48af913-c350-32d2-b49c-1e6a98283c83",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83",
-          "gate": "e06422a2-ec9f-272d-b2eb-4a70d6a57c69",
-          "id": "dashboard",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/e06422a2-ec9f-272d-b2eb-4a70d6a57c69",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/e06422a2-ec9f-272d-b2eb-4a70d6a57c69"
-        },
         "skill": {
           "directions": 2
         },
@@ -2394,18 +2130,6 @@
         "toolbox": "tree",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "tree",
-          "categorySlug": "f48af913-c350-32d2-b49c-1e6a98283c83",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83",
-          "gate": "2b3476e5-6fc5-8ccb-ba5b-25006324a178",
-          "id": "clone",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/2b3476e5-6fc5-8ccb-ba5b-25006324a178",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/2b3476e5-6fc5-8ccb-ba5b-25006324a178"
-        },
         "skill": {
           "directions": 2
         },
@@ -2477,18 +2201,6 @@
         "toolbox": "tree",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "tree",
-          "categorySlug": "f48af913-c350-32d2-b49c-1e6a98283c83",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83",
-          "gate": "97ab57bf-118c-8c86-be03-2cc77f27ea5c",
-          "id": "apis",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/97ab57bf-118c-8c86-be03-2cc77f27ea5c",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/f48af913-c350-32d2-b49c-1e6a98283c83/97ab57bf-118c-8c86-be03-2cc77f27ea5c"
-        },
         "skill": {
           "directions": 2
         },
@@ -2562,18 +2274,6 @@
           "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
         },
         "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "flow",
-          "categorySlug": "59822989-fa4f-4d22-a18c-7a3d2dd2b83b",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b",
-          "gate": "6a3d741b-d0c7-3c9e-803c-09f021b7a926",
-          "id": "discover",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b/6a3d741b-d0c7-3c9e-803c-09f021b7a926",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b/6a3d741b-d0c7-3c9e-803c-09f021b7a926"
-        },
         "skill": {
           "directions": 4
         },
@@ -2634,18 +2334,6 @@
           "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
         },
         "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "flow",
-          "categorySlug": "59822989-fa4f-4d22-a18c-7a3d2dd2b83b",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b",
-          "gate": "d6ed486b-fa98-4a39-adbb-89ac4213fca4",
-          "id": "wave",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b/d6ed486b-fa98-4a39-adbb-89ac4213fca4",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b/d6ed486b-fa98-4a39-adbb-89ac4213fca4"
-        },
         "skill": {
           "directions": 4
         },
@@ -2717,18 +2405,6 @@
         "toolbox": "flow",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "flow",
-          "categorySlug": "59822989-fa4f-4d22-a18c-7a3d2dd2b83b",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b",
-          "gate": "f4de84e4-9493-730e-a5d4-9eb345932e55",
-          "id": "readiness",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b/f4de84e4-9493-730e-a5d4-9eb345932e55",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b/f4de84e4-9493-730e-a5d4-9eb345932e55"
-        },
         "skill": {
           "directions": 4
         },
@@ -2806,18 +2482,6 @@
         "toolbox": "flow",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "flow",
-          "categorySlug": "59822989-fa4f-4d22-a18c-7a3d2dd2b83b",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b",
-          "gate": "5f46252c-a047-39a9-aa8e-8a2e78cf9c1d",
-          "id": "imagine",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b/5f46252c-a047-39a9-aa8e-8a2e78cf9c1d",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b/5f46252c-a047-39a9-aa8e-8a2e78cf9c1d"
-        },
         "skill": {
           "directions": 4
         },
@@ -2885,18 +2549,6 @@
           "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
         },
         "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "flow",
-          "categorySlug": "59822989-fa4f-4d22-a18c-7a3d2dd2b83b",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b",
-          "gate": "1757753e-4f70-6d43-9672-85c7a01ef5b7",
-          "id": "e2e",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b/1757753e-4f70-6d43-9672-85c7a01ef5b7",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b/1757753e-4f70-6d43-9672-85c7a01ef5b7"
-        },
         "skill": {
           "directions": 4
         },
@@ -2943,18 +2595,6 @@
         "toolbox": "flow",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "flow",
-          "categorySlug": "59822989-fa4f-4d22-a18c-7a3d2dd2b83b",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b",
-          "gate": "4bb0794b-0132-35cb-985a-90c7b8029c25",
-          "id": "shard",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b/4bb0794b-0132-35cb-985a-90c7b8029c25",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/59822989-fa4f-4d22-a18c-7a3d2dd2b83b/4bb0794b-0132-35cb-985a-90c7b8029c25"
-        },
         "skill": {
           "directions": 4
         },
@@ -3030,18 +2670,6 @@
         "toolbox": "language",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "language",
-          "categorySlug": "8a9c62d5-7aef-69d9-ac83-d3bcbe530ba9",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/8a9c62d5-7aef-69d9-ac83-d3bcbe530ba9",
-          "gate": "244c6c04-2740-26b9-8336-9a5a81c94b57",
-          "id": "translate",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/8a9c62d5-7aef-69d9-ac83-d3bcbe530ba9/244c6c04-2740-26b9-8336-9a5a81c94b57",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/8a9c62d5-7aef-69d9-ac83-d3bcbe530ba9/244c6c04-2740-26b9-8336-9a5a81c94b57"
-        },
         "skill": {
           "directions": 3
         },
@@ -3108,18 +2736,6 @@
         "toolbox": "language",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "language",
-          "categorySlug": "8a9c62d5-7aef-69d9-ac83-d3bcbe530ba9",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/8a9c62d5-7aef-69d9-ac83-d3bcbe530ba9",
-          "gate": "822d9fcf-8ebe-7c76-930f-0094a686ffbe",
-          "id": "prose",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/8a9c62d5-7aef-69d9-ac83-d3bcbe530ba9/822d9fcf-8ebe-7c76-930f-0094a686ffbe",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/8a9c62d5-7aef-69d9-ac83-d3bcbe530ba9/822d9fcf-8ebe-7c76-930f-0094a686ffbe"
-        },
         "skill": {
           "directions": 3
         },
@@ -3215,18 +2831,6 @@
         "toolbox": "raid",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "raid",
-          "categorySlug": "d8ff8f24-cce1-6623-bd88-4c5f285014d3",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/d8ff8f24-cce1-6623-bd88-4c5f285014d3",
-          "gate": "c41d7c33-3863-4888-9559-faabe4dca04d",
-          "id": "mongo",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/d8ff8f24-cce1-6623-bd88-4c5f285014d3/c41d7c33-3863-4888-9559-faabe4dca04d",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/d8ff8f24-cce1-6623-bd88-4c5f285014d3/c41d7c33-3863-4888-9559-faabe4dca04d"
-        },
         "skill": {
           "directions": 3
         },
@@ -3391,18 +2995,6 @@
         "toolbox": "billing",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "billing",
-          "categorySlug": "b4dc31cc-00fd-78e1-921b-864381fca44c",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/b4dc31cc-00fd-78e1-921b-864381fca44c",
-          "gate": "21325694-9dc4-17da-b789-a7ebfc222f1c",
-          "id": "stripe",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/b4dc31cc-00fd-78e1-921b-864381fca44c/21325694-9dc4-17da-b789-a7ebfc222f1c",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/b4dc31cc-00fd-78e1-921b-864381fca44c/21325694-9dc4-17da-b789-a7ebfc222f1c"
-        },
         "skill": {
           "directions": 3
         },
@@ -3481,18 +3073,6 @@
         "toolbox": "billing",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "billing",
-          "categorySlug": "b4dc31cc-00fd-78e1-921b-864381fca44c",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/b4dc31cc-00fd-78e1-921b-864381fca44c",
-          "gate": "5938d2a6-0d95-3878-ae4e-929aab1d52ea",
-          "id": "currency",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/b4dc31cc-00fd-78e1-921b-864381fca44c/5938d2a6-0d95-3878-ae4e-929aab1d52ea",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/b4dc31cc-00fd-78e1-921b-864381fca44c/5938d2a6-0d95-3878-ae4e-929aab1d52ea"
-        },
         "skill": {
           "directions": 3
         },
@@ -3566,18 +3146,6 @@
         "toolbox": "legal",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "legal",
-          "categorySlug": "dde68aa6-a7ad-3996-9ce9-078190dfdca6",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/dde68aa6-a7ad-3996-9ce9-078190dfdca6",
-          "gate": "9c4b4d40-2ec2-4d7d-9229-b0f4f66a1864",
-          "id": "legal",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/dde68aa6-a7ad-3996-9ce9-078190dfdca6/9c4b4d40-2ec2-4d7d-9229-b0f4f66a1864",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/dde68aa6-a7ad-3996-9ce9-078190dfdca6/9c4b4d40-2ec2-4d7d-9229-b0f4f66a1864"
-        },
         "skill": {
           "directions": 3
         },
@@ -3648,18 +3216,6 @@
         "toolbox": "legal",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "legal",
-          "categorySlug": "dde68aa6-a7ad-3996-9ce9-078190dfdca6",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/dde68aa6-a7ad-3996-9ce9-078190dfdca6",
-          "gate": "fca058d6-41dd-572e-8f52-d118a77ce0dc",
-          "id": "compete",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/dde68aa6-a7ad-3996-9ce9-078190dfdca6/fca058d6-41dd-572e-8f52-d118a77ce0dc",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/dde68aa6-a7ad-3996-9ce9-078190dfdca6/fca058d6-41dd-572e-8f52-d118a77ce0dc"
-        },
         "skill": {
           "directions": 3
         },
@@ -3738,18 +3294,6 @@
         "toolbox": "legal",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "legal",
-          "categorySlug": "dde68aa6-a7ad-3996-9ce9-078190dfdca6",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/dde68aa6-a7ad-3996-9ce9-078190dfdca6",
-          "gate": "3b60cedd-9990-1b81-a7ac-90d9b3bf40ba",
-          "id": "patents",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/dde68aa6-a7ad-3996-9ce9-078190dfdca6/3b60cedd-9990-1b81-a7ac-90d9b3bf40ba",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/dde68aa6-a7ad-3996-9ce9-078190dfdca6/3b60cedd-9990-1b81-a7ac-90d9b3bf40ba"
-        },
         "skill": {
           "directions": 3
         },
@@ -3885,18 +3429,6 @@
           "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
         },
         "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "repository",
-          "categorySlug": "bad436e3-5256-3060-9367-4a7f53e54a47",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/bad436e3-5256-3060-9367-4a7f53e54a47",
-          "gate": "b6a0edbe-1c20-5d90-a72e-62e394b41bd9",
-          "id": "repository",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/bad436e3-5256-3060-9367-4a7f53e54a47/b6a0edbe-1c20-5d90-a72e-62e394b41bd9",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/bad436e3-5256-3060-9367-4a7f53e54a47/b6a0edbe-1c20-5d90-a72e-62e394b41bd9"
-        },
         "skill": {
           "directions": 3
         },
@@ -3989,18 +3521,6 @@
         "toolbox": "standards",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "standards",
-          "categorySlug": "50b684fe-4169-3b01-8e44-a923ce41c291",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/50b684fe-4169-3b01-8e44-a923ce41c291",
-          "gate": "87746e1f-2e12-87c7-b962-47b909ee2393",
-          "id": "jsonld",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/50b684fe-4169-3b01-8e44-a923ce41c291/87746e1f-2e12-87c7-b962-47b909ee2393",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/50b684fe-4169-3b01-8e44-a923ce41c291/87746e1f-2e12-87c7-b962-47b909ee2393"
-        },
         "skill": {
           "directions": 3
         },
@@ -4053,18 +3573,6 @@
           "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
         },
         "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "standards",
-          "categorySlug": "50b684fe-4169-3b01-8e44-a923ce41c291",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/50b684fe-4169-3b01-8e44-a923ce41c291",
-          "gate": "3bb3c9f0-4a38-6836-b37a-30e15c1b65fb",
-          "id": "codes",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/50b684fe-4169-3b01-8e44-a923ce41c291/3bb3c9f0-4a38-6836-b37a-30e15c1b65fb",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/50b684fe-4169-3b01-8e44-a923ce41c291/3bb3c9f0-4a38-6836-b37a-30e15c1b65fb"
-        },
         "skill": {
           "directions": 3
         },
@@ -4124,18 +3632,6 @@
           "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
         },
         "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "standards",
-          "categorySlug": "50b684fe-4169-3b01-8e44-a923ce41c291",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/50b684fe-4169-3b01-8e44-a923ce41c291",
-          "gate": "7a91fc96-7133-3cc8-b49e-fdcd194d7cc7",
-          "id": "validate",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/50b684fe-4169-3b01-8e44-a923ce41c291/7a91fc96-7133-3cc8-b49e-fdcd194d7cc7",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/50b684fe-4169-3b01-8e44-a923ce41c291/7a91fc96-7133-3cc8-b49e-fdcd194d7cc7"
-        },
         "skill": {
           "directions": 3
         },
@@ -4409,18 +3905,6 @@
           "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
         },
         "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "payload",
-          "categorySlug": "e6b99e5b-d3dc-1005-a1c2-a60ded2a8a51",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/e6b99e5b-d3dc-1005-a1c2-a60ded2a8a51",
-          "gate": "aa40f7fe-d269-8636-b907-08e539a0c22f",
-          "id": "payload",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/e6b99e5b-d3dc-1005-a1c2-a60ded2a8a51/aa40f7fe-d269-8636-b907-08e539a0c22f",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/e6b99e5b-d3dc-1005-a1c2-a60ded2a8a51/aa40f7fe-d269-8636-b907-08e539a0c22f"
-        },
         "skill": {
           "directions": 3
         },
@@ -4584,18 +4068,6 @@
         "toolbox": "payload",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "payload",
-          "categorySlug": "e6b99e5b-d3dc-1005-a1c2-a60ded2a8a51",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/e6b99e5b-d3dc-1005-a1c2-a60ded2a8a51",
-          "gate": "e2b1583d-5ab0-3323-9f64-5df324a38e09",
-          "id": "configure",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/e6b99e5b-d3dc-1005-a1c2-a60ded2a8a51/e2b1583d-5ab0-3323-9f64-5df324a38e09",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/e6b99e5b-d3dc-1005-a1c2-a60ded2a8a51/e2b1583d-5ab0-3323-9f64-5df324a38e09"
-        },
         "skill": {
           "directions": 3
         },
@@ -4698,18 +4170,6 @@
         "toolbox": "extension",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "extension",
-          "categorySlug": "9fb71e94-1f29-302a-bfd3-527cbedfb766",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/9fb71e94-1f29-302a-bfd3-527cbedfb766",
-          "gate": "8b0ebb3a-8d1e-596c-87b0-d68eff7e4b0d",
-          "id": "extend",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/9fb71e94-1f29-302a-bfd3-527cbedfb766/8b0ebb3a-8d1e-596c-87b0-d68eff7e4b0d",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/9fb71e94-1f29-302a-bfd3-527cbedfb766/8b0ebb3a-8d1e-596c-87b0-d68eff7e4b0d"
-        },
         "skill": {
           "directions": 4
         },
@@ -4889,18 +4349,6 @@
         "toolbox": "crypto",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "crypto",
-          "categorySlug": "c854c546-e12b-6410-904d-9926a7541402",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/c854c546-e12b-6410-904d-9926a7541402",
-          "gate": "1698dbe8-f65b-24c8-b8f0-de975e147e86",
-          "id": "fold",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/c854c546-e12b-6410-904d-9926a7541402/1698dbe8-f65b-24c8-b8f0-de975e147e86",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/c854c546-e12b-6410-904d-9926a7541402/1698dbe8-f65b-24c8-b8f0-de975e147e86"
-        },
         "skill": {
           "directions": 3
         },
@@ -4919,6 +4367,10 @@
       "inputSchema": {
         "type": "object",
         "properties": {
+          "pqc": {
+            "type": "object",
+            "description": "Post-quantum cryptography computed"
+          },
           "gltf": {
             "type": "object",
             "description": "a glTF 2"
@@ -4942,17 +4394,17 @@
             "description": "FIPS 202"
           },
           "kem": {
-            "description": "ML-KEM-512, ML-KEM-768 (true) or ML-KEM-1024, FIPS 203"
+            "description": "ML-KEM-512, ML-KEM-768 (true) or ML-KEM-1024 of FIPS 203, or { algorithm, seed }"
           },
           "slh": {
-            "description": "SLH-DSA-SHA2-128s (true), 128f, 192s or 256s, FIPS 205"
+            "description": "SLH-DSA-SHA2-128s (true), 128f, 192s or 256s of FIPS 205, or { algorithm, seed }"
           },
           "ed25519": {
-            "description": "Ed25519, RFC 8032, over the message"
+            "description": "Ed25519, RFC 8032, over the message, computed and verified here under a fresh key"
           },
           "ecdsa": {
             "type": "boolean",
-            "description": "ECDSA on P-256, FIPS 186-5, over the SHA-256 of the text"
+            "description": "ECDSA on P-256, FIPS 186-5, over the SHA-256 of the text, computed and verified here under a fresh key"
           },
           "x25519": {
             "type": "object",
@@ -4980,9 +4432,10 @@
           "sign": {
             "type": [
               "string",
-              "boolean"
+              "boolean",
+              "object"
             ],
-            "description": "a post-quantum signature over the digest"
+            "description": "an ML-DSA signature over the text, computed and verified here"
           },
           "referer": {
             "description": "seeds bound to a referer block"
@@ -5027,18 +4480,6 @@
         "toolbox": "crypto",
         "experience": "iso-quantum-ai",
         "online": false,
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "crypto",
-          "categorySlug": "c854c546-e12b-6410-904d-9926a7541402",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/c854c546-e12b-6410-904d-9926a7541402",
-          "gate": "d1331d4d-2bc2-3483-92cf-678e3be2c92c",
-          "id": "seal",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/c854c546-e12b-6410-904d-9926a7541402/d1331d4d-2bc2-3483-92cf-678e3be2c92c",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/c854c546-e12b-6410-904d-9926a7541402/d1331d4d-2bc2-3483-92cf-678e3be2c92c"
-        },
         "skill": {
           "directions": 3
         },
@@ -5129,18 +4570,6 @@
           "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
         },
         "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
-        "website": {
-          "collection": "pages",
-          "root": "504bb942-11b3-54a9-8600-743050903445",
-          "rootPath": "/504bb942-11b3-54a9-8600-743050903445",
-          "category": "crypto",
-          "categorySlug": "c854c546-e12b-6410-904d-9926a7541402",
-          "categoryPath": "/504bb942-11b3-54a9-8600-743050903445/c854c546-e12b-6410-904d-9926a7541402",
-          "gate": "7b4c04e3-1f71-3109-9828-f1ea12fb4710",
-          "id": "attest",
-          "path": "/504bb942-11b3-54a9-8600-743050903445/c854c546-e12b-6410-904d-9926a7541402/7b4c04e3-1f71-3109-9828-f1ea12fb4710",
-          "url": "https://qpu.uuidna.com/504bb942-11b3-54a9-8600-743050903445/c854c546-e12b-6410-904d-9926a7541402/7b4c04e3-1f71-3109-9828-f1ea12fb4710"
-        },
         "skill": {
           "directions": 3
         },
