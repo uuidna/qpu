@@ -1,0 +1,30 @@
+# syntax=docker/dockerfile:1
+# qpu's one environment, Alpine throughout, so no host decides what quantum can run: Node 26 and pnpm, Lean v4.33.0
+# built from source (Lean publishes glibc binaries only; Alpine is musl), Mathlib's cache, and wrangler through pnpm.
+# CI runs every gate in the runtime stage, the devcontainer develops in it, and the Cloudflare Lean container serves
+# the prover stage.
+ARG NODE=node:26-alpine3.22@sha256:c7932b9e5e337b0e733d6e16abc1b0e104759e8b05e59ed56586cce967d26dfe
+
+# Lean from source at the commit lean-toolchain names (v4.33.0), so Mathlib's cache, built by that commit, loads.
+FROM ${NODE} AS lean
+RUN apk add --no-cache build-base cmake git gmp-dev libuv-dev python3 bash ccache
+ARG LEAN_COMMIT=d8b18978322de05a8f3dba51ef03cf5461676c17
+RUN git clone --filter=blob:none https://github.com/leanprover/lean4 /src/lean4 \
+ && git -C /src/lean4 checkout "${LEAN_COMMIT}" \
+ && cmake -S /src/lean4 --preset release \
+ && make -C /src/lean4/build/release -j"$(nproc)" \
+ && cp -r /src/lean4/build/release/stage1 /opt/lean
+
+# The environment every gate runs in: Lean and lake on PATH, a C toolchain for lake to build executables, Node and pnpm.
+FROM ${NODE} AS runtime
+RUN apk add --no-cache build-base git bash gmp libuv curl ca-certificates zstd \
+ && corepack enable && corepack prepare pnpm@10.28.0 --activate
+COPY --from=lean /opt/lean /opt/lean
+ENV PATH=/opt/lean/bin:${PATH}
+WORKDIR /qpu
+
+# The prover: qpu's Lean project with Mathlib's cache in place, for the Lean container behind the Worker.
+FROM runtime AS prover
+COPY lean-toolchain lakefile.lean lake-manifest.json ./
+COPY lean ./lean
+RUN lake exe cache get && lake build
