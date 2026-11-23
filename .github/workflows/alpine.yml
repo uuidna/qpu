@@ -7,8 +7,15 @@ on:
   pull_request:
 permissions:
   contents: read
+# One build per branch: a newer head waits for the running one, which finishes and fills the layer cache, instead of
+# cancelling it; heads pushed meanwhile are skipped for the newest. A pull request from a branch the push trigger
+# already builds runs no second copy.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: false
 jobs:
   gates:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository || !startsWith(github.head_ref, 'claude/')
     runs-on: ubuntu-latest
     timeout-minutes: 300
     steps:
