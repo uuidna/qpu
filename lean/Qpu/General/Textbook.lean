@@ -73,6 +73,9 @@ example := @textbook_fold_mirror
 @[reflection] theorem textbook_fold_mirror_reflected (n i : Nat) (h : i ≤ n) (σ : Nat) : σ - (n) = σ - (i + (n - i)) := congrArg (σ - ·) (Eq.symm (textbook_fold_mirror n i h))
 /-- the contrapositive of textbook_fold_mirror (examples: fold-ledger) -/
 @[reflection] theorem textbook_fold_mirror_contrapositive (n i : Nat) : ¬ (i + (n - i) = n) → ¬ ((i ≤ n)) := fun hc hh => hc (textbook_fold_mirror n i hh)
+/-- the converse of textbook_fold_mirror, proved. From Mathlib's `add_tsub_cancel_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: fold-ledger) -/
+@[reflection] theorem textbook_fold_mirror_converse (n i : Nat) : (i + (n - i) = n) → (i ≤ n) :=
+  fun hc => add_tsub_cancel_iff_le.mp hc
 /-- a keyed integrations and b open ones make a + b, the cardinality of a disjoint union. From Mathlib's `Fintype.card_sum` and `Fintype.card_fin` (examples: extend-in-request) -/
 theorem textbook_integrations_are_thirty_five (a b : ℕ) : Fintype.card (Fin a ⊕ Fin b) = a + b := by
   rw [Fintype.card_sum, Fintype.card_fin, Fintype.card_fin]
@@ -110,6 +113,9 @@ example := @textbook_double_entry
 @[reflection] theorem textbook_double_entry_reflected (debits credits : Nat) (h : debits = credits) (σ : Nat) : (σ - (0) = σ - (debits - credits)) ∧ (σ - (0) = σ - (credits - debits)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_double_entry debits credits h).1), congrArg (σ - ·) (Eq.symm (textbook_double_entry debits credits h).2)⟩
 /-- the contrapositive of textbook_double_entry (examples: stripe-ledger, compete-economics, verify-radar) -/
 @[reflection] theorem textbook_double_entry_contrapositive (debits credits : Nat) : ¬ (debits - credits = 0 ∧ credits - debits = 0) → ¬ ((debits = credits)) := fun hc hh => hc (textbook_double_entry debits credits hh)
+/-- the converse of textbook_double_entry, proved. From Mathlib's `le_antisymm`, `tsub_eq_zero_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: stripe-ledger, compete-economics, verify-radar) -/
+@[reflection] theorem textbook_double_entry_converse (debits credits : Nat) : (debits - credits = 0 ∧ credits - debits = 0) → (debits = credits) :=
+  fun hc => le_antisymm (tsub_eq_zero_iff_le.mp hc.1) (tsub_eq_zero_iff_le.mp hc.2)
 /-- the covered and the uncovered make the standards: with truncated subtraction (ℕ among its models), when c + u is the total, the total less u is c. From Mathlib's `add_tsub_cancel_right` (examples: standards-validate, textbook-education, payload-iso-connector, payload-iso-connector-auth, payload-iso-connector-id) -/
 theorem textbook_standards_sliced {α : Type*} [PartialOrder α] [AddCommSemigroup α] [Sub α] [OrderedSub α]
     [AddLeftReflectLE α] (covered uncovered total : α) (h : covered + uncovered = total) : total - uncovered = covered := by
@@ -278,6 +284,9 @@ example := @textbook_penalty_harmonic
 @[reflection] theorem textbook_penalty_harmonic_reflected (cost price : Nat) (h : price = cost) (σ : Nat) : (σ - (0) = σ - (price - cost)) ∧ (σ - (0) = σ - (cost - price)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_penalty_harmonic cost price h).1), congrArg (σ - ·) (Eq.symm (textbook_penalty_harmonic cost price h).2)⟩
 /-- the contrapositive of textbook_penalty_harmonic (examples: repository-penalty-harmonic) -/
 @[reflection] theorem textbook_penalty_harmonic_contrapositive (cost price : Nat) : ¬ (price - cost = 0 ∧ cost - price = 0) → ¬ ((price = cost)) := fun hc hh => hc (textbook_penalty_harmonic cost price hh)
+/-- the converse of textbook_penalty_harmonic, proved. From Mathlib's `le_antisymm`, `tsub_eq_zero_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: repository-penalty-harmonic) -/
+@[reflection] theorem textbook_penalty_harmonic_converse (cost price : Nat) : (price - cost = 0 ∧ cost - price = 0) → (price = cost) :=
+  fun hc => le_antisymm (tsub_eq_zero_iff_le.mp hc.1) (tsub_eq_zero_iff_le.mp hc.2)
 /-- one more occurrence of a violation costs one more unit, never a multiplier: (n + 1) · u = n · u + u. From Mathlib's `add_one_mul`, `Distrib.rightDistribClass` (examples: repository-penalty-proportional) -/
 theorem textbook_penalty_proportional (n u : Nat) : (n + 1) * u = n * u + u := add_one_mul n u
 example := @textbook_penalty_proportional
@@ -304,6 +313,9 @@ example := @textbook_new_doors_proven
 @[reflection] theorem textbook_new_doors_proven_reflected (news proven : Nat) (hp : proven ≤ news) (hu : news - proven = 0) (σ : Nat) : σ - (news) = σ - (proven) := congrArg (σ - ·) (Eq.symm (textbook_new_doors_proven news proven hp hu))
 /-- the contrapositive of textbook_new_doors_proven (examples: repository-commit-folds, repository-commit-grows) -/
 @[reflection] theorem textbook_new_doors_proven_contrapositive (news proven : Nat) : ¬ (proven = news) → ¬ ((proven ≤ news) ∧ (news - proven = 0)) := fun hc hh => hc (textbook_new_doors_proven news proven hh.1 hh.2)
+/-- the converse of textbook_new_doors_proven, proved. From Mathlib's `Eq.le`, `tsub_eq_zero_iff_le`, `Nat.instCanonicallyOrderedAdd`, `Nat.instOrderedSub` and `Eq.ge` (examples: repository-commit-folds, repository-commit-grows) -/
+@[reflection] theorem textbook_new_doors_proven_converse (news proven : Nat) : (proven = news) → (proven ≤ news) ∧ (news - proven = 0) :=
+  fun hc => ⟨hc.le, tsub_eq_zero_iff_le.mpr hc.ge⟩
 /-- a table cell carries no link: when every link a cell holds is escaped, the links less the escaped are none. From Mathlib's `tsub_self`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: widgets-cell-text) -/
 theorem textbook_cells_text (links escaped : ℕ) (h : escaped = links) : links - escaped = 0 := by
   rw [h, tsub_self]
@@ -484,6 +496,9 @@ example := @textbook_patent_term_twenty_years
 @[reflection] theorem textbook_patent_term_twenty_years_reflected (f term : Nat) (h : 0 < term) (σ : Nat) (hσ0 : (f + term) ≤ σ) : σ - (f + term) < σ - (f) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_patent_term_twenty_years f term h) hσ0) (textbook_patent_term_twenty_years f term h)
 /-- the contrapositive of textbook_patent_term_twenty_years (examples: ) -/
 @[reflection] theorem textbook_patent_term_twenty_years_contrapositive (f term : Nat) : ¬ (f < f + term) → ¬ ((0 < term)) := fun hc hh => hc (textbook_patent_term_twenty_years f term hh)
+/-- the converse of textbook_patent_term_twenty_years, proved. From Mathlib's `lt_add_iff_pos_right`, `IsLeftCancelAdd.addLeftStrictMono_of_addLeftMono`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `contravariant_lt_of_covariant_le` (examples: ) -/
+@[reflection] theorem textbook_patent_term_twenty_years_converse (f term : Nat) : (f < f + term) → (0 < term) :=
+  fun hc => (lt_add_iff_pos_right f).mp hc
 /-- k hex digits and 4k bits are as many values: 16^k = 2^(4k) (a 512-bit value is 128 hex digits). From Mathlib's `Fintype.card_fun`, `Fintype.card_fin`, `Fintype.card_bool`, `pow_mul` (examples: none yet) -/
 theorem textbook_hash_bits (k : Nat) : Fintype.card (Fin k → Fin 16) = Fintype.card (Fin (4 * k) → Bool) := by
   rw [Fintype.card_fun, Fintype.card_fun, Fintype.card_fin, Fintype.card_fin, Fintype.card_fin, Fintype.card_bool, pow_mul]
@@ -570,6 +585,9 @@ example := @textbook_one_holder
 @[reflection] theorem textbook_one_holder_reflected (k : Nat) (h : 1 ≤ k) (σ : Nat) : σ - (1) = σ - (k - (k - 1)) := congrArg (σ - ·) (Eq.symm (textbook_one_holder k h))
 /-- the contrapositive of textbook_one_holder (examples: audit-shapes-one-holder) -/
 @[reflection] theorem textbook_one_holder_contrapositive (k : Nat) : ¬ (k - (k - 1) = 1) → ¬ ((1 ≤ k)) := fun hc hh => hc (textbook_one_holder k hh)
+/-- the converse of textbook_one_holder, proved. From Mathlib's `tsub_lt_self_iff`, `Nat.instCanonicallyOrderedAdd`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `tsub_pos_iff_lt`, `zero_lt_one` and `Nat.instZeroLEOneClass` (examples: audit-shapes-one-holder) -/
+@[reflection] theorem textbook_one_holder_converse (k : Nat) : (k - (k - 1) = 1) → (1 ≤ k) :=
+  fun hc => (tsub_lt_self_iff.mp (tsub_pos_iff_lt.mp (hc ▸ zero_lt_one))).1
 /-- when each generated file has one role among the roles, the files number the sum over the roles of the files of each role. From Mathlib's `Finset.card_eq_sum_card_fiberwise` (examples: configure-fullstack, configure-fullstack-readme) -/
 theorem textbook_fullstack_files_by_role {ι κ : Type} [DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ) (h : ∀ x ∈ s, f x ∈ t) : s.card = ∑ k ∈ t, (s.filter (fun x => f x = k)).card :=
   Finset.card_eq_sum_card_fiberwise (fun x hx => h x hx)
@@ -584,6 +602,9 @@ example := @textbook_compete_knows
 @[reflection] theorem textbook_compete_knows_reflected (c t : Nat) (hc : 0 < c) (ht : 0 < t) (σ : Nat) (hσ0 : (c * t) ≤ σ) : σ - (c * t) < σ - (0) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_compete_knows c t hc ht) hσ0) (textbook_compete_knows c t hc ht)
 /-- the contrapositive of textbook_compete_knows (examples: compete-rules) -/
 @[reflection] theorem textbook_compete_knows_contrapositive (c t : Nat) : ¬ (0 < c * t) → ¬ ((0 < c) ∧ (0 < t)) := fun hc hh => hc (textbook_compete_knows c t hh.1 hh.2)
+/-- the converse of textbook_compete_knows, proved. From Mathlib's `CanonicallyOrderedAdd.mul_pos`, `Nat.instCanonicallyOrderedAdd`, `IsStrictOrderedRing.noZeroDivisors`, `Nat.instIsStrictOrderedRing`, `StarOrderedRing.toExistsAddOfLE` and `Nat.instStarOrderedRing` (examples: compete-rules) -/
+@[reflection] theorem textbook_compete_knows_converse (c t : Nat) : (0 < c * t) → (0 < c) ∧ (0 < t) :=
+  fun hc => CanonicallyOrderedAdd.mul_pos.mp hc
 /-- a bundle made of the stack's a files and b further files has a + b files: the cardinality of a disjoint union is the sum. From Mathlib's `Fintype.card_sum` and `Fintype.card_fin` (examples: payload-app) -/
 theorem textbook_app_bundle (a b : ℕ) : Fintype.card (Fin a ⊕ Fin b) = a + b := by
   rw [Fintype.card_sum, Fintype.card_fin, Fintype.card_fin]
@@ -616,6 +637,9 @@ example := @textbook_error_remedies
 @[reflection] theorem textbook_error_remedies_reflected (e r : Nat) (h : r ≤ e) (σ : Nat) : σ - (e) = σ - (e - r + r) := congrArg (σ - ·) (Eq.symm (textbook_error_remedies e r h))
 /-- the contrapositive of textbook_error_remedies (examples: audit-remedies) -/
 @[reflection] theorem textbook_error_remedies_contrapositive (e r : Nat) : ¬ (e - r + r = e) → ¬ ((r ≤ e)) := fun hc hh => hc (textbook_error_remedies e r hh)
+/-- the converse of textbook_error_remedies, proved. From Mathlib's `tsub_add_cancel_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: audit-remedies) -/
+@[reflection] theorem textbook_error_remedies_converse (e r : Nat) : (e - r + r = e) → (r ≤ e) :=
+  fun hc => tsub_add_cancel_iff_le.mp hc
 /-- the advisories less the unfixable are the fixable ones, which the public MCP repairs by an override. From Mathlib's `Finset.card_sdiff_of_subset` (examples: audit-repair) -/
 theorem textbook_repair_partitions {Advisory : Type} [DecidableEq Advisory] (advisories unfixable : Finset Advisory) (h : unfixable ⊆ advisories) :
   (advisories \ unfixable).card = advisories.card - unfixable.card := Finset.card_sdiff_of_subset h
@@ -654,6 +678,9 @@ example := @textbook_denier_identified
 @[reflection] theorem textbook_denier_identified_reflected (code : Nat) (h : 400 ≤ code) (σ : Nat) : σ - (code) = σ - (code - 400 + 400) := congrArg (σ - ·) (Eq.symm (textbook_denier_identified code h))
 /-- the contrapositive of textbook_denier_identified (examples: legal-court-denier) -/
 @[reflection] theorem textbook_denier_identified_contrapositive (code : Nat) : ¬ (code - 400 + 400 = code) → ¬ ((400 ≤ code)) := fun hc hh => hc (textbook_denier_identified code hh)
+/-- the converse of textbook_denier_identified, proved. From Mathlib's `tsub_add_cancel_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: legal-court-denier) -/
+@[reflection] theorem textbook_denier_identified_converse (code : Nat) : (code - 400 + 400 = code) → (400 ≤ code) :=
+  fun hc => tsub_add_cancel_iff_le.mp hc
 /-- verifying the repo by its content address is one check while recomputing re-runs all n facts, so for any tree of at least two facts, 1 + 1 ≤ n means 1 < n. From Mathlib's `Order.add_one_le_iff` and `Nat.instNoMaxOrder` (examples: legal-court-repo-audit) -/
 theorem textbook_court_audits_repo (n : ℕ) (h : 2 ≤ n) : 1 < n := Order.add_one_le_iff.mp h
 example := @textbook_court_audits_repo
@@ -816,6 +843,9 @@ example := @textbook_context_balanced
 @[reflection] theorem textbook_context_balanced_reflected (full kept : Nat) (h : kept ≤ full) (σ : Nat) : σ - (full) = σ - (full - kept + kept) := congrArg (σ - ·) (Eq.symm (textbook_context_balanced full kept h))
 /-- the contrapositive of textbook_context_balanced (examples: extend-out-balanced) -/
 @[reflection] theorem textbook_context_balanced_contrapositive (full kept : Nat) : ¬ (full - kept + kept = full) → ¬ ((kept ≤ full)) := fun hc hh => hc (textbook_context_balanced full kept hh)
+/-- the converse of textbook_context_balanced, proved. From Mathlib's `tsub_add_cancel_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: extend-out-balanced) -/
+@[reflection] theorem textbook_context_balanced_converse (full kept : Nat) : (full - kept + kept = full) → (kept ≤ full) :=
+  fun hc => tsub_add_cancel_iff_le.mp hc
 /-- the usage bill is complete when its four accounts are each kept: the tokens, the bits at their thermodynamic cost at the temperature, the time, the coins (examples: metrics-bill) -/
 theorem textbook_billing_complete : 1 + 1 + 1 + 1 = 4 := by decide
 /-- textbook_billing_complete reflected by its shape, equality (examples: metrics-bill) -/
@@ -831,6 +861,9 @@ example := @textbook_margin_makes_price
 @[reflection] theorem textbook_margin_makes_price_reflected (price cost : Nat) (h : cost ≤ price) (σ : Nat) : σ - (price) = σ - (price - cost + cost) := congrArg (σ - ·) (Eq.symm (textbook_margin_makes_price price cost h))
 /-- the contrapositive of textbook_margin_makes_price (examples: stripe-margins) -/
 @[reflection] theorem textbook_margin_makes_price_contrapositive (price cost : Nat) : ¬ (price - cost + cost = price) → ¬ ((cost ≤ price)) := fun hc hh => hc (textbook_margin_makes_price price cost hh)
+/-- the converse of textbook_margin_makes_price, proved. From Mathlib's `tsub_add_cancel_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: stripe-margins) -/
+@[reflection] theorem textbook_margin_makes_price_converse (price cost : Nat) : (price - cost + cost = price) → (cost ≤ price) :=
+  fun hc => tsub_add_cancel_iff_le.mp hc
 /-- the open news APIs and the keyed ones, disjoint, together number the two counts, |A ∪ B| = |A| + |B|. From Mathlib's `Finset.card_union_of_disjoint` (examples: compete-news-plan) -/
 theorem textbook_news_adapters {α : Type*} [DecidableEq α] (A B : Finset α) (h : Disjoint A B) :
     (A ∪ B).card = A.card + B.card :=
@@ -1350,6 +1383,9 @@ example := @textbook_site_documents
 @[reflection] theorem textbook_site_documents_reflected (pages gates categories docs : Nat) (h : docs = pages + (gates + categories + 1)) (σ : Nat) : σ - (gates + categories + 1) = σ - (docs - pages) := congrArg (σ - ·) (Eq.symm (textbook_site_documents pages gates categories docs h))
 /-- the contrapositive of textbook_site_documents (examples: payload-site) -/
 @[reflection] theorem textbook_site_documents_contrapositive (pages gates categories docs : Nat) : ¬ (docs - pages = gates + categories + 1) → ¬ ((docs = pages + (gates + categories + 1))) := fun hc hh => hc (textbook_site_documents pages gates categories docs hh)
+/-- the converse of textbook_site_documents, proved. From Mathlib's `add_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub`, `LT.lt.le`, `tsub_pos_iff_lt` and `Nat.instCanonicallyOrderedAdd` (examples: payload-site) -/
+@[reflection] theorem textbook_site_documents_converse (pages gates categories docs : Nat) : (docs - pages = gates + categories + 1) → (docs = pages + (gates + categories + 1)) :=
+  fun hc => (add_tsub_cancel_of_le (tsub_pos_iff_lt.mp (hc ▸ Nat.succ_pos _)).le).symm.trans (congrArg (pages + ·) hc)
 /-- a requested limit clamped to [1, 100] lies within it, whatever was asked (the default 10 among them). From Mathlib's `le_max_left`, `max_le` and `min_le_right` (examples: discover-search-request, discover-search-servers) -/
 theorem textbook_mcp_search_limit (x : Nat) : 1 ≤ max 1 (min x 100) ∧ max 1 (min x 100) ≤ 100 :=
   ⟨le_max_left 1 _, max_le (by decide) (min_le_right x 100)⟩
@@ -1368,6 +1404,9 @@ example := @textbook_dead_removed
 @[reflection] theorem textbook_dead_removed_reflected (fixed found : Nat) (h : fixed ≤ found) (σ : Nat) : σ - (found) = σ - (fixed + (found - fixed)) := congrArg (σ - ·) (Eq.symm (textbook_dead_removed fixed found h))
 /-- the contrapositive of textbook_dead_removed (examples: audit-dead) -/
 @[reflection] theorem textbook_dead_removed_contrapositive (fixed found : Nat) : ¬ (fixed + (found - fixed) = found) → ¬ ((fixed ≤ found)) := fun hc hh => hc (textbook_dead_removed fixed found hh)
+/-- the converse of textbook_dead_removed, proved. From Mathlib's `add_tsub_cancel_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: audit-dead) -/
+@[reflection] theorem textbook_dead_removed_converse (fixed found : Nat) : (fixed + (found - fixed) = found) → (fixed ≤ found) :=
+  fun hc => add_tsub_cancel_iff_le.mp hc
 /-- every file read is either classified or named unclassified: with truncated subtraction (ℕ among its models), the classified and the rest make the files, c + (f − c) = f when c ≤ f. From Mathlib's `add_tsub_cancel_of_le` (examples: validate-iso-classify) -/
 theorem textbook_iso_classify {α : Type*} [AddCommSemigroup α] [PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
     [Sub α] [OrderedSub α] (cited files : α) (h : cited ≤ files) : cited + (files - cited) = files :=
@@ -1388,6 +1427,9 @@ example := @textbook_programs_partition
 @[reflection] theorem textbook_programs_partition_reflected (programs files : Nat) (h : programs ≤ files) (σ : Nat) : σ - (files) = σ - (programs + (files - programs)) := congrArg (σ - ·) (Eq.symm (textbook_programs_partition programs files h))
 /-- the contrapositive of textbook_programs_partition (examples: audit-programs) -/
 @[reflection] theorem textbook_programs_partition_contrapositive (programs files : Nat) : ¬ (programs + (files - programs) = files) → ¬ ((programs ≤ files)) := fun hc hh => hc (textbook_programs_partition programs files hh)
+/-- the converse of textbook_programs_partition, proved. From Mathlib's `add_tsub_cancel_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: audit-programs) -/
+@[reflection] theorem textbook_programs_partition_converse (programs files : Nat) : (programs + (files - programs) = files) → (programs ≤ files) :=
+  fun hc => add_tsub_cancel_iff_le.mp hc
 /-- a call's duration is the later monotonic reading less the earlier and never negative: (ended − started) + started = ended. From Mathlib's `tsub_add_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub` (examples: metrics-served-calls) -/
 theorem textbook_monotonic_tick (started ended : Nat) (h : started ≤ ended) : ended - started + started = ended := tsub_add_cancel_of_le h
 example := @textbook_monotonic_tick
@@ -1395,6 +1437,9 @@ example := @textbook_monotonic_tick
 @[reflection] theorem textbook_monotonic_tick_reflected (started ended : Nat) (h : started ≤ ended) (σ : Nat) : σ - (ended) = σ - (ended - started + started) := congrArg (σ - ·) (Eq.symm (textbook_monotonic_tick started ended h))
 /-- the contrapositive of textbook_monotonic_tick (examples: metrics-served-calls) -/
 @[reflection] theorem textbook_monotonic_tick_contrapositive (started ended : Nat) : ¬ (ended - started + started = ended) → ¬ ((started ≤ ended)) := fun hc hh => hc (textbook_monotonic_tick started ended hh)
+/-- the converse of textbook_monotonic_tick, proved. From Mathlib's `tsub_add_cancel_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: metrics-served-calls) -/
+@[reflection] theorem textbook_monotonic_tick_converse (started ended : Nat) : (ended - started + started = ended) → (started ≤ ended) :=
+  fun hc => tsub_add_cancel_iff_le.mp hc
 /-- the tree's own tools plus the one door the docs add, less the tree's own, is that one door, whatever the number of tools. From Mathlib's `add_tsub_cancel_left`, through the instances `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: extend-in-docs) -/
 theorem textbook_extend_inward (mine : Nat) : mine + 1 - mine = 1 := add_tsub_cancel_left mine 1
 example := @textbook_extend_inward
@@ -1571,6 +1616,9 @@ example : 2 * 16 > 16 + 1 ∧ 16 + 1 > 16 := by decide
 @[reflection] theorem textbook_xeb_reflected (D : Nat) (h : 1 < D) (σ : Nat) (hσ0 : (2 * D) ≤ σ) (hσ1 : (D + 1) ≤ σ) : (σ - (2 * D) < σ - (D + 1)) ∧ (σ - (D + 1) < σ - (D)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_xeb D h).1 hσ0) (textbook_xeb D h).1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_xeb D h).2 hσ1) (textbook_xeb D h).2⟩
 /-- the contrapositive of textbook_xeb (examples: algorithm-xeb) -/
 @[reflection] theorem textbook_xeb_contrapositive (D : Nat) : ¬ (D + 1 < 2 * D ∧ D < D + 1) → ¬ ((1 < D)) := fun hc hh => hc (textbook_xeb D hh)
+/-- the converse of textbook_xeb, proved. From Mathlib's `add_lt_add_iff_left`, `IsLeftCancelAdd.addLeftStrictMono_of_addLeftMono`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `contravariant_lt_of_covariant_le`, `Nat.instAtLeastTwoHAddOfNat` and `two_mul` (examples: algorithm-xeb) -/
+@[reflection] theorem textbook_xeb_converse (D : Nat) : (D + 1 < 2 * D ∧ D < D + 1) → (1 < D) :=
+  fun hc => (add_lt_add_iff_left D).mp (two_mul D ▸ hc.1)
 /-- no-cloning from linearity: a linear map that copies a and b (a ↦ a ⊗ a, b ↦ b ⊗ b) copies a + b only when the cross terms a ⊗ b + b ⊗ a vanish, since (a + b) ⊗ (a + b) carries them and the linear image does not. From Mathlib's `map_add`, `TensorProduct.add_tmul`, `TensorProduct.tmul_add`, `add_assoc`, `add_comm`, `add_eq_left`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `SemilinearMapClass.toAddHomClass`, `LinearMap.semilinearMapClass` (examples: algorithm-no-cloning) -/
 theorem textbook_no_cloning {K V : Type} [CommRing K] [AddCommGroup V] [Module K V] (f : V →ₗ[K] TensorProduct K V V) (a b : V)
   (ha : f a = a ⊗ₜ a) (hb : f b = b ⊗ₜ b) (hab : f (a + b) = (a + b) ⊗ₜ (a + b)) : a ⊗ₜ[K] b + b ⊗ₜ[K] a = 0 := by
@@ -1798,6 +1846,9 @@ example := @textbook_machine_allow_list
 @[reflection] theorem textbook_machine_allow_list_reflected (asked allowed : Nat) (h : allowed ≤ asked) (σ : Nat) : σ - (asked) = σ - (asked - allowed + allowed) := congrArg (σ - ·) (Eq.symm (textbook_machine_allow_list asked allowed h))
 /-- the contrapositive of textbook_machine_allow_list (examples: repository-machine-actions, repository-machine-refused, repository-machine-push-unconfirmed, repository-machine-worktree-unconfirmed, repository-machine-tag-confirmed, repository-machine-commit-deferred) -/
 @[reflection] theorem textbook_machine_allow_list_contrapositive (asked allowed : Nat) : ¬ (asked - allowed + allowed = asked) → ¬ ((allowed ≤ asked)) := fun hc hh => hc (textbook_machine_allow_list asked allowed hh)
+/-- the converse of textbook_machine_allow_list, proved. From Mathlib's `tsub_add_cancel_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: repository-machine-actions, repository-machine-refused, repository-machine-push-unconfirmed, repository-machine-worktree-unconfirmed, repository-machine-tag-confirmed, repository-machine-commit-deferred) -/
+@[reflection] theorem textbook_machine_allow_list_converse (asked allowed : Nat) : (asked - allowed + allowed = asked) → (allowed ≤ asked) :=
+  fun hc => tsub_add_cancel_iff_le.mp hc
 /-- every gap within the heartbeat and the heartbeat within a second put every gap within a second. From Mathlib's `le_trans` (examples: repository-status-no-silence) -/
 theorem textbook_stream_no_silence (gap beat : Nat) (h : gap ≤ beat) (hb : beat ≤ 1000) : gap ≤ 1000 := le_trans h hb
 example := @textbook_stream_no_silence
@@ -1825,6 +1876,9 @@ example := @textbook_long_action_queued
 @[reflection] theorem textbook_long_action_queued_reflected (budget request : Nat) (h : request < budget) (σ : Nat) (hσ0 : (budget - request) ≤ σ) : σ - (budget - request) < σ - (0) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_long_action_queued budget request h) hσ0) (textbook_long_action_queued budget request h)
 /-- the contrapositive of textbook_long_action_queued (examples: repository-machine-next-long) -/
 @[reflection] theorem textbook_long_action_queued_contrapositive (budget request : Nat) : ¬ (0 < budget - request) → ¬ ((request < budget)) := fun hc hh => hc (textbook_long_action_queued budget request hh)
+/-- the converse of textbook_long_action_queued, proved. From Mathlib's `tsub_pos_iff_lt`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: repository-machine-next-long) -/
+@[reflection] theorem textbook_long_action_queued_converse (budget request : Nat) : (0 < budget - request) → (request < budget) :=
+  fun hc => tsub_pos_iff_lt.mp hc
 /-- the skills are complete when every toolbox has its skill, the index one more, and the named and unnamed terms make the vocabulary: named + (terms − named) = terms. From Mathlib's `add_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub` (examples: payload-scripts-skills) -/
 theorem textbook_skills_complete (boxes skilled terms named : Nat) (hs : skilled = boxes) (hn : named ≤ terms) : skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms :=
   ⟨by rw [hs], add_tsub_cancel_of_le hn⟩
@@ -1833,6 +1887,9 @@ example := @textbook_skills_complete
 @[reflection] theorem textbook_skills_complete_reflected (boxes skilled terms named : Nat) (hs : skilled = boxes) (hn : named ≤ terms) (σ : Nat) : (σ - (boxes + 1) = σ - (skilled + 1)) ∧ (σ - (terms) = σ - (named + (terms - named))) := ⟨congrArg (σ - ·) (Eq.symm (textbook_skills_complete boxes skilled terms named hs hn).1), congrArg (σ - ·) (Eq.symm (textbook_skills_complete boxes skilled terms named hs hn).2)⟩
 /-- the contrapositive of textbook_skills_complete (examples: payload-scripts-skills) -/
 @[reflection] theorem textbook_skills_complete_contrapositive (boxes skilled terms named : Nat) : ¬ (skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms) → ¬ ((skilled = boxes) ∧ (named ≤ terms)) := fun hc hh => hc (textbook_skills_complete boxes skilled terms named hh.1 hh.2)
+/-- the converse of textbook_skills_complete, proved. From Mathlib's `add_right_cancel`, `instIsRightCancelAddOfAddRightReflectLE`, `addRightReflectLE_of_addLeftReflectLE`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `add_tsub_cancel_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: payload-scripts-skills) -/
+@[reflection] theorem textbook_skills_complete_converse (boxes skilled terms named : Nat) : (skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms) → (skilled = boxes) ∧ (named ≤ terms) :=
+  fun hc => ⟨add_right_cancel hc.1, add_tsub_cancel_iff_le.mp hc.2⟩
 /-- every cap is either removed or kept with its citation: the caps less the removed are the kept, and the removed never exceed the caps. From Mathlib's `add_tsub_cancel_left`, `le_self_add`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `Nat.instCanonicallyOrderedAdd` (examples: audit-uncap) -/
 theorem textbook_caps_removed (caps removed kept : ℕ) (h : removed + kept = caps) : caps - removed = kept ∧ removed ≤ caps := by
   rw [← h]
@@ -1907,6 +1964,8 @@ theorem textbook_order_finding (N : Nat) (x : ZMod N) : x ^ orderOf x = 1 ∧ �
   ⟨pow_orderOf_eq_one x, fun _ hk hlt => pow_ne_one_of_lt_orderOf hk.ne' hlt⟩
 example := @textbook_order_finding
 example : 2 ^ 4 % 15 = 1 ∧ 2 ^ 1 % 15 ≠ 1 ∧ 2 ^ 2 % 15 ≠ 1 ∧ 2 ^ 3 % 15 ≠ 1 ∧ 4 = 2 * 2 - 0 := by decide
+/-- textbook_order_finding reflected by its shape (examples: algorithm-discover, algorithm-order, algorithm-factor-find) -/
+@[reflection] theorem textbook_order_finding_reflected (N : Nat) (x : ZMod N) : ((1) = (x ^ orderOf x)) ∧ (∀ k, ¬ (x ^ k ≠ 1) → ¬ ((0 < k) ∧ (k < orderOf x))) := ⟨Eq.symm (textbook_order_finding N x).1, fun k => fun hc hh => hc (((textbook_order_finding N x).2 k) hh.1 hh.2)⟩
 /-- a part found of an integer, multiplied by the rest, gives the integer back, so it divides it: f · c = n implies f ∣ n. From Mathlib's `Dvd.intro` (examples: algorithm-factor-1000-bit, algorithm-factor-observe, algorithm-factor-mersenne, payload-predict) -/
 theorem textbook_factors_divide (f c n : Nat) (h : f * c = n) : f ∣ n := Dvd.intro c h
 example := @textbook_factors_divide
@@ -1960,6 +2019,9 @@ example : 10 - (10 - 3) = 3 ∧ 10 - (10 - 7) = 7 ∧ 10 - (10 - 5) = 5 ∧ 10 -
 @[reflection] theorem textbook_thermal_time_sigma_reflected (n x : Nat) (h : x ≤ n) (σ : Nat) : (σ - (x) = σ - (n - (n - x))) ∧ (σ - (n) = σ - (x + (n - x))) := ⟨congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma n x h).1), congrArg (σ - ·) (Eq.symm (textbook_thermal_time_sigma n x h).2)⟩
 /-- the contrapositive of textbook_thermal_time_sigma (examples: clay-reflection) -/
 @[reflection] theorem textbook_thermal_time_sigma_contrapositive (n x : Nat) : ¬ (n - (n - x) = x ∧ x + (n - x) = n) → ¬ ((x ≤ n)) := fun hc hh => hc (textbook_thermal_time_sigma n x hh)
+/-- the converse of textbook_thermal_time_sigma, proved. From Mathlib's `min_eq_right_iff`, `tsub_tsub_eq_min`, `Nat.instCanonicallyOrderedAdd`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: clay-reflection) -/
+@[reflection] theorem textbook_thermal_time_sigma_converse (n x : Nat) : (n - (n - x) = x ∧ x + (n - x) = n) → (x ≤ n) :=
+  fun hc => min_eq_right_iff.mp ((tsub_tsub_eq_min n x).symm.trans hc.1)
 /-- the reflection σ_d(x) = d − x on 0, …, d, in ℕ or any ordered monoid with truncated subtraction, crosses and returns (d − (d − x) = x), partitions the meeting value ((d − x) + x = d), and swaps the endpoints (σ_d(0) = d, σ_d(d) = 0): the bridge at every clay value d (91 for crypto, 10 for physics). From Mathlib's `tsub_tsub_cancel_of_le`, `tsub_add_cancel_of_le`, `tsub_zero`, `add_tsub_cancel_right` and `zero_add` (examples: clay-reflection) -/
 theorem textbook_clay_bridge {α : Type*} [AddCommMonoid α] [PartialOrder α] [Sub α] [OrderedSub α]
     [ExistsAddOfLE α] [AddLeftMono α] [AddLeftReflectLE α] (d x : α) (h : x ≤ d) :
@@ -1987,6 +2049,9 @@ example : 12 - (12 - 3) = 3 ∧ 12 - (12 - 9) = 9 ∧ 12 - (12 - 6) = 6 ∧ 12 -
 @[reflection] theorem textbook_clock_clone_involution_reflected (d x : Nat) (h : x ≤ d) (σ : Nat) : (σ - (x) = σ - (d - (d - x))) ∧ (σ - (d) = σ - ((d - x) + x)) ∧ (σ - (d) = σ - (d - 0)) ∧ (σ - (0) = σ - (d - d)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_clock_clone_involution d x h).1), congrArg (σ - ·) (Eq.symm (textbook_clock_clone_involution d x h).2.1), congrArg (σ - ·) (Eq.symm (textbook_clock_clone_involution d x h).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_clock_clone_involution d x h).2.2.2)⟩
 /-- the contrapositive of textbook_clock_clone_involution (examples: clay-reflection) -/
 @[reflection] theorem textbook_clock_clone_involution_contrapositive (d x : Nat) : ¬ (d - (d - x) = x ∧ (d - x) + x = d ∧ d - 0 = d ∧ d - d = 0) → ¬ ((x ≤ d)) := fun hc hh => hc (textbook_clock_clone_involution d x hh)
+/-- the converse of textbook_clock_clone_involution, proved. From Mathlib's `min_eq_right_iff`, `tsub_tsub_eq_min`, `Nat.instCanonicallyOrderedAdd`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: clay-reflection) -/
+@[reflection] theorem textbook_clock_clone_involution_converse (d x : Nat) : (d - (d - x) = x ∧ (d - x) + x = d ∧ d - 0 = d ∧ d - d = 0) → (x ≤ d) :=
+  fun hc => min_eq_right_iff.mp ((tsub_tsub_eq_min d x).symm.trans hc.1)
 /-- a superposition at index k carries 2k witnesses, and a ±1 move in k is ±2 in the span: 2(k + 1) = 2k + 2 and 2(k − 1) = 2k − 2 (from 14 = 2 · 7 to 12 and 16; from 110 to 108 and 112). From Mathlib's `mul_add_one` and `Distrib.leftDistribClass` (examples: verify-witness-move) -/
 theorem textbook_witness_clock_move (k : Nat) : 2 * (k + 1) = 2 * k + 2 ∧ 2 * (k - 1) = 2 * k - 2 :=
   ⟨mul_add_one 2 k, Nat.mul_sub_one 2 k⟩
@@ -2011,6 +2076,9 @@ example : 3 * 60 = 180 ∧ 2 * 90 = 180 ∧ 360 - 180 = 180 ∧ 360 / 60 = 6 ∧
 @[reflection] theorem textbook_gravity_torus_sigma_reflected (n x c : Nat) (h : x ≤ n) (σ : Nat) : (σ - (x) = σ - (n - (n - x))) ∧ (σ - (c) = σ - ((c + c) - c)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_gravity_torus_sigma n x c h).1), congrArg (σ - ·) (Eq.symm (textbook_gravity_torus_sigma n x c h).2)⟩
 /-- the contrapositive of textbook_gravity_torus_sigma (examples: clay-reflection) -/
 @[reflection] theorem textbook_gravity_torus_sigma_contrapositive (n x c : Nat) : ¬ (n - (n - x) = x ∧ (c + c) - c = c) → ¬ ((x ≤ n)) := fun hc hh => hc (textbook_gravity_torus_sigma n x c hh)
+/-- the converse of textbook_gravity_torus_sigma, proved. From Mathlib's `min_eq_right_iff`, `tsub_tsub_eq_min`, `Nat.instCanonicallyOrderedAdd`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: clay-reflection) -/
+@[reflection] theorem textbook_gravity_torus_sigma_converse (n x c : Nat) : (n - (n - x) = x ∧ (c + c) - c = c) → (x ≤ n) :=
+  fun hc => min_eq_right_iff.mp ((tsub_tsub_eq_min n x).symm.trans hc.1)
 /-- the neuroscience bridge σ_d(x) = d − x is an involution on 0..d: σ_d(σ_d(x)) = x, σ_d³ = σ_d, and the two sides sum to the whole, (d − x) + x = d. From Mathlib's `tsub_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le` and `tsub_add_cancel_of_le` (examples: clay-reflection) -/
 theorem textbook_mind_sigma (d x : ℕ) (h : x ≤ d) : d - (d - x) = x ∧ d - (d - (d - x)) = d - x ∧ (d - x) + x = d := by
   refine ⟨tsub_tsub_cancel_of_le h, ?_, tsub_add_cancel_of_le h⟩
@@ -2026,6 +2094,9 @@ example := @textbook_claim_prove_involution
 @[reflection] theorem textbook_claim_prove_involution_reflected (d x : Nat) (h : x ≤ d) (σ : Nat) : (σ - (x) = σ - (d - (d - x))) ∧ (σ - (x) = σ - (x * 1)) ∧ (σ - (0) = σ - (x * 0)) ∧ (σ - (d) = σ - ((d - x) + x)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_claim_prove_involution d x h).1), congrArg (σ - ·) (Eq.symm (textbook_claim_prove_involution d x h).2.1), congrArg (σ - ·) (Eq.symm (textbook_claim_prove_involution d x h).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_claim_prove_involution d x h).2.2.2)⟩
 /-- the contrapositive of textbook_claim_prove_involution (examples: clay-reflection) -/
 @[reflection] theorem textbook_claim_prove_involution_contrapositive (d x : Nat) : ¬ (d - (d - x) = x ∧ x * 1 = x ∧ x * 0 = 0 ∧ (d - x) + x = d) → ¬ ((x ≤ d)) := fun hc hh => hc (textbook_claim_prove_involution d x hh)
+/-- the converse of textbook_claim_prove_involution, proved. From Mathlib's `min_eq_right_iff`, `tsub_tsub_eq_min`, `Nat.instCanonicallyOrderedAdd`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: clay-reflection) -/
+@[reflection] theorem textbook_claim_prove_involution_converse (d x : Nat) : (d - (d - x) = x ∧ x * 1 = x ∧ x * 0 = 0 ∧ (d - x) + x = d) → (x ≤ d) :=
+  fun hc => min_eq_right_iff.mp ((tsub_tsub_eq_min d x).symm.trans hc.1)
 /-- a code of minimum distance d corrects t errors when 2t < d: a word within t of two codewords forces them equal (the toric code at d = 3 corrects ⌊(3 − 1)/2⌋ = 1 error). From Mathlib's `hammingDist_triangle` (examples: ftqc-all) -/
 theorem textbook_toric_torus_code {F : Type} [DecidableEq F] {n : ℕ} (d t : ℕ) (c₁ c₂ x : Fin n → F) (hc : c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) (ht : 2 * t < d) (h1 : hammingDist c₁ x ≤ t) (h2 : hammingDist x c₂ ≤ t) : c₁ = c₂ := by
   by_contra hne
@@ -2344,6 +2415,9 @@ example := @textbook_raid_bit_zero_verify
 @[reflection] theorem textbook_raid_bit_zero_verify_reflected (v m d b : Nat) (h : v + m + d = b) (k : 1 ≤ v) (σ : Nat) (hσ0 : (b) ≤ σ) : (σ - (b) = σ - (m + d + v)) ∧ (σ - (b) < σ - (m + d)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_raid_bit_zero_verify v m d b h k).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_raid_bit_zero_verify v m d b h k).2 hσ0) (textbook_raid_bit_zero_verify v m d b h k).2⟩
 /-- the contrapositive of textbook_raid_bit_zero_verify (examples: raid-bit-zero-verify) -/
 @[reflection] theorem textbook_raid_bit_zero_verify_contrapositive (v m d b : Nat) : ¬ (m + d + v = b ∧ m + d < b) → ¬ ((v + m + d = b) ∧ (1 ≤ v)) := fun hc hh => hc (textbook_raid_bit_zero_verify v m d b hh.1 hh.2)
+/-- the converse of textbook_raid_bit_zero_verify, proved. From Mathlib's `add_assoc`, `add_comm`, `lt_add_iff_pos_right`, `IsLeftCancelAdd.addLeftStrictMono_of_addLeftMono`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `contravariant_lt_of_covariant_le` (examples: raid-bit-zero-verify) -/
+@[reflection] theorem textbook_raid_bit_zero_verify_converse (v m d b : Nat) : (m + d + v = b ∧ m + d < b) → (v + m + d = b) ∧ (1 ≤ v) :=
+  fun hc => ⟨(add_assoc v m d).trans ((add_comm v (m + d)).trans hc.1), (lt_add_iff_pos_right (m + d)).mp (hc.1.symm ▸ hc.2)⟩
 /-- σ reverses order under truncated subtraction (ℕ among its models), a ≤ b gives d − b ≤ d − a, and an implication gives its contrapositive. From Mathlib's `tsub_le_tsub_left` (examples: textbook-reflected) -/
 theorem textbook_reflection_by_shape {α : Type*} [Preorder α] [AddCommSemigroup α] [Sub α] [OrderedSub α] [AddLeftMono α]
     (d a b : α) (h : a ≤ b) (P Q : Prop) (hpq : P → Q) : d - b ≤ d - a ∧ (¬ Q → ¬ P) :=
@@ -2481,6 +2555,9 @@ example := @textbook_royalty_conserved
 @[reflection] theorem textbook_royalty_conserved_reflected (f p x : Nat) (hp : p ≤ f) (hx : x = f - p) (σ : Nat) : (σ - (f) = σ - (p + x)) ∧ (σ - (0) = σ - (f - p - x)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_royalty_conserved f p x hp hx).1), congrArg (σ - ·) (Eq.symm (textbook_royalty_conserved f p x hp hx).2)⟩
 /-- the contrapositive of textbook_royalty_conserved (examples: stripe-royalty, stripe-royalty-escrow) -/
 @[reflection] theorem textbook_royalty_conserved_contrapositive (f p x : Nat) : ¬ (p + x = f ∧ f - p - x = 0) → ¬ ((p ≤ f) ∧ (x = f - p)) := fun hc hh => hc (textbook_royalty_conserved f p x hh.1 hh.2)
+/-- the converse of textbook_royalty_conserved, proved. From Mathlib's `le_self_add`, `Nat.instCanonicallyOrderedAdd`, `add_tsub_cancel_left`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: stripe-royalty, stripe-royalty-escrow) -/
+@[reflection] theorem textbook_royalty_conserved_converse (f p x : Nat) : (p + x = f ∧ f - p - x = 0) → (p ≤ f) ∧ (x = f - p) :=
+  fun hc => ⟨hc.1 ▸ le_self_add, (add_tsub_cancel_left p x).symm.trans (congrArg (· - p) hc.1)⟩
 /-- items passed, missing or contradicted sum to the items, and the coins booked are the passed alone, so k + m + c = n and k ≤ n − m − c. From Mathlib's `tsub_tsub`, `add_assoc`, `add_tsub_cancel_right`, `le_of_eq`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `le_refl` (examples: stripe-mint-witnesses, stripe-idea-contribution, stripe-royalty-escrow, verify-witnesses-merge) -/
 theorem textbook_witness_books_nothing (n p m c k : Nat) (h : p + m + c = n) (hk : k = p) : k + m + c = n ∧ k ≤ n - m - c := by
   subst hk
@@ -2502,6 +2579,9 @@ example := @textbook_witness_states
 @[reflection] theorem textbook_witness_states_reflected (present missing contradicted witnesses : Nat) (h : present + missing + contradicted = witnesses) (k : missing + contradicted = 0) (σ : Nat) : (σ - (witnesses) = σ - (present)) ∧ (σ - (0) = σ - (contradicted)) ∧ (σ - (0) = σ - (missing)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_witness_states present missing contradicted witnesses h k).1), congrArg (σ - ·) (Eq.symm (textbook_witness_states present missing contradicted witnesses h k).2.1), congrArg (σ - ·) (Eq.symm (textbook_witness_states present missing contradicted witnesses h k).2.2)⟩
 /-- the contrapositive of textbook_witness_states (examples: match-witness-p-np, match-witness-planck, match-witness-planck-value, match-witness-negation, match-witness-willow, match-witness-willow-wrong, match-search-witnessed, chat-witness-planck, chat-witness-computed, match-witness-loose) -/
 @[reflection] theorem textbook_witness_states_contrapositive (present missing contradicted witnesses : Nat) : ¬ (present = witnesses ∧ contradicted = 0 ∧ missing = 0) → ¬ ((present + missing + contradicted = witnesses) ∧ (missing + contradicted = 0)) := fun hc hh => hc (textbook_witness_states present missing contradicted witnesses hh.1 hh.2)
+/-- the converse of textbook_witness_states, proved. From Mathlib's `add_zero`, `add_eq_zero` and `Unique.instSubsingleton` (examples: match-witness-p-np, match-witness-planck, match-witness-planck-value, match-witness-negation, match-witness-willow, match-witness-willow-wrong, match-search-witnessed, chat-witness-planck, chat-witness-computed, match-witness-loose) -/
+@[reflection] theorem textbook_witness_states_converse (present missing contradicted witnesses : Nat) : (present = witnesses ∧ contradicted = 0 ∧ missing = 0) → (present + missing + contradicted = witnesses) ∧ (missing + contradicted = 0) :=
+  fun hc => ⟨by rw [hc.2.1, hc.2.2, add_zero, add_zero]; exact hc.1, add_eq_zero.mpr ⟨hc.2.2, hc.2.1⟩⟩
 /-- a chain of blocks joined by hash links, as a walk from the genesis block, holds one more block than links: n blocks carry n − 1 hash links, and the genesis block alone carries none (ISO 22739:2024 3.6, 3.4, 3.44, 3.47; NISTIR 8202 §3.7). From Mathlib's `SimpleGraph.Walk.length_support` and `SimpleGraph.Walk.length_nil` (examples: verify-blockchain-genesis, verify-blockchain-linked, verify-radar) -/
 theorem textbook_blockchain_hash_links {V : Type*} (G : SimpleGraph V) {u v : V} (p : G.Walk u v) :
     p.support.length = p.length + 1 ∧ (SimpleGraph.Walk.nil : G.Walk u u).length = 0 :=
@@ -2566,6 +2646,9 @@ example := @textbook_blockchain_transfer_once
 @[reflection] theorem textbook_blockchain_transfer_once_reflected (a b k : Nat) (h : k ≤ a) (σ : Nat) : σ - (a + b) = σ - ((a - k) + (b + k)) := congrArg (σ - ·) (Eq.symm (textbook_blockchain_transfer_once a b k h))
 /-- the contrapositive of textbook_blockchain_transfer_once (examples: verify-blockchain-transfer-once) -/
 @[reflection] theorem textbook_blockchain_transfer_once_contrapositive (a b k : Nat) : ¬ ((a - k) + (b + k) = a + b) → ¬ ((k ≤ a)) := fun hc hh => hc (textbook_blockchain_transfer_once a b k hh)
+/-- the converse of textbook_blockchain_transfer_once, proved. From Mathlib's `tsub_add_cancel_iff_le`, `Nat.instCanonicallyOrderedAdd`, `Nat.instOrderedSub`, `add_right_cancel`, `instIsRightCancelAddOfAddRightReflectLE`, `addRightReflectLE_of_addLeftReflectLE`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `add_assoc` and `add_comm` (examples: verify-blockchain-transfer-once) -/
+@[reflection] theorem textbook_blockchain_transfer_once_converse (a b k : Nat) : ((a - k) + (b + k) = a + b) → (k ≤ a) :=
+  fun hc => tsub_add_cancel_iff_le.mp (add_right_cancel (b := b) (by rw [add_assoc, add_comm k b]; exact hc))
 /-- the recomputations each observed lie meets: 15 = 3 × 7 recomputes 21 where the factor door states 3 × 5 = 15; the create hue is 432 % 360 = 72, never 73 nor 432 (the side sides reads, which the prose backs); G's relative uncertainty is 22474 ppb, never 99; the ancient law is 4 + 5 = 9 entries, never 10; the order of 7 modulo 15 is 4 (7² mod 15 = 4); 6 < 999 is a width the scaled register holds, and the door that factors 91 = 7 × 13 has no qubit ceiling; and a decimal agrees to the places it is written to, 3.47 read as 3.5 ((2 · 347 + 10) / 20 = 35) (examples: match-witness-arithmetic, match-witness-bound, match-witness-route, textbook-prose-sides, match-witness-list, match-witness-named-side) -/
 theorem textbook_lie_collides : 3 * 7 ≠ 15 ∧ 3 * 5 = 15 ∧ 432 % 360 = 72 ∧ 72 ≠ 73 ∧ 72 ≠ 432 ∧ 15 * 1000000000 / 667430 = 22474 ∧ 22474 ≠ 99 ∧ 4 + 5 = 9 ∧ 9 ≠ 10 ∧ 7 ^ 2 % 15 = 4 ∧ 6 < 999 ∧ 7 * 13 = 91 ∧ (2 * 347 + 10) / (2 * 10) = 35 := by decide
 /-- textbook_lie_collides reflected by its shape, conjunction (examples: match-witness-arithmetic, match-witness-bound, match-witness-route, textbook-prose-sides, match-witness-list, match-witness-named-side) -/
@@ -2757,4 +2840,7 @@ example := @textbook_carry_release
 @[reflection] theorem textbook_carry_release_reflected (version carried : Nat) (h : carried = 0) (σ : Nat) : σ - (version + 1) = σ - (version + 1 + carried) := congrArg (σ - ·) (Eq.symm (textbook_carry_release version carried h))
 /-- the contrapositive of textbook_carry_release (examples: repository-workflow) -/
 @[reflection] theorem textbook_carry_release_contrapositive (version carried : Nat) : ¬ (version + 1 + carried = version + 1) → ¬ ((carried = 0)) := fun hc hh => hc (textbook_carry_release version carried hh)
+/-- the converse of textbook_carry_release, proved. From Mathlib's `add_left_cancel`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid` and `add_zero` (examples: repository-workflow) -/
+@[reflection] theorem textbook_carry_release_converse (version carried : Nat) : (version + 1 + carried = version + 1) → (carried = 0) :=
+  fun hc => add_left_cancel (hc.trans (add_zero (version + 1)).symm)
 

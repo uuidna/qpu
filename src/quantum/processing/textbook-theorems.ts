@@ -15,8 +15,8 @@ export const TEXTBOOK_THEOREMS: readonly TextbookTheorem[] = TEXTBOOK_INDEX
 // equivalence and a disequality by symmetry; an implication, stated or by hypotheses, by its contrapositive, which always holds, and its
 // converse, proved by omega where no counterexample exists and the arithmetic is linear, refuted by a counterexample the kernel decides, or open.
 type Reflection = { key: string; shape: string; lean: string[]; converse: 'proved' | 'refuted' | 'open' | null; counterexample: Record<string, string> | null }
-/** The top-level parts of a statement split at an operator, outside every bracket. */
-const parts = (s: string, op: string): string[] => { const out: string[] = []; let d = 0, from = 0; for (let i = 0; i < s.length; i++) { const c = s[i]!; if ('(⟨[{'.includes(c)) d++; else if (')⟩]}'.includes(c)) d--; else if (d === 0 && s.startsWith(op, i)) { out.push(s.slice(from, i).trim()); from = i + op.length } } return [...out, s.slice(from).trim()] }
+/** The top-level parts of a statement split at an operator, outside every bracket and before any quantifier, whose scope runs to the end. */
+const parts = (s: string, op: string): string[] => { const out: string[] = []; let d = 0, from = 0; for (let i = 0; i < s.length; i++) { const c = s[i]!; if ('(⟨[{'.includes(c)) d++; else if (')⟩]}'.includes(c)) d--; else if (d === 0 && op !== ':=' && '∀∃'.includes(c)) break; else if (d === 0 && s.startsWith(op, i)) { out.push(s.slice(from, i).trim()); from = i + op.length } } return [...out, s.slice(from).trim()] }
 const parens = (s: string) => `(${s})`
 /** A statement without the parentheses that wrap all of it. */
 const bare = (s: string): string => { let d = 0; for (let i = 0; i < s.length && s[0] === '('; i++) if ('(⟨[{'.includes(s[i]!)) d++; else if (')⟩]}'.includes(s[i]!) && --d === 0) return i === s.length - 1 ? bare(s.slice(1, -1).trim()) : s; return s }
@@ -67,7 +67,8 @@ const reflection = (t: TextbookTheorem): Reflection => {
   const holds = (e: string, at: Record<string, bigint>) => { try { return evaluate(e, at).value === true } catch { return false } }
   const search = (k: number, at: Record<string, bigint>): Record<string, bigint> | null => (k === vars.length ? (holds(concl, at) && !holds(hp, at) ? at : null) : lits.reduce<Record<string, bigint> | null>((f, x) => f ?? search(k + 1, { ...at, [vars[k]!]: x }), null))
   const found = search(0, {})
-  if (found) { lean.push(`theorem ${t.key}_converse_refuted : ¬ ${vars.length ? `∀ ${own}, ` : ''}${parens(concl)} → ${hp} := fun h => absurd (h ${vars.map((v) => found[v]!.toString()).join(' ')} (by decide)) (by decide)`); return { key: t.key, shape, lean, converse: 'refuted', counterexample: Object.fromEntries(Object.entries(found).map(([k, v]) => [k, v.toString()])) } }
+  // a converse refuted by a counterexample is that counterexample, decided here; a decide proof of it carries no textbook meaning, so no theorem is written
+  if (found) return { key: t.key, shape, lean, converse: 'refuted', counterexample: Object.fromEntries(Object.entries(found).map(([k, v]) => [k, v.toString()])) }
   if (/([A-Za-z_][\w']*|\))\s*[*/%^]\s*[A-Za-z_(]|[\d)]\s*\^\s*[A-Za-z_(]/.test(`${hp} ${concl}`)) {
     // not linear: omega does not decide it, so the converse is open unless a proof is held for it, which the kernel checks like any other
     const proof = NONLINEAR_CONVERSES[t.key]
@@ -95,7 +96,7 @@ export const getReflections = (kernel: ReadonlySet<string>, books: Readonly<Reco
   const count = (suffix: string) => ({ generated: rows.filter((r) => r.names.includes(r.key + suffix)).length, accepted: rows.filter((r) => kernel.has(r.key + suffix)).length })
   const generated = rows.reduce((n, r) => n + r.names.length, 0), accepted = rows.reduce((n, r) => n + r.names.filter((k) => kernel.has(k)).length, 0)
   const reflected = count('_reflected'), converse = (s: string) => rows.filter((r) => r.converse === s).length, cited = rows.filter((r) => r.books > 0)
-  return { theorems: rows.length, reflected: reflected.accepted, unreflected: rows.filter((r) => !kernel.has(`${r.key}_reflected`)).map((r) => r.key), contrapositives: count('_contrapositive'), converses: { total: rows.filter((r) => r.converse).length, proved: converse('proved'), refuted: converse('refuted'), open: converse('open'), accepted: count('_converse').accepted + count('_converse_refuted').accepted }, generated, accepted, byShape: rows.reduce<Record<string, number>>((a, r) => ({ ...a, [r.shape]: (a[r.shape] ?? 0) + 1 }), {}), books: { cited: cited.length, routed: cited.reduce((n, r) => n + r.books, 0), stated: 0 }, rows: rows.map(({ lean: _, ...r }) => r), theorem: 'textbook_reflection_by_shape', says: proseFill(PROSE.quantumProcessingTextbookTheorems_says2, reflected.accepted, rows.length, converse('proved'), converse('refuted'), converse('open'), accepted, generated, cited.length) }
+  return { theorems: rows.length, reflected: reflected.accepted, unreflected: rows.filter((r) => !kernel.has(`${r.key}_reflected`)).map((r) => r.key), contrapositives: count('_contrapositive'), converses: { total: rows.filter((r) => r.converse).length, proved: converse('proved'), refuted: converse('refuted'), open: converse('open'), accepted: count('_converse').accepted }, generated, accepted, byShape: rows.reduce<Record<string, number>>((a, r) => ({ ...a, [r.shape]: (a[r.shape] ?? 0) + 1 }), {}), books: { cited: cited.length, routed: cited.reduce((n, r) => n + r.books, 0), stated: 0 }, rows: rows.map(({ lean: _, ...r }) => r), theorem: 'textbook_reflection_by_shape', says: proseFill(PROSE.quantumProcessingTextbookTheorems_says2, reflected.accepted, rows.length, converse('proved'), converse('refuted'), converse('open'), accepted, generated, cited.length) }
 }
 /**
  * Full-text search over textbook theorems: each theorem is a real scenario whose `says` uses respected terminology

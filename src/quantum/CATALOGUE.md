@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1681 products, 2 under a declared claim context and 1679 as the author's own statement, with 1227 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1710 products, 2 under a declared claim context and 1708 as the author's own statement, with 1276 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -6166,6 +6166,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (a b k : ℕ), ¬a - k + (b + k) = a + b → ¬k ≤ a
 ```
 
+### `textbook_blockchain_transfer_once_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-transfer-once.
+
+```lean
+∀ (a b k : ℕ), a - k + (b + k) = a + b → k ≤ a
+```
+
 ### `textbook_blockchain_transfer_once_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: verify-blockchain-transfer-once.
@@ -6306,6 +6314,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (version carried : ℕ), ¬version + 1 + carried = version + 1 → ¬carried = 0
+```
+
+### `textbook_carry_release_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-workflow.
+
+```lean
+∀ (version carried : ℕ), version + 1 + carried = version + 1 → carried = 0
 ```
 
 ### `textbook_carry_release_reflected`
@@ -6540,6 +6556,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (d x : ℕ), ¬(d - (d - x) = x ∧ x * 1 = x ∧ x * 0 = 0 ∧ d - x + x = d) → ¬x ≤ d
 ```
 
+### `textbook_claim_prove_involution_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
+
+```lean
+∀ (d x : ℕ), d - (d - x) = x ∧ x * 1 = x ∧ x * 0 = 0 ∧ d - x + x = d → x ≤ d
+```
+
 ### `textbook_claim_prove_involution_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
@@ -6613,6 +6637,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (d x : ℕ), ¬(d - (d - x) = x ∧ d - x + x = d ∧ d - 0 = d ∧ d - d = 0) → ¬x ≤ d
+```
+
+### `textbook_clock_clone_involution_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
+
+```lean
+∀ (d x : ℕ), d - (d - x) = x ∧ d - x + x = d ∧ d - 0 = d ∧ d - d = 0 → x ≤ d
 ```
 
 ### `textbook_clock_clone_involution_reflected`
@@ -6831,6 +6863,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (c t : ℕ), ¬0 < c * t → ¬(0 < c ∧ 0 < t)
 ```
 
+### `textbook_compete_knows_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-rules.
+
+```lean
+∀ (c t : ℕ), 0 < c * t → 0 < c ∧ 0 < t
+```
+
 ### `textbook_compete_knows_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: compete-rules.
@@ -6909,6 +6949,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (full kept : ℕ), ¬full - kept + kept = full → ¬kept ≤ full
+```
+
+### `textbook_context_balanced_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: extend-out-balanced.
+
+```lean
+∀ (full kept : ℕ), full - kept + kept = full → kept ≤ full
 ```
 
 ### `textbook_context_balanced_reflected`
@@ -7099,6 +7147,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (fixed found : ℕ), ¬fixed + (found - fixed) = found → ¬fixed ≤ found
 ```
 
+### `textbook_dead_removed_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-dead.
+
+```lean
+∀ (fixed found : ℕ), fixed + (found - fixed) = found → fixed ≤ found
+```
+
 ### `textbook_dead_removed_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-dead.
@@ -7145,6 +7201,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (code : ℕ), ¬code - 400 + 400 = code → ¬400 ≤ code
+```
+
+### `textbook_denier_identified_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: legal-court-denier.
+
+```lean
+∀ (code : ℕ), code - 400 + 400 = code → 400 ≤ code
 ```
 
 ### `textbook_denier_identified_reflected`
@@ -7334,6 +7398,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (debits credits : ℕ), ¬(debits - credits = 0 ∧ credits - debits = 0) → ¬debits = credits
+```
+
+### `textbook_double_entry_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-ledger, compete-economics, verify-radar.
+
+```lean
+∀ (debits credits : ℕ), debits - credits = 0 ∧ credits - debits = 0 → debits = credits
 ```
 
 ### `textbook_double_entry_reflected`
@@ -7536,6 +7608,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (e r : ℕ), ¬e - r + r = e → ¬r ≤ e
 ```
 
+### `textbook_error_remedies_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-remedies.
+
+```lean
+∀ (e r : ℕ), e - r + r = e → r ≤ e
+```
+
 ### `textbook_error_remedies_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-remedies.
@@ -7720,6 +7800,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (n i : ℕ), ¬i + (n - i) = n → ¬i ≤ n
+```
+
+### `textbook_fold_mirror_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: fold-ledger.
+
+```lean
+∀ (n i : ℕ), i + (n - i) = n → i ≤ n
 ```
 
 ### `textbook_fold_mirror_reflected`
@@ -8111,6 +8199,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (n x c : ℕ), ¬(n - (n - x) = x ∧ c + c - c = c) → ¬x ≤ n
+```
+
+### `textbook_gravity_torus_sigma_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
+
+```lean
+∀ (n x c : ℕ), n - (n - x) = x ∧ c + c - c = c → x ≤ n
 ```
 
 ### `textbook_gravity_torus_sigma_reflected`
@@ -8887,6 +8983,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (budget request : ℕ), ¬0 < budget - request → ¬request < budget
 ```
 
+### `textbook_long_action_queued_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-next-long.
+
+```lean
+∀ (budget request : ℕ), 0 < budget - request → request < budget
+```
+
 ### `textbook_long_action_queued_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-next-long.
@@ -8909,6 +9013,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (asked allowed : ℕ), ¬asked - allowed + allowed = asked → ¬allowed ≤ asked
+```
+
+### `textbook_machine_allow_list_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-actions, repository-machine-refused, repository-machine-push-unconfirmed, repository-machine-worktree-unconfirmed, repository-machine-tag-confirmed, repository-machine-commit-deferred.
+
+```lean
+∀ (asked allowed : ℕ), asked - allowed + allowed = asked → allowed ≤ asked
 ```
 
 ### `textbook_machine_allow_list_reflected`
@@ -8958,6 +9070,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (price cost : ℕ), ¬price - cost + cost = price → ¬cost ≤ price
+```
+
+### `textbook_margin_makes_price_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-margins.
+
+```lean
+∀ (price cost : ℕ), price - cost + cost = price → cost ≤ price
 ```
 
 ### `textbook_margin_makes_price_reflected`
@@ -9242,6 +9362,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (started ended : ℕ), ¬ended - started + started = ended → ¬started ≤ ended
 ```
 
+### `textbook_monotonic_tick_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: metrics-served-calls.
+
+```lean
+∀ (started ended : ℕ), ended - started + started = ended → started ≤ ended
+```
+
 ### `textbook_monotonic_tick_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: metrics-served-calls.
@@ -9304,6 +9432,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (news proven : ℕ), ¬proven = news → ¬(proven ≤ news ∧ news - proven = 0)
+```
+
+### `textbook_new_doors_proven_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-commit-folds, repository-commit-grows.
+
+```lean
+∀ (news proven : ℕ), proven = news → proven ≤ news ∧ news - proven = 0
 ```
 
 ### `textbook_new_doors_proven_reflected`
@@ -9454,6 +9590,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (k : ℕ), ¬k - (k - 1) = 1 → ¬1 ≤ k
 ```
 
+### `textbook_one_holder_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-shapes-one-holder.
+
+```lean
+∀ (k : ℕ), k - (k - 1) = 1 → 1 ≤ k
+```
+
 ### `textbook_one_holder_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-shapes-one-holder.
@@ -9516,6 +9660,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (N : ℕ) (x : ZMod N), x ^ orderOf x = 1 ∧ ∀ (k : ℕ), 0 < k → k < orderOf x → x ^ k ≠ 1
+```
+
+### `textbook_order_finding_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-discover, algorithm-order, algorithm-factor-find.
+
+```lean
+∀ (N : ℕ) (x : ZMod N), 1 = x ^ orderOf x ∧ ∀ (k : ℕ), ¬x ^ k ≠ 1 → ¬(0 < k ∧ k < orderOf x)
 ```
 
 ### `textbook_own_keys_only`
@@ -9651,6 +9803,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (f term : ℕ), ¬f < f + term → ¬0 < term
+```
+
+### `textbook_patent_term_twenty_years_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: .
+
+```lean
+∀ (f term : ℕ), f < f + term → 0 < term
 ```
 
 ### `textbook_patent_term_twenty_years_reflected`
@@ -9915,6 +10075,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (cost price : ℕ), ¬(price - cost = 0 ∧ cost - price = 0) → ¬price = cost
+```
+
+### `textbook_penalty_harmonic_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-harmonic.
+
+```lean
+∀ (cost price : ℕ), price - cost = 0 ∧ cost - price = 0 → price = cost
 ```
 
 ### `textbook_penalty_harmonic_reflected`
@@ -10287,6 +10455,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (programs files : ℕ), ¬programs + (files - programs) = files → ¬programs ≤ files
 ```
 
+### `textbook_programs_partition_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-programs.
+
+```lean
+∀ (programs files : ℕ), programs + (files - programs) = files → programs ≤ files
+```
+
 ### `textbook_programs_partition_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: audit-programs.
@@ -10423,6 +10599,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (v m d b : ℕ), ¬(m + d + v = b ∧ m + d < b) → ¬(v + m + d = b ∧ 1 ≤ v)
+```
+
+### `textbook_raid_bit_zero_verify_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: raid-bit-zero-verify.
+
+```lean
+∀ (v m d b : ℕ), m + d + v = b ∧ m + d < b → v + m + d = b ∧ 1 ≤ v
 ```
 
 ### `textbook_raid_bit_zero_verify_reflected`
@@ -10995,6 +11179,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (f p x : ℕ), ¬(p + x = f ∧ f - p - x = 0) → ¬(p ≤ f ∧ x = f - p)
 ```
 
+### `textbook_royalty_conserved_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-royalty, stripe-royalty-escrow.
+
+```lean
+∀ (f p x : ℕ), p + x = f ∧ f - p - x = 0 → p ≤ f ∧ x = f - p
+```
+
 ### `textbook_royalty_conserved_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: stripe-royalty, stripe-royalty-escrow.
@@ -11411,6 +11603,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (pages gates categories docs : ℕ), ¬docs - pages = gates + categories + 1 → ¬docs = pages + (gates + categories + 1)
 ```
 
+### `textbook_site_documents_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-site.
+
+```lean
+∀ (pages gates categories docs : ℕ), docs - pages = gates + categories + 1 → docs = pages + (gates + categories + 1)
+```
+
 ### `textbook_site_documents_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-site.
@@ -11476,6 +11676,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```lean
 ∀ (boxes skilled terms named : ℕ),
   ¬(skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms) → ¬(skilled = boxes ∧ named ≤ terms)
+```
+
+### `textbook_skills_complete_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: payload-scripts-skills.
+
+```lean
+∀ (boxes skilled terms named : ℕ),
+  skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms → skilled = boxes ∧ named ≤ terms
 ```
 
 ### `textbook_skills_complete_reflected`
@@ -11841,6 +12050,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (n x : ℕ), ¬(n - (n - x) = x ∧ x + (n - x) = n) → ¬x ≤ n
+```
+
+### `textbook_thermal_time_sigma_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-reflection.
+
+```lean
+∀ (n x : ℕ), n - (n - x) = x ∧ x + (n - x) = n → x ≤ n
 ```
 
 ### `textbook_thermal_time_sigma_reflected`
@@ -12462,6 +12679,16 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
     ¬(present + missing + contradicted = witnesses ∧ missing + contradicted = 0)
 ```
 
+### `textbook_witness_states_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-witness-p-np, match-witness-planck, match-witness-planck-value, match-witness-negation, match-witness-willow, match-witness-willow-wrong, match-search-witnessed, chat-witness-planck, chat-witness-computed, match-witness-loose.
+
+```lean
+∀ (present missing contradicted witnesses : ℕ),
+  present = witnesses ∧ contradicted = 0 ∧ missing = 0 →
+    present + missing + contradicted = witnesses ∧ missing + contradicted = 0
+```
+
 ### `textbook_witness_states_reflected`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: match-witness-p-np, match-witness-planck, match-witness-planck-value, match-witness-negation, match-witness-willow, match-witness-willow-wrong, match-search-witnessed, chat-witness-planck, chat-witness-computed, match-witness-loose.
@@ -12604,6 +12831,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (D : ℕ), ¬(D + 1 < 2 * D ∧ D < D + 1) → ¬1 < D
+```
+
+### `textbook_xeb_converse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-xeb.
+
+```lean
+∀ (D : ℕ), D + 1 < 2 * D ∧ D < D + 1 → 1 < D
 ```
 
 ### `textbook_xeb_reflected`
