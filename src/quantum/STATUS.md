@@ -36,7 +36,7 @@
 
 | novelty | prior art | receipt |
 |---|---|---|
-| none yet: a novelty enters when the gate admits it with its prior-art dossier | — | — |
+| `Polynomial.prod_cyclotomic_eq_X_pow_add_one` | 8f1972b9-da78-721e-9d7e-cf6e117067ed (lean/dossiers/Polynomial.prod_cyclotomic_eq_X_pow_add_one.md) | `0cfeaef2` |
 
 ## Open claims: no theorem proves these yet (Qpu.openClaims)
 

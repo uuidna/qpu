@@ -21,6 +21,7 @@ import Qpu.Application.Shor
 import Qpu.Processing.Stabilizer
 import Qpu.General.Clay
 import Qpu.General.Cross
+import Qpu.General.Cyclotomic
 import Qpu.General.Fuse
 import Qpu.Processing.Fusion
 import Qpu.Physics.EnergyGap

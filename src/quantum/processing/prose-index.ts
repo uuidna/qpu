@@ -72,7 +72,6 @@ const SENTENCES = {
   quantumOsAlpinePackages_s3: "alpine repo is main, community, or testing",
   quantumOsAlpinePackages_s4: "⟦0⟧ of ⟦1⟧ package(s) name an apk. The client device fetches that binary and runs it in the browser. Nothing is fetched here and nothing is executed here.",
   quantumOsAlpinePackages_s5: "⟦0⟧ package(s) asked. The client device fetches the Alpine index, then the apk, and runs that binary in the browser. Nothing is fetched here and nothing is executed here.",
-  quantumOsFetch_s1: "Mozilla/5.0 (compatible; QPUResearch/1.0; +https://qpu.uuidna.com)",
   quantumPasswordAddress_p1: "a handle is 8 hex, a program ten nibbles 0..15, a tail 12 hex",
   quantumPayloadDeploy_says1: "Lean writes the pages, VitePress builds them, Wrangler deploys the Worker",
   quantumPayloadDeploy_says2: "smoke /api/mcp and the site on both hostnames",

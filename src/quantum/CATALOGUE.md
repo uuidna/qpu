@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1574 products, 2 under a declared claim context and 1572 as the author's own statement, with 1076 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1575 products, 2 under a declared claim context and 1573 as the author's own statement, with 1076 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -1924,6 +1924,19 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 fused = faces * mint (bits + seed)
+```
+
+## Qpu.General.Cyclotomic
+
+### `Polynomial.prod_cyclotomic_eq_X_pow_add_one`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {n : ℕ},
+  0 < n →
+    ∀ (R : Type u_1) [inst : CommRing R],
+      ∏ d ∈ (2 * n).divisors \ n.divisors, Polynomial.cyclotomic d R = Polynomial.X ^ n + 1
 ```
 
 ## Qpu.General.Fuse
