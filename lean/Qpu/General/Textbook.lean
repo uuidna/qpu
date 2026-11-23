@@ -1636,8 +1636,8 @@ example := @textbook_holevo
 example : 2 ^ 1 = 2 ∧ 2 ^ 2 > 2 := by decide
 /-- textbook_holevo reflected by its shape (examples: algorithm-holevo) -/
 @[reflection] theorem textbook_holevo_reflected (k : Nat) : (k) = (Nat.log 2 (2 ^ k)) := Eq.symm (textbook_holevo k)
-/-- Gottesman–Knill's space bound, a novelty with no Mathlib equivalent: an n-qubit stabilizer tableau of 2n² + n bits is smaller than the 2ⁿ amplitudes of the state vector for every n ≥ 7, so stabilizer circuits are simulated in polynomial space (210 < 1024 at n = 10); proved by Mathlib's `Nat.le_induction`, and computed by stabilizerCompression (examples: algorithm-gottesman-knill) -/
-@[novelty] theorem textbook_gottesman_knill (n : ℕ) (h : 7 ≤ n) : 2 * (n * n) + n < 2 ^ n := by
+/-- the size remark accompanying Gottesman–Knill: n stabilizer generators of 2n + 1 bits each, n(2n + 1) = 2n² + n bits (Aaronson–Gottesman 2004, §III), are fewer than the 2ⁿ amplitudes of the state for every n ≥ 7, the bound sharp (210 < 1024 at n = 10); an instance of polynomial below exponential, proved by Mathlib's `Nat.le_induction`; the update theorem itself is not stated here (examples: algorithm-gottesman-knill) -/
+theorem textbook_gottesman_knill (n : ℕ) (h : 7 ≤ n) : 2 * (n * n) + n < 2 ^ n := by
   induction n, h using Nat.le_induction with
   | base => decide
   | succ n hn ih =>

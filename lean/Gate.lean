@@ -17,8 +17,8 @@ meaning. The rule, read from the kernel environment and never from prose written
   theorem, it reaches a Mathlib theorem or a named theorem of Lean core, Batteries or Std (Lean verified beyond Mathlib,
   never the logic and decision machinery), and its prose names every Mathlib and `Qpu` theorem it uses;
 * a `@[novelty]` theorem, one with no Mathlib equivalent, is meaningful as its own statement: the kernel accepts it on
-  the standard axioms alone, it uses only verified library theorems and meaningful `Qpu` theorems, and it is not an
-  instance of a Mathlib theorem. Every novelty is listed: what qpu can give to Mathlib.
+  the standard axioms alone, it uses only verified library theorems and meaningful `Qpu` theorems, it is not an
+  instance of a Mathlib theorem, and its prose cites its prior-art dossier (`Prior art: <address>`). Every novelty is listed: what qpu can give to Mathlib.
 
 The standing violations are named in `GateBaseline`, which this module writes when `MEANING_RATCHET=1` is set. The
 gate fails on any violation not named there and on any named one that no longer stands: no violation can enter, and
@@ -148,7 +148,8 @@ run_cmd do
         let standard := (← collectAxioms n).all ([``propext, ``Classical.choice, ``Quot.sound].contains ·)
         -- an induction or recursion principle is a method of proof, not a statement the novelty would restate
         let method (h : Name) := match h with | .str _ s => (s.splitOn "induction").length > 1 || s.startsWith "rec" | _ => false
-        if standard && allClean && !(proofHead ti.value).any (fun h => isMathlib env h && !method h) then
+        let dossier := (prose.splitOn "Prior art: ").length > 1
+        if standard && allClean && dossier && !(proofHead ti.value).any (fun h => isMathlib env h && !method h) then
           clean := clean.insert n
           novelties := novelties.push n
           changed := true
