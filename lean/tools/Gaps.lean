@@ -9,7 +9,7 @@ declared with at least one variable is split into its conjuncts, and each conjun
 context, is put to `Lean.Meta.LibrarySearch.librarySearch` over all of Mathlib, imported whole. A conjunct is
 
 * `library`: closed outright by a library theorem, no `Qpu` constant in the proof (the names are given);
-* `decided`: the search left it, a decision procedure of the library (`omega`, `grind`) closed it (named);
+* `decided`: the search left it, a procedure of the library (`omega`, `grind`, `positivity`, `gcongr`, `nlinarith`) closed it (named);
 * `open`: the search and the decision procedures ended without closing it, a candidate gap of the library: no imported library theorem proves it
   in one step followed by `solve_by_elim`, which is the search's bound, not a proof that none exists;
 * `undecided`: the search spent its budget, decided neither way;
@@ -70,7 +70,8 @@ def search (goalType : Expr) : MetaM (List Name × Bool) :=
 /-- The library's decision procedures, tried on a conjunct the search leaves open: one that closes it decides it, so
     it is no gap. Each runs on the same budget as the search. -/
 def decideBy (goalType : Expr) : MetaM (Option String) := do
-  for (name, tactic) in [("omega", ← `(tactic| omega)), ("grind", ← `(tactic| grind))] do
+  for (name, tactic) in [("omega", ← `(tactic| omega)), ("grind", ← `(tactic| grind)), ("positivity", ← `(tactic| positivity)),
+      ("gcongr", ← `(tactic| gcongr)), ("nlinarith", ← `(tactic| nlinarith))] do
     let closed ← withTheReader Core.Context (fun c => { c with maxHeartbeats := budget * 1000 }) <| withCurrHeartbeats do
       let saved ← saveState
       let g ← mkFreshExprMVar goalType
