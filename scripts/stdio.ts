@@ -1,6 +1,5 @@
-// The QPU MCP over stdio: the server the Worker serves, built from the kernel, on the MCP SDK's own stdio door, so a
-// harness that starts a command reaches the same tools as one given the URL; and, on this machine alone, its git
-// through the machine allow-list (machine.ts), which the Worker never holds.
+// The QPU MCP over stdio: the Worker's server on the MCP SDK's stdio door, so a harness that starts a command reaches
+// the same tools as one given the URL; and this machine's git through the machine allow-list, which the Worker never holds.
 import { serveStdio } from '@modelcontextprotocol/server/stdio'
 import { z } from 'zod'
 import { mcpServer } from '../src/quantum/net/mcp-http.ts'

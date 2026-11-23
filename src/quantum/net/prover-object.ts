@@ -1,7 +1,7 @@
 // The Lean container's Durable Object: it starts the prover image (alpine/Dockerfile, stage prover) with no internet,
-// waits until its server answers /health, and forwards each request to it. Imported only by the Worker (worker.ts): the
-// runtime module cloudflare:workers exists there and nowhere else.
+// waits for /health and forwards each request. Only worker.ts imports it: cloudflare:workers exists there alone.
 import { DurableObject } from 'cloudflare:workers'
+import { PROSE, proseFill } from '../processing/prose-index.ts'
 
 const PORT = 8080
 /** How long the container keeps Mathlib loaded after its last request. */
@@ -17,7 +17,7 @@ export class Prover extends DurableObject<Env> {
   }
 
   async fetch(request: Request): Promise<Response> {
-    // concurrent requests share one startup and readiness check, and a failed one is retried by the next request
+    // concurrent requests share one startup; a failed one is retried by the next
     this.starting ??= this.startAndWaitForPort().finally(() => { this.starting = undefined })
     await this.starting
     const url = new URL(request.url)
@@ -46,6 +46,6 @@ export class Prover extends DurableObject<Env> {
       }
       await scheduler.wait(200)
     }
-    throw new Error(`the prover did not answer on port ${PORT}`, { cause: lastError })
+    throw new Error(proseFill(PROSE.quantumNetProver_unanswered, PORT), { cause: lastError })
   }
 }

@@ -15,10 +15,11 @@ RUN git clone --filter=blob:none https://github.com/leanprover/lean4 /src/lean4 
  && make -C /src/lean4/build/release -j"$(nproc)" \
  && cp -r /src/lean4/build/release/stage1 /opt/lean
 
-# The environment every gate runs in: Lean and lake on PATH, a C toolchain for lake to build executables, Node and pnpm.
+# The environment every gate runs in: Lean and lake on PATH, a C toolchain for lake to build executables, Node and pnpm
+# (installed by npm: Node 25 and later ship no corepack), at the version the workflows pin.
 FROM ${NODE} AS runtime
 RUN apk add --no-cache build-base git bash gmp libuv curl ca-certificates zstd \
- && corepack enable && corepack prepare pnpm@10.28.0 --activate
+ && npm install -g pnpm@10.34.9
 COPY --from=lean /opt/lean /opt/lean
 ENV PATH=/opt/lean/bin:${PATH}
 WORKDIR /qpu

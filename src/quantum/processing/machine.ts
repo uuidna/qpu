@@ -21,7 +21,7 @@ export const MACHINE_ACTIONS = ROWS.map((a) => ({ ...a, cmd: a.cmd ?? 'git', say
 
 /** The parameters of the actions that discard or move work, checked before anything runs. */
 const WORKTREE_RE = /^\.claude\/worktrees\/[A-Za-z0-9._-]{1,120}$/
-const FILE_RE = /^(?![/.-])(?!.*\.\.)[A-Za-z0-9._/-]{1,300}$/
+const FILE_RE = /^(?![/-])(?!.*\.\.)[A-Za-z0-9._/-]{1,300}$/
 const TAG_RE = /^archive\/[A-Za-z0-9._-]{1,120}$/
 const SHA_RE = /^[0-9a-f]{40}$/
 
@@ -38,7 +38,7 @@ export const planMachine = (r: MachineRequest, decide: Decide) => {
   // a row's own parameter by its needs: a file after --, a pattern after -e, a patch as the input
   // paths, after --: a stage needs them, a commit may name them so only they are committed
   const paths = Array.isArray(r.files) && r.files.length > 0 && r.files.every((f) => typeof f === 'string' && FILE_RE.test(f)) ? ['--', ...r.files] : null
-  if (r.files !== undefined && !paths) return refuse('shape', `${a.id} takes its files as paths, no NUL`, { action: a.id })
+  if (r.files !== undefined && !paths) return refuse('shape', proseFill(PROSE.quantumProcessingMachine_files, a.id), { action: a.id })
   const param = a.needs === 'files' ? paths : a.needs === 'file' ? (typeof r.file === 'string' && FILE_RE.test(r.file) ? ['--', r.file] : null) : a.needs === 'pattern' ? (typeof r.pattern === 'string' && r.pattern && !r.pattern.includes('\u0000') ? ['-e', r.pattern] : null) : a.needs === 'patch' && typeof r.patch !== 'string' ? null : []
   if (!param) return refuse('shape', `${a.id} takes its ${a.needs}, no NUL`, { action: a.id })
   const worktree = r.worktree ?? null

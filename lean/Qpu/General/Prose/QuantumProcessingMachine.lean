@@ -15,4 +15,6 @@ def quantumProcessingMachine_reference8 : String := "TimesFM (google-research/ti
 def quantumProcessingMachine_formula9 : String := "min(cores, floor(0.7 × memory ÷ heap))"
 def quantumProcessingMachine_says10 : String := "⟦0⟧ step(s) in ⟦1⟧ wave(s), run by ⟦2⟧ with no shell; ⟦3⟧ action(s) longer than a request are queued as jobs"
 
+def quantumProcessingMachine_files : String := "⟦0⟧ takes its files as paths relative to the root, with no NUL."
+
 end Prose

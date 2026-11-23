@@ -125,7 +125,17 @@
             "description": "a verdict from another vocabulary (verify_claim"
           },
           "chat": {
-            "type": "object",
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string"
+              }
+            ],
             "description": "the Payload search itself"
           },
           "url": {
@@ -1073,8 +1083,16 @@
             "description": "factor"
           },
           "order": {
-            "type": "string",
-            "pattern": "^[0-9]+$",
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "string",
+                "pattern": "^[0-9]+$"
+              }
+            ],
             "description": "shor/factor"
           },
           "budget": {
@@ -1091,13 +1109,29 @@
             "description": "factor"
           },
           "N": {
-            "type": "integer",
-            "minimum": 3,
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 3
+              },
+              {
+                "type": "string",
+                "pattern": "^[0-9]+$"
+              }
+            ],
             "description": "shor"
           },
           "a": {
-            "type": "integer",
-            "minimum": 2,
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 2
+              },
+              {
+                "type": "string",
+                "pattern": "^[0-9]+$"
+              }
+            ],
             "description": "the base, a param"
           },
           "sweep": {
@@ -1888,6 +1922,17 @@
       "inputSchema": {
         "type": "object",
         "properties": {
+          "library": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "description": "true"
+          },
           "scripts": {
             "type": "object",
             "description": "the files Lean writes, answered by the textbook (no new tools/list door)"
@@ -3755,7 +3800,17 @@
             "description": "texts consolidated as coins by address alone"
           },
           "speak": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "object"
+              }
+            ],
             "description": "a hex spoken in Glagolitic numerals"
           },
           "split": {

@@ -9,4 +9,6 @@ def quantumNetProver_source : String := "A Lean source to check, as one file: it
 def quantumNetProver_gaps : String := "true: Lean's library search over every theorem of the tree with a variable, run once per image as three shards at once; the first call starts it, later calls answer its progress and then its counts."
 def quantumNetProver_sourceRefused : String := "The source must be Lean text of 1 to ⟦0⟧ characters."
 
+def quantumNetProver_unanswered : String := "The prover did not answer on port ⟦0⟧."
+
 end Prose

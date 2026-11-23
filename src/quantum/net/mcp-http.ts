@@ -9,6 +9,7 @@ import { createMcpHandler } from 'agents/mcp/server'
 import { withX402 } from 'agents/x402'
 import { z } from 'zod'
 import { handle, type Rpc } from '../processing/mcp.ts'
+import { PROSE } from '../processing/prose-index.ts'
 import { TENANTS } from '../processing/unit/tenants.ts'
 import { MESSAGING_TOOLS, callMessaging, type MailboxNamespace } from './messaging.ts'
 import { PROVER_TOOLS, callProver, type ProverNamespace } from './prover.ts'
@@ -43,7 +44,7 @@ const surface = () => (listed ??= (async () => ({
 export const x402Of = (env: Env) => {
   const recipient = env.QPU_X402_RECIPIENT
   if (recipient === undefined || recipient === '') return null
-  if (typeof recipient !== 'string' || !/^0x[0-9a-fA-F]{40}$/.test(recipient)) throw new Error('QPU_X402_RECIPIENT is not an EVM address')
+  if (typeof recipient !== 'string' || !/^0x[0-9a-fA-F]{40}$/.test(recipient)) throw new Error(PROSE.quantumNetMcpHttp_recipientRefused)
   return { network: typeof env.QPU_X402_NETWORK === 'string' ? env.QPU_X402_NETWORK : 'base-sepolia', recipient: recipient as `0x${string}`, facilitator: { url: (typeof env.QPU_X402_FACILITATOR === 'string' ? env.QPU_X402_FACILITATOR : 'https://x402.org/facilitator') as `https://${string}` } }
 }
 

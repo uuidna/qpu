@@ -5,7 +5,7 @@
 import ts from 'typescript'
 
 /** Text that is code, not a sentence: shell, Lean, TypeScript, YAML or markup written out by a generator. */
-const CODE = /\$\(|\$\{|&&|\|\||=>|:=|;\s*$|^\s*[{[<#]|^(https?:|theorem |import |export |pnpm |npm |npx |node |lake |git |curl |cross-env |name: |- )|\n\s*(-|run:|uses:|with:|theorem |def |import |export )/
+const CODE = /^[a-z]+\/[\w.+-]+(, |$)|\$\(|\$\{|&&|\|\||=>|:=|;\s*$|^\s*[{[<#]|^(https?:|theorem |import |export |pnpm |npm |npx |node |lake |git |curl |cross-env |name: |- |SELECT |INSERT |DELETE |CREATE )|\n\s*(-|run:|uses:|with:|theorem |def |import |export )/
 export const isProse = (text: string) => (text.match(/[A-Za-z]{3,}/g) ?? []).length >= 5 && text.includes(' ') && !CODE.test(text)
 
 /** The text a literal states itself: a template's computed values are holes `⟦n⟧`. Undefined when an escape has no value. */

@@ -5,4 +5,6 @@ The prose of `src/quantum/net/mcp-http.ts`. Each definition is one sentence, rea
 namespace Prose
 
 
+def quantumNetMcpHttp_recipientRefused : String := "QPU_X402_RECIPIENT is not an EVM address: name a wallet of 0x and 40 hex digits, or none to serve free."
+
 end Prose
