@@ -1,7 +1,7 @@
 {
   "name": "@uuidna/qpu",
   "description": "An exact quantum processing unit served over MCP",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "license": "CC-BY-NC-ND-4.0",
   "private": true,
   "type": "module",

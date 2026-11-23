@@ -1,11 +1,13 @@
 # Land a pull request once its checks are green, then deploy: no hand merges it and no hand starts the deploy.
-# It runs when lean-verify or site finishes on a pull request of this repository (never a fork), reads every check on
-# that head, and merges only when all of them have passed. A merge made here does not start push workflows, so the
-# deploy is started here. The pull request's code is never checked out or run by this workflow.
+# It runs when lean-verify, site or alpine finishes on a pull request of this repository (never a fork; alpine builds a
+# pull request's branch on push, so its push runs count), reads every check and every workflow run on that head, and
+# merges only when all of them have passed: a run still queued has no check yet, so the runs are read too. A merge made
+# here does not start push workflows, so the deploy is started here. The pull request's code is never checked out or
+# run by this workflow.
 name: land
 on:
   workflow_run:
-    workflows: [lean-verify, site]
+    workflows: [lean-verify, site, alpine]
     types: [completed]
 permissions:
   contents: write
@@ -18,7 +20,7 @@ concurrency:
 jobs:
   land:
     if: >-
-      github.event.workflow_run.event == 'pull_request' &&
+      (github.event.workflow_run.event == 'pull_request' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.name == 'alpine')) &&
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
@@ -35,13 +37,15 @@ jobs:
           number=$(gh pr list --state open --base main --head "$HEAD_BRANCH" --json number,headRefOid,isDraft \
             --jq "map(select(.headRefOid == \"$HEAD_SHA\" and (.isDraft | not))) | .[0].number // empty")
           echo "number=$number" >> "$GITHUB_OUTPUT"
-      - name: every check on the head has passed
+      - name: every check and every workflow run on the head has passed
         id: green
         if: steps.pr.outputs.number != ''
         run: |
-          pending=$(gh api "repos/$GH_REPO/commits/$HEAD_SHA/check-runs?per_page=100" \
+          checks=$(gh api "repos/$GH_REPO/commits/$HEAD_SHA/check-runs?per_page=100" \
             --jq '[.check_runs[] | select(.name != "land") | select(.status != "completed" or (.conclusion != "success" and .conclusion != "skipped" and .conclusion != "neutral"))] | length')
-          echo "pending=$pending" >> "$GITHUB_OUTPUT"
+          runs=$(gh api "repos/$GH_REPO/actions/runs?head_sha=$HEAD_SHA&per_page=100" \
+            --jq '[.workflow_runs[] | select(.name != "land") | select(.status != "completed")] | length')
+          echo "pending=$((checks + runs))" >> "$GITHUB_OUTPUT"
       - name: merge, then start the deploy
         if: steps.pr.outputs.number != '' && steps.green.outputs.pending == '0'
         run: |
