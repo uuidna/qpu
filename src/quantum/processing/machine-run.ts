@@ -217,13 +217,13 @@ export const runMachine = async (args: Record<string, unknown>, cwd: string, onP
   return { plan, record, answer: { plan: { action: plan.action, command: plan.command, decision: plan.decision?.says ?? null }, eta, record: { says: record.says, ok: record.ok, redacted: record.redacted, entry: record.entry }, ...(receipt ? { receipt: { green: receipt.green, red: receipt.red, skipped: receipt.skipped, wallMs: receipt.wallMs, red_steps: receipt.steps.filter((s) => s.status === 'red').map((s) => s.name) } } : {}) } }
 }
 
-/** The local Worker the e2e step replays against: left alone when it answers on :3000, else started and stopped after. */
+/** The local Worker the e2e step replays against: kept when it answers on :3000, else started and stopped after. */
 const serveLocal = async (cwd: string) => {
   const answers = async () => { try { return (await fetch('http://localhost:3000/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream' }, body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}', signal: AbortSignal.timeout(5000) })).ok } catch { return false } }
   if (await answers()) return null
   const child = spawn('npm', ['run', '-s', 'dev'], { cwd, detached: true, stdio: 'ignore' })
   for (let i = 0; i < 90 && !(await answers()); i++) await new Promise((r) => setTimeout(r, 1000))
-  return () => { try { process.kill(-child.pid!, 'SIGTERM') } catch { /* already gone */ } }
+  return () => { try { process.kill(-child.pid!, 'SIGTERM') } catch { /* gone */ } }
 }
 
 /** A git hook as the client of its workflow (repository { workflow }): its steps walked as the door answers them (next run here, a command spawned,
