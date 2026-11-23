@@ -333,7 +333,7 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
   for (const [i, e] of examples.entries()) {
     const et = exTok[i]!
     const hits = overlap(q, et)
-    if (hits > 1) candidates.push({ kind: 'example', id: e.id, score: overlap(q, et, w) + 0.5, hits: hits + 1, text: e.shows })
+    if (hits > 0) candidates.push({ kind: 'example', id: e.id, score: overlap(q, et, w) + 0.5, hits: hits + 1, text: e.shows })
   }
   for (const [i, l] of leads.entries()) {
     const lt = leadTok[i]!
@@ -417,7 +417,9 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
   if ('result' in reply) {
     const why = example ? example.expect(reply.result.structuredContent) : null
     // only the proven is admitted (legal_only_the_proven_is_admitted): a weak or unreplayed match is unknown, a discovery lead, never a false "served"
-    if (coverage < 0.7 || (example && why !== null)) return { statement, verdict: 'unknown', evidence: [proseFill(PROSE.quantumProcessingMatch_s22, example ? `example ${example.id}` : `tool ${tool}`, why !== null ? `does not replay as documented (${why})` : `covers only ${Math.round(coverage * 100)}% of the statement`)], tool: 'discover', coverage, ...around, lead: { ...asLead, status: 'open', tool: 'discover', reason: proseFill(PROSE.quantumProcessingMatch_reason23, Math.round(coverage * 100)) } }
+    // one shared word is no match
+    const share = top.kind === 'example' && top.hits === 2 && substantive.length > 1 ? 1 / substantive.length : coverage
+    if (share < 0.7 || (example && why !== null)) return { statement, verdict: 'unknown', evidence: [proseFill(PROSE.quantumProcessingMatch_s22, example ? `example ${example.id}` : `tool ${tool}`, why !== null ? `does not replay as documented (${why})` : `covers only ${Math.round(share * 100)}% of the statement`)], tool: 'discover', coverage, ...around, lead: { ...asLead, status: 'open', tool: 'discover', reason: proseFill(PROSE.quantumProcessingMatch_reason23, Math.round(share * 100)) } }
     return { statement, verdict: 'served', evidence: [example ? `example ${example.id}: ${why ?? 'as documented'}` : `tool ${tool} answered the call`], tool, call, result: reply.result.structuredContent, example: example?.id, coverage, weak: coverage < 0.7, ...around, lead: { ...asLead, status: 'served', tool } }
   }
   return { statement, verdict: 'impossible', evidence: [`tool ${tool} refused: ${reply.error.message}`], tool, call, ...around, lead: { ...asLead, status: 'blocked', reason: reply.error.message } }

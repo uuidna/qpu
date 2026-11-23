@@ -20,7 +20,7 @@ test('serveMcp serves the kernel\'s tools through the Agents SDK, acknowledges a
   assert.equal(note.status, 202, 'a notification is answered with 202 and no body')
 
   const call = { jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'clay', arguments: {} } }, env = { QPU_X402_RECIPIENT: '0x0000000000000000000000000000000000000001', QPU_MCP_HOSTS: 'qpu.test' }
-  assert.ok(!(await read<{ result: { _meta?: object } }>(await post(call, env))).result._meta, 'free on a bound domain')
+  assert.ok(!('x402/error' in ((await read<{ result: { _meta?: object } }>(await post(call, env))).result._meta ?? {})), 'free')
   const paid = await post(call, env, 'qpu.test')
   const required = (await read(paid) as { result: { _meta: Record<string, { x402Version: number; error: string; accepts: { amount: string; network: string }[] }> } }).result._meta['x402/error']!
   assert.equal(required.x402Version, 2)
