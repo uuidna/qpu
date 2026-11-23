@@ -6,9 +6,10 @@
 ARG NODE=node:26-alpine3.22@sha256:c7932b9e5e337b0e733d6e16abc1b0e104759e8b05e59ed56586cce967d26dfe
 
 # Lean from source at the commit lean-toolchain names (v4.33.0), so Mathlib's cache, built by that commit, loads; it
-# builds against GMP, libuv and OpenSSL 3, and the runtime stage carries the libraries it loads.
+# builds against GMP, libuv, OpenSSL 3 and the kernel headers (mimalloc reads linux/prctl.h), and the runtime stage
+# carries the libraries it loads.
 FROM ${NODE} AS lean
-RUN apk add --no-cache build-base cmake git gmp-dev libuv-dev openssl-dev python3 bash ccache
+RUN apk add --no-cache build-base cmake git gmp-dev libuv-dev openssl-dev linux-headers python3 bash ccache
 ARG LEAN_COMMIT=d8b18978322de05a8f3dba51ef03cf5461676c17
 RUN git clone --filter=blob:none https://github.com/leanprover/lean4 /src/lean4 \
  && git -C /src/lean4 checkout "${LEAN_COMMIT}" \
