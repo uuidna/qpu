@@ -13,6 +13,7 @@ import { PROSE } from '../processing/prose-index.ts'
 import { TENANTS } from '../processing/unit/tenants.ts'
 import { MESSAGING_TOOLS, callMessaging, type MailboxNamespace } from './messaging.ts'
 import { PROVER_TOOLS, callProver, type ProverNamespace } from './prover.ts'
+import { receiptOf } from '../uuid/programs/index.ts'
 
 // The real quantum market QPU is measured against (AWS Braket per-shot + its flat task fee; source:
 // quantumcomputingcost.com/aws-braket-pricing, 2026-02). A device's per-qubit price is its shot price over its
@@ -48,6 +49,10 @@ export const x402Of = (env: Env) => {
   return { network: typeof env.QPU_X402_NETWORK === 'string' ? env.QPU_X402_NETWORK : 'base-sepolia', recipient: recipient as `0x${string}`, facilitator: { url: (typeof env.QPU_X402_FACILITATOR === 'string' ? env.QPU_X402_FACILITATOR : 'https://x402.org/facilitator') as `https://${string}` } }
 }
 
+/** A paid answer whose settlement is sealed as it lands: the SDK settles after the tool answers and writes x402/payment-response
+ *  into the answer's _meta, which seals it beside it as x402/receipt. */
+export const sealSettlement = <R extends { _meta?: Record<string, unknown> }>(r: R): R => ({ ...r, _meta: new Proxy({ ...r._meta }, { set: (m, k, v) => { m[k as string] = v; if (k === 'x402/payment-response') m['x402/receipt'] = receiptOf('x402', v); return true } }) })
+
 /** One MCP SDK server over the kernel: each tool registered with its own schema, paid where the tenant names a wallet;
  *  the Worker serves it over Streamable HTTP, scripts/stdio.ts over stdio. */
 export const mcpServer = async (env: Env) => {
@@ -57,7 +62,7 @@ export const mcpServer = async (env: Env) => {
   for (const t of tools) {
     const schema = z.fromJSONSchema(t.inputSchema) as z.ZodObject
     const run = async (args: Record<string, unknown>) => { const a = await kernel('tools/call', { name: t.name, arguments: args }); return (a.result ?? { content: [{ type: 'text', text: a.error?.message ?? 'no answer' }], isError: true }) as never }
-    if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations ?? {}, run).update({ _meta: t._meta })
+    if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations ?? {}, async (args: Record<string, unknown>) => sealSettlement(await run(args))).update({ _meta: t._meta })
     else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations, _meta: t._meta }, run)
   }
   // where the Worker binds the rooms and the Lean prover, their tools are tools like the kernel's, charged the same way
@@ -65,7 +70,7 @@ export const mcpServer = async (env: Env) => {
   const bound = [...(rooms ? MESSAGING_TOOLS.map((t) => [t, (args: Record<string, unknown>) => callMessaging(rooms, t.name, args)] as const) : []), ...(prover ? PROVER_TOOLS.map((t) => [t, (args: Record<string, unknown>) => callProver(prover, args)] as const) : [])]
   for (const [t, call] of bound) {
     const schema = z.fromJSONSchema(t.inputSchema as never) as z.ZodObject, run = async (args: Record<string, unknown>) => (await call(args)) as never
-    if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations, run)
+    if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations, async (args: Record<string, unknown>) => sealSettlement(await run(args)))
     else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations }, run)
   }
   for (const r of resources) base.registerResource(r.name, r.uri, { description: r.description, mimeType: r.mimeType }, async (uri: URL) => (await kernel('resources/read', { uri: uri.href })).result as never)

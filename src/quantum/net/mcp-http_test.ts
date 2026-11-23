@@ -58,3 +58,14 @@ test('every example\'s arguments satisfy the schema its tool advertises, so a cl
   const tools = new Map(((await handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' } as never)) as any).result.tools.map((t: { name: string; inputSchema: object }) => [t.name, t.inputSchema]))
   assert.deepEqual(EXAMPLES.filter((e) => tools.has(e.tool) && !z.fromJSONSchema(tools.get(e.tool) as never).safeParse(e.arguments).success).map((e) => e.id), [])
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a settled payment is sealed as the SDK writes it, beside the settlement. */
+test('a settled payment is sealed as the SDK writes it, beside the settlement', async () => {
+  const { sealSettlement } = await import('./mcp-http.ts')
+  // the two statements agents/x402 runs after the tool answers and the facilitator settles
+  const result = sealSettlement({ content: [] } as { content: never[]; _meta?: Record<string, any> })
+  result._meta ??= {}
+  result._meta['x402/payment-response'] = { success: true, transaction: '0xabc', network: 'base', payer: '0xdef' }
+  assert.deepEqual([result._meta['x402/receipt'].kind, result._meta['x402/receipt'].sealed, JSON.parse(JSON.stringify(result))._meta['x402/receipt'].address.length], ['x402', true, 36])
+})
+
