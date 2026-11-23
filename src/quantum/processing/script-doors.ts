@@ -8,7 +8,7 @@ import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { QUANTUM_TERMS, quantumVocabulary } from './quantum-vocabulary.ts'
 import { canonicalText, seal, uuid, uuidQubits } from '../uuid/index.ts'
 import { TOOLBOXES } from './mcp.ts'
-import { GENERATED_LEMMAS, KERNEL_THEOREMS, THEOREMS } from './theorems-index.ts'
+import { GENERATED_LEMMAS, KERNEL_THEOREMS, OPEN_CLAIMS, THEOREMS } from './theorems-index.ts'
 
 /** Qpu/General/Textbook.lean is written in Lean. This door renders nothing: it names the file and counts what the index read from it. */
 const textbookLean = () => {
@@ -252,6 +252,22 @@ const SCRIPT_INVOKE = {
   stdio: { tool: 'mcpServer (serveStdio)', via: 'scripts/stdio.ts', npm: 'MCP stdio transport' },
 } as const
 
+type StatusContext = { examples: readonly { id: string; tool?: string; arguments?: unknown }[]; call: (name: string, args?: Record<string, unknown>) => any }
+/** The tree's status, every value read from its own doors: the Google challenges, the Clay register, the factoring examples
+ *  and the claims no theorem proves. A regression answers holds false, so the generator step turns the gate red. */
+const status = (ctx: StatusContext) => {
+  const g = ctx.call('google', { challenges: true }), c = ctx.call('clay', {}), yes = (b: unknown) => (b === true ? '✓' : '✗'), code = (t: unknown) => `\`${t}\``
+  const factored = ['algorithm-factor-1000-bit', 'algorithm-factor-test-integer'].map((id) => { const e = ctx.examples.find((x) => x.id === id)!; return { id, s: ctx.call(e.tool!, e.arguments as Record<string, unknown>) } })
+  const table = (columns: string, body: unknown[][]) => { const head = columns.split(' · '); return [`| ${head.join(' | ')} |`, `|${head.map(() => '---').join('|')}|`, ...body.map((r) => `| ${r.join(' | ')} |`), ''] }
+  const text = [PROSE.quantumProcessingScriptDoors_status39, '', '# Status', '',
+    `## ${proseFill(PROSE.quantumProcessingScriptDoors_google40, g.holding, g.total, g.allHold, g.sealed)}`, '', ...table(PROSE.quantumProcessingScriptDoors_columns45, g.challenges.map((x: Record<string, unknown>) => [x.title, yes(x.holds), yes(x.kernelAccepted), yes(x.sealed), code(x.theorem)])),
+    `## ${proseFill(PROSE.quantumProcessingScriptDoors_clay41, c.holding, c.total)}`, '',
+    `## ${PROSE.quantumProcessingScriptDoors_factor42}`, '', ...table(PROSE.quantumProcessingScriptDoors_columns46, factored.map(({ id, s }) => [code(id), s.bits, s.factors.length, s.left.length, s.complete, s.verified, code(s.theorem)])),
+    `## ${PROSE.quantumProcessingScriptDoors_open43}`, '', ...table(PROSE.quantumProcessingScriptDoors_columns47, OPEN_CLAIMS.map((o) => [`${code(o.name)}: ${o.claim}`, o.proved.map(code).join(', ') || '—']))].join('\n')
+  const holds = g.allHold === true && g.sealed === true && c.holding === c.total && factored.every(({ s }) => s.verified === true) && factored[0]!.s.complete === true
+  return { phase: 'scripts-status' as const, path: 'src/quantum/STATUS.md', text, holds, says: proseFill(PROSE.quantumProcessingScriptDoors_says44, g.holding, g.total, c.holding, c.total, factored.length, OPEN_CLAIMS.length, holds) }
+}
+
 const scriptsCatalog = () => ({
   phase: 'scripts-catalog' as const,
   count: Object.keys(SCRIPT_INVOKE).length,
@@ -268,15 +284,17 @@ export type ScriptsArgs = {
   blueprint?: { lean?: Record<string, string> }
   theoremsIndex?: { output?: string }
   skills?: boolean
+  status?: boolean
 }
 
 /** payload { scripts } — one fused door for relocated script work. */
-export const scripts = (args: ScriptsArgs, ctx?: { examples?: readonly { id: string; shows?: string; tool?: string }[] }) => {
+export const scripts = (args: ScriptsArgs, ctx?: { examples?: readonly { id: string; shows?: string; tool?: string; arguments?: unknown }[]; call?: StatusContext['call'] }) => {
   if (args.catalog) return scriptsCatalog()
   if (args.clay && typeof args.clay.lean === 'string') return clayStatements(args.clay.lean)
   if (args.textbookLean === true) return textbookLean()
   if (args.blueprint) return blueprint()
   if (args.skills === true) return qpuSkills(TOOLBOXES, QUANTUM_TERMS, ctx?.examples ?? [])
+  if (args.status === true && ctx?.call && ctx.examples) return status({ examples: ctx.examples, call: ctx.call })
   if (args.theoremsIndex && typeof args.theoremsIndex === 'object') return theoremsIndex()
   if (args.leadsIndex && Array.isArray(args.leadsIndex.rows)) return leadsIndex(args.leadsIndex.rows)
   if (args.tablesIndex && args.tablesIndex.tables && typeof args.tablesIndex.tables === 'object') {
@@ -284,7 +302,7 @@ export const scripts = (args: ScriptsArgs, ctx?: { examples?: readonly { id: str
   }
   return {
     phase: 'scripts-plan' as const,
-    doors: ['catalog', 'clay', 'leadsIndex', 'tablesIndex', 'textbookLean', 'blueprint', 'theoremsIndex', 'skills'] as const,
+    doors: ['catalog', 'clay', 'leadsIndex', 'tablesIndex', 'textbookLean', 'blueprint', 'theoremsIndex', 'skills', 'status'] as const,
     invoke: SCRIPT_INVOKE,
     says: PROSE.quantumProcessingScriptDoors_says38,
   }

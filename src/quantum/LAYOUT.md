@@ -6,10 +6,6 @@ Names are lowercase and may use `_` or `-`. A directory's public surface is its 
 
 `plugins` is twelve folder plugins, one per directory: `app`, `apps`, `config`, `db`, `engine`, `generators`, `os`, `password`, `payload`, `processing`, `uuid`.
 
-`tsconfig.json` excludes `src/quantum`. The website `package.json` is `payload-website` and does not export `@uuidna/qpu`. `src/payload.config.ts` does not mount this simulator, so there is no `/api/qpu/*` route.
-
-`payload { generate }` answers the generators. An install, and a call that names none of the other kinds, returns `installApp`.
-
 | Kind | What it returns |
 |---|---|
 | `install: true` | The files `rails new` writes, the models, and the admin mount. |

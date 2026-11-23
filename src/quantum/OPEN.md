@@ -2,12 +2,6 @@
 
 What this repository leaves open. A sitemap page is classified by `sitemapLeads` in [`leads.ts`](processing/leads.ts). The layouts are [`PROCESSORS.md`](PROCESSORS.md). The algorithm names are [`ALGORITHMS.md`](ALGORITHMS.md). The thousand-bit integer is [`CRYPTO.md`](CRYPTO.md). The routes are [`LAYOUT.md`](LAYOUT.md) and [`API.md`](API.md).
 
-## Website
-
-`src/payload.config.ts` mounts five endpoints: `POST /sync/docs`, `POST /redeploy/website`, `GET /refresh/mdx-to-lexical`, `POST /create-release-post`, and `POST /create-release-post-from-admin`. `src/app/api` has `analytics/event`. `tsconfig.json` excludes `src/quantum`. Pages stay Payload's local API. The import is [`index.ts`](index.ts).
-
-The registry records `/api/qpu/repos`, `/api/qpu/feeds`, `/api/qpu/accounting`, `/api/qpu/google`, and `/api/mcp`. `POST /api/mcp` is live through `qpuMcpPlugin` (`@payloadcms/plugin-mcp` via `payload.qpu.config` / `qpuPlugin`). The other `/api/qpu/*` simulator routes stay registry doors until a deploy mounts them; pages stay Payload's local API.
-
 ## Bristlecone and Foxtail
 
 `ALL_PROCESSORS` holds six processors: Google Quantum AI's five layouts and qpu's register (`Qpu.Information.Qubit`). `DEVICES` is the same map, so the `circuit` tool and the engine client check a circuit against every one of them.

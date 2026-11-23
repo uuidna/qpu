@@ -1,6 +1,6 @@
 # Standards
 
-The ISO dimensions this tree names, and the check that the simulator meets them. The list and the check are [`standards.ts`](processing/standards.ts). The defining rows the `payload` door holds are `ISO_OPEN_DEFINITIONS` in [`payload.ts`](processing/toolboxes/payload.ts). The detailed specification is [`README.md`](README.md). The witnesses are [`WITNESSES.md`](WITNESSES.md).
+The ISO dimensions this tree names, and the check that the simulator meets them. The list and the check are [`standards.ts`](processing/standards.ts). The detailed specification is [`README.md`](README.md). The witnesses are [`WITNESSES.md`](WITNESSES.md).
 
 `ISO_DIMENSIONS` names the dimensions; every count of them is `ISO_DIMENSIONS.length`. A catalogue row matches a name when its reference is that name, or starts with the name plus `:` or `-`. `ISO 16` does not match `ISO 16000`. A current row has stage at least 6060 and below 9500. Among the rows that match, the one kept is current, then defining, then not a supplement, then the later year, then the higher stage. The defining row of each, with its catalogue number and stage from ISO open data, is `ISO_OPEN_DEFINITIONS` in [`iso-deliverables.ts`](processing/iso-deliverables.ts).
 
@@ -9,8 +9,6 @@ Entropy as a quantity is **ISO 80000-5:2019** (catalogue 64976): \(S = k \ln W\)
 `validate { classify }` classifies files by the dimensions they cite (`isoClassify`): handed paths it asks for those files, and handed the files it answers each path with its dimensions and names every file that cites none.
 
 `verifyIsoOnline` fetches nothing. With no answer the phase is `requests`, the page is `https://www.iso.org/open-data.html`, the dataset is `iso_deliverables_metadata`, the licence is ODC-By 1.0, and `holds` is false. An HTML answer that links the JSONLines file asks for that file next. A file answer verifies a dimension when a row names it, and defines it when that row has an English title and a scope. `holds` is true when every dimension is verified and defined. Research beside that file asks ISO 690 and ISO 26324 of the DOI ecosystem.
-
-`payload { iso: true }` defines every dimension from those rows. Each is current except ISO 639-1, which is defined and is not current. Nothing is fetched and nothing is written.
 
 `gateQuantumPurity` admits a state of trace 1 and purity 1 under ISO/IEC 4879:2024. A state of trace 1 and purity below 1 is mixed, and is not admitted as pure. The other fourteen dimensions are not a purity question: each of those rows holds, and none of them is admitted.
 

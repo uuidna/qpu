@@ -90,6 +90,10 @@ Tests sit next to the modules (`coin-uuid_test.ts`, `google-challenges_test.ts`,
 
 [`index.ts`](./index.ts) is the import. The exports, the JSON-RPC methods, and the worked calls are [`API.md`](./API.md). There is no `/api/qpu/*` route.
 
+## Status
+
+The tree's status, written from its own doors by the status generator and checked at every commit, is [`STATUS.md`](./STATUS.md).
+
 ## Open
 
 What stays open is [`OPEN.md`](./OPEN.md).

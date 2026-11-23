@@ -51,3 +51,10 @@ test('a browser at / and /mcp still gets the site, and a browser-based client fr
   const r = await serveMcp(rpc('https://qpu.test/mcp', { jsonrpc: '2.0', id: 1, method: 'tools/list' }, { origin: 'https://inspector.example' }), { QPU_MCP_HOSTS: 'qpu.test' })
   assert.equal(r.status, 200, await r.clone().text())
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every example's arguments satisfy the schema its tool advertises, so a client the SDK validates reaches what the kernel answers. */
+test('every example\'s arguments satisfy the schema its tool advertises, so a client the SDK validates reaches what the kernel answers', async () => {
+  const [{ EXAMPLES }, { handle }, { z }] = await Promise.all([import('../processing/examples.ts'), import('../processing/mcp.ts'), import('zod')])
+  const tools = new Map(((await handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' } as never)) as any).result.tools.map((t: { name: string; inputSchema: object }) => [t.name, t.inputSchema]))
+  assert.deepEqual(EXAMPLES.filter((e) => tools.has(e.tool) && !z.fromJSONSchema(tools.get(e.tool) as never).safeParse(e.arguments).success).map((e) => e.id), [])
+})
