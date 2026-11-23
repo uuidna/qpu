@@ -1,7 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { configKinds } from './payload-vocabulary.ts'
-import { domainConfigs, scientificDomains } from './domains.ts'
+import { scientificDomains } from './domains.ts'
 import { call } from './mcp.ts'
 
 const field = (id: string) => ({ id: `https://openalex.org/fields/${id}` })
@@ -48,29 +47,4 @@ test('the leads door covers every scientific domain by the product, and a named 
   assert.equal(row.product, '1500')
   assert.equal(row.whole, true)
   assert.equal(row.walked, false)
-})
-
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: every Payload config UUID carries the domain product, and a named domain id does not narrow it. */
-test('every Payload config UUID carries the domain product, and a named domain id does not narrow it', () => {
-  const open = domainConfigs({ id: '3' })
-  assert.equal(open.improved, false)
-  assert.equal(open.product, null)
-  assert.equal(open.configs, configKinds.length)
-  assert.ok(open.domains.ran === false, 'no page was handed, so the cover is the one request')
-  assert.equal(open.domains.request.url.includes('/domains/3'), false)
-  assert.equal(open.rows.every((row) => row.sealed), true)
-  const covered = call('payload', { improve: { domains: { id: '3', page } } })
-  assert.ok('result' in covered)
-  const row = (covered.result as { structuredContent: { improved: boolean; product: string; configs: number; walked: boolean; hosts: string[]; sealed: boolean } }).structuredContent
-  assert.equal(row.improved, true)
-  assert.equal(row.product, '1500')
-  assert.equal(row.configs, configKinds.length)
-  assert.equal(row.walked, false)
-  assert.equal(row.sealed, true)
-  assert.deepEqual(row.hosts, ['qpu.uuidna.com', 'qpu.psg.bg'])
-  const configured = call('configure', { domains: { page } })
-  assert.ok('result' in configured)
-  const config = (configured.result as { structuredContent: { via: string; product: string } }).structuredContent
-  assert.equal(config.via, 'uuid-payload-config')
-  assert.equal(config.product, '1500')
 })

@@ -8,8 +8,7 @@ import { VERSION } from './unit/version.ts'
 import { TABLES } from './tables-index.ts'
 import { canonicalText, seal, uuid } from '../uuid/index.ts'
 import { ISO_DIMENSIONS, ISO_OPEN_DATA, ISO_PRODUCERS, PRODUCER_TRINITIES, HIDDEN_PERSPECTIVES, extractIsoFromProducers, extractIsoRefs, unlockHiddenPerspectives, isoResearch, verifyIsoOnline } from './iso-deliverables.ts'
-import { parseIsoDimensionsMicrodata, parseToMicrodata } from './microdata.ts'
-export { ISO_DIMENSIONS, ISO_OPEN_DATA, ISO_PRODUCERS, PRODUCER_TRINITIES, HIDDEN_PERSPECTIVES, extractIsoFromProducers, extractIsoRefs, unlockHiddenPerspectives, isoResearch, verifyIsoOnline, parseToMicrodata, parseIsoDimensionsMicrodata }
+export { ISO_DIMENSIONS, ISO_OPEN_DATA, ISO_PRODUCERS, PRODUCER_TRINITIES, HIDDEN_PERSPECTIVES, extractIsoFromProducers, extractIsoRefs, unlockHiddenPerspectives, isoResearch, verifyIsoOnline }
 import { hex, sha256, utf8 } from './unit/hmac.ts'
 import {
   CNOT,
@@ -110,8 +109,8 @@ type ApiTool = { name: string; description: string; inputSchema: object }
 export const OPENAPI_RESOURCE = 'openapi://qpu'
 /** The QPU's own contract in the standard the discover step asks every host for: an OpenAPI 3.1 document derived from tools/list and the
  *  endpoint table, never written by hand — every tool a component schema (its JSON Schema as tools/list serves it), every endpoint a path,
- *  the one MCP operation a JSON-RPC envelope whose params name a tool and its arguments; the envelopes are the two schemas beyond the tools
- *  (textbook_openapi_contract). The same document stands in the discovery document at /.well-known/qpu.json and as the resource
+ *  the one MCP operation a JSON-RPC envelope whose params name a tool and its arguments; the envelopes are the two schemas beyond the tools.
+ *  The same document stands in the discovery document at /.well-known/qpu.json and as the resource
  *  openapi://qpu, so the tree detects its own hosts as `openapi 3.1.0` the way it detects any other's. What an AI API and a quantum API
  *  share — a named tool, its schema, a structured result at a content address — is this contract. Pure. */
 export const createOpenapi = (origin: string, tools: readonly ApiTool[], hosts: readonly string[] = [origin]) => {
@@ -496,8 +495,8 @@ export const verifyIsoQuantumEquivalence = () => {
   const g3Holds =
     clay.holding === clay.total &&
     clay.total === CLAY_RELATIONS.length &&
-    THEOREMS.length >= 1439 &&
-    TEXTBOOK_THEOREMS.length >= 376 &&
+    THEOREMS.length >= 1574 &&
+    TEXTBOOK_THEOREMS.length >= 360 &&
     stdValidation.uncovered === 0 &&
     stdValidation.covered === stdValidation.standards
 
@@ -622,11 +621,11 @@ export const verifyIsoQuantumEquivalence = () => {
       programmability: PROSE.quantumProcessingStandards_programmability35,
       holds:
         fuseCall('fold').side === 'coin' &&
-        fuseCall('payload').side === 'coil' &&
+        fuseCall('google').side === 'coil' &&
         accountCoins('fold').balanced &&
-        accountCoins('payload').balanced,
+        accountCoins('google').balanced,
       evidence: {
-        toolboxes: 12,
+        toolboxes: 11,
         deterministicTools: 47,
         algebraCoinTools: ['css', 'fold', 'verify', 'clay'],
         licensedCoilTools: 43,

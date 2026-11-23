@@ -17,14 +17,12 @@ type Asset = { kind: AssetKind; id: string; url: string; address: string; bytes:
 
 const intersect = (a: Set<string>, b: Set<string>) => [...a].filter((x) => b.has(x))
 
-/** Every cached asset the handler can compute, each at its address: the code of the full stack, the SDK, the registry items, the examples' blocks. */
+/** Every cached asset the handler can compute, each at its address: the SDK, the registry items, the examples' blocks. */
 const listAssets = (ctx: Context, origin: string): Omit<Asset, 'score'>[] => {
-  const files = (ctx.call('configure', { kind: 'fullstack' })?.config?.files as Record<string, string> | undefined) ?? {}
   const sdk = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: 'sdk://qpu/lib' } }) as { result?: { contents?: { text?: string }[] } }).result?.contents?.[0]?.text ?? ''
   const textAsset = (kind: AssetKind, id: string, text: string, url: string): Omit<Asset, 'score'> => { const address = uuid(text); return { kind, id, url, address, bytes: text.length, verified: verify(address, text).valid, stems: [...wordStems(id.replace(/\.[a-z]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2'))], text } }
   const idAsset = (kind: AssetKind, id: string, url: string, stems: string, extra: Partial<Asset> = {}): Omit<Asset, 'score'> => { const address = uuid(`${kind}:${id}`); return { kind, id, url, address, bytes: 0, verified: verify(address).valid, stems: [...wordStems(stems)], ...extra } }
   return [
-    ...Object.entries(files).map(([p, text]) => textAsset('code', p, text, `${origin}/${p}`)),
     ...(sdk ? [textAsset('sdk', 'lib/qpu-sdk.ts', sdk, `${origin}/lib/qpu-sdk.ts`)] : []),
     ...PRESENTABLE_ITEMS.map((item) => idAsset('registry', item, `${origin}/r/${item}.json`, `${item} registry shadcn`)),
     ...ctx.examples.map((e) => idAsset('block', e.id, `${origin}/mcp`, `${e.id} ${e.tool} ${e.theorem ?? ''}`, { tool: e.tool, replay: { tool: 'textbook', arguments: { reuse: e.id } } })),

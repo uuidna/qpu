@@ -3,7 +3,7 @@
 // request the client fetches, the answer read back whether JSON or an event stream. Outward, this catalogue is expressed as
 // the registration any MCP client mounts (tools/list as every client receives it, the mcpServers fragment). Pure: no fetch.
 import { PROSE, proseFill } from '../prose-index.ts'
-import { ADAPTED_CONNECTORS, QPU_CONNECTOR, WEBSITE_CLIENT, WEBSITE_ROUTES, llmTools } from '../../net/website-client.ts'
+import { ADAPTED_CONNECTORS, QPU_CONNECTOR, WEBSITE_CLIENT, WEBSITE_ROUTES, llmTools } from '../../net/connector.ts'
 import { TABLES } from '../tables-index.ts'
 import { defineTool, isObj, createChecks, listTools, type Toolbox, type Context } from '../toolbox.ts'
 import { toDoor, getEventData, rpcBody, DEFAULT_MCP_HOSTS, CLOUDFLARE_MCP, CLOUDFLARE_DOCS_MCP, QPU_MCP, KNOWN_MCP, CLAUDE_API, GEMINI_API, OPEN_MCP_BASELINES, compareToolsLists, createCoverageRequest, getCoverage, mcpHostList, type Door } from '../discovery.ts'
@@ -166,7 +166,7 @@ const extend = defineTool('extension', {
     }
     // the coverage of the registered MCP world: the registry's first page named for the client to walk, then its count turned into a ratio of the gates' MCP doors
     if (args.coverage === true) return { phase: 'requests' as const, request: createCoverageRequest(), says: PROSE.quantumProcessingToolboxesExtension_says27 } as never
-    if (isObj(args.coverage)) { const total = Number((args.coverage as { registryTotal?: unknown }).registryTotal ?? 0); const gates = ((ctx.call('configure', { kind: 'gates' })?.config?.gates as { category: string }[] | undefined) ?? []); const tools = listTools(ctx).length; return { phase: 'coverage' as const, ...getCoverage(gates.filter((g) => g.category === 'mcp').length, Number.isFinite(total) ? total : 0, tools) } as never }
+    if (isObj(args.coverage)) { const total = Number((args.coverage as { registryTotal?: unknown }).registryTotal ?? 0); const tools = listTools(ctx).length; return { phase: 'coverage' as const, ...getCoverage(mcpHostList().length, Number.isFinite(total) ? total : 0, tools) } as never }
     if (args.connector === true || isObj(args.connector)) {
       const asked = args.connector === true ? undefined : (args.connector as { model?: unknown }).model
       if (asked !== undefined && (typeof asked !== 'string' || !MODEL_NAME.test(asked))) throw new Error(PROSE.quantumProcessingToolboxesExtension_s28)
@@ -191,8 +191,8 @@ const extend = defineTool('extension', {
           const counts = { open: open.filter((row) => row.status === 'open').length, partial: open.filter((row) => row.status === 'partial').length, blocked: open.filter((row) => row.status === 'blocked').length }
           const leads = open.flatMap((row) => [rotate(row.id, row.statement), ...(row.idea ? [rotate(row.id, row.idea)] : [])])
           const held = (row: { kept: boolean; back: boolean; around: boolean; sealed: boolean; all: boolean; places: number; rotated: string; program: string; aspects: number }) => row.kept && row.back && row.around && row.sealed && row.all && row.places === 10 && row.rotated === row.program.slice(1) + row.program[0] && row.aspects === 4
-          const walked = ctx.call('leads', { ideas: { next: 'quantum-leads' } }) as { leads: { id: string; depth: number }[]; saves: { page: { saved?: boolean; next?: { decision?: string; clause?: string; holds?: boolean } } }[] }
-          const rows = walked.leads.map((lead, index) => { const page = walked.saves[index]?.page; return { id: lead.id, depth: lead.depth, decision: page?.next?.decision ?? null, clause: page?.next?.clause ?? null, holds: page?.next?.holds === true, saved: page?.saved === true } })
+          const walked = ctx.call('leads', { ideas: { next: 'quantum-leads' } }) as { leads: { id: string; depth: number; developed?: { iso?: { documented?: boolean }; end?: { next?: { decision?: string; clause?: string; holds?: boolean } } } }[] }
+          const rows = walked.leads.map((lead) => { const next = lead.developed?.end?.next; return { id: lead.id, depth: lead.depth, decision: next?.decision ?? null, clause: next?.clause ?? null, holds: next?.holds === true, saved: lead.developed?.iso?.documented === true } })
           const accepted = rows.filter((row) => row.decision === 'accept' && row.holds && row.saved).length
           const review = { accepted, refused: rows.length - accepted, of: rows.length, holds: rows.length > 0 && accepted === rows.length, rows }
           const tasks = leads.map(taskMessage)

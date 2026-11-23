@@ -8,13 +8,32 @@ import type { Lead } from './leads.ts'
 import type { Rpc } from './audit.ts'
 import { createMatcher } from './match.ts'
 import { VERIFIERS } from './verifiers.ts'
-import { canonicalText, channel, seal, uuid } from '../uuid/index.ts'
+import { canonicalText, channel, seal, uuid, uuidFromParts } from '../uuid/index.ts'
 import { nil } from '../uuid/programs/index.ts'
 import { checkWitnesses } from './witnesses.ts'
-import { theoremHex } from './toolboxes/payload.ts'
 import { LICENSE, PRECEDENCE } from './unit/license.ts'
 import { KEY } from './unit/theme.ts'
 import { decodeImpossible, seededTrapdoor } from './algorithms.ts'
+
+const leanExpression = (lean: string) => {
+  const at = lean.lastIndexOf(' :=')
+  const head = at < 0 ? lean : lean.slice(0, at)
+  const colon = head.lastIndexOf(':')
+  const body = (colon < 0 ? head : head.slice(colon + 1)).trim()
+  return body || lean.trim()
+}
+/** The theorem and its witnesses, as hex. The handle is the theorem's place. The program is the theorem's own numerals, and each further nibble is σ of one of them (15 − digit). The tail is the witness partition: 6 squares, 8 triangles, 14 faces. */
+const WITNESS_TAIL = [6, 8, 14].map((n) => n.toString(16).padStart(4, '0')).join('')
+const theoremHex = (book: { lean: string }, index: number) => {
+  const expression = leanExpression(book.lean)
+  const numerals = [...expression.matchAll(/\d+/g)].flatMap((m) => [...BigInt(m[0]).toString(16)].map((c) => parseInt(c, 16)))
+  const seed = numerals.length ? numerals : [index & 15]
+  const program = Array.from({ length: 10 }, (_, i) => (i < numerals.length ? numerals[i]! : (15 - seed[i % seed.length]!) & 15))
+  const handle = index.toString(16).padStart(8, '0')
+  const gravity = uuidFromParts(handle, program, WITNESS_TAIL)
+  return { expression, numerals, seed, program, handle, gravity }
+}
+/** Code gravity is one online gate QPU handles. The gate is open, its call is public, and the call costs no token. This save ports that one gate into the website. The address is the theorem and the witnesses, in hex, and that address uses every effective qubit. The hook names the next open gate. Nothing is fetched and nothing is written. */
 
 type ImagineRow = { lead: string; status: string; verdict: string; tool?: string; cluster: number; verify: number; factors: number; angles: number; queries: number; opened: number }
 type Imagination = { leads: number; verdicts: Record<string, number>; verifyRequests: number; imaginedLeads: number; rows: ImagineRow[]; imagined: Lead[] }

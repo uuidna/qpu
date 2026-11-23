@@ -8,7 +8,7 @@ Every quantum term from clause 3.1.1 through 3.6.4 is one row of [`quantum-vocab
 
 Identifiers and ledger records use ISO/IEC 9834-8, ISO 22739:2024, ISO 23257:2022, ISO/TR 23455:2019, ISO 24165, ISO 20022, and ISO 4217. The further dimensions this tree names are ISO 80000-10, ISO 8601, ISO 639-1, ISO 3166-1, ISO/IEC 19770, ISO 16, and ISO 9001. Quantum purity is gated on ISO/IEC 4879:2024. A state of trace 1 and purity 1 is admitted. A state of trace 1 and purity below 1 is refused as pure.
 
-The Payload website serves this cover through one connector: `qpuMcpPlugin` at `POST /api/mcp` (tool `coverDomains` among others). Nested pages → ecommerce → post → Zenodo. The rest of this processing stays off the website. Rails names the folders and the generators. Payload answers them.
+The Worker serves this cover through one connector: `qpuMcpPlugin` at `POST /api/mcp`. Rails names the folders and the generators.
 
 ## Abstract
 
@@ -61,7 +61,7 @@ The binding this tree puts beside the coin is the SHA-256 of the receipt. `textb
 
 ## Layout
 
-The folders, the twelve plugins, and `payload { generate }` are [`LAYOUT.md`](./LAYOUT.md). `tsconfig.json` excludes `src/quantum`, so there is no `/api/qpu/*` route.
+The folders are [`LAYOUT.md`](./LAYOUT.md). `tsconfig.json` excludes `src/quantum`, so there is no `/api/qpu/*` route.
 
 ## Two layers
 
@@ -81,8 +81,8 @@ The folders, the twelve plugins, and `payload { generate }` are [`LAYOUT.md`](./
 | [`witnesses.ts`](./processing/witnesses.ts) | Fourteen faces around a UUID, and the shared-witness merge. The squares, the triangles, and the coins are [`WITNESSES.md`](./WITNESSES.md). |
 | [`standards.ts`](./processing/standards.ts) | The ISO dimensions, the purity gate, and the equivalence check. The defining rows are [`STANDARDS.md`](./STANDARDS.md). |
 | [`crypto/index.ts`](./processing/crypto/index.ts) | \(2^{999}+1\) and the 1000-bit trapdoor. The pieces, the product check, and the reflection integer are [`CRYPTO.md`](./CRYPTO.md). |
-| [`repositories.ts`](./processing/repositories.ts) | Fifteen quantumlib repositories, and three payloadcms repositories with 21 mounted packages. The matrix is [`REPOSITORIES.md`](./REPOSITORIES.md). |
-| [`toolboxes/`](./processing/toolboxes) | Twelve toolboxes, their tools counted by `textbook_mcp_tools_by_toolbox`. The names are [`TOOLBOXES.md`](./TOOLBOXES.md). |
+| [`repositories.ts`](./processing/repositories.ts) | Fifteen quantumlib repositories. The matrix is [`REPOSITORIES.md`](./REPOSITORIES.md). |
+| [`toolboxes/`](./processing/toolboxes) | Eleven toolboxes, their tools counted by `textbook_mcp_tools_by_toolbox`. The names are [`TOOLBOXES.md`](./TOOLBOXES.md). |
 
 Tests sit next to the modules (`coin-uuid_test.ts`, `google-challenges_test.ts`, `cirq_test.ts`, `qec_test.ts`, `processor_test.ts`, `thousand-bit_test.ts`, and others). A test file is `*_test.ts`: lowercase, and the only punctuation is the extension. Run one with `node --experimental-strip-types --test <file>`. The website `package.json` has no script for that. The deploy workflow does not run these tests.
 

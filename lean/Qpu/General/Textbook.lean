@@ -41,12 +41,12 @@ where it has variables an `example := @name` that holds the theorem at every val
 theorems that reflect it. `lake run index` renders textbook-index.ts
 from this text, and the TypeScript side reads that. -/
 
-/-- each of n plugins in or out gives 2^n configurations. From Mathlib's `Fintype.card_fun`, `Fintype.card_bool` and `Fintype.card_fin` (examples: configure-payload) -/
+/-- each of n plugins in or out gives 2^n configurations. From Mathlib's `Fintype.card_fun`, `Fintype.card_bool` and `Fintype.card_fin` -/
 theorem textbook_plugin_combinations (n : Nat) : Fintype.card (Fin n → Bool) = 2 ^ n := by
   rw [Fintype.card_fun, Fintype.card_bool, Fintype.card_fin]
 example := @textbook_plugin_combinations
 example : 2 ^ 9 = 512 := by decide
-/-- textbook_plugin_combinations reflected by its shape (examples: configure-payload) -/
+/-- textbook_plugin_combinations reflected by its shape -/
 @[reflection] theorem textbook_plugin_combinations_reflected (n : Nat) : (2 ^ n) = (Fintype.card (Fin n → Bool)) := Eq.symm (textbook_plugin_combinations n)
 /-- every variant priced in every currency is one price: variants × currencies prices. From Mathlib's `Fintype.card_prod` (examples: stripe-catalogue) -/
 theorem textbook_prices_are_variants_times_currencies (Variant Currency : Type) [Fintype Variant] [Fintype Currency] :
@@ -55,17 +55,17 @@ example := @textbook_prices_are_variants_times_currencies
 example : 9 * 2 = 18 := by decide
 /-- textbook_prices_are_variants_times_currencies reflected by its shape (examples: stripe-catalogue) -/
 @[reflection] theorem textbook_prices_are_variants_times_currencies_reflected (Variant Currency : Type) [Fintype Variant] [Fintype Currency] : (Fintype.card Variant * Fintype.card Currency) = (Fintype.card (Variant × Currency)) := Eq.symm (textbook_prices_are_variants_times_currencies Variant Currency)
-/-- a string of a digits and b dashes has a + b characters (a UUID: 32 hex digits and 4 dashes, 36 characters). From Mathlib's `Fintype.card_sum`, `Fintype.card_fin` (examples: payload-doc, legal-audit-offline) -/
+/-- a string of a digits and b dashes has a + b characters (a UUID: 32 hex digits and 4 dashes, 36 characters). From Mathlib's `Fintype.card_sum`, `Fintype.card_fin` (examples: legal-audit-offline) -/
 theorem textbook_uuid_is_36 (a b : Nat) : Fintype.card (Fin a ⊕ Fin b) = a + b := by
   rw [Fintype.card_sum, Fintype.card_fin, Fintype.card_fin]
 example := @textbook_uuid_is_36
 example : 32 + 4 = 36 := by decide
-/-- textbook_uuid_is_36 reflected by its shape (examples: payload-doc, legal-audit-offline) -/
+/-- textbook_uuid_is_36 reflected by its shape (examples: legal-audit-offline) -/
 @[reflection] theorem textbook_uuid_is_36_reflected (a b : Nat) : (a + b) = (Fintype.card (Fin a ⊕ Fin b)) := Eq.symm (textbook_uuid_is_36 a b)
-/-- a seed and its reflection σ₁₀(s) = 10 − s sum to ten. From Mathlib's `add_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `Nat.instOrderedSub` (examples: css-stylesheet, configure-all) -/
+/-- a seed and its reflection σ₁₀(s) = 10 − s sum to ten. From Mathlib's `add_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `Nat.instOrderedSub` (examples: css-stylesheet) -/
 theorem textbook_reflection_sums_to_ten (s : ℕ) (h : s ≤ 10) : s + (10 - s) = 10 := add_tsub_cancel_of_le h
 example := @textbook_reflection_sums_to_ten
-/-- textbook_reflection_sums_to_ten reflected by its shape (examples: css-stylesheet, configure-all) -/
+/-- textbook_reflection_sums_to_ten reflected by its shape (examples: css-stylesheet) -/
 @[reflection] theorem textbook_reflection_sums_to_ten_reflected (s : ℕ) (h : s ≤ 10) : (10) = (s + (10 - s)) := Eq.symm (textbook_reflection_sums_to_ten s h)
 /-- piece i and its mirror n − i sum to the boundary n. From Mathlib's `add_tsub_cancel_of_le`, through the instances `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `Nat.instOrderedSub` (examples: fold-ledger) -/
 theorem textbook_fold_mirror (n i : Nat) (h : i ≤ n) : i + (n - i) = n := add_tsub_cancel_of_le h
@@ -96,7 +96,7 @@ example := @textbook_workspace_sets
 example : 3 * 3 * 3 * 3 * 3 * 3 * 2 * 3 * 2 * 3 = 26244 ∧ 3 = 3 := by decide
 /-- textbook_workspace_sets reflected by its shape (examples: textbook-sets, textbook-set) -/
 @[reflection] theorem textbook_workspace_sets_reflected (k : Nat) (r : Fin k → Nat) : (∏ i, r i) = (Fintype.card ((i : Fin k) → Fin (r i))) := Eq.symm (textbook_workspace_sets k r)
-/-- a namespace narrows a credential, never widens it: the meet of what the request named and what the user held lies below what the user held. From Mathlib's `inf_le_right` (examples: payload-namespace-sandbox, payload-namespace-narrow, leads-client) -/
+/-- a namespace narrows a credential, never widens it: the meet of what the request named and what the user held lies below what the user held. From Mathlib's `inf_le_right` (examples: leads-client) -/
 theorem textbook_namespace_narrows {α : Type*} [SemilatticeInf α] (named held : α) : named ⊓ held ≤ held := inf_le_right
 example := @textbook_namespace_narrows
 /-- a deterministic check of equal inputs has an equal verdict: an example whose answer folds to the integers its theorem's confirmed pass recorded is decided by that theorem, and the text checks run only to confirm a new integer (examples: audit-self) -/
@@ -117,43 +117,13 @@ example := @textbook_double_entry
 /-- the converse of textbook_double_entry, proved. From Mathlib's `le_antisymm`, `tsub_eq_zero_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: stripe-ledger, compete-economics, verify-radar) -/
 @[reflection] theorem textbook_double_entry_converse (debits credits : Nat) : (debits - credits = 0 ∧ credits - debits = 0) → (debits = credits) :=
   fun hc => le_antisymm (tsub_eq_zero_iff_le.mp hc.1) (tsub_eq_zero_iff_le.mp hc.2)
-/-- the covered and the uncovered make the standards: with truncated subtraction (ℕ among its models), when c + u is the total, the total less u is c. From Mathlib's `add_tsub_cancel_right` (examples: standards-validate, textbook-education, payload-iso-connector, payload-iso-connector-auth, payload-iso-connector-id) -/
+/-- the covered and the uncovered make the standards: with truncated subtraction (ℕ among its models), when c + u is the total, the total less u is c. From Mathlib's `add_tsub_cancel_right` (examples: standards-validate, textbook-education) -/
 theorem textbook_standards_sliced {α : Type*} [PartialOrder α] [AddCommSemigroup α] [Sub α] [OrderedSub α]
     [AddLeftReflectLE α] (covered uncovered total : α) (h : covered + uncovered = total) : total - uncovered = covered := by
   rw [← h]; exact add_tsub_cancel_right covered uncovered
 example := @textbook_standards_sliced
-/-- textbook_standards_sliced reflected by its shape (examples: standards-validate, textbook-education, payload-iso-connector, payload-iso-connector-auth, payload-iso-connector-id) -/
+/-- textbook_standards_sliced reflected by its shape (examples: standards-validate, textbook-education) -/
 @[reflection] theorem textbook_standards_sliced_reflected {α : Type*} [PartialOrder α] [AddCommSemigroup α] [Sub α] [OrderedSub α] [AddLeftReflectLE α] (covered uncovered total : α) (h : covered + uncovered = total) : (covered) = (total - uncovered) := Eq.symm (textbook_standards_sliced covered uncovered total h)
-/-- parseToMicrodata splits a value and converts every piece to schema.org microdata at the deepest SKU-bearing leaf: an ISO reference into organization / number / part / year (each character a DefinedTerm), a sealed UUID into handle / program / stamp / tail (each nibble a leaf), anything else into tokens then characters; the root SKU is the handle of uuid(text) or of the sealed address itself, the same trackable rule as a product SKU (15 ISO dimensions → depth 4, 141 leaves) (examples: payload-iso) -/
-theorem textbook_parse_microdata_deep : 4 > 2 ∧ 141 > 14 ∧ 15 = 15 := by decide
-/-- textbook_parse_microdata_deep reflected by its shape, conjunction (examples: payload-iso) -/
-@[reflection] theorem textbook_parse_microdata_deep_reflected (σ : Nat) (hσ0 : (4) ≤ σ) (hσ1 : (141) ≤ σ) : (σ - (4) < σ - (2)) ∧ (σ - (141) < σ - (14)) ∧ (σ - (15) = σ - (15)) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_parse_microdata_deep).1 hσ0) (textbook_parse_microdata_deep).1, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_parse_microdata_deep).2.1 hσ1) (textbook_parse_microdata_deep).2.1, congrArg (σ - ·) (Eq.symm (textbook_parse_microdata_deep).2.2)⟩
-/-- typography set twice is set once: min (min n 1) 1 = min n 1, a cap applied again changes nothing. From Mathlib's `min_assoc` and `min_self` (examples: payload-standardise) -/
-theorem textbook_typography_idempotent (n : ℕ) : min (min n 1) 1 = min n 1 := by
-  rw [min_assoc, min_self]
-example := @textbook_typography_idempotent
-/-- textbook_typography_idempotent reflected by its shape (examples: payload-standardise) -/
-@[reflection] theorem textbook_typography_idempotent_reflected (n : ℕ) : (min n 1) = (min (min n 1) 1) := Eq.symm (textbook_typography_idempotent n)
-/-- n documents fused into k nodes: with truncated subtraction (ℕ among its models), the n − k fused away and the k that remain are the n, every document counted once. From Mathlib's `tsub_add_cancel_of_le` (examples: payload-references) -/
-theorem textbook_references_acyclic {α : Type*} [AddCommSemigroup α] [PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α]
-    [Sub α] [OrderedSub α] (k n : α) (h : k ≤ n) : n - k + k = n := tsub_add_cancel_of_le h
-example := @textbook_references_acyclic
-/-- textbook_references_acyclic reflected by its shape (examples: payload-references) -/
-@[reflection] theorem textbook_references_acyclic_reflected {α : Type*} [AddCommSemigroup α] [PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α] [Sub α] [OrderedSub α] (k n : α) (h : k ≤ n) : (n) = (n - k + k) := Eq.symm (textbook_references_acyclic k n h)
-/-- when the queries served and the cache hits saved make the total, the total less the saved is the served. From Mathlib's `add_tsub_cancel_right`, through the instances `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: payload-reference-index) -/
-theorem textbook_cache_saves_cost (served saved total : Nat) (h : served + saved = total) : total - saved = served := by
-  rw [← h]; exact add_tsub_cancel_right served saved
-example := @textbook_cache_saves_cost
-/-- textbook_cache_saves_cost reflected by its shape (examples: payload-reference-index) -/
-@[reflection] theorem textbook_cache_saves_cost_reflected (served saved total : Nat) (h : served + saved = total) (σ : Nat) : σ - (served) = σ - (total - saved) := congrArg (σ - ·) (Eq.symm (textbook_cache_saves_cost served saved total h))
-/-- the contrapositive of textbook_cache_saves_cost (examples: payload-reference-index) -/
-@[reflection] theorem textbook_cache_saves_cost_contrapositive (served saved total : Nat) : ¬ (total - saved = served) → ¬ ((served + saved = total)) := fun hc hh => hc (textbook_cache_saves_cost served saved total hh)
-/-- the distinct addresses and the cache hits make the references, so the references less the hits are the distinct addresses. From Mathlib's `Finset.card_sdiff_of_subset` (examples: payload-reference-index) -/
-theorem textbook_reference_index_cached {Reference : Type} [DecidableEq Reference] (references hits : Finset Reference) (h : hits ⊆ references) :
-  (references \ hits).card = references.card - hits.card := Finset.card_sdiff_of_subset h
-example := @textbook_reference_index_cached
-/-- textbook_reference_index_cached reflected by its shape (examples: payload-reference-index) -/
-@[reflection] theorem textbook_reference_index_cached_reflected {Reference : Type} [DecidableEq Reference] (references hits : Finset Reference) (h : hits ⊆ references) : (references.card - hits.card) = ((references \ hits).card) := Eq.symm (textbook_reference_index_cached references hits h)
 /-- the gravitational constant 667430 × 10^-16 with its uncertainty 15 × 10^-16 has a relative uncertainty of 22474 parts per billion, rounded down, computed from the integers alone: a seal keeps it, never removes it (examples: seal-constants) -/
 theorem textbook_codata_g_ppb : 15 * 1000000000 / 667430 = 22474 := by decide
 /-- textbook_codata_g_ppb reflected by its shape, equality (examples: seal-constants) -/
@@ -356,27 +326,6 @@ theorem textbook_sigma_involution {α : Type*} [AddCommSemigroup α] [PartialOrd
 example := @textbook_sigma_involution
 /-- textbook_sigma_involution reflected by its shape (examples: verify-witnesses, verify-witnesses-merge, verify-radar) -/
 @[reflection] theorem textbook_sigma_involution_reflected {α : Type*} [AddCommSemigroup α] [PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α] [Sub α] [OrderedSub α] [AddLeftReflectLE α] (d x : α) (h : x ≤ d) : (x) = (d - (d - x)) := Eq.symm (textbook_sigma_involution d x h)
-/-- the tenant hosts and the operator's are the tenants' count plus one providers (2 + 1 = 3). From Mathlib's `Fintype.card_option` (examples: configure-migration) -/
-theorem textbook_providers_are_tenants_plus_operator (Tenant : Type) [Fintype Tenant] : Fintype.card (Option Tenant) = Fintype.card Tenant + 1 :=
-  Fintype.card_option
-example := @textbook_providers_are_tenants_plus_operator
-example : 2 + 1 = 3 := by decide
-/-- textbook_providers_are_tenants_plus_operator reflected by its shape (examples: configure-migration) -/
-@[reflection] theorem textbook_providers_are_tenants_plus_operator_reflected (Tenant : Type) [Fintype Tenant] : (Fintype.card Tenant + 1) = (Fintype.card (Option Tenant)) := Eq.symm (textbook_providers_are_tenants_plus_operator Tenant)
-/-- the plugins MCP configures split into the site's own, those beyond it and the editor: a finite set partitioned into three classes has as many elements as the classes hold together. From Mathlib's `Finset.card_eq_sum_card_fiberwise` and `Finset.mem_univ` (examples: payload-website) -/
-theorem textbook_website_plugins_partition {α : Type*} (plugins : Finset α) (cls : α → Fin 3) : plugins.card = ∑ j : Fin 3, (plugins.filter (fun x => cls x = j)).card :=
-  Finset.card_eq_sum_card_fiberwise (fun x _ => Finset.mem_univ (cls x))
-example := @textbook_website_plugins_partition
-example : 4 + 4 + 1 = 9 := by decide
-/-- textbook_website_plugins_partition reflected by its shape (examples: payload-website) -/
-@[reflection] theorem textbook_website_plugins_partition_reflected {α : Type*} (plugins : Finset α) (cls : α → Fin 3) : (∑ j : Fin 3, (plugins.filter (fun x => cls x = j)).card) = (plugins.card) := Eq.symm (textbook_website_plugins_partition plugins cls)
-/-- the skills and their references, two disjoint kinds, number the sum, |A ⊕ B| = |A| + |B|. From Mathlib's `Fintype.card_sum` and `Fintype.card_fin` (examples: payload-skills) -/
-theorem textbook_skills_documents (a b : Nat) : Fintype.card (Fin a ⊕ Fin b) = a + b := by
-  simp only [Fintype.card_sum, Fintype.card_fin]
-example := @textbook_skills_documents
-example : 2 + 12 = 14 := by decide
-/-- textbook_skills_documents reflected by its shape (examples: payload-skills) -/
-@[reflection] theorem textbook_skills_documents_reflected (a b : Nat) : (a + b) = (Fintype.card (Fin a ⊕ Fin b)) := Eq.symm (textbook_skills_documents a b)
 /-- the shard of item k among n shards is k mod n, a residue in ZMod n and so one of the n shards: every item is shared. From Mathlib's `ZMod.val_natCast`, `ZMod.val_lt` (examples: shard-share, audit-shard) -/
 theorem textbook_shards_cover (n : Nat) [NeZero n] (k : Nat) : (k : ZMod n).val = k % n ∧ (k : ZMod n).val < n :=
   ⟨ZMod.val_natCast n k, ZMod.val_lt _⟩
@@ -392,27 +341,12 @@ example := @textbook_signature_over_digest
 example : 32 * 8 = 256 := by decide
 /-- textbook_signature_over_digest reflected by its shape (examples: seal-sign) -/
 @[reflection] theorem textbook_signature_over_digest_reflected (n : ℕ) : (2 ^ (8 * n)) = ((2 ^ 8) ^ n) := Eq.symm (textbook_signature_over_digest n)
-/-- the configuration kinds split into the ones the tool writes, the ones the hand holds and the ones answered inside them: a finite set partitioned into k classes has as many elements as the classes hold together. From Mathlib's `Finset.card_eq_sum_card_fiberwise` and `Finset.mem_univ` (examples: configure-files, configure-policies) -/
-theorem textbook_configs_partition {α : Type*} {k : ℕ} (s : Finset α) (kind : α → Fin k) : s.card = ∑ j : Fin k, (s.filter (fun x => kind x = j)).card :=
-  Finset.card_eq_sum_card_fiberwise (fun x _ => Finset.mem_univ (kind x))
-example := @textbook_configs_partition
-example : 8 + 2 + 15 = 25 := by decide
-/-- textbook_configs_partition reflected by its shape (examples: configure-files, configure-policies) -/
-@[reflection] theorem textbook_configs_partition_reflected {α : Type*} {k : ℕ} (s : Finset α) (kind : α → Fin k) : (∑ j : Fin k, (s.filter (fun x => kind x = j)).card) = (s.card) := Eq.symm (textbook_configs_partition s kind)
-/-- packages sorted by kind number the sum of the kinds' sizes, |s| = Σ_b |{a ∈ s | f a = b}|. From Mathlib's `Finset.card_eq_sum_card_fiberwise` (examples: configure-packages) -/
-theorem textbook_packages_partition {α β : Type*} [DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β)
-    (H : ∀ x ∈ s, f x ∈ t) : s.card = ∑ b ∈ t, (s.filter fun a => f a = b).card :=
-  Finset.card_eq_sum_card_fiberwise H
-example := @textbook_packages_partition
-example : 12 + 5 + 5 + 2 + 1 + 3 + 17 = 45 := by decide
-/-- textbook_packages_partition reflected by its shape (examples: configure-packages) -/
-@[reflection] theorem textbook_packages_partition_reflected {α β : Type*} [DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β) (H : ∀ x ∈ s, f x ∈ t) : (∑ b ∈ t, (s.filter fun a => f a = b).card) = (s.card) := Eq.symm (textbook_packages_partition f s t H)
-/-- v variants priced in c currencies are v · c prices, the pairs of a product. From Mathlib's `Fintype.card_prod` and `Fintype.card_fin` (examples: configure-ecommerce) -/
+/-- v variants priced in c currencies are v · c prices, the pairs of a product. From Mathlib's `Fintype.card_prod` and `Fintype.card_fin` (examples: stripe-variants-built) -/
 theorem textbook_catalogue_prices (v c : Nat) : Fintype.card (Fin v × Fin c) = v * c := by
   simp only [Fintype.card_prod, Fintype.card_fin]
 example := @textbook_catalogue_prices
 example : 9 * 3 = 27 := by decide
-/-- textbook_catalogue_prices reflected by its shape (examples: configure-ecommerce) -/
+/-- textbook_catalogue_prices reflected by its shape (examples: stripe-variants-built) -/
 @[reflection] theorem textbook_catalogue_prices_reflected (v c : Nat) : (v * c) = (Fintype.card (Fin v × Fin c)) := Eq.symm (textbook_catalogue_prices v c)
 /-- a pegged currency converts at one fixed rate: the same euro amount gives the same leva, always (1.95583 since 2026-01-01) (examples: currency-harmonise, currency-plan, currency-refuse-qpu) -/
 theorem textbook_peg_is_fixed (eur : Nat) : eur * 195583 / 100000 = eur * 195583 / 100000 := rfl
@@ -460,25 +394,21 @@ example := @textbook_uuid_core
 example : 8 + 10 + 12 + 2 = 32 := by decide
 /-- textbook_uuid_core reflected by its shape (examples: fold-hex, match-pattern-uuid, imagine-all, fold-speak-thousand, chat-thousand) -/
 @[reflection] theorem textbook_uuid_core_reflected (a b c d : ℕ) : (a + b + c + d) = (Fintype.card (Fin a ⊕ Fin b ⊕ Fin c ⊕ Fin d)) := Eq.symm (textbook_uuid_core a b c d)
-/-- overlays of the UUID core hold as formulated calls: a432 key 432, hue 72, DNA base-4 round-trips, Glagolitic signal, CMYK accent, shadcn registry block, Open Graph website and thousandBit clay theatre; the sealed address alone is password/address without pulling style/stream/widget (examples: configure-uuid-overlays) -/
-theorem textbook_uuid_overlays : 432 = 432 ∧ 72 = 72 ∧ 4 = 4 := by decide
-/-- textbook_uuid_overlays reflected by its shape, conjunction (examples: configure-uuid-overlays) -/
-@[reflection] theorem textbook_uuid_overlays_reflected (σ : Nat) : (σ - (432) = σ - (432)) ∧ (σ - (72) = σ - (72)) ∧ (σ - (4) = σ - (4)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_uuid_overlays).1), congrArg (σ - ·) (Eq.symm (textbook_uuid_overlays).2.1), congrArg (σ - ·) (Eq.symm (textbook_uuid_overlays).2.2)⟩
-/-- a filtered stream keeps f of its n rows and drops the rest: the stream less the dropped is the kept, whatever the hexes. From Mathlib's `tsub_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd` and `contravariant_lt_of_covariant_le` (examples: fold-stream, configure-ui-stream) -/
+/-- a filtered stream keeps f of its n rows and drops the rest: the stream less the dropped is the kept, whatever the hexes. From Mathlib's `tsub_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd` and `contravariant_lt_of_covariant_le` (examples: fold-stream) -/
 theorem textbook_stream_filter (n f : ℕ) (h : f ≤ n) : n - (n - f) = f := tsub_tsub_cancel_of_le h
 example := @textbook_stream_filter
-/-- textbook_stream_filter reflected by its shape (examples: fold-stream, configure-ui-stream) -/
+/-- textbook_stream_filter reflected by its shape (examples: fold-stream) -/
 @[reflection] theorem textbook_stream_filter_reflected (n f : ℕ) (h : f ≤ n) : (f) = (n - (n - f)) := Eq.symm (textbook_stream_filter n f h)
-/-- any hex is presentable: each of the a · b values of a digit is exactly one pair (item, variant), finProdFinEquiv : Fin a × Fin b ≃ Fin (a · b), so the two are equally many (a nibble's 16 values are 8 registry items by 2 variants). From Mathlib's `Fintype.card_congr` (examples: configure-ui-hex, fold-hex) -/
+/-- any hex is presentable: each of the a · b values of a digit is exactly one pair (item, variant), finProdFinEquiv : Fin a × Fin b ≃ Fin (a · b), so the two are equally many (a nibble's 16 values are 8 registry items by 2 variants). From Mathlib's `Fintype.card_congr` (examples: fold-hex) -/
 theorem textbook_hex_presentations (a b : Nat) : Fintype.card (Fin a × Fin b) = Fintype.card (Fin (a * b)) :=
   Fintype.card_congr finProdFinEquiv
 example := @textbook_hex_presentations
 example : 8 * 2 = 16 := by decide
-/-- textbook_hex_presentations reflected by its shape (examples: configure-ui-hex, fold-hex) -/
+/-- textbook_hex_presentations reflected by its shape (examples: fold-hex) -/
 @[reflection] theorem textbook_hex_presentations_reflected (a b : Nat) : (Fintype.card (Fin (a * b))) = (Fintype.card (Fin a × Fin b)) := Eq.symm (textbook_hex_presentations a b)
-/-- the app shell is a function of the key alone: the same key gives the same shell, at every host, every time (examples: configure-ui) -/
+/-- the app shell is a function of the key alone: the same key gives the same shell, at every host, every time -/
 theorem textbook_ui_deterministic (f : Nat → Nat) (k : Nat) : f k = f k := rfl
-/-- textbook_ui_deterministic reflected by its shape, equality (examples: configure-ui) -/
+/-- textbook_ui_deterministic reflected by its shape, equality -/
 @[reflection] theorem textbook_ui_deterministic_reflected (f : Nat → Nat) (k : Nat) : (f k) = (f k) := Eq.symm (textbook_ui_deterministic f k)
 /-- priority, filing and grant are ordered: what is ordered pairwise is ordered through, in any preorder. From Mathlib's `le_trans` (examples: patents-read) -/
 theorem textbook_patent_dates_ordered {α : Type*} [Preorder α] (p f g : α) (h₁ : p ≤ f) (h₂ : f ≤ g) : p ≤ g := le_trans h₁ h₂
@@ -542,42 +472,36 @@ example := @textbook_dates_ordered
 /-- a capability plugin that writes into another plugin's options runs strictly before it, so at least one order step before: m < n gives m + 1 ≤ n. From Mathlib's `Order.add_one_le_of_lt` (examples: textbook-plugins-by-capability) -/
 theorem textbook_plugins_by_capability (m n : ℕ) (h : m < n) : m + 1 ≤ n := Order.add_one_le_of_lt h
 example := @textbook_plugins_by_capability
-/-- a read g that the write f undoes (f ∘ g = id) makes every further round trip the identity: (f ∘ g) ∘ (f ∘ g) = id. From Mathlib's `Function.LeftInverse.comp_eq_id`, `Function.id_comp` (examples: payload-workspace-form, payload-workspace-form-violations, payload-workspace-response) -/
+/-- a read g that the write f undoes (f ∘ g = id) makes every further round trip the identity: (f ∘ g) ∘ (f ∘ g) = id. From Mathlib's `Function.LeftInverse.comp_eq_id`, `Function.id_comp` (examples: google-workspace-form, google-workspace-form-violations, google-workspace-response) -/
 theorem textbook_workspace_round_trip {α β : Type} (f : α → β) (g : β → α) (h : Function.LeftInverse f g) : (f ∘ g) ∘ (f ∘ g) = id := by
   rw [h.comp_eq_id, Function.id_comp]
 example := @textbook_workspace_round_trip
-/-- textbook_workspace_round_trip reflected by its shape (examples: payload-workspace-form, payload-workspace-form-violations, payload-workspace-response) -/
+/-- textbook_workspace_round_trip reflected by its shape (examples: google-workspace-form, google-workspace-form-violations, google-workspace-response) -/
 @[reflection] theorem textbook_workspace_round_trip_reflected {α β : Type} (f : α → β) (g : β → α) (h : Function.LeftInverse f g) : (id) = ((f ∘ g) ∘ (f ∘ g)) := Eq.symm (textbook_workspace_round_trip f g h)
-/-- a round trip that keeps the shape keeps it through any number of round trips: shape ∘ back = shape gives shape ∘ backⁿ = shape. From Mathlib's `Function.Semiconj.iterate_right` and `Function.iterate_id` (examples: payload-workspace-docs, payload-workspace-docs-lost) -/
+/-- a round trip that keeps the shape keeps it through any number of round trips: shape ∘ back = shape gives shape ∘ backⁿ = shape. From Mathlib's `Function.Semiconj.iterate_right` and `Function.iterate_id` (examples: google-workspace-docs, google-workspace-docs-lost) -/
 theorem textbook_workspace_docs_round_trip {α β : Type*} (shape : α → β) (back : α → α) (h : ∀ x, shape (back x) = shape x) (n : ℕ) (x : α) : shape (back^[n] x) = shape x := by
   have := Function.Semiconj.iterate_right (f := shape) (ga := back) (gb := id) h n x
   rwa [Function.iterate_id] at this
 example := @textbook_workspace_docs_round_trip
-/-- textbook_workspace_docs_round_trip reflected by its shape (examples: payload-workspace-docs, payload-workspace-docs-lost) -/
+/-- textbook_workspace_docs_round_trip reflected by its shape (examples: google-workspace-docs, google-workspace-docs-lost) -/
 @[reflection] theorem textbook_workspace_docs_round_trip_reflected {α β : Type*} (shape : α → β) (back : α → α) (h : ∀ x, shape (back x) = shape x) (n : ℕ) (x : α) : (shape x) = (shape (back^[n] x)) := Eq.symm (textbook_workspace_docs_round_trip shape back h n x)
-/-- held plus missing are the kinds the Discovery documents define: with truncated subtraction (ℕ among its models), when h + m is the kinds, the kinds less the missing are the held. From Mathlib's `add_tsub_cancel_right` (examples: payload-workspace-coverage) -/
+/-- held plus missing are the kinds the Discovery documents define: with truncated subtraction (ℕ among its models), when h + m is the kinds, the kinds less the missing are the held. From Mathlib's `add_tsub_cancel_right` (examples: google-workspace-coverage) -/
 theorem textbook_workspace_coverage {α : Type*} [PartialOrder α] [AddCommSemigroup α] [Sub α] [OrderedSub α]
     [AddLeftReflectLE α] (held missing kinds : α) (h : held + missing = kinds) : kinds - missing = held := by
   rw [← h]; exact add_tsub_cancel_right held missing
 example := @textbook_workspace_coverage
-/-- textbook_workspace_coverage reflected by its shape (examples: payload-workspace-coverage) -/
+/-- textbook_workspace_coverage reflected by its shape (examples: google-workspace-coverage) -/
 @[reflection] theorem textbook_workspace_coverage_reflected {α : Type*} [PartialOrder α] [AddCommSemigroup α] [Sub α] [OrderedSub α] [AddLeftReflectLE α] (held missing kinds : α) (h : held + missing = kinds) : (held) = (kinds - missing) := Eq.symm (textbook_workspace_coverage held missing kinds h)
-/-- an injective content address separates states: a before and an after witness differ exactly when the operation changed the state. From Mathlib's `Function.Embedding.apply_eq_iff_eq` and `Iff.not` (examples: payload-hooks-witnesses, configure-hooks) -/
-theorem textbook_witness_pair {α β : Type} (f : α → β) (hf : ∀ x y, f x = f y → x = y) (a b : α) : f a ≠ f b ↔ a ≠ b :=
-  (Function.Embedding.apply_eq_iff_eq ⟨f, fun x y => hf x y⟩ a b).not
-example := @textbook_witness_pair
-/-- textbook_witness_pair reflected by its shape (examples: payload-hooks-witnesses, configure-hooks) -/
-@[reflection] theorem textbook_witness_pair_reflected {α β : Type} (f : α → β) (hf : ∀ x y, f x = f y → x = y) (a b : α) : (a ≠ b) ↔ (f a ≠ f b) := Iff.symm (textbook_witness_pair f hf a b)
-/-- a field-for-field correspondence both ways is an equivalence, so a document mapped to a Drive File and back is the document. From Mathlib's `Equiv.symm_apply_apply` (examples: payload-workspace-drive, payload-workspace-drive-answers) -/
+/-- a field-for-field correspondence both ways is an equivalence, so a document mapped to a Drive File and back is the document. From Mathlib's `Equiv.symm_apply_apply` (examples: google-workspace-drive, google-workspace-drive-answers) -/
 theorem textbook_workspace_drive {α β : Type} (e : α ≃ β) (x : α) : e.symm (e x) = x := Equiv.symm_apply_apply e x
 example := @textbook_workspace_drive
-/-- textbook_workspace_drive reflected by its shape (examples: payload-workspace-drive, payload-workspace-drive-answers) -/
+/-- textbook_workspace_drive reflected by its shape (examples: google-workspace-drive, google-workspace-drive-answers) -/
 @[reflection] theorem textbook_workspace_drive_reflected {α β : Type} (e : α ≃ β) (x : α) : (x) = (e.symm (e x)) := Eq.symm (textbook_workspace_drive e x)
-/-- the calls answered and the calls refused partition the calls, so the calls less the refused are the answered ones. From Mathlib's `Finset.card_sdiff_of_subset` (examples: payload-google-measured) -/
+/-- the calls answered and the calls refused partition the calls, so the calls less the refused are the answered ones. From Mathlib's `Finset.card_sdiff_of_subset` (examples: google-measured) -/
 theorem textbook_google_measured {Call : Type} [DecidableEq Call] (calls refused : Finset Call) (h : refused ⊆ calls) :
   (calls \ refused).card = calls.card - refused.card := Finset.card_sdiff_of_subset h
 example := @textbook_google_measured
-/-- textbook_google_measured reflected by its shape (examples: payload-google-measured) -/
+/-- textbook_google_measured reflected by its shape (examples: google-measured) -/
 @[reflection] theorem textbook_google_measured_reflected {Call : Type} [DecidableEq Call] (calls refused : Finset Call) (h : refused ⊆ calls) : (calls.card - refused.card) = ((calls \ refused).card) := Eq.symm (textbook_google_measured calls refused h)
 /-- k copies folded into one holder leave one: k − (k − 1) = 1 for k ≥ 1. From Mathlib's `tsub_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le` (examples: audit-shapes-one-holder) -/
 theorem textbook_one_holder (k : Nat) (h : 1 ≤ k) : k - (k - 1) = 1 := tsub_tsub_cancel_of_le h
@@ -589,13 +513,6 @@ example := @textbook_one_holder
 /-- the converse of textbook_one_holder, proved. From Mathlib's `tsub_lt_self_iff`, `Nat.instCanonicallyOrderedAdd`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `tsub_pos_iff_lt`, `zero_lt_one` and `Nat.instZeroLEOneClass` (examples: audit-shapes-one-holder) -/
 @[reflection] theorem textbook_one_holder_converse (k : Nat) : (k - (k - 1) = 1) → (1 ≤ k) :=
   fun hc => (tsub_lt_self_iff.mp (tsub_pos_iff_lt.mp (hc ▸ zero_lt_one))).1
-/-- when each generated file has one role among the roles, the files number the sum over the roles of the files of each role. From Mathlib's `Finset.card_eq_sum_card_fiberwise` (examples: configure-fullstack, configure-fullstack-readme) -/
-theorem textbook_fullstack_files_by_role {ι κ : Type} [DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ) (h : ∀ x ∈ s, f x ∈ t) : s.card = ∑ k ∈ t, (s.filter (fun x => f x = k)).card :=
-  Finset.card_eq_sum_card_fiberwise (fun x hx => h x hx)
-example := @textbook_fullstack_files_by_role
-example : 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 1 = 1 := by decide
-/-- textbook_fullstack_files_by_role reflected by its shape (examples: configure-fullstack, configure-fullstack-readme) -/
-@[reflection] theorem textbook_fullstack_files_by_role_reflected {ι κ : Type} [DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ) (h : ∀ x ∈ s, f x ∈ t) : (∑ k ∈ t, (s.filter (fun x => f x = k)).card) = (s.card) := Eq.symm (textbook_fullstack_files_by_role f s t h)
 /-- the knowledge of a competition is the product of the competitors and the theorems known, positive when neither is empty. From Mathlib's `mul_pos`, `LinearOrderedCommMonoidWithZero.toPosMulStrictMono` (examples: compete-rules) -/
 theorem textbook_compete_knows (c t : Nat) (hc : 0 < c) (ht : 0 < t) : 0 < c * t := mul_pos hc ht
 example := @textbook_compete_knows
@@ -606,17 +523,10 @@ example := @textbook_compete_knows
 /-- the converse of textbook_compete_knows, proved. From Mathlib's `CanonicallyOrderedAdd.mul_pos`, `Nat.instCanonicallyOrderedAdd`, `IsStrictOrderedRing.noZeroDivisors`, `Nat.instIsStrictOrderedRing`, `StarOrderedRing.toExistsAddOfLE` and `Nat.instStarOrderedRing` (examples: compete-rules) -/
 @[reflection] theorem textbook_compete_knows_converse (c t : Nat) : (0 < c * t) → (0 < c) ∧ (0 < t) :=
   fun hc => CanonicallyOrderedAdd.mul_pos.mp hc
-/-- a bundle made of the stack's a files and b further files has a + b files: the cardinality of a disjoint union is the sum. From Mathlib's `Fintype.card_sum` and `Fintype.card_fin` (examples: payload-app) -/
-theorem textbook_app_bundle (a b : ℕ) : Fintype.card (Fin a ⊕ Fin b) = a + b := by
-  rw [Fintype.card_sum, Fintype.card_fin, Fintype.card_fin]
-example := @textbook_app_bundle
-example : 1 + 2 = 3 := by decide
-/-- textbook_app_bundle reflected by its shape (examples: payload-app) -/
-@[reflection] theorem textbook_app_bundle_reflected (a b : ℕ) : (a + b) = (Fintype.card (Fin a ⊕ Fin b)) := Eq.symm (textbook_app_bundle a b)
-/-- two edits of one document either share their base address or collide, the excluded middle: there is no third case. From Mathlib's `em` (examples: configure-realtime) -/
+/-- two edits of one document either share their base address or collide, the excluded middle: there is no third case. From Mathlib's `em` (examples: legal-court-collision) -/
 theorem textbook_edit_collides {α : Type*} (p q : α) : p = q ∨ p ≠ q := em (p = q)
 example := @textbook_edit_collides
-/-- textbook_edit_collides reflected by its shape (examples: configure-realtime) -/
+/-- textbook_edit_collides reflected by its shape (examples: legal-court-collision) -/
 @[reflection] theorem textbook_edit_collides_reflected {α : Type*} (p q : α) : (p ≠ q) ∨ (p = q) := Or.symm (textbook_edit_collides p q)
 /-- the leads a difference opens are the members on one side only: with a and b members sharing c, (a − c) + (b − c) = a + b − 2c. From Mathlib's `tsub_add_tsub_comm` and `two_mul`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `Nat.instAtLeastTwoHAddOfNat` (examples: audit-difference) -/
 theorem textbook_difference_leads (a b c : Nat) (ha : c ≤ a) (hb : c ≤ b) : (a - c) + (b - c) = a + b - 2 * c := by
@@ -690,148 +600,30 @@ theorem textbook_entropy_fusion (f d : Nat) : f - d ≤ f := tsub_le_self
 example := @textbook_entropy_fusion
 /-- textbook_entropy_fusion reflected by its shape (examples: audit-entropy, audit-entropy-vacuum, fold-integers) -/
 @[reflection] theorem textbook_entropy_fusion_reflected (f d : Nat) (σ : Nat) : σ - (f) ≤ σ - (f - d) := Nat.sub_le_sub_left (textbook_entropy_fusion f d) σ
-/-- inclusion–exclusion: two config sets unite into |a ∪ b| = |a| + |b| − |a ∩ b| members, |a ∪ b| + |a ∩ b| = |a| + |b|. From Mathlib's `Finset.card_union_add_card_inter` (examples: configure-sets) -/
-theorem textbook_set_union {α : Type} [DecidableEq α] (a b : Finset α) : (a ∪ b).card + (a ∩ b).card = a.card + b.card :=
-  Finset.card_union_add_card_inter a b
-example := @textbook_set_union
-/-- textbook_set_union reflected by its shape (examples: configure-sets) -/
-@[reflection] theorem textbook_set_union_reflected {α : Type} [DecidableEq α] (a b : Finset α) : (a.card + b.card) = ((a ∪ b).card + (a ∩ b).card) := Eq.symm (textbook_set_union a b)
-/-- the meet of equal sets is the set: when the widgeted and the skilled tools are the same set, their intersection is the widgeted. From Mathlib's `Finset.inter_self` (examples: configure-sets) -/
-theorem textbook_widget_skilled_tools {α : Type} [DecidableEq α] (w s : Finset α) (h : w = s) : w ∩ s = w := by
-  rw [h, Finset.inter_self]
-example := @textbook_widget_skilled_tools
-/-- textbook_widget_skilled_tools reflected by its shape (examples: configure-sets) -/
-@[reflection] theorem textbook_widget_skilled_tools_reflected {α : Type} [DecidableEq α] (w s : Finset α) (h : w = s) : (w) = (w ∩ s) := Eq.symm (textbook_widget_skilled_tools w s h)
-/-- tools partitioned over toolboxes number the sum over the toolboxes of each one's tools. From Mathlib's `Fintype.card_sigma` (examples: configure-sets, extend-out) -/
+/-- tools partitioned over toolboxes number the sum over the toolboxes of each one's tools. From Mathlib's `Fintype.card_sigma` (examples: extend-out) -/
 theorem textbook_mcp_tools_by_toolbox {Toolbox : Type} [Fintype Toolbox] (Tool : Toolbox → Type) [∀ b, Fintype (Tool b)] :
   Fintype.card (Σ b, Tool b) = ∑ b, Fintype.card (Tool b) := Fintype.card_sigma
 example := @textbook_mcp_tools_by_toolbox
-example : 13 + 11 + 6 + 2 + 1 + 2 + 3 + 1 + 3 + 2 + 1 + 3 = 48 := by decide
-/-- textbook_mcp_tools_by_toolbox reflected by its shape (examples: configure-sets, extend-out) -/
+example : 14 + 11 + 6 + 2 + 1 + 2 + 3 + 1 + 3 + 1 + 3 = 47 := by decide
+/-- textbook_mcp_tools_by_toolbox reflected by its shape (examples: extend-out) -/
 @[reflection] theorem textbook_mcp_tools_by_toolbox_reflected {Toolbox : Type} [Fintype Toolbox] (Tool : Toolbox → Type) [∀ b, Fintype (Tool b)] : (∑ b, Fintype.card (Tool b)) = (Fintype.card (Σ b, Tool b)) := Eq.symm (textbook_mcp_tools_by_toolbox Tool)
-/-- when the own doors and the external addresses partition the gates, the gates less the external are the own, however many the tables grow to. From Mathlib's `add_tsub_cancel_right`, through the instances `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: configure-gates) -/
-theorem textbook_gates_partition (parts : List Nat) (own external : Nat) (h : own + external = parts.sum) : parts.sum - external = own := by
-  rw [← h]; exact add_tsub_cancel_right own external
-example := @textbook_gates_partition
-/-- textbook_gates_partition reflected by its shape (examples: configure-gates) -/
-@[reflection] theorem textbook_gates_partition_reflected (parts : List Nat) (own external : Nat) (h : own + external = parts.sum) : (own) = (parts.sum - external) := Eq.symm (textbook_gates_partition parts own external h)
-/-- the landings partition the gates however many the tables grow to: with truncated subtraction (ℕ among its models), when a + b is the total, the total less b is a. From Mathlib's `add_tsub_cancel_right` (examples: configure-gates) -/
-theorem textbook_gate_adapters {α : Type*} [PartialOrder α] [AddCommSemigroup α] [Sub α] [OrderedSub α]
-    [AddLeftReflectLE α] (a b total : α) (h : a + b = total) : total - b = a := by
-  rw [← h]; exact add_tsub_cancel_right a b
-example := @textbook_gate_adapters
-/-- textbook_gate_adapters reflected by its shape (examples: configure-gates) -/
-@[reflection] theorem textbook_gate_adapters_reflected {α : Type*} [PartialOrder α] [AddCommSemigroup α] [Sub α] [OrderedSub α] [AddLeftReflectLE α] (a b total : α) (h : a + b = total) : (a) = (total - b) := Eq.symm (textbook_gate_adapters a b total h)
-/-- 2 directions under r roles are 2 · r role-direction pairs, |Bool × Fin r| = 2r (REST in and out under three tenant roles: six). From Mathlib's `Fintype.card_prod`, `Fintype.card_bool` and `Fintype.card_fin` (examples: configure-gates) -/
+/-- 2 directions under r roles are 2 · r role-direction pairs, |Bool × Fin r| = 2r (REST in and out under three tenant roles: six). From Mathlib's `Fintype.card_prod`, `Fintype.card_bool` and `Fintype.card_fin` (examples: legal-court-role) -/
 theorem textbook_rest_rbac (r : Nat) : Fintype.card (Bool × Fin r) = 2 * r := by
   rw [Fintype.card_prod, Fintype.card_bool, Fintype.card_fin]
 example := @textbook_rest_rbac
 example : 2 * 3 = 6 := by decide
-/-- textbook_rest_rbac reflected by its shape (examples: configure-gates) -/
+/-- textbook_rest_rbac reflected by its shape (examples: legal-court-role) -/
 @[reflection] theorem textbook_rest_rbac_reflected (r : Nat) : (2 * r) = (Fintype.card (Bool × Fin r)) := Eq.symm (textbook_rest_rbac r)
-/-- a servers at the registry and b toolboxes make a + b, the cardinality of a disjoint union. From Mathlib's `Fintype.card_sum` and `Fintype.card_fin` (examples: configure-gates) -/
+/-- a servers at the registry and b toolboxes make a + b, the cardinality of a disjoint union. From Mathlib's `Fintype.card_sum` and `Fintype.card_fin` -/
 theorem textbook_google_mcps (a b : ℕ) : Fintype.card (Fin a ⊕ Fin b) = a + b := by
   rw [Fintype.card_sum, Fintype.card_fin, Fintype.card_fin]
 example := @textbook_google_mcps
 example : 15 + 3 = 18 := by decide
-/-- textbook_google_mcps reflected by its shape (examples: configure-gates) -/
+/-- textbook_google_mcps reflected by its shape -/
 @[reflection] theorem textbook_google_mcps_reflected (a b : ℕ) : (a + b) = (Fintype.card (Fin a ⊕ Fin b)) := Eq.symm (textbook_google_mcps a b)
-/-- the gates by kind partition the gates however many the tables grow to: when the parts' sum is a + b, the total less b is a. From Mathlib's `add_tsub_cancel_right`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: configure-gates) -/
-theorem textbook_gates_by_kind (parts : List ℕ) (a b total : ℕ) (h : a + b = parts.sum) (ht : total = parts.sum) : total - b = a := by
-  rw [ht, ← h, add_tsub_cancel_right]
-example := @textbook_gates_by_kind
-/-- textbook_gates_by_kind reflected by its shape (examples: configure-gates) -/
-@[reflection] theorem textbook_gates_by_kind_reflected (parts : List ℕ) (a b total : ℕ) (h : a + b = parts.sum) (ht : total = parts.sum) : (a) = (total - b) := Eq.symm (textbook_gates_by_kind parts a b total h ht)
-/-- a database, b storage and c email adapters, one of each, give a·(b·c) adapter combinations. From Mathlib's `Fintype.card_prod` and `Fintype.card_fin` (examples: configure-adapters) -/
-theorem textbook_adapter_combinations (a b c : ℕ) : Fintype.card (Fin a × Fin b × Fin c) = a * (b * c) := by
-  rw [Fintype.card_prod, Fintype.card_prod, Fintype.card_fin, Fintype.card_fin, Fintype.card_fin]
-example := @textbook_adapter_combinations
-example : 5 * 5 * 3 = 75 := by decide
-/-- textbook_adapter_combinations reflected by its shape (examples: configure-adapters) -/
-@[reflection] theorem textbook_adapter_combinations_reflected (a b c : ℕ) : (a * (b * c)) = (Fintype.card (Fin a × Fin b × Fin c)) := Eq.symm (textbook_adapter_combinations a b c)
-/-- when every configuration kind is tested, the kinds less the tested leave none open: a number less itself is zero. From Mathlib's `tsub_self`, through the instances `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: configure-all) -/
-theorem textbook_configurations_closed (tested kinds : Nat) (h : tested = kinds) : kinds - tested = 0 := by
-  rw [h, tsub_self]
-example := @textbook_configurations_closed
-/-- textbook_configurations_closed reflected by its shape (examples: configure-all) -/
-@[reflection] theorem textbook_configurations_closed_reflected (tested kinds : Nat) (h : tested = kinds) (σ : Nat) : σ - (0) = σ - (kinds - tested) := congrArg (σ - ·) (Eq.symm (textbook_configurations_closed tested kinds h))
-/-- the contrapositive of textbook_configurations_closed (examples: configure-all) -/
-@[reflection] theorem textbook_configurations_closed_contrapositive (tested kinds : Nat) : ¬ (kinds - tested = 0) → ¬ ((tested = kinds)) := fun hc hh => hc (textbook_configurations_closed tested kinds hh)
-/-- the standard contract adds nothing the catalogue does not hold: the tools and the two JSON-RPC envelopes, less the envelopes, are the tools. From Mathlib's `add_tsub_cancel_right`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: configure-api) -/
-theorem textbook_openapi_contract (tools : ℕ) : tools + 2 - 2 = tools := add_tsub_cancel_right tools 2
-example := @textbook_openapi_contract
-/-- textbook_openapi_contract reflected by its shape (examples: configure-api) -/
-@[reflection] theorem textbook_openapi_contract_reflected (tools : ℕ) : (tools) = (tools + 2 - 2) := Eq.symm (textbook_openapi_contract tools)
-/-- however many binding names a tenant admin selects in Payload, the values held there are none: names times zero values is zero. From Mathlib's `MulZeroClass.mul_zero` (examples: configure-connectors, configure-bindings, configure-tenant-missing) -/
-theorem textbook_bindings_named_not_valued (names : ℕ) : names * 0 = 0 := mul_zero names
-example := @textbook_bindings_named_not_valued
-/-- textbook_bindings_named_not_valued reflected by its shape (examples: configure-connectors, configure-bindings, configure-tenant-missing) -/
-@[reflection] theorem textbook_bindings_named_not_valued_reflected (names : ℕ) : (0) = (names * 0) := Eq.symm (textbook_bindings_named_not_valued names)
-/-- a choice of a tenant role, a docket role and an operation is a triple, so a, b and c options make a · b · c combinations. From Mathlib's `Fintype.card_prod` and `Fintype.card_fin` (examples: audit-access) -/
-theorem textbook_access_combinations (a b c : ℕ) : Fintype.card (Fin a × Fin b × Fin c) = a * b * c := by
-  rw [Fintype.card_prod, Fintype.card_prod, Fintype.card_fin, Fintype.card_fin, Fintype.card_fin, Nat.mul_assoc]
-example := @textbook_access_combinations
-example : 3 * 3 * 4 = 36 := by decide
-/-- textbook_access_combinations reflected by its shape (examples: audit-access) -/
-@[reflection] theorem textbook_access_combinations_reflected (a b c : ℕ) : (a * b * c) = (Fintype.card (Fin a × Fin b × Fin c)) := Eq.symm (textbook_access_combinations a b c)
-/-- the reused and the recomputed make the computations, so the computations less the recomputed are the reused. From Mathlib's `add_tsub_cancel_right`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: payload-report) -/
-theorem textbook_report_refactors (reused recomputed total : ℕ) (h : reused + recomputed = total) : total - recomputed = reused := by
-  rw [← h, add_tsub_cancel_right]
-example := @textbook_report_refactors
-/-- textbook_report_refactors reflected by its shape (examples: payload-report) -/
-@[reflection] theorem textbook_report_refactors_reflected (reused recomputed total : ℕ) (h : reused + recomputed = total) : (reused) = (total - recomputed) := Eq.symm (textbook_report_refactors reused recomputed total h)
-/-- the quantum advantage is unlimited by default: the naturals have no maximum, so for any count of copies proven by hash there is a greater one and no bound is set on the measure. From Mathlib's `exists_gt`, `NoMaxOrder.exists_gt`, `Nat.instNoMaxOrder` (examples: audit-access, metrics-advantage, payload-predict) -/
+/-- the quantum advantage is unlimited by default: the naturals have no maximum, so for any count of copies proven by hash there is a greater one and no bound is set on the measure. From Mathlib's `exists_gt`, `NoMaxOrder.exists_gt`, `Nat.instNoMaxOrder` (examples: metrics-advantage) -/
 theorem textbook_advantage_unbounded (verified : Nat) : ∃ more, verified < more := exists_gt verified
 example := @textbook_advantage_unbounded
-/-- merging by block address is a join: two edits merged commute and merging an edit with itself is that edit, max a b = max b a and max a a = a. From Mathlib's `max_comm` and `max_self` (examples: payload-merge) -/
-theorem textbook_merge_commutes (a b : Nat) : max a b = max b a ∧ max a a = a := ⟨max_comm a b, max_self a⟩
-example := @textbook_merge_commutes
-/-- textbook_merge_commutes reflected by its shape (examples: payload-merge) -/
-@[reflection] theorem textbook_merge_commutes_reflected (a b : Nat) (σ : Nat) : (σ - (max b a) = σ - (max a b)) ∧ (σ - (a) = σ - (max a a)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_merge_commutes a b).1), congrArg (σ - ·) (Eq.symm (textbook_merge_commutes a b).2)⟩
-/-- a document holding one block per generated file and one more for the bundle has the files' count plus one blocks. From Mathlib's `Fintype.card_option` (examples: payload-app-lexical) -/
-theorem textbook_app_doc_blocks (File : Type) [Fintype File] : Fintype.card (Option File) = Fintype.card File + 1 :=
-  Fintype.card_option
-example := @textbook_app_doc_blocks
-example : 3 + 1 = 4 := by decide
-/-- textbook_app_doc_blocks reflected by its shape (examples: payload-app-lexical) -/
-@[reflection] theorem textbook_app_doc_blocks_reflected (File : Type) [Fintype File] : (Fintype.card File + 1) = (Fintype.card (Option File)) := Eq.symm (textbook_app_doc_blocks File)
-/-- a wider angle fits fewer streams in a turn: for 0 < s ≤ l, turn / l ≤ turn / s (360 / 90 = 4 gateways ≤ 360 / 60 = 6 streams). From Mathlib's `div_le_div_of_nonneg_left`, `PosMulReflectLE.toPosMulReflectLT`, `PosMulStrictMono.toPosMulReflectLE`, `IsStrictOrderedRing.toPosMulStrictMono`, `Rat.instIsStrictOrderedRing`, `MulPosReflectLE.toMulPosReflectLT`, `MulPosStrictMono.toMulPosReflectLE`, `IsStrictOrderedRing.toMulPosStrictMono` (examples: configure-scope, payload-merge) -/
-theorem textbook_streams_cover_gateways (turn small large : ℚ) (ht : 0 ≤ turn) (hs : 0 < small) (h : small ≤ large) : turn / large ≤ turn / small :=
-  div_le_div_of_nonneg_left ht hs h
-example := @textbook_streams_cover_gateways
-example : 360 / 60 = 6 ∧ 360 / 90 = 4 ∧ 4 ≤ 6 := by decide
-/-- the poles of the earth as pyramids base to base are the octahedron: six vertices, twelve edges, eight 60-degree faces closed by Euler, four faces to a pole over the four gateways of the equator (examples: configure-dependencies) -/
-theorem textbook_poles_pyramid : 6 + 8 - 12 = 2 ∧ 8 / 2 = 4 := by decide
-/-- textbook_poles_pyramid reflected by its shape, conjunction (examples: configure-dependencies) -/
-@[reflection] theorem textbook_poles_pyramid_reflected (σ : Nat) : (σ - (2) = σ - (6 + 8 - 12)) ∧ (σ - (4) = σ - (8 / 2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_poles_pyramid).1), congrArg (σ - ·) (Eq.symm (textbook_poles_pyramid).2)⟩
-/-- every rotation in every locale is one page: rotations × locales pages. From Mathlib's `Fintype.card_prod` (examples: none yet) -/
-theorem textbook_hologram_rotations (Rotation Locale : Type) [Fintype Rotation] [Fintype Locale] :
-  Fintype.card (Rotation × Locale) = Fintype.card Rotation * Fintype.card Locale := Fintype.card_prod _ _
-example := @textbook_hologram_rotations
-example : 10 * 11 = 110 := by decide
-/-- textbook_hologram_rotations reflected by its shape (examples: ) -/
-@[reflection] theorem textbook_hologram_rotations_reflected (Rotation Locale : Type) [Fintype Rotation] [Fintype Locale] : (Fintype.card Rotation * Fintype.card Locale) = (Fintype.card (Rotation × Locale)) := Eq.symm (textbook_hologram_rotations Rotation Locale)
-/-- a sitemap index of i sitemaps of u URLs each presents i · u addresses, the pairs of a product (50,000 by 50,000: 2,500,000,000). From Mathlib's `Fintype.card_prod` and `Fintype.card_fin` (examples: none yet) -/
-theorem textbook_sitemap_capacity (i u : Nat) : Fintype.card (Fin i × Fin u) = i * u := by
-  simp only [Fintype.card_prod, Fintype.card_fin]
-example := @textbook_sitemap_capacity
-example : 50000 * 50000 = 2500000000 := by decide
-/-- textbook_sitemap_capacity reflected by its shape (examples: ) -/
-@[reflection] theorem textbook_sitemap_capacity_reflected (i u : Nat) : (i * u) = (Fintype.card (Fin i × Fin u)) := Eq.symm (textbook_sitemap_capacity i u)
-/-- n scales of one shape in a row have n − 1 steps between neighbours (seven scales, six steps). From Mathlib's `List.length_zip`, `List.length_tail`, `min_eq_right`, `tsub_le_self`, `Nat.instCanonicallyOrderedAdd`, `Nat.instOrderedSub` (examples: configure-branding) -/
-theorem textbook_fractal_scales {α : Type} (scales : List α) : (scales.zip scales.tail).length = scales.length - 1 := by
-  rw [List.length_zip, List.length_tail, min_eq_right tsub_le_self]
-example := @textbook_fractal_scales
-example : 7 - 1 = 6 := by decide
-/-- textbook_fractal_scales reflected by its shape (examples: configure-branding) -/
-@[reflection] theorem textbook_fractal_scales_reflected {α : Type} (scales : List α) : (scales.length - 1) = ((scales.zip scales.tail).length) := Eq.symm (textbook_fractal_scales scales)
-/-- every registry item in every variant is one choice: items × variants choices (8 · 2 = 16, one per value of a nibble). From Mathlib's `Fintype.card_prod` (examples: configure-ui-coverage) -/
-theorem textbook_widgets_cover_mcp (Item Variant : Type) [Fintype Item] [Fintype Variant] :
-  Fintype.card (Item × Variant) = Fintype.card Item * Fintype.card Variant := Fintype.card_prod _ _
-example := @textbook_widgets_cover_mcp
-example : 8 * 2 = 16 := by decide
-/-- textbook_widgets_cover_mcp reflected by its shape (examples: configure-ui-coverage) -/
-@[reflection] theorem textbook_widgets_cover_mcp_reflected (Item Variant : Type) [Fintype Item] [Fintype Variant] : (Fintype.card Item * Fintype.card Variant) = (Fintype.card (Item × Variant)) := Eq.symm (textbook_widgets_cover_mcp Item Variant)
 /-- the leads addressed and the leads not addressed, less the latter, are the addressed: a + u − u = a. From Mathlib's `add_tsub_cancel_right`, through the instances `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: leads-by-theorem) -/
 theorem textbook_leads_addressed (a u : Nat) : a + u - u = a := add_tsub_cancel_right a u
 example := @textbook_leads_addressed
@@ -878,64 +670,14 @@ theorem textbook_lean_served_whole (hand generated : Nat) : hand + generated - g
 example := @textbook_lean_served_whole
 /-- textbook_lean_served_whole reflected by its shape (examples: textbook-theorems-served, metrics-live) -/
 @[reflection] theorem textbook_lean_served_whole_reflected (hand generated : Nat) (σ : Nat) : σ - (hand) = σ - (hand + generated - generated) := congrArg (σ - ·) (Eq.symm (textbook_lean_served_whole hand generated))
-/-- t deploy templates over p products are t · p sets, the pairs of a product. From Mathlib's `Fintype.card_prod` and `Fintype.card_fin` (examples: configure-wrangler-set, configure-deploy-sets) -/
-theorem textbook_deploy_sets (t p : Nat) : Fintype.card (Fin t × Fin p) = t * p := by
-  simp only [Fintype.card_prod, Fintype.card_fin]
-example := @textbook_deploy_sets
-example : 2 * 8 = 16 := by decide
-/-- textbook_deploy_sets reflected by its shape (examples: configure-wrangler-set, configure-deploy-sets) -/
-@[reflection] theorem textbook_deploy_sets_reflected (t p : Nat) : (t * p) = (Fintype.card (Fin t × Fin p)) := Eq.symm (textbook_deploy_sets t p)
-/-- a value-holding field types and b presentational ones make a + b, the cardinality of a disjoint union. From Mathlib's `Fintype.card_sum` and `Fintype.card_fin` (examples: payload-schemas) -/
-theorem textbook_payload_field_types (a b : ℕ) : Fintype.card (Fin a ⊕ Fin b) = a + b := by
-  rw [Fintype.card_sum, Fintype.card_fin, Fintype.card_fin]
-example := @textbook_payload_field_types
-example : 19 + 4 = 23 := by decide
-/-- textbook_payload_field_types reflected by its shape (examples: payload-schemas) -/
-@[reflection] theorem textbook_payload_field_types_reflected (a b : ℕ) : (a + b) = (Fintype.card (Fin a ⊕ Fin b)) := Eq.symm (textbook_payload_field_types a b)
-/-- operations sorted by scope number the sum of the scopes' sizes, |s| = Σ_b |{a ∈ s | f a = b}|. From Mathlib's `Finset.card_eq_sum_card_fiberwise` (examples: payload-schemas) -/
+/-- operations sorted by scope number the sum of the scopes' sizes, |s| = Σ_b |{a ∈ s | f a = b}|. From Mathlib's `Finset.card_eq_sum_card_fiberwise` (examples: legal-court-method) -/
 theorem textbook_payload_operations {α β : Type*} [DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β)
     (H : ∀ x ∈ s, f x ∈ t) : s.card = ∑ b ∈ t, (s.filter fun a => f a = b).card :=
   Finset.card_eq_sum_card_fiberwise H
 example := @textbook_payload_operations
 example : 17 + 7 + 12 + 3 + 3 + 6 + 1 + 1 = 50 := by decide
-/-- textbook_payload_operations reflected by its shape (examples: payload-schemas) -/
+/-- textbook_payload_operations reflected by its shape (examples: legal-court-method) -/
 @[reflection] theorem textbook_payload_operations_reflected {α β : Type*} [DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β) (H : ∀ x ∈ s, f x ∈ t) : (∑ b ∈ t, (s.filter fun a => f a = b).card) = (s.card) := Eq.symm (textbook_payload_operations f s t H)
-/-- a data field types under b collection operations make a · b schemas, the cardinality of a product. From Mathlib's `Fintype.card_prod` and `Fintype.card_fin` (examples: payload-schemas) -/
-theorem textbook_payload_schemas (a b : ℕ) : Fintype.card (Fin a × Fin b) = a * b := by
-  rw [Fintype.card_prod, Fintype.card_fin, Fintype.card_fin]
-example := @textbook_payload_schemas
-example : 19 * 17 = 323 := by decide
-/-- textbook_payload_schemas reflected by its shape (examples: payload-schemas) -/
-@[reflection] theorem textbook_payload_schemas_reflected (a b : ℕ) : (a * b) = (Fintype.card (Fin a × Fin b)) := Eq.symm (textbook_payload_schemas a b)
-/-- the where operators over the data field types pair each of a operators with each of b types, a·b queries. From Mathlib's `Fintype.card_prod` and `Fintype.card_fin` (examples: payload-schemas) -/
-theorem textbook_payload_queries (a b : ℕ) : Fintype.card (Fin a × Fin b) = a * b := by
-  rw [Fintype.card_prod, Fintype.card_fin, Fintype.card_fin]
-example := @textbook_payload_queries
-example : 16 * 19 = 304 := by decide
-/-- textbook_payload_queries reflected by its shape (examples: payload-schemas) -/
-@[reflection] theorem textbook_payload_queries_reflected (a b : ℕ) : (a * b) = (Fintype.card (Fin a × Fin b)) := Eq.symm (textbook_payload_queries a b)
-/-- hooks partitioned by level number the sum over the levels of each level's hooks. From Mathlib's `Fintype.card_sigma` (examples: payload-schemas) -/
-theorem textbook_payload_hooks {Level : Type} [Fintype Level] (Hook : Level → Type) [∀ l, Fintype (Hook l)] :
-  Fintype.card (Σ l, Hook l) = ∑ l, Fintype.card (Hook l) := Fintype.card_sigma
-example := @textbook_payload_hooks
-example : 1 + 18 + 6 + 5 = 30 := by decide
-/-- textbook_payload_hooks reflected by its shape (examples: payload-schemas) -/
-@[reflection] theorem textbook_payload_hooks_reflected {Level : Type} [Fintype Level] (Hook : Level → Type) [∀ l, Fintype (Hook l)] : (∑ l, Fintype.card (Hook l)) = (Fintype.card (Σ l, Hook l)) := Eq.symm (textbook_payload_hooks Hook)
-/-- access functions sorted by level number the sum of the levels' sizes, |s| = Σ_b |{a ∈ s | f a = b}|. From Mathlib's `Finset.card_eq_sum_card_fiberwise` (examples: payload-schemas) -/
-theorem textbook_payload_access {α β : Type*} [DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β)
-    (H : ∀ x ∈ s, f x ∈ t) : s.card = ∑ b ∈ t, (s.filter fun a => f a = b).card :=
-  Finset.card_eq_sum_card_fiberwise H
-example := @textbook_payload_access
-example : 7 + 3 + 3 + 3 = 16 := by decide
-/-- textbook_payload_access reflected by its shape (examples: payload-schemas) -/
-@[reflection] theorem textbook_payload_access_reflected {α β : Type*} [DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β) (H : ∀ x ∈ s, f x ∈ t) : (∑ b ∈ t, (s.filter fun a => f a = b).card) = (s.card) := Eq.symm (textbook_payload_access f s t H)
-/-- the realtime channels pair each of a channels with each of b operations, a·b coordinations. From Mathlib's `Fintype.card_prod` and `Fintype.card_fin` (examples: payload-schemas) -/
-theorem textbook_payload_coordination (a b : ℕ) : Fintype.card (Fin a × Fin b) = a * b := by
-  rw [Fintype.card_prod, Fintype.card_fin, Fintype.card_fin]
-example := @textbook_payload_coordination
-example : 8 * 50 = 400 := by decide
-/-- textbook_payload_coordination reflected by its shape (examples: payload-schemas) -/
-@[reflection] theorem textbook_payload_coordination_reflected (a b : ℕ) : (a * b) = (Fintype.card (Fin a × Fin b)) := Eq.symm (textbook_payload_coordination a b)
 /-- a set of n kinds has 2^n − 1 non-empty combinations, its subsets but the empty one (four kinds of cached asset: fifteen). From Mathlib's `Finset.card_erase_of_mem`, `Finset.empty_mem_powerset` and `Finset.card_powerset` (examples: match-url-fallback) -/
 theorem textbook_url_combinations {α : Type*} [DecidableEq α] (s : Finset α) : (s.powerset.erase ∅).card = 2 ^ s.card - 1 := by
   rw [Finset.card_erase_of_mem (Finset.empty_mem_powerset s), Finset.card_powerset]
@@ -949,32 +691,19 @@ theorem textbook_licence_chain {α : Type*} [PartialOrder α] [AddCommSemigroup 
 example := @textbook_licence_chain
 /-- textbook_licence_chain reflected by its shape (examples: match-url-fallback) -/
 @[reflection] theorem textbook_licence_chain_reflected {α : Type*} [PartialOrder α] [AddCommSemigroup α] [Sub α] [OrderedSub α] [AddLeftReflectLE α] (n k : α) : (n) = (n + k - k) := Eq.symm (textbook_licence_chain n k)
-/-- an alphabet extended by one symbol has one more: the letters and the dash, 26 + 1 = 27 symbols. From Mathlib's `Fintype.card_option` (examples: configure-validations) -/
-theorem textbook_kind_alphabet (α : Type) [Fintype α] : Fintype.card (Option α) = Fintype.card α + 1 := Fintype.card_option
-example := @textbook_kind_alphabet
-example : 26 + 1 = 27 := by decide
-/-- textbook_kind_alphabet reflected by its shape (examples: configure-validations) -/
-@[reflection] theorem textbook_kind_alphabet_reflected (α : Type) [Fintype α] : (Fintype.card α + 1) = (Fintype.card (Option α)) := Eq.symm (textbook_kind_alphabet α)
-/-- a hex digit is four bits: n hex digits span 16ⁿ = 2^(4n) values, so 64 hex digits hold a 256-bit SHA-256 digest. From Mathlib's `pow_mul` (examples: configure-validations, seal-text, match-pattern-seal) -/
+/-- a hex digit is four bits: n hex digits span 16ⁿ = 2^(4n) values, so 64 hex digits hold a 256-bit SHA-256 digest. From Mathlib's `pow_mul` (examples: seal-text, match-pattern-seal) -/
 theorem textbook_sha256_is_64 (n : ℕ) : (2 ^ 4) ^ n = 2 ^ (4 * n) := (pow_mul 2 4 n).symm
 example := @textbook_sha256_is_64
 example : 256 / 4 = 64 := by decide
-/-- textbook_sha256_is_64 reflected by its shape (examples: configure-validations, seal-text, match-pattern-seal) -/
+/-- textbook_sha256_is_64 reflected by its shape (examples: seal-text, match-pattern-seal) -/
 @[reflection] theorem textbook_sha256_is_64_reflected (n : ℕ) : (2 ^ (4 * n)) = ((2 ^ 4) ^ n) := Eq.symm (textbook_sha256_is_64 n)
-/-- an alphabet of a letters, d digits and one separator has a + d + 1 symbols (slugs and binding names: 26 + 10 + 1 = 37). From Mathlib's `Fintype.card_option`, `Fintype.card_sum` and `Fintype.card_fin` (examples: configure-validations) -/
-theorem textbook_name_alphabets (a d : Nat) : Fintype.card (Option (Fin a ⊕ Fin d)) = a + d + 1 := by
-  simp only [Fintype.card_option, Fintype.card_sum, Fintype.card_fin]
-example := @textbook_name_alphabets
-example : 26 + 10 + 1 = 37 := by decide
-/-- textbook_name_alphabets reflected by its shape (examples: configure-validations) -/
-@[reflection] theorem textbook_name_alphabets_reflected (a d : Nat) : (a + d + 1) = (Fintype.card (Option (Fin a ⊕ Fin d))) := Eq.symm (textbook_name_alphabets a d)
 /-- a hue is an angle modulo the full turn: adding 360 degrees gives the same hue (432 = 72 + 360 is the hue 72). From Mathlib's `Nat.add_modEq_right_iff` and `dvd_refl` (examples: css-create) -/
 theorem textbook_create_hue (h : Nat) : 360 + h ≡ h [MOD 360] := Nat.add_modEq_right_iff.mpr (dvd_refl 360)
 example := @textbook_create_hue
 example : 432 % 360 = 72 := by decide
-/-- when coins fuse to coils the colour is green, the heart chakra's: the coin's a432 hue (72) advanced by a ninth of the key (48) is 120, cyan and yellow full in CMYK (examples: css-coil, css-resonance, payload-predict, algorithm-factor-test-integer) -/
+/-- when coins fuse to coils the colour is green, the heart chakra's: the coin's a432 hue (72) advanced by a ninth of the key (48) is 120, cyan and yellow full in CMYK (examples: css-coil, css-resonance, algorithm-factor-test-integer) -/
 theorem textbook_coil_green : 432 % 360 + 432 / 9 = 120 := by decide
-/-- textbook_coil_green reflected by its shape, equality (examples: css-coil, css-resonance, payload-predict, algorithm-factor-test-integer) -/
+/-- textbook_coil_green reflected by its shape, equality (examples: css-coil, css-resonance, algorithm-factor-test-integer) -/
 @[reflection] theorem textbook_coil_green_reflected (σ : Nat) : σ - (120) = σ - (432 % 360 + 432 / 9) := congrArg (σ - ·) (Eq.symm (textbook_coil_green))
 /-- the scannable stream: thirty-six frames (one per character of a UUID) of 108 milliseconds (the third harmonic) are 3888 milliseconds, the vortex period (432 × 9); a single frame links nothing, a stream reads the address (examples: verify-scan, css-media) -/
 theorem textbook_scan_stream : 36 * 108 = 432 * 9 := by decide
@@ -995,13 +724,13 @@ example := @textbook_mcp_directories
 example : 2 + 1 + 1 + 2 + 1 = 7 := by decide
 /-- textbook_mcp_directories reflected by its shape (examples: discover-lead-registry, discover-directories-keyed) -/
 @[reflection] theorem textbook_mcp_directories_reflected {α β : Type*} [DecidableEq β] (f : α → β) (s : Finset α) (t : Finset β) (H : ∀ x ∈ s, f x ∈ t) : (∑ b ∈ t, (s.filter fun a => f a = b).card) = (s.card) := Eq.symm (textbook_mcp_directories f s t H)
-/-- one gate per API: a one-to-one correspondence between two finite collections makes them equally many (three Google APIs, three gates). From Mathlib's `Fintype.card_congr` (examples: configure-google-apis) -/
+/-- one gate per API: a one-to-one correspondence between two finite collections makes them equally many (three Google APIs, three gates). From Mathlib's `Fintype.card_congr` -/
 theorem textbook_google_api_surfaces {α β : Type*} [Fintype α] [Fintype β] (e : α ≃ β) :
     Fintype.card α = Fintype.card β :=
   Fintype.card_congr e
 example := @textbook_google_api_surfaces
 example : 1 + 1 + 1 = 3 ∧ 1 + 1 = 2 := by decide
-/-- textbook_google_api_surfaces reflected by its shape (examples: configure-google-apis) -/
+/-- textbook_google_api_surfaces reflected by its shape -/
 @[reflection] theorem textbook_google_api_surfaces_reflected {α β : Type*} [Fintype α] [Fintype β] (e : α ≃ β) : (Fintype.card β) = (Fintype.card α) := Eq.symm (textbook_google_api_surfaces e)
 /-- the handshake lemma: the degrees of a graph sum to twice its edges, so the average connectivity is 2E/N (Willow's 182 couplers on 105 qubits: 364/105 ≈ 3.47). From Mathlib's `SimpleGraph.sum_degrees_eq_twice_card_edges` (examples: processor-willow) -/
 theorem textbook_willow_connectivity {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj] :
@@ -1025,17 +754,17 @@ example := @textbook_shared_verbs
 example : 2 + 2 + 1 + 1 = 6 := by decide
 /-- textbook_shared_verbs reflected by its shape (examples: audit-declarations) -/
 @[reflection] theorem textbook_shared_verbs_reflected {α : Type*} {k : ℕ} (decls : Finset α) (kind : α → Fin k) : (∑ j : Fin k, (decls.filter (fun x => kind x = j)).card) = (decls.card) := Eq.symm (textbook_shared_verbs decls kind)
-/-- getAccess grants exactly when some can rule allows and no cannot rule denies: in any Boolean algebra of abilities, can ⊓ cannotᶜ = ⊤ forces can = ⊤ and cannot = ⊥ (the meet is the merge of CanCanCan's rules). From Mathlib's `inf_eq_top_iff` and `compl_eq_top` (examples: payload-access-abilities, payload-roles-from-groups) -/
+/-- getAccess grants exactly when some can rule allows and no cannot rule denies: in any Boolean algebra of abilities, can ⊓ cannotᶜ = ⊤ forces can = ⊤ and cannot = ⊥ (the meet is the merge of CanCanCan's rules). From Mathlib's `inf_eq_top_iff` and `compl_eq_top` -/
 theorem textbook_abilities_merge {α : Type*} [BooleanAlgebra α] (can cannot : α) : can ⊓ cannotᶜ = ⊤ → can = ⊤ ∧ cannot = ⊥ :=
   fun h => (inf_eq_top_iff.mp h).imp_right compl_eq_top.mp
 example := @textbook_abilities_merge
-/-- textbook_abilities_merge reflected by its shape (examples: payload-access-abilities, payload-roles-from-groups) -/
+/-- textbook_abilities_merge reflected by its shape -/
 @[reflection] theorem textbook_abilities_merge_reflected {α : Type*} [BooleanAlgebra α] (can cannot : α) : ¬ (can = ⊤ ∧ cannot = ⊥) → ¬ ((can ⊓ cannotᶜ = ⊤)) := fun hc hh => hc ((textbook_abilities_merge can cannot) hh)
-/-- a cannot binds whatever can allows: when the cannot is everything, can ⊓ cannotᶜ = ⊥ in any Boolean algebra (Bool's `can && !true = false` a case). From Mathlib's `compl_top` and `inf_bot_eq` (examples: payload-access-waive) -/
+/-- a cannot binds whatever can allows: when the cannot is everything, can ⊓ cannotᶜ = ⊥ in any Boolean algebra (Bool's `can && !true = false` a case). From Mathlib's `compl_top` and `inf_bot_eq` -/
 theorem textbook_cannot_binds {α : Type} [BooleanAlgebra α] (can cannot : α) (h : cannot = ⊤) : can ⊓ cannotᶜ = ⊥ := by
   rw [h, compl_top, inf_bot_eq]
 example := @textbook_cannot_binds
-/-- textbook_cannot_binds reflected by its shape (examples: payload-access-waive) -/
+/-- textbook_cannot_binds reflected by its shape -/
 @[reflection] theorem textbook_cannot_binds_reflected {α : Type} [BooleanAlgebra α] (can cannot : α) (h : cannot = ⊤) : (⊥) = (can ⊓ cannotᶜ) := Eq.symm (textbook_cannot_binds can cannot h)
 /-- when each association type is answered by one field kind, the types number the sum over the kinds of the types each kind answers (5 by a relationship, 4 by a join, 1 by a type select: 10). From Mathlib's `Finset.card_eq_sum_card_fiberwise` (examples: rails-associations-overview, rails-associations-types, rails-associations-choosing, rails-associations-advanced, rails-associations-sti, rails-associations-delegated, rails-associations-tips, rails-associations-references) -/
 theorem textbook_association_fields {ι κ : Type} [DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ) (h : ∀ x ∈ s, f x ∈ t) : s.card = ∑ k ∈ t, (s.filter (fun x => f x = k)).card :=
@@ -1124,32 +853,26 @@ theorem textbook_google_one_door (direct : Nat) : direct = 0 ↔ ¬ 0 < direct :
 example := @textbook_google_one_door
 /-- textbook_google_one_door reflected by its shape (examples: repository-google-via-payload, textbook-rewrite) -/
 @[reflection] theorem textbook_google_one_door_reflected (direct : Nat) : (¬ 0 < direct) ↔ (direct = 0) := Iff.symm (textbook_google_one_door direct)
-/-- a Google call runs exactly when its violations sum to none, that is when each kind is none: a sum of naturals is zero iff every summand is. From Mathlib's `add_eq_zero` and `Unique.instSubsingleton` (examples: payload-google-call-validated, payload-google-call-endpoint, payload-google-call-refused) -/
+/-- a Google call runs exactly when its violations sum to none, that is when each kind is none: a sum of naturals is zero iff every summand is. From Mathlib's `add_eq_zero` and `Unique.instSubsingleton` (examples: google-call-validated, google-call-endpoint, google-call-refused) -/
 theorem textbook_google_call_schema (unknown missing broken : ℕ) : unknown + missing + broken = 0 ↔ unknown = 0 ∧ missing = 0 ∧ broken = 0 := by
   rw [add_eq_zero, add_eq_zero, and_assoc]
 example := @textbook_google_call_schema
-/-- textbook_google_call_schema reflected by its shape (examples: payload-google-call-validated, payload-google-call-endpoint, payload-google-call-refused) -/
+/-- textbook_google_call_schema reflected by its shape (examples: google-call-validated, google-call-endpoint, google-call-refused) -/
 @[reflection] theorem textbook_google_call_schema_reflected (unknown missing broken : ℕ) : (unknown = 0 ∧ missing = 0 ∧ broken = 0) ↔ (unknown + missing + broken = 0) := Iff.symm (textbook_google_call_schema unknown missing broken)
 /-- a retried step is its last attempt: whatever the earlier attempts were, the status the green rule reads is the last one, so a step next retried to green no longer refuses the commit; every attempt stays in the receipt as history (examples: repository-retry-supersedes) -/
 theorem textbook_retry_supersedes (attempts : List Bool) (last : Bool) : (attempts ++ [last]).getLast? = some last := by simp
 /-- textbook_retry_supersedes reflected by its shape, equality (examples: repository-retry-supersedes) -/
 @[reflection] theorem textbook_retry_supersedes_reflected (attempts : List Bool) (last : Bool) : (some last) = ((attempts ++ [last]).getLast?) := Eq.symm (textbook_retry_supersedes attempts last)
-/-- the version is the last tag or its one next step: with truncated subtraction (ℕ among its models), one step k forward and one back is the tag, (n + k) − k = n, here k = 1. From Mathlib's `add_tsub_cancel_right` (examples: configure-versions) -/
-theorem textbook_version_sequential {α : Type*} [PartialOrder α] [AddCommSemigroup α] [Sub α] [OrderedSub α]
-    [AddLeftReflectLE α] (n k : α) : n + k - k = n := add_tsub_cancel_right n k
-example := @textbook_version_sequential
-/-- textbook_version_sequential reflected by its shape (examples: configure-versions) -/
-@[reflection] theorem textbook_version_sequential_reflected {α : Type*} [PartialOrder α] [AddCommSemigroup α] [Sub α] [OrderedSub α] [AddLeftReflectLE α] (n k : α) : (n) = (n + k - k) := Eq.symm (textbook_version_sequential n k)
 /-- majority decoding: any two strict majorities of the same copies share a copy, so the majority's verdict is unique (twice two exceeds three: two of three decide). From Mathlib's `Finset.inter_nonempty_of_card_lt_card_add_card` (examples: none yet) -/
 theorem textbook_majority_of_three {α : Type*} [DecidableEq α] (copies A B : Finset α) (hA : A ⊆ copies) (hB : B ⊆ copies) (hA2 : copies.card < 2 * A.card) (hB2 : copies.card < 2 * B.card) : (A ∩ B).Nonempty :=
   Finset.inter_nonempty_of_card_lt_card_add_card hA hB (by omega)
 example := @textbook_majority_of_three
 example : 2 * 2 > 3 := by decide
-/-- every chat turn is a door call or a question with at least one option: a Boolean is false or true, and a turn not served carries options. From Mathlib's `Bool.dichotomy` (examples: chat-question, chat-choice, chat-routes, chat-not-object, configure-chat-item, imagine-integer-llm, chat-account, chat-thousand, textbook-chat-plan, textbook-chat-coverage) -/
+/-- every chat turn is a door call or a question with at least one option: a Boolean is false or true, and a turn not served carries options. From Mathlib's `Bool.dichotomy` (examples: chat-question, chat-choice, chat-routes, chat-not-object, imagine-integer-llm, chat-account, chat-thousand, textbook-chat-plan, textbook-chat-coverage) -/
 theorem textbook_chat_call_or_question (served : Bool) (options : ℕ) (h : served = false → 0 < options) : served = true ∨ 0 < options :=
   (Bool.dichotomy served).elim (fun hf => Or.inr (h hf)) Or.inl
 example := @textbook_chat_call_or_question
-/-- textbook_chat_call_or_question reflected by its shape (examples: chat-question, chat-choice, chat-routes, chat-not-object, configure-chat-item, imagine-integer-llm, chat-account, chat-thousand, textbook-chat-plan, textbook-chat-coverage) -/
+/-- textbook_chat_call_or_question reflected by its shape (examples: chat-question, chat-choice, chat-routes, chat-not-object, imagine-integer-llm, chat-account, chat-thousand, textbook-chat-plan, textbook-chat-coverage) -/
 @[reflection] theorem textbook_chat_call_or_question_reflected (served : Bool) (options : ℕ) (h : served = false → 0 < options) : (0 < options) ∨ (served = true) := Or.symm (textbook_chat_call_or_question served options h)
 /-- every prompt is routed or is a lead, no third case: a Boolean is true or false. From Mathlib's `Bool.dichotomy` (examples: match-route) -/
 theorem textbook_route_or_lead (b : Bool) : b = true ∨ b = false := (Bool.dichotomy b).symm
@@ -1290,103 +1013,6 @@ example := @textbook_codes_locales
 example : 1 + 10 = 11 := by decide
 /-- textbook_codes_locales reflected by its shape (examples: codes-plan) -/
 @[reflection] theorem textbook_codes_locales_reflected (n : Nat) : (n + 1) = (Fintype.card (Option (Fin n))) := Eq.symm (textbook_codes_locales n)
-/-- t tenants over c scoped collections are t · c tenant scopes, and r tenant roles beside s docket roles are r + s roles (3 · 4 = 12, 3 + 3 = 6). From Mathlib's `Fintype.card_prod`, `Fintype.card_sum` and `Fintype.card_fin` (examples: configure-scopes) -/
-theorem textbook_scopes_tenants_collections (t c r s : Nat) :
-    Fintype.card (Fin t × Fin c) = t * c ∧ Fintype.card (Fin r ⊕ Fin s) = r + s := by
-  constructor
-  · simp only [Fintype.card_prod, Fintype.card_fin]
-  · simp only [Fintype.card_sum, Fintype.card_fin]
-example := @textbook_scopes_tenants_collections
-example : 3 * 4 = 12 ∧ 3 + 3 = 6 := by decide
-/-- textbook_scopes_tenants_collections reflected by its shape (examples: configure-scopes) -/
-@[reflection] theorem textbook_scopes_tenants_collections_reflected (t c r s : Nat) : ((t * c) = (Fintype.card (Fin t × Fin c))) ∧ ((r + s) = (Fintype.card (Fin r ⊕ Fin s))) := ⟨Eq.symm (textbook_scopes_tenants_collections t c r s).1, Eq.symm (textbook_scopes_tenants_collections t c r s).2⟩
-/-- fields of the entries collection and of the qpu block number the sum of both (6 + 9 = 15 fields QPU adds to Payload). From Mathlib's `Fintype.card_sum` (examples: configure-fields) -/
-theorem textbook_qpu_fields (EntryField BlockField : Type) [Fintype EntryField] [Fintype BlockField] :
-  Fintype.card (EntryField ⊕ BlockField) = Fintype.card EntryField + Fintype.card BlockField := Fintype.card_sum
-example := @textbook_qpu_fields
-example : 6 + 9 = 15 := by decide
-/-- textbook_qpu_fields reflected by its shape (examples: configure-fields) -/
-@[reflection] theorem textbook_qpu_fields_reflected (EntryField BlockField : Type) [Fintype EntryField] [Fintype BlockField] : (Fintype.card EntryField + Fintype.card BlockField) = (Fintype.card (EntryField ⊕ BlockField)) := Eq.symm (textbook_qpu_fields EntryField BlockField)
-/-- an entry's operations split into those granted by role and those granted to no one: a predicate splits a finite set into those that satisfy it and those that do not (3 + 1 = 4). From Mathlib's `Finset.card_filter_add_card_filter_not` (examples: configure-access) -/
-theorem textbook_entry_operations {α : Type*} (ops : Finset α) (byRole : α → Prop) [DecidablePred byRole] : (ops.filter byRole).card + (ops.filter (fun x => ¬ byRole x)).card = ops.card :=
-  Finset.card_filter_add_card_filter_not byRole
-example := @textbook_entry_operations
-example : 3 + 1 = 4 := by decide
-/-- textbook_entry_operations reflected by its shape (examples: configure-access) -/
-@[reflection] theorem textbook_entry_operations_reflected {α : Type*} (ops : Finset α) (byRole : α → Prop) [DecidablePred byRole] : (ops.card) = ((ops.filter byRole).card + (ops.filter (fun x => ¬ byRole x)).card) := Eq.symm (textbook_entry_operations ops byRole)
-/-- a batch budget B sharded by the slowest host's median m (the largest of the medians) takes ⌊B/m⌋ calls: they fit in the budget and one more would not (1000 / 140 = 7 for the medians 120, 140, 110). From Mathlib's `le_max_left`, `le_max_right`, `Nat.div_mul_le_self`, `Nat.lt_div_mul_add` and `Nat.succ_mul`, `le_trans` (examples: configure-actions) -/
-theorem textbook_actions_experience (a b c budget : Nat) (h : 0 < max a (max b c)) :
-  a ≤ max a (max b c) ∧ b ≤ max a (max b c) ∧ c ≤ max a (max b c) ∧
-  budget / max a (max b c) * max a (max b c) ≤ budget ∧ budget < (budget / max a (max b c) + 1) * max a (max b c) :=
-  ⟨le_max_left _ _, le_trans (le_max_left b c) (le_max_right _ _), le_trans (le_max_right b c) (le_max_right _ _),
-    Nat.div_mul_le_self _ _, by rw [Nat.succ_mul]; exact Nat.lt_div_mul_add h⟩
-example := @textbook_actions_experience
-example : (2 * 507 * 100 + 546) / (2 * 546) = 93 ∧ max 120 (max 140 110) = 140 ∧ 1000 / 140 = 7 := by decide
-/-- textbook_actions_experience reflected by its shape (examples: configure-actions) -/
-@[reflection] theorem textbook_actions_experience_reflected (a b c budget : Nat) (h : 0 < max a (max b c)) (σ : Nat) (hσ0 : ((budget / max a (max b c) + 1) * max a (max b c)) ≤ σ) : (σ - (max a (max b c)) ≤ σ - (a)) ∧ (σ - (max a (max b c)) ≤ σ - (b)) ∧ (σ - (max a (max b c)) ≤ σ - (c)) ∧ (σ - (budget) ≤ σ - (budget / max a (max b c) * max a (max b c))) ∧ (σ - ((budget / max a (max b c) + 1) * max a (max b c)) < σ - (budget)) := ⟨Nat.sub_le_sub_left (textbook_actions_experience a b c budget h).1 σ, Nat.sub_le_sub_left (textbook_actions_experience a b c budget h).2.1 σ, Nat.sub_le_sub_left (textbook_actions_experience a b c budget h).2.2.1 σ, Nat.sub_le_sub_left (textbook_actions_experience a b c budget h).2.2.2.1 σ, Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_actions_experience a b c budget h).2.2.2.2 hσ0) (textbook_actions_experience a b c budget h).2.2.2.2⟩
-/-- the contrapositive of textbook_actions_experience (examples: configure-actions) -/
-@[reflection] theorem textbook_actions_experience_contrapositive (a b c budget : Nat) : ¬ (a ≤ max a (max b c) ∧ b ≤ max a (max b c) ∧ c ≤ max a (max b c) ∧
-  budget / max a (max b c) * max a (max b c) ≤ budget ∧ budget < (budget / max a (max b c) + 1) * max a (max b c)) → ¬ ((0 < max a (max b c))) := fun hc hh => hc (textbook_actions_experience a b c budget hh)
-/-- hooks on two collections number the hooks of each added (three on entries and two on pages are five). From Mathlib's `Fintype.card_sum` (examples: configure-hooks) -/
-theorem textbook_fullstack_hooks (OnEntries OnPages : Type) [Fintype OnEntries] [Fintype OnPages] :
-  Fintype.card (OnEntries ⊕ OnPages) = Fintype.card OnEntries + Fintype.card OnPages := Fintype.card_sum
-example := @textbook_fullstack_hooks
-example : 3 + 2 = 5 := by decide
-/-- textbook_fullstack_hooks reflected by its shape (examples: configure-hooks) -/
-@[reflection] theorem textbook_fullstack_hooks_reflected (OnEntries OnPages : Type) [Fintype OnEntries] [Fintype OnPages] : (Fintype.card OnEntries + Fintype.card OnPages) = (Fintype.card (OnEntries ⊕ OnPages)) := Eq.symm (textbook_fullstack_hooks OnEntries OnPages)
-/-- of the Worker configuration's top-level paths, those the client agrees on removed leave the drifting ones: removing a subset leaves the difference of the counts (12 − 2 = 10). From Mathlib's `Finset.card_sdiff_of_subset` (examples: configure-wrangler-drift) -/
-theorem textbook_wrangler_drift {α : Type*} [DecidableEq α] (paths agreed : Finset α) (h : agreed ⊆ paths) : (paths \ agreed).card = paths.card - agreed.card :=
-  Finset.card_sdiff_of_subset h
-example := @textbook_wrangler_drift
-example : 12 - 2 = 10 ∧ 5 ≤ 10 := by decide
-/-- textbook_wrangler_drift reflected by its shape (examples: configure-wrangler-drift) -/
-@[reflection] theorem textbook_wrangler_drift_reflected {α : Type*} [DecidableEq α] (paths agreed : Finset α) (h : agreed ⊆ paths) : (paths.card - agreed.card) = ((paths \ agreed).card) := Eq.symm (textbook_wrangler_drift paths agreed h)
-/-- fields of two sources, those the user defined and those still computed, number the sum of both (3 + 2 = 5 for the branding). From Mathlib's `Fintype.card_sum` (examples: configure-branding-user) -/
-theorem textbook_branding_sources (Defined Computed : Type) [Fintype Defined] [Fintype Computed] :
-  Fintype.card (Defined ⊕ Computed) = Fintype.card Defined + Fintype.card Computed := Fintype.card_sum
-example := @textbook_branding_sources
-example : 3 + 2 = 5 := by decide
-/-- textbook_branding_sources reflected by its shape (examples: configure-branding-user) -/
-@[reflection] theorem textbook_branding_sources_reflected (Defined Computed : Type) [Fintype Defined] [Fintype Computed] : (Fintype.card Defined + Fintype.card Computed) = (Fintype.card (Defined ⊕ Computed)) := Eq.symm (textbook_branding_sources Defined Computed)
-/-- a tool's cells are the product of its enumerable facets' spaces, and setting aside its one free facet leaves the others (4 − 1 = 3 facets, 2 · 1 · 1 = 2 cells for attest). From Mathlib's `Fintype.card_pi` and `Finset.card_erase_of_mem` (examples: dashboard-attest) -/
-theorem textbook_attest_facets {ι : Type} [Fintype ι] [DecidableEq ι] (space : ι → Type) [∀ i, Fintype (space i)]
-  (facets : Finset ι) (free : ι) (h : free ∈ facets) :
-  Fintype.card (∀ i, space i) = ∏ i, Fintype.card (space i) ∧ (facets.erase free).card = facets.card - 1 :=
-  ⟨Fintype.card_pi, Finset.card_erase_of_mem h⟩
-example := @textbook_attest_facets
-example : 4 - 1 = 3 ∧ 2 * 1 * 1 = 2 := by decide
-/-- textbook_attest_facets reflected by its shape (examples: dashboard-attest) -/
-@[reflection] theorem textbook_attest_facets_reflected {ι : Type} [Fintype ι] [DecidableEq ι] (space : ι → Type) [∀ i, Fintype (space i)] (facets : Finset ι) (free : ι) (h : free ∈ facets) : ((∏ i, Fintype.card (space i)) = (Fintype.card (∀ i, space i))) ∧ ((facets.card - 1) = ((facets.erase free).card)) := ⟨Eq.symm (textbook_attest_facets space facets free h).1, Eq.symm (textbook_attest_facets space facets free h).2⟩
-/-- the plan over at least ten theorems and at least ten backed examples covers at least twenty: bounds add. From Mathlib's `add_le_add`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `covariant_swap_add_of_covariant_add` (examples: payload-theorems-plan) -/
-theorem textbook_theorems_plan_steps (theorems backed : ℕ) (h1 : 10 ≤ theorems) (h2 : 10 ≤ backed) : 10 + 10 ≤ theorems + backed := add_le_add h1 h2
-example := @textbook_theorems_plan_steps
-/-- the blocks to update are the blocks read less those already naming their theorem: |S \ T| = |S| − |T| for T ⊆ S (two blocks read, one naming its theorem: one axiom replaced, one update request). From Mathlib's `Finset.card_sdiff_of_subset` (examples: payload-theorems-update) -/
-theorem textbook_axioms_replaced {α : Type*} [DecidableEq α] (S T : Finset α) (h : T ⊆ S) :
-    (S \ T).card = S.card - T.card :=
-  Finset.card_sdiff_of_subset h
-example := @textbook_axioms_replaced
-example : 1 + 1 = 2 ∧ 2 - 1 = 1 := by decide
-/-- textbook_axioms_replaced reflected by its shape (examples: payload-theorems-update) -/
-@[reflection] theorem textbook_axioms_replaced_reflected {α : Type*} [DecidableEq α] (S T : Finset α) (h : T ⊆ S) : (S.card - T.card) = ((S \ T).card) := Eq.symm (textbook_axioms_replaced S T h)
-/-- the fields of a form split into those that pass and those refused, and the two together are all of them (four fields: three pass, one refused; the refused env's three names: two known, one unknown). From Mathlib's `Finset.card_filter_add_card_filter_not` (examples: payload-app-validate) -/
-theorem textbook_app_fields_validated {α : Type*} (s : Finset α) (p : α → Prop) [DecidablePred p] :
-    (s.filter p).card + (s.filter fun a => ¬ p a).card = s.card :=
-  Finset.card_filter_add_card_filter_not p
-example := @textbook_app_fields_validated
-example : 3 + 1 = 4 ∧ 2 + 1 = 3 := by decide
-/-- textbook_app_fields_validated reflected by its shape (examples: payload-app-validate) -/
-@[reflection] theorem textbook_app_fields_validated_reflected {α : Type*} (s : Finset α) (p : α → Prop) [DecidablePred p] : (s.card) = ((s.filter p).card + (s.filter fun a => ¬ p a).card) := Eq.symm (textbook_app_fields_validated s p)
-/-- the site's documents are its use-case pages and the gate pages, so the documents less the pages are the gate pages, every gate, every category and the root. From Mathlib's `add_tsub_cancel_left`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` (examples: payload-site) -/
-theorem textbook_site_documents (pages gates categories docs : Nat) (h : docs = pages + (gates + categories + 1)) : docs - pages = gates + categories + 1 := by
-  rw [h, add_tsub_cancel_left]
-example := @textbook_site_documents
-/-- textbook_site_documents reflected by its shape (examples: payload-site) -/
-@[reflection] theorem textbook_site_documents_reflected (pages gates categories docs : Nat) (h : docs = pages + (gates + categories + 1)) (σ : Nat) : σ - (gates + categories + 1) = σ - (docs - pages) := congrArg (σ - ·) (Eq.symm (textbook_site_documents pages gates categories docs h))
-/-- the contrapositive of textbook_site_documents (examples: payload-site) -/
-@[reflection] theorem textbook_site_documents_contrapositive (pages gates categories docs : Nat) : ¬ (docs - pages = gates + categories + 1) → ¬ ((docs = pages + (gates + categories + 1))) := fun hc hh => hc (textbook_site_documents pages gates categories docs hh)
-/-- the converse of textbook_site_documents, proved. From Mathlib's `add_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub`, `LT.lt.le`, `tsub_pos_iff_lt` and `Nat.instCanonicallyOrderedAdd` (examples: payload-site) -/
-@[reflection] theorem textbook_site_documents_converse (pages gates categories docs : Nat) : (docs - pages = gates + categories + 1) → (docs = pages + (gates + categories + 1)) :=
-  fun hc => (add_tsub_cancel_of_le (tsub_pos_iff_lt.mp (hc ▸ Nat.succ_pos _)).le).symm.trans (congrArg (pages + ·) hc)
 /-- a requested limit clamped to [1, 100] lies within it, whatever was asked (the default 10 among them). From Mathlib's `le_max_left`, `max_le` and `min_le_right` (examples: discover-search-request, discover-search-servers) -/
 theorem textbook_mcp_search_limit (x : Nat) : 1 ≤ max 1 (min x 100) ∧ max 1 (min x 100) ≤ 100 :=
   ⟨le_max_left 1 _, max_le (by decide) (min_le_right x 100)⟩
@@ -1828,11 +1454,11 @@ example := @textbook_queneau_compositions
 example : 10 ^ 14 = 100000000000000 ∧ 365 * 24 * 60 = 525600 ∧ 10 ^ 14 / 525600 = 190258751 ∧ 10 ^ 14 % 525600 = 474400 := by decide
 /-- textbook_queneau_compositions reflected by its shape (examples: textbook-queneau, textbook-prose-queneau, fold-combinatorics) -/
 @[reflection] theorem textbook_queneau_compositions_reflected (n k : Nat) : (k ^ n) = (Fintype.card (Fin n → Fin k)) := Eq.symm (textbook_queneau_compositions n k)
-/-- mixed radix: a choice d below n and the rest q are one index d + n · q below m · n, and the index gives them back. From Mathlib's `finProdFinEquiv_apply_val` and `Equiv.symm_apply_apply` (examples: fold-queneau, fold-rosetta, leads-scientific-domains, payload-domain-configs, css-shadcn) -/
+/-- mixed radix: a choice d below n and the rest q are one index d + n · q below m · n, and the index gives them back. From Mathlib's `finProdFinEquiv_apply_val` and `Equiv.symm_apply_apply` (examples: fold-queneau, fold-rosetta, leads-scientific-domains, css-shadcn) -/
 theorem textbook_mixed_radix (m n : ℕ) (x : Fin m × Fin n) : (finProdFinEquiv x : ℕ) = x.2 + n * x.1 ∧ finProdFinEquiv.symm (finProdFinEquiv x) = x :=
   ⟨finProdFinEquiv_apply_val x, Equiv.symm_apply_apply finProdFinEquiv x⟩
 example := @textbook_mixed_radix
-/-- textbook_mixed_radix reflected by its shape (examples: fold-queneau, fold-rosetta, leads-scientific-domains, payload-domain-configs, css-shadcn) -/
+/-- textbook_mixed_radix reflected by its shape (examples: fold-queneau, fold-rosetta, leads-scientific-domains, css-shadcn) -/
 @[reflection] theorem textbook_mixed_radix_reflected (m n : ℕ) (x : Fin m × Fin n) : ((x.2 + n * x.1) = ((finProdFinEquiv x : ℕ))) ∧ ((x) = (finProdFinEquiv.symm (finProdFinEquiv x))) := ⟨Eq.symm (textbook_mixed_radix m n x).1, Eq.symm (textbook_mixed_radix m n x).2⟩
 /-- decoding is algebra, not search: a composition of n positions of b choices is one of b^n candidates, and decoding takes n steps, one per position, with n < b^n for every b > 1. From Mathlib's `Fintype.card_fun` and `Fintype.card_fin` (examples: fold-decode, fold-decode-one-way) -/
 theorem textbook_decode_not_search (n b : Nat) (hb : 1 < b) : Fintype.card (Fin n → Fin b) = b ^ n ∧ n < b ^ n :=
@@ -1891,15 +1517,15 @@ example := @textbook_long_action_queued
 /-- the converse of textbook_long_action_queued, proved. From Mathlib's `tsub_pos_iff_lt`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: repository-machine-next-long) -/
 @[reflection] theorem textbook_long_action_queued_converse (budget request : Nat) : (0 < budget - request) → (request < budget) :=
   fun hc => tsub_pos_iff_lt.mp hc
-/-- the skills are complete when every toolbox has its skill, the index one more, and the named and unnamed terms make the vocabulary: named + (terms − named) = terms. From Mathlib's `add_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub` (examples: payload-scripts-skills) -/
+/-- the skills are complete when every toolbox has its skill, the index one more, and the named and unnamed terms make the vocabulary: named + (terms − named) = terms. From Mathlib's `add_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub` (examples: textbook-scripts-skills) -/
 theorem textbook_skills_complete (boxes skilled terms named : Nat) (hs : skilled = boxes) (hn : named ≤ terms) : skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms :=
   ⟨by rw [hs], add_tsub_cancel_of_le hn⟩
 example := @textbook_skills_complete
-/-- textbook_skills_complete reflected by its shape (examples: payload-scripts-skills) -/
+/-- textbook_skills_complete reflected by its shape (examples: textbook-scripts-skills) -/
 @[reflection] theorem textbook_skills_complete_reflected (boxes skilled terms named : Nat) (hs : skilled = boxes) (hn : named ≤ terms) (σ : Nat) : (σ - (boxes + 1) = σ - (skilled + 1)) ∧ (σ - (terms) = σ - (named + (terms - named))) := ⟨congrArg (σ - ·) (Eq.symm (textbook_skills_complete boxes skilled terms named hs hn).1), congrArg (σ - ·) (Eq.symm (textbook_skills_complete boxes skilled terms named hs hn).2)⟩
-/-- the contrapositive of textbook_skills_complete (examples: payload-scripts-skills) -/
+/-- the contrapositive of textbook_skills_complete (examples: textbook-scripts-skills) -/
 @[reflection] theorem textbook_skills_complete_contrapositive (boxes skilled terms named : Nat) : ¬ (skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms) → ¬ ((skilled = boxes) ∧ (named ≤ terms)) := fun hc hh => hc (textbook_skills_complete boxes skilled terms named hh.1 hh.2)
-/-- the converse of textbook_skills_complete, proved. From Mathlib's `add_right_cancel`, `instIsRightCancelAddOfAddRightReflectLE`, `addRightReflectLE_of_addLeftReflectLE`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `add_tsub_cancel_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: payload-scripts-skills) -/
+/-- the converse of textbook_skills_complete, proved. From Mathlib's `add_right_cancel`, `instIsRightCancelAddOfAddRightReflectLE`, `addRightReflectLE_of_addLeftReflectLE`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `add_tsub_cancel_iff_le`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: textbook-scripts-skills) -/
 @[reflection] theorem textbook_skills_complete_converse (boxes skilled terms named : Nat) : (skilled + 1 = boxes + 1 ∧ named + (terms - named) = terms) → (skilled = boxes) ∧ (named ≤ terms) :=
   fun hc => ⟨add_right_cancel hc.1, add_tsub_cancel_iff_le.mp hc.2⟩
 /-- every cap is either removed or kept with its citation: the caps less the removed are the kept, and the removed never exceed the caps. From Mathlib's `add_tsub_cancel_left`, `le_self_add`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `Nat.instCanonicallyOrderedAdd` (examples: audit-uncap) -/
@@ -1930,22 +1556,13 @@ theorem textbook_build_fresh {α : Type*} [AddCommSemigroup α] [PartialOrder α
 example := @textbook_build_fresh
 /-- textbook_build_fresh reflected by its shape (examples: repository-predeploy) -/
 @[reflection] theorem textbook_build_fresh_reflected {α : Type*} [AddCommSemigroup α] [PartialOrder α] [ExistsAddOfLE α] [AddLeftMono α] [Sub α] [OrderedSub α] (built source : α) (h : source ≤ built) : (built) = (built - source + source) := Eq.symm (textbook_build_fresh built source h)
-/-- in any cancellative additive monoid (counts among them), when the declared bindings and the missing ones make the needed, the declared are the needed exactly when none is missing, however many the adapters bind. From Mathlib's `left_eq_add` (examples: repository-predeploy, configure-cloudflare-adapters) -/
+/-- in any cancellative additive monoid (counts among them), when the declared bindings and the missing ones make the needed, the declared are the needed exactly when none is missing, however many the adapters bind. From Mathlib's `left_eq_add` (examples: repository-predeploy) -/
 theorem textbook_bindings_bound {M : Type*} [AddMonoid M] [IsLeftCancelAdd M] (needed declared missing : M)
     (h : declared + missing = needed) : declared = needed ↔ missing = 0 := by
   rw [← h]; exact left_eq_add
 example := @textbook_bindings_bound
-/-- textbook_bindings_bound reflected by its shape (examples: repository-predeploy, configure-cloudflare-adapters) -/
+/-- textbook_bindings_bound reflected by its shape (examples: repository-predeploy) -/
 @[reflection] theorem textbook_bindings_bound_reflected {M : Type*} [AddMonoid M] [IsLeftCancelAdd M] (needed declared missing : M) (h : declared + missing = needed) : (missing = 0) ↔ (declared = needed) := Iff.symm (textbook_bindings_bound needed declared missing h)
-/-- when the bindings in use and the idle ones make the total and none is idle, every binding is used, and a one-to-one pairing of all bindings pairs the used ones. From Mathlib's `add_zero` (examples: configure-bindings-google) -/
-theorem textbook_bindings_used_google (used idle total paired : Nat) (h : used + idle = total) (h0 : idle = 0) (hp : paired = total) : used = total ∧ paired = used := by
-  rw [h0, add_zero] at h
-  exact ⟨h, hp.trans h.symm⟩
-example := @textbook_bindings_used_google
-/-- textbook_bindings_used_google reflected by its shape (examples: configure-bindings-google) -/
-@[reflection] theorem textbook_bindings_used_google_reflected (used idle total paired : Nat) (h : used + idle = total) (h0 : idle = 0) (hp : paired = total) (σ : Nat) : (σ - (total) = σ - (used)) ∧ (σ - (used) = σ - (paired)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_bindings_used_google used idle total paired h h0 hp).1), congrArg (σ - ·) (Eq.symm (textbook_bindings_used_google used idle total paired h h0 hp).2)⟩
-/-- the contrapositive of textbook_bindings_used_google (examples: configure-bindings-google) -/
-@[reflection] theorem textbook_bindings_used_google_contrapositive (used idle total paired : Nat) : ¬ (used = total ∧ paired = used) → ¬ ((used + idle = total) ∧ (idle = 0) ∧ (paired = total)) := fun hc hh => hc (textbook_bindings_used_google used idle total paired hh.1 hh.2.1 hh.2.2)
 /-- at most one error per thousand requests means the errors never outnumber the requests: errors ≤ errors · 1000 ≤ requests. From Mathlib's `le_trans` (examples: repository-predeploy) -/
 theorem textbook_observed_errors (errors requests : Nat) (h : errors * 1000 ≤ requests) : errors ≤ requests :=
   le_trans (Nat.le_mul_of_pos_right errors (by decide)) h
@@ -1978,7 +1595,7 @@ example := @textbook_order_finding
 example : 2 ^ 4 % 15 = 1 ∧ 2 ^ 1 % 15 ≠ 1 ∧ 2 ^ 2 % 15 ≠ 1 ∧ 2 ^ 3 % 15 ≠ 1 ∧ 4 = 2 * 2 - 0 := by decide
 /-- textbook_order_finding reflected by its shape (examples: algorithm-discover, algorithm-order, algorithm-factor-find) -/
 @[reflection] theorem textbook_order_finding_reflected (N : Nat) (x : ZMod N) : ((1) = (x ^ orderOf x)) ∧ (∀ k, ¬ (x ^ k ≠ 1) → ¬ ((0 < k) ∧ (k < orderOf x))) := ⟨Eq.symm (textbook_order_finding N x).1, fun k => fun hc hh => hc (((textbook_order_finding N x).2 k) hh.1 hh.2)⟩
-/-- a part found of an integer, multiplied by the rest, gives the integer back, so it divides it: f · c = n implies f ∣ n. From Mathlib's `Dvd.intro` (examples: algorithm-factor-1000-bit, algorithm-factor-observe, algorithm-factor-mersenne, payload-predict) -/
+/-- a part found of an integer, multiplied by the rest, gives the integer back, so it divides it: f · c = n implies f ∣ n. From Mathlib's `Dvd.intro` (examples: algorithm-factor-1000-bit, algorithm-factor-observe, algorithm-factor-mersenne) -/
 theorem textbook_factors_divide (f c n : Nat) (h : f * c = n) : f ∣ n := Dvd.intro c h
 example := @textbook_factors_divide
 /-- listFactors returns the prime factorisation: for every n ≠ 0 the list of prime factors multiplies back to n and each is prime, fifteen listing as three times five. From Mathlib's `Nat.prod_primeFactorsList` and `Nat.prime_of_mem_primeFactorsList` (examples: algorithm-factor-15, algorithm-one-door) -/
@@ -2325,7 +1942,7 @@ theorem textbook_thousand_bit_width (n : Nat) (hn : 1 ≤ n) : Nat.log 2 (2 ^ n 
 example := @textbook_thousand_bit_width
 /-- textbook_thousand_bit_width reflected by its shape (examples: algorithm-factor-1000-bit, fold-speak-thousand, chat-thousand) -/
 @[reflection] theorem textbook_thousand_bit_width_reflected (n : Nat) (hn : 1 ≤ n) : (n) = (Nat.log 2 (2 ^ n + 1)) := Eq.symm (textbook_thousand_bit_width n hn)
-/-- three divides 2^n + 1 for every odd n, since x + y divides x^n + y^n for odd n (2^999 + 1 mod 3 = 0, the thousand-bit test integer's smallest prime factor). From Mathlib's `Odd.nat_add_dvd_pow_add_pow`, `one_pow` (examples: algorithm-factor-1000-bit, payload-predict) -/
+/-- three divides 2^n + 1 for every odd n, since x + y divides x^n + y^n for odd n (2^999 + 1 mod 3 = 0, the thousand-bit test integer's smallest prime factor). From Mathlib's `Odd.nat_add_dvd_pow_add_pow`, `one_pow` (examples: algorithm-factor-1000-bit) -/
 theorem textbook_thousand_bit_three_divides (n : Nat) (hn : Odd n) : 3 ∣ 2 ^ n + 1 := by
   have e := Odd.nat_add_dvd_pow_add_pow 2 1 hn
   rwa [one_pow] at e
@@ -2365,13 +1982,7 @@ example := @textbook_editorial_posts
 @[reflection] theorem textbook_editorial_posts_reflected (posts backlog items : Nat) (h : posts + backlog = items) (σ : Nat) : σ - (posts) = σ - (items - backlog) := congrArg (σ - ·) (Eq.symm (textbook_editorial_posts posts backlog items h))
 /-- the contrapositive of textbook_editorial_posts (examples: match-editorial) -/
 @[reflection] theorem textbook_editorial_posts_contrapositive (posts backlog items : Nat) : ¬ (items - backlog = posts) → ¬ ((posts + backlog = items)) := fun hc hh => hc (textbook_editorial_posts posts backlog items hh)
-/-- the combinations less the blocked ones are the complete ones, however many adapters the app grows to. From Mathlib's `Finset.card_sdiff_of_subset` (examples: configure-adapters-port) -/
-theorem textbook_ports_cover {Combination : Type} [DecidableEq Combination] (combinations blocked : Finset Combination) (h : blocked ⊆ combinations) :
-  (combinations \ blocked).card = combinations.card - blocked.card := Finset.card_sdiff_of_subset h
-example := @textbook_ports_cover
-/-- textbook_ports_cover reflected by its shape (examples: configure-adapters-port) -/
-@[reflection] theorem textbook_ports_cover_reflected {Combination : Type} [DecidableEq Combination] (combinations blocked : Finset Combination) (h : blocked ⊆ combinations) : (combinations.card - blocked.card) = ((combinations \ blocked).card) := Eq.symm (textbook_ports_cover combinations blocked h)
-/-- any key reduced modulo n > 0 combinations is one of the n combinations 0 to n − 1, so the default it names always exists. From Mathlib's `Finset.mem_range` (examples: fold-harmonic, payload-hooks-collapse) -/
+/-- any key reduced modulo n > 0 combinations is one of the n combinations 0 to n − 1, so the default it names always exists. From Mathlib's `Finset.mem_range` (examples: fold-harmonic) -/
 theorem textbook_harmonic_default (n k : Nat) (h : 0 < n) : k % n ∈ Finset.range n := Finset.mem_range.mpr (Nat.mod_lt k h)
 example := @textbook_harmonic_default
 /-- a role's allowed combinations and the ones it may not make are all of them: with truncated subtraction (ℕ among its models), (a − l) + l = a when l ≤ a. From Mathlib's `tsub_add_cancel_of_le` (examples: fold-harmonic-rbac) -/
@@ -2454,17 +2065,6 @@ theorem textbook_e2e_tree_dissent {α : Type*} [DecidableEq α] (voters A B : Fi
   ⟨Finset.inter_nonempty_of_card_lt_card_add_card hA hB (by omega), Finset.card_sdiff_of_subset hA⟩
 example := @textbook_e2e_tree_dissent
 example : 2 * 2 > 3 ∧ 3 - 2 = 1 ∧ 1 + 1 = 2 ∧ 0 = 0 := by decide
-/-- merging in either order names the same addresses and the same collisions, the addresses both edits name: a ∪ b = b ∪ a and a ∩ b = b ∩ a. From Mathlib's `Finset.union_comm`, `Finset.inter_comm` (examples: payload-merge-collision, payload-merge-collision-reversed, payload-merge-edit-stands) -/
-theorem textbook_merge_collision {Address : Type} [DecidableEq Address] (a b : Finset Address) : a ∪ b = b ∪ a ∧ a ∩ b = b ∩ a :=
-  ⟨Finset.union_comm a b, Finset.inter_comm a b⟩
-example := @textbook_merge_collision
-example : 1 + 1 + 0 = 2 ∧ 2 = 2 ∧ 2 - 1 = 1 ∧ 1 + 1 + 0 = 2 := by decide
-/-- textbook_merge_collision reflected by its shape (examples: payload-merge-collision, payload-merge-collision-reversed, payload-merge-edit-stands) -/
-@[reflection] theorem textbook_merge_collision_reflected {Address : Type} [DecidableEq Address] (a b : Finset Address) : ((b ∪ a) = (a ∪ b)) ∧ ((b ∩ a) = (a ∩ b)) := ⟨Eq.symm (textbook_merge_collision a b).1, Eq.symm (textbook_merge_collision a b).2⟩
-/-- a config set of given members has at most as many distinct members as given, and the union of a and b is a + b less their intersection. From Mathlib's `List.toFinset_card_le` and `Finset.card_union` (examples: configure-sets-given) -/
-theorem textbook_set_address_canonical {α : Type} [DecidableEq α] (l : List α) (a b : Finset α) : l.toFinset.card ≤ l.length ∧ (a ∪ b).card = a.card + b.card - (a ∩ b).card :=
-  ⟨List.toFinset_card_le l, Finset.card_union a b⟩
-example := @textbook_set_address_canonical
 /-- a document of n keys can be written in n! key orders, the permutations of its keys, the writes canonicalText folds into one entry. From Mathlib's `Fintype.card_perm` and `Fintype.card_fin` (examples: mongo-insert-canonical) -/
 theorem textbook_entry_canonical (n : Nat) : Fintype.card (Equiv.Perm (Fin n)) = n.factorial := by
   rw [Fintype.card_perm, Fintype.card_fin]
@@ -2488,10 +2088,6 @@ example : 20 / 14 * 14 + 20 % 14 = 20 ∧ 20 % 14 < 14 := by decide
 @[reflection] theorem textbook_reflect_widths_reflected (t n : Nat) (hn : 0 < n) (σ : Nat) : σ - (t) = σ - ((n - t % n) * (t / n) + t % n * (t / n + 1)) := congrArg (σ - ·) (Eq.symm (textbook_reflect_widths t n hn))
 /-- the contrapositive of textbook_reflect_widths (examples: fold-reflect-widths) -/
 @[reflection] theorem textbook_reflect_widths_contrapositive (t n : Nat) : ¬ ((n - t % n) * (t / n) + t % n * (t / n + 1) = t) → ¬ ((0 < n)) := fun hc hh => hc (textbook_reflect_widths t n hh)
-/-- createReferenceGraph: every reference resolves to one document or is dangling; a name two documents claim is a collision listed with both and resolved to neither (examples: payload-references-collision) -/
-theorem textbook_references_name_collision : 0 + 1 = 1 ∧ 1 = 1 ∧ 2 = 2 := by decide
-/-- textbook_references_name_collision reflected by its shape, conjunction (examples: payload-references-collision) -/
-@[reflection] theorem textbook_references_name_collision_reflected (σ : Nat) : (σ - (1) = σ - (0 + 1)) ∧ (σ - (1) = σ - (1)) ∧ (σ - (2) = σ - (2)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_references_name_collision).1), congrArg (σ - ·) (Eq.symm (textbook_references_name_collision).2.1), congrArg (σ - ·) (Eq.symm (textbook_references_name_collision).2.2)⟩
 /-- the hue of an address is its handle read in ZMod 360, whose value is the handle mod 360, one value per handle. From Mathlib's `ZMod.val_natCast` (examples: css-one-source, fold-hex-one-source) -/
 theorem textbook_css_one_source (n : Nat) : ((n : ZMod 360)).val = n % 360 := ZMod.val_natCast 360 n
 example := @textbook_css_one_source
@@ -2704,10 +2300,10 @@ theorem textbook_stale_receipt_refuses_deploy {Receipt : Type} [DecidableEq Rece
   exact ⟨rfl, tsub_pos_of_lt hlt⟩
 example := @textbook_stale_receipt_refuses_deploy
 example : 1 + 1 + 0 = 2 ∧ 2 - 1 = 1 + 0 ∧ 0 < 2 - 1 := by decide
-/-- no register is the last: every qubit count has a larger one, and one more qubit doubles the states, 2^(q + 1) = 2 · 2^q. From Mathlib's `lt_add_one`, `pow_succ'`, `Nat.instZeroLEOneClass`, `IsLeftCancelAdd.addLeftStrictMono_of_addLeftMono`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` (examples: processor-unlimited, circuit-unlimited, echo-unlimited, match-unlimited, prose-unlimited, seal-unlimited, verify-unlimited, stripe-unlimited, fold-unlimited, repository-unlimited, payload-unlimited) -/
+/-- no register is the last: every qubit count has a larger one, and one more qubit doubles the states, 2^(q + 1) = 2 · 2^q. From Mathlib's `lt_add_one`, `pow_succ'`, `Nat.instZeroLEOneClass`, `IsLeftCancelAdd.addLeftStrictMono_of_addLeftMono`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` (examples: processor-unlimited, circuit-unlimited, echo-unlimited, match-unlimited, prose-unlimited, seal-unlimited, verify-unlimited, stripe-unlimited, fold-unlimited, repository-unlimited) -/
 theorem textbook_unlimited_qubits (q : Nat) : q < q + 1 ∧ 2 ^ (q + 1) = 2 * 2 ^ q := ⟨lt_add_one q, pow_succ' 2 q⟩
 example := @textbook_unlimited_qubits
-/-- textbook_unlimited_qubits reflected by its shape (examples: processor-unlimited, circuit-unlimited, echo-unlimited, match-unlimited, prose-unlimited, seal-unlimited, verify-unlimited, stripe-unlimited, fold-unlimited, repository-unlimited, payload-unlimited) -/
+/-- textbook_unlimited_qubits reflected by its shape (examples: processor-unlimited, circuit-unlimited, echo-unlimited, match-unlimited, prose-unlimited, seal-unlimited, verify-unlimited, stripe-unlimited, fold-unlimited, repository-unlimited) -/
 @[reflection] theorem textbook_unlimited_qubits_reflected (q : Nat) (σ : Nat) (hσ0 : (q + 1) ≤ σ) : (σ - (q + 1) < σ - (q)) ∧ (σ - (2 * 2 ^ q) = σ - (2 ^ (q + 1))) := ⟨Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_unlimited_qubits q).1 hσ0) (textbook_unlimited_qubits q).1, congrArg (σ - ·) (Eq.symm (textbook_unlimited_qubits q).2)⟩
 /-- a standard is verified only when every row asked is verified: no row left unverified with verified ≤ asked forces verified = asked. From Mathlib's `tsub_eq_zero_iff_le`, `le_antisymm`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub` (examples: standards-iso-online, standards-iso-page, standards-iso-joined) -/
 theorem textbook_iso_rows_verified (asked verified : ℕ) (h : verified ≤ asked) : asked - verified = 0 → verified = asked :=
@@ -2715,50 +2311,23 @@ theorem textbook_iso_rows_verified (asked verified : ℕ) (h : verified ≤ aske
 example := @textbook_iso_rows_verified
 /-- textbook_iso_rows_verified reflected by its shape (examples: standards-iso-online, standards-iso-page, standards-iso-joined) -/
 @[reflection] theorem textbook_iso_rows_verified_reflected (asked verified : ℕ) (h : verified ≤ asked) : ¬ (verified = asked) → ¬ ((asked - verified = 0)) := fun hc hh => hc ((textbook_iso_rows_verified asked verified h) hh)
-/-- a theme is configured in one read: with truncated subtraction (ℕ among its models), what is developed beyond the theme and the mode (k = 2) is each template and each part, (t + p + k) − k = t + p. From Mathlib's `add_tsub_cancel_right` (examples: configure-theme) -/
-theorem textbook_theme_developed {α : Type*} [PartialOrder α] [AddCommSemigroup α] [Sub α] [OrderedSub α]
-    [AddLeftReflectLE α] (templates parts k : α) : templates + parts + k - k = templates + parts :=
-  add_tsub_cancel_right (templates + parts) k
-example := @textbook_theme_developed
-/-- textbook_theme_developed reflected by its shape (examples: configure-theme) -/
-@[reflection] theorem textbook_theme_developed_reflected {α : Type*} [PartialOrder α] [AddCommSemigroup α] [Sub α] [OrderedSub α] [AddLeftReflectLE α] (templates parts k : α) : (templates + parts) = (templates + parts + k - k) := Eq.symm (textbook_theme_developed templates parts k)
-/-- every Alpine directive is ported, partial or a gap, so the directives less the ported ones are the partial ones and the gaps: removing a summand from a sum leaves the rest. From Mathlib's `add_assoc`, `add_tsub_cancel_left`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: payload-alpine) -/
+/-- every Alpine directive is ported, partial or a gap, so the directives less the ported ones are the partial ones and the gaps: removing a summand from a sum leaves the rest. From Mathlib's `add_assoc`, `add_tsub_cancel_left`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: clone-alpine) -/
 theorem textbook_alpine_ported (ported halfway gaps total : ℕ) (h : ported + halfway + gaps = total) : total - ported = halfway + gaps := by
   rw [← h, add_assoc, add_tsub_cancel_left]
 example := @textbook_alpine_ported
-/-- textbook_alpine_ported reflected by its shape (examples: payload-alpine) -/
+/-- textbook_alpine_ported reflected by its shape (examples: clone-alpine) -/
 @[reflection] theorem textbook_alpine_ported_reflected (ported halfway gaps total : ℕ) (h : ported + halfway + gaps = total) : (halfway + gaps) = (total - ported) := Eq.symm (textbook_alpine_ported ported halfway gaps total h)
-/-- a directive that runs adds one to the store's count, so the count after exceeds the count before (1 + 1 = 2 > 1) and the count shows. From Mathlib's `lt_add_one`, `Nat.instZeroLEOneClass`, `IsLeftCancelAdd.addLeftStrictMono_of_addLeftMono`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` (examples: payload-alpine-run) -/
+/-- a directive that runs adds one to the store's count, so the count after exceeds the count before (1 + 1 = 2 > 1) and the count shows. From Mathlib's `lt_add_one`, `Nat.instZeroLEOneClass`, `IsLeftCancelAdd.addLeftStrictMono_of_addLeftMono`, `instIsLeftCancelAddOfAddLeftReflectLE`, `IsOrderedCancelAddMonoid.toAddLeftReflectLE`, `Nat.instIsOrderedCancelAddMonoid`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` (examples: clone-alpine-run) -/
 theorem textbook_alpine_runs (count : Nat) : count < count + 1 := lt_add_one count
 example := @textbook_alpine_runs
 example : 1 + 1 = 2 ∧ 1 < 2 := by decide
-/-- textbook_alpine_runs reflected by its shape (examples: payload-alpine-run) -/
+/-- textbook_alpine_runs reflected by its shape (examples: clone-alpine-run) -/
 @[reflection] theorem textbook_alpine_runs_reflected (count : Nat) (σ : Nat) (hσ0 : (count + 1) ≤ σ) : σ - (count + 1) < σ - (count) := Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_alpine_runs count) hσ0) (textbook_alpine_runs count)
-/-- a directive the linter refuses adds nothing, and adding zero leaves the count as it was. From Mathlib's `add_zero` (examples: payload-alpine-eslint) -/
+/-- a directive the linter refuses adds nothing, and adding zero leaves the count as it was. From Mathlib's `add_zero` (examples: clone-alpine-eslint) -/
 theorem textbook_alpine_refused (count : Nat) : count + 0 = count := add_zero count
 example := @textbook_alpine_refused
-/-- textbook_alpine_refused reflected by its shape (examples: payload-alpine-eslint) -/
+/-- textbook_alpine_refused reflected by its shape (examples: clone-alpine-eslint) -/
 @[reflection] theorem textbook_alpine_refused_reflected (count : Nat) (σ : Nat) : σ - (count) = σ - (count + 0) := congrArg (σ - ·) (Eq.symm (textbook_alpine_refused count))
-/-- an action on a member answers as a bulk action on its collection, which holds at least that one member: a ∈ s gives 1 ≤ |s|. From Mathlib's `Finset.one_le_card` (examples: payload-rails-admin) -/
-theorem textbook_member_in_collection {α : Type*} (s : Finset α) (a : α) (h : a ∈ s) : 1 ≤ s.card :=
-  Finset.one_le_card.mpr ⟨a, h⟩
-example := @textbook_member_in_collection
-/-- the length of a concatenated word is the sum of the lengths, and one more letter adds one (apps_ and cards: 5 + 5 = 10 for apps_cards; card and s: 4 + 1 = 5). From Mathlib's `FreeMonoid.length_mul` and `FreeMonoid.length_of` (examples: payload-rails-model) -/
-theorem textbook_model_table (p w : FreeMonoid Char) (c : Char) :
-    (p * w).length = p.length + w.length ∧ (w * FreeMonoid.of c).length = w.length + 1 := by
-  refine ⟨FreeMonoid.length_mul p w, ?_⟩
-  rw [FreeMonoid.length_mul, FreeMonoid.length_of]
-example := @textbook_model_table
-example : 5 + 5 = 10 ∧ 4 + 1 = 5 := by decide
-/-- textbook_model_table reflected by its shape (examples: payload-rails-model) -/
-@[reflection] theorem textbook_model_table_reflected (p w : FreeMonoid Char) (c : Char) : ((p.length + w.length) = ((p * w).length)) ∧ ((w.length + 1) = ((w * FreeMonoid.of c).length)) := ⟨Eq.symm (textbook_model_table p w c).1, Eq.symm (textbook_model_table p w c).2⟩
-/-- f frameworks each cloning s slots hold f · s pages, the pairs of a product (12 frameworks of 25 slots: 300 pages). From Mathlib's `Fintype.card_prod` and `Fintype.card_fin` (examples: payload-self-clone) -/
-theorem textbook_clone_slots (f s : Nat) : Fintype.card (Fin f × Fin s) = f * s := by
-  simp only [Fintype.card_prod, Fintype.card_fin]
-example := @textbook_clone_slots
-example : 12 * 25 = 300 := by decide
-/-- textbook_clone_slots reflected by its shape (examples: payload-self-clone) -/
-@[reflection] theorem textbook_clone_slots_reflected (f s : Nat) : (f * s) = (Fintype.card (Fin f × Fin s)) := Eq.symm (textbook_clone_slots f s)
 /-- a string of n bytes is n · 8 bits, so it takes 2^(8n) values, and each byte is two hexadecimal digits, 256^n = 16^(2n) (AES-256-GCM: a 32-byte key is 256 bits, a 12-byte nonce 96, a 16-byte tag 128, and 10 bytes of text 20 hexadecimal digits). From Mathlib's `Fintype.card_fun`, `Fintype.card_bool`, `Fintype.card_fin` and `pow_mul` (examples: seal-aead) -/
 theorem textbook_aead_sizes (n : Nat) : Fintype.card (Fin n → Fin 8 → Bool) = 2 ^ (8 * n) ∧
     Fintype.card (Fin n → Fin 256) = Fintype.card (Fin (2 * n) → Fin 16) := by
@@ -2821,18 +2390,6 @@ example := @textbook_particles_classes
 example : 6 * 4 = 24 ∧ 6 * 4 ≠ 25 := by decide
 /-- textbook_particles_classes reflected by its shape (examples: textbook-particles, textbook-particles-control) -/
 @[reflection] theorem textbook_particles_classes_reflected {ι κ : Type} [DecidableEq κ] (f : ι → κ) (s : Finset ι) (t : Finset κ) (h : ∀ x ∈ s, f x ∈ t) : (∑ k ∈ t, (s.filter (fun x => f x = k)).card) = (s.card) := Eq.symm (textbook_particles_classes f s t h)
-/-- a deposit that is paid is covered: the coins held less the price, and the price again, are the coins held. From Mathlib's `tsub_add_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `Nat.instOrderedSub` (examples: payload-zenodo-account) -/
-theorem textbook_deposit_paid (coins price : ℕ) (h : price ≤ coins) : coins - price + price = coins := tsub_add_cancel_of_le h
-example := @textbook_deposit_paid
-/-- textbook_deposit_paid reflected by its shape (examples: payload-zenodo-account) -/
-@[reflection] theorem textbook_deposit_paid_reflected (coins price : ℕ) (h : price ≤ coins) : (coins) = (coins - price + price) := Eq.symm (textbook_deposit_paid coins price h)
-/-- of the collections that may name a DOI, those that verify it removed leave the leads: removing a subset leaves the difference of the counts (4 − 2 = 2). From Mathlib's `Finset.card_sdiff_of_subset` (examples: payload-doi-related) -/
-theorem textbook_doi_related {α : Type*} [DecidableEq α] (collections verified : Finset α) (h : verified ⊆ collections) : (collections \ verified).card = collections.card - verified.card :=
-  Finset.card_sdiff_of_subset h
-example := @textbook_doi_related
-example : 4 - 2 = 2 := by decide
-/-- textbook_doi_related reflected by its shape (examples: payload-doi-related) -/
-@[reflection] theorem textbook_doi_related_reflected {α : Type*} [DecidableEq α] (collections verified : Finset α) (h : verified ⊆ collections) : (collections.card - verified.card) = ((collections \ verified).card) := Eq.symm (textbook_doi_related collections verified h)
 /-- a QAOA circuit has a parameters a layer, its angles: one more layer is a more parameters, a(p + 1) = ap + a (two angles: 7 layers have 14). From Mathlib's `mul_add_one` and `Distrib.leftDistribClass` (examples: clay-relation-14) -/
 theorem textbook_qaoa_params (p : Nat) : 2 * (p + 1) = 2 * p + 2 := mul_add_one 2 p
 example := @textbook_qaoa_params

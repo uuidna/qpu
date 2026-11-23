@@ -2,7 +2,7 @@
 // The list is the one on https://developers.cloudflare.com/workers/runtime-apis/bindings/
 // Each adapter is the one connector. Names only. Values never travel.
 import { PROSE, proseFill } from '../processing/prose-index.ts'
-import { QPU_CONNECTOR } from './website-client.ts'
+import { QPU_CONNECTOR } from './connector.ts'
 
 const CLOUDFLARE_BINDINGS_SOURCE = 'https://developers.cloudflare.com/workers/runtime-apis/bindings/' as const
 

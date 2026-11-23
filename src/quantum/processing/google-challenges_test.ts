@@ -1,8 +1,6 @@
 // Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (https://orcid.org/0009-0000-7312-9778)
-// End-to-end verification of all 14 Google challenges solved via Google APIs and exposed through Payload API:
-//   - payload { google: true } / payload { google: { challenge } } / payload { feeds: { google: true } }
-//   - qpuGoogle plugin endpoints: GET /api/qpu/google, POST /api/qpu/google, GET /api/qpu/feeds?google=1
-//   - Cursor Payload MCP connector: payload_google, payload_rest, payload_feeds, and persisted Payload entries + qpu global
+// End-to-end verification of all 14 Google challenges solved via Google APIs and exposed through the google door:
+//   - google { challenges: true } / google { challenges: { challenge } } / google {} (the default)
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { call } from './mcp.ts'
@@ -76,23 +74,17 @@ test('googleChallenges solves all 14 Google challenges with kernel-accepted theo
   }
 })
 
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: payload MCP tool exposes Google challenges via { google: true }, single challenge filter, and { feeds: { google: true } }. */
-test('payload MCP tool exposes Google challenges via { google: true }, single challenge filter, and { feeds: { google: true } }', () => {
-  const all = call('payload', { google: true }).result?.structuredContent
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the google door exposes the Google challenges: all of them by default, and one by { challenges: { challenge } }. */
+test('the google door exposes the Google challenges: all of them by default, and one by { challenges: { challenge } }', () => {
+  const all = call('google', { challenges: true }).result?.structuredContent
   assert.equal(all.phase, 'google-challenges')
   assert.equal(all.allHold, true)
   assert.equal(all.holding, 14)
+  assert.equal(call('google', {}).result?.structuredContent.holding, 14)
 
-  const one = call('payload', { google: { challenge: 'quantum-echoes-otoc' } }).result?.structuredContent
+  const one = call('google', { challenges: { challenge: 'quantum-echoes-otoc' } }).result?.structuredContent
   assert.equal(one.total, 1)
   assert.equal(one.challenges[0].id, 'quantum-echoes-otoc')
   assert.equal(one.challenges[0].holds, true)
   assert.equal(one.challenges[0].value.speedupOverFrontier, 13000)
-
-  const feed = call('payload', { feeds: { google: true } }).result?.structuredContent
-  assert.equal(feed.phase, 'payload')
-  assert.equal(feed.counts.googleChallenges, 14)
-  assert.equal(feed.counts.googleHolding, 14)
-  assert.equal(feed.google.allHold, true)
-  assert.ok(feed.catalogue.length > 0)
 })

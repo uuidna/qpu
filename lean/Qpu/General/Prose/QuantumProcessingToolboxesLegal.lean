@@ -144,5 +144,8 @@ def quantumProcessingToolboxesLegal_s137 : String := "Registration opens on Janu
 def quantumProcessingToolboxesLegal_s138 : String := "the XPRIZE window read from its sentence: open on 2026-02-01, closed on 2026-10-26; a page naming a 2027 window makes the competition enterable in 2027"
 def quantumProcessingToolboxesLegal_s139 : String := "unpushed and unpublished, nothing is ready and three funding programs are enterable by the author's acts (Google's accelerator among them; the Gemini XPRIZE hackathon closed) (Vercel's says applications are currently closed); pushed, the public-repository rule is satisfied and the application stays the author's; a Millennium problem stays open whatever the author does here"
 def quantumProcessingToolboxesLegal_s140 : String := "⟦0⟧ checks over 2 patents, ⟦1⟧ violations on the second (dates, term); numbers read for US, EP, WO; an unreadable body said so"
+def quantumProcessingToolboxesLegal_shows141 : String := "A 401 at a REST gate is the role rule: the role the token carries does not allow the act at this tenant, and the remedy names the role the act needs."
+def quantumProcessingToolboxesLegal_shows142 : String := "A 412 at an edit is the collision rule: the edit names an address the document no longer folds to, and both addresses are answered."
+def quantumProcessingToolboxesLegal_shows143 : String := "A 405 at a gate is the method rule: the method is not one the gate answers, and the remedy names the methods the error lists."
 
 end Prose

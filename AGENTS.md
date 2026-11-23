@@ -1,6 +1,6 @@
 # AI Agent
 
-Skills: `.agents/skills/`; skill/skills/SKILL_MCP → MCP tools/call (`payload { skills: true }`).
+Skills: `.agents/skills/`, written by `textbook { scripts: { skills: true } }` over MCP tools/call.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

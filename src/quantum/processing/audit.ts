@@ -10,7 +10,6 @@ export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string;
 import { THEOREMS, THEOREM_KEYS } from './theorems-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { uuid, seal } from '../uuid/index.ts'
-import { manageApi } from '../payload/index.ts'
 import { TABLES } from './tables-index.ts'
 import { ISO_ENTROPY, isoEntropyOf } from './iso-deliverables.ts'
 import { clock } from '../uuid/programs/clock/index.ts'
@@ -51,7 +50,7 @@ export const GENERATOR_REMEDIES: readonly [RegExp, { cmd: string; args: string[]
 ]
 /** The roots whose hand-written source the literal rule reads. */
 export const LITERAL_ROOTS = ['src', 'scripts'] as const
-export const LITERAL_REGISTRIES = { url: ['src/quantum/processing/discovery.ts', 'src/quantum/processing/discovery-document.ts', 'src/quantum/processing/sources.ts', 'src/quantum/processing/leads.ts', 'src/quantum/processing/payload-surface.ts', 'src/quantum/processing/institutions.ts', 'src/quantum/processing/unit/index.ts'], path: ['src/quantum/processing/toolboxes/payload.ts', 'src/quantum/processing/toolboxes/repository.ts', 'src/quantum/processing/toolboxes/legal.ts', 'src/quantum/processing/audit.ts', 'src/quantum/processing/machine.ts', 'src/quantum/processing/examples.ts', 'src/quantum/processing/script-doors.ts', 'scripts/next.ts', 'scripts/run.ts', 'scripts/gen-clay.ts', 'scripts/legal.ts'] } as const
+export const LITERAL_REGISTRIES = { url: ['src/quantum/processing/discovery.ts', 'src/quantum/processing/discovery-document.ts', 'src/quantum/processing/sources.ts', 'src/quantum/processing/leads.ts', 'src/quantum/processing/payload-surface.ts', 'src/quantum/processing/institutions.ts', 'src/quantum/processing/unit/index.ts'], path: ['src/quantum/processing/toolboxes/repository.ts', 'src/quantum/processing/toolboxes/legal.ts', 'src/quantum/processing/audit.ts', 'src/quantum/processing/machine.ts', 'src/quantum/processing/examples.ts', 'src/quantum/processing/script-doors.ts', 'scripts/next.ts', 'scripts/run.ts', 'scripts/gen-clay.ts', 'scripts/legal.ts'] } as const
 const LITERAL_EXEMPT = /uuidna\.com\/licen[cs]e|creativecommons\.org\/licenses|contributor-covenant\.org|\(\+https:\/\/qpu\.uuidna\.com\)/
 type Literal = { kind: 'url' | 'path'; file: string; line: number; literal: string; clean: boolean; why: string; tokens: number; antimatter: { needs: 'confirm'; says: string } | null }
 export const listLiterals = (files: Readonly<Record<string, string>>) => {
@@ -211,7 +210,7 @@ export const handleOrCorrect = (errors: readonly string[], majority: boolean, mo
   let m = mode
   const stop = (swaps: number, extra: { remedies?: ReturnType<typeof listRemedies>; says?: string } = {}) => {
     const left = (extra.remedies ?? listRemedies(errors)).leads.filter((l) => !l.remedy).map((l) => l.statement)
-    return { mode: m, steps, swaps, terminated: true as const, ...extra, continued: manageApi({ collection: 'entries', action: 'create', data: { kind: 'audit-stop', from: 'audit', body: { mode: m, swaps, left } } }) }
+    return { mode: m, steps, swaps, terminated: true as const, ...extra, continued: { kind: 'audit-stop', from: 'audit', body: { mode: m, swaps, left } } }
   }
   for (let swap = 0; swap < 3; swap += 1) {
     if (m === 'correction') { if (majority) { steps.push({ mode: m, result: 'corrected by majority' }); return stop(swap) } steps.push({ mode: m, result: 'no majority: the correction errors' }); m = flipMode(m); continue }

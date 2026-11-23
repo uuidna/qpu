@@ -13,12 +13,6 @@
       "skillPath": "skills/cloudflare/SKILL.md",
       "computedHash": "1cce94a0fea413a5d5f9dd18d2a72cd90e925017c791eb6554be14f5bb777576"
     },
-    "payload": {
-      "source": "payloadcms/skills",
-      "sourceType": "github",
-      "skillPath": "skills/payload/SKILL.md",
-      "computedHash": "4abfcc828ca2cc0d9142b2fee2456f257f73dd7a37bd1cce2d354231b08b8767"
-    },
     "workers-best-practices": {
       "source": "cloudflare/skills",
       "sourceType": "github",

@@ -10,6 +10,7 @@ import { withX402 } from 'agents/x402'
 import { z } from 'zod'
 import { handle, type Rpc } from '../processing/mcp.ts'
 import { TENANTS } from '../processing/unit/tenants.ts'
+import { MESSAGING_TOOLS, callMessaging, type MailboxNamespace } from './messaging.ts'
 
 // The real quantum market QPU is measured against (AWS Braket per-shot + its flat task fee; source:
 // quantumcomputingcost.com/aws-braket-pricing, 2026-02). A device's per-qubit price is its shot price over its
@@ -56,15 +57,31 @@ const build = async (env: Env) => {
     if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations ?? {}, run).update({ _meta: t._meta })
     else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations, _meta: t._meta }, run)
   }
+  // where the Worker binds the rooms, send and receive are tools like the kernel's, charged the same way
+  const rooms = env.MAILBOX as MailboxNamespace | undefined
+  for (const t of rooms ? MESSAGING_TOOLS : []) {
+    const schema = z.fromJSONSchema(t.inputSchema as never) as z.ZodObject, run = async (args: Record<string, unknown>) => (await callMessaging(rooms!, t.name, args)) as never
+    if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations, run)
+    else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations }, run)
+  }
   for (const r of resources) base.registerResource(r.name, r.uri, { description: r.description, mimeType: r.mimeType }, async (uri: URL) => (await kernel('resources/read', { uri: uri.href })).result as never)
   return base
 }
 
-/** The MCP endpoint for a deploy to mount at /api/mcp: Streamable HTTP through the Agents SDK, the hostnames the
- *  tenants name (and those QPU_MCP_HOSTS adds) allowed. `env` is the Worker/Pages/process env. */
+/** Where an agent harness may be pointed: the domain itself, the conventional /mcp, and /api/mcp. */
+export const MCP_PATHS = ['/', '/mcp', '/api/mcp']
+/** A request of the MCP protocol, not a browser's: anything but a GET at /api/mcp; elsewhere a POST, DELETE or
+ *  preflight, or a GET that asks for an event stream and not for a page. */
+export const isMcp = (request: Request): boolean => {
+  const path = new URL(request.url).pathname, accept = request.headers.get('accept') ?? ''
+  return path === '/api/mcp' || (MCP_PATHS.includes(path) && (!['GET', 'HEAD'].includes(request.method) || (accept.includes('text/event-stream') && !accept.includes('text/html'))))
+}
+
+/** The MCP endpoint at every path of MCP_PATHS: Streamable HTTP through the Agents SDK, the hostnames the tenants
+ *  name (and those QPU_MCP_HOSTS adds) allowed, every origin allowed since no call rides a cookie: each carries its own payment. */
 export const serveMcp = async (request: Request, env: Env = (globalThis as { process?: { env?: Env } }).process?.env ?? {}): Promise<Response> => {
   x402Of(env) // a tenant whose wallet is not an address is refused before anything is served
   const extra = typeof env.QPU_MCP_HOSTS === 'string' ? env.QPU_MCP_HOSTS.split(',').map((h) => h.trim()).filter(Boolean) : []
-  const handler = createMcpHandler(() => build(env), { route: '/api/mcp', responseMode: 'json', allowedHostnames: [...Object.keys(TENANTS), ...extra] })
+  const handler = createMcpHandler(() => build(env), { route: new URL(request.url).pathname, responseMode: 'json', allowedHostnames: [...Object.keys(TENANTS), ...extra], allowedOriginHostnames: '*' })
   return handler(request, env, { waitUntil: () => {}, passThroughOnException: () => {}, props: {} } as unknown as Parameters<typeof handler>[2])
 }

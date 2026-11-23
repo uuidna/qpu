@@ -871,7 +871,7 @@ const bound = (hooks: Record<string, unknown[]> = {}, w: Where) => ({ ...hooks, 
 const nodes = (adapter: any) => { const f = adapter?.editorConfig?.features; for (const [h, m] of Object.entries((f?.nodeHooks ?? {}) as Record<string, Map<string, unknown[]>>)) for (const t of f.getSubFields?.keys() ?? []) m.set(t, into(m.get(t), 'node', h)); return adapter }
 // synchronous as Payload requires: sanitizeConfig assigns the provider's return without awaiting it, so an async wrapper left every editor a Promise (editor.validate is not a function)
 const editor = (e: any) => (typeof e !== 'function' ? nodes(e) : e.qpuWitness ? e : Object.assign((a: unknown) => { const r = e(a); return r && typeof r.then === 'function' ? r.then(nodes) : nodes(r) }, { qpuWitness: true }))
-/** qpuHooks: the witnesses bound to any config walked whole, every rich text field and Lexical block node (textbook_witness_pair) */
+/** qpuHooks: the witnesses bound to any config walked whole, every rich text field and Lexical block node */
 export const qpuHooks = (config: Record<string, any>) => {
   const n = { richText: 0, blocks: 0 }, box = (b: any): any => (typeof b === 'string' ? b : (n.blocks++, { ...b, fields: fields(b.fields) }))
   const fields = (fs: any[] = []): any[] => fs.map((f) => (f.type === 'richText' ? (n.richText++, { ...f, hooks: bound(f.hooks, 'field'), ...(f.editor ? { editor: editor(f.editor) } : {}) }) : f.tabs ? { ...f, tabs: f.tabs.map((t: any) => ({ ...t, fields: fields(t.fields) })) } : f.blocks ? { ...f, blocks: f.blocks.map(box) } : f.fields ? { ...f, fields: fields(f.fields) } : f))
@@ -1028,5 +1028,4 @@ const shadcnCreatePreset = (params: ShadcnCreatePresetParams = {}) => {
 
 
 
-export { uuidPlugin as plugin } from '../plugin.ts'
 

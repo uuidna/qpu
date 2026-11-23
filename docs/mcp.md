@@ -34,6 +34,7 @@ Any client mounts:
 | `quantum-error-correction` | google |
 | `chemistry-simulation` | google |
 | `fault-tolerant-design` | google |
+| `google` | google |
 | `leads` | tree |
 | `audit` | tree |
 | `metrics` | tree |
@@ -60,8 +61,6 @@ Any client mounts:
 | `jsonld` | standards |
 | `codes` | standards |
 | `validate` | standards |
-| `payload` | payload |
-| `configure` | payload |
 | `extend` | extension |
 | `fold` | crypto |
 | `seal` | crypto |

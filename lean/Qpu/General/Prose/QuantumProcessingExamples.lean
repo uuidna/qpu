@@ -529,5 +529,8 @@ def quantumProcessingExamples_showsCloudflareAdapters : String := "The adapters 
 def quantumProcessingExamples_showsClayRelation14 : String := "The relation at 14 by name: the faces of the lattice are the coil and the parameters of a QAOA circuit of seven layers, two for each layer (textbook_qaoa_params)."
 
 def quantumProcessingExamples_showsShorOddOrder : String := "Order-finding where the order is odd: 4 has the order 3 modulo 21, so this base yields no factor and another base is tried (textbook_refuse_is_refuse)."
+def quantumProcessingExamples_shows514 : String := "Alpine.js ported as its documentation names it: every directive, magic, global and first-party plugin. The data directives run on the scope handed here. Each name that needs a document, a plugin or a reactor that re-runs is a lead, and the lead's run is the develop hook. The browser OS lints expressions with ESLint's universal Linter before they run."
+def quantumProcessingExamples_shows515 : String := "One Alpine component on the scope: x-data, x-init, x-text, x-show and x-for run. ESLint's universal Linter checks each expression against the scope the OS already holds, and this run is clean. x-teleport needs a document and x-effect does not re-run, so those two are leads whose run develops them next."
+def quantumProcessingExamples_shows516 : String := "An expression on the browser OS is linted by ESLint before it runs. eval is not a name the scope holds, so x-init does not run and the count stays the value x-data declared. x-text still reads that count."
 
 end Prose

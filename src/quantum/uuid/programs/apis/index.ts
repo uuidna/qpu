@@ -180,7 +180,7 @@ export const zoneReadingsOf = (answer: ZoneAnswer) => {
 }
 
 import { hexbit, next as turnNext, uuidQubits } from '../../index.ts'
-import { OFFICIAL_PLUGINS } from '../../../plugin.ts'
+import { OFFICIAL_PLUGINS } from '../index.ts'
 /** Payload's monorepo beside its packages (https://github.com/payloadcms/payload, read 2026-11-08): the templates a site starts from and the examples a capability is shown by. */
 export const PAYLOAD_TEMPLATES = ['_data', '_template', 'blank-tanstack', 'blank', 'ecommerce', 'plugin', 'website', 'with-cloudflare-d1', 'with-postgres', 'with-vercel-mongodb', 'with-vercel-postgres', 'with-vercel-website'] as const
 export const PAYLOAD_EXAMPLES = ['astro', 'auth', 'custom-components', 'custom-server', 'draft-preview', 'email', 'form-builder', 'live-preview', 'localization', 'multi-tenant', 'remix', 'tailwind-shadcn-ui', 'whitelabel'] as const

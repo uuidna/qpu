@@ -585,7 +585,7 @@ export const aead = (raw: unknown) => {
     if (typeof open.ciphertext !== 'string' || typeof open.tag !== 'string') throw new Error(PROSE.quantumProcessingCryptoIndex_s38)
     const ciphertext = fromHex(open.ciphertext, 'ciphertext'), tag = fromHex(open.tag, 'tag')
     const plain = cipher === 'aes-256-gcm' ? aes256gcmDecrypt(key, nonce, ciphertext, tag, aad) : chacha20poly1305Decrypt(key, nonce, ciphertext, tag, aad)
-    const text = plain ? new TextDecoder('utf-8', { fatal: false }).decode(plain) : null
+    const text = plain ? new TextDecoder('utf-8').decode(plain) : null
     return { phase: 'aead' as const, cipher, direction: 'open' as const, verified: plain !== null, plain: plain ? hex(plain) : null, text: plain ? text : null }
   }
   if (typeof a.text !== 'string') throw new Error(PROSE.quantumProcessingCryptoIndex_s39)

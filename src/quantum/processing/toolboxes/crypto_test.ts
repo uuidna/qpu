@@ -46,7 +46,7 @@ const refuse = (name: string, args: Record<string, unknown>, pattern: RegExp) =>
 }
 
 const develop = (formula: string, product: string, variant: string) =>
-  invoke('payload', { develop: { formula, product, variant, title: `${product} ${variant}` } })
+  invoke('leads', { develop: { formula, product, variant, title: `${product} ${variant}` } })
 
 const throughEnd = (developed: any, formula: string) => {
   assert.equal(developed.phase, 'develop')

@@ -272,15 +272,6 @@
         "toolbox": "tree",
         "experience": "iso-quantum-ai",
         "online": true,
-        "auth": {
-          "collection": "payload-mcp-api-keys",
-          "header": "Authorization",
-          "scheme": "Bearer",
-          "named": "QPU_MCP_API_KEY",
-          "plugin": "qpuMcpPlugin",
-          "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
-        },
-        "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
         "skill": {
           "directions": 2
         },
@@ -1613,11 +1604,65 @@
       }
     },
     {
+      "name": "google",
+      "description": "The one Google door",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "challenges": {
+            "description": "true for all 14 challenges, or { challenge } or { challenges"
+          },
+          "call": {
+            "type": "object",
+            "description": "{ api, version, method, params, body?, discovery? } | { url, httpMethod? } | { endpoint, params }"
+          },
+          "measured": {
+            "type": "object",
+            "description": "{ pages?, tenants?, entries?, keys? }"
+          },
+          "workspace": {
+            "type": "object",
+            "description": "{ discovery | kinds | form | forms | response | lexical | document | doc | file | answers }"
+          }
+        },
+        "x-harmonic": {
+          "combinations": "1",
+          "index": "0",
+          "from": "a432",
+          "unlimited": true
+        }
+      },
+      "annotations": {
+        "title": "google",
+        "readOnlyHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "_meta": {
+        "toolbox": "google",
+        "experience": "iso-quantum-ai",
+        "online": false,
+        "skill": {
+          "directions": 1
+        },
+        "ui": {
+          "resourceUri": "ui://qpu/google",
+          "visibility": [
+            "model",
+            "app"
+          ]
+        }
+      }
+    },
+    {
       "name": "leads",
       "description": "Every lead on quantumai",
       "inputSchema": {
         "type": "object",
         "properties": {
+          "develop": {
+            "description": "an ISO 9001 process based on the parameters the formula names (the axioms)"
+          },
           "runnable": {
             "type": "object",
             "description": "the leads that run themselves"
@@ -1654,10 +1699,6 @@
           "sources": {
             "type": "object",
             "description": "the immutable sources of leads"
-          },
-          "carry": {
-            "type": "boolean",
-            "description": "the cost of carrying the leads and what converting them to Payload documents saves; when nothing is carried the release is published as the next sequential vers"
           },
           "session": {
             "type": "object",
@@ -1782,13 +1823,6 @@
           "fallbacks": {
             "type": "boolean",
             "description": "the fallback combinations (correction ↔ handling, the involution) and the adapters each falls back to"
-          },
-          "access": {
-            "type": [
-              "boolean",
-              "object"
-            ],
-            "description": "the access audit from every perspective — the public reader at the default domain, a licensed tenant's users at theirs, the operator, an MCP client with a key,"
           }
         }
       },
@@ -2107,6 +2141,9 @@
       "inputSchema": {
         "type": "object",
         "properties": {
+          "alpine": {
+            "description": "Alpine"
+          },
           "toolbox": {
             "type": "string",
             "description": "the toolbox to clone; omit for the index"
@@ -2265,15 +2302,6 @@
         "toolbox": "flow",
         "experience": "iso-quantum-ai",
         "online": true,
-        "auth": {
-          "collection": "payload-mcp-api-keys",
-          "header": "Authorization",
-          "scheme": "Bearer",
-          "named": "QPU_MCP_API_KEY",
-          "plugin": "qpuMcpPlugin",
-          "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
-        },
-        "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
         "skill": {
           "directions": 4
         },
@@ -2325,15 +2353,6 @@
         "toolbox": "flow",
         "experience": "iso-quantum-ai",
         "online": true,
-        "auth": {
-          "collection": "payload-mcp-api-keys",
-          "header": "Authorization",
-          "scheme": "Bearer",
-          "named": "QPU_MCP_API_KEY",
-          "plugin": "qpuMcpPlugin",
-          "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
-        },
-        "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
         "skill": {
           "directions": 4
         },
@@ -2456,10 +2475,6 @@
             },
             "description": "ad-hoc statements {id, statement} to imagine instead"
           },
-          "frameworks": {
-            "type": "array",
-            "description": "the other frameworks, always imagined through payload"
-          },
           "clay": {
             "description": "true, or { session }"
           },
@@ -2540,15 +2555,6 @@
         "toolbox": "flow",
         "experience": "iso-quantum-ai",
         "online": true,
-        "auth": {
-          "collection": "payload-mcp-api-keys",
-          "header": "Authorization",
-          "scheme": "Bearer",
-          "named": "QPU_MCP_API_KEY",
-          "plugin": "qpuMcpPlugin",
-          "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
-        },
-        "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
         "skill": {
           "directions": 4
         },
@@ -3420,15 +3426,6 @@
         "toolbox": "repository",
         "experience": "iso-quantum-ai",
         "online": true,
-        "auth": {
-          "collection": "payload-mcp-api-keys",
-          "header": "Authorization",
-          "scheme": "Bearer",
-          "named": "QPU_MCP_API_KEY",
-          "plugin": "qpuMcpPlugin",
-          "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
-        },
-        "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
         "skill": {
           "directions": 3
         },
@@ -3564,15 +3561,6 @@
         "toolbox": "standards",
         "experience": "iso-quantum-ai",
         "online": true,
-        "auth": {
-          "collection": "payload-mcp-api-keys",
-          "header": "Authorization",
-          "scheme": "Bearer",
-          "named": "QPU_MCP_API_KEY",
-          "plugin": "qpuMcpPlugin",
-          "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
-        },
-        "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
         "skill": {
           "directions": 3
         },
@@ -3623,456 +3611,11 @@
         "toolbox": "standards",
         "experience": "iso-quantum-ai",
         "online": true,
-        "auth": {
-          "collection": "payload-mcp-api-keys",
-          "header": "Authorization",
-          "scheme": "Bearer",
-          "named": "QPU_MCP_API_KEY",
-          "plugin": "qpuMcpPlugin",
-          "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
-        },
-        "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
         "skill": {
           "directions": 3
         },
         "ui": {
           "resourceUri": "ui://qpu/validate",
-          "visibility": [
-            "model",
-            "app"
-          ]
-        }
-      }
-    },
-    {
-      "name": "payload",
-      "description": "Payload/website delivery surface",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "cryptoConfig": {
-            "description": "true"
-          },
-          "feeds": {
-            "type": "object",
-            "description": "computed quantum product/variant feeds for the website"
-          },
-          "phase": {
-            "type": "object",
-            "description": "the phase of a modulo N, decided by the hooks"
-          },
-          "develop": {
-            "description": "an ISO 9001 process based on the parameters the formula names (the axioms)"
-          },
-          "improve": {
-            "description": "ISO 9001 improvement of all, via the ideas"
-          },
-          "optimise": {
-            "description": "Each aspect of one UUID on the filesystem"
-          },
-          "names": {
-            "type": "boolean",
-            "description": "true validates every theorem name against the deliverables"
-          },
-          "quantum": {
-            "type": "boolean",
-            "description": "true implements all quantum as nested Payload pages under /quantum"
-          },
-          "iso": {
-            "description": "true verifies and defines every ISO dimension from the defining rows of the iso_deliverables_metadata dataset"
-          },
-          "instance": {
-            "description": "true, or { action?, role?, at? }"
-          },
-          "plugins": {
-            "type": "boolean",
-            "description": "true"
-          },
-          "aspects": {
-            "type": "boolean",
-            "description": "true"
-          },
-          "locale": {
-            "type": "boolean",
-            "description": "the same door as plugins"
-          },
-          "variants": {
-            "description": "whatever is passed"
-          },
-          "rbac": {
-            "description": "every API and every MCP under the one Payload RBAC MCP"
-          },
-          "access": {
-            "type": "object",
-            "description": "CanCanCan over Payload"
-          },
-          "rolesFromGroups": {
-            "type": "object",
-            "description": "roles from Google Workspace"
-          },
-          "references": {
-            "type": "object",
-            "description": "the references between documents as one graph"
-          },
-          "report": {
-            "type": "object",
-            "description": "Payload handles the proof of a quantum computation as a report"
-          },
-          "referenceIndex": {
-            "type": "object",
-            "description": "every reference indexed by scope and combination, cached by query hash, over the Payload search results"
-          },
-          "handle": {
-            "description": "true"
-          },
-          "hooks": {
-            "type": "object",
-            "description": "the witness hooks"
-          },
-          "google": {
-            "type": "object",
-            "description": "{ pages, tenants, entries, keys }"
-          },
-          "workspace": {
-            "type": "object",
-            "description": "{ discovery | kinds | form | forms | response | lexical | document | doc | file | answers }"
-          },
-          "standardise": {
-            "type": "object",
-            "description": "a lexical document set in standard typography without a change of meaning"
-          },
-          "lexical": {
-            "type": "object",
-            "description": "a Payload lexical document whose qpu blocks run through MCP"
-          },
-          "namespace": {
-            "type": "object",
-            "description": "tenants as namespaces, each app its own sandbox without a domain"
-          },
-          "theorems": {
-            "type": "boolean",
-            "description": "the textbook's axioms replaced by theorems through the tenant's Payload MCP plugin, as a client"
-          },
-          "schemas": {
-            "type": "boolean",
-            "description": "Payload's combinatorial surface handled programmatically"
-          },
-          "collection": {
-            "type": "object",
-            "description": "schemas"
-          },
-          "payloadUrl": {
-            "type": "string",
-            "description": "the tenant's Payload origin; its MCP is at /api/mcp"
-          },
-          "answers": {
-            "type": "object"
-          },
-          "predict": {
-            "description": "any paste, read when it arrives"
-          },
-          "frameworks": {
-            "type": "array",
-            "description": "the other frameworks qpu is imagined in, always through this door"
-          },
-          "textbooks": {
-            "description": "true, or { role?, action?, iso?"
-          },
-          "morph": {
-            "description": "true, or { framework }"
-          },
-          "related": {
-            "description": "posts, pages, products and variants verified against their DOIs"
-          },
-          "zenodo": {
-            "description": "a blog post or a novel claim deposited on Zenodo"
-          },
-          "alpine": {
-            "description": "Alpine"
-          },
-          "links": {
-            "description": "pasted links researched on the browser OS"
-          },
-          "drift": {
-            "description": "true patches ISO and harmonises every drift"
-          },
-          "claims": {
-            "description": "true or { all"
-          },
-          "capacity": {
-            "description": "true or { hexbit?, full?, utilise?, address?, stop?, iso? }"
-          },
-          "dryClean": {
-            "description": "dry clean via quantum"
-          },
-          "idea": {
-            "description": "any idea as a pages seed of the website schema"
-          },
-          "seed": {
-            "description": "the same door as idea"
-          },
-          "website": {
-            "description": "true"
-          },
-          "liveBlockTypes": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "skills": {
-            "description": "true"
-          },
-          "api": {
-            "description": "Payload's local API manages every collection and any API held as one"
-          },
-          "parent": {
-            "description": "the website is the memory and the processing"
-          },
-          "site": {
-            "type": "boolean",
-            "description": "the site as its own use cases"
-          },
-          "scripts": {
-            "type": "object",
-            "description": "former scripts/* owned by Payload (no new tools/list door)"
-          },
-          "merge": {
-            "type": "object",
-            "description": "two edits of one document merged by block address"
-          },
-          "devDependencies": {
-            "type": "object",
-            "description": "with site"
-          },
-          "app": {
-            "type": "object",
-            "description": "an app requested from the Payload UI"
-          },
-          "captcha": {
-            "description": "a captcha solved only by a human on a product form"
-          },
-          "tool": {
-            "type": "string"
-          },
-          "arguments": {
-            "type": "object"
-          },
-          "depth": {
-            "description": "a document nested to any depth by crypto"
-          },
-          "prev": {
-            "type": "string",
-            "description": "the referer block's uuid"
-          },
-          "chain": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "the referers before prev, oldest first"
-          },
-          "origin": {
-            "type": "string"
-          },
-          "token": {
-            "description": "the widget accepts the credential and sends the sha-256 witness"
-          },
-          "deploy": {
-            "description": "true deploys the fully seeded website through Payload onto Cloudflare"
-          },
-          "selftest": {
-            "type": "boolean"
-          }
-        }
-      },
-      "annotations": {
-        "title": "payload",
-        "readOnlyHint": true,
-        "idempotentHint": true,
-        "openWorldHint": true
-      },
-      "_meta": {
-        "toolbox": "payload",
-        "experience": "iso-quantum-ai",
-        "online": true,
-        "auth": {
-          "collection": "payload-mcp-api-keys",
-          "header": "Authorization",
-          "scheme": "Bearer",
-          "named": "QPU_MCP_API_KEY",
-          "plugin": "qpuMcpPlugin",
-          "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
-        },
-        "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
-        "skill": {
-          "directions": 3
-        },
-        "ui": {
-          "resourceUri": "ui://qpu/payload",
-          "visibility": [
-            "model",
-            "app"
-          ]
-        }
-      }
-    },
-    {
-      "name": "configure",
-      "description": "Configure the payloadcms/website delivery vehicle and its bindings",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "domains": {
-            "description": "every scientific domain at once, carried by the UUID of every Payload config"
-          },
-          "port": {
-            "description": "kind adapters"
-          },
-          "kind": {
-            "type": "string",
-            "enum": [
-              "payload",
-              "wrangler",
-              "tenant",
-              "pwa",
-              "mcp",
-              "versions",
-              "migration",
-              "fullstack",
-              "api",
-              "hooks",
-              "bindings",
-              "scopes",
-              "fields",
-              "validations",
-              "access",
-              "actions",
-              "packages",
-              "ecommerce",
-              "ui",
-              "adapters",
-              "gates",
-              "sets",
-              "realtime",
-              "branding",
-              "policies"
-            ],
-            "description": "omit for all",
-            "default": "packages"
-          },
-          "files": {
-            "type": "boolean",
-            "description": "the file of every configuration and its source (tool or hand)"
-          },
-          "next": {
-            "description": "Next addresses the 1000-bit successful exit with the prime factors that integer was created with"
-          },
-          "experience": {
-            "type": "object",
-            "description": "kind actions"
-          },
-          "rates": {
-            "type": "object",
-            "description": "kind ecommerce"
-          },
-          "lastTag": {
-            "type": "object",
-            "description": "{ version, tools }"
-          },
-          "current": {
-            "type": "string",
-            "description": "the configuration text the client holds (JSON or JSONC)"
-          },
-          "version": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "env": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "the variable NAMES the client's environment holds"
-          },
-          "template": {
-            "type": "string",
-            "enum": [
-              "site",
-              "app"
-            ],
-            "description": "kind wrangler",
-            "default": "site"
-          },
-          "useCase": {
-            "type": "string",
-            "description": "kind wrangler"
-          },
-          "name": {
-            "type": "string",
-            "description": "kind wrangler, template app"
-          },
-          "hex": {
-            "type": "string",
-            "description": "kind ui"
-          },
-          "stream": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "kind ui"
-          },
-          "query": {
-            "type": "object",
-            "description": "kind ui, with stream"
-          },
-          "sets": {
-            "type": "array",
-            "description": "kind sets"
-          },
-          "mcp": {
-            "description": "kind gates"
-          },
-          "devDependencies": {
-            "type": "object",
-            "description": "kind gates"
-          },
-          "google": {
-            "type": "object",
-            "description": "kind gates"
-          },
-          "branding": {
-            "type": "object",
-            "description": "kind branding"
-          },
-          "selftest": {
-            "type": "boolean"
-          }
-        },
-        "x-harmonic": {
-          "combinations": "50",
-          "index": "32",
-          "from": "a432"
-        }
-      },
-      "annotations": {
-        "title": "configure",
-        "readOnlyHint": true,
-        "idempotentHint": true,
-        "openWorldHint": false
-      },
-      "_meta": {
-        "toolbox": "payload",
-        "experience": "iso-quantum-ai",
-        "online": false,
-        "skill": {
-          "directions": 3
-        },
-        "ui": {
-          "resourceUri": "ui://qpu/configure",
           "visibility": [
             "model",
             "app"
@@ -4367,6 +3910,9 @@
       "inputSchema": {
         "type": "object",
         "properties": {
+          "token": {
+            "description": "the widget accepts the credential and sends the sha-256 witness"
+          },
           "pqc": {
             "type": "object",
             "description": "Post-quantum cryptography computed"
@@ -4561,15 +4107,6 @@
         "toolbox": "crypto",
         "experience": "iso-quantum-ai",
         "online": true,
-        "auth": {
-          "collection": "payload-mcp-api-keys",
-          "header": "Authorization",
-          "scheme": "Bearer",
-          "named": "QPU_MCP_API_KEY",
-          "plugin": "qpuMcpPlugin",
-          "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys"
-        },
-        "law": "next and online verification only via qpuMcpPlugin with payload-mcp-api-keys",
         "skill": {
           "directions": 3
         },

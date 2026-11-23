@@ -11,5 +11,4 @@ const os = { alpine, debian, ubuntu, packages: portPackages, online: readOnline 
 
 export { readOnline }
 
-export { osPlugin as plugin } from '../plugin.ts'
 export default os

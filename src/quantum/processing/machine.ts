@@ -128,8 +128,6 @@ export const NEXT_STEPS: readonly NextStep[] = [
   { name: 'typecheck', wave: 2, budgetMs: 900_000, via: 'process', cmd: 'npx', args: ['tsc', '--noEmit', '-p', 'tsconfig.json'] },
   { name: 'test', wave: 2, budgetMs: 600_000, via: 'process', cmd: 'node', args: ['--test', 'src/quantum/**/*.test.ts'] },
   { name: 'selftest', wave: 2, budgetMs: 300_000, via: 'door', tool: '*', arguments: { selftest: true } },
-  { name: 'configs', wave: 2, budgetMs: 300_000, via: 'door', tool: 'configure', arguments: {} },
-  { name: 'audit', wave: 2, budgetMs: 300_000, via: 'door', tool: 'audit', arguments: { access: true } },
   { name: 'imagine', wave: 3, budgetMs: 300_000, via: 'door', tool: 'imagine', arguments: { open: 8 }, long: true },
   { name: 'leads', wave: 2, budgetMs: 300_000, via: 'door', tool: 'leads', arguments: { consistent: true } },
   { name: 'textbook', wave: 2, budgetMs: 300_000, via: 'door', tool: 'textbook', arguments: { particles: true } },

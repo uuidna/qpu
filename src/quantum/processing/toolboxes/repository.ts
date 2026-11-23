@@ -17,7 +17,7 @@ import { CLAIMS } from '../claims-index.ts'
 import { listLiterals, listManualDocs, ERROR_REMEDIES, FALLBACKS, ENTROPY_KINDS } from '../audit.ts'
 import { uuid } from '../../uuid/index.ts'
 import { GOOGLE_HOST, QPU_MCP } from '../discovery.ts'
-import { checkAccess, type Ability, type ScopedRole } from './payload.ts'
+import { checkAccess, type Ability, type ScopedRole } from '../access.ts'
 import { PAYLOADCMS_WORKSPACE_ALIGNMENT } from '../repositories.ts'
 import { LICENSE } from '../unit/license.ts'
 import { TABLES } from '../tables-index.ts'
@@ -49,7 +49,7 @@ const NEEDED_BINDINGS = ['ASSETS', 'D1', 'R2', 'KV', 'QPU', 'AI'] as const
 const NEEDED_FLAGS = ['nodejs_compat', 'webcrypto_modern_algorithms'] as const
 /** The strict rules of when to commit and when to push, each decided by a theorem over the facts the client hands over (the receipt it just
  *  wrote, the approval the configs step recorded, the gate's decoding): a commit needs the flow green (no red step: textbook_commit_green);
- *  a push needs that, the version sequential and representing the package (textbook_version_sequential), the gate decoded with nothing
+ *  a push needs that, the version sequential and representing the package, the gate decoded with nothing
  *  uncorrectable (textbook_majority_of_three), and the packed npm package complete and ISO verified; a release needs nothing carried
  *  (textbook_carry_release). A release is tagged and pushed only when that package gate holds. A violated rule is a case the court computes. */
 /** A waiver of one rule, asked by someone through Payload: honoured only when the rule abilities let their roles waive that rule here. */

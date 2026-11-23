@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { callPriceUsd, serveMcp } from './mcp-http.ts'
+import { callPriceUsd, isMcp, serveMcp } from './mcp-http.ts'
 
 const post = (body: unknown, env: Record<string, string | undefined> = {}) =>
   serveMcp(new Request('https://qpu.uuidna.com/api/mcp', { method: 'POST', headers: { host: 'qpu.uuidna.com', 'content-type': 'application/json', accept: 'application/json, text/event-stream' }, body: JSON.stringify(body) }), env)
@@ -25,4 +25,29 @@ test('serveMcp serves the kernel\'s tools through the Agents SDK, acknowledges a
   assert.equal(callPriceUsd(), 0.300425, 'the price is the cheapest real quantum call: the task fee and one shot, as providers charge')
 
   await assert.rejects(post({ jsonrpc: '2.0', id: 3, method: 'tools/list' }, { QPU_X402_RECIPIENT: '0xWallet' }), 'a wallet that is not an EVM address is refused, never served free')
+})
+
+// Node's Request carries no Host header: set it from the URL, as the Worker's runtime does
+const hosted = (url: string, init: RequestInit = {}) => { const r = new Request(url, init); const h = new Headers(r.headers); h.set('host', new URL(url).host); return new Request(r, { headers: h }) }
+const site = () => Promise.resolve(new Response('<html>site</html>', { headers: { 'content-type': 'text/html' } }))
+const worker = (r: Request) => (isMcp(r) ? serveMcp(r, { QPU_MCP_HOSTS: 'qpu.test' }) : site())
+const rpc = (url: string, body: unknown, headers: Record<string, string> = {}) => hosted(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', ...headers }, body: JSON.stringify(body) })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: an agent harness pointed at the domain, /mcp or /api/mcp initializes, lists and calls. */
+test('an agent harness pointed at the domain, /mcp or /api/mcp initializes, lists and calls', async () => {
+  for (const url of ['https://qpu.test', 'https://qpu.test/', 'https://qpu.test/mcp', 'https://qpu.test/api/mcp']) {
+    const init = await worker(rpc(url, { jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'harness', version: '1' } } }))
+    assert.equal(init.status, 200, url)
+    const list = await read(await worker(rpc(url, { jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} }))) as { result: { tools: { name: string }[] } }
+    assert.ok(list.result.tools.length > 10, `${url}: ${list.result.tools.length} tools`)
+    const called = await read(await worker(rpc(url, { jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'currency', arguments: { selftest: true } } }))) as { result?: { content?: unknown[] } }
+    assert.ok(called.result?.content, `${url}: answered`)
+  }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a browser at / and /mcp still gets the site, and a browser-based client from another origin is served. */
+test('a browser at / and /mcp still gets the site, and a browser-based client from another origin is served', async () => {
+  for (const p of ['/', '/mcp']) assert.equal(isMcp(new Request(`https://qpu.test${p}`, { headers: { accept: 'text/html,*/*' } })), false, p)
+  const r = await serveMcp(rpc('https://qpu.test/mcp', { jsonrpc: '2.0', id: 1, method: 'tools/list' }, { origin: 'https://inspector.example' }), { QPU_MCP_HOSTS: 'qpu.test' })
+  assert.equal(r.status, 200, await r.clone().text())
 })

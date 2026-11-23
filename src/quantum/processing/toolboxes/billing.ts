@@ -270,7 +270,7 @@ const createAntimatter = (kind: GapKind, rule: string, evidence: Record<string, 
     if (typeof evidence.cacheKey === 'string') return of(proseFill(PROSE.quantumProcessingToolboxesBilling_s52, String(evidence.step ?? rule), evidence.cacheKey), [], { tool: 'verify', arguments: { uuid: evidence.cacheKey } })
     return of(proseFill(PROSE.quantumProcessingToolboxesBilling_s53, String(evidence.step ?? rule), n, n), [], { tool: 'shard', arguments: { list: (evidence.items as unknown[] | undefined) ?? [String(evidence.step ?? rule)], index: 0, count: n } })
   }
-  if (kind === 'dirty-code' || kind === 'dirty-prose') return of(PROSE.quantumProcessingToolboxesBilling_s54, [auto('npm', ['run', '-s', 'purify'])], evidence.doc ? { tool: 'payload', arguments: { standardise: { doc: evidence.doc, spans: evidence.spans ?? [] } } } : null)
+  if (kind === 'dirty-code' || kind === 'dirty-prose') return of(PROSE.quantumProcessingToolboxesBilling_s54, [auto('npm', ['run', '-s', 'purify'])], null)
   if (kind === 'prize' || kind === 'step') {
     const command = evidence.command as { cmd: string; args: string[] } | undefined
     return of(`run the red ${kind === 'prize' ? 'compete rule' : 'step'} ${String(evidence.step ?? evidence.subject ?? rule)} again`, command ? [auto(command.cmd, command.args)] : [], kind === 'prize' ? { tool: 'compete', arguments: { rule: String(evidence.subject ?? rule) } } : null)
@@ -297,7 +297,7 @@ const createAntimatter = (kind: GapKind, rule: string, evidence: Record<string, 
   if (kind === 'gemini-compat') return of(PROSE.quantumProcessingToolboxesBilling_s67, [], { tool: 'extend', arguments: { gemini: { compat: true } } })
   const row = listRemedies([String(evidence.says ?? rule)]).leads[0]
   if (row?.remedy) return { ...of(row.remedy, []), needs: row.automated ? 'auto' as const : 'confirm' as const }
-  if (violated.includes('green')) return of(PROSE.quantumProcessingToolboxesBilling_s68, [], { tool: 'configure', arguments: { kind: 'next', flags: ['--offline', '--fast'], auth: 'payload-mcp-api-keys' } })
+  if (violated.includes('green')) return of(PROSE.quantumProcessingToolboxesBilling_s68, [], { tool: 'repository', arguments: { workflow: 'pre-commit' } })
   // a refusal no row has learned yet: its antimatter is the lead that teaches the next row, its text the evidence (counted as none until learned)
   return { ...of(proseFill(PROSE.quantumProcessingToolboxesBilling_s69, rule), [], { tool: 'audit', arguments: { errors: [String(evidence.says ?? rule)] } }), learn: true }
 }

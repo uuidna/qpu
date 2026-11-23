@@ -5,7 +5,7 @@ import { PROSE, proseFill } from './prose-index.ts'
 import os from '../os/alpine/index.ts'
 import { portPackages, type PackageAsk } from '../os/alpine/packages.ts'
 import type { EslintFinding } from '../os/eslint.ts'
-import { entriesCover } from '../payload/index.ts'
+import { entriesCover } from './iso-exit.ts'
 import { uuid } from '../uuid/index.ts'
 import type { Lead } from './leads.ts'
 
@@ -69,9 +69,9 @@ const leadFor = (name: string, why: string, source: string, status: 'open' | 'pa
     source,
     statement: formula,
     status,
-    tool: 'payload',
+    tool: 'leads',
     reason: why,
-    run: { tool: 'payload', arguments: { develop: { formula, product: 'alpine', variant: name } } },
+    run: { tool: 'leads', arguments: { develop: { formula, product: 'alpine', variant: name } } },
   }
 }
 
@@ -103,7 +103,6 @@ export const listAlpine = () => {
   const complete = ported === total && partial === 0 && gaps === 0 && leads.length === 0
   return {
     phase: 'alpine' as const,
-    source: os.source,
     upstream: os.upstream,
     symbols, total, ported, partial, gaps, leads,
     next: leads.map((l) => l.run),

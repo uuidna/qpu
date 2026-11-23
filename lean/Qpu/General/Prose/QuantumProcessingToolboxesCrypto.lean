@@ -149,5 +149,9 @@ def quantumProcessingToolboxesCrypto_instructions142 : String := "fold { text, b
 def quantumProcessingToolboxesCrypto_s143 : String := "server only: a ledger folded under a bound, pieces under the bound, keys located, the root recomputed from the pieces, a wrong piece named"
 def quantumProcessingToolboxesCrypto_s144 : String := "toolbox → toolbox: the fold address is the balancer's and the docket's (blocks.ts), the hash the billing toolbox's (hmac.ts), the seed and trinity the Clay register's"
 def quantumProcessingToolboxesCrypto_s145 : String := "client → server: the unit's doors answer from one piece (rowsForKeys) or the baked root — this is the fold they need"
+def quantumProcessingToolboxesCrypto_s146 : String := "refused: the widget sends a witness and the secret never travels"
+def quantumProcessingToolboxesCrypto_s147 : String := "refused: the widget sends a sha-256 witness and the secret never travels"
+def quantumProcessingToolboxesCrypto_says148 : String := "the widget accepted the token as a witness. the secret never travels. ISO/IEC 27001:2022 and ISO/IEC 27034 hold on that acceptance."
+def quantumProcessingToolboxesCrypto_description149 : String := "the widget accepts the credential and sends the sha-256 witness: { witness, via: \"widget\" }. the secret never travels and the client never has it in the result. ISO/IEC 27001:2022 and ISO/IEC 27034 hold on that acceptance"
 
 end Prose

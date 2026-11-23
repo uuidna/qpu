@@ -16,16 +16,73 @@ import { challenge } from './challenge/index.ts'
 
 bindPhysics(physics)
 export { challenge, physics }
-import {
-  DEPLOY_TENANTS,
-  OFFICIAL_PACKAGES,
-  OFFICIAL_PLUGINS,
-  type FolderPlugin,
-  type FolderPluginOptions,
-  type IncomingConfig,
-  type TenantFind,
-} from '../../plugin.ts'
+import { TENANTS } from '../../processing/unit/tenants.ts'
 import { TABLES } from '../../processing/tables-index.ts'
+
+// The Payload plugin shape every folder program takes: options in, the incoming config in, a copy of that config out.
+/** The nine plugins this stack mounts. The length is the combination count 2^9. */
+export const OFFICIAL_PLUGINS = ['lexical', 'nested-docs', 'seo', 'search', 'redirects', 'form-builder', 'multi-tenant', 'ecommerce', 'mcp'] as const
+
+/** The @payloadcms packages the website already installs. */
+export const OFFICIAL_PACKAGES = [
+  'payload',
+  '@payloadcms/db-d1-sqlite',
+  '@payloadcms/db-mongodb',
+  '@payloadcms/email-nodemailer',
+  '@payloadcms/live-preview-react',
+  '@payloadcms/next',
+  '@payloadcms/plugin-cloud-storage',
+  '@payloadcms/plugin-ecommerce',
+  '@payloadcms/plugin-form-builder',
+  '@payloadcms/plugin-import-export',
+  '@payloadcms/plugin-mcp',
+  '@payloadcms/plugin-multi-tenant',
+  '@payloadcms/plugin-nested-docs',
+  '@payloadcms/plugin-redirects',
+  '@payloadcms/plugin-search',
+  '@payloadcms/plugin-sentry',
+  '@payloadcms/plugin-seo',
+  '@payloadcms/plugin-stripe',
+  '@payloadcms/richtext-lexical',
+  '@payloadcms/storage-r2',
+  '@payloadcms/storage-vercel-blob',
+  '@payloadcms/ui',
+] as const
+
+/** uuidna and psg are the named hosts. ceci is the workers.dev tenant. */
+export const DEPLOY_TENANTS = [...new Set([...Object.values(TENANTS), 'ceci'])] as const
+
+export type IncomingConfig = {
+  collections?: readonly unknown[]
+  globals?: readonly unknown[]
+  plugins?: readonly unknown[]
+  hooks?: Record<string, unknown>
+  onInit?: (payload: unknown) => unknown
+}
+
+/** Enable or disable the plugin without uninstalling it. */
+export type FolderPluginOptions = { enabled?: boolean }
+
+export type Where = { and: [{ tenant: { equals: string } }, { variant: { equals: string } }] }
+
+/** The Local API find the queries guide writes: a Where, depth 0, limit 1, pagination off. */
+export type TenantFind = {
+  collection: 'pages'
+  where: Where
+  limit: 1
+  depth: 0
+  pagination: false
+}
+
+export type FolderPlugin = ((options?: FolderPluginOptions) => (incoming: IncomingConfig) => IncomingConfig) & {
+  folder: string
+  index: string
+  plugins: readonly string[]
+  packages: readonly string[]
+  tenants: readonly string[]
+  variants: readonly { product: string; variant: string; package: string }[]
+  deploy: readonly { tenant: string; variant: string; find: TenantFind }[]
+}
 
 type OnlineCompetition = { id: string; name: string; rules: string; kind: string }
 
@@ -581,7 +638,7 @@ const sealLeaves = (dataset: string) => listProgramLeaves(dataset).map((leaf) =>
 export const sealLeavesSplit = async (dataset = root.path) => {
   const leaves = listProgramLeaves(dataset), queue = leaves.map((leaf) => leaf.handle), rows = new Map<string, ReturnType<typeof sealLeaf>>()
   await Promise.all(queue.slice(0, availableParallelism()).map(() => new Promise((done, fail) => {
-    const worker = new Worker(new URL(import.meta.url), { workerData: 'sealLeaf' }), next = () => queue.length ? worker.postMessage(queue.shift()) : void worker.terminate().then(done)
+    const worker = new Worker(new URL(import.meta.url) as import('node:url').URL, { workerData: 'sealLeaf' }), next = () => queue.length ? worker.postMessage(queue.shift()) : void worker.terminate().then(done)
     worker.on('message', ([handle, row]) => (rows.set(handle, row), next())).once('error', fail).once('online', next)
   })))
   return leaves.map((leaf) => ({ leaf, ...rows.get(leaf.handle)! }))

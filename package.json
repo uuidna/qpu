@@ -14,7 +14,7 @@
     "site:build": "lake run site",
     "site:dev": "lake run seed && vitepress dev site",
     "test": "node --test \"src/quantum/**/*_test.ts\" \"src/quantum/**/*.test.ts\"",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "wrangler types && tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.worker.json"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "2.4.0",

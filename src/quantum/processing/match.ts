@@ -211,9 +211,9 @@ export const reflectStatement = (statement: string): string[] => {
 const slug = (text: string): string => tokens(text).slice(0, 6).join('-') || 'statement'
 
 /** Tools the matcher never calls to serve a statement: itself, the judges and layouts, the doors that run any tool they are handed (prose,
- *  payload) and every toolbox that fetches, bills or audits. A pattern may still open any door by name. */
-const META = new Set(['match', 'audit', 'verify', 'metrics', 'textbook', 'dashboard', 'clone', 'css', 'prose', 'payload'])
-const META_TOOLBOXES = new Set(['flow', 'legal', 'repository', 'billing', 'standards', 'payload', 'extension'])
+ *  the google door) and every toolbox that fetches, bills or audits. A pattern may still open any door by name. */
+const META = new Set(['match', 'audit', 'verify', 'metrics', 'textbook', 'dashboard', 'clone', 'css', 'prose', 'google'])
+const META_TOOLBOXES = new Set(['flow', 'legal', 'repository', 'billing', 'standards', 'extension'])
 
 /** Shor's factoring of a small N on the simulator is deterministic: once per process; a matcher's index is built once. */
 const SHOR = new Map<number, any>()
@@ -238,7 +238,6 @@ export const PATTERNS: readonly Pattern[] = [
   { name: 'scan', test: /\bscan\b[^[]*(\[[\s\S]*\])/i, tool: 'verify', args: (m) => { try { return { scan: JSON.parse(m[1]!) } } catch { return { scan: [] } } }, shows: PROSE.quantumProcessingMatch_shows6 },
   { name: 'metrics', test: /\b(metrics|how many (?:tools|examples|theorems|leads)|coins paid)\b/i, tool: 'metrics', args: () => ({}), shows: 'the tree\'s metrics now' },
   { name: 'textbook', test: /\b(?:reuse|replay) (?:example )?([a-z0-9-]+)/i, tool: 'textbook', args: (m) => ({ reuse: m[1]!.toLowerCase() }), shows: 'an example reused by id' },
-  { name: 'first-user', test: /\badmin\b[\s/-]*create[\s/-]*first[\s/-]*user\b/i, tool: 'configure', args: () => ({ kind: 'hooks' }), shows: PROSE.quantumProcessingMatch_shows7 },
   { name: 'shor', test: /\bfactor(?:ise|ize)?\s+(\d+)\b/i, tool: 'algorithm', args: (m) => ({ name: 'factor', integer: m[1]! }), shows: PROSE.quantumProcessingMatch_shows8 },
   { name: 'prime', test: /\bis\s+(\d+)\s+(?:a\s+)?prime\b/i, tool: 'algorithm', args: (m) => ({ name: 'factor', integer: m[1]! }), shows: PROSE.quantumProcessingMatch_shows9 },
   // an exploit is re-fused to patching: a hack, vulnerability, breach or CVE opens audit { repair } (a live patch, or a remediation lead), never a denial

@@ -3,7 +3,7 @@
 
 import { PROSE } from '../processing/prose-index.ts'
 import { coins, seal } from '../uuid/index.ts'
-import { findArgs, pageData, writeArgs } from '../payload/index.ts'
+import { pageSeed } from '../processing/page-seed.ts'
 import { accountBytes } from '../processing/toolboxes/billing.ts'
 import { asset, loadable } from './unreal/index.ts'
 
@@ -24,12 +24,12 @@ const measure = (texts: readonly string[]) => {
 }
 
 const seedOf = (name: string, says: string) => {
-  const { page } = pageData(name, says)
-  const create = writeArgs(page)
+  const page = pageSeed(name, says)
+  const { id: _id, sku: _sku, breadcrumbs: _breadcrumbs, ...data } = page
   const block = page.layout[0]
   const read = loadable(asset(name))
   const website = page._status === 'draft' && page.hero.type === 'default' && page.layout.length === 1 && block?.blockType === 'content' && block.contentFields.layout === 'oneColumn' && page.meta.title === page.title && page.breadcrumbs[0]?.url === `/${page.slug}`
-  return { name, says, theorem: name, coin: coinOf(says), impact: measure([JSON.stringify(create.data)]), page, find: findArgs(page.slug), create, website, collection: 'pages' as const, schema: 'pages' as const, slot: 'content' as const, phase: 'seed' as const, unreal: { version: read.version, loadable: read.loadable, theorem: read.theorem }, iso: 'ISO/IEC 12113:2022' as const }
+  return { name, says, theorem: name, coin: coinOf(says), impact: measure([JSON.stringify(data)]), page, data, website, collection: 'pages' as const, schema: 'pages' as const, slot: 'content' as const, phase: 'seed' as const, unreal: { version: read.version, loadable: read.loadable, theorem: read.theorem }, iso: 'ISO/IEC 12113:2022' as const }
 }
 
 const seeds = () => LINES.map((line) => seedOf(line.name, line.says))
@@ -39,8 +39,8 @@ const play = (move: string) => LINES.map((line) => seedOf(line.name, `${line.say
 const impact = (move?: string) => {
   const standing = seeds()
   const rows = move === undefined ? standing : play(move)
-  const booked = measure(rows.map((seed) => JSON.stringify(seed.create.data)))
-  const prior = measure(standing.map((seed) => JSON.stringify(seed.create.data)))
+  const booked = measure(rows.map((seed) => JSON.stringify(seed.data)))
+  const prior = measure(standing.map((seed) => JSON.stringify(seed.data)))
   const sum = rows.reduce((n, seed) => n + seed.impact.bytes, 0)
   const delta = booked.bytes - prior.bytes
   return { ...booked, pages: rows.length, sum, delta, holds: booked.holds && prior.holds && sum === booked.bytes && rows.every((seed) => seed.impact.holds && seed.coin.sealed && seed.website) && (move === undefined ? delta === 0 : delta > 0) }
@@ -55,5 +55,4 @@ const capabilities = () => {
 const engine = { seeds, play, impact, capabilities }
 
 export { seeds, play, impact, capabilities }
-export { enginePlugin as plugin } from '../plugin.ts'
 export default engine

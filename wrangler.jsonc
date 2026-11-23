@@ -13,13 +13,18 @@
   "assets": {
     "directory": "site/.vitepress/dist",
     "binding": "ASSETS",
+    "run_worker_first": ["/", "/mcp"],
   },
   // The live qpu Worker holds these Durable Object migration tags (v2 deleted its only class); a deploy under the
   // same name repeats them.
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["DocketObject"] },
     { "tag": "v2", "deleted_classes": ["DocketObject"] },
+    { "tag": "v3", "new_sqlite_classes": ["Mailbox"] },
   ],
+  "durable_objects": {
+    "bindings": [{ "name": "MAILBOX", "class_name": "Mailbox" }],
+  },
   "observability": {
     "enabled": true,
     "head_sampling_rate": 0.1,

@@ -31,7 +31,7 @@ const SRC_INODES = [
   'src/quantum/uuid',
 ] as const
 
-const TOOLBOX_TOOLS = new Set(['payload', 'configure', 'stripe', 'currency', 'translate', 'prose', 'fold', 'seal', 'attest', 'repository', 'legal', 'compete', 'patents', 'discover', 'e2e', 'shard', 'wave', 'readiness', 'imagine', 'jsonld', 'codes', 'validate', 'mongo', 'extend'])
+const TOOLBOX_TOOLS = new Set(['google', 'stripe', 'currency', 'translate', 'prose', 'fold', 'seal', 'attest', 'repository', 'legal', 'compete', 'patents', 'discover', 'e2e', 'shard', 'wave', 'readiness', 'imagine', 'jsonld', 'codes', 'validate', 'mongo', 'extend'])
 
 /** The inode a lead is developed in: the toolbox directory when the tool lives there, otherwise the processing directory. */
 const leadInode = (tool?: string): (typeof SRC_INODES)[number] => tool && TOOLBOX_TOOLS.has(tool) ? 'src/quantum/processing/toolboxes' : 'src/quantum/processing'

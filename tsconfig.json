@@ -15,5 +15,5 @@
     "types": ["node"]
   },
   "include": ["src/quantum/**/*.ts", "scripts/**/*.ts"],
-  "exclude": ["node_modules", "legacy"]
+  "exclude": ["node_modules", "legacy", "src/quantum/net/worker.ts", "src/quantum/net/mailbox.ts"]
 }

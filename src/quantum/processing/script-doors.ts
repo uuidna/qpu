@@ -218,8 +218,7 @@ export const tablesIndex = (
   }
 }
 
-/** How each former npm script / scripts/*.ts is invoked through Payload/MCP — no new list doors. */
-export { skill, skills, SKILL_MCP, type SkillCall } from './skill/index.ts'
+/** How each former npm script / scripts/*.ts is invoked through MCP — no new list doors. */
 
 const SCRIPT_INVOKE = {
   audit: { tool: 'audit', via: 'mcp tools/call audit', npm: 'npm run audit → node scripts/run.ts audit' },
@@ -236,16 +235,13 @@ const SCRIPT_INVOKE = {
   currency: { tool: 'currency', via: 'scripts/currency.ts', npm: 'next step currency' },
   attest: { tool: 'attest', via: 'scripts/attest.ts', npm: 'next step attest' },
   seal: { tool: 'seal', via: 'scripts/constants.ts | pqc-verify.ts', npm: 'next step constants' },
-  configure: { tool: 'configure', via: 'scripts/configs.ts', npm: 'next step configs' },
-  payload_workspace: { tool: 'payload', args: '{ workspace }', via: 'scripts/workspace.ts', npm: 'next step workspace' },
-  payload_site: { tool: 'payload', args: '{ site: true }', via: 'scripts/gen-docs.ts', npm: 'npm run docs:gen' },
-  payload_feeds: { tool: 'payload', args: '{ feeds: true }', via: PROSE.quantumProcessingScriptDoors_via25, npm: 'npm run feeds' },
-  payload_scripts_clay: { tool: 'payload', args: '{ scripts: { clay: { lean } } }', via: 'scripts/gen-clay.ts', npm: 'npm run clay:gen' },
-  payload_scripts_leads: { tool: 'payload', args: '{ scripts: { leadsIndex } }', via: PROSE.quantumProcessingScriptDoors_via26, npm: 'npm run leads' },
-  payload_scripts_tables: { tool: 'payload', args: '{ scripts: { tablesIndex } }', via: PROSE.quantumProcessingScriptDoors_via27, npm: 'npm run clean' },
-  payload_scripts_textbook_lean: { tool: 'payload', args: '{ scripts: { textbookLean } }', via: PROSE.quantumProcessingScriptDoors_via28, npm: 'next step docs:gen' },
-  payload_scripts_skills: { tool: 'payload', args: '{ scripts: { skills } }', via: PROSE.quantumProcessingScriptDoors_via29, npm: 'next step skills:gen' },
-  payload_scripts_theorems_index: { tool: 'payload', args: '{ scripts: { theoremsIndex: { output } } }', via: PROSE.quantumProcessingScriptDoors_via30, npm: 'next step theorems:index' },
+  workspace: { tool: 'google', args: '{ workspace }', via: 'scripts/workspace.ts', npm: 'next step workspace' },
+  scripts_clay: { tool: 'textbook', args: '{ scripts: { clay: { lean } } }', via: 'scripts/gen-clay.ts', npm: 'npm run clay:gen' },
+  scripts_leads: { tool: 'textbook', args: '{ scripts: { leadsIndex } }', via: PROSE.quantumProcessingScriptDoors_via26, npm: 'npm run leads' },
+  scripts_tables: { tool: 'textbook', args: '{ scripts: { tablesIndex } }', via: PROSE.quantumProcessingScriptDoors_via27, npm: 'npm run clean' },
+  scripts_textbook_lean: { tool: 'textbook', args: '{ scripts: { textbookLean } }', via: PROSE.quantumProcessingScriptDoors_via28, npm: 'next step docs:gen' },
+  scripts_skills: { tool: 'textbook', args: '{ scripts: { skills } }', via: PROSE.quantumProcessingScriptDoors_via29, npm: 'next step skills:gen' },
+  scripts_theorems_index: { tool: 'textbook', args: '{ scripts: { theoremsIndex: { output } } }', via: PROSE.quantumProcessingScriptDoors_via30, npm: 'next step theorems:index' },
   leads: { tool: 'leads', via: PROSE.quantumProcessingScriptDoors_via31, npm: 'next steps' },
   clay: { tool: 'clay', via: PROSE.quantumProcessingScriptDoors_via32, npm: 'npm run clay:gen' },
   machine: { tool: 'payload machine (plugin)', via: 'scripts/machine.ts allow-list', npm: PROSE.quantumProcessingScriptDoors_npm33 },

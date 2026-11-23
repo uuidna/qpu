@@ -793,7 +793,7 @@ const listFactorsOnce = (n: bigint, reflections: bigint, from?: bigint): FactorL
 }
 
 /** n bytes: crypto randomness, or a seed's SHA-256 stream (reproducible, so public). */
-const bytes = (seed?: bigint) => { let c = 0; return (n: number): Uint8Array => { if (seed === undefined) return globalThis.crypto.getRandomValues(new Uint8Array(n)); const out = new Uint8Array(n); for (let i = 0; i < n; i += 32) out.set(sha256(utf8(`${seed}:${c++}`)).subarray(0, n - i), i); return out } }
+const bytes = (seed?: bigint) => { let c = 0; return (n: number): Uint8Array => { if (seed === undefined) return crypto.getRandomValues(new Uint8Array(n)); const out = new Uint8Array(n); for (let i = 0; i < n; i += 32) out.set(sha256(utf8(`${seed}:${c++}`)).subarray(0, n - i), i); return out } }
 /** A random prime of exactly k bits, its top two bits set: two multiply to exactly their widths' sum. */
 const prime = (k: number, bytes: (n: number) => Uint8Array): bigint => { for (;;) { const m = Math.ceil(k / 8), x = (BigInt('0x' + hex(bytes(m))) >> BigInt(8 * m - k)) | (3n << BigInt(k - 2)) | 1n; if (testPrimality(x).prime) return x } }
 /** Mint an "impossible integer": N = p·q with its σ-reflection witness a = (p + q)/2 (N = a² − b², q = σ_{2a}(p)), which splits N in one reflection; blind,

@@ -4,4 +4,3 @@
 
 export { handle, handleBatch, call, caller, chat, TOOLBOXES, type Rpc, type Reply } from './mcp.ts'
 export type { Toolbox } from './toolbox.ts'
-export { processingPlugin as plugin } from '../plugin.ts'

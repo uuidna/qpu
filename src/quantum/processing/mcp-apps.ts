@@ -69,7 +69,7 @@ pre { background: var(--surface-1); border-radius: var(--radius); padding: var(-
       raw = ''
       var id = ++seq
       pending[id] = function (m) { var a = m.result && m.result.structuredContent; tok.textContent = a && a.accepted && a.secret === false && a.travelled === false ? ' accepted' : ' refused' }
-      send({ id: id, method: 'tools/call', params: { name: 'payload', arguments: { token: { witness: hex, via: 'widget' } } } })
+      send({ id: id, method: 'tools/call', params: { name: 'seal', arguments: { token: { witness: hex, via: 'widget' } } } })
     }).catch(function () { tok.textContent = ' refused' })
   }
   if (k && ok) { k.onkeydown = function (e) { if (e.key === 'Enter') accept() }; ok.onclick = accept }

@@ -1,7 +1,7 @@
 // Payload MCP RBAC for every API and every MCP. A read is anyone's, a create is an editor or a writer, an update or a delete
 // is manage (tenant-admin, admin). The decision is getAccess, the same CanCanCan table the MCP plugin asks first.
 import { BATCH_ACTIONS, OPERATIONS } from './payload-vocabulary.ts'
-import { getAccess, type Ability } from './toolboxes/payload.ts'
+import { getAccess, type Ability } from './access.ts'
 
 const ROLES = ['viewer', 'reader', 'editor', 'writer', 'tenant-admin', 'admin'] as const
 const ABILITIES: Ability[] = (['apis', 'mcps'] as const).flatMap((subject) => [

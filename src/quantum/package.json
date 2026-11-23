@@ -18,8 +18,6 @@
     "./roles": "./processing/unit/roles.ts",
     "./machine": "./processing/machine.ts",
     "./machine-run": "./processing/machine-run.ts",
-    "./payload-api": "./payload/index.ts",
-    "./payload": "./processing/toolboxes/payload.ts",
     "./prose": "./processing/prose-index.ts",
     "./address": "./password/address.ts",
     "./jsonld": "./processing/jsonld.ts",
@@ -30,9 +28,12 @@
     "./payload-vocabulary": "./processing/payload-vocabulary.ts",
     "./discovery": "./processing/discovery.ts",
     "./config": "./processing/config-index.ts",
-    "./catalogue-seed": "./processing/catalogue-seed.ts",
     "./engine": "./engine/index.ts",
-    "./website-client": "./net/website-client.ts"
+    "./page-seed": "./processing/page-seed.ts",
+    "./iso": "./processing/iso-index.ts",
+    "./nested": "./processing/nested-index.ts",
+    "./waves": "./payload/waves.ts",
+    "./mcp-apps": "./processing/mcp-apps.ts"
   },
   "dependencies": {
     "agents": "0.34.0",

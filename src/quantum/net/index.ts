@@ -24,7 +24,6 @@ export const store = (id: string, env: readonly string[] = []) => {
 
 export { BINDING_NAMES, BINDINGS, STORAGE, cloudflareAdapters }
 
-export { netPlugin as plugin } from '../plugin.ts'
 
 const net = { storage: STORAGE, bindings: BINDINGS, names: BINDING_NAMES, storageOf: storage, store }
 export default net

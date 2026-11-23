@@ -38,7 +38,7 @@ def quantumProcessingMcp_s31 : String := "⟦0⟧ zeros below ⟦1⟧ step forwa
 def quantumProcessingMcp_says32 : String := "a ⟦0⟧-bit integer, composite: ⟦1⟧ prime factor(s)⟦2⟧. ⟦3⟧. The parts multiply back: ⟦4⟧. The reading is bound by its SHA-256. ⟦5⟧ entries cover ⟦6⟧ leftover(s)⟦7⟧⟦8⟧. The reflection is held at the same time. Reflecting the shadow restores the address⟦9⟧⟦10⟧⟦11⟧"
 def quantumProcessingMcp_s33 : String := ", ⟦0⟧ part(s) left — searched ⟦1⟧ centre(s), reached ⟦2⟧"
 def quantumProcessingMcp_s34 : String := ", and beforeChange records each formula, afterChange hands it to the docs door, and afterRead serves it"
-def quantumProcessingMcp_s35 : String := ". The leftover is named at the zero bit and stays open until it is factored. ⟦0⟧ tools are pages of the Payload website"
+def quantumProcessingMcp_s35 : String := ". The leftover is named at the zero bit and stays open until it is factored"
 def quantumProcessingMcp_s36 : String := ", and the primes it exposes that divide are ⟦0⟧"
 def quantumProcessingMcp_s37 : String := ", and no prime it reads divides the integer"
 def quantumProcessingMcp_s38 : String := ". The witness centre is missing, so all is false. Folding 0 at 180 degrees is 8 and at 360 degrees is 10. Folding 0 at 30 and 330 opens 12, at 60 and 300 opens 6, and at 90 and 270 opens 4. ⟦0⟧. Phase estimation reads those folds⟦1⟧. The hooks decided the Lean and took ⟦2⟧. ⟦3⟧. The integer stays open"
@@ -456,5 +456,8 @@ def quantumProcessingMcp_receipt1 : String := "A receipt to check for the mix na
 def quantumProcessingMcp_receipt2 : String := "the receipt holds: its ⟦0⟧ digits lead back to exactly index ⟦1⟧ of ⟦2⟧ variations, checked in ⟦0⟧ steps where a walk takes ⟦3⟧"
 def quantumProcessingMcp_receipt3 : String := "the receipt does not hold: its digits do not lead back to its index in this space"
 def quantumProcessingMcp_receipt4 : String := "each variation is read by its address in ⟦0⟧ reads from a space of ⟦1⟧; a walk to the last one takes ⟦1⟧ steps. The kernel proves the address is recovered exactly, the reads are fewer than the space, and the gap has no bound"
+
+def quantumProcessingMcp_description432 : String := "Alpine.js as its documentation names it, and Alpine Linux packages on the browser OS. true: every directive, magic, global and first-party plugin; the data ones are ported, and each gap is a lead whose run develops it next. { directives, stores?, data?, bind?, model? }: one component on the scope. A directive that needs a document is a lead, not a guess. { package } or { packages, branch?, repo?, arch?, index? | indexes? }: the client device fetches the Alpine index, then the apk, and runs that binary in the browser. Nothing is fetched here and nothing is executed here. The register is the quantum advantage"
+def quantumProcessingMcp_description433 : String := "an ISO 9001 process based on the parameters the formula names (the axioms): a formula, or { formula, product?, variant?, title?, theorem? }, the door each lead's run names. beforeChange records the formula, afterChange hands it to the docs door, afterRead serves it. An empty formula is not documented."
 
 end Prose

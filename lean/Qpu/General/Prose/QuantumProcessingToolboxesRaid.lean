@@ -27,5 +27,6 @@ def quantumProcessingToolboxesRaid_s20 : String := "set, inc, push, unset; the s
 def quantumProcessingToolboxesRaid_s21 : String := "same content, same address; a replacement links what it replaces"
 def quantumProcessingToolboxesRaid_s22 : String := "an operator not ported throws, never guesses"
 def quantumProcessingToolboxesRaid_s23 : String := "SMART: each binding a self-monitored disk — filesystem healthy, r2 missing one (degraded, rebuildable), the RAID degraded with one rebuild lead"
+def quantumProcessingToolboxesRaid_s24 : String := "is the wrong length (should be ⟦0⟧ characters)"
 
 end Prose

@@ -5,8 +5,6 @@
 import { PROSE, proseFill } from './prose-index.ts'
 import { canonicalText, compositions, seal, uuid } from '../uuid/index.ts'
 
-export { domainConfigs } from '../net/domain-cover.ts'
-
 export const DOMAINS_URL = 'https://api.openalex.org/domains?page=1'
 
 export type DomainPage = { meta?: { count?: number }; results?: readonly { id?: string; display_name?: string; fields?: readonly { id?: string; display_name?: string }[] }[] }

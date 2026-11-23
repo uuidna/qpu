@@ -278,4 +278,3 @@ export const generate = (args: GenerateArgs) => {
   return installApp()
 }
 
-export { generatorsPlugin as plugin } from '../plugin.ts'
