@@ -25,6 +25,9 @@
   ],
   // Lean with Mathlib behind the Worker: the prover stage of the Alpine image (Lean built from source, Mathlib's cache),
   // started by the Prover Durable Object with no internet. Mathlib loaded is some 3 GiB a check, the image some 10 GB.
+  // Local development runs the Worker without the prover: its image builds Lean from source and fetches Mathlib, hours of
+  // work, and src/quantum/net/prover_test.ts checks the prover's server against this checkout's own Lean instead.
+  "dev": { "enable_containers": false },
   "containers": [
     { "class_name": "Prover", "image": "./alpine/Dockerfile", "image_build_context": ".", "instance_type": "standard-4", "max_instances": 2 },
   ],
