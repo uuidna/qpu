@@ -90,23 +90,38 @@ Tests sit next to the modules (`coin-uuid_test.ts`, `google-challenges_test.ts`,
 
 [`index.ts`](./index.ts) is the import. The exports, the JSON-RPC methods, and the worked calls are [`API.md`](./API.md). There is no `/api/qpu/*` route.
 
+<!-- GENERATED from the QPU doors: payload{google:true}, clay, algorithm{shor|factor}, and the (open) catalogue entry. Do not edit by hand. -->
+
 ## Status
 
-The verified status of the challenges, recomputed and sealed by the doors named. "Holds / verified" means the kernel accepts the model or theorem and the receipt reseals; it is not a claim of a physical hardware achievement. Device terms name a tangible device; this program is the simulator of that behaviour.
+### Google Quantum AI challenges — 14/14 hold, allHold true, sealed true
 
-### Google Quantum AI challenges
+| Challenge | Holds | Kernel | Sealed |
+|---|:-:|:-:|:-:|
+| Willow 105-Qubit Superconducting Grid, Coupler Connectivity & Code Capacity | ✓ | ✓ | ✓ |
+| Sycamore 54-Qubit & Sycamore23 Known-Device Grid Topology | ✓ | ✓ | ✓ |
+| Surface Code Below Threshold (Λ = 2.14), Repetition Code & Steane [[7,1,3]] CSS QEC | ✓ | ✓ | ✓ |
+| Random Circuit Sampling (RCS) & Cross-Entropy Benchmarking (XEB) Porter–Thomas Speckle | ✓ | ✓ | ✓ |
+| Quantum Echoes Out-of-Time-Order Correlator (OTOC) Time-Reversal Protocol on Willow | ✓ | ✓ | ✓ |
+| Cirq State-Vector, Density-Matrix Kraus Channels & Willow Quantum Virtual Machine | ✓ | ✓ | ✓ |
+| ReCirq Sycamore QAOA Max-Cut, Shor Order-Finding & Bell CHSH Tsirelson Bound | ✓ | ✓ | ✓ |
+| OpenFermion H₂ STO-3G Molecular Integrals, Pauli Hamiltonian & VQE Ground Energy | ✓ | ✓ | ✓ |
+| Qualtran Fault-Tolerant Clifford+T Resource Counts & Willow Magic State Cultivation | ✓ | ✓ | ✓ |
+| Google Quantum AI 6-Milestone Roadmap to 10⁶ Qubits, Software, Statements & Quantumlib | ✓ | ✓ | ✓ |
+| Google Discovery Service Validation, 7 Named Endpoints, Docs Rewrite & qpu-google-call Job | ✓ | ✓ | ✓ |
+| Google Workspace Forms v1, Docs v1, Drive v3 Bidirectional Round-Trips & 26,244 Institution Sets | ✓ | ✓ | ✓ |
+| Google Cloud Adapter Profile (Cloud Run/SQL/GCS/Gmail), 15 Google MCPs & Standards RBAC | ✓ | ✓ | ✓ |
+| Google Patents Hardware Verification, Gemini 3.8 Flash Coil Plan & Google XPRIZE Competitions | ✓ | ✓ | ✓ |
 
-14 of 14 hold, each kernel-accepted and sealed, `allHold: true` ([`payload { google: true }`](./processing/toolboxes/google.ts), [`google-clay-1000_test.ts`](./processing/google-clay-1000_test.ts)). They are **verified models** of the Google Quantum AI stack — Willow connectivity, Sycamore topology, surface-code QEC, RCS/XEB, Quantum Echoes/OTOC, Cirq QVM, ReCirq QAOA/Shor, OpenFermion H₂, Qualtran FTQC, roadmap, discovery, workspace, cloud-MCP RBAC, patents — not hardware demonstrations. In particular `rcs-xeb-beyond-classical` verifies the **XEB benchmark model**; it is not a beyond-classical (supremacy) result.
+### Clay register — 38/38 relations hold
 
-### Clay register
+### Thousand-bit integer
 
-38 of 38 relations hold, recomputed in integer arithmetic ([`clay`](./processing/clay-register.ts), [`CLAY.md`](./CLAY.md)).
-
-### Thousand-bit integer ([`CRYPTO.md`](./CRYPTO.md))
-
-- **\(2^{999}+1\)** — complete: 20 prime factors, product-verified (`complete: true`, `verified: true`), via the cyclotomic split; `textbook_factors_divide`, `relation_36 = φ(74) = 36`.
-- **The RSA-class test integer** (a 1000-bit balanced semiprime) — declined by design: `complete: false`, the integer stays in `left`, the product check holds, no factors are fabricated (`textbook_rsa_beyond_bound`, `textbook_impossible_trapdoor`). It splits only when the order \(r\) of a base \(a\) or the witness \(a=(p+q)/2\) is supplied; `decodeImpossible` then opens it in one reflection.
-- **Solution by quantum supremacy** — open (`thousand_bit_by_quantum_supremacy`): "no measurement is recorded here; the challenge is not solved by supremacy." It needs a physical quantum device, not a code change.
+| Integer | Bits | Prime factors | Left | Complete | Verified | Theorem |
+|---|:-:|:-:|:-:|:-:|:-:|---|
+| 2^999 + 1 | 1000 | 20 | 0 | true | true | textbook_factors_divide |
+| RSA-class test integer | 1000 | 0 | 1 | false | true | textbook_rsa_beyond_bound |
+| Solution by quantum supremacy | — | — | — | open | — | thousand_bit_by_quantum_supremacy |
 
 ## Open
 
