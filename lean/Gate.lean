@@ -22,7 +22,8 @@ meaning. The rule, read from the kernel environment and never from prose written
 
 The standing violations are named in `GateBaseline`, which this module writes when `MEANING_RATCHET=1` is set. The
 gate fails on any violation not named there and on any named one that no longer stands: no violation can enter, and
-every one that is fixed is struck from the list in the same commit. -/
+every one that is fixed is struck from the list in the same commit. The list only shrinks: against the list as
+committed (`MEANING_BASE` names the commit, `HEAD` by default) neither the ratchet nor a hand adds a violation to it. -/
 
 open Lean Elab Command
 
@@ -160,6 +161,19 @@ run_cmd do
   for (n, v) in headed.toList do
     if !clean.contains n then violations := violations.push v
   let current := violations.qsort (· < ·)
+  -- THE LIST ONLY SHRINKS: a violation the committed list does not name cannot be listed, by the ratchet or by hand;
+  -- it is bound to its library notion instead. Where git holds no such commit (an image built without its history)
+  -- the comparison with the list below stands alone.
+  let ref := (← IO.getEnv "MEANING_BASE").getD "HEAD"
+  let committed ← match ← (IO.Process.output { cmd := "git", args := #["show", s!"{ref}:lean/GateBaseline.lean"] }).toBaseIO with
+    | .ok o => pure (if o.exitCode == 0 then some o.stdout else none)
+    | .error _ => pure none
+  let added := match committed with
+    | some listed => current.filter (fun (v : String) => (listed.splitOn v.quote).length == 1)
+    | none => #[]
+  for v in added.toList.take 20 do IO.println s!"  would ENTER the list: {v}"
+  unless added.isEmpty do
+    throwError s!"Gate: {added.size} violation(s) of textbook meaning the committed list ({ref}) does not name: the list only shrinks, so bind each to its library notion"
   if (← IO.getEnv "MEANING_RATCHET").isSome then
     -- the binding data for the mechanical prose placement: each bound definition and binding, with its notion's docstring
     let mut out : Array Json := #[]

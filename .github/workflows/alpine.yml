@@ -43,15 +43,21 @@ jobs:
           key: alpine-lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'alpine/Dockerfile') }}-${{ hashFiles('lakefile.lean', 'lean/**/*.lean') }}
           restore-keys: |
             alpine-lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'alpine/Dockerfile') }}-
+      # a gate past its time fails with its log, which a running job never shows
       - name: dependencies
+        timeout-minutes: 10
         run: docker run --rm -v "$PWD:/qpu" -w /qpu qpu-alpine:ci pnpm install --frozen-lockfile
       - name: Mathlib's build cache
+        timeout-minutes: 20
         run: docker run --rm -v "$PWD:/qpu" -w /qpu qpu-alpine:ci lake exe cache get
       - name: the Lean kernel checks the tree
+        timeout-minutes: 90
         run: docker run --rm -v "$PWD:/qpu" -w /qpu qpu-alpine:ci lake build
       - name: typecheck
+        timeout-minutes: 15
         run: docker run --rm -v "$PWD:/qpu" -w /qpu qpu-alpine:ci pnpm run typecheck
       - name: tests
+        timeout-minutes: 20
         run: docker run --rm -v "$PWD:/qpu" -w /qpu qpu-alpine:ci pnpm test
       # the container wrote as root: the cache steps that follow read the build as the runner
       - name: hand the build back to the runner
