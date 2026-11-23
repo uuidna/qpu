@@ -1,11 +1,12 @@
 import Lean
+import Mathlib
 import Qpu
 
 /-! # Gaps
 
 Lean finds the gaps of Mathlib this tree exposes, by its own library search (`exact?`). Each theorem the author
 declared with at least one variable is split into its conjuncts, and each conjunct, with the theorem's hypotheses in
-context, is put to `Lean.Meta.LibrarySearch.librarySearch` over every library theorem the tree imports. A conjunct is
+context, is put to `Lean.Meta.LibrarySearch.librarySearch` over all of Mathlib, imported whole. A conjunct is
 
 * `library`: closed outright by a library theorem, no `Qpu` constant in the proof (the names are given);
 * `decided`: the search left it, a decision procedure of the library (`omega`, `grind`) closed it (named);

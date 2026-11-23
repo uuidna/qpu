@@ -2167,6 +2167,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 mint hexbit = mint (n + seed)
 ```
 
+### `faces_harmonic`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+faces = rays + rays
+```
+
 ### `fill`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -2181,14 +2189,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 amplitudes = mint bits ∧ mint (bits + seed) = amplitudes + amplitudes
-```
-
-### `harmonic`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-faces = rays + rays
 ```
 
 ### `health`
