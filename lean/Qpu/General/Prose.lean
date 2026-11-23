@@ -1,6 +1,5 @@
 import Qpu.General.Prose.QuantumAppsChessIndex
 import Qpu.General.Prose.QuantumEngineIndex
-import Qpu.General.Prose.QuantumGeneratorsIndex
 import Qpu.General.Prose.QuantumNetBindingsIndex
 import Qpu.General.Prose.QuantumNetCloudflare
 import Qpu.General.Prose.QuantumNetConnector

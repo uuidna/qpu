@@ -8,7 +8,7 @@ Every quantum term from clause 3.1.1 through 3.6.4 is one row of [`quantum-vocab
 
 Identifiers and ledger records use ISO/IEC 9834-8, ISO 22739:2024, ISO 23257:2022, ISO/TR 23455:2019, ISO 24165, ISO 20022, and ISO 4217. The further dimensions this tree names are ISO 80000-10, ISO 8601, ISO 639-1, ISO 3166-1, ISO/IEC 19770, ISO 16, and ISO 9001. Quantum purity is gated on ISO/IEC 4879:2024. A state of trace 1 and purity 1 is admitted. A state of trace 1 and purity below 1 is refused as pure.
 
-The Worker serves this cover through one connector: `qpuMcpPlugin` at `POST /api/mcp`. Rails names the folders and the generators.
+The Worker serves this cover through one connector: `qpuMcpPlugin` at `POST /api/mcp`.
 
 ## Abstract
 

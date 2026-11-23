@@ -19,6 +19,7 @@ def theoremsOut : System.FilePath := ".lake" / "build" / "theorems-index.ts"
   let declared ← Qpu.declaredTheorems
   let (all, compilerWritten) ← Qpu.theoremCounts
   let mut rows : Array String := #[]
+  let mut novelties : Array Json := #[]
   let mut sorried := 0
   for (name, module) in declared do
     let info ← getConstInfo name
@@ -29,6 +30,8 @@ def theoremsOut : System.FilePath := ".lake" / "build" / "theorems-index.ts"
     let fields : List (String × Json) :=
       [("key", .str name.toString), ("module", .str module.toString), ("statement", .str ((toString statement).replace "\n" " ")), ("axioms", .arr (axioms.map fun a => Json.str a.toString))]
       ++ (if doc.isEmpty then [] else [("doc", .str (doc.replace "\n" " "))])
+    -- a novelty, a theorem with no Mathlib equivalent, with the doc that cites its prior-art dossier
+    if noveltyAttr.hasTag env name then novelties := novelties.push (Json.mkObj [("key", .str name.toString), ("doc", .str doc)])
     -- the fields in the order the readers know them
     rows := rows.push ("  {" ++ ", ".intercalate (fields.map fun (key, value) => s!"{(Json.str key).compress}: {value.compress}") ++ "},")
   if sorried > 0 then throwError s!"{sorried} declared theorem(s) rest on sorry: nothing is written"
@@ -48,6 +51,8 @@ def theoremsOut : System.FilePath := ".lake" / "build" / "theorems-index.ts"
     ++ rows.toList ++
     [ "]"
     , "export const THEOREM_KEYS: ReadonlySet<string> = new Set(THEOREMS.map((t) => t.key))"
+    , "/** every novelty: a theorem the gate admits as its own statement, with no Mathlib equivalent, and the doc citing its dossier */"
+    , s!"export const NOVELTIES: readonly \{ key: string; doc: string }[] = {(Json.arr novelties).compress}"
     , "/** every claim no theorem proves (Qpu.openClaims), kept as an underclaim: what is proved toward it and what is missing */"
     , s!"export const OPEN_CLAIMS: readonly \{ name: string; claim: string; proved: readonly string[]; missing: string }[] = {claims.compress}"
     , "/** each Qpu module's doc, as the kernel environment holds it */"

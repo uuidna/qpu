@@ -27,10 +27,16 @@
 
 ## Thousand-bit integers, each the answer to its example
 
-| example | bits | prime factors | left | complete | verified | theorem |
-|---|---|---|---|---|---|---|
-| `algorithm-factor-1000-bit` | 1000 | 20 | 0 | true | true | `textbook_shor_reduction` |
-| `algorithm-factor-test-integer` | 1000 | 0 | 1 | false | true | `textbook_factors_divide` |
+| example | bits | prime factors | left | complete | verified | theorem | receipt |
+|---|---|---|---|---|---|---|---|
+| `algorithm-factor-1000-bit` | 1000 | 20 | 0 | true | true | `textbook_shor_reduction` | `1282adb6` |
+| `algorithm-factor-test-integer` | 1000 | 0 | 1 | false | true | `textbook_factors_divide` | `a84bf4b2` |
+
+## Novelties: theorems the gate admits as their own statements, with no Mathlib equivalent, each sealed as a quantum receipt
+
+| novelty | prior art | receipt |
+|---|---|---|
+| none yet: a novelty enters when the gate admits it with its prior-art dossier | — | — |
 
 ## Open claims: no theorem proves these yet (Qpu.openClaims)
 

@@ -19,7 +19,7 @@ test('a source out of bounds is refused before the container is reached, and a v
   for (const source of ['', 'x'.repeat(PROVER_LIMITS.source + 1), 7]) assert.equal((await callProver(prover, { source })).isError, true)
   assert.equal(asked.length, 0)
   const once = await callProver(prover, { source: 'theorem t : 1 + 1 = 2 := rfl' }), again = await callProver(prover, { source: 'theorem t : 1 + 1 = 2 := rfl' })
-  assert.deepEqual([once.isError, s(once).ok, s(once).address === s(again).address, asked[0]!.url, JSON.parse(asked[0]!.body).seconds], [false, true, true, 'http://prover/check', PROVER_LIMITS.seconds])
+  assert.deepEqual([once.isError, s(once).ok, s(once).receipt.address === s(again).receipt.address && s(once).receipt.sealed, asked[0]!.url, JSON.parse(asked[0]!.body).seconds], [false, true, true, 'http://prover/check', PROVER_LIMITS.seconds])
   await callProver(prover, { gaps: true })
   assert.deepEqual([asked.at(-1)!.url, PROVER_TOOLS.map((t) => t.name)], ['http://prover/gaps', ['lean']])
 })

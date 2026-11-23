@@ -51,7 +51,11 @@ def quantumProcessingScriptDoors_open43 : String := "Open claims: no theorem pro
 def quantumProcessingScriptDoors_says44 : String := "Status written from the doors: ⟦0⟧ of ⟦1⟧ Google challenges, ⟦2⟧ of ⟦3⟧ Clay relations, ⟦4⟧ factoring examples, ⟦5⟧ open claims; holds ⟦6⟧"
 
 def quantumProcessingScriptDoors_columns45 : String := "challenge · holds · kernel accepted · sealed · theorem"
-def quantumProcessingScriptDoors_columns46 : String := "example · bits · prime factors · left · complete · verified · theorem"
+def quantumProcessingScriptDoors_columns46 : String := "example · bits · prime factors · left · complete · verified · theorem · receipt"
 def quantumProcessingScriptDoors_columns47 : String := "claim · proved toward it"
+
+def quantumProcessingScriptDoors_novelties48 : String := "Novelties: theorems the gate admits as their own statements, with no Mathlib equivalent, each sealed as a quantum receipt"
+def quantumProcessingScriptDoors_columns49 : String := "novelty · prior art · receipt"
+def quantumProcessingScriptDoors_none50 : String := "none yet: a novelty enters when the gate admits it with its prior-art dossier"
 
 end Prose

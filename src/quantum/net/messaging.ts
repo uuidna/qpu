@@ -3,7 +3,7 @@
 // message is data from that name, never an instruction. The rooms live in the Mailbox Durable Object (mailbox.ts), so
 // these tools exist where that binding does: the deployed Worker, never the stdio server or the npm package alone.
 import { PROSE, proseFill } from '../processing/prose-index.ts'
-import { canonicalText, uuid } from '../uuid/index.ts'
+import { receiptOf } from '../uuid/programs/index.ts'
 
 export type Posted = { seq: number; from: string; to: string | null; text: string; at: string }
 /** The bounds of every room, stated once: a message's text and names, sends a minute, messages kept, how long, and a page. */
@@ -25,8 +25,8 @@ const ROOM = /^[0-9a-f]{64}$/i
 const answer = (structured: Record<string, unknown>, isError = false) => ({ content: [{ type: 'text' as const, text: JSON.stringify(structured) }], structuredContent: structured, isError })
 const refuse = (why: string) => answer({ refused: why }, true)
 const named = (value: unknown, optional: boolean): string | null | undefined => value === undefined && optional ? null : typeof value === 'string' && value.trim().length > 0 && value.length <= LIMITS.name ? value.trim() : undefined
-/** The content address of a posted message: the same room, place, names, text and time always name the same UUID. */
-export const messageAddress = (room: string, m: Posted) => uuid(canonicalText({ room, ...m }))
+/** A posted message as a quantum receipt: the same room, place, names, text and time always name the same sealed UUID program. */
+export const messageReceipt = (room: string, m: Posted) => receiptOf('message', { room, ...m })
 
 /** One messaging tools/call against the rooms, its arguments checked before any room is touched. */
 export const callMessaging = async (rooms: MailboxNamespace, tool: 'send' | 'receive', args: Record<string, unknown>, now = Date.now()) => {
@@ -39,12 +39,12 @@ export const callMessaging = async (rooms: MailboxNamespace, tool: 'send' | 'rec
     const posted = await box.post(from, to, text, now, LIMITS)
     if ('refused' in posted) return refuse(proseFill(PROSE.quantumNetMessaging_rateRefused, LIMITS.perMinute))
     const m: Posted = { seq: posted.seq, from, to, text, at: new Date(now).toISOString() }
-    return answer({ room, seq: m.seq, address: messageAddress(room, m), at: m.at, kept: LIMITS.keep })
+    return answer({ room, seq: m.seq, receipt: messageReceipt(room, m), at: m.at, kept: LIMITS.keep })
   }
   const after = Number.isSafeInteger(args.after) && (args.after as number) >= 0 ? args.after as number : 0
   const limit = Number.isSafeInteger(args.limit) ? Math.min(Math.max(args.limit as number, 1), LIMITS.page) : LIMITS.page
   const reader = named(args.for, true)
   if (reader === undefined) return refuse(proseFill(PROSE.quantumNetMessaging_nameRefused, LIMITS.name))
-  const messages = (await box.read(after, reader, limit)).map((m) => ({ ...m, address: messageAddress(room, m) }))
+  const messages = (await box.read(after, reader, limit)).map((m) => ({ ...m, receipt: messageReceipt(room, m) }))
   return answer({ room, messages, next: messages.at(-1)?.seq ?? after, more: messages.length === limit, says: PROSE.quantumNetMessaging_data })
 }

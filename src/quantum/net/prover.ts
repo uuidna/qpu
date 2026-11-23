@@ -2,7 +2,7 @@
 // runs Lean's library search over every theorem (lean/tools/Gaps.lean). The prover runs in a Cloudflare Container with
 // no internet (prover-object.ts, alpine/prover-server.ts), so the tool exists where that binding does: the deployed Worker.
 import { PROSE, proseFill } from '../processing/prose-index.ts'
-import { canonicalText, uuid } from '../uuid/index.ts'
+import { receiptOf } from '../uuid/programs/index.ts'
 
 /** The bounds of one check, stated once: the source's length and the seconds Lean may take. */
 export const PROVER_LIMITS = { source: 65536, seconds: 300 } as const
@@ -15,7 +15,7 @@ export const PROVER_TOOLS = [
 
 const answer = (structured: Record<string, unknown>, isError = false) => ({ content: [{ type: 'text' as const, text: JSON.stringify(structured) }], structuredContent: structured, isError })
 
-/** One lean tools/call against the prover: the source checked before the container is reached, the verdict sealed by its content address. */
+/** One lean tools/call against the prover: the source checked before the container is reached, the verdict sealed as a quantum receipt. */
 export const callProver = async (prover: ProverNamespace, args: Record<string, unknown>) => {
   const lean = prover.getByName('lean')
   if (args.gaps === true) {
@@ -25,5 +25,5 @@ export const callProver = async (prover: ProverNamespace, args: Record<string, u
   if (typeof args.source !== 'string' || args.source.length === 0 || args.source.length > PROVER_LIMITS.source) return answer({ refused: proseFill(PROSE.quantumNetProver_sourceRefused, PROVER_LIMITS.source) }, true)
   const r = await lean.fetch(new Request('http://prover/check', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ source: args.source, seconds: PROVER_LIMITS.seconds }) }))
   const verdict = await r.json() as { ok?: boolean; messages?: unknown; toolchain?: string }
-  return answer({ ...verdict, address: uuid(canonicalText({ source: args.source, ok: verdict.ok, messages: verdict.messages, toolchain: verdict.toolchain })) }, !r.ok || verdict.ok !== true)
+  return answer({ ...verdict, receipt: receiptOf('lean', { source: args.source, ok: verdict.ok, messages: verdict.messages, toolchain: verdict.toolchain }) }, !r.ok || verdict.ok !== true)
 }

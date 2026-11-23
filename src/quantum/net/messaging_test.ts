@@ -29,7 +29,8 @@ test('a room carries messages in order, a reader resumes after its last sequence
   const b = s(await callMessaging(rooms, 'send', { room, from: 'blissful', to: 'qpu-readme', text: 'agreed' }, 2_000))
   await callMessaging(rooms, 'send', { room, from: 'blissful', to: 'someone-else', text: 'not for you' }, 3_000)
   assert.deepEqual([a.seq, b.seq], [1, 2])
-  assert.match(a.address, /^[0-9a-f]{8}-/)
+  assert.match(a.receipt.address, /^[0-9a-f]{8}-/)
+  assert.equal(a.receipt.sealed, true)
   const all = s(await callMessaging(rooms, 'receive', { room }))
   assert.deepEqual(all.messages.map((m: Posted) => m.text), ['merge my branch first', 'agreed', 'not for you'])
   assert.equal(all.next, 3)
@@ -37,7 +38,7 @@ test('a room carries messages in order, a reader resumes after its last sequence
   assert.deepEqual(mine.messages.map((m: Posted) => m.seq), [1, 2])
   const after = s(await callMessaging(rooms, 'receive', { room, after: 2 }))
   assert.deepEqual(after.messages.map((m: Posted) => m.seq), [3])
-  assert.equal(all.messages[0].address, a.address, 'the address a send answers is the address the message is read under')
+  assert.equal(all.messages[0].receipt.address, a.receipt.address, 'the address a send answers is the address the message is read under')
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: a room is 256 bits, names and text are bounded, and a room takes its share a minute and no more. */

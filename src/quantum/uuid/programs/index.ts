@@ -10,7 +10,7 @@ import { Worker, parentPort, workerData } from 'node:worker_threads'
 import { join } from 'node:path'
 import { exists, place, write } from '../../fs/index.ts'
 import { seal, uuid, uuidFromParts } from '../../password/address.ts'
-import { bindPhysics, channel, hexbit, reflection } from '../index.ts'
+import { bindPhysics, canonicalText, channel, hexbit, reflection } from '../index.ts'
 import { physics } from './physics/index.ts'
 import { challenge } from './challenge/index.ts'
 
@@ -435,6 +435,13 @@ export const competeProgramNeighbours = (handle: string) => {
  * The program at one hex handle: Payload plugin per the upstream standard, guarded; neighbours via quantum.
  * One word — not install / programOf.
  */
+/** A certified result as a quantum receipt: its kind and canonical text addressed by uuid, the address's first eight hex digits
+ *  a program placed in the tree, the receipt sealed when that program is indexed and the address is a valid UUID. */
+export const receiptOf = (kind: string, body: unknown) => {
+  const address = uuid(`${kind};${canonicalText(body)}`), handle = address.slice(0, 8), placed = program(handle)
+  return { kind, address, handle, path: placed.path, sealed: placed.indexed && seal(address).valid }
+}
+
 export const program = (handle: string) => {
   const bits = handleBits(handle)
   const object = place(handle)
