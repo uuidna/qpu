@@ -533,4 +533,6 @@ def quantumProcessingExamples_shows514 : String := "Alpine.js ported as its docu
 def quantumProcessingExamples_shows515 : String := "One Alpine component on the scope: x-data, x-init, x-text, x-show and x-for run. ESLint's universal Linter checks each expression against the scope the OS already holds, and this run is clean. x-teleport needs a document and x-effect does not re-run, so those two are leads whose run develops them next."
 def quantumProcessingExamples_shows516 : String := "An expression on the browser OS is linted by ESLint before it runs. eval is not a name the scope holds, so x-init does not run and the count stays the value x-data declared. x-text still reads that count."
 
+def quantumProcessingExamples_shows517 : String := "Lean's own library search decides division by zero: every conjunct of textbook_div_zero is closed by a library theorem, so it is no gap of the library and no novelty."
+
 end Prose

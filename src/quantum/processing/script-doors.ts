@@ -249,7 +249,7 @@ const SCRIPT_INVOKE = {
   hook: { tool: 'repository { workflow }', via: PROSE.quantumProcessingScriptDoors_via35, npm: '.githooks/<name>' },
   purify: { tool: 'audit + leads + metrics', via: PROSE.quantumProcessingScriptDoors_via36, npm: 'npm run purify' },
   publish: { tool: 'docket entries', via: 'scripts/publish.ts', npm: 'npm run publish' },
-  stdio: { tool: 'Payload /api/mcp', via: 'scripts/stdio.ts', npm: 'MCP stdio transport' },
+  stdio: { tool: 'mcpServer (serveStdio)', via: 'scripts/stdio.ts', npm: 'MCP stdio transport' },
 } as const
 
 const scriptsCatalog = () => ({

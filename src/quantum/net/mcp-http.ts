@@ -46,8 +46,9 @@ export const x402Of = (env: Env) => {
   return { network: typeof env.QPU_X402_NETWORK === 'string' ? env.QPU_X402_NETWORK : 'base-sepolia', recipient: recipient as `0x${string}`, facilitator: { url: (typeof env.QPU_X402_FACILITATOR === 'string' ? env.QPU_X402_FACILITATOR : 'https://x402.org/facilitator') as `https://${string}` } }
 }
 
-/** One MCP SDK server over the kernel: each tool registered with its own schema, paid where the tenant names a wallet. */
-const build = async (env: Env) => {
+/** One MCP SDK server over the kernel: each tool registered with its own schema, paid where the tenant names a wallet;
+ *  the Worker serves it over Streamable HTTP, scripts/stdio.ts over stdio. */
+export const mcpServer = async (env: Env) => {
   const { info, tools, resources } = await surface(), terms = x402Of(env)
   const base = new McpServer({ name: info.serverInfo?.name ?? 'qpu', version: info.serverInfo?.version ?? '0' }, { instructions: info.instructions })
   const server = terms ? withX402(base, terms) : null
@@ -82,6 +83,6 @@ export const isMcp = (request: Request): boolean => {
 export const serveMcp = async (request: Request, env: Env = (globalThis as { process?: { env?: Env } }).process?.env ?? {}): Promise<Response> => {
   x402Of(env) // a tenant whose wallet is not an address is refused before anything is served
   const extra = typeof env.QPU_MCP_HOSTS === 'string' ? env.QPU_MCP_HOSTS.split(',').map((h) => h.trim()).filter(Boolean) : []
-  const handler = createMcpHandler(() => build(env), { route: new URL(request.url).pathname, responseMode: 'json', allowedHostnames: [...Object.keys(TENANTS), ...extra], allowedOriginHostnames: '*' })
+  const handler = createMcpHandler(() => mcpServer(env), { route: new URL(request.url).pathname, responseMode: 'json', allowedHostnames: [...Object.keys(TENANTS), ...extra], allowedOriginHostnames: '*' })
   return handler(request, env, { waitUntil: () => {}, passThroughOnException: () => {}, props: {} } as unknown as Parameters<typeof handler>[2])
 }

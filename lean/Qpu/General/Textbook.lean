@@ -2094,7 +2094,7 @@ example := @textbook_css_one_source
 example : 23963508 % 360 = 108 ∧ 108 = 108 := by decide
 /-- textbook_css_one_source reflected by its shape (examples: css-one-source, fold-hex-one-source) -/
 @[reflection] theorem textbook_css_one_source_reflected (n : Nat) : (n % 360) = (((n : ZMod 360)).val) := Eq.symm (textbook_css_one_source n)
-/-- division by zero is total: x / 0 = 0 and x % 0 = x for every natural, z / 0 = 0 for every integer, and q / 0 = 0 in every group with zero (ℚ here); 0 has no inverse. From Mathlib's `Nat.div_zero`, `Nat.mod_zero`, `Int.ediv_zero` and `div_zero` (examples: match-div-zero) -/
+/-- division by zero is total: x / 0 = 0 and x % 0 = x for every natural, z / 0 = 0 for every integer, and q / 0 = 0 in every group with zero (ℚ here); 0 has no inverse. From Lean core's `Nat.div_zero`, `Nat.mod_zero` and `Int.ediv_zero`, and Mathlib's `div_zero` (examples: match-div-zero) -/
 theorem textbook_div_zero (x : Nat) (z : Int) (q : ℚ) : x / 0 = 0 ∧ x % 0 = x ∧ z / 0 = 0 ∧ q / 0 = 0 :=
   ⟨Nat.div_zero x, Nat.mod_zero x, Int.ediv_zero z, div_zero q⟩
 example := @textbook_div_zero

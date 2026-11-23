@@ -92,6 +92,10 @@ def textbookFile : String := "lean/tools/Textbook.lean"
 /-- The Lean file that writes the theorem index. -/
 def theoremsFile : String := "lean/tools/Theorems.lean"
 
+/-- The Lean file that finds the library's gaps by Lean's own library search, and the shards it runs as at once. -/
+def gapsFile : String := "lean/tools/Gaps.lean"
+def gapsShards : Nat := 3
+
 /-- The Lean file that renders the UUID address core as TypeScript (Lean → TS codegen). -/
 def addressFile : String := "lean/tools/Address.lean"
 
@@ -172,6 +176,23 @@ script index do
   if hooked != 0 then return hooked
   steps (renderers.map fun file => ("node", #[file]))
 
+/-- `lake run gaps`: build, then Lean's library search over every declared theorem with a variable, as `gapsShards`
+shards at once, their rows merged into the gaps index the `textbook { gaps }` door serves. Long, so not in `index`. -/
+script gaps do
+  let built ← step "lake" #["build"]
+  if built != 0 then return built
+  let run (env : String × String) : IO UInt32 := do
+    (← IO.Process.spawn { cmd := "lake", args := #["env", "lean", gapsFile], env := #[(env.1, some env.2)] }).wait
+  for k in List.range gapsShards do IO.FS.writeFile (".lake" / "build" / s!"gaps-{k}-of-{gapsShards}.jsonl") ""
+  let tasks ← (List.range gapsShards).mapM fun k => IO.asTask (run ("GAPS_SHARD", s!"{k}/{gapsShards}"))
+  for task in tasks do
+    match task.get with
+    | .ok 0 => pure ()
+    | _ => return 1
+  let merged ← run ("GAPS_MERGE", toString gapsShards)
+  if merged != 0 then return merged
+  settle (".lake" / "build" / "gaps-index.ts") ("src" / "quantum" / "processing" / "gaps-index.ts") false
+
 /-- `lake run check`: build, then fail when a rendered file differs from Lean. Nothing is written. -/
 script check do
   let built ← step "lake" #["build"]
@@ -200,7 +221,7 @@ script applications do
   steps [("lake", #["build"]), ("lake", #["env", "lean", applicationsFile])]
 
 /-- The Lean files that write rendered output; `lake run verify` runs each of them. -/
-def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile, configFile, addressFile]
+def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile, configFile, addressFile, gapsFile]
 
 /-- `lake run leanfiles`: no Lean file is skipped. Every `.lean` file the repository tracks is this lakefile, a module
 the build compiles, a tool `lake run verify` runs, or evidence kept under `lean/`, which is named and never removed. -/
