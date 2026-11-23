@@ -1,6 +1,7 @@
 name: alpine
 # Every gate in qpu's one environment: the image alpine/Dockerfile builds (Lean from source on musl, Node 26, pnpm), so
-# a branch is verified whatever the pushing session could run.
+# a branch is verified whatever the pushing session could run. Each gate is a step of its own, so a running job shows
+# which gate it is in and how long each took; the Lean build is kept between runs, so only changed modules rebuild.
 on:
   push:
     branches: [main, 'claude/**']
@@ -31,7 +32,28 @@ jobs:
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: gates in the Alpine environment
-        run: >-
-          docker run --rm -v "$PWD:/qpu" -w /qpu qpu-alpine:ci sh -c
-          'pnpm install --frozen-lockfile && lake exe cache get && lake build && pnpm run typecheck && pnpm test'
+      # the musl-built packages (Mathlib's cache tool and its unpacked modules) and the tree's own compiled modules
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .lake/packages
+          key: alpine-lake-packages-${{ hashFiles('lake-manifest.json', 'lean-toolchain', 'alpine/Dockerfile') }}
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .lake/build
+          key: alpine-lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'alpine/Dockerfile') }}-${{ hashFiles('lakefile.lean', 'lean/**/*.lean') }}
+          restore-keys: |
+            alpine-lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'alpine/Dockerfile') }}-
+      - name: dependencies
+        run: docker run --rm -v "$PWD:/qpu" -w /qpu qpu-alpine:ci pnpm install --frozen-lockfile
+      - name: Mathlib's build cache
+        run: docker run --rm -v "$PWD:/qpu" -w /qpu qpu-alpine:ci lake exe cache get
+      - name: the Lean kernel checks the tree
+        run: docker run --rm -v "$PWD:/qpu" -w /qpu qpu-alpine:ci lake build
+      - name: typecheck
+        run: docker run --rm -v "$PWD:/qpu" -w /qpu qpu-alpine:ci pnpm run typecheck
+      - name: tests
+        run: docker run --rm -v "$PWD:/qpu" -w /qpu qpu-alpine:ci pnpm test
+      # the container wrote as root: the cache steps that follow read the build as the runner
+      - name: hand the build back to the runner
+        if: always()
+        run: sudo chown -R "$(id -u):$(id -g)" .lake
