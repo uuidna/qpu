@@ -2,9 +2,8 @@
 // workflows already name), each planned here — refused with the court's case when the list does not name it, when its parameters are not
 // its own, or when the workflow rules decided by theorems refuse it (a commit needs the flow green, a push the rules of pre-push and the
 // user's confirmation) — and each run judged here: its output's paths made relative, its leaks redacted by kind, the whole a docket entry
-// at its content address with its SHA-256, the same shape the Worker's docket and the Payload entries address. No shell, no arbitrary
-// command: the one runner (scripts/machine.ts), called by the stdio transport and by the Payload MCP plugin's machine tool, executes only
-// the argument vector a plan returns, streaming its lines as progress to a caller that sent a progress token.
+// at its content address with its SHA-256. No shell, no arbitrary command: the runner (machine-run.ts), which the stdio server's machine
+// tool calls, executes only the argument vector a plan returns; files are staged and committed by their paths, never all at once.
 import { PROSE, proseFill } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
 import { uuid, entryText } from '../uuid/index.ts'
@@ -14,7 +13,7 @@ import { summonCourt } from './toolboxes/legal.ts'
 import type { WorkflowFacts } from './toolboxes/repository.ts'
 type Decide = (name: 'pre-commit' | 'pre-push', facts: WorkflowFacts) => { allowed: boolean; says: string; violated: string[]; unknown: string[] }
 
-type MachineAction = { id: string; kind: 'read' | 'write'; cmd?: string; args: readonly string[]; says: string; needs?: 'message' | 'confirm' | 'branch' | 'file' | 'pattern' | 'patch'; workflow?: 'pre-commit' | 'pre-push' }
+type MachineAction = { id: string; kind: 'read' | 'write'; cmd?: string; args: readonly string[]; says: string; needs?: 'message' | 'confirm' | 'branch' | 'file' | 'files' | 'pattern' | 'patch'; workflow?: 'pre-commit' | 'pre-push' }
 /** A branch a merge may name: letters, digits, dot, underscore, slash and dash, never starting with a dash (it would be read as an option). */
 const BRANCH_RE = /^[A-Za-z0-9._/-]{1,200}$/
 const ROWS = TABLES.MACHINE_ROWS as unknown as readonly MachineAction[]
@@ -26,7 +25,7 @@ const FILE_RE = /^(?![/.-])(?!.*\.\.)[A-Za-z0-9._/-]{1,300}$/
 const TAG_RE = /^archive\/[A-Za-z0-9._-]{1,120}$/
 const SHA_RE = /^[0-9a-f]{40}$/
 
-export type MachineRequest = { action?: string; message?: string; confirm?: boolean; branch?: string; path?: string; tag?: string; commit?: string; from?: string; file?: string; archived?: boolean; worktree?: string; pattern?: string; patch?: string; facts?: WorkflowFacts }
+export type MachineRequest = { action?: string; message?: string; files?: readonly string[]; confirm?: boolean; branch?: string; path?: string; tag?: string; commit?: string; from?: string; file?: string; archived?: boolean; worktree?: string; pattern?: string; patch?: string; facts?: WorkflowFacts }
 /** The plan of one action: allowed with its argument vector (and the message as its input), or refused with the court's case. */
 export const planMachine = (r: MachineRequest, decide: Decide) => {
   const a = MACHINE_ACTIONS.find((x) => x.id === r.action)
@@ -37,7 +36,10 @@ export const planMachine = (r: MachineRequest, decide: Decide) => {
   if (a.needs === 'confirm' && r.confirm !== true) return refuse('role', proseFill(PROSE.quantumProcessingMachine_s4, a.id), { action: a.id })
   if (r.worktree !== undefined && !WORKTREE_RE.test(String(r.worktree))) return refuse('shape', proseFill(PROSE.quantumProcessingMachine_s5, a.id), { action: a.id })
   // a row's own parameter by its needs: a file after --, a pattern after -e, a patch as the input
-  const param = a.needs === 'file' ? (typeof r.file === 'string' && FILE_RE.test(r.file) ? ['--', r.file] : null) : a.needs === 'pattern' ? (typeof r.pattern === 'string' && r.pattern && !r.pattern.includes('\u0000') ? ['-e', r.pattern] : null) : a.needs === 'patch' && typeof r.patch !== 'string' ? null : []
+  // paths, after --: a stage needs them, a commit may name them so only they are committed
+  const paths = Array.isArray(r.files) && r.files.length > 0 && r.files.every((f) => typeof f === 'string' && FILE_RE.test(f)) ? ['--', ...r.files] : null
+  if (r.files !== undefined && !paths) return refuse('shape', `${a.id} takes its files as paths, no NUL`, { action: a.id })
+  const param = a.needs === 'files' ? paths : a.needs === 'file' ? (typeof r.file === 'string' && FILE_RE.test(r.file) ? ['--', r.file] : null) : a.needs === 'pattern' ? (typeof r.pattern === 'string' && r.pattern && !r.pattern.includes('\u0000') ? ['-e', r.pattern] : null) : a.needs === 'patch' && typeof r.patch !== 'string' ? null : []
   if (!param) return refuse('shape', `${a.id} takes its ${a.needs}, no NUL`, { action: a.id })
   const worktree = r.worktree ?? null
   const PARAMETRISED: Record<string, () => string[] | null> = {
@@ -56,7 +58,7 @@ export const planMachine = (r: MachineRequest, decide: Decide) => {
   // and decides the same rules strictly: a rule unknown here is deferred to it, a rule violated here refuses at once; a push decides here, all of it
   const deferred = a.workflow === 'pre-commit' && decision && !decision.allowed && decision.violated.length === 0
   if (decision && !decision.allowed && !deferred) return { ...refuse('collision', `the ${a.workflow} rules refuse it: ${decision.says}`, { action: a.id, violated: decision.violated, unknown: decision.unknown }), decision }
-  return { allowed: true as const, action: a.id, kind: a.kind, command: { cmd: a.cmd, args: a.needs === 'branch' ? [...a.args, r.branch!] : [...a.args, ...param] }, input: a.needs === 'message' ? r.message : a.needs === 'patch' ? r.patch : null, worktree, decision, deferred: deferred ? decision!.unknown : [], says: a.says, theorems: ['textbook_machine_allow_list'] }
+  return { allowed: true as const, action: a.id, kind: a.kind, command: { cmd: a.cmd, args: a.needs === 'branch' ? [...a.args, r.branch!] : [...a.args, ...param, ...(a.needs === 'message' && paths ? paths : [])] }, input: a.needs === 'message' ? r.message : a.needs === 'patch' ? r.patch : null, worktree, decision, deferred: deferred ? decision!.unknown : [], says: a.says, theorems: ['textbook_machine_allow_list'] }
 }
 
 export type MachineRun = { action: string; command: { cmd: string; args: readonly string[] }; status: number | null; stdout: string; stderr: string; ms: number; root: string; home?: string }
@@ -139,7 +141,7 @@ export const NEXT_STEPS: readonly NextStep[] = [
 export const MACHINE_RUNNER = 'src/quantum/processing/machine-run.ts'
 /** The actions longer than a request: the Payload MCP's machine tool queues each as a job and answers the job's id at once; the queue runs it
  *  in child processes and writes its record as an entry (textbook_long_action_queued). Every other action answers within the request. */
-export const LONG_ACTIONS: readonly string[] = ['next', 'regenerate', 'precheck', 'site-audit', 'site-install', 'site-build']
+export const LONG_ACTIONS: readonly string[] = ['next', 'regenerate']
 /** The waves of next in their order, and the bound on the lanes of each: min(cores, ⌊capacity ÷ heap⌋), the formula the runner applies. */
 export const nextWaves = (steps: readonly NextStep[] = NEXT_STEPS) => {
   const waves = [...new Set(steps.map((s) => s.wave))].sort((a, b) => a - b)
