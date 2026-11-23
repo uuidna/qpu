@@ -2,7 +2,7 @@
 // what the tools compute. Lean states these numbers in Qpu/General/Textbook.lean; each entry here renders the same
 // theorem from the data as it is now. textbook_test.ts fails when the two differ: the Lean file is the author, so a
 // change in the data is a change someone makes in Lean.
-import { PROSE, proseFill } from './prose-index.ts'
+import { PROSE } from './prose-index.ts'
 import { PRECEDENCE } from './unit/license.ts'
 type MeasuredTheorem = { key: string; lean?: string; says?: string; examples: readonly string[]; /** the Lean example testing it: integers and decimals live here, never in a theorem */ example?: string }
 import { SET_FAMILIES, SET_RADICES, SET_SPACE } from './institutions.ts'
@@ -18,7 +18,6 @@ const once = <V>(f: () => V) => { let v: V | undefined; return () => (v ??= f())
 const BOXES = once(() => from().toolboxes.map((b) => b.tools.length))
 // a theorem's numbers read from the example it names: the tool's answer over the example's own arguments
 const example = (id: string) => { const e = from().examples.find((x) => x.id === id); if (!e) throw new Error(`no example ${id}`); return (from().call(e.tool, e.arguments) as { result?: { structuredContent?: any } }).result?.structuredContent }
-const SLICES = once(() => example('fold-slices-exact') as { bytes: number; pieces: unknown[] }), WIDTHS = once(() => example('fold-reflect-widths') as { nibbles: number; faces: number })
 const ANTIMATTER = once(() => (example('repository-antimatter-total') as { antimatterCounts: { generated: number; none: number } }).antimatterCounts), ROYALTY = once(() => (example('stripe-royalty') as { royalty: { ratio: { num: number; den: number } } }).royalty.ratio)
 // the counts the theorems state, read from their sources (the tables Payload holds, Payload's surface, the locales) when gen-docs writes the Lean
 // file: never a number written by hand that a new row would falsify
@@ -26,7 +25,7 @@ const T = TABLES as unknown as Record<string, any>, count = <R>(rows: readonly R
 const CAT = T.CATALOGUE.length, byInterval = (i: string) => count(T.CATALOGUE, (v: { interval: string }) => v.interval === i)
 const NEWS_OPEN = count(T.NEWS_APIS, (a: { open: boolean }) => a.open), PATENT_OPEN = count(T.PATENT_APIS, (a: { open: boolean }) => a.open), ATTEST_REQUESTED = count(T.ATTEST_APIS, (a: { id: string }) => a.id !== 'tls-live')
 const DIR = (read: string) => count(T.MCP_DIRECTORIES, (d: { read: string }) => d.read === read), SOFTWARE_DONE = count(T.SOFTWARE, (s: { implemented: boolean }) => s.implemented), STATEMENT_COUNT = Object.keys(T.STATEMENTS).length
-const LANG_ROWS = [...new Set(T.REPOSITORIES.map((r: { language: string }) => r.language))].map((l) => [l, count(T.REPOSITORIES, (r: { language: string }) => r.language === l)] as const), LANGS = LANG_ROWS.map(([, k]) => k), LANGS_SAID = LANG_ROWS.map(([l, k]) => `${k} in ${l}`).join(', ')
+const LANG_ROWS = [...new Set(T.REPOSITORIES.map((r: { language: string }) => r.language))].map((l) => [l, count(T.REPOSITORIES, (r: { language: string }) => r.language === l)] as const), LANGS = LANG_ROWS.map(([, k]) => k)
 const LOCALE_COUNT = Object.keys(LOCALES).length
 export const MEASURED_THEOREMS: readonly MeasuredTheorem[] = [
   { key: 'textbook_prices_are_variants_times_currencies', example: `example : ${CAT} * 2 = ${CAT * 2} := by decide`, examples: ['stripe-catalogue'] },

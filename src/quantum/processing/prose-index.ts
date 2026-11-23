@@ -2860,8 +2860,6 @@ const SENTENCES = {
   quantumUuidProgramsIndex_s12: "⟦0⟧/⟦1⟧ leaves: neighbours reflect and test each other across ⟦2⟧ online competitions; sealed via ⟦3⟧ product combinations",
   quantumUuidProgramsIndex_s13: "⟦0⟧/⟦1⟧ leaves seal and compete online; ⟦2⟧ refused",
   quantumUuidProgramsIndex_s14: "⟦0⟧/⟦1⟧ folders: neighbours reflect and test each other across ⟦2⟧ online competitions",
-  quantumUuidProgramsIndex_s15: "program ⟦0⟧: self + 6 neighbours → utilise ⟦1⟧/⟦2⟧, left 0, navigate 6, space unwalked",
-  quantumUuidProgramsIndex_s16: "program ⟦0⟧: capacity utilisation did not hold",
   quantumUuidProgramsIndex_s2: "handle ⟦0⟧: all 6 neighbours via quantum; index ⟦1⟧",
   quantumUuidProgramsIndex_s3: "handle ⟦0⟧: quantum neighbours did not hold",
   quantumUuidProgramsIndex_s4: "handle ⟦0⟧: 3 axis pairs reflect and test each other; σ round-trips",
