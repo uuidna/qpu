@@ -83,10 +83,11 @@ export const isMcp = (request: Request): boolean => {
 }
 
 /** The MCP endpoint at every path of MCP_PATHS: Streamable HTTP through the Agents SDK, the hostnames the tenants
- *  name (and those QPU_MCP_HOSTS adds) allowed, every origin allowed since no call rides a cookie: each carries its own payment. */
+ *  name (and those QPU_MCP_HOSTS adds) allowed, every origin allowed since no call rides a cookie. A tenant's host is free;
+ *  a call on an added host carries its own payment. */
 export const serveMcp = async (request: Request, env: Env = (globalThis as { process?: { env?: Env } }).process?.env ?? {}): Promise<Response> => {
   x402Of(env) // a tenant whose wallet is not an address is refused before anything is served
   const extra = typeof env.QPU_MCP_HOSTS === 'string' ? env.QPU_MCP_HOSTS.split(',').map((h) => h.trim()).filter(Boolean) : []
-  const handler = createMcpHandler(() => mcpServer(env), { route: new URL(request.url).pathname, responseMode: 'json', allowedHostnames: [...Object.keys(TENANTS), ...extra], allowedOriginHostnames: '*' })
+  const handler = createMcpHandler(() => mcpServer(new URL(request.url).hostname in TENANTS ? { ...env, QPU_X402_RECIPIENT: '' } : env), { route: new URL(request.url).pathname, responseMode: 'json', allowedHostnames: [...Object.keys(TENANTS), ...extra], allowedOriginHostnames: '*' })
   return handler(request, env, { waitUntil: () => {}, passThroughOnException: () => {}, props: {} } as unknown as Parameters<typeof handler>[2])
 }

@@ -144,11 +144,12 @@ def renderProse (check : Bool) : IO UInt32 := do
         if settled != 0 then failed := settled
   return failed
 
-/-- The git hooks Lean writes, compared with or installed into `.githooks`. -/
+/-- Wrangler's configuration and the git hooks Lean writes (lean/tools/Config.lean), compared with or installed as
+`wrangler.jsonc` and into `.githooks`. -/
 def renderHooks (check : Bool) : IO UInt32 := do
   let built : System.FilePath := ".lake" / "build" / "githooks"
   let hooksDir : System.FilePath := ".githooks"
-  let mut code : UInt32 := 0
+  let mut code ← settle (".lake" / "build" / "wrangler.jsonc") "wrangler.jsonc" check
   for entry in (← built.readDir) do
     let written ← IO.FS.readFile entry.path
     let at_ := hooksDir / entry.fileName

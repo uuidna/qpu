@@ -56,6 +56,19 @@ def protocolVersion : String := "2025-06-18"
 /-- The address of the theorem ledger among the connector's resources. -/
 def leanResource : String := "lean://qpu/theorems"
 
+-- The domains bound to the Worker, each with its tenant. Wrangler's routes, the hosts the server answers and serves
+-- free and the hosts the site names are built from this one list (lean/tools/Config.lean writes them).
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+def tenants : List (String × String) := [("qpu.uuidna.com", "uuidna"), ("qpu.psg.bg", "psg")]
+
 /-- The ways an operation is inserted into a circuit, and the one used when none is named. -/
 def insertStrategies : List String := ["EARLIEST", "NEW", "INLINE", "NEW_THEN_INLINE"]
 

@@ -1,6 +1,6 @@
 # API
 
-[`index.ts`](index.ts) is the import. Run it from the repository root with `node --experimental-strip-types`. The website template does not mount this file, so there is no `/api/qpu/*` route. The detailed specification is [`README.md`](README.md). The unit is [`UNIT.md`](UNIT.md). The tools are [`TOOLBOXES.md`](TOOLBOXES.md).
+[`index.ts`](index.ts) is the import. Run it from the repository root with `node`. The detailed specification is [`README.md`](README.md). The unit is [`UNIT.md`](UNIT.md). The tools are [`TOOLBOXES.md`](TOOLBOXES.md).
 
 ```ts
 import { call, caller, chat, handle, uuid, seal } from './src/quantum/index.ts'
@@ -8,13 +8,13 @@ import { call, caller, chat, handle, uuid, seal } from './src/quantum/index.ts'
 
 ## Exports
 
-The UUID core, from [`uuid/index.ts`](uuid/index.ts): `uuid`, `reflection`, `seal`, `style`, `neighbours`, `block`, `verify`, `coins`, `quantumSku`, `organiseQubits`.
+The UUID core, from [`uuid/index.ts`](uuid/index.ts): `uuid`, `reflection`, `seal`, `style`, `neighbours`, `block`, `verify`, `coins`, `organiseQubits`.
 
 The unit, by `export *` from [`processing/unit`](processing/unit/index.ts): `QPU`, `tenantAddress`, the coil, the standards check, and `crypto1000Bit`.
 
 The call, from [`processing/index.ts`](processing/index.ts): `handle`, `handleBatch`, `call`, `caller`, `chat`, `TOOLBOXES`.
 
-Beside those: `os` is alpine, debian, and ubuntu. `calculator` is the integer calculator. `engine` is the default of the game seeds, and `seeds`, `play`, `impact`, and `capabilities` are its named exports. `plugins` is the twelve folder plugins.
+Beside those: `os` is alpine, debian, and ubuntu. `calculator` is the integer calculator. `engine` is the default of the game seeds, and `seeds`, `play`, `impact`, and `capabilities` are its named exports.
 
 ## A call
 

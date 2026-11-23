@@ -2911,6 +2911,12 @@ const SENTENCES = {
   scriptsStdio_message: "The commit message: a subject in the imperative and a body.",
   scriptsTextbookIndex_s1: "⟦0⟧ differs from the Lean file: run lake run index and commit the result",
   scriptsTheoremsIndex_s1: "⟦0⟧ differs from the Lean environment: run lake run index and commit the result",
+  siteVitepressConfig_card: "ISO/IEC 4879 quantum vocabulary, Lean-proved, as MCP tools; every call is free on ⟦0⟧",
+  siteVitepressConfig_citeAuthor: "⟦0⟧, ORCID ⟦1⟧",
+  siteVitepressConfig_citeRecord: "DOI ⟦0⟧, cited as the author's own record",
+  siteVitepressConfig_citeWork: "DOI ⟦0⟧, every version",
+  siteVitepressConfig_endpoint: "Model Context Protocol, Streamable HTTP transport (POST JSON-RPC), protocol versions ⟦0⟧. Every method, tools/call included, is free on ⟦1⟧: no payment is asked.",
+  siteVitepressConfig_webApi: "Model Context Protocol server over Streamable HTTP; every call is free on ⟦0⟧",
 }
 /** Every sentence the tree says, by the name Lean gives it. */
 export const PROSE: { readonly [K in keyof typeof SENTENCES]: string } = SENTENCES

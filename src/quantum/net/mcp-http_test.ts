@@ -2,8 +2,10 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { callPriceUsd, isMcp, serveMcp } from './mcp-http.ts'
 
-const post = (body: unknown, env: Record<string, string | undefined> = {}) =>
-  serveMcp(new Request('https://qpu.uuidna.com/api/mcp', { method: 'POST', headers: { host: 'qpu.uuidna.com', 'content-type': 'application/json', accept: 'application/json, text/event-stream' }, body: JSON.stringify(body) }), env)
+// Node's Request carries no Host header: set it from the URL, as the Worker's runtime does
+const hosted = (url: string, init: RequestInit = {}) => { const r = new Request(url, init); const h = new Headers(r.headers); h.set('host', new URL(url).host); return new Request(r, { headers: h }) }
+const rpc = (url: string, body: unknown, headers: Record<string, string> = {}) => hosted(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', ...headers }, body: JSON.stringify(body) })
+const post = (body: unknown, env: Record<string, string | undefined> = {}, host = 'qpu.uuidna.com') => serveMcp(rpc(`https://${host}/api/mcp`, body), env)
 // a Streamable HTTP answer is one JSON body or an event stream whose data line carries it
 const read = async <T>(res: Response): Promise<T> => { const text = await res.text(); return JSON.parse(res.headers.get('content-type')?.includes('text/event-stream') ? text.split('\n').find((l) => l.startsWith('data: '))!.slice(6) : text) as T }
 
@@ -17,7 +19,9 @@ test('serveMcp serves the kernel\'s tools through the Agents SDK, acknowledges a
   const note = await post({ jsonrpc: '2.0', method: 'notifications/initialized' })
   assert.equal(note.status, 202, 'a notification is answered with 202 and no body')
 
-  const paid = await post({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'clay', arguments: {} } }, { QPU_X402_RECIPIENT: '0x0000000000000000000000000000000000000001' })
+  const call = { jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'clay', arguments: {} } }, env = { QPU_X402_RECIPIENT: '0x0000000000000000000000000000000000000001', QPU_MCP_HOSTS: 'qpu.test' }
+  assert.ok(!(await read<{ result: { _meta?: object } }>(await post(call, env))).result._meta, 'free on a bound domain')
+  const paid = await post(call, env, 'qpu.test')
   const required = (await read(paid) as { result: { _meta: Record<string, { x402Version: number; error: string; accepts: { amount: string; network: string }[] }> } }).result._meta['x402/error']!
   assert.equal(required.x402Version, 2)
   assert.equal(required.error, 'PAYMENT_REQUIRED', 'a call without a payment is challenged')
@@ -27,11 +31,8 @@ test('serveMcp serves the kernel\'s tools through the Agents SDK, acknowledges a
   await assert.rejects(post({ jsonrpc: '2.0', id: 3, method: 'tools/list' }, { QPU_X402_RECIPIENT: '0xWallet' }), 'a wallet that is not an EVM address is refused, never served free')
 })
 
-// Node's Request carries no Host header: set it from the URL, as the Worker's runtime does
-const hosted = (url: string, init: RequestInit = {}) => { const r = new Request(url, init); const h = new Headers(r.headers); h.set('host', new URL(url).host); return new Request(r, { headers: h }) }
 const site = () => Promise.resolve(new Response('<html>site</html>', { headers: { 'content-type': 'text/html' } }))
 const worker = (r: Request) => (isMcp(r) ? serveMcp(r, { QPU_MCP_HOSTS: 'qpu.test' }) : site())
-const rpc = (url: string, body: unknown, headers: Record<string, string> = {}) => hosted(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', ...headers }, body: JSON.stringify(body) })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: an agent harness pointed at the domain, /mcp or /api/mcp initializes, lists and calls. */
 test('an agent harness pointed at the domain, /mcp or /api/mcp initializes, lists and calls', async () => {

@@ -52,7 +52,7 @@ jobs:
       - name: smoke /api/mcp and the site on both hostnames
         run: |
           fail=0
-          for host in qpu.uuidna.com qpu.psg.bg
+          for host in $(node -e "import('./src/quantum/processing/config-index.ts').then((c) => console.log(Object.keys(c.TENANTS).join(' ')))")
           do
             site=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "https://$host/")
             mcp=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "https://$host/api/mcp")

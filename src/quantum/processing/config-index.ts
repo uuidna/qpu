@@ -29,3 +29,5 @@ export const AFTER_HOOKS = ["post-commit","post-push"] as const
 export const UUID_GROUPS = [8,4,4,4,12] as const
 /** The shape of a UUID as a pattern, built from its groups; every check of a UUID in the code reads this one. */
 export const UUID_SHAPE = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+/** The domains bound to the Worker, each with its tenant, from Config.tenants: Wrangler's routes and the hosts served free. */
+export const TENANTS: Readonly<Record<string, string>> = { "qpu.uuidna.com": "uuidna", "qpu.psg.bg": "psg" }
