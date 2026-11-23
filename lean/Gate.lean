@@ -29,7 +29,7 @@ open Lean Elab Command
 /-- The module a declaration comes from, by name. -/
 def moduleOf (env : Environment) (n : Name) : Name :=
   match env.getModuleIdxFor? n with
-  | some i => env.header.moduleNames[i.toNat]!
+  | some i => env.header.modules[i.toNat]!.module
   | none => .anonymous
 
 def isQpu (env : Environment) (n : Name) : Bool := (`Qpu).isPrefixOf (moduleOf env n)

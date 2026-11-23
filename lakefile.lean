@@ -164,23 +164,10 @@ def renderHooks (check : Bool) : IO UInt32 := do
       IO.println s!"wrote {at_}"
   return code
 
-/-- `lake run index`: build, then Lean writes every file that follows it (prose index, theorem index, textbook index,
-blueprint, nested catalogue, catalogue of claims, thousand-bit table, register of standards). The Clay statements keep their own generator,
-which runs last. The prose index comes first: every other renderer reads its sentences from it. -/
-script index do
-  let built ← step "lake" #["build"]
-  if built != 0 then return built
-  let said ← renderProse false
-  if said != 0 then return said
-  let hooked ← renderHooks false
-  if hooked != 0 then return hooked
-  steps (renderers.map fun file => ("node", #[file]))
-
-/-- `lake run gaps`: build, then Lean's library search over every declared theorem with a variable, as `gapsShards`
-shards at once, their rows merged into the gaps index the `textbook { gaps }` door serves. Long, so not in `index`. -/
-script gaps do
-  let built ← step "lake" #["build"]
-  if built != 0 then return built
+/-- Lean's library search over every declared theorem with a variable, as `gapsShards` shards at once, their rows
+merged into the gaps index the `textbook { gaps }` door serves. A rerun keeps each committed row whose statements are
+unchanged under the same Mathlib, budget and procedures, so it searches only what changed. -/
+def renderGaps (check : Bool) : IO UInt32 := do
   let run (env : String × String) : IO UInt32 := do
     (← IO.Process.spawn { cmd := "lake", args := #["env", "lean", gapsFile], env := #[(env.1, some env.2)] }).wait
   for k in List.range gapsShards do IO.FS.writeFile (".lake" / "build" / s!"gaps-{k}-of-{gapsShards}.jsonl") ""
@@ -191,7 +178,27 @@ script gaps do
     | _ => return 1
   let merged ← run ("GAPS_MERGE", toString gapsShards)
   if merged != 0 then return merged
-  settle (".lake" / "build" / "gaps-index.ts") ("src" / "quantum" / "processing" / "gaps-index.ts") false
+  settle (".lake" / "build" / "gaps-index.ts") ("src" / "quantum" / "processing" / "gaps-index.ts") check
+
+/-- `lake run index`: build, then Lean writes every file that follows it (prose index, theorem index, textbook index,
+blueprint, nested catalogue, catalogue of claims, thousand-bit table, register of standards, gaps index). The Clay statements keep their own generator,
+which runs last. The prose index comes first: every other renderer reads its sentences from it. -/
+script index do
+  let built ← step "lake" #["build"]
+  if built != 0 then return built
+  let said ← renderProse false
+  if said != 0 then return said
+  let searched ← renderGaps false
+  if searched != 0 then return searched
+  let hooked ← renderHooks false
+  if hooked != 0 then return hooked
+  steps (renderers.map fun file => ("node", #[file]))
+
+/-- `lake run gaps`: build, then the gaps index alone. -/
+script gaps do
+  let built ← step "lake" #["build"]
+  if built != 0 then return built
+  renderGaps false
 
 /-- `lake run check`: build, then fail when a rendered file differs from Lean. Nothing is written. -/
 script check do
@@ -199,6 +206,8 @@ script check do
   if built != 0 then return built
   let said ← renderProse true
   if said != 0 then return said
+  let searched ← renderGaps true
+  if searched != 0 then return searched
   let hooked ← renderHooks true
   if hooked != 0 then return hooked
   steps (renderers.map fun file => ("node", #[file, "--check"]))
