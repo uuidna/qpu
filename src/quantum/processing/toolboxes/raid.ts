@@ -145,8 +145,8 @@ export const RAID: Toolbox = {
   idea: PROSE.quantumProcessingToolboxesRaid_idea11,
   tools: [mongo],
   examples: [
-    { id: 'mongo-find', tool: 'mongo', arguments: { op: 'find', collection: 'processors', docs: SAMPLE, filter: { qubits: { $gte: 60 }, tags: 'processor' }, sort: { qubits: -1 } }, shows: PROSE.quantumProcessingToolboxesRaid_shows12, expect: (s) => (s.matched === 1 && s.docs[0]?._id === 'a' ? null : `${s.matched} matched: ${s.docs.map((d: Doc) => d._id)}`) },
-    { id: 'mongo-update', tool: 'mongo', arguments: { op: 'update', collection: 'processors', docs: SAMPLE, filter: { _id: 'b' }, update: { $set: { 'meta.year': 2020 }, $inc: { qubits: 1 }, $push: { tags: 'updated' } } }, shows: PROSE.quantumProcessingToolboxesRaid_shows13, expect: (s) => (s.matched === 1 && s.changes[0]?.to.body.qubits === 55 && s.changes[0]?.to.body.meta.year === 2020 && s.changes[0]?.to.links[0] === 'b' ? null : JSON.stringify(s.changes)) },
+    { id: 'mongo-find', tool: 'mongo', theorem: 'textbook_mongo_find_filter', arguments: { op: 'find', collection: 'processors', docs: SAMPLE, filter: { qubits: { $gte: 60 }, tags: 'processor' }, sort: { qubits: -1 } }, shows: PROSE.quantumProcessingToolboxesRaid_shows12, expect: (s) => (s.matched === 1 && s.docs[0]?._id === 'a' ? null : `${s.matched} matched: ${s.docs.map((d: Doc) => d._id)}`) },
+    { id: 'mongo-update', tool: 'mongo', theorem: 'textbook_mongo_update_inc', arguments: { op: 'update', collection: 'processors', docs: SAMPLE, filter: { _id: 'b' }, update: { $set: { 'meta.year': 2020 }, $inc: { qubits: 1 }, $push: { tags: 'updated' } } }, shows: PROSE.quantumProcessingToolboxesRaid_shows13, expect: (s) => (s.matched === 1 && s.changes[0]?.to.body.qubits === 55 && s.changes[0]?.to.body.meta.year === 2020 && s.changes[0]?.to.links[0] === 'b' ? null : JSON.stringify(s.changes)) },
   ],
   skill: {
     instructions: PROSE.quantumProcessingToolboxesRaid_instructions14,
