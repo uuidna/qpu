@@ -7,11 +7,12 @@ on:
   pull_request:
 permissions:
   contents: read
-# One build per branch: a newer head waits for the running one, which finishes and fills the layer cache, instead of
-# cancelling it; heads pushed meanwhile are skipped for the newest. A pull request from a branch the push trigger
-# already builds runs no second copy.
+# One build per branch and event: a newer head waits for the running one, which finishes and fills the layer cache,
+# instead of cancelling it; heads pushed meanwhile are skipped for the newest. A pull request from a branch the push
+# trigger already builds runs no second copy, and its skipped run waits in its own group, so it never takes the place
+# of the push run that builds.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: false
 jobs:
   gates:

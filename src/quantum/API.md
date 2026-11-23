@@ -24,7 +24,7 @@ Beside those: `os` is alpine, debian, and ubuntu. `calculator` is the integer ca
 
 `handle` takes one message. An array is a batch. `handleBatch` answers a JSON-RPC array in order. The claimed role is decided before each call runs. A role that may not take the action gets an error, and that call does not run.
 
-The methods are `initialize`, `tools/list`, `tools/call`, `resources/list`, `resources/templates/list`, and `resources/read`. `initialize` answers protocol `2025-06-18`. The server name is `qpu` and the version is `1.4.0`.
+The methods are `initialize`, `tools/list`, `tools/call`, `resources/list`, `resources/templates/list`, and `resources/read`. `initialize` answers protocol `2025-06-18`. The server name is `qpu`; its version is the package's.
 
 A `tools/call` message is `{ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments } }`.
 
