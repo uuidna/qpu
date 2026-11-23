@@ -8,7 +8,8 @@ import { PROSE, proseFill } from './prose-index.ts'
 import { evaluate } from './expressions.ts'
 import { TEXTBOOK_INDEX, type TextbookRow } from './textbook-index.ts'
 type TextbookTheorem = TextbookRow
-export const TEXTBOOK_THEOREMS: readonly TextbookTheorem[] = TEXTBOOK_INDEX
+// a theorem's attributes (@[novelty]) mark it; its statement starts at the keyword
+export const TEXTBOOK_THEOREMS: readonly TextbookTheorem[] = TEXTBOOK_INDEX.map((t) => ({ ...t, lean: t.lean.replace(/^@\[[^\]]*\]\s*/, '') }))
 // Every theorem of the table reflected by the shape of its statement, generated beside it into Qpu/General/Textbook.lean and never assumed: an
 // equality a = b over the naturals reflects to σ − b = σ − a for every σ (its symmetry and σ_σ at once), any other equality to b = a; an order
 // a ≤ b to σ − b ≤ σ − a, since σ reverses order, and a < b to σ − b < σ − a wherever b ≤ σ; a conjunction part by part; a disjunction, an

@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1710 products, 2 under a declared claim context and 1708 as the author's own statement, with 1276 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1708 products, 2 under a declared claim context and 1706 as the author's own statement, with 1274 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -8174,15 +8174,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-gottesman-knill.
 
 ```lean
-2 * 10 * 10 + 10 = 210 ∧ 210 < 2 ^ 10
-```
-
-### `textbook_gottesman_knill_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: algorithm-gottesman-knill.
-
-```lean
-∀ (σ : ℕ), 2 ^ 10 ≤ σ → σ - 210 = σ - (2 * 10 * 10 + 10) ∧ σ - 2 ^ 10 < σ - 210
+∀ (n : ℕ), 7 ≤ n → 2 * (n * n) + n < 2 ^ n
 ```
 
 ### `textbook_gravity_torus_sigma`
@@ -12193,18 +12185,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
 
 ```lean
-Nat.gcd 432 440 = 8 ∧ 432 / 8 = 54 ∧ 440 / 8 = 55 ∧ 432 * 55 = 440 * 54 ∧ 440 - 432 = 8 ∧ 55 - 54 = 1
-```
-
-### `textbook_tuning_ratio_reflected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: clay-register.
-
-```lean
-∀ (σ : ℕ),
-  σ - 8 = σ - Nat.gcd 432 440 ∧
-    σ - 54 = σ - 432 / 8 ∧
-      σ - 55 = σ - 440 / 8 ∧ σ - 440 * 54 = σ - 432 * 55 ∧ σ - 8 = σ - (440 - 432) ∧ σ - 1 = σ - (55 - 54)
+∀ (a b : ℕ), 0 < a.gcd b → (a / a.gcd b).Coprime (b / a.gcd b) ∧ a * (b / a.gcd b) = b * (a / a.gcd b)
 ```
 
 ### `textbook_two_pow_odd_mod_three`

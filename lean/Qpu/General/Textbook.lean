@@ -24,6 +24,7 @@ import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.Data.Nat.Totient
 import Mathlib.Data.Nat.Log
 import Mathlib.FieldTheory.Finite.Basic
+import Qpu.Claims.Novelty
 import Qpu.Claims.Reflection
 import Qpu.Communication.QuantumCommunication
 import Qpu.General.Sigma
@@ -1635,10 +1636,21 @@ example := @textbook_holevo
 example : 2 ^ 1 = 2 ∧ 2 ^ 2 > 2 := by decide
 /-- textbook_holevo reflected by its shape (examples: algorithm-holevo) -/
 @[reflection] theorem textbook_holevo_reflected (k : Nat) : (k) = (Nat.log 2 (2 ^ k)) := Eq.symm (textbook_holevo k)
-/-- Gottesman–Knill: a 10-qubit stabilizer state needs 2n²+n = 210 bits versus 2¹⁰ = 1024 amplitudes, so stabilizer circuits are simulated classically in polynomial space (210 < 1024); proven by stabilizerCompression (examples: algorithm-gottesman-knill) -/
-theorem textbook_gottesman_knill : 2 * 10 * 10 + 10 = 210 ∧ 210 < 2 ^ 10 := by decide
-/-- textbook_gottesman_knill reflected by its shape, conjunction (examples: algorithm-gottesman-knill) -/
-@[reflection] theorem textbook_gottesman_knill_reflected (σ : Nat) (hσ0 : (2 ^ 10) ≤ σ) : (σ - (210) = σ - (2 * 10 * 10 + 10)) ∧ (σ - (2 ^ 10) < σ - (210)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_gottesman_knill).1), Nat.sub_lt_sub_left (Nat.lt_of_lt_of_le (textbook_gottesman_knill).2 hσ0) (textbook_gottesman_knill).2⟩
+/-- Gottesman–Knill's space bound, a novelty with no Mathlib equivalent: an n-qubit stabilizer tableau of 2n² + n bits is smaller than the 2ⁿ amplitudes of the state vector for every n ≥ 7, so stabilizer circuits are simulated in polynomial space (210 < 1024 at n = 10); proved by Mathlib's `Nat.le_induction`, and computed by stabilizerCompression (examples: algorithm-gottesman-knill) -/
+@[novelty] theorem textbook_gottesman_knill (n : ℕ) (h : 7 ≤ n) : 2 * (n * n) + n < 2 ^ n := by
+  induction n, h using Nat.le_induction with
+  | base => decide
+  | succ n hn ih =>
+    have sq : (n + 1) * (n + 1) = n * n + 2 * n + 1 := by
+      rw [Nat.add_mul, Nat.mul_add, Nat.mul_one, Nat.one_mul]
+      omega
+    rw [sq, Nat.pow_succ]
+    have : 4 * n + 3 ≤ 2 * (n * n) + n := by
+      have : 7 * n ≤ n * n := Nat.mul_le_mul_right n hn
+      omega
+    omega
+example := @textbook_gottesman_knill
+example : 2 * 10 * 10 + 10 = 210 ∧ 210 < 2 ^ 10 := by decide
 /-- an element fixed by a choice among a images of X and an independent choice among b images of Z is a pair, so there are a · b of them (6 · 4 = 24 single-qubit Cliffords modulo phase). From Mathlib's `Fintype.card_prod` and `Fintype.card_fin` (examples: algorithm-eastin-knill) -/
 theorem textbook_eastin_knill (a b : ℕ) : Fintype.card (Fin a × Fin b) = a * b := by
   rw [Fintype.card_prod, Fintype.card_fin, Fintype.card_fin]
@@ -2318,10 +2330,13 @@ theorem textbook_thousand_bit_three_divides (n : Nat) (hn : Odd n) : 3 ∣ 2 ^ n
   have e := Odd.nat_add_dvd_pow_add_pow 2 1 hn
   rwa [one_pow] at e
 example := @textbook_thousand_bit_three_divides
-/-- gcd(432, 440) = 8, so 432 : 440 = 54 : 55, and the difference is 8 Hz. ISO 16 states the standard tuning frequency, the note A at 440 Hz, and does not state this ratio. (examples: clay-register) -/
-theorem textbook_tuning_ratio : Nat.gcd 432 440 = 8 ∧ 432 / 8 = 54 ∧ 440 / 8 = 55 ∧ 432 * 55 = 440 * 54 ∧ 440 - 432 = 8 ∧ 55 - 54 = 1 := by decide
-/-- textbook_tuning_ratio reflected by its shape, conjunction (examples: clay-register) -/
-@[reflection] theorem textbook_tuning_ratio_reflected (σ : Nat) : (σ - (8) = σ - (Nat.gcd 432 440)) ∧ (σ - (54) = σ - (432 / 8)) ∧ (σ - (55) = σ - (440 / 8)) ∧ (σ - (440 * 54) = σ - (432 * 55)) ∧ (σ - (8) = σ - (440 - 432)) ∧ (σ - (1) = σ - (55 - 54)) := ⟨congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_tuning_ratio).2.2.2.2.2)⟩
+/-- two frequencies divided by their gcd give coprime quotients with the same cross product, the ratio in lowest terms: gcd(432, 440) = 8, so 432 : 440 = 54 : 55. ISO 16 states the standard tuning frequency, the note A at 440 Hz, and does not state this ratio. From Lean core's `Nat.coprime_div_gcd_div_gcd`, `Nat.mul_div_assoc`, `Nat.gcd_dvd_left` and `Nat.gcd_dvd_right`, and Mathlib's `mul_comm` (examples: clay-register) -/
+theorem textbook_tuning_ratio (a b : Nat) (h : 0 < Nat.gcd a b) :
+  Nat.Coprime (a / Nat.gcd a b) (b / Nat.gcd a b) ∧ a * (b / Nat.gcd a b) = b * (a / Nat.gcd a b) := by
+  refine ⟨Nat.coprime_div_gcd_div_gcd h, ?_⟩
+  rw [← Nat.mul_div_assoc a (Nat.gcd_dvd_right a b), ← Nat.mul_div_assoc b (Nat.gcd_dvd_left a b), mul_comm a b]
+example := @textbook_tuning_ratio
+example : Nat.gcd 432 440 = 8 ∧ 432 / 8 = 54 ∧ 440 / 8 = 55 ∧ 432 * 55 = 440 * 54 ∧ 440 - 432 = 8 ∧ 55 - 54 = 1 := by decide
 /-- every question read is decided or a lead: the questions less the leads are the decided ones. From Mathlib's `add_tsub_cancel_right`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: match-questions) -/
 theorem textbook_questions_matched (decided leads total : ℕ) (h : decided + leads = total) : total - leads = decided := by
   rw [← h, add_tsub_cancel_right]

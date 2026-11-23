@@ -6,6 +6,7 @@ export const NESTED: readonly { module: string; clause: string; products: readon
   {"clause":"Application","module":"Qpu.Application.Shor","products":[{"theorem":"all_shor","variants":[]},{"theorem":"shor","variants":[]},{"theorem":"shor_cases","variants":[]}]},
   {"clause":"Claims","module":"Qpu.Claims.Claim","products":[]},
   {"clause":"Claims","module":"Qpu.Claims.Declared","products":[]},
+  {"clause":"Claims","module":"Qpu.Claims.Novelty","products":[]},
   {"clause":"Claims","module":"Qpu.Claims.Open","products":[{"theorem":"Qpu.open_claims_stated","variants":[]}]},
   {"clause":"Claims","module":"Qpu.Claims.Reflection","products":[]},
   {"clause":"Communication","module":"Qpu.Communication.Coil","products":[{"theorem":"clay","variants":[]},{"theorem":"coil_efficiency","variants":[]},{"theorem":"coil_is_faces","variants":[]},{"theorem":"follow_the_coins","variants":[]},{"theorem":"fusion","variants":[]},{"theorem":"next_coil","variants":[]},{"theorem":"one_plus_six","variants":[]},{"theorem":"two_coins_make_a_coil","variants":[]},{"theorem":"two_x_seven_coins","variants":[]}]},
@@ -81,4 +82,4 @@ export const NESTED: readonly { module: string; clause: string; products: readon
   {"clause":"Processing","module":"Qpu.Processing.Verify.Uuid","products":[{"theorem":"Qpu.Verify.Uuid.bands_cover_the_free_bits","variants":[]},{"theorem":"Qpu.Verify.Uuid.distinct_slots_distinct_handles","variants":[]},{"theorem":"Qpu.Verify.Uuid.free_is_122","variants":[]},{"theorem":"Qpu.Verify.Uuid.program_capacity","variants":[]},{"theorem":"Qpu.Verify.Uuid.slot_round_trips","variants":[]},{"theorem":"Qpu.Verify.Uuid.slot_round_trips_max_program","variants":[]}]},
 ]
 /** What Lean counts: the textbooks, their mixes two at a time by Lean's own `choose`, and the variations a product has alone and mixed. */
-export const NESTED_COUNTS = { textbooks: 78, mixes: 3003, products: 1257, variants: 606, variations: '1448', mixedVariations: '843334', trinities: 76076, trinityVariations: '287987944', pairedTrinities: 228228, pairedVariations: '863963832' } as const
+export const NESTED_COUNTS = { textbooks: 79, mixes: 3081, products: 1257, variants: 606, variations: '1448', mixedVariations: '843334', trinities: 79079, trinityVariations: '287987944', pairedTrinities: 237237, pairedVariations: '863963832' } as const
