@@ -1,26 +1,15 @@
-// The MCP endpoint as a portable fetch handler: Streamable-HTTP framing over the pure kernel, no Payload/Next. Any
-// deploy mounts /api/mcp by calling serveMcp(request, env). A notification (no id) computes but answers nothing; a
-// request answers; a batch answers in kind; a malformed body is a parse error; and where a tenant names a wallet a
-// tools/call is paid through Cloudflare x402 first. Price is the qubits the call uses times the fused real quantum
-// market floor, held below the cheapest real quantum call — a derived figure, never typed, off by default.
-import { PROSE, proseFill } from '../processing/prose-index.ts'
-import { handle, type Rpc, type Reply } from '../processing/mcp.ts'
-
-const CORS: Record<string, string> = {
-  'access-control-allow-origin': '*',
-  'access-control-allow-methods': 'GET, POST, OPTIONS',
-  'access-control-allow-headers': PROSE.quantumNetMcpHttp_p1,
-  'access-control-expose-headers': 'mcp-session-id, x-payment-response',
-}
-const json = (body: unknown, status = 200, extra: Record<string, string> = {}): Response =>
-  new Response(body === null ? '' : JSON.stringify(body), { status, headers: { 'content-type': 'application/json', ...CORS, ...extra } })
-const isNotification = (m: Rpc): boolean => m === null || typeof m !== 'object' || !('id' in m)
-const isPaidCall = (m: Rpc): boolean => m !== null && typeof m === 'object' && m.method === 'tools/call'
-const toolOf = (m: Rpc): string => String((m?.params as { name?: unknown })?.name ?? 'tool')
-
-type X402 = { recipient: string; network: string; facilitator: string; asset: string }
-const b64 = (v: unknown): string => { const s = JSON.stringify(v); return typeof btoa === 'function' ? btoa(unescape(encodeURIComponent(s))) : Buffer.from(s, 'utf8').toString('base64') }
-const unb64 = (t: string): unknown => JSON.parse(typeof atob === 'function' ? decodeURIComponent(escape(atob(t))) : Buffer.from(t, 'base64').toString('utf8'))
+// The MCP endpoint as a portable fetch handler, served by Cloudflare's Agents SDK: an MCP SDK server built from the
+// kernel's own tools/list and resources/list, every tool answered by the kernel, and, where a tenant names a wallet,
+// every tools/call charged through x402 (withX402, paidTool) and settled by the facilitator. Price is the qubits a call
+// deposits times the fused real quantum market floor, held below the cheapest real quantum call: derived, never typed.
+// x402 authorises a payment with an EVM ECDSA signature, which is not post-quantum: the transport is (Cloudflare's hybrid
+// X25519MLKEM768 TLS), the payment rail is not.
+import { McpServer } from '@modelcontextprotocol/server'
+import { createMcpHandler } from 'agents/mcp/server'
+import { withX402 } from 'agents/x402'
+import { z } from 'zod'
+import { handle, type Rpc } from '../processing/mcp.ts'
+import { TENANTS } from '../processing/unit/tenants.ts'
 
 // The real quantum market QPU is measured against (AWS Braket per-shot + its flat task fee; source:
 // quantumcomputingcost.com/aws-braket-pricing, 2026-02). A device's per-qubit price is its shot price over its
@@ -35,59 +24,48 @@ const QUANTUM_MARKET: readonly Device[] = [
 const USDC = 1_000_000
 const marketFloorPerQubitUsd = (): number => Math.min(...QUANTUM_MARKET.map((d) => d.perShotUsd / d.qubits))
 const cheapestRealCallUsd = (): number => Math.min(...QUANTUM_MARKET.map((d) => d.taskFeeUsd + d.perShotUsd))
-const bitLength = (v: unknown): number => { try { const n = typeof v === 'string' ? BigInt(/^\s*0x/i.test(v) ? v.trim() : (v.replace(/[^0-9]/g, '') || '0')) : BigInt(Math.trunc(Number(v))); return n > 0n ? n.toString(2).length : 0 } catch { return 0 } }
-// Qubits the computation uses, from the request: the bit-width its arguments imply, else the two 128-bit coins it deposits.
-const qubitsOf = (m: Rpc): number => {
-  const a = ((m?.params as { arguments?: Record<string, unknown> })?.arguments ?? {})
-  const w = Math.max(bitLength(a.n), bitLength(a.N), bitLength(a.number), bitLength(a.value), Number(a.bits) || 0, Number(a.qubits) || 0)
-  return w > 0 ? w : 256
-}
-const priceBaseUnits = (qubits: number): bigint => BigInt(Math.max(1, Math.min(Math.ceil(qubits * marketFloorPerQubitUsd() * USDC), Math.floor(cheapestRealCallUsd() * USDC) - 1)))
+/** The price of one call in USD: the two 128-bit coins every call deposits at the market floor, under the cheapest real call. */
+export const callPriceUsd = (qubits = 256): number => Math.max(1, Math.min(Math.ceil(qubits * marketFloorPerQubitUsd() * USDC), Math.floor(cheapestRealCallUsd() * USDC) - 1)) / USDC
 
-// A tenant's x402 config from its env, or null (off) when no wallet is named; the price is derived, never configured.
-const x402Of = (env: Record<string, string | undefined>): X402 | null => {
+type Env = Record<string, unknown>
+type Answer = { result?: Record<string, any>; error?: { message: string } }
+const kernel = async (method: string, params: unknown = {}) => (await handle({ jsonrpc: '2.0', id: 0, method, params } as Rpc)) as Answer
+let listed: Promise<{ info: Record<string, any>; tools: Record<string, any>[]; resources: Record<string, any>[] }> | undefined
+/** What the kernel serves, read once: its server info and instructions, its tools, and the ui:// views they render in. */
+const surface = () => (listed ??= (async () => ({
+  info: (await kernel('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'qpu', version: '0' } })).result ?? {},
+  tools: (await kernel('tools/list')).result?.tools ?? [],
+  resources: (await kernel('resources/list')).result?.resources ?? [],
+}))())
+
+/** The tenant's x402 terms from its env, or null when it names no wallet; a wallet that is not an EVM address is refused, never served free. */
+export const x402Of = (env: Env) => {
   const recipient = env.QPU_X402_RECIPIENT
-  if (!recipient) return null
-  return { recipient, network: env.QPU_X402_NETWORK ?? 'base-sepolia', facilitator: (env.QPU_X402_FACILITATOR ?? 'https://x402.org/facilitator').replace(/\/$/, ''), asset: env.QPU_X402_ASSET ?? '' }
-}
-const requirements = (cfg: X402, resource: string, tool: string, qubits: number) => ({ scheme: 'exact' as const, network: cfg.network, maxAmountRequired: priceBaseUnits(qubits).toString(), resource, description: proseFill(PROSE.quantumNetMcpHttp_p2, tool, qubits), mimeType: 'application/json', payTo: cfg.recipient, maxTimeoutSeconds: 60, asset: cfg.asset, extra: { tool, qubits, marketFloorPerQubitUsd: marketFloorPerQubitUsd(), cheapestRealCallUsd: cheapestRealCallUsd(), market: QUANTUM_MARKET } })
-const challenge = (reqs: ReturnType<typeof requirements>, error = 'X-PAYMENT header is required') => ({ x402Version: 1, accepts: [reqs], error })
-const verify = async (cfg: X402, proof: string, reqs: ReturnType<typeof requirements>): Promise<{ isValid: boolean; invalidReason?: string }> => {
-  let payload: unknown
-  try { payload = unb64(proof) } catch { return { isValid: false, invalidReason: 'malformed X-PAYMENT' } }
-  const res = await fetch(`${cfg.facilitator}/verify`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ x402Version: 1, paymentPayload: payload, paymentRequirements: reqs }) })
-  return res.ok ? (await res.json()) as { isValid: boolean; invalidReason?: string } : { isValid: false, invalidReason: `facilitator ${res.status}` }
-}
-const settle = async (cfg: X402, proof: string, reqs: ReturnType<typeof requirements>): Promise<string | null> => {
-  try { const res = await fetch(`${cfg.facilitator}/settle`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ x402Version: 1, paymentPayload: unb64(proof), paymentRequirements: reqs }) }); return res.ok ? b64(await res.json()) : null } catch { return null }
+  if (recipient === undefined || recipient === '') return null
+  if (typeof recipient !== 'string' || !/^0x[0-9a-fA-F]{40}$/.test(recipient)) throw new Error('QPU_X402_RECIPIENT is not an EVM address')
+  return { network: typeof env.QPU_X402_NETWORK === 'string' ? env.QPU_X402_NETWORK : 'base-sepolia', recipient: recipient as `0x${string}`, facilitator: { url: (typeof env.QPU_X402_FACILITATOR === 'string' ? env.QPU_X402_FACILITATOR : 'https://x402.org/facilitator') as `https://${string}` } }
 }
 
-/** The MCP endpoint for a deploy to mount at /api/mcp: GET answers server info, POST frames JSON-RPC and gates a
- *  paid tools/call behind x402 when the env names a wallet. `env` is the Worker/Pages/process env. */
-export const serveMcp = async (request: Request, env: Record<string, string | undefined> = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env ?? {}): Promise<Response> => {
-  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS })
-  if (request.method === 'GET') {
-    const info = await handle({ jsonrpc: '2.0', id: 0, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'http', version: '0' } } })
-    return json('result' in info ? info.result : info)
+/** One MCP SDK server over the kernel: each tool registered with its own schema, paid where the tenant names a wallet. */
+const build = async (env: Env) => {
+  const { info, tools, resources } = await surface(), terms = x402Of(env)
+  const base = new McpServer({ name: info.serverInfo?.name ?? 'qpu', version: info.serverInfo?.version ?? '0' }, { instructions: info.instructions })
+  const server = terms ? withX402(base, terms) : null
+  for (const t of tools) {
+    const schema = z.fromJSONSchema(t.inputSchema) as z.ZodObject
+    const run = async (args: Record<string, unknown>) => { const a = await kernel('tools/call', { name: t.name, arguments: args }); return (a.result ?? { content: [{ type: 'text', text: a.error?.message ?? 'no answer' }], isError: true }) as never }
+    if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations ?? {}, run).update({ _meta: t._meta })
+    else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations, _meta: t._meta }, run)
   }
-  if (request.method !== 'POST') return json({ jsonrpc: '2.0', id: null, error: { code: -32601, message: `method ${request.method} is not served` } }, 405)
-  let parsed: unknown
-  try { parsed = await request.json() } catch { return json({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'parse error' } }, 400) }
-  const batch = Array.isArray(parsed)
-  const messages = (batch ? parsed : [parsed]) as Rpc[]
-  const cfg = x402Of(env)
-  const paid = cfg ? messages.filter(isPaidCall) : []
-  let receipt: string | null = null
-  if (cfg && paid.length) {
-    const reqs = requirements(cfg, `${request.url}#${toolOf(paid[0]!)}`, toolOf(paid[0]!), qubitsOf(paid[0]!))
-    const proof = request.headers.get('x-payment') ?? request.headers.get('payment-signature')
-    if (!proof) return json(challenge(reqs), 402, { 'x-payment-required': '1' })
-    const ok = await verify(cfg, proof, reqs)
-    if (!ok.isValid) return json(challenge(reqs, ok.invalidReason ?? 'payment invalid'), 402)
-    receipt = await settle(cfg, proof, reqs)
-  }
-  const replies: Reply[] = []
-  for (const message of messages) { const reply = await handle(message); if (!isNotification(message)) replies.push(reply as Reply) }
-  if (replies.length === 0) return new Response(null, { status: 202, headers: CORS })
-  return json(batch ? replies : replies[0], 200, receipt ? { 'x-payment-response': receipt } : {})
+  for (const r of resources) base.registerResource(r.name, r.uri, { description: r.description, mimeType: r.mimeType }, async (uri: URL) => (await kernel('resources/read', { uri: uri.href })).result as never)
+  return base
+}
+
+/** The MCP endpoint for a deploy to mount at /api/mcp: Streamable HTTP through the Agents SDK, the hostnames the
+ *  tenants name (and those QPU_MCP_HOSTS adds) allowed. `env` is the Worker/Pages/process env. */
+export const serveMcp = async (request: Request, env: Env = (globalThis as { process?: { env?: Env } }).process?.env ?? {}): Promise<Response> => {
+  x402Of(env) // a tenant whose wallet is not an address is refused before anything is served
+  const extra = typeof env.QPU_MCP_HOSTS === 'string' ? env.QPU_MCP_HOSTS.split(',').map((h) => h.trim()).filter(Boolean) : []
+  const handler = createMcpHandler(() => build(env), { route: '/api/mcp', responseMode: 'json', allowedHostnames: [...Object.keys(TENANTS), ...extra] })
+  return handler(request, env, { waitUntil: () => {}, passThroughOnException: () => {}, props: {} } as unknown as Parameters<typeof handler>[2])
 }

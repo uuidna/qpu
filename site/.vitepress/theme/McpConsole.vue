@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { rpc as call } from './mcp'
 // A live console over the site's own /api/mcp (serveMcp): lists the tools, runs one, shows the JSON result. Client
 // only — VitePress renders the page statically, this calls the endpoint in the browser against the same origin.
 import { ref, onMounted } from 'vue'
@@ -12,11 +13,7 @@ const result = ref('')
 const busy = ref(false)
 const error = ref('')
 
-const rpc = async (method: string, params: unknown) => {
-  const res = await fetch(endpoint, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) })
-  if (res.status === 402) return { payment: await res.json() }
-  return res.json()
-}
+const rpc = (method: string, params: unknown) => call(method, params, endpoint)
 
 onMounted(async () => {
   try {

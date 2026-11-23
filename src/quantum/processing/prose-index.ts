@@ -48,8 +48,6 @@ const SENTENCES = {
   quantumNetDomainCover_p1: "⟦0⟧ Payload config UUIDs carry the cover of ⟦1⟧ scientific domains: ⟦2⟧. One stream, ⟦3⟧. The hosts are ⟦4⟧. No domain was fetched alone.",
   quantumNetDomainCover_p2: "the page is not the whole set of scientific domains, so the Payload configs do not carry the cover",
   quantumNetDomainCover_p3: "⟦0⟧ Payload configs are one UUID stream. All scientific domains are the product those configs carry. One domains page is the whole set. A domain is not fetched alone.",
-  quantumNetMcpHttp_p1: "content-type, authorization, mcp-protocol-version, mcp-session-id, x-payment",
-  quantumNetMcpHttp_p2: "QPU MCP tool ⟦0⟧: ⟦1⟧ qubits at the fused quantum market floor, below competition",
   quantumNetStorageIndex_s1: "every object copied through the app (listed from Vercel Blob, put into R2)",
   quantumNetStorageIndex_s2: "the bucket created (the user approves)",
   quantumNetStorageIndex_s3: "moving Vercel Blob into R2: no Cloudflare migration tool reads Vercel Blob, so the copy is the app's own",
