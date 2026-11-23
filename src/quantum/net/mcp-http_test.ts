@@ -7,8 +7,8 @@ const post = (body: unknown, env: Record<string, string | undefined> = {}) =>
 // a Streamable HTTP answer is one JSON body or an event stream whose data line carries it
 const read = async <T>(res: Response): Promise<T> => { const text = await res.text(); return JSON.parse(res.headers.get('content-type')?.includes('text/event-stream') ? text.split('\n').find((l) => l.startsWith('data: '))!.slice(6) : text) as T }
 
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: serveMcp serves the kernel's tools through the Agents SDK, acknowledges a notification, and charges a call through x402 below the quantum market. */
-test('serveMcp serves the kernel\'s tools through the Agents SDK, acknowledges a notification, and charges a call through x402 below the quantum market', async () => {
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: serveMcp serves the kernel's tools through the Agents SDK, acknowledges a notification, and charges a call through x402 at the quantum market's price. */
+test('serveMcp serves the kernel\'s tools through the Agents SDK, acknowledges a notification, and charges a call through x402 at the quantum market\'s price', async () => {
   const list = await post({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} })
   assert.equal(list.status, 200)
   const listed = await read(list) as { result: { tools: { name: string; _meta?: { ui?: unknown } }[] } }
@@ -22,7 +22,7 @@ test('serveMcp serves the kernel\'s tools through the Agents SDK, acknowledges a
   assert.equal(required.x402Version, 2)
   assert.equal(required.error, 'PAYMENT_REQUIRED', 'a call without a payment is challenged')
   assert.equal(Number(required.accepts[0]!.amount), Math.round(callPriceUsd() * 1e6), 'the challenge asks the derived price')
-  assert.ok(callPriceUsd() > 0 && callPriceUsd() < 0.30, 'the price is positive and below the cheapest real quantum call')
+  assert.equal(callPriceUsd(), 0.300425, 'the price is the cheapest real quantum call: the task fee and one shot, as providers charge')
 
   await assert.rejects(post({ jsonrpc: '2.0', id: 3, method: 'tools/list' }, { QPU_X402_RECIPIENT: '0xWallet' }), 'a wallet that is not an EVM address is refused, never served free')
 })

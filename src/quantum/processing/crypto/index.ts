@@ -9,6 +9,7 @@ import { speakThousand } from '../i18n.ts'
 import { sha256, sha512, sha1, sha3_256, sha3_512, shake128, shake256, utf8, hex, hkdfExtract, hkdfExpand, pbkdf2Sha256, aes256gcmEncrypt, aes256gcmDecrypt, x25519, chacha20poly1305Encrypt, chacha20poly1305Decrypt, merkleLeafHash, merkleRoot, merkleProof, merkleVerify } from '../unit/hmac.ts'
 import { isObj } from '../toolbox.ts'
 import { isoEntropyOf } from '../iso-deliverables.ts'
+import { kemRound, dsaRound } from './pqc.ts'
 
 /** Tenant / Payload MCP crypto config: handed by `payload { cryptoConfig: true }` or merged from `tenants.settings.arguments`. Pure crypto never reads TABLES or the tenants collection itself. */
 /** The 32 hex digits of one UUID register (ISO/IEC 9834-8): the width of the DNA read, a field of the construction, not a cap. */
@@ -622,62 +623,6 @@ export const getGltf = (g: { glb64?: string; json?: unknown }, supported: readon
   return { phase: 'gltf' as const, format: g.glb64 ? 'glb' : 'gltf', version: '2.0', generator: doc!.asset?.generator ?? null, counts: Object.fromEntries(['scenes', 'nodes', 'meshes', 'materials', 'animations', 'skins', 'textures', 'images', 'buffers'].map((k) => [k, count(k)])), binBytes: bin, external, extensions: used.map((e) => ({ name: e, prefix: prefix(e), required: required.includes(e), supported: supported.includes(e) })), loadable: missing.length === 0, why: missing.length ? proseFill(PROSE.quantumProcessingCryptoIndex_s48, missing.join(', ')) : null, theorem: 'textbook_gltf_required_extensions' }
 }
 
-/** The ML-DSA parameter sets of FIPS 204 (table 2 of the standard: public key and signature sizes in bytes) and the Web Crypto names Workers and Node give them. */
-const ML_DSA = {
-  'ML-DSA-44': { category: 2, publicKey: 1312, signature: 2420 },
-  'ML-DSA-65': { category: 3, publicKey: 1952, signature: 3309 },
-  'ML-DSA-87': { category: 5, publicKey: 2592, signature: 4627 },
-} as const
-type MlDsa = keyof typeof ML_DSA
-type SignaturePlan = { algorithm: MlDsa; fips: 204; over: 'sha256'; message: string; signed: string; executedBy: 'host'; keyVar: string; webcrypto: { flag: string; generateKey: { name: MlDsa }; sign: { name: MlDsa }; keyFormat: 'jwk'; kty: 'AKP'; since: string }; sizes: { publicKey: number; signature: number }; verify: string; value?: string; publicKey?: Record<string, unknown>; keyed?: 'secret' | 'ephemeral'; phase?: 'planned' | 'signed' | 'unsupported'; note?: string }
-/** The signature plan, pure: what the host signs (the 32 bytes of the digest), with which algorithm, under which key variable, through which Web Crypto call; the host fills value, publicKey and keyed. Flag/changelog from tenant crypto config. */
-export const planSignature = (digest: string, sign: unknown, config: CryptoConfig): SignaturePlan => {
-  const algorithm: MlDsa = sign === true || sign === 'ML-DSA-65' ? 'ML-DSA-65' : sign === 'ML-DSA-44' ? 'ML-DSA-44' : sign === 'ML-DSA-87' ? 'ML-DSA-87' : (() => { throw new Error(proseFill(PROSE.quantumProcessingCryptoIndex_s49, JSON.stringify(sign))) })()
-  const pq = config.postQuantum
-  return { algorithm, fips: 204, over: 'sha256', message: digest, signed: PROSE.quantumProcessingCryptoIndex_signed50, executedBy: 'host', keyVar: PROSE.quantumProcessingCryptoIndex_keyVar51, webcrypto: { flag: pq.workers.flag, generateKey: { name: algorithm }, sign: { name: algorithm }, keyFormat: 'jwk', kty: 'AKP', since: pq.workers.changelog }, sizes: { publicKey: ML_DSA[algorithm].publicKey, signature: ML_DSA[algorithm].signature }, verify: proseFill(PROSE.quantumProcessingCryptoIndex_verify52, algorithm), phase: 'planned' }
-}
-
-/** The ML-KEM parameter sets of FIPS 203 (table: encapsulation/decapsulation key, ciphertext and shared-secret sizes in bytes): the post-quantum
- *  key encapsulation that pairs with ML-DSA (FIPS 204) — the attest tool already reads NIST NVD's CVEs on ML-KEM; this is the KEM itself, host-executed. */
-const ML_KEM = {
-  'ML-KEM-512': { category: 1, encapsulationKey: 800, decapsulationKey: 1632, ciphertext: 768, sharedSecret: 32 },
-  'ML-KEM-768': { category: 3, encapsulationKey: 1184, decapsulationKey: 2400, ciphertext: 1088, sharedSecret: 32 },
-  'ML-KEM-1024': { category: 5, encapsulationKey: 1568, decapsulationKey: 3168, ciphertext: 1568, sharedSecret: 32 },
-} as const
-type MlKem = keyof typeof ML_KEM
-type EncapsulationPlan = { algorithm: MlKem; fips: 203; executedBy: 'host'; webcrypto: { flag: string; encapsulate: { name: MlKem }; keyFormat: 'raw-public'; since: string }; sizes: { encapsulationKey: number; decapsulationKey: number; ciphertext: number; sharedSecret: number }; encapsulate: string; decapsulate: string; ciphertext?: string; sharedSecret?: string; phase?: 'planned' | 'encapsulated' | 'unsupported' }
-/** The KEM encapsulation plan, pure: which ML-KEM, over which Web Crypto call, the sizes; the host runs encapsulate() with the recipient's public key and fills the ciphertext (the shared secret never leaves the host). */
-export const planEncapsulation = (kem: unknown, config: CryptoConfig): EncapsulationPlan => {
-  const algorithm: MlKem = kem === true || kem === 'ML-KEM-768' ? 'ML-KEM-768' : kem === 'ML-KEM-512' ? 'ML-KEM-512' : kem === 'ML-KEM-1024' ? 'ML-KEM-1024' : (() => { throw new Error(proseFill(PROSE.quantumProcessingCryptoIndex_s53, JSON.stringify(kem))) })()
-  const s = ML_KEM[algorithm]
-  const pq = config.postQuantum
-  return { algorithm, fips: 203, executedBy: 'host', webcrypto: { flag: pq.workers.flag, encapsulate: { name: algorithm }, keyFormat: 'raw-public', since: pq.workers.changelog }, sizes: { encapsulationKey: s.encapsulationKey, decapsulationKey: s.decapsulationKey, ciphertext: s.ciphertext, sharedSecret: s.sharedSecret }, encapsulate: proseFill(PROSE.quantumProcessingCryptoIndex_encapsulate54, algorithm, s.sharedSecret), decapsulate: proseFill(PROSE.quantumProcessingCryptoIndex_decapsulate55, algorithm), phase: 'planned' }
-}
-
-/** Ed25519 (RFC 8032), the classical signature beside the PQC ML-DSA: host-executed via Web Crypto (Node, Workers and browsers all have it), a 32-byte public key and a 64-byte signature over the message itself (no pre-hash); verified without any secret. */
-type Ed25519Plan = { algorithm: 'Ed25519'; rfc: 8032; over: 'message'; executedBy: 'host'; webcrypto: { generateKey: { name: 'Ed25519' }; sign: { name: 'Ed25519' }; keyFormat: 'raw' }; sizes: { publicKey: 32; signature: 64 }; message: string; verify: string; phase: 'planned' }
-export const planEd25519 = (message: string): Ed25519Plan => ({ algorithm: 'Ed25519', rfc: 8032, over: 'message', executedBy: 'host', webcrypto: { generateKey: { name: 'Ed25519' }, sign: { name: 'Ed25519' }, keyFormat: 'raw' }, sizes: { publicKey: 32, signature: 64 }, message, verify: PROSE.quantumProcessingCryptoIndex_verify56, phase: 'planned' })
-
-/** SLH-DSA parameter sets of FIPS 205 (table: public key and signature sizes in bytes): the hash-based (SPHINCS+) signature, the third PQC standard beside ML-KEM (203) and ML-DSA (204); host-executed — its signatures are large, so the plan carries the sizes and the call. */
-const SLH_DSA = {
-  'SLH-DSA-SHA2-128s': { category: 1, publicKey: 32, signature: 7856 },
-  'SLH-DSA-SHA2-128f': { category: 1, publicKey: 32, signature: 17088 },
-  'SLH-DSA-SHA2-192s': { category: 3, publicKey: 48, signature: 16224 },
-  'SLH-DSA-SHA2-256s': { category: 5, publicKey: 64, signature: 29792 },
-} as const
-type SlhDsa = keyof typeof SLH_DSA
-type SlhDsaPlan = { algorithm: SlhDsa; fips: 205; over: 'message'; executedBy: 'host'; sizes: { publicKey: number; signature: number }; verify: string; phase: 'planned' }
-export const planSlhDsa = (slh: unknown): SlhDsaPlan => {
-  const algorithm = (typeof slh === 'string' && slh in SLH_DSA ? slh : slh === true ? 'SLH-DSA-SHA2-128s' : (() => { throw new Error(`slh is one of ${Object.keys(SLH_DSA).join(', ')} (FIPS 205), not ${JSON.stringify(slh)}`) })()) as SlhDsa
-  const s = SLH_DSA[algorithm]
-  return { algorithm, fips: 205, over: 'message', executedBy: 'host', sizes: { publicKey: s.publicKey, signature: s.signature }, verify: proseFill(PROSE.quantumProcessingCryptoIndex_verify57, s.signature, s.publicKey), phase: 'planned' }
-}
-
-/** ECDSA on P-256 (FIPS 186-5), the other classical signature beside Ed25519: host-executed via Web Crypto, over the SHA-256 of the message; 65-byte uncompressed public key, 64-byte raw (r‖s) signature. */
-type EcdsaPlan = { algorithm: 'ECDSA'; curve: 'P-256'; fips: '186-5'; over: 'sha256'; executedBy: 'host'; webcrypto: { generateKey: { name: 'ECDSA'; namedCurve: 'P-256' }; sign: { name: 'ECDSA'; hash: 'SHA-256' } }; sizes: { publicKey: 65; signature: 64 }; message: string; verify: string; phase: 'planned' }
-export const planEcdsaP256 = (message: string): EcdsaPlan => ({ algorithm: 'ECDSA', curve: 'P-256', fips: '186-5', over: 'sha256', executedBy: 'host', webcrypto: { generateKey: { name: 'ECDSA', namedCurve: 'P-256' }, sign: { name: 'ECDSA', hash: 'SHA-256' } }, sizes: { publicKey: 65, signature: 64 }, message, verify: PROSE.quantumProcessingCryptoIndex_verify58, phase: 'planned' })
-
-
 /** Derived hosts from a Payload MCP / tenant crypto config. */
 export const cryptoHosts = (config: CryptoConfig) => {
   const hosts = cfgHosts(config)
@@ -756,8 +701,7 @@ export const nistScenariosReverse = (config: CryptoConfig, hosts: readonly strin
   const fipsOnce = { sha1: hex(sha1(message)), sha256: digest, sha512: hex(sha512(message)) }
   const fipsAgain = { sha1: hex(sha1(message)), sha256: sha('nist'), sha512: hex(sha512(message)) }
   const fipsBack = fipsOnce.sha1 === fipsAgain.sha1 && fipsOnce.sha256 === fipsAgain.sha256 && fipsOnce.sha512 === fipsAgain.sha512 && fipsOnce.sha1.length === 40 && fipsOnce.sha256.length === 64 && fipsOnce.sha512.length === 128
-  const ecdsaOnce = planEcdsaP256(digest), ecdsaAgain = planEcdsaP256(sha('nist'))
-  const ecdsaBack = ecdsaOnce.message === digest && ecdsaAgain.message === ecdsaOnce.message && ecdsaOnce.fips === '186-5' && ecdsaOnce.curve === 'P-256'
+  const ecdsa = dsaRound({ algorithm: 'ECDSA-P256', seed: '5a'.repeat(48) }, 'nist'), ecdsaBack = !!ecdsa.verified && !!ecdsa.refusesChanged && ecdsa.fips === '186-5' && ecdsa.publicKey.length === 2 * 65
   const sha3Once = { sha3_256: hex(sha3_256(message)), sha3_512: hex(sha3_512(message)) }
   const sha3Again = { sha3_256: hex(sha3_256(message)), sha3_512: hex(sha3_512(message)) }
   const sha3Back = sha3Once.sha3_256 === sha3Again.sha3_256 && sha3Once.sha3_512 === sha3Again.sha3_512 && sha3Once.sha3_256.length === 64 && sha3Once.sha3_512.length === 128
@@ -765,17 +709,16 @@ export const nistScenariosReverse = (config: CryptoConfig, hosts: readonly strin
   const shakeAgain = { shake128: hex(shake128(message, 32)), shake256: hex(shake256(message, 64)) }
   const shakeBack = shakeOnce.shake128 === shakeAgain.shake128 && shakeOnce.shake256 === shakeAgain.shake256 && shakeOnce.shake128.length === 64 && shakeOnce.shake256.length === 128
   const kemRows = (['ML-KEM-512', 'ML-KEM-768', 'ML-KEM-1024'] as const).map((kem) => {
-    const once = planEncapsulation(kem, config), again = planEncapsulation(kem, config)
-    return { id: `fips-203-${kem}`, standard: 'FIPS 203', reverse: proseFill(PROSE.quantumProcessingCryptoIndex_reverse72, kem), returns: once.algorithm === again.algorithm && once.sizes.ciphertext === again.sizes.ciphertext && once.sizes.sharedSecret === 32 && once.fips === 203, of: once.sizes.sharedSecret, tool: 'seal' as const, arguments: { kem } }
+    const r = kemRound({ algorithm: kem, seed: '5a'.repeat(64) })
+    return { id: `fips-203-${kem}`, standard: 'FIPS 203', reverse: proseFill(PROSE.quantumProcessingCryptoIndex_reverseKem, kem), returns: r.agrees && r.sizes.sharedSecret === 32 && r.cipherText.length === 2 * r.sizes.cipherText!, of: r.sizes.sharedSecret, tool: 'seal' as const, arguments: { kem } }
   })
-  const dsaRows = (['ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87'] as const).map((sign) => {
-    const once = planSignature(digest, sign, config), again = planSignature(sha('nist'), sign, config)
-    return { id: `fips-204-${sign}`, standard: 'FIPS 204', reverse: proseFill(PROSE.quantumProcessingCryptoIndex_reverse73, sign), returns: once.algorithm === again.algorithm && once.message === again.message && once.message === digest && once.fips === 204, of: once.sizes.signature, tool: 'seal' as const, arguments: { text: 'nist', sign } }
-  })
-  const slhRows = (['SLH-DSA-SHA2-128s', 'SLH-DSA-SHA2-128f', 'SLH-DSA-SHA2-192s', 'SLH-DSA-SHA2-256s'] as const).map((slh) => {
-    const once = planSlhDsa(slh), again = planSlhDsa(slh)
-    return { id: `fips-205-${slh}`, standard: 'FIPS 205', reverse: proseFill(PROSE.quantumProcessingCryptoIndex_reverse72, slh), returns: once.algorithm === again.algorithm && once.sizes.signature === again.sizes.signature && once.fips === 205, of: once.sizes.signature, tool: 'seal' as const, arguments: { slh } }
-  })
+  // a signature row verifies its own signature and refuses a changed message; SLH-DSA's 's' sets, seconds a signature, derive their key alone
+  const signed = (algorithm: string, fips: string, reverse: string, args: Record<string, unknown>, seed?: string, signs = true) => {
+    const r = dsaRound({ algorithm, seed }, signs ? 'nist' : undefined)
+    return { id: `fips-${fips}-${algorithm}`, standard: `FIPS ${fips}`, reverse: proseFill(reverse, algorithm), returns: r.fips === +fips && r.publicKey.length === 2 * r.sizes.publicKey! && (!signs || (!!r.verified && !!r.refusesChanged && r.signature?.length === 2 * r.sizes.signature!)), of: r.sizes.signature!, tool: 'seal' as const, arguments: args }
+  }
+  const dsaRows = (['ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87'] as const).map((sign) => signed(sign, '204', PROSE.quantumProcessingCryptoIndex_reverse73, { text: 'nist', sign }, '5a'.repeat(32)))
+  const slhRows = (['SLH-DSA-SHA2-128s', 'SLH-DSA-SHA2-128f', 'SLH-DSA-SHA2-192s', 'SLH-DSA-SHA2-256s'] as const).map((slh) => signed(slh, '205', PROSE.quantumProcessingCryptoIndex_reverse72, { slh }, undefined, slh.endsWith('f')))
   const pbkdf = { password: 'password', salt: 'salt', iterations: 1, length: 32 }
   const derivedOnce = derivePbkdf2(pbkdf) as { derived: string }, derivedAgain = derivePbkdf2(pbkdf) as { derived: string }
   const pbkdfBack = derivedOnce.derived === derivedAgain.derived && derivedOnce.derived === '120fb6cffcf8b32c43e7225256c4f837a86548c92ccc35480805987cb70be17b'
@@ -790,7 +733,7 @@ export const nistScenariosReverse = (config: CryptoConfig, hosts: readonly strin
   const attestOrder = [openApis.find((a) => a.id === 'cern-opendata')!, ...[...openApis].filter((a) => a.id !== 'cern-opendata').reverse()]
   const local: NistReverseRow[] = [
     { id: 'fips-180-4', standard: 'FIPS 180-4', reverse: PROSE.quantumProcessingCryptoIndex_reverse74, returns: fipsBack, of: 3, tool: 'seal', arguments: { text: 'nist', fips180: true } },
-    { id: 'fips-186-5-ecdsa', standard: 'FIPS 186-5', reverse: PROSE.quantumProcessingCryptoIndex_reverse75, returns: ecdsaBack, of: ecdsaOnce.sizes.signature, tool: 'seal', arguments: { text: 'nist', ecdsa: true } },
+    { id: 'fips-186-5-ecdsa', standard: 'FIPS 186-5', reverse: PROSE.quantumProcessingCryptoIndex_reverse75, returns: ecdsaBack, of: ecdsa.sizes.signature!, tool: 'seal', arguments: { text: 'nist', ecdsa: true } },
     { id: 'fips-202-sha3', standard: 'FIPS 202', reverse: PROSE.quantumProcessingCryptoIndex_reverse76, returns: sha3Back, of: 2, tool: 'seal', arguments: { text: 'nist', sha3: true } },
     { id: 'fips-202-shake', standard: 'FIPS 202', reverse: PROSE.quantumProcessingCryptoIndex_reverse77, returns: shakeBack, of: 2, tool: 'seal', arguments: { text: 'nist', shake: true } },
     ...kemRows, ...dsaRows, ...slhRows,

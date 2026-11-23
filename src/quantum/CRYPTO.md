@@ -22,3 +22,10 @@ A general integer has no cyclotomic split. Trial runs below \(2^{16}\), then Mil
 - The factoring of \(2^{999}+1\) multiplies back, `relation_36` is 36, and every Clay relation holds.
 
 The phase is `qpu-crypto-1000-bit`. The address is the UUID of that record, and the seal holds. The lattice on the record is 2 coins, 7 rays, 14 faces, and plane 28.
+
+## Post-quantum
+
+- Transport: Cloudflare negotiates hybrid X25519MLKEM768 whenever the client offers it.
+- Keys and signatures: `seal { pqc | kem | sign | slh }` computes X-Wing, ML-KEM (FIPS 203), ML-DSA (FIPS 204) and SLH-DSA (FIPS 205). X25519, Ed25519 and ECDSA alone fall to Shor's algorithm.
+- Symmetric keys and hashes: Grover halves their strength; AES-256, ChaCha20 and SHA-256 keep 128 bits.
+- Payments: x402 authorises each payment with an EVM ECDSA signature, which Shor's algorithm breaks, until the chains it settles on adopt post-quantum signatures.

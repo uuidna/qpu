@@ -37,6 +37,8 @@
   "dependencies": {
     "agents": "0.34.0",
     "@modelcontextprotocol/server": "2.4.0",
+    "@noble/curves": "2.4.0",
+    "@noble/post-quantum": "0.7.1",
     "@x402/core": "2.32.0",
     "@x402/evm": "2.32.0",
     "zod": "4.6.7"

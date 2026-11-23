@@ -1,7 +1,7 @@
 // The MCP endpoint as a portable fetch handler, served by Cloudflare's Agents SDK: an MCP SDK server built from the
 // kernel's own tools/list and resources/list, every tool answered by the kernel, and, where a tenant names a wallet,
-// every tools/call charged through x402 (withX402, paidTool) and settled by the facilitator. Price is the qubits a call
-// deposits times the fused real quantum market floor, held below the cheapest real quantum call: derived, never typed.
+// every tools/call charged through x402 (withX402, paidTool) and settled by the facilitator. Price is what the call
+// would cost on the market: the cheapest real quantum call a provider charges its clients, derived, never typed.
 // x402 authorises a payment with an EVM ECDSA signature, which is not post-quantum: the transport is (Cloudflare's hybrid
 // X25519MLKEM768 TLS), the payment rail is not.
 import { McpServer } from '@modelcontextprotocol/server'
@@ -22,10 +22,9 @@ const QUANTUM_MARKET: readonly Device[] = [
   { provider: 'IonQ', device: 'Forte', qubits: 36, perShotUsd: 0.08, taskFeeUsd: 0.30 },
 ]
 const USDC = 1_000_000
-const marketFloorPerQubitUsd = (): number => Math.min(...QUANTUM_MARKET.map((d) => d.perShotUsd / d.qubits))
 const cheapestRealCallUsd = (): number => Math.min(...QUANTUM_MARKET.map((d) => d.taskFeeUsd + d.perShotUsd))
-/** The price of one call in USD: the two 128-bit coins every call deposits at the market floor, under the cheapest real call. */
-export const callPriceUsd = (qubits = 256): number => Math.max(1, Math.min(Math.ceil(qubits * marketFloorPerQubitUsd() * USDC), Math.floor(cheapestRealCallUsd() * USDC) - 1)) / USDC
+/** The price of one call in USD: what quantum providers charge their clients for one call, the cheapest real call on the market. */
+export const callPriceUsd = (): number => Math.round(cheapestRealCallUsd() * USDC) / USDC
 
 type Env = Record<string, unknown>
 type Answer = { result?: Record<string, any>; error?: { message: string } }

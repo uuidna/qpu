@@ -516,7 +516,7 @@ def quantumProcessingExamples_shows509 : String := "A block's text sealed: its S
 def quantumProcessingExamples_shows510 : String := "The same block's text under FIPS 202: SHA3-256 (64 hexadecimal characters, capacity 512 of the 1600-bit state, rate 1088) and SHA3-512 (128 characters, capacity 1024, rate 576) beside its SHA-256."
 def quantumProcessingExamples_shows511 : String := "The vocabulary the blockchain theorems cite, checked by its key: the kernel accepts textbook_iso_22739_terms_read (99 terms read in full from Dig.watch, 0 cut, 0 unread; lead iso-22739-terms-unread closed) and lists the examples it proves — so every ISO term a theorem names is one the tree has read."
 def quantumProcessingExamples_shows512 : String := "The transfer law checked by its key: the kernel accepts textbook_blockchain_transfer_once — one transfer conserves the total and a second transfer of the same control is double spending (ISO 22739:2024 3.37) — and lists the examples it proves."
-def quantumProcessingExamples_shows513 : String := "The block's digital signature planned (ISO 22739:2024 3.22): ML-DSA-44 of FIPS 204 over the 32-byte digest, public key 1312 bytes and signature 2420 (Table 2), executed by the host with its key, never here."
+def quantumProcessingExamples_shows513 : String := "The block's digital signature computed (ISO 22739:2024 3.22): ML-DSA-44 of FIPS 204 over the block's text, public key 1312 bytes and signature 2420 (Table 2), verified here, while a changed text is refused."
 
 def quantumProcessingExamples_showsJsonldBlock : String := "The block as JSON-LD: the author is a Person whose @id is the ORCID, sixteen digits in four groups with three dashes, nineteen characters (textbook_orcid_digits)."
 

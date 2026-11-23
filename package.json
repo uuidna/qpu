@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/server": "2.4.0",
+    "@noble/curves": "2.4.0",
+    "@noble/post-quantum": "0.7.1",
     "@uuidna/qpu": "link:src/quantum",
     "@x402/core": "2.32.0",
     "@x402/evm": "2.32.0",

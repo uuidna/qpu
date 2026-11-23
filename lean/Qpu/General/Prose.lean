@@ -27,6 +27,7 @@ import Qpu.General.Prose.QuantumProcessingCompat
 import Qpu.General.Prose.QuantumProcessingCompose
 import Qpu.General.Prose.QuantumProcessingCryptoConfig
 import Qpu.General.Prose.QuantumProcessingCryptoIndex
+import Qpu.General.Prose.QuantumProcessingCryptoPqc
 import Qpu.General.Prose.QuantumProcessingDiscovery
 import Qpu.General.Prose.QuantumProcessingDiscoveryDocument
 import Qpu.General.Prose.QuantumProcessingDomains
