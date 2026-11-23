@@ -20,9 +20,11 @@ RUN git clone --filter=blob:none https://github.com/leanprover/lean4 /src/lean4 
  && cp -r /src/lean4/build/release/stage1 /opt/lean
 
 # The environment every gate runs in: Lean and lake on PATH, a C toolchain for lake to build executables, Node and pnpm
-# (installed by npm: Node 25 and later ship no corepack), at the version the workflows pin.
+# (installed by npm: Node 25 and later ship no corepack), at the version the workflows pin. Lake links an executable,
+# Mathlib's cache first, against GMP, libuv and OpenSSL by their unversioned libraries, which Alpine ships in the -dev
+# packages; those pull in the runtime libraries.
 FROM ${NODE} AS runtime
-RUN apk add --no-cache build-base git bash gmp libuv libssl3 curl ca-certificates zstd \
+RUN apk add --no-cache build-base git bash gmp-dev libuv-dev openssl-dev curl ca-certificates zstd \
  && npm install -g pnpm@10.34.9
 COPY --from=lean /opt/lean /opt/lean
 ENV PATH=/opt/lean/bin:${PATH}
