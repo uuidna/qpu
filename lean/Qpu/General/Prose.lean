@@ -6,6 +6,7 @@ import Qpu.General.Prose.QuantumNetCloudflare
 import Qpu.General.Prose.QuantumNetConnector
 import Qpu.General.Prose.QuantumNetMcpHttp
 import Qpu.General.Prose.QuantumNetMessaging
+import Qpu.General.Prose.QuantumNetProver
 import Qpu.General.Prose.QuantumNetStorageIndex
 import Qpu.General.Prose.QuantumOsAlpinePackages
 import Qpu.General.Prose.QuantumOsFetch

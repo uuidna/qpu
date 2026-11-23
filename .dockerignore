@@ -1,0 +1,8 @@
+# The image takes only what alpine/Dockerfile copies: never the dependencies, builds, caches or history of this checkout.
+node_modules
+.lake
+.git
+.wrangler
+site/.vitepress/dist
+site/.vitepress/cache
+.dev.vars

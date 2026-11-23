@@ -82,24 +82,6 @@ export const GOOGLE_CHALLENGE_IDS = [
 
 export type GoogleChallengeId = (typeof GOOGLE_CHALLENGE_IDS)[number]
 
-/** The page each challenge is: the product is its category, the variant is its id. */
-export const GOOGLE_CHALLENGE_PAGE: Record<GoogleChallengeId, { category: GoogleChallengeCategory; title: string }> = {
-  'willow-connectivity': { category: 'quantum-hardware', title: PROSE.quantumProcessingToolboxesGoogle_title2 },
-  'sycamore-topology': { category: 'quantum-hardware', title: PROSE.quantumProcessingToolboxesGoogle_title3 },
-  'surface-code-qec': { category: 'quantum-error-correction', title: PROSE.quantumProcessingToolboxesGoogle_title4 },
-  'rcs-xeb-beyond-classical': { category: 'quantum-algorithms', title: PROSE.quantumProcessingToolboxesGoogle_title5 },
-  'quantum-echoes-otoc': { category: 'quantum-algorithms', title: PROSE.quantumProcessingToolboxesGoogle_title6 },
-  'cirq-qvm-simulation': { category: 'quantum-hardware', title: PROSE.quantumProcessingToolboxesGoogle_title7 },
-  'recirq-qaoa-shor-algorithms': { category: 'quantum-algorithms', title: PROSE.quantumProcessingToolboxesGoogle_title8 },
-  'openfermion-chemistry-h2': { category: 'quantum-algorithms', title: PROSE.quantumProcessingToolboxesGoogle_title9 },
-  'qualtran-ftqc-magic-state': { category: 'quantum-error-correction', title: PROSE.quantumProcessingToolboxesGoogle_title10 },
-  'google-quantum-roadmap-catalog': { category: 'quantum-hardware', title: PROSE.quantumProcessingToolboxesGoogle_title11 },
-  'google-discovery-one-door': { category: 'google-apis-discovery', title: PROSE.quantumProcessingToolboxesGoogle_title12 },
-  'google-workspace-roundtrip-sets': { category: 'google-workspace-cloud', title: PROSE.quantumProcessingToolboxesGoogle_title13 },
-  'google-cloud-mcp-bindings-rbac': { category: 'google-workspace-cloud', title: PROSE.quantumProcessingToolboxesGoogle_title14 },
-  'google-patents-gemini-xprize-sitemap': { category: 'google-apis-discovery', title: PROSE.quantumProcessingToolboxesGoogle_title15 },
-}
-
 type GoogleChallengeCategory =
   | 'quantum-hardware'
   | 'quantum-error-correction'

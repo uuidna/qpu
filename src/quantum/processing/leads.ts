@@ -13,38 +13,6 @@ export type LeadStatus = 'served' | 'partial' | 'blocked' | 'out_of_scope' | 'op
 
 export type Lead = { id: string; source: string; statement: string; status: LeadStatus; tool?: string; reason?: string; lastmod?: string; /** the door that serves it, run as the Payload job qpu-lead-run */ run?: { tool: string; arguments?: Record<string, unknown> } }
 
-/** The src directories. Each one is an inode. A lead is developed in the inode of the module that serves it. */
-const SRC_INODES = [
-  'src',
-  'src/app',
-  'src/collections',
-  'src/components',
-  'src/globals',
-  'src/plugins',
-  'src/quantum',
-  'src/quantum/password',
-  'src/quantum/payload',
-  'src/quantum/processing',
-  'src/quantum/processing/crypto',
-  'src/quantum/processing/toolboxes',
-  'src/quantum/processing/unit',
-  'src/quantum/uuid',
-] as const
-
-const TOOLBOX_TOOLS = new Set(['google', 'stripe', 'currency', 'translate', 'prose', 'fold', 'seal', 'attest', 'repository', 'legal', 'compete', 'patents', 'discover', 'e2e', 'shard', 'wave', 'readiness', 'imagine', 'jsonld', 'codes', 'validate', 'mongo', 'extend'])
-
-/** The inode a lead is developed in: the toolbox directory when the tool lives there, otherwise the processing directory. */
-const leadInode = (tool?: string): (typeof SRC_INODES)[number] => tool && TOOLBOX_TOOLS.has(tool) ? 'src/quantum/processing/toolboxes' : 'src/quantum/processing'
-
-/** Every src inode is one superposition: 2 to the number of leads developed there. An empty inode is 2^0 = 1. */
-export const inodeSuperpositions = (leads: readonly { tool?: string }[]) => {
-  const counts = new Map<string, number>(SRC_INODES.map((inode) => [inode, 0]))
-  for (const lead of leads) counts.set(leadInode(lead.tool), (counts.get(leadInode(lead.tool)) ?? 0) + 1)
-  return SRC_INODES.map((inode) => {
-    const bits = counts.get(inode) ?? 0
-    return { inode, parent: inode.includes('/') ? inode.slice(0, inode.lastIndexOf('/')) : null, bits, superposition: (1n << BigInt(bits)).toString(), address: uuid(inode) }
-  })
-}
 /** The leads that run themselves: open, partial or blocked, and naming the door that serves them; each run by next as a Payload job. */
 export const listRunnableLeads = (leads: readonly Lead[]) => leads.filter((l) => l.run?.tool && l.status !== 'served' && l.status !== 'out_of_scope').map((l) => ({ lead: l.id, tool: l.run!.tool, arguments: l.run!.arguments ?? {} }))
 

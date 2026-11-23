@@ -4,7 +4,7 @@
 // with the corrections controlled by the qubits that would have been measured.
 
 import { PROSE, proseFill } from './prose-index.ts'
-import { Circuit, CNOT, CZ, DensityMatrixSimulator, getExpectation, H, LineQubit, measure, type Operation, type Qubit, SWAP, Simulator, TOFFOLI, X, Y, Z, ZZ, adjointGate, applied, defineGate, qubitKey, raiseGate, seededRandom, type Gate } from './cirq.ts'
+import { Circuit, CNOT, CZ, DensityMatrixSimulator, getExpectation, H, LineQubit, measure, type Operation, type Qubit, SWAP, Simulator, TOFFOLI, X, Y, Z, ZZ, adjointGate, applied, defineGate, qubitKey, raiseGate, type Gate } from './cirq.ts'
 import { numpyWeights } from './unit/random.ts'
 import { uuid } from '../uuid/index.ts'
 import { sha256, utf8, hex, rsaModPow as powMod } from './unit/hmac.ts'
@@ -451,107 +451,6 @@ export const shorFactors = (N: number, a: number, bitstrings: readonly string[])
     }
   }
   return { order: null, factors: null, estimates }
-}
-
-type Amp = { re: number; im: number }
-const modInverse = (u: bigint, N: bigint): bigint => {
-  let a = u, b = N, x = 1n, y = 0n
-  while (b !== 0n) { const q = a / b; [a, b] = [b, a - q * b]; [x, y] = [y, x - q * y] }
-  return ((x % N) + N) % N
-}
-const phaseDenominators = (numerator: bigint, denominator: bigint, limit: bigint): bigint[] => {
-  const out: bigint[] = []
-  let earlier = 1n, prior = 0n, n = numerator, d = denominator
-  while (d !== 0n && out.length < 64) {
-    const quot = n / d
-    const next = quot * prior + earlier
-    if (next >= limit) break
-    out.push(next)
-    earlier = prior
-    prior = next
-    const rest = n % d
-    n = d
-    d = rest
-  }
-  return out
-}
-/** One shot of Shor's phase measurement. Counting bit k controls multiplication by a^(2^k). The bits are measured from the high power downward, and bit k has weight 2^(t−1−k). Every power is computed. The shot stops when the work support would pass the cap without having wrapped. */
-const phaseShot = (a: bigint, N: bigint, powers: readonly bigint[], random: () => number, cap: number) => {
-  const counting = powers.length
-  const measured = new Array<number>(counting).fill(-1)
-  let state = new Map<bigint, Amp>([[1n, { re: 1, im: 0 }]])
-  let wrapped = false
-  let bits = 0
-  for (let k = counting - 1; k >= 0; k--) {
-    if (!wrapped && state.size * 2 > cap) break
-    const u = powers[k]!
-    const inv = modInverse(u, N)
-    let theta = 0
-    for (let j = k + 1; j < counting; j++) if (measured[j] === 1) theta -= 2 * Math.PI / 2 ** (j - k + 1)
-    const c = Math.cos(theta), s = Math.sin(theta)
-    let overlap = false
-    for (const x of state.keys()) if (state.has((x * u) % N)) { overlap = true; break }
-    let bit: number
-    let next: Map<bigint, Amp>
-    if (!overlap) {
-      bit = random() < 0.5 ? 0 : 1
-      const sign = bit === 0 ? 1 : -1
-      next = new Map(state)
-      for (const [x, amp] of state) {
-        const pr = c * amp.re - s * amp.im, pi = c * amp.im + s * amp.re
-        next.set((x * u) % N, { re: sign * pr, im: sign * pi })
-      }
-    } else {
-      const ys = new Set(state.keys())
-      for (const x of state.keys()) ys.add((x * u) % N)
-      let sum0 = 0, sum1 = 0
-      const out0 = new Map<bigint, Amp>(), out1 = new Map<bigint, Amp>()
-      for (const y of ys) {
-        const A = state.get(y) ?? { re: 0, im: 0 }
-        const src = state.get((y * inv) % N) ?? { re: 0, im: 0 }
-        const pr = c * src.re - s * src.im, pi = c * src.im + s * src.re
-        const r0 = A.re + pr, i0 = A.im + pi, r1 = A.re - pr, i1 = A.im - pi
-        const n0 = r0 * r0 + i0 * i0, n1 = r1 * r1 + i1 * i1
-        sum0 += n0
-        sum1 += n1
-        if (n0 > 1e-18) out0.set(y, { re: r0, im: i0 })
-        if (n1 > 1e-18) out1.set(y, { re: r1, im: i1 })
-      }
-      bit = random() < sum0 / (sum0 + sum1) ? 0 : 1
-      const chosen = bit === 0 ? out0 : out1
-      let norm = 0
-      for (const amp of chosen.values()) norm += amp.re * amp.re + amp.im * amp.im
-      const scale = Math.sqrt(norm) || 1
-      next = new Map()
-      for (const [y, amp] of chosen) next.set(y, { re: amp.re / scale, im: amp.im / scale })
-    }
-    if (next.size === state.size) wrapped = true
-    measured[k] = bit
-    state = next
-    bits++
-  }
-  let value = 0n
-  for (let k = 0; k < counting; k++) if (measured[k] === 1) value += 1n << BigInt(counting - 1 - k)
-  const complete = bits === counting
-  let order: bigint | null = null
-  if (complete) for (const r of phaseDenominators(value, 1n << BigInt(counting), N)) if (r > 1n && powMod(a, r, N) === 1n) { order = r; break }
-  return { value, complete, wrapped, bits, support: state.size, order }
-}
-/** The phase of multiplication by a modulo N. Small orders are measured in full, repeated until the order checks. A larger integer is measured until the work support fills the cap; bits past that are not invented. */
-export const measurePhase = (a: bigint, N: bigint, cap = 1 << 18) => {
-  const width = N.toString(2).length
-  const counting = width * 2
-  const powers: bigint[] = []
-  let p = a % N
-  for (let k = 0; k < counting; k++) { powers.push(p); p = (p * p) % N }
-  let shots = 0
-  let shot = phaseShot(a, N, powers, seededRandom(`phase:${N}:${a}:0`), cap)
-  shots++
-  while (shot.complete && shot.order === null && shots < 16) {
-    shot = phaseShot(a, N, powers, seededRandom(`phase:${N}:${a}:${shots}`), cap)
-    shots++
-  }
-  return { counting, powers: powers.length, measured: shot.bits, complete: shot.complete, wrapped: shot.wrapped, support: shot.support, value: shot.value.toString(), order: shot.order === null ? null : shot.order.toString(), shots }
 }
 
 

@@ -121,5 +121,3 @@ export const challenge = () => {
       : proseFill(PROSE.quantumUuidProgramsChallengeIndex_s2, handle),
   }
 }
-
-export type ChallengeDecision = ReturnType<typeof challenge>

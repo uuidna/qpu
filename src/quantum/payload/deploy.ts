@@ -29,6 +29,3 @@ export const DEPLOY_STAGES: readonly DeployStage[] = [
   { id: 'smoke', run: smoke, says: PROSE.quantumPayloadDeploy_says2, block: true },
   { id: 'logs', run: logs, says: 'query Worker logs', block: true },
 ]
-
-/** The command package.json `deploy` runs: Lean writes the site, then Wrangler deploys the Worker. */
-export const deployCommand = () => 'lake run site && wrangler deploy'

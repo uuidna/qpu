@@ -23,8 +23,17 @@ COPY --from=lean /opt/lean /opt/lean
 ENV PATH=/opt/lean/bin:${PATH}
 WORKDIR /qpu
 
-# The prover: qpu's Lean project with Mathlib's cache in place, for the Lean container behind the Worker.
+# The prover: qpu's Lean project with Mathlib's cache in place, served by alpine/prover-server.ts to the Prover Durable
+# Object (src/quantum/net/prover-object.ts), which starts it with no internet. The project is root's and read-only to
+# the unprivileged user the server runs as, so no check can change what the next one is checked against; only the gap
+# run's own outputs are writable.
 FROM runtime AS prover
 COPY lean-toolchain lakefile.lean lake-manifest.json ./
 COPY lean ./lean
-RUN lake exe cache get && lake build
+RUN lake exe cache get && lake build \
+ && touch .lake/build/gaps-0-of-3.jsonl .lake/build/gaps-1-of-3.jsonl .lake/build/gaps-2-of-3.jsonl .lake/build/gaps-index.ts
+COPY alpine/prover-server.ts ./alpine/
+RUN adduser -D -H prover && chown prover .lake/build/gaps-*
+USER prover
+EXPOSE 8080
+CMD ["node", "alpine/prover-server.ts"]

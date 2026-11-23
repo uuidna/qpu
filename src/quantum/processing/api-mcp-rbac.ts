@@ -63,9 +63,3 @@ export const payloadRbacMcp = (hosts: readonly { name: string; url: string }[]) 
     merged: doors.length > 0 && urls.size === doors.length && doors.every((door) => door.rbac.managedBy === 'payload-mcp' && door.rbac.subject === 'mcps' && door.rbac.access),
   }
 }
-
-/** The batch actions for one role: each operation over many documents, allowed exactly when that operation is allowed. */
-export const decideBatch = (subject: 'apis' | 'mcps', role: string) => {
-  const calls = BATCH_ACTIONS.map((batch) => ({ action: batch.action, rest: batch.rest, mcp: batch.mcp, where: batch.where, access: decideApiMcp(subject, batch.action, role) }))
-  return { subject, action: 'batch' as const, role, calls, access: calls.every((c) => c.access), managedBy: 'payload-mcp' as const, ...(subject === 'mcps' ? { server: 'payload-rbac' as const, one: true as const, first: true as const } : {}) }
-}

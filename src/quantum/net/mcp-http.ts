@@ -11,6 +11,7 @@ import { z } from 'zod'
 import { handle, type Rpc } from '../processing/mcp.ts'
 import { TENANTS } from '../processing/unit/tenants.ts'
 import { MESSAGING_TOOLS, callMessaging, type MailboxNamespace } from './messaging.ts'
+import { PROVER_TOOLS, callProver, type ProverNamespace } from './prover.ts'
 
 // The real quantum market QPU is measured against (AWS Braket per-shot + its flat task fee; source:
 // quantumcomputingcost.com/aws-braket-pricing, 2026-02). A device's per-qubit price is its shot price over its
@@ -58,10 +59,11 @@ export const mcpServer = async (env: Env) => {
     if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations ?? {}, run).update({ _meta: t._meta })
     else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations, _meta: t._meta }, run)
   }
-  // where the Worker binds the rooms, send and receive are tools like the kernel's, charged the same way
-  const rooms = env.MAILBOX as MailboxNamespace | undefined
-  for (const t of rooms ? MESSAGING_TOOLS : []) {
-    const schema = z.fromJSONSchema(t.inputSchema as never) as z.ZodObject, run = async (args: Record<string, unknown>) => (await callMessaging(rooms!, t.name, args)) as never
+  // where the Worker binds the rooms and the Lean prover, their tools are tools like the kernel's, charged the same way
+  const rooms = env.MAILBOX as MailboxNamespace | undefined, prover = env.PROVER as ProverNamespace | undefined
+  const bound = [...(rooms ? MESSAGING_TOOLS.map((t) => [t, (args: Record<string, unknown>) => callMessaging(rooms, t.name, args)] as const) : []), ...(prover ? PROVER_TOOLS.map((t) => [t, (args: Record<string, unknown>) => callProver(prover, args)] as const) : [])]
+  for (const [t, call] of bound) {
+    const schema = z.fromJSONSchema(t.inputSchema as never) as z.ZodObject, run = async (args: Record<string, unknown>) => (await call(args)) as never
     if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations, run)
     else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations }, run)
   }

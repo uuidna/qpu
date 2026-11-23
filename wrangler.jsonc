@@ -21,9 +21,15 @@
     { "tag": "v1", "new_sqlite_classes": ["DocketObject"] },
     { "tag": "v2", "deleted_classes": ["DocketObject"] },
     { "tag": "v3", "new_sqlite_classes": ["Mailbox"] },
+    { "tag": "v4", "new_sqlite_classes": ["Prover"] },
+  ],
+  // Lean with Mathlib behind the Worker: the prover stage of the Alpine image (Lean built from source, Mathlib's cache),
+  // started by the Prover Durable Object with no internet. Mathlib loaded is some 3 GiB a check, the image some 10 GB.
+  "containers": [
+    { "class_name": "Prover", "image": "./alpine/Dockerfile", "image_build_context": ".", "instance_type": "standard-4", "max_instances": 2 },
   ],
   "durable_objects": {
-    "bindings": [{ "name": "MAILBOX", "class_name": "Mailbox" }],
+    "bindings": [{ "name": "MAILBOX", "class_name": "Mailbox" }, { "name": "PROVER", "class_name": "Prover" }],
   },
   "observability": {
     "enabled": true,

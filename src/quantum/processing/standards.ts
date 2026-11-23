@@ -194,13 +194,6 @@ export type IsoBlockchainStandardLayer = {
  * Pure: no I/O, no network, no clock.
  */
 
-/** ISO/IEC 4879:2024 names a quantum state. A state of trace 1 and purity 1 is admitted. A state of trace 1 and purity below 1 is refused as pure. Anything else is not a state the gate admits. The other ISO dimensions are not a purity question. */
-export const gateQuantumPurity = (state: { purity: number; trace: number }) => {
-  const admitted = state.trace === 1 && state.purity === 1
-  const mixed = state.trace === 1 && state.purity < 1
-  return ISO_DIMENSIONS.map((dimension) => dimension === 'ISO/IEC 4879:2024' ? { dimension, admitted, mixed, holds: admitted || mixed } : { dimension, admitted: false, mixed: false, holds: true })
-}
-
 export const verifyIsoQuantumEquivalence = () => {
   const near = (a: number, b: number, eps = 1e-9) => Math.abs(a - b) <= eps
   const sim = new Simulator(seededRandom('iso-4879-quantum-equivalence'))
