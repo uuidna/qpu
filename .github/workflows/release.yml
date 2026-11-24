@@ -1,7 +1,8 @@
 # Cut qpu's next release: the tag one patch above the highest version GitHub or Zenodo holds (nextTag in
 # src/quantum/processing/release.ts), created at main's head as a GitHub release, which Zenodo archives as a new version
 # under the unit's concept DOI. Only a stable tree is released: it refuses unless alpine, lean-verify, site and test
-# have each passed on main's head, or, for a merge commit, on the pull request's head with the same tree. It refuses
+# have each passed on main's head, or, for a merge commit, on the pull request's head with the same tree, and unless
+# deploy, whose last gate asks the live server, has passed on main's head. It refuses
 # unless src/quantum/package.json states the version, so the tagged tree names its own release. Started by hand on
 # main: a release is the author's act. Its note is the description of .zenodo.json, the record the build writes and Zenodo
 # reads from the tagged tree, so the note and the archived record state the same achievements, open claims and funding.
@@ -35,6 +36,11 @@ jobs:
               --jq "[.workflow_runs[] | select(.name == \"$workflow\" and .conclusion == \"success\")] | length")
             if [ "$passed" = "0" ]; then echo "::error::$workflow has not passed on $sha, so the tree is not released"; exit 1; fi
           done
+          # the deploy runs on main alone and ends with the gate on the live server (Lean both ways, the selftests, the
+          # audit): a tree whose deployed server answered wrong is not released
+          deployed=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$GITHUB_SHA&per_page=100" \
+            --jq '[.workflow_runs[] | select(.name == "deploy" and .conclusion == "success")] | length')
+          if [ "$deployed" = "0" ]; then echo "::error::deploy, with its gate on the live server, has not passed on $GITHUB_SHA, so the tree is not released"; exit 1; fi
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: 26

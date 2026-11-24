@@ -154,4 +154,6 @@ def quantumProcessingToolboxesRepository_genuineHolds : String := "nothing fake 
 def quantumProcessingToolboxesRepository_genuineUnread : String := "what is shown was not searched"
 def quantumProcessingToolboxesRepository_report : String := "the act reported to the Payload app through its MCP door, which answers the decision; with no door in reach the decision is computed here"
 
+def quantumProcessingToolboxesRepository_deployed : String := "{ url?, shards?, waitMs?, answers?, attempt? }: the gate after a deploy. Without answers: the requests to make against the deployed MCP at url (one theorem Lean must accept, one it must reject, the crypto selftests through seal and fold, and the audit in shards shares). With the answers: each judged and a wrong one named with what the server said, so holds is false; a prover that is starting, busy or out of reach is no verdict and is asked again with the reason said, waitMs (30 000 unless given) apart, up to five attempts"
+
 end Prose

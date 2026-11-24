@@ -60,6 +60,13 @@ jobs:
             if [ "$site" != "200" ] || [ "$mcp" != "200" ]; then fail=1; fi
           done
           exit "$fail"
+      # the gate after the deploy (src/quantum/processing/deployed.ts), asked of the live server the way a client asks: one
+      # theorem Lean must accept and one it must reject with its own error, the crypto selftests, and the audit in eight
+      # shares. A wrong answer fails the deploy and names what the server said; a prover still starting is asked again,
+      # up to five times, each retry printed with its reason.
+      - name: the deployed server answers right
+        timeout-minutes: 30
+        run: node src/quantum/processing/machine-run.ts step repository '{"deployed":{}}' --json
       - name: query Worker logs
         run: |
           from=$(( $(date +%s%3N) - 900000 ))

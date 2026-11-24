@@ -12,6 +12,7 @@ import Qpu.General.Prose.QuantumOsAlpinePackages
 import Qpu.General.Prose.QuantumPasswordAddress
 import Qpu.General.Prose.QuantumPayloadDeploy
 import Qpu.General.Prose.QuantumPayloadWaves
+import Qpu.General.Prose.QuantumProcessingDeployed
 import Qpu.General.Prose.QuantumProcessingAccess
 import Qpu.General.Prose.QuantumProcessingAlgorithms
 import Qpu.General.Prose.QuantumProcessingAlpine

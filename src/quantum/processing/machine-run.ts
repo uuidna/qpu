@@ -31,7 +31,11 @@ const cmdOf = (cmd: string) => (cmd === 'lake' ? lakeOf() : cmd)
 export const spawnRun = (cmd: string, args: readonly string[], o: { cwd: string; input?: string | null; budgetMs?: number; env?: Record<string, string>; onLine?: (line: string) => void } ): Promise<Run> =>
   new Promise((resolve) => {
     const t0 = clock()
-    const child = spawn(cmdOf(cmd), [...args], { cwd: o.cwd, shell: false, detached: process.platform !== 'win32', env: { ...process.env, FORCE_COLOR: '0', ...(o.env ?? {}) } })
+    // git hands a hook its own GIT_DIR and GIT_INDEX_FILE, absolute in a linked worktree: lake runs git inside each package, which would then read
+    // this repository for the package's (and write the package's index over this worktree's), so lake is started without them
+    const env: Record<string, string | undefined> = { ...process.env, FORCE_COLOR: '0', ...(o.env ?? {}) }
+    if (cmd === 'lake') for (const k of Object.keys(env)) if (/^GIT_(DIR|INDEX_FILE|WORK_TREE|COMMON_DIR|PREFIX|OBJECT_DIRECTORY|ALTERNATE_OBJECT_DIRECTORIES)$/.test(k)) delete env[k]
+    const child = spawn(cmdOf(cmd), [...args], { cwd: o.cwd, shell: false, detached: process.platform !== 'win32', env })
     let stdout = '', stderr = '', timedOut = false
     const lineOf = (stream: 'stdout' | 'stderr') => { let rest = ''; return (chunk: Buffer) => {
       const s = chunk.toString('utf8'); if (stream === 'stdout') stdout += s; else stderr += s
@@ -104,11 +108,24 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   let s = r.result?.structuredContent ?? null
   // a door that answers with requests has them fetched, eight at a time, then answers again with them: e2e decodes here, every other door is asked with answers
   if (Array.isArray(s?.requestList) && !(args as { answers?: unknown }).answers) {
-    const list = [...s.requestList] as { url: string; method: string; accept: string; headers?: Record<string, string>; body?: unknown }[], answers: unknown[] = []
-    await Promise.all(Array.from({ length: 8 }, async () => { for (let q = list.shift(); q; q = list.shift()) { const t0 = performance.now(); try { const res = await fetch(q.url, { method: q.method, headers: { 'content-type': 'application/json', accept: q.accept, ...q.headers }, body: q.body === undefined ? undefined : JSON.stringify(q.body), signal: AbortSignal.timeout(20000) }); answers.push({ ...q, status: res.status, ms: performance.now() - t0, text: await res.text(), etag: res.headers.get('etag') }) } catch (e) { answers.push({ ...q, status: 0, ms: performance.now() - t0, text: String(e) }) } } }))
+    type Asked = { url: string; method: string; accept: string; headers?: Record<string, string>; body?: unknown; timeoutMs?: number }
+    const fetchAll = async (requests: Asked[]) => { const list = [...requests], answers: unknown[] = []; await Promise.all(Array.from({ length: 8 }, async () => { for (let q = list.shift(); q; q = list.shift()) { const t0 = performance.now(); try { const res = await fetch(q.url, { method: q.method, headers: { 'content-type': 'application/json', accept: q.accept, ...q.headers }, body: q.body === undefined ? undefined : JSON.stringify(q.body), signal: AbortSignal.timeout(q.timeoutMs ?? 20000) }); answers.push({ ...q, status: res.status, ms: performance.now() - t0, text: await res.text(), etag: res.headers.get('etag') }) } catch (e) { answers.push({ ...q, status: 0, ms: performance.now() - t0, text: String(e) }) } } })); return answers }
+    let answers = await fetchAll(s.requestList as Asked[])
     // in this process: the door's wrapper re-serialises e2e's bodies past a string's length
     if (tool === 'e2e') { const d = (await import('./e2e.ts')).decodeE2e(answers as never); s = { phase: 'decoded', ...d.outcomes, combos: d.combos, copies: d.copies, uncorrectableLeads: d.leads.filter((l) => l.id.startsWith('e2e-uncorrectable')).map((l) => l.id).join(' ') } }
-    else { const again = call(tool, { ...(args as object), answers }); if (again.error) { console.log(JSON.stringify({ error: again.error.message })); process.exitCode = 1; return } s = again.result?.structuredContent ?? null }
+    else {
+      // a door that answers the answers with requests again says why (retry), is waited for, and is asked once more with what it kept and the new answers
+      for (let attempt = 1; ; attempt++) {
+        const again = call(tool, { ...(args as object), answers, attempt }); if (again.error) { console.log(JSON.stringify({ error: again.error.message })); process.exitCode = 1; return }
+        s = again.result?.structuredContent ?? null
+        if (!Array.isArray(s?.requestList) || !Array.isArray(s?.retry) || attempt >= 8) break
+        for (const r of s.retry as { says?: string }[]) console.log(`retry ${r.says ?? JSON.stringify(r)}`)
+        await new Promise((done) => setTimeout(done, typeof s.waitMs === 'number' ? s.waitMs : 0))
+        answers = [...(Array.isArray(s.kept) ? s.kept : []), ...await fetchAll(s.requestList as Asked[])]
+      }
+      // requests still owed when the attempts ran out are a gate that did not hold
+      if (Array.isArray(s?.requestList) && Array.isArray(s?.retry)) process.exitCode = 1
+    }
   }
 
   // a door that names its readList answers again with those files

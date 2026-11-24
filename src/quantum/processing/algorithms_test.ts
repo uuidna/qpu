@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { Circuit, DensityMatrixSimulator, LineQubit, Simulator, X, applied, getExpectation } from './cirq.ts'
-import { listFactors, pageInstance, groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaEstimate, qaoaExpectedCut, qaoaSweep, qftOperations, shorCircuit, shorFactors, teleportationCircuit } from './algorithms.ts'
+import { FACTOR_CERTIFICATES, listFactors, searchFactors, pageInstance, groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaEstimate, qaoaExpectedCut, qaoaSweep, qftOperations, shorCircuit, shorFactors, teleportationCircuit } from './algorithms.ts'
 import { numpyWeights } from './unit/random.ts'
 import { DEVICES } from './processor.ts'
 
@@ -133,6 +133,19 @@ test('2^999 + 1, the 1000-bit integer, factors completely and the product is the
   assert.deepEqual(f.left, [])
   assert.ok(f.factors.includes(3n))
   assert.ok(f.factors.length >= 20)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the certificate of 2^999 + 1 is the list the search itself finds, and it answers within a request's time where the search cannot. */
+test('the certificate of 2^999 + 1 is the list the search itself finds, and it answers within a request\'s time where the search cannot', () => {
+  const N = (1n << 999n) + 1n, held = FACTOR_CERTIFICATES[N.toString()]!
+  // first, before anything has searched: the certificate alone answers, checked by primality and product, far inside one request
+  const t0 = performance.now(), fast = listFactors(N, 1n << 12n), ms = performance.now() - t0
+  assert.ok(ms < 5000, `${Math.round(ms)} ms`)
+  assert.deepEqual([fast.factors.map(String), fast.left, String(fast.reached), String(fast.searched), fast.verified], [[...held.factors], [], held.reached, held.searched, true])
+  // then the search with no certificate and no memory (tens of seconds: Lenstra's curves): it writes the same list
+  const found = searchFactors(N, 1n << 12n)
+  assert.deepEqual({ factors: found.factors.map(String), reached: String(found.reached), searched: String(found.searched) }, { factors: [...held.factors], reached: held.reached, searched: held.searched })
+  assert.deepEqual([found.left, found.verified], [[], true])
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the page's instance: the first twelve sorted Sycamore qubits, their 15 couplers in networkx order, and numpy's seed-11 weights. */
