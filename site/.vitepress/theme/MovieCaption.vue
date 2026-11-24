@@ -5,8 +5,9 @@ import { computed, onMounted } from 'vue'
 import { data } from './supremacy.data'
 import { live, liveError, startLive } from './movie-live'
 
-// each formula the movie plays, with how many theorems of the kernel index state it, and each experiment's statement
-const kernel = computed(() => [...data.played.map((p) => `${p.formula} · ${p.keys.length}`), ...[...data.experiments.within, ...data.experiments.separated].map((e) => e.statement)])
+// each formula the movie plays, with how many theorems of the kernel index state it, each experiment's statement,
+// and the equality the movie's clock is read from
+const kernel = computed(() => [...data.played.map((p) => `${p.formula} · ${p.keys.length}`), ...[...data.experiments.within, ...data.experiments.separated].map((e) => e.statement), ...(data.clock ? [data.clock.statement] : [])])
 onMounted(startLive)
 </script>
 
