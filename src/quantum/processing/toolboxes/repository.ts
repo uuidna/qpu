@@ -26,6 +26,7 @@ import { findStaleReceipts } from '../crypto/index.ts'
 import { createDeployedRequests, judgeDeployed, type DeployedAnswer } from '../deployed.ts'
 import { quantumCapacity, stabilityOf, stableSource } from '../capacity.ts'
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.ts'
+import { gateProseLinks } from '../prose-links.ts'
 
 /** The theorems the one passable way rests on, and what the literature and the hosts say of them: each one's claim as the sealed OpenAlex search
  *  and the readers' confirmations left it (nothing recognised without a recorded confirmation; a theorem never searched is unasked), and the e2e
@@ -177,6 +178,8 @@ export const WORKFLOW_RULES: readonly { rule: string; theorem: string; appliesTo
   { rule: 'google-via-payload', theorem: 'textbook_google_one_door', appliesTo: ['pre-commit'], says: PROSE.quantumProcessingToolboxesRepository_says47, decide: (f) => { const g = f.literals?.added.filter((x) => URL.canParse(x.literal) && GOOGLE_HOST.test(new URL(x.literal).hostname)); return g ? { holds: !g.length, evidence: g.length ? proseFill(PROSE.quantumProcessingToolboxesRepository_s48, g.length, g.map((x) => `${x.literal} in ${x.file}`).join(', ')) : PROSE.quantumProcessingToolboxesRepository_s49 } : { holds: null, evidence: PROSE.quantumProcessingToolboxesRepository_evidence50 } } },
   // the full quantum capacity at every step: no workflow passes while the register's parts do not make the whole, its receipt does not balance or a qubit is left unused; the rule's sentence is the theorem's own, as Lean states it
   { rule: 'capacity', theorem: 'textbook_capacity_conserved', appliesTo: WORKFLOWS, says: TEXTBOOK_THEOREMS.find((t) => t.key === 'textbook_capacity_conserved')?.says ?? 'textbook_capacity_conserved', decide: () => { const c = quantumCapacity(); return { holds: c.gate.holds, evidence: c.gate.evidence } } },
+  // prose is linked to the source of its proof: no sentence enters the tree unlinked, and the list of the unlinked only shrinks
+  { rule: 'linked', theorem: 'textbook_code_folds', appliesTo: ['pre-commit', 'pre-push', 'ci'], says: PROSE.quantumProcessingToolboxesRepository_linked, decide: () => { const g = gateProseLinks(); return { holds: g.holds, evidence: g.evidence } } },
   { rule: 'genuine', theorem: 'textbook_google_one_door', appliesTo: ['pre-commit', 'pre-push'], says: PROSE.quantumProcessingToolboxesRepository_genuine, decide: (f) => (f.fakes ? { holds: !f.fakes.length, evidence: f.fakes.join('; ') || PROSE.quantumProcessingToolboxesRepository_genuineHolds } : { holds: null, evidence: PROSE.quantumProcessingToolboxesRepository_genuineUnread }) },
 ]
 /** A violation, the one computable type every rule, check, red step and refusal answers: a kind of the closed set (the workflow rules, the

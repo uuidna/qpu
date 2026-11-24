@@ -125,6 +125,7 @@ export const NEXT_STEPS: readonly NextStep[] = [
   { name: 'skills:gen', wave: 1, budgetMs: 120_000, via: 'generator', tool: 'textbook', arguments: { scripts: { skills: true } } },
   { name: 'lean', wave: 1.5, budgetMs: 1_800_000, via: 'process', cmd: 'lake', args: ['build'] },
   { name: 'theorems:index', wave: 1.75, budgetMs: 600_000, via: 'generator', tool: 'textbook', arguments: { scripts: { theoremsIndex: { output: { $exec: { cmd: 'lake', args: ['env', 'lean'], script: { tool: 'textbook', arguments: { scripts: { theoremsIndex: {} } }, key: 'lean' } } } } } } },
+  { name: 'prose:links', wave: 1.9, budgetMs: 300_000, via: 'generator', tool: 'textbook', arguments: { scripts: { proseLinks: true } } },
   { name: 'outputs:gen', wave: 1.9, budgetMs: 300_000, via: 'generator', tool: 'textbook', arguments: { scripts: { outputs: true } } },
   { name: 'status:gen', wave: 1.9, budgetMs: 300_000, via: 'generator', tool: 'textbook', arguments: { scripts: { status: true } } },
   { name: 'blueprint:gen', wave: 1.8, budgetMs: 120_000, via: 'generator', tool: 'textbook', arguments: { scripts: { blueprint: { lean: { $lean: true } } } } },

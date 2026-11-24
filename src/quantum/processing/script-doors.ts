@@ -11,6 +11,8 @@ import { TOOLBOXES } from './mcp.ts'
 import { GENERATED_LEMMAS, KERNEL_THEOREMS, NOVELTIES, OPEN_CLAIMS, THEOREMS } from './theorems-index.ts'
 import { receiptOf } from '../uuid/programs/index.ts'
 import { LEAD_ROWS } from './leads-index.ts'
+import { gateProseLinks, nextUnlinked } from './prose-links.ts'
+import { PROSE_UNLINKED } from './prose-unlinked-index.ts'
 
 /** Qpu/General/Textbook.lean is written in Lean. This door renders nothing: it names the file and counts what the index read from it. */
 const textbookLean = () => {
@@ -243,6 +245,7 @@ const SCRIPT_INVOKE = {
   scripts_tables: { tool: 'textbook', args: '{ scripts: { tablesIndex } }', via: PROSE.quantumProcessingScriptDoors_via27, npm: 'npm run clean' },
   scripts_textbook_lean: { tool: 'textbook', args: '{ scripts: { textbookLean } }', via: PROSE.quantumProcessingScriptDoors_via28, npm: 'next step docs:gen' },
   scripts_skills: { tool: 'textbook', args: '{ scripts: { skills } }', via: PROSE.quantumProcessingScriptDoors_via29, npm: 'next step skills:gen' },
+  scripts_prose_links: { tool: 'textbook', args: '{ scripts: { proseLinks } }', via: 'src/quantum/processing/prose-unlinked-index.ts', npm: 'next step prose:links' },
   scripts_outputs: { tool: 'textbook', args: '{ scripts: { outputs } }', via: 'src/quantum/processing/outputs-index.ts', npm: 'next step outputs:gen' },
   scripts_theorems_index: { tool: 'textbook', args: '{ scripts: { theoremsIndex: { output } } }', via: PROSE.quantumProcessingScriptDoors_via30, npm: 'next step theorems:index' },
   leads: { tool: 'leads', via: PROSE.quantumProcessingScriptDoors_via31, npm: 'next steps' },
@@ -315,6 +318,7 @@ export type ScriptsArgs = {
   skills?: boolean
   status?: boolean
   outputs?: boolean
+  proseLinks?: boolean | { seed?: boolean }
 }
 
 /** payload { scripts } — one fused door for relocated script work. */
@@ -326,6 +330,7 @@ export const scripts = (args: ScriptsArgs, ctx?: { examples?: readonly { id: str
   if (args.skills === true) return qpuSkills(TOOLBOXES, QUANTUM_TERMS, ctx?.examples ?? [])
   if (args.status === true && ctx?.call && ctx.examples) return status({ examples: ctx.examples, call: ctx.call })
   if (args.outputs === true && ctx?.call && ctx.examples) return outputs({ examples: ctx.examples, call: ctx.call })
+  if (args.proseLinks !== undefined && args.proseLinks !== false) { const names = nextUnlinked(PROSE_UNLINKED, typeof args.proseLinks === 'object' && args.proseLinks.seed === true), gate = gateProseLinks(names); return { phase: 'scripts-prose-links' as const, path: 'src/quantum/processing/prose-unlinked-index.ts', text: [PROSE.quantumProcessingScriptDoors_unlinkedHead, `export const PROSE_UNLINKED: readonly string[] = ${JSON.stringify(names)}`, ''].join('\n'), sentences: gate.sentences, linked: gate.linked, listed: names.length, entering: gate.entering.length, holds: gate.holds } }
   if (args.theoremsIndex && typeof args.theoremsIndex === 'object') return theoremsIndex()
   if (args.leadsIndex && Array.isArray(args.leadsIndex.rows)) return leadsIndex(args.leadsIndex.rows)
   // new leads merged into the record this build holds, so one call of the runner deposits a lead; a lead already recorded is kept as it is,
