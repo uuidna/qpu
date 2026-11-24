@@ -6,9 +6,18 @@
 # unless src/quantum/package.json states the version, so the tagged tree names its own release. Started by hand on
 # main: a release is the author's act. Its note is the description of .zenodo.json, the record the build writes and Zenodo
 # reads from the tagged tree, so the note and the archived record state the same achievements, open claims and funding.
+# One pipeline from a commit to a release: a pull request lands when its checks pass (land), the landing deploys
+# (deploy, whose last gate asks the live server), and a deploy that passed on main starts this workflow. Every refusal
+# above still decides: the release is made only when the gates and the deploy passed on main's head, the tree is stable
+# and the package states the next tag. Where the package states no new version there is nothing to release, and a run
+# the deploy started says so and ends; a run started by hand refuses instead, since the author asked for a release.
 name: release
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows: [deploy]
+    types: [completed]
+    branches: [main]
 permissions:
   contents: write
   actions: read
@@ -17,7 +26,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   release:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -63,9 +72,13 @@ jobs:
               read('https://zenodo.org/api/records/' + UNIT_CONCEPT_DOI.slice(UNIT_CONCEPT_DOI.lastIndexOf('.') + 1))])
             console.log(nextTag([github.tag_name, zenodo.metadata?.version]))")
           version=$(node -p "require('./src/quantum/package.json').version")
-          if [ "v$version" != "$tag" ]; then echo "::error::the next tag is $tag, but src/quantum/package.json states $version"; exit 1; fi
+          if [ "v$version" != "$tag" ]; then
+            if [ "$GITHUB_EVENT_NAME" = "workflow_run" ]; then echo "::notice::nothing to release: the next tag is $tag and src/quantum/package.json states $version"; exit 0; fi
+            echo "::error::the next tag is $tag, but src/quantum/package.json states $version"; exit 1
+          fi
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
       - name: the release at main's head
+        if: steps.next.outputs.tag != ''
         run: |
           jq -r .description .zenodo.json > "$RUNNER_TEMP/notes.html"
           gh release create "${{ steps.next.outputs.tag }}" --target "$GITHUB_SHA" --title "${{ steps.next.outputs.tag }}" --notes-file "$RUNNER_TEMP/notes.html"
