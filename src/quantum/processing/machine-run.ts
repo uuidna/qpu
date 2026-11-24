@@ -8,6 +8,7 @@
 import { AFTER_HOOKS } from './config-index.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
+import { THEOREMS } from './theorems-index.ts'
 import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readdirSync, readFileSync, readlinkSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
@@ -257,7 +258,8 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   }
   const flows = join(cwd, '.github/workflows')
   facts.workflows = existsSync(flows) ? Object.fromEntries(readdirSync(flows).filter((f) => /\.ya?ml$/.test(f)).map((f) => [`.github/workflows/${f}`, readFileSync(join(flows, f), 'utf8')])) : null
-  facts.fakes = (await Promise.all(TABLES.FAKES.map(async (k) => (await git(...k.git, '--', ...k.paths)).split('\n').filter(Boolean).map((l) => `${k.fake}: ${l}`)))).flat()
+  const held = new Set<string>(THEOREMS.map((t) => t.key))
+  facts.fakes = (await Promise.all(TABLES.FAKES.map(async (k) => [...new Set((await git(...k.git, '--', ...k.paths)).split('\n'))].filter((l) => l && !('standing' in k && (held.has(l) || (k.standing as readonly string[]).includes(l)))).map((l) => `${k.fake}: ${l}`)))).flat()
   if (name === 'commit-msg') facts.message = readFileSync(rest[0]!, 'utf8')
   if (name === 'pre-commit') {
     const diff = await git('diff', '--cached', '-U0', '--no-color', '--no-renames', '--', ...LITERAL_ROOTS), generated: string[] = []

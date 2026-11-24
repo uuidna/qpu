@@ -39,7 +39,7 @@ type EntropyFinding = { kind: EntropyKind; file: string; line: number; excerpt: 
 type EntropyLead = { id: string; kind: EntropyKind; source: string; statement: string; status: 'open'; tool: 'audit'; occurrences: number; address: string; explore: string; config: string | null }
 export const LEAK_ALLOWED = new Set(['payloadcms.com', 'example.com', 'test.com', 'thirdparty.com', 'github.com', 'anthropic.com', 'localhost.test', 'local.test'])
 /** Paths and URLs each live in one registry (a path by its role, file; a URL in the sources, discovery and leads tables): a literal elsewhere in
- *  hand-written source is dirty, priced by its bytes, its antimatter the move to its registry (textbook_literal_in_registry). Generated files,
+ *  hand-written source is dirty, priced by its bytes, its antimatter the move to its registry. Generated files,
  *  fixtures, tests and the licence's verbatim URLs are exempt. */
 /** The generator of each generated file: the antimatter of its drift runs it and restages what drifted. */
 export const GENERATOR_REMEDIES: readonly [RegExp, { cmd: string; args: string[] }][] = [
