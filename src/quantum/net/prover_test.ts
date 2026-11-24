@@ -42,6 +42,9 @@ test('a receipt is issued for Lean\'s verdict alone: a prover that failed, timed
   // what the live server answered on 2026-11-24: Lean never ran, and the answer read as a rejection and was sealed
   const silent = await ask({ ok: false, timedOut: false, ms: 688, messages: [], toolchain })
   assert.deepEqual([silent.code, 'ok' in silent, 'receipt' in silent, silent.verdict, silent.retryable], ['prover_failed', false, false, null, true])
+  // an HTTP status is never reported as the process's exit code: the old container answers 200 with no exit, and the answer says so
+  assert.match(silent.error, /\(exit unknown, HTTP 200\)/)
+  assert.match(s(await callProver(recording({ error: 'prover_failed', exit: 1, signal: null, stderr: 'x', toolchain }, 500).prover, { source })).error, /\(exit 1\)/)
   const failed = await ask({ error: 'prover_failed', exit: 1, signal: null, stderr: 'error: permission denied (error code: 13)\n  file: /qpu/.lake/packages/mathlib/Counterexamples/QuadraticForm.lean', toolchain }, 500)
   assert.deepEqual([failed.code, failed.exit, /permission denied/.test(failed.stderr), 'ok' in failed, 'receipt' in failed], ['prover_failed', 1, true, false, false])
   const away = await ask(new Error('There is no container application assigned to this Durable Object namespace'))

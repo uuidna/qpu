@@ -49,6 +49,6 @@ export const callProver = async (prover: ProverNamespace, args: Record<string, u
   // a verdict is what Lean decided and nothing else: accepted, or rejected with an error of its own
   const accepted = status === 200 && v.ok === true && v.timedOut !== true && !hasError(v.messages), rejected = status === 200 && v.ok === false && v.timedOut !== true && hasError(v.messages)
   if (status === 200 && v.ok === false && v.timedOut === true) return noVerdict('time_limit', proseFill(PROSE.quantumNetProver_timeLimit, PROVER_LIMITS.seconds), { timedOut: true, ms: v.ms, messages: v.messages, toolchain: v.toolchain })
-  if (!accepted && !rejected) return noVerdict('prover_failed', proseFill(PROSE.quantumNetProver_failed, v.exit ?? status), { status, exit: v.exit ?? null, signal: v.signal ?? null, stderr: typeof v.stderr === 'string' ? v.stderr : text, toolchain: v.toolchain })
+  if (!accepted && !rejected) return noVerdict('prover_failed', proseFill(PROSE.quantumNetProver_failed, typeof v.exit === 'number' ? v.exit : `unknown, HTTP ${status}`), { status, exit: v.exit ?? null, signal: v.signal ?? null, stderr: typeof v.stderr === 'string' ? v.stderr : text, toolchain: v.toolchain })
   return answer({ ok: accepted, verdict: accepted ? 'accepted' : 'rejected', timedOut: false, ms: v.ms, messages: v.messages, toolchain: v.toolchain, receipt: receiptOf('lean', { source: args.source, ok: v.ok, messages: v.messages, toolchain: v.toolchain }) }, !accepted)
 }
