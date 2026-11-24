@@ -9,8 +9,8 @@ import { AFTER_HOOKS } from './config-index.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { existsSync, mkdirSync, readdirSync, readFileSync, readlinkSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { copyFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, readlinkSync, realpathSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { availableParallelism, freemem, homedir, tmpdir, totalmem } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { MACHINE_ACTIONS, MACHINE_RUNNER, NEXT_STEPS, forecastTimes, redact, type NextStep } from './machine.ts'
@@ -226,10 +226,49 @@ const serveLocal = async (cwd: string) => {
   return () => { try { process.kill(-child.pid!, 'SIGTERM') } catch { /* gone */ } }
 }
 
+/** The staged tree: the index (the one git hands the hook in GIT_INDEX_FILE, a commit by pathspec's own) checked out into a directory of its
+ *  own whose git is the repository's, the untracked tools (node_modules, .lake, .qpu) linked into it entry by entry, a link into the tree itself
+ *  turned to the copy, and the command run there; so what decides reads exactly what the commit will hold, and one session's unstaged work
+ *  never decides another's commit. What the command stages there (a generator's output) is in the index already; it is copied to the working
+ *  tree where that file held no unstaged edit of its own, and left as it was where it did. The directory is removed after. */
+const inStagedTree = async (cwd: string, cmd: string, args: readonly string[], onLine?: (line: string) => void): Promise<Run> => {
+  // a relative GIT_INDEX_FILE or GIT_DIR names a file under the repository; resolved here so the copy reads the same index
+  const env = Object.fromEntries((['GIT_INDEX_FILE', 'GIT_DIR'] as const).flatMap((k) => { const v = process.env[k]; return v && !isAbsolute(v) ? [[k, resolve(cwd, v)]] : [] }))
+  const git = async (a: string[], input?: string) => { const r = await spawnRun('git', a, { cwd, env, input }); if (r.status !== 0) throw new Error(`git ${a[0]} ended with status ${r.status}: ${r.stderr.trim()}`); return r.stdout }
+  const indexed = async () => new Map((await git(['ls-files', '-s', '-z'])).split('\0').filter(Boolean).map((l) => [l.slice(l.indexOf('\t') + 1), l.split(' ')[1]!] as const))
+  const gitDir = (await git(['rev-parse', '--absolute-git-dir'])).trim(), before = await indexed()
+  const dir = mkdtempSync(join(tmpdir(), 'qpu-staged-')), root = realpathSync(cwd)
+  const inside = (p: string, root: string) => p === root || p.startsWith(root + sep)
+  // each entry a link to the tool's own; a scope (@x) a directory of links; an entry whose real path is in the tree outside the tool, the copy's
+  const link = (top: string, from: string, to: string) => {
+    mkdirSync(to, { recursive: true })
+    for (const e of readdirSync(from, { withFileTypes: true })) {
+      const at = join(from, e.name)
+      if (e.name.startsWith('@') && e.isDirectory()) { link(top, at, join(to, e.name)); continue }
+      let real = at; try { real = realpathSync(at) } catch { /* a dangling link stays as it is */ }
+      symlinkSync(inside(real, root) && !inside(real, top) ? join(dir, relative(root, real)) : at, join(to, e.name))
+    }
+  }
+  try {
+    await git(['checkout-index', '--all', `--prefix=${dir}${sep}`])
+    writeFileSync(join(dir, '.git'), `gitdir: ${gitDir}\n`)
+    for (const name of ['node_modules', '.lake', '.qpu']) { const top = join(cwd, name); if (existsSync(top)) link(realpathSync(top), top, join(dir, name)) }
+    const r = await spawnRun(cmd, args, { cwd: dir, env: { ...env, QPU_STAGED_FROM: cwd }, onLine })
+    const moved = [...(await indexed())].filter(([p, blob]) => before.get(p) !== blob && lstatSync(join(dir, p), { throwIfNoEntry: false })?.isFile())
+    const present = moved.filter(([p]) => existsSync(join(cwd, p)))
+    const hashed = present.length ? (await git(['hash-object', '--stdin-paths'], present.map(([p]) => p).join('\n'))).split('\n') : []
+    const held = new Map(present.map(([p], i) => [p, hashed[i]!]))
+    for (const [p] of moved) if ((held.get(p) ?? null) === (before.get(p) ?? null)) { mkdirSync(dirname(join(cwd, p)), { recursive: true }); copyFileSync(join(dir, p), join(cwd, p)) }
+    return r
+  } finally { rmSync(dir, { recursive: true, force: true }) }
+}
+
 /** A git hook as the client of its workflow (repository { workflow }): its steps walked as the door answers them (next run here, a command spawned,
  *  the generated files compared before they are staged), the facts read (the receipt, the staged diff of the hand-written roots, the workflow files,
  *  the message, the packed package, the gate's decoding) and the decision obeyed: a refused rule or a red step ends the hook with status 1. */
 const runHook = async (name: string, rest: readonly string[], cwd: string) => {
+  // the workflow before a commit decides on the staged tree alone: the hook runs itself again in a checkout of the index, and obeys that run
+  if (name === 'pre-commit' && !process.env.QPU_STAGED_FROM) return (await inStagedTree(cwd, process.execPath, [MACHINE_RUNNER, 'hook', name, ...rest], (l) => console.log(l))).status === 0 ? 0 : 1
   const { call } = await import('./mcp.ts') as { call: Call }, { LITERAL_ROOTS } = await import('./audit.ts')
   const ask = (a: Record<string, unknown>) => { const r = call('repository', a); if (r.error) throw new Error(r.error.message); return r.result!.structuredContent }
   const git = async (...a: string[]) => (await spawnRun('git', a, { cwd })).stdout.trim()
@@ -296,6 +335,8 @@ if (process.argv[1] && SELF === fileURLToPath(new URL(process.argv[1], 'file://'
   const [, , action, ...rest] = process.argv
   // the arguments as JSON, or @<file> holding the JSON (a list of texts outgrows an argument)
   if (action === 'step') await runStepChild(rest[0]!, rest[1]?.startsWith('@') ? readFileSync(rest[1].slice(1), 'utf8') : rest[1] ?? '{}', rest.includes('--write'), process.cwd(), rest.includes('--json'))
+  // `staged <cmd> [args…]`: the command run in a checkout of the index (inStagedTree), its status the runner's
+  else if (action === 'staged') process.exitCode = (await inStagedTree(process.cwd(), rest[0]!, rest.slice(1), (l) => console.log(l))).status ?? 1
   else if (action === 'hook') process.exitCode = await runHook(rest[0] ?? '', rest.slice(1), process.cwd())
   else if (action === 'next') { const r = await runNext({ cwd: process.cwd(), offline: rest.includes('--offline'), fast: rest.includes('--fast'), generators: rest.includes('--generators') }); process.exitCode = r.red ? 1 : 0 }
   else if (action) { const r = await runMachine({ action, confirm: rest.includes('--confirm'), message: rest.includes('-m') ? rest[rest.indexOf('-m') + 1] : undefined, branch: rest.includes('--branch') ? rest[rest.indexOf('--branch') + 1] : undefined }, process.cwd()); console.log(JSON.stringify(r.answer)); process.exitCode = (r as { record?: { ok: boolean } }).record?.ok === false ? 1 : 0 }
