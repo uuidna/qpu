@@ -1,0 +1,54 @@
+# Cut qpu's next release: the tag one patch above the highest version GitHub or Zenodo holds (nextTag in
+# src/quantum/processing/release.ts), created at main's head as a GitHub release, which Zenodo archives as a new version
+# under the unit's concept DOI. Only a stable tree is released: it refuses unless alpine, lean-verify, site and test
+# have each passed on main's head, or, for a merge commit, on the pull request's head with the same tree. It refuses
+# unless src/quantum/package.json states the version, so the tagged tree names its own release. Started by hand on
+# main: a release is the author's act.
+name: release
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: release
+  cancel-in-progress: false
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 2
+      - name: every gate has passed on this tree
+        run: |
+          sha=$GITHUB_SHA
+          if head=$(git rev-parse -q --verify 'HEAD^2') && [ "$(git rev-parse 'HEAD^{tree}')" = "$(git rev-parse "$head^{tree}")" ]; then sha=$head; fi
+          for workflow in alpine lean-verify site test
+          do
+            passed=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$sha&per_page=100" \
+              --jq "[.workflow_runs[] | select(.name == \"$workflow\" and .conclusion == \"success\")] | length")
+            if [ "$passed" = "0" ]; then echo "::error::$workflow has not passed on $sha, so the tree is not released"; exit 1; fi
+          done
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 26
+      - name: the next tag, which the package states
+        id: next
+        run: |
+          tag=$(node --input-type=module -e "
+            import { nextTag, RELEASE_REPOSITORY, UNIT_CONCEPT_DOI } from './src/quantum/processing/release.ts'
+            const read = async (url, headers = {}) => { const r = await fetch(url, { headers: { accept: 'application/json', 'user-agent': 'qpu', ...headers } }); return r.ok ? r.json() : {} }
+            const [github, zenodo] = await Promise.all([
+              read('https://api.github.com/repos/' + RELEASE_REPOSITORY + '/releases/latest', { authorization: 'Bearer ' + process.env.GH_TOKEN }),
+              read('https://zenodo.org/api/records/' + UNIT_CONCEPT_DOI.slice(UNIT_CONCEPT_DOI.lastIndexOf('.') + 1))])
+            console.log(nextTag([github.tag_name, zenodo.metadata?.version]))")
+          version=$(node -p "require('./src/quantum/package.json').version")
+          if [ "v$version" != "$tag" ]; then echo "::error::the next tag is $tag, but src/quantum/package.json states $version"; exit 1; fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+      - name: the release at main's head
+        run: gh release create "${{ steps.next.outputs.tag }}" --target "$GITHUB_SHA" --title "${{ steps.next.outputs.tag }}" --generate-notes

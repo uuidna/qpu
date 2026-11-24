@@ -6,7 +6,7 @@ import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 import type { Rpc } from './audit.ts'
 import { extractFacts, createVerifyRequests, type VerifyRequest } from './verifiers.ts'
-import { listNumerals, translate } from './i18n.ts'
+import { LOCALES, listNumerals, translate } from './i18n.ts'
 import { THEOREMS } from './theorems-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { TABLES } from './tables-index.ts'
@@ -226,6 +226,8 @@ const indexOf = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads
 }
 /** The shapes a statement can carry and the door each opens, recognised before the token match. */
 type Pattern = { name: string; test: RegExp; tool: string; args: (m: RegExpMatchArray, statement: string) => Record<string, unknown>; shows: string }
+/** An expression of integers, exact; else its first integer. */
+const int = (s: string) => { try { if (/[+*^(]/.test(s)) return String(evaluate(s, {}).value) } catch { /* first integer */ } return /\d+/.exec(s)![0] }
 export const PATTERNS: readonly Pattern[] = [
   { name: 'uuid', test: /\b([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\b/i, tool: 'verify', args: (m) => ({ uuid: m[1]!.toLowerCase() }), shows: PROSE.quantumProcessingMatch_shows3 },
   { name: 'oeis', test: /\b(A\d{6})\b/, tool: 'leads', args: () => ({}), shows: PROSE.quantumProcessingMatch_shows4 },
@@ -233,13 +235,12 @@ export const PATTERNS: readonly Pattern[] = [
   { name: 'clay-technique', test: /\b(clay|register)\b.*\b(reflect|reflection|vortex|trinit)/i, tool: 'clay', args: () => ({ technique: 'reflection' }), shows: PROSE.quantumProcessingMatch_shows5 },
   { name: 'dashboard', test: /\b(?:dashboard|lay out|layout|combinations?|all (?:the )?(?:options|values)) (?:of |for )?([a-z_-]+)/i, tool: 'dashboard', args: (m) => ({ tool: m[1]!.toLowerCase() }), shows: 'a tool laid out whole' },
   { name: 'clone', test: /\bclone (?:the )?([a-z-]+)(?: toolbox)?(?: as ([a-z0-9-]+))?/i, tool: 'clone', args: (m) => ({ toolbox: m[1]!.toLowerCase(), ...(m[2] ? { as: m[2].toLowerCase() } : {}) }), shows: 'a toolbox cloned whole' },
-  { name: 'translate', test: /\btranslate\b\s*(?:"([^"]+)"|'([^']+)'|(.+?))\s+(?:to|into)\s+([a-z]{2})\b/i, tool: 'translate', args: (m) => ({ text: m[1] ?? m[2] ?? m[3] ?? '', from: 'en', to: m[4]!.toLowerCase() }), shows: 'a text translated by vocabulary' },
+  { name: 'translate', test: /\btranslate\b\s*(?:"([^"]+)"|'([^']+)'|(.+))\s+(?:to|into)\s+([a-z]+)\b/i, tool: 'translate', args: (m) => ({ text: m[1] ?? m[2] ?? m[3] ?? '', from: 'en', to: Object.keys(LOCALES).find((k) => LOCALES[k]!.name.toLowerCase() === m[4]!.toLowerCase()) ?? m[4]!.toLowerCase() }), shows: 'a text translated by vocabulary' },
   { name: 'css-of', test: /\b(?:css|stylesheet|colou?rs?|aura) (?:of |for )?([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\b/i, tool: 'css', args: (m) => ({ uuid: m[1]!.toLowerCase() }), shows: 'the CSS variables of a UUID' },
   { name: 'scan', test: /\bscan\b[^[]*(\[[\s\S]*\])/i, tool: 'verify', args: (m) => { try { return { scan: JSON.parse(m[1]!) } } catch { return { scan: [] } } }, shows: PROSE.quantumProcessingMatch_shows6 },
   { name: 'metrics', test: /\b(metrics|how many (?:tools|examples|theorems|leads)|coins paid)\b/i, tool: 'metrics', args: () => ({}), shows: 'the tree\'s metrics now' },
   { name: 'textbook', test: /\b(?:reuse|replay) (?:example )?([a-z0-9-]+)/i, tool: 'textbook', args: (m) => ({ reuse: m[1]!.toLowerCase() }), shows: 'an example reused by id' },
-  { name: 'shor', test: /\bfactor(?:ise|ize)?\s+(\d+)\b/i, tool: 'algorithm', args: (m) => ({ name: 'factor', integer: m[1]! }), shows: PROSE.quantumProcessingMatch_shows8 },
-  { name: 'prime', test: /\bis\s+(\d+)\s+(?:a\s+)?prime\b/i, tool: 'algorithm', args: (m) => ({ name: 'factor', integer: m[1]! }), shows: PROSE.quantumProcessingMatch_shows9 },
+  { name: 'shor', test: /\b(?:factor(?:ise|ize)?|is(?=[^a-z]+(?:a\s+)?prime\b))\s+(\d(?:[\d\s()+*^-]*[\d)])?)/i, tool: 'algorithm', args: (m) => ({ name: 'factor', integer: int(m[1]!) }), shows: PROSE.quantumProcessingMatch_shows8 },
   // an exploit is re-fused to patching: a hack, vulnerability, breach or CVE opens audit { repair } (a live patch, or a remediation lead), never a denial
   { name: 'repair', test: /\b(?:hack(?:ed|ing)?|exploit(?:ed|s|ing)?|vulnerab(?:le|ility|ilities)|breach(?:ed|es)?|compromis(?:e|ed)|malware|ransomware|CVE-\d{4}-\d{1,7})\b/i, tool: 'audit', args: (m, statement) => { const cve = /\bCVE-\d{4}-\d{1,7}\b/i.exec(statement)?.[0]; const mod = /\b(?:in|package|module|library|dependency|the)\s+([a-z0-9@._/-]{2,})/i.exec(statement)?.[1] ?? /\b(linux|kernel|openssl|openssh|glibc|systemd|sudo|log4j|node)\b/i.exec(statement)?.[1]; return { repair: [{ module: (mod ?? 'reported').toLowerCase(), severity: 'critical', ...(cve ? { cve } : {}), title: statement }] } }, shows: PROSE.quantumProcessingMatch_shows10 },
   // splitting under a bound (bytes): the quoted text, or the statement itself
@@ -416,7 +417,9 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
   if ('result' in reply) {
     const why = example ? example.expect(reply.result.structuredContent) : null
     // only the proven is admitted (legal_only_the_proven_is_admitted): a weak or unreplayed match is unknown, a discovery lead, never a false "served"
-    if (coverage < 0.7 || (example && why !== null)) return { statement, verdict: 'unknown', evidence: [proseFill(PROSE.quantumProcessingMatch_s22, example ? `example ${example.id}` : `tool ${tool}`, why !== null ? `does not replay as documented (${why})` : `covers only ${Math.round(coverage * 100)}% of the statement`)], tool: 'discover', coverage, ...around, lead: { ...asLead, status: 'open', tool: 'discover', reason: proseFill(PROSE.quantumProcessingMatch_reason23, Math.round(coverage * 100)) } }
+    // one shared word is no match
+    const share = top.kind === 'example' && top.hits === 2 && substantive.length > 1 ? 1 / substantive.length : coverage
+    if (share < 0.7 || (example && why !== null)) return { statement, verdict: 'unknown', evidence: [proseFill(PROSE.quantumProcessingMatch_s22, example ? `example ${example.id}` : `tool ${tool}`, why !== null ? `does not replay as documented (${why})` : `covers only ${Math.round(share * 100)}% of the statement`)], tool: 'discover', coverage, ...around, lead: { ...asLead, status: 'open', tool: 'discover', reason: proseFill(PROSE.quantumProcessingMatch_reason23, Math.round(share * 100)) } }
     return { statement, verdict: 'served', evidence: [example ? `example ${example.id}: ${why ?? 'as documented'}` : `tool ${tool} answered the call`], tool, call, result: reply.result.structuredContent, example: example?.id, coverage, weak: coverage < 0.7, ...around, lead: { ...asLead, status: 'served', tool } }
   }
   return { statement, verdict: 'impossible', evidence: [`tool ${tool} refused: ${reply.error.message}`], tool, call, ...around, lead: { ...asLead, status: 'blocked', reason: reply.error.message } }
@@ -428,7 +431,7 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
     const w: Witnesses = { present: [], missing: [], contradicted: [] }, put = (ok: boolean | null, why: string) => void w[ok === null ? 'missing' : ok ? 'present' : 'contradicted'].push(why)
     const negated = statement.search(NEGATION) >= 0, plain = statement.replace(NEGATION, () => ' '), served = m.verdict === 'served', proven = served && !!m.theorem && !m.call
     const computed = route?.theorems[0] ? evaluateRouted(route.theorems[0].theorem, statement) : null, example = examples.find((e) => e.id === m.example), theorem = THEOREMS.find((t) => t.key === m.theorem), door = allTools.find((t) => t.name === m.call?.name)
-    const relations = [...plain.matchAll(RELATION)].map((r) => r[0].trim()), inputs = [...leaves(m.call?.arguments ?? {}).flatMap((v) => (m.pattern ? numbers(v.replace(/_/g, () => ' ')) : [v])), ...(proven ? m.theorem!.split(/[_.]/) : []), ...Object.values(computed?.values ?? {})], has = (xs: string[], n: string) => xs.some((x) => agree(n, x))
+    const relations = [...plain.matchAll(RELATION)].map((r) => r[0].trim()), inputs = [...leaves(m.call?.arguments ?? {}).flatMap((v) => (m.pattern ? numbers(v.replace(/_/g, () => ' ')) : [v])), ...numbers(PATTERNS.find((p) => p.name === m.pattern)?.test.exec(statement)?.[0] ?? ''), ...(proven ? m.theorem!.split(/[_.]/) : []), ...Object.values(computed?.values ?? {})], has = (xs: string[], n: string) => xs.some((x) => agree(n, x))
     // a bound exceeded refutes when the answering door (or no door) is bounded by it; beside a door it does not bind it is a claim (Willow has 105 qubits)
     const onDoor = (property: string) => door ? !!door.inputSchema.properties?.[property] : !proven
     // a property with no maximum is not a ceiling. On the door that takes it, the number is within the call. Beside a door that does not take it, the claim checker still compares it with the answer.

@@ -84,7 +84,7 @@ The folders are [`LAYOUT.md`](./LAYOUT.md). `tsconfig.json` excludes `src/quantu
 | [`repositories.ts`](./processing/repositories.ts) | Fifteen quantumlib repositories. The matrix is [`REPOSITORIES.md`](./REPOSITORIES.md). |
 | [`toolboxes/`](./processing/toolboxes) | Eleven toolboxes, their tools counted by `textbook_mcp_tools_by_toolbox`. The names are [`TOOLBOXES.md`](./TOOLBOXES.md). |
 
-Tests sit next to the modules (`coin-uuid_test.ts`, `google-challenges_test.ts`, `cirq_test.ts`, `qec_test.ts`, `processor_test.ts`, `thousand-bit_test.ts`, and others). A test file is `*_test.ts`: lowercase, and the only punctuation is the extension. Run one with `node --experimental-strip-types --test <file>`. The website `package.json` has no script for that. The deploy workflow does not run these tests.
+Tests sit next to the modules (`coin-uuid_test.ts`, `google-challenges_test.ts`, `cirq_test.ts`, `qec_test.ts`, `processor_test.ts`, `thousand-bit_test.ts`, and others). A test file is `*_test.ts`: lowercase, and the only punctuation is the extension. Run one with `node --test <file>`. `npm test` runs them all.
 
 ## API
 

@@ -1,6 +1,6 @@
 # API
 
-[`index.ts`](index.ts) is the import. Run it from the repository root with `node --experimental-strip-types`. The website template does not mount this file, so there is no `/api/qpu/*` route. The detailed specification is [`README.md`](README.md). The unit is [`UNIT.md`](UNIT.md). The tools are [`TOOLBOXES.md`](TOOLBOXES.md).
+[`index.ts`](index.ts) is the import. Run it from the repository root with `node`. The detailed specification is [`README.md`](README.md). The unit is [`UNIT.md`](UNIT.md). The tools are [`TOOLBOXES.md`](TOOLBOXES.md).
 
 ```ts
 import { call, caller, chat, handle, uuid, seal } from './src/quantum/index.ts'
@@ -8,13 +8,13 @@ import { call, caller, chat, handle, uuid, seal } from './src/quantum/index.ts'
 
 ## Exports
 
-The UUID core, from [`uuid/index.ts`](uuid/index.ts): `uuid`, `reflection`, `seal`, `style`, `neighbours`, `block`, `verify`, `coins`, `quantumSku`, `organiseQubits`.
+The UUID core, from [`uuid/index.ts`](uuid/index.ts): `uuid`, `reflection`, `seal`, `style`, `neighbours`, `block`, `verify`, `coins`, `organiseQubits`.
 
 The unit, by `export *` from [`processing/unit`](processing/unit/index.ts): `QPU`, `tenantAddress`, the coil, the standards check, and `crypto1000Bit`.
 
 The call, from [`processing/index.ts`](processing/index.ts): `handle`, `handleBatch`, `call`, `caller`, `chat`, `TOOLBOXES`.
 
-Beside those: `os` is alpine, debian, and ubuntu. `calculator` is the integer calculator. `engine` is the default of the game seeds, and `seeds`, `play`, `impact`, and `capabilities` are its named exports. `plugins` is the twelve folder plugins.
+Beside those: `os` is alpine, debian, and ubuntu. `calculator` is the integer calculator. `engine` is the default of the game seeds, and `seeds`, `play`, `impact`, and `capabilities` are its named exports.
 
 ## A call
 
@@ -24,7 +24,7 @@ Beside those: `os` is alpine, debian, and ubuntu. `calculator` is the integer ca
 
 `handle` takes one message. An array is a batch. `handleBatch` answers a JSON-RPC array in order. The claimed role is decided before each call runs. A role that may not take the action gets an error, and that call does not run.
 
-The methods are `initialize`, `tools/list`, `tools/call`, `resources/list`, `resources/templates/list`, and `resources/read`. `initialize` answers protocol `2025-06-18`. The server name is `qpu` and the version is `1.4.0`.
+The methods are `initialize`, `tools/list`, `tools/call`, `resources/list`, `resources/templates/list`, and `resources/read`. `initialize` answers protocol `2025-06-18`. The server name is `qpu`; its version is the package's.
 
 A `tools/call` message is `{ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments } }`.
 

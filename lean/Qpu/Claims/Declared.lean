@@ -19,7 +19,7 @@ def treeTheorem? (env : Environment) (name : Name) (info : ConstantInfo) : Optio
   | .thmInfo _ =>
     match env.getModuleIdxFor? name with
     | some idx =>
-      let module := env.header.moduleNames[idx.toNat]!
+      let module := env.header.modules[idx.toNat]!.module
       if (`Qpu).isPrefixOf module then some module else none
     | none => none
   | _ => none

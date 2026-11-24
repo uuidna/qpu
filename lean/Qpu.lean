@@ -2,6 +2,7 @@ import Qpu.General.Meaning
 import Qpu.General.Meaning.Totient
 import Qpu.General.Meaning.Sum
 import Qpu.General.Meaning.Prime
+import Qpu.General.Meaning.Config
 import Qpu.General.Mint
 import Qpu.General.Lattice
 import Qpu.Processing.QuantumComputer

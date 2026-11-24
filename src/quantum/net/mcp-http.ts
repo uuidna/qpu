@@ -59,19 +59,15 @@ export const mcpServer = async (env: Env) => {
   const { info, tools, resources } = await surface(), terms = x402Of(env)
   const base = new McpServer({ name: info.serverInfo?.name ?? 'qpu', version: info.serverInfo?.version ?? '0' }, { instructions: info.instructions })
   const server = terms ? withX402(base, terms) : null
-  for (const t of tools) {
-    const schema = z.fromJSONSchema(t.inputSchema) as z.ZodObject
-    const run = async (args: Record<string, unknown>) => { const a = await kernel('tools/call', { name: t.name, arguments: args }); return (a.result ?? { content: [{ type: 'text', text: a.error?.message ?? 'no answer' }], isError: true }) as never }
-    if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations ?? {}, async (args: Record<string, unknown>) => sealSettlement(await run(args))).update({ _meta: t._meta })
-    else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations, _meta: t._meta }, run)
-  }
   // where the Worker binds the rooms and the Lean prover, their tools are tools like the kernel's, charged the same way
   const rooms = env.MAILBOX as MailboxNamespace | undefined, prover = env.PROVER as ProverNamespace | undefined
-  const bound = [...(rooms ? MESSAGING_TOOLS.map((t) => [t, (args: Record<string, unknown>) => callMessaging(rooms, t.name, args)] as const) : []), ...(prover ? PROVER_TOOLS.map((t) => [t, (args: Record<string, unknown>) => callProver(prover, args)] as const) : [])]
-  for (const [t, call] of bound) {
-    const schema = z.fromJSONSchema(t.inputSchema as never) as z.ZodObject, run = async (args: Record<string, unknown>) => (await call(args)) as never
-    if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations, async (args: Record<string, unknown>) => sealSettlement(await run(args)))
-    else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations }, run)
+  type Args = Record<string, unknown>
+  const all = [...tools.map((t: any) => [t, async (args: Args) => { const a = await kernel('tools/call', { name: t.name, arguments: args }); return a.result ?? { content: [{ type: 'text', text: a.error?.message ?? 'no answer' }], isError: true } }] as const), ...(rooms ? MESSAGING_TOOLS.map((t) => [t, (args: Args) => callMessaging(rooms, t.name, args)] as const) : []), ...(prover ? PROVER_TOOLS.map((t) => [t, (args: Args) => callProver(prover, args)] as const) : [])]
+  for (const [t, call] of all) {
+    // a schema's default is a choice shown, never an argument the client gave
+    const schema = z.fromJSONSchema(JSON.parse(JSON.stringify(t.inputSchema, (k, v) => (k === 'default' ? undefined : v)))) as z.ZodObject, run = async (args: Args) => (await call(args)) as never
+    if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations ?? {}, async (args: Args) => sealSettlement(await run(args))).update({ _meta: t._meta })
+    else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations, _meta: t._meta }, run)
   }
   for (const r of resources) base.registerResource(r.name, r.uri, { description: r.description, mimeType: r.mimeType }, async (uri: URL) => (await kernel('resources/read', { uri: uri.href })).result as never)
   return base
@@ -87,10 +83,11 @@ export const isMcp = (request: Request): boolean => {
 }
 
 /** The MCP endpoint at every path of MCP_PATHS: Streamable HTTP through the Agents SDK, the hostnames the tenants
- *  name (and those QPU_MCP_HOSTS adds) allowed, every origin allowed since no call rides a cookie: each carries its own payment. */
+ *  name (and those QPU_MCP_HOSTS adds) allowed, every origin allowed since no call rides a cookie. A tenant's host is free;
+ *  a call on an added host carries its own payment. */
 export const serveMcp = async (request: Request, env: Env = (globalThis as { process?: { env?: Env } }).process?.env ?? {}): Promise<Response> => {
   x402Of(env) // a tenant whose wallet is not an address is refused before anything is served
   const extra = typeof env.QPU_MCP_HOSTS === 'string' ? env.QPU_MCP_HOSTS.split(',').map((h) => h.trim()).filter(Boolean) : []
-  const handler = createMcpHandler(() => mcpServer(env), { route: new URL(request.url).pathname, responseMode: 'json', allowedHostnames: [...Object.keys(TENANTS), ...extra], allowedOriginHostnames: '*' })
+  const handler = createMcpHandler(() => mcpServer(new URL(request.url).hostname in TENANTS ? { ...env, QPU_X402_RECIPIENT: '' } : env), { route: new URL(request.url).pathname, responseMode: 'json', allowedHostnames: [...Object.keys(TENANTS), ...extra], allowedOriginHostnames: '*' })
   return handler(request, env, { waitUntil: () => {}, passThroughOnException: () => {}, props: {} } as unknown as Parameters<typeof handler>[2])
 }
