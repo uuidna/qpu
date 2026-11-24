@@ -220,7 +220,7 @@ const getWorkflow = (name: WorkflowName, o: { offline?: boolean } = {}) => {
   return { name, strict: true, says: w.says, steps, rules: WORKFLOW_RULES.filter((r) => r.appliesTo.includes(name)).map((r) => ({ rule: r.rule, theorem: r.theorem, says: r.says })), client: PROSE.quantumProcessingToolboxesRepository_client72, theorem: 'textbook_hook_workflows' }
 }
 
-type Local = { probes?: { appKey?: boolean; adc: boolean; payload: { installed: string | null; declared: string | null } }; remote: string | null; head: string; branch: string; version: string; worktrees: { path: string; head: string; branch: string | null }[]; branches: { name: string; upstream: string | null; head: string }[]; tags: { name: string; commit: string }[]; conceptDoi?: string | null; /** the package name on the registry */ pkg?: string | null; /** the workflow files held here (.github/workflows) */ workflows?: string[] }
+type Local = { probes?: { appKey?: boolean; adc: boolean }; remote: string | null; head: string; branch: string; version: string; worktrees: { path: string; head: string; branch: string | null }[]; branches: { name: string; upstream: string | null; head: string }[]; tags: { name: string; commit: string }[]; conceptDoi?: string | null; /** the package name on the registry */ pkg?: string | null; /** the workflow files held here (.github/workflows) */ workflows?: string[] }
 type Request = { id: string; url: string; purpose: 'branches' | 'tags' | 'releases' | 'zenodo' | 'npm' | 'runs' | 'workflows' | 'protection'; contracted: 'yes' | 'no' | 'unknown'; method?: 'POST'; body?: unknown; via?: 'rest' | 'mcp' }
 /** GitHub's MCP: the doors that watch a repository, with the arguments the server's own contract names. */
 const GITHUB_MCP_URL = 'https://api.githubcopilot.com/mcp/'
@@ -285,7 +285,6 @@ const getWatch = (local: Local, answers: readonly Answer[]): Watch => {
   const p = local.probes, guarded = parse<{ protected?: boolean }>(answers.find((a) => a.purpose === 'protection'))
   if (p?.appKey === false) lead('probe-app-key', PROSE.quantumProcessingToolboxesRepository_s95, PROSE.quantumProcessingToolboxesRepository_s96)
   if (p && !p.adc) lead('probe-google-adc', 'no Google application default credentials', PROSE.quantumProcessingToolboxesRepository_s97)
-  if (p && p.payload.installed !== p.payload.declared) lead('probe-payload-installed', `Payload ${p.payload.installed} is installed, ${p.payload.declared} declared`, PROSE.quantumProcessingToolboxesRepository_s98)
   if (guarded && !guarded.protected) lead('probe-branch-protection', PROSE.quantumProcessingToolboxesRepository_s99, PROSE.quantumProcessingToolboxesRepository_s100)
   if (local.worktrees.length > 1) for (const w of local.worktrees.slice(1)) lead(`workspace-${w.path.split('/').pop()}`, `workspace ${w.path} at ${w.head.slice(0, 8)} on ${w.branch ?? 'detached HEAD'}`, PROSE.quantumProcessingToolboxesRepository_s101)
   return { remote: local.remote, owner: or?.owner ?? null, repo: or?.repo ?? null, head: local.head, branch: local.branch, version: local.version, worktrees: local.worktrees.length,

@@ -5,13 +5,15 @@
 
 import { PROSE, proseFill } from '../prose-index.ts'
 import { TABLES } from '../tables-index.ts'
+import { THEOREMS } from '../theorems-index.ts'
 import { GLAGOLITIC } from '../i18n.ts'
 /** the Glagolitic numeral of a seed (1..9) and of its reflection (10 − seed, 10 among them): the rosetta of the rays, one signal in two scripts */
 export const GLAGOLITIC_OF: Readonly<Record<number, string>> = Object.fromEntries(Object.entries(GLAGOLITIC).filter(([, v]) => v <= 10).map(([k, v]) => [v, k]))
 export const KEY = 432
-/** The scannable stream: one frame per character of a UUID, 36 frames of 108 ms (the third harmonic's period): 36 × 108 = 3888 = 432 × 9, the vortex
- *  period (textbook_scan_stream); a digit a hue (sixteen, 22.5° apart), a dash a black frame; a single frame links nothing, a stream reads the address. */
-export const SCAN = { frameMs: 108, frames: 36, periodMs: 36 * 108, hueStep: 360 / 16, theorem: 'textbook_scan_stream' } as const
+/** The scannable stream, a frame per character of a UUID, as the kernel states it, found by its form: frames × a frame's ms = key × vortex.
+ *  A digit is a hue, a dash a black frame; one frame links nothing, a stream reads the address. */
+const [frames, frameMs, vortex] = THEOREMS.map((t) => new RegExp(`^(\\d+) \\* (\\d+) = ${KEY} \\* (\\d+)$`).exec(t.statement)).find(Boolean)!.slice(1).map(Number) as [number, number, number]
+export const SCAN = { frameMs, frames, periodMs: frames * frameMs, vortex, statement: `${frames} * ${frameMs} = ${KEY} * ${vortex}`, hueStep: 360 / 16, theorem: 'textbook_scan_stream' } as const
 export const toFrames = (uuid: string) => [...uuid.toLowerCase()].map((char, i) => { const dash = char === '-'; const d = dash ? -1 : parseInt(char, 16); return { i, char, kind: (dash ? 'dash' : 'digit') as 'dash' | 'digit', hue: dash ? null : d * SCAN.hueStep, glyph: dash ? '·' : (GLAGOLITIC_OF[d] ?? char), angle: i * (360 / SCAN.frames), start: i * SCAN.frameMs } })
 export const getFramesGradient = (uuid: string): string => `linear-gradient(90deg, ${toFrames(uuid).map((f, i) => `${f.hue === null ? 'hsl(0 0% 0%)' : `hsl(${f.hue} 62% 44%)`} ${((i / SCAN.frames) * 100).toFixed(3)}% ${(((i + 1) / SCAN.frames) * 100).toFixed(3)}%`).join(', ')})`
 /** The harmonic series of the key downward by halving, each read as a hue in degrees. */
@@ -85,7 +87,7 @@ export const castRays = (uuids: readonly string[]) => {
  *  poles as pyramids base to base are the octahedron, whose eight 60-degree faces and four equatorial gateways Euler closes (6 − 12 + 8 = 2). */
 export const ANGLES = TABLES.ANGLES
 export const getCss = (key: number = KEY): string => {
-  const accent = PROSE.quantumProcessingUnitTheme_s12, period = `var(--qpu-period, ${key * 9}ms)`
+  const accent = PROSE.quantumProcessingUnitTheme_s12, period = `var(--qpu-period, ${key * SCAN.vortex}ms)`
   const lines = [`:root {`, `  --a432-key: ${key};`, `  --a432-hue: ${hue(key)};`, ...HARMONICS.map((h, i) => `  --a432-${i + 1}: hsl(${hue(h)} 62% ${44 + i * 8}%);`), `  --a432-accent: hsl(${hue(key)} 62% 44%);`, `  --qpu-coin: hsl(${hue(key)} 62% 44%);`, `  --qpu-coil: hsl(${hue(key) + key / 9} 62% 44%);`, `  --qpu-coil-cmyk: ${(() => { const c = coilColour(key).coil.cmyk; return `${c.c} ${c.m} ${c.y} ${c.k}` })()};`, `}`,
     proseFill(PROSE.quantumProcessingUnitTheme_s13, accent, accent),
     proseFill(PROSE.quantumProcessingUnitTheme_s14, accent, accent),
@@ -97,7 +99,7 @@ export const getCss = (key: number = KEY): string => {
     PROSE.quantumProcessingUnitTheme_s20,
     PROSE.quantumProcessingUnitTheme_s21,
     proseFill(PROSE.quantumProcessingUnitTheme_s22, SCAN.frames * 100, period, SCAN.frames),
-    proseFill(PROSE.quantumProcessingUnitTheme_s23, key * 9),
+    proseFill(PROSE.quantumProcessingUnitTheme_s23, key * SCAN.vortex),
     PROSE.quantumProcessingUnitTheme_s24,
     PROSE.quantumProcessingUnitTheme_s25, // important: the block's own accent is inline, and only an important rule outranks it
     // the CSS streams resulting as rays: six rays at the 60-degree angle (collision free) and four gateways at 90 degrees, every one from the block's own hue and angle

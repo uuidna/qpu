@@ -4,7 +4,7 @@
 import { defineLoader } from 'vitepress'
 import { THEOREMS } from '../../../src/quantum/processing/theorems-index.ts'
 import { WILLOW } from '../../../src/quantum/processing/processor.ts'
-import { KEY } from '../../../src/quantum/processing/unit/theme.ts'
+import { KEY, SCAN } from '../../../src/quantum/processing/unit/theme.ts'
 import { FOLD } from './fold-index.ts'
 
 // The movie plays formulas, not names. Each entry is a formula as the kernel index prints it, and the movie plays every
@@ -47,19 +47,18 @@ export default defineLoader({
     const within = closed.filter((c) => !c.strict), bound = within.length ? Math.max(...within.map((c) => c.sides[1])) : null
     const separated = bound === null ? [] : closed.filter((c) => c.strict && c.sides[0] <= bound && bound < c.sides[1])
     const experiment = ({ key, statement, sides }: (typeof closed)[number]): Experiment => ({ key, statement, sides })
-    // The clock is one proven equality, found by its form: the closed equality of two products whose right side is
-    // the key times a number, frames × milliseconds = key × vortex. Its value is the period; the dial has as many
-    // hours as the key holds frames; an hour lasts as many frames as the vortex number, so a turn is that many frames
-    // for each hour. The digits and their bits are the fold plan's, which Lean writes (fold-index.ts).
-    const stream = THEOREMS.flatMap(({ statement }) => { const m = new RegExp(`^(\\d+) \\* (\\d+) = ${KEY} \\* (\\d+)$`).exec(statement); return m ? [{ statement, frames: Number(m[1]), frameMs: Number(m[2]), vortex: Number(m[3]) }] : [] })[0]
-    const hours = stream ? KEY / stream.frames : 0
-    const clock = stream ? { statement: stream.statement, frames: stream.frames, frameMs: stream.frameMs, periodMs: stream.frames * stream.frameMs, hours, hourMs: stream.vortex * stream.frameMs, turnMs: hours * stream.vortex * stream.frameMs, digits: FOLD.digits, bits: FOLD.halves.length } : null
+    // The clock is the scan stream the theme reads from the kernel's statement frames × milliseconds = key × vortex
+    // (SCAN): its value is the period; the dial has as many hours as the key holds frames; an hour lasts as many
+    // frames as the vortex number, so a turn is that many frames for each hour. The digits and their bits are the
+    // fold plan's, which Lean writes (fold-index.ts).
+    const hours = KEY / SCAN.frames
+    const clock = { statement: SCAN.statement, frames: SCAN.frames, frameMs: SCAN.frameMs, periodMs: SCAN.periodMs, hours, hourMs: SCAN.vortex * SCAN.frameMs, turnMs: hours * SCAN.vortex * SCAN.frameMs, digits: FOLD.digits, bits: FOLD.halves.length }
     const rcs = WILLOW.chips.randomCircuitSampling
     return {
       clock,
       played: played.filter((p) => p.keys.length > 0),
       experiments: { bound, within: within.map(experiment), separated: separated.map(experiment) },
-      missing: [...played.filter((p) => p.keys.length === 0).map((p) => p.formula), ...(clock ? [] : [`a * b = ${KEY} * c`])],
+      missing: [...played.filter((p) => p.keys.length === 0).map((p) => p.formula), ...[]],
       willow: { quantum: rcs.comparison.onWillow, classical: rcs.comparison.onClassicalSupercomputer, qubits: rcs.application.qubits, depth: rcs.application.depth },
     }
   },

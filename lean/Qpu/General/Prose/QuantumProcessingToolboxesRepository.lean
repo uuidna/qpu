@@ -101,7 +101,6 @@ def quantumProcessingToolboxesRepository_s94 : String := "a Zenodo version witho
 def quantumProcessingToolboxesRepository_s95 : String := "the hooks hold no Payload MCP key"
 def quantumProcessingToolboxesRepository_s96 : String := "security add-generic-password -s qpu-app-key -a \"$USER\" -w stores it in the keychain once, the user's act; until then penalties queue in .qpu and nothing waits"
 def quantumProcessingToolboxesRepository_s97 : String := "gcloud auth application-default login is the user's; the adapters answer keyless meanwhile"
-def quantumProcessingToolboxesRepository_s98 : String := "the install is the user's; the tree builds on the installed one meanwhile"
 def quantumProcessingToolboxesRepository_s99 : String := "main is not protected at the remote"
 def quantumProcessingToolboxesRepository_s100 : String := "the setting is the user's; the hooks enforce the rules meanwhile"
 def quantumProcessingToolboxesRepository_s101 : String := "a second workspace holds work the main one does not see; merge or record it"
