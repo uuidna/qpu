@@ -95,6 +95,7 @@ import Qpu.General.Prose.QuantumUuidProgramsRsaIndex
 import Qpu.General.Prose.QuantumUuidProgramsShadcnIndex
 import Qpu.General.Prose.ScriptsCloseProducts
 import Qpu.General.Prose.ScriptsDevelopLead
+import Qpu.General.Prose.ScriptsDoiRecord
 import Qpu.General.Prose.ScriptsLeanDerived
 import Qpu.General.Prose.ScriptsMcpUseCase
 import Qpu.General.Prose.ScriptsProseCheck

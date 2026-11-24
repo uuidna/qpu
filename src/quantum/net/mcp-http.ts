@@ -53,7 +53,8 @@ export const x402Of = (env: Env) => {
  *  into the answer's _meta, which seals it beside it as x402/receipt. */
 export const sealSettlement = <R extends { _meta?: Record<string, unknown> }>(r: R): R => ({ ...r, _meta: new Proxy({ ...r._meta }, { set: (m, k, v) => { m[k as string] = v; if (k === 'x402/payment-response') m['x402/receipt'] = receiptOf('x402', v); return true } }) })
 
-const DONATION = 'https://revolut.me/ceccec'
+/** Where a host that names no wallet asks for a donation. */
+export const DONATION = 'https://revolut.me/ceccec'
 
 /** One MCP SDK server over the kernel: each tool registered with its own schema, paid where the tenant names a wallet, free with a
  *  donation asked where it names none; the Worker serves it over Streamable HTTP, scripts/stdio.ts over stdio. */

@@ -53,9 +53,10 @@ def steps (all : List (String × Array String)) : IO UInt32 := do
 /-- The Lean file that writes the draft applications. -/
 def applicationsFile : String := "lean/tools/Applications.lean"
 
-/-- The scripts that render files from Lean, in the order they depend on each other. -/
+/-- The scripts that render files from Lean, in the order they depend on each other: the record Zenodo archives with each
+release reads the indexes the others leave. -/
 def renderers : List String :=
-  ["scripts/leanDerived.ts"]
+  ["scripts/leanDerived.ts", "scripts/doiRecord.ts"]
 
 /-- The Lean file that writes the prose index, where it writes it, and where the TypeScript reads it. -/
 def proseFile : String := "lean/tools/Prose.lean"
