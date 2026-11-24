@@ -304,7 +304,10 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   if (name === 'pre-commit') {
     const diff = await git('diff', '--cached', '-U0', '--no-color', '--no-renames', '--', ...LITERAL_ROOTS), generated: string[] = []
     for (const f of [...diff.matchAll(/^\+\+\+ b\/(.+)$/gm)].map((m) => m[1]!)) if (GENERATED.test((await git('show', `:${f}`)).slice(0, 800))) generated.push(f)
-    facts.staged = { diff, generated }
+    // a merge adds no file the merged branch already holds: those paths are named, so a rule reading additions reads only this commit's own
+    const added = (await git('diff', '--cached', '--name-only', '--diff-filter=A', '--no-renames', '--', ...LITERAL_ROOTS)).split('\n').filter(Boolean)
+    const parents = added.length && (await git('rev-parse', '-q', '--verify', 'MERGE_HEAD')) ? (await git('ls-tree', '-r', '--name-only', 'MERGE_HEAD', '--', ...added)).split('\n').filter(Boolean) : []
+    facts.staged = { diff, generated, ...(parents.length ? { parents } : {}) }
     // every tool call imprinted: each example and each tool's own call is asked once, the answers that took a second or more are kept under
     // their addresses in the memory of this code, and all are asked again; the slowest read is the time the rule folded reads
     const kernel = await import('./mcp.ts') as unknown as { handle: (m: object) => unknown; balancerLoad: (b: readonly Block[]) => number; balancerSnapshot: (p: { onlyNew?: boolean }) => Block[] }
