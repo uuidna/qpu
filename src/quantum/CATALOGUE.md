@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1576 products, 2 under a declared claim context and 1574 as the author's own statement, with 1076 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1578 products, 2 under a declared claim context and 1576 as the author's own statement, with 1076 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -1213,12 +1213,29 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (sizes : List ℕ), (∀ s ∈ sizes, 2 ≤ s) → 2 ^ sizes.length ≤ Advantage.space sizes
 ```
 
+### `Advantage.unrank_cons_address`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (s : ℕ) (rest : List ℕ) (i : ℕ),
+  Advantage.unrank (s :: rest) i = i / Advantage.space rest % s :: Advantage.unrank rest i
+```
+
 ### `Advantage.unrank_length`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
 ∀ (sizes : List ℕ) (i : ℕ), (Advantage.unrank sizes i).length = sizes.length
+```
+
+### `Advantage.unrank_mod`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (sizes : List ℕ) (k i : ℕ), Advantage.unrank sizes (i % (k * Advantage.space sizes)) = Advantage.unrank sizes i
 ```
 
 ### `Advantage.uuid_address`
