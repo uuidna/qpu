@@ -4,7 +4,7 @@
 
 import { listGaps } from './gaps.ts'
 import { scripts, type ScriptsArgs } from './script-doors.ts'
-import { CHAT_SHARE, CLAY_FIRST, FORMULA, INSERT_SCHEMA, LEAN_RESOURCE, NIBBLE_PRIMES, OFFICIAL_PLUGINS, PROTOCOL_VERSION } from './config-index.ts'
+import { CHAT_SHARE, CLAY_FIRST, COIN_QUBIT_SPACE, FORMULA, INSERT_SCHEMA, LEAN_RESOURCE, NIBBLE_PRIMES, OFFICIAL_PLUGINS, PROTOCOL_VERSION } from './config-index.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 import { GOOGLE_MCPS, QPU_MCP, mcpHostList } from './discovery.ts'
 import { GOOGLE_DOOR, bindGoogleCall } from './toolboxes/google.ts'
@@ -308,6 +308,7 @@ const factorExit = (complete: boolean, receipt?: string, digest?: string, leftov
   return { ...row, closed: complete, open: !complete, status: complete ? 'factored' as const : 'open' as const, ...(receipt ? { receipt, readingSha256: digest } : {}), next }
 }
 
+const FORMULA_HOOKS = { manual: false as const, process: 'ISO 9001' as const, hooks: ['beforeChange', 'afterChange', 'afterRead'] as const, beforeChange: 'the formula is recorded' as const, afterChange: PROSE.quantumProcessingIsoDevelop_s12, afterRead: 'the documented formula is served' as const }
 const coverLeftovers = (left: readonly bigint[]) => {
   const developed = left.map((part) => {
     const width = part.toString(2).length
@@ -318,8 +319,7 @@ const coverLeftovers = (left: readonly bigint[]) => {
   })
   const cover = entriesCover(developed.map((row) => ({ from: row.from, body: { code: 1, strategy: 'nonconforming', standard: 'ISO 9001', bits: row.width, formula: row.formula, iso: row.served.iso, docs: row.served.docs } })))
   return {
-    ...cover, via: 'hooks' as const, manual: false as const, process: 'ISO 9001' as const, hooks: ['beforeChange', 'afterChange', 'afterRead'] as const,
-    beforeChange: 'the formula is recorded' as const, afterChange: PROSE.quantumProcessingIsoDevelop_s12, afterRead: 'the documented formula is served' as const,
+    ...cover, via: 'hooks' as const, ...FORMULA_HOOKS,
     documented: developed.every((row) => row.documented),
     developed: developed.map((row) => ({ from: row.from, bits: row.width, formula: row.formula, documented: row.documented })),
   }
@@ -877,8 +877,7 @@ const portToZero = (parts: readonly bigint[]) => {
     bit: 0 as const, bits: 0 as const, via: 'clay' as const,
     theorems: combos.products.length, axioms: combos.axioms.length, crossVerified: combos.crossVerified, verified: combos.verified, combinations: combos.space, problems: combos.problems, solved: combos.solved, depth: combos.depth,
     rows,
-    hooks: ['beforeChange', 'afterChange', 'afterRead'] as const, beforeChange: 'the formula is recorded' as const, afterChange: PROSE.quantumProcessingIsoDevelop_s12, afterRead: 'the documented formula is served' as const,
-    manual: false as const, process: 'ISO 9001' as const, documented,
+    ...FORMULA_HOOKS, documented,
     open: true as const, closed: false as const, status: 'open' as const,
     holds: false as const,
   }
@@ -2654,7 +2653,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       if (!asked.access) return { jsonrpc: '2.0', id, error: { code: INVALID_PARAMS, message: proseFill(PROSE.quantumProcessingMcp_message421, asked.role, asked.action), data: { rbac: asked } } }
       askedFirst = { server: asked.server, one: asked.one, first: asked.first, asked: asked.asked, tool: asked.tool }
     }
-    if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online] }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
+    if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online] }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${INSTRUCTIONS}\n\n${proseFill(PROSE.quantumProcessingMcp_scale, COIN_QUBIT_SPACE)}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
     // every tool declares its UI resource (MCP Apps, _meta.ui.resourceUri): a host that negotiates the extension renders the tool's result through it
     // every tool listed widget-skilled: its UI resource (the widget) and its toolbox's skill (the instructions a client follows, the directions it tests in)
     if (message.method === 'tools/list') {

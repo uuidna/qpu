@@ -578,13 +578,14 @@ const extended = (a: bigint, n: bigint): { inv: bigint } | { factor: bigint } =>
   while (r) { const q = old / r; [old, r] = [r, old - q * r]; [os, s] = [s, os - q * s] }
   return old === 1n ? { inv: residue(os, n) } : { factor: old < 0n ? -old : old }
 }
+// coordinates are residues in [0, N), so every operand below is kept non-negative and one % N reduces it
 const pointDouble = (x: bigint, z: bigint, a24: bigint, N: bigint): [bigint, bigint] => {
-  const s = residue((x + z) * (x + z), N), d = residue((x - z) * (x - z), N), diff = residue(s - d, N)
-  return [residue(s * d, N), residue(diff * residue(d + a24 * diff, N), N)]
+  const s = (x + z) ** 2n % N, d = (x - z) ** 2n % N, diff = s - d + N
+  return [s * d % N, diff * (d + a24 * diff % N) % N]
 }
 const pointAdd = (xp: bigint, zp: bigint, xq: bigint, zq: bigint, xd: bigint, zd: bigint, N: bigint): [bigint, bigint] => {
-  const h = residue((xp - zp) * (xq + zq), N), g = residue((xp + zp) * (xq - zq), N), sum = residue(h + g, N), dif = residue(h - g, N)
-  return [residue(zd * sum * sum, N), residue(xd * dif * dif, N)]
+  const h = (xp - zp + N) * (xq + zq) % N, g = (xp + zp) * (xq - zq + N) % N
+  return [zd * ((h + g) ** 2n % N) % N, xd * ((h - g) ** 2n % N) % N]
 }
 const pointMul = (x: bigint, z: bigint, a24: bigint, e: bigint, N: bigint): [bigint, bigint] => {
   if (e <= 1n) return [x, z]
@@ -609,22 +610,19 @@ const suyama = (sigma: bigint, N: bigint): { factor: bigint } | { x: bigint; z: 
   const num = residue(diff * diff * diff * residue(3n * u + v, N), N)
   return { x: residue(u * u * u, N), z: residue(v * v * v, N), a24: residue(num * inv.inv, N) }
 }
-/** Stage 2 walks odd multipliers of the stage-1 point and multiplies the Z coordinates of the prime steps. */
+/** Stage 2 by baby steps j·P (odd j ≤ D/2) and giant steps k·D·P: a prime q = kD ± j in (B1, B2] sends P to infinity mod a factor p
+ *  exactly when X_k·Z_j − X_j·Z_k vanishes mod p, so each prime costs one cross product and each D one point addition. */
 const ecmStage2 = (x: bigint, z: bigint, a24: bigint, N: bigint, B1: number, B2: number) => {
-  const start = B1 + 1 + (B1 % 2)
-  if (start > B2) return 1n
-  const composite = new Uint8Array(B2 + 1)
-  for (let i = 2; i * i <= B2; i++) if (!composite[i]) for (let j = i * i; j <= B2; j += i) composite[j] = 1
-  const two = pointDouble(x, z, a24, N)
-  let prev = pointMul(x, z, a24, BigInt(start - 2), N)
-  let cur = pointMul(x, z, a24, BigInt(start), N)
-  let prod = 1n
-  for (let m = start; m <= B2; m += 2) {
-    if (!composite[m]) prod = residue(prod * (cur[1] === 0n ? 1n : cur[1]), N)
-    if (cur[1] === 0n) return N
-    const next = pointAdd(cur[0], cur[1], two[0], two[1], prev[0], prev[1], N)
-    prev = cur; cur = next
-    if (((m - start) & 255) === 0) { const g = gcdBig(prod, N); if (g > 1n && g < N) return g; prod = 1n }
+  const D = 210, two = pointDouble(x, z, a24, N), baby: [bigint, bigint][] = [[x, z]]
+  while (baby.length < D / 4) baby.push(pointAdd(...baby.at(-1)!, ...two, ...(baby.at(-2) ?? baby[0]!), N))
+  let k = Math.round((B1 + 1) / D), prod = 1n, back = pointMul(x, z, a24, BigInt((k - 1) * D), N), g = pointMul(x, z, a24, BigInt(k * D), N)
+  const step = pointMul(x, z, a24, BigInt(D), N)
+  for (const q of primesTo(B2)) {
+    if (q > B2) break
+    if (q <= B1) continue
+    for (; q > k * D + D / 2; k++) [back, g] = [g, pointAdd(...g, ...step, ...back, N)]
+    const [bx, bz] = baby[Math.abs(q - k * D) >> 1]!
+    prod = prod * ((g[0] * bz - bx * g[1]) % N + N) % N
   }
   return gcdBig(prod, N)
 }

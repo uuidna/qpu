@@ -471,4 +471,5 @@ def quantumProcessingMcp_s433 : String := "nodes is an integer of at least 2"
 def quantumProcessingMcp_s434 : String := "steps is an integer of at least 4"
 def quantumProcessingMcp_s435 : String := "a program is a list of operations"
 
+def quantumProcessingMcp_scale : String := "To scale a long task, split its list with shard { list, index, count: ⟦0⟧ }, one call for each index below ⟦0⟧: the shares cover the list exactly once (textbook_shards_cover, textbook_shards_disjoint). Every answer is sealed under its address, so an answer already held is checked with verify { uuid, content } in one step and is not asked again (textbook_court_audits_repo)."
 end Prose
