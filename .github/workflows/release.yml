@@ -3,7 +3,8 @@
 # under the unit's concept DOI. Only a stable tree is released: it refuses unless alpine, lean-verify, site and test
 # have each passed on main's head, or, for a merge commit, on the pull request's head with the same tree. It refuses
 # unless src/quantum/package.json states the version, so the tagged tree names its own release. Started by hand on
-# main: a release is the author's act.
+# main: a release is the author's act. Its note is the description of .zenodo.json, the record the build writes and Zenodo
+# reads from the tagged tree, so the note and the archived record state the same achievements, open claims and funding.
 name: release
 on:
   workflow_dispatch:
@@ -51,4 +52,6 @@ jobs:
           if [ "v$version" != "$tag" ]; then echo "::error::the next tag is $tag, but src/quantum/package.json states $version"; exit 1; fi
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
       - name: the release at main's head
-        run: gh release create "${{ steps.next.outputs.tag }}" --target "$GITHUB_SHA" --title "${{ steps.next.outputs.tag }}" --generate-notes
+        run: |
+          jq -r .description .zenodo.json > "$RUNNER_TEMP/notes.html"
+          gh release create "${{ steps.next.outputs.tag }}" --target "$GITHUB_SHA" --title "${{ steps.next.outputs.tag }}" --notes-file "$RUNNER_TEMP/notes.html"

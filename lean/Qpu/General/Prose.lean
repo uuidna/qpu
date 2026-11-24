@@ -8,7 +8,6 @@ import Qpu.General.Prose.QuantumNetMessaging
 import Qpu.General.Prose.QuantumNetProver
 import Qpu.General.Prose.ScriptsStdio
 import Qpu.General.Prose.SiteVitepressConfig
-import Qpu.General.Prose.LeanToolsZenodo
 import Qpu.General.Prose.QuantumOsAlpinePackages
 import Qpu.General.Prose.QuantumPasswordAddress
 import Qpu.General.Prose.QuantumPayloadDeploy
@@ -96,6 +95,7 @@ import Qpu.General.Prose.QuantumUuidProgramsRsaIndex
 import Qpu.General.Prose.QuantumUuidProgramsShadcnIndex
 import Qpu.General.Prose.ScriptsCloseProducts
 import Qpu.General.Prose.ScriptsDevelopLead
+import Qpu.General.Prose.ScriptsDoiRecord
 import Qpu.General.Prose.ScriptsLeanDerived
 import Qpu.General.Prose.ScriptsMcpUseCase
 import Qpu.General.Prose.ScriptsProseCheck
