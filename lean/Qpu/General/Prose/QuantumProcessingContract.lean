@@ -21,5 +21,6 @@ def quantumProcessingContract_clock : String := "reads the clock and the process
 def quantumProcessingContract_showsSummary : String := "The leads as counts alone: no lead is listed, and the counts by status and by tool sum to the total."
 def quantumProcessingContract_showsPage : String := "The first five open leads and the offset of the page that follows."
 def quantumProcessingContract_showsTool : String := "The leads of one door alone, counted: those whose tool is processor."
+def quantumProcessingContract_outputBrief : String := "An object of ⟦0⟧ key(s); tools/list with tools naming ⟦1⟧ states them (textbook_context_balanced)."
 
 end Prose

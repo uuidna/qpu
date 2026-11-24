@@ -13,8 +13,11 @@ import { serveMcp } from './mcp-http.ts'
 import { MESSAGING_TOOLS } from './messaging.ts'
 import { PROVER_TOOLS } from './prover.ts'
 
-type Listed = { name: string; description: string; inputSchema: { properties?: Record<string, { description?: string; type?: unknown; anyOf?: unknown; enum?: unknown; examples?: unknown[] }>; 'x-alternatives'?: { oneOf: { inputs: string[]; with: string[] }[] } }; outputSchema?: { type?: string; properties?: Record<string, { type?: unknown }> }; annotations?: { readOnlyHint?: boolean; idempotentHint?: boolean }; _meta?: { state?: { writes?: boolean; idempotent?: boolean } } }
-const kernel = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: Listed[] } }).result.tools
+type Listed = { name: string; description: string; inputSchema: { properties?: Record<string, { description?: string; type?: unknown; anyOf?: unknown; enum?: unknown; examples?: unknown[] }>; 'x-alternatives'?: { oneOf: { inputs: string[]; with: string[] }[] } }; outputSchema?: { type?: string; description?: string; properties?: Record<string, { type?: unknown }> }; annotations?: { readOnlyHint?: boolean; idempotentHint?: boolean }; _meta?: { state?: { writes?: boolean; idempotent?: boolean } } }
+const listed = (params?: object) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', ...(params ? { params } : {}) }) as { result: { tools: Listed[]; _meta: { context: { tokens: number; fullTokens: number; saved: number } } } }).result
+const kernel = listed().tools
+/** The contract with every key and worked example: the list where the tools are named. */
+const detailed = listed({ tools: kernel.map((t) => t.name) }).tools
 const failed = (name: string, args: object) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { error?: { code: number; message: string; data: { code: string; kind: string; error: string } } }).error
 const bound = { PROVER: { getByName: () => ({ fetch: async () => Response.json({ ok: true, timedOut: false, ms: 1, messages: [], toolchain: 'x' }) }) }, MAILBOX: { getByName: () => ({ post: async () => ({ seq: 1 }), read: async () => [] }) } }
 const post = (body: object, accept: string, env: Record<string, unknown> = bound) => serveMcp(new Request('https://qpu.uuidna.com/api/mcp', { method: 'POST', headers: { host: 'qpu.uuidna.com', 'content-type': 'application/json', accept }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, ...body }) }), env)
@@ -27,15 +30,24 @@ test('tools/list alone is readable: every description is a whole sentence, every
   const fold = kernel.find((t) => t.name === 'fold')!, seal = kernel.find((t) => t.name === 'seal')!
   assert.ok(fold.inputSchema.properties!.superpositions!.description!.length > 20)
   assert.match(seal.inputSchema.properties!.merkle!.description!, /\{ leaves \}.*inclusion proof/)
-  assert.deepEqual(seal.inputSchema.properties!.merkle!.examples, [{ leaves: ['a', 'b', 'c'], index: 1 }])
-  const inputs = kernel.flatMap((t) => Object.entries(t.inputSchema.properties ?? {}).map(([k, p]) => ({ at: `${t.name}.${k}`, p })))
+  assert.deepEqual(detailed.find((t) => t.name === 'seal')!.inputSchema.properties!.merkle!.examples, [{ leaves: ['a', 'b', 'c'], index: 1 }])
+  // the list asked whole costs an agent less context than the whole contract: on 2026-11-24 it cost more (47,762 tokens against 45,863)
+  const asked = listed()._meta.context, one = listed({ tools: ['seal'] })._meta.context
+  assert.ok(asked.saved > 0 && asked.tokens * 4 < asked.fullTokens * 3, JSON.stringify(asked))
+  assert.ok(one.tokens * 4 < one.fullTokens, JSON.stringify(one))
+  assert.match(seal.outputSchema!.description!, /tools\/list with tools naming seal/)
+  // the one text tells agents the same numbers, written by its generator from tools/list (agentContext in scripts/oneText.ts)
+  const readme = readFileSync('README.md', 'utf8'), stated = listed({ statement: 'factor an integer with Shor' })._meta.context
+  assert.ok(readme.includes('## For agents'))
+  for (const [call, c] of [['`{}`', asked], ['`{"statement":"factor an integer with Shor"}`', stated], ['`{"tools":["seal"]}`', one]] as const) assert.ok(readme.includes(`| ${call} | `) && readme.includes(` | ${c.tokens} | ${c.saved} |`), call)
+  const inputs = detailed.flatMap((t) => Object.entries(t.inputSchema.properties ?? {}).map(([k, p]) => ({ at: `${t.name}.${k}`, p })))
   assert.deepEqual(inputs.filter(({ p }) => p.description === undefined && p.type === undefined && p.anyOf === undefined && p.enum === undefined).map((i) => i.at), [])
-  assert.deepEqual(inputs.filter(({ p }) => typeof p.description === 'string' && /\b(true|schema|Currency)$/.test(p.description)).map((i) => i.at), [])
+  assert.deepEqual(kernel.flatMap((t) => Object.entries(t.inputSchema.properties ?? {}).map(([k, p]) => ({ at: `${t.name}.${k}`, p }))).filter(({ p }) => typeof p.description === 'string' && /\b(true|schema|Currency)$/.test(p.description)).map((i) => i.at), [])
   // an example beside an input is an argument a worked example passes; the inputs still without one are counted so the number only falls
   const without = inputs.filter(({ p }) => !p.examples).length
   assert.ok(without <= 190, `${without} of ${inputs.length} inputs have no worked example`)
   for (const t of kernel) assert.equal(t.outputSchema?.type, 'object', t.name)
-  assert.ok(kernel.filter((t) => Object.keys(t.outputSchema!.properties ?? {}).length > 0).length >= 45)
+  assert.ok(detailed.filter((t) => Object.keys(t.outputSchema!.properties ?? {}).length > 0).length >= 45)
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the output schemas and input examples are the ones the worked examples witness today, and every example's answer has only stated types. */
@@ -44,7 +56,7 @@ test('the output schemas and input examples are the ones the worked examples wit
   assert.equal(readFileSync(written.path, 'utf8'), written.text, 'run: node src/quantum/processing/machine-run.ts step textbook \'{"scripts":{"outputs":true}}\' --write')
   const kind = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v === 'number' ? (Number.isInteger(v) ? 'integer' : 'number') : typeof v)
   const e = EXAMPLES.find((x) => x.id === 'seal-merkle') ?? EXAMPLES.find((x) => x.tool === 'seal')!, s = call(e.tool, e.arguments).result!.structuredContent as Record<string, unknown>
-  const stated = kernel.find((t) => t.name === e.tool)!.outputSchema!.properties!
+  const stated = detailed.find((t) => t.name === e.tool)!.outputSchema!.properties!
   for (const [k, v] of Object.entries(s)) { const t = [stated[k]?.type].flat(); assert.ok(t.includes(kind(v)) || (kind(v) === 'integer' && t.includes('number')), `${e.tool}.${k}: ${kind(v)} not in ${t}`) }
 })
 
@@ -125,7 +137,7 @@ test('one count of tools everywhere, one version, and a client that accepts JSON
   assert.equal(served.length, metrics.toolsServed)
   // through the Worker every tool, the bound ones too, states its output and what a second call answers
   for (const t of served) assert.deepEqual([t.outputSchema?.type, typeof t.annotations?.idempotentHint, typeof t._meta?.state?.writes], ['object', 'boolean', 'boolean'], t.name)
-  assert.ok(Object.keys(served.find((t) => t.name === 'seal')!.outputSchema!.properties ?? {}).length > 5)
+  assert.match(served.find((t) => t.name === 'seal')!.outputSchema!.description!, /An object of \d+ key/)
   // a client that accepts the stream still gets it, and a refusal has the one shape through the Worker too
   const stream = await post({ method: 'tools/call', params: { name: 'fold', arguments: { text: 'abc', combinatorics: true } } }, 'application/json, text/event-stream')
   const refused = JSON.parse((await stream.text()).replace(/^[\s\S]*?data: /, '')).result
