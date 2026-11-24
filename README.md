@@ -12,7 +12,7 @@ The theorems written by hand, by family: Qpu.General.Textbook 743, Qpu.Processin
 
 360 textbook theorems, and a catalogue of 1197 products in 505 variants, each product a theorem of the kernel.
 
-50 tools are served over MCP: the kernel's 47, and 3 where the Worker binds its rooms and its Lean prover. The audit replays 514 worked examples against the kernel's tools; every answer is a block sealed under its UUID.
+50 tools are served over MCP: the kernel's 47, and 3 where the Worker binds its rooms and its Lean prover. The audit replays 515 worked examples against the kernel's tools; every answer is a block sealed under its UUID.
 
 ## Quantum capacity, utilised by receipts
 
@@ -82,7 +82,7 @@ theorem textbook_hexbit_gateway_ftl : 32 * 4 - 4 - 2 = 122 ∧ 2 = 2 ∧ 1 < 16 
 | --- | --- |
 | stable | true |
 | release | allowed |
-| entropy.files | 810 |
+| entropy.files | 811 |
 | entropy.leads | 0 |
 | entropy.occurrences | 0 |
 | entropy.byKind | \{\} |
@@ -307,14 +307,14 @@ Every source and proof this text rests on, each a link: the doors to call, the p
 - Qpu.Processing.Verify.Gate, proving `Qpu.Verify.Gate.h_z_h_is_two_x`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean>
 ---
 
-This text is one build receipt. Its UUID 71a61645-9b15-72a2-87d8-13e5ad03979c is the address of the text above it, and its SHA-256 is f52cf3e6a366cf02ecf8e8193f3d9a6b28f2130b46af94732593c448f4dbb71f. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify \{ uuid, content \} at <https://qpu.uuidna.com/api/mcp>.
+This text is one build receipt. Its UUID c83fe63a-e740-840e-9910-6e7974de3a8a is the address of the text above it, and its SHA-256 is 4bc1bec0060d12846bee0a0b2addc4cb80262a06637de01542d62997dc86c127. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify \{ uuid, content \} at <https://qpu.uuidna.com/api/mcp>.
 
 <!-- hardware -->
 
 ## Hardware of the build that minted this receipt
 
-Every value below was read from the machine during the build, and its UUID 1332c09e-3738-75d1-b5db-6a2cb8a2dc2e is the address of the JSON beneath it, verifiable with verify \{ uuid, content \} like the text above. The machine holds an exact state vector of 31 qubits, since n qubits span 2^n basis states (Vocabulary.system\_dimension) at 16 bytes per complex amplitude; Willow has 105 qubits and Sycamore 54, as the processor door states them, and one UUID register carries 122 (Qubit.effective\_formula). The build took 2989 ms.
+Every value below was read from the machine during the build, and its UUID 2ee2762f-76ae-2705-bc4a-81f63e08f685 is the address of the JSON beneath it, verifiable with verify \{ uuid, content \} like the text above. The machine holds an exact state vector of 31 qubits, since n qubits span 2^n basis states (Vocabulary.system\_dimension) at 16 bytes per complex amplitude; Willow has 105 qubits and Sycamore 54, as the processor door states them, and one UUID register carries 122 (Qubit.effective\_formula). The build took 3004 ms.
 
 ```json
-{"platform":"darwin","release":"27.2.0","arch":"arm64","endianness":"LE","cpu":"Apple M1 Max","cores":10,"parallelism":10,"cpuMHz":2400,"memoryBytes":34359738368,"freeMemoryBytes":3486089216,"load1":4.89794921875,"load5":6.56689453125,"load15":7.01611328125,"uptimeS":94644,"node":"26.13.1","v8":"14.6.202.34-node.40","lean":"leanprover/lean4:v4.33.0","rssBytes":327434240,"heapUsedBytes":128020608,"stateVectorQubits":31,"registersInMemory":2147483648,"registerQubitsInMemory":261993005056,"willowQubits":105,"sycamoreQubits":54,"registerQubits":122,"buildMs":2989,"at":"2026-11-24T19:04:06.997Z"}
+{"platform":"darwin","release":"27.2.0","arch":"arm64","endianness":"LE","cpu":"Apple M1 Max","cores":10,"parallelism":10,"cpuMHz":2400,"memoryBytes":34359738368,"freeMemoryBytes":4979687424,"load1":5.6103515625,"load5":6.7001953125,"load15":7.62158203125,"uptimeS":95812,"node":"26.13.1","v8":"14.6.202.34-node.40","lean":"leanprover/lean4:v4.33.0","rssBytes":332251136,"heapUsedBytes":120314720,"stateVectorQubits":31,"registersInMemory":2147483648,"registerQubitsInMemory":261993005056,"willowQubits":105,"sycamoreQubits":54,"registerQubits":122,"buildMs":3004,"at":"2026-11-24T19:23:34.482Z"}
 ```
