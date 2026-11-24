@@ -4,20 +4,21 @@
 // x402 price, the licence and the calls the compete door found open). Zenodo's GitHub integration reads .zenodo.json at the
 // tagged commit, so the record a version carries is the build that version is. With --check nothing is written and a
 // difference fails. The release note is the record's description, which the release workflow reads from .zenodo.json.
-import { readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { PROSE, proseFill } from '../src/quantum/processing/prose-index.ts'
 import { GENERATED_LEMMAS, KERNEL_THEOREMS, NOVELTIES, OPEN_CLAIMS, THEOREMS } from '../src/quantum/processing/theorems-index.ts'
 import { TEXTBOOK_INDEX } from '../src/quantum/processing/textbook-index.ts'
 import { NESTED_COUNTS } from '../src/quantum/processing/nested-index.ts'
 import { CLAIMS } from '../src/quantum/processing/claims-index.ts'
 import { TABLES } from '../src/quantum/processing/tables-index.ts'
+import { TENANTS } from '../src/quantum/processing/config-index.ts'
 import { EXAMPLES } from '../src/quantum/processing/examples.ts'
 import { TOOLBOXES, handle } from '../src/quantum/processing/mcp.ts'
 import { DONATION, callPriceUsd } from '../src/quantum/net/mcp-http.ts'
 import { LICENSE, PRECEDENCE } from '../src/quantum/processing/unit/license.ts'
 import { RELEASE_REPOSITORY, UNIT_CONCEPT_DOI } from '../src/quantum/processing/release.ts'
 
-const RECORD = '.zenodo.json'
+const RECORD = '.zenodo.json', README = 'README.md'
 const pkg = JSON.parse(readFileSync('src/quantum/package.json', 'utf8')) as { name: string; version: string; description: string }
 const LEAN_AXIOMS = new Set(['propext', 'Classical.choice', 'Quot.sound'])
 
@@ -71,8 +72,9 @@ const sections = [
 const escape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 const html = sections.map((s) => [`<h2>${escape(s.heading)}</h2>`, ...s.lead.map((p) => `<p>${escape(p)}</p>`), ...(s.items.length ? [`<ul>${s.items.map((i) => `<li>${escape(i)}</li>`).join('')}</ul>`] : [])].join('')).join('')
 
+const title = proseFill(PROSE.scriptsDoiRecord_title, pkg.name, pkg.version, pkg.description)
 const record = {
-  title: proseFill(PROSE.scriptsDoiRecord_title, pkg.name, pkg.version, pkg.description),
+  title,
   version: pkg.version,
   upload_type: 'software',
   access_right: 'open',
@@ -88,13 +90,51 @@ const record = {
 }
 const text = JSON.stringify(record, null, 2) + '\n'
 
+// the README's publication section: the same sections as the note, where the work is published, and every theorem by family,
+// each family linked to its Lean source and to its section of the catalogue on the site
+const site = `https://${Object.keys(TENANTS)[0]}`, source = `https://github.com/${RELEASE_REPOSITORY}`
+const catalogue = readFileSync('src/quantum/CATALOGUE.md', 'utf8')
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+const md = (s: string) => s.split('`').map((part, i) => (i % 2 ? part : part.replace(/</g, '&lt;'))).join('`').replace(/\s*\n\s*/g, ' ')
+const grouped = new Map<string, string[]>()
+for (const t of THEOREMS) grouped.set(t.module, [...(grouped.get(t.module) ?? []), t.key])
+const byFamily = [...grouped].sort((a, b) => (a[0] < b[0] ? -1 : 1)), leanOf = (module: string) => `lean/${module.split('.').join('/')}.lean`
+const unsourced = byFamily.map(([module]) => leanOf(module)).filter((path) => !existsSync(path))
+const cited = Boolean(LICENSE.author && pkg.name && pkg.description) && /^10\.\d{4,9}\/\S+$/.test(UNIT_CONCEPT_DOI)
+const markdown = [
+  PROSE.scriptsDoiRecord_readmeStart, '',
+  `## ${PROSE.scriptsDoiRecord_publication}`, '',
+  proseFill(PROSE.scriptsDoiRecord_record, title, LICENSE.author, LICENSE.orcid, `[${LICENSE.spdx}](${LICENSE.url})`, `[${UNIT_CONCEPT_DOI}](https://doi.org/${UNIT_CONCEPT_DOI})`), '',
+  PROSE.scriptsDoiRecord_disclosure, '',
+  proseFill(PROSE.scriptsDoiRecord_standards, cited), '',
+  `### ${PROSE.scriptsDoiRecord_methods}`, '', PROSE.scriptsDoiRecord_methodHead, '| --- | --- | --- |',
+  proseFill(PROSE.scriptsDoiRecord_methodSource, source), proseFill(PROSE.scriptsDoiRecord_methodSite, site), proseFill(PROSE.scriptsDoiRecord_methodCatalogue, `${site}/catalogue`),
+  proseFill(PROSE.scriptsDoiRecord_methodMcp, `${site}/api/mcp`), proseFill(PROSE.scriptsDoiRecord_methodPackage, `https://www.npmjs.com/package/${pkg.name}`, pkg.version),
+  proseFill(PROSE.scriptsDoiRecord_methodArchive, `https://doi.org/${UNIT_CONCEPT_DOI}`), proseFill(PROSE.scriptsDoiRecord_methodReleases, `${source}/releases`), proseFill(PROSE.scriptsDoiRecord_methodNote, `${site}/release`), '',
+  ...sections.flatMap((s) => [`### ${s.heading}`, '', ...s.lead.flatMap((p) => [md(p), '']), ...(s.items.length ? [...s.items.map((i) => `- ${md(i)}`), ''] : [])]),
+  `### ${PROSE.scriptsDoiRecord_theorems}`, '',
+  proseFill(PROSE.scriptsDoiRecord_theoremsLead, THEOREMS.length, byFamily.length), '',
+  ...byFamily.flatMap(([module, keys]) => [`#### ${proseFill(PROSE.scriptsDoiRecord_family, `\`${module}\``, keys.length, `${source}/blob/main/${leanOf(module)}`, `${site}/catalogue${catalogue.includes(`\n## ${module}\n`) ? `#${slug(module)}` : ''}`)}`, '', keys.map((k) => `\`${k}\``).join(' · '), '']),
+  PROSE.scriptsDoiRecord_readmeEnd,
+].join('\n')
+let readme = ''
+try { readme = readFileSync(README, 'utf8') } catch { readme = '' }
+const start = readme.indexOf(PROSE.scriptsDoiRecord_readmeStart), end = readme.indexOf(PROSE.scriptsDoiRecord_readmeEnd), license = readme.indexOf('\n## License')
+const published = start >= 0 && end > start ? readme.slice(0, start) + markdown + readme.slice(end + PROSE.scriptsDoiRecord_readmeEnd.length)
+  : license >= 0 ? `${readme.slice(0, license + 1)}${markdown}\n\n${readme.slice(license + 1)}` : `${readme}\n${markdown}\n`
+
 const check = process.argv.includes('--check')
 let committed = ''
 try { committed = readFileSync(RECORD, 'utf8') } catch { committed = '' }
-const agrees = committed === text
+const agrees = committed === text, shown = readme === published
 if (!agrees && !check) writeFileSync(RECORD, text)
-console.log(JSON.stringify({ check, agrees, written: !agrees && !check, path: RECORD, novelties: novelties.length, open: open.length, calls: available.length }))
-if (!agrees && check) {
-  console.error(PROSE.scriptsDoiRecord_s1)
+if (!shown && !check) writeFileSync(README, published)
+console.log(JSON.stringify({ check, agrees, shown, written: !(agrees && shown) && !check, path: RECORD, readme: README, novelties: novelties.length, open: open.length, calls: available.length, theorems: THEOREMS.length, families: byFamily.length, unsourced }))
+if (unsourced.length) {
+  console.error(proseFill(PROSE.scriptsDoiRecord_s3, unsourced.join(', ')))
+  process.exit(1)
+}
+if (!(agrees && shown) && check) {
+  console.error(agrees ? PROSE.scriptsDoiRecord_s2 : PROSE.scriptsDoiRecord_s1)
   process.exit(1)
 }

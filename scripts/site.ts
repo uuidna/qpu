@@ -78,6 +78,9 @@ for (const section of sections) {
 }
 
 write(join(out, 'catalogue.md'), ['---', 'title: "Catalogue of claims"', '---', '', readFileSync('src/quantum/CATALOGUE.md', 'utf8')].join('\n'))
+// the release note as a page: the description of the record Zenodo archives, the same text the release and the README carry
+const release = JSON.parse(readFileSync('.zenodo.json', 'utf8')) as { title: string; description: string }
+write(join(out, 'release.md'), ['---', `title: ${yaml(release.title)}`, '---', '', `# ${plain(release.title)}`, '', release.description.replace(/\{\{/g, '&#123;&#123;').replace(/<\/(h2|p|ul)>/g, '</$1>\n\n'), ''].join('\n'))
 const tools = TOOLBOXES.flatMap((box) => box.tools.map((tool) => ({ name: tool.name, toolbox: box.name, description: tool.description, inputSchema: tool.inputSchema })))
 write(join(out, 'public', 'mcp.json'), JSON.stringify({ live: 'POST /api/mcp', says: PROSE.scriptsSite_says1, tools }, null, 2))
 write(join('docs', 'public', 'mcp.json'), JSON.stringify({ tools: (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: unknown } }).result.tools }, null, 2))
