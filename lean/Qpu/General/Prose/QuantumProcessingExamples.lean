@@ -536,4 +536,9 @@ def quantumProcessingExamples_shows516 : String := "An expression on the browser
 def quantumProcessingExamples_shows517 : String := "Lean's own library search decides division by zero: every conjunct of textbook_div_zero is closed by a library theorem, so it is no gap of the library and no novelty."
 
 def quantumProcessingExamples_showsGenuine : String := "What is shown but kept by hand is refused at commit and at push by genuine: an image kept as a file, or an animation with a typed time, is a fake, and one fake found is enough to refuse."
+def quantumProcessingExamples_showsDoored : String := "A write by the harness's own tool outside every repository is refused before it runs by doored: a scratchpad holds nothing the doors cannot give, and in the tree the machine door's patch is the only writer."
+def quantumProcessingExamples_showsTimed : String := "A spawn of agents is held for the owner's word by timed, shown its measure: the time since a commit last landed and the bytes the session has written."
+def quantumProcessingExamples_s504 : String := "this line is long enough to count as one place of code that repeats"
+def quantumProcessingExamples_s505 : String := "show me the dashboard of algorithm"
+
 end Prose

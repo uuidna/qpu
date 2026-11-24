@@ -36,15 +36,15 @@ const PARTIAL = new Set<string>(['x-effect', 'Alpine.effect', 'Alpine.reactive']
 const WHY: Record<string, string> = {
   'x-html': PROSE.quantumProcessingAlpine_s1,
   'x-modelable': PROSE.quantumProcessingAlpine_s2,
-  'x-transition': 'animates an element in the document',
+  'x-transition': PROSE.quantumProcessingAlpine_s26,
   'x-effect': PROSE.quantumProcessingAlpine_s3,
-  'x-ref': 'names an element in the document',
+  'x-ref': PROSE.quantumProcessingAlpine_s28,
   'x-cloak': PROSE.quantumProcessingAlpine_s4,
-  'x-teleport': 'moves an element in the document',
+  'x-teleport': PROSE.quantumProcessingAlpine_s27,
   '$el': 'the element itself',
   '$refs': 'the named elements',
   '$watch': 're-runs when a value changes',
-  '$dispatch': 'fires an event on the document',
+  '$dispatch': PROSE.quantumProcessingAlpine_s30,
   '$nextTick': PROSE.quantumProcessingAlpine_s5,
   '$root': 'the component\'s root element',
   'Alpine.start': PROSE.quantumProcessingAlpine_s6,
@@ -53,7 +53,7 @@ const WHY: Record<string, string> = {
   'Alpine.magic': PROSE.quantumProcessingAlpine_s9,
   'Alpine.effect': PROSE.quantumProcessingAlpine_s10,
   'Alpine.reactive': PROSE.quantumProcessingAlpine_s11,
-  'Alpine.addScopeToNode': 'attaches a scope to a document node',
+  'Alpine.addScopeToNode': PROSE.quantumProcessingAlpine_s25,
   'Alpine.deferInit': 'defers the document\'s start',
   'Alpine.interceptInit': 'hooks the document\'s start',
 }
@@ -192,12 +192,12 @@ const evaluate = (source: string, frame: Frame): { value: Val; scope: Scope } =>
   const pathOf = (): string[] => {
     skip()
     const start = i
-    if (!/[A-Za-z_$]/.test(s[i] ?? '')) gap('an expression needs a name or a value')
+    if (!/[A-Za-z_$]/.test(s[i] ?? '')) gap(PROSE.quantumProcessingAlpine_s24)
     while (/[\w$]/.test(s[i] ?? '')) i++
     const parts = [s.slice(start, i)]
     for (;;) {
       if (s[i] === '.') { i++; const from = i; while (/[\w$]/.test(s[i] ?? '')) i++; if (i === from) gap('a dot needs a name'); parts.push(s.slice(from, i)); continue }
-      if (s[i] === '[') { i++; skip(); const from = i; while (/[0-9]/.test(s[i] ?? '')) i++; if (i === from || s[i] !== ']') gap('an index is digits in brackets'); parts.push(s.slice(from, i)); i++; continue }
+      if (s[i] === '[') { i++; skip(); const from = i; while (/[0-9]/.test(s[i] ?? '')) i++; if (i === from || s[i] !== ']') gap(PROSE.quantumProcessingAlpine_s29); parts.push(s.slice(from, i)); i++; continue }
       break
     }
     return parts

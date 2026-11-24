@@ -4,7 +4,7 @@
 
 import { listGaps } from './gaps.ts'
 import { scripts, type ScriptsArgs } from './script-doors.ts'
-import { CHAT_SHARE, CLAY_FIRST, FORMULA, INSERT_SCHEMA, LEAN_RESOURCE, NIBBLE_PRIMES, OFFICIAL_PLUGINS, PROTOCOL_VERSION } from './config-index.ts'
+import { CHAT_SHARE, CLAY_FIRST, COIN_QUBIT_SPACE, FORMULA, INSERT_SCHEMA, LEAN_RESOURCE, NIBBLE_PRIMES, OFFICIAL_PLUGINS, PROTOCOL_VERSION } from './config-index.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 import { GOOGLE_MCPS, QPU_MCP, mcpHostList } from './discovery.ts'
 import { GOOGLE_DOOR, bindGoogleCall } from './toolboxes/google.ts'
@@ -78,7 +78,7 @@ const ISO_QUANTUM_AI = {
   experience: 'iso-quantum-ai' as const,
   vocabulary: 'ISO/IEC 4879:2024' as const,
   entropy: {
-    law: 'first the dictionary meaning; then the meaning is verified' as const,
+    law: PROSE.quantumProcessingIsoDeliverables_s20,
     dictionary: 'disorder; unpredictability; unavailable energy or information' as const,
     verified: { standard: 'ISO 80000-5:2019' as const, definition: 'S = k ln W' as const },
   },
@@ -134,7 +134,7 @@ const engineCall = (raw: Record<string, unknown>) => {
   const processor = String(raw.processor ?? 'Willow')
   if (!(processor in DEVICES)) reject(proseFill(PROSE.quantumProcessingMcp_s2, processor, Object.keys(DEVICES).join(', ')))
   const program = isObj(raw.program) ? raw.program as { operations?: OperationJson[]; measure?: MeasureJson } : {}
-  if (!Array.isArray(program.operations) || program.operations.length === 0) reject('a program is a list of operations')
+  if (!Array.isArray(program.operations) || program.operations.length === 0) reject(PROSE.quantumProcessingMcp_s435)
   const prepared = circuit(program.operations, 'EARLIEST', program.measure)
   toDevice(DEVICES[processor as keyof typeof DEVICES]).validateCircuit(prepared)
   const programId = uuid(canonicalText({ processor, operations: program.operations, measure: program.measure ?? null }))
@@ -309,6 +309,7 @@ const factorExit = (complete: boolean, receipt?: string, digest?: string, leftov
   return { ...row, closed: complete, open: !complete, status: complete ? 'factored' as const : 'open' as const, ...(receipt ? { receipt, readingSha256: digest } : {}), next }
 }
 
+const FORMULA_HOOKS = { manual: false as const, process: 'ISO 9001' as const, hooks: ['beforeChange', 'afterChange', 'afterRead'] as const, beforeChange: 'the formula is recorded' as const, afterChange: PROSE.quantumProcessingIsoDevelop_s12, afterRead: 'the documented formula is served' as const }
 const coverLeftovers = (left: readonly bigint[]) => {
   const developed = left.map((part) => {
     const width = part.toString(2).length
@@ -319,8 +320,7 @@ const coverLeftovers = (left: readonly bigint[]) => {
   })
   const cover = entriesCover(developed.map((row) => ({ from: row.from, body: { code: 1, strategy: 'nonconforming', standard: 'ISO 9001', bits: row.width, formula: row.formula, iso: row.served.iso, docs: row.served.docs } })))
   return {
-    ...cover, via: 'hooks' as const, manual: false as const, process: 'ISO 9001' as const, hooks: ['beforeChange', 'afterChange', 'afterRead'] as const,
-    beforeChange: 'the formula is recorded' as const, afterChange: 'the formula is handed to the docs door' as const, afterRead: 'the documented formula is served' as const,
+    ...cover, via: 'hooks' as const, ...FORMULA_HOOKS,
     documented: developed.every((row) => row.documented),
     developed: developed.map((row) => ({ from: row.from, bits: row.width, formula: row.formula, documented: row.documented })),
   }
@@ -565,7 +565,7 @@ const imprintRegister = (n: bigint) => {
   })
   const frames = merkaba(n)
   const developed = developViaHooks({ formula: `${n} = ${frames.quotient} * ${frames.scale} + ${frames.residue}`, product: 'merkaba', variant: frames.exposed ? 'analog' : 'harmonic', title: 'merkaba', theorem: 'textbook_mixed_radix' })
-  return { bits, qubits, handles: spread.handles, effective: spread.effective, unlimited: true as const, ceiling: null, capacity: 'unlimited' as const, via: 'uuid' as const, superposition: amplitude, formula: spread.formula, root, sealed: imprints.every((row) => row.sealed), validated: imprints.every((row) => row.validated && row.sealed), imprints, frames, hooks: { via: 'hooks' as const, hooks: developed.hooks, beforeChange: 'the residue is recorded' as const, afterChange: 'the residue is handed to the docs door' as const, afterRead: 'the exposed residue is served' as const, documented: developed.iso.documented === true, formula: developed.iso.formula, iso: developed.iso, docs: developed.docs } }
+  return { bits, qubits, handles: spread.handles, effective: spread.effective, unlimited: true as const, ceiling: null, capacity: 'unlimited' as const, via: 'uuid' as const, superposition: amplitude, formula: spread.formula, root, sealed: imprints.every((row) => row.sealed), validated: imprints.every((row) => row.validated && row.sealed), imprints, frames, hooks: { via: 'hooks' as const, hooks: developed.hooks, beforeChange: 'the residue is recorded' as const, afterChange: PROSE.quantumProcessingMcp_s430, afterRead: 'the exposed residue is served' as const, documented: developed.iso.documented === true, formula: developed.iso.formula, iso: developed.iso, docs: developed.docs } }
 }
 
 const hexbitRegister = (part: bigint) => {
@@ -878,8 +878,7 @@ const portToZero = (parts: readonly bigint[]) => {
     bit: 0 as const, bits: 0 as const, via: 'clay' as const,
     theorems: combos.products.length, axioms: combos.axioms.length, crossVerified: combos.crossVerified, verified: combos.verified, combinations: combos.space, problems: combos.problems, solved: combos.solved, depth: combos.depth,
     rows,
-    hooks: ['beforeChange', 'afterChange', 'afterRead'] as const, beforeChange: 'the formula is recorded' as const, afterChange: 'the formula is handed to the docs door' as const, afterRead: 'the documented formula is served' as const,
-    manual: false as const, process: 'ISO 9001' as const, documented,
+    ...FORMULA_HOOKS, documented,
     open: true as const, closed: false as const, status: 'open' as const,
     holds: false as const,
   }
@@ -1329,7 +1328,7 @@ const OWN: Tool[] = [
       if (name === 'qaoa') {
         if (args.nodes === undefined) { const width = registerQubits(); return { ...uuidCapacity(name, width), name, qubits: width, nodes: width, sampled: false as const, summary: [['Nodes', String(width)], ['Graph', 'the UUID register'], ['Qubits', String(width)]], header: ['Fact', 'Value'], rows: [['register', String(width)]] } }
         const requested = Number(args.nodes)
-        if (!Number.isInteger(requested) || requested < 2) reject('nodes is an integer of at least 2')
+        if (!Number.isInteger(requested) || requested < 2) reject(PROSE.quantumProcessingMcp_s433)
         const graph = pageInstance(DEVICES.Sycamore, requested)
         if (graph.nodes.length >= 16) return { ...uuidCapacity(name, graph.nodes.length), name, qubits: graph.nodes.length, nodes: graph.nodes.length, edges: graph.edges.length, sampled: false, summary: [['Device', 'Sycamore'], ['Nodes', String(graph.nodes.length)], ['Edges', String(graph.edges.length)], ['Qubits', String(graph.nodes.length)]], header: ['Edge', 'Weight'], rows: graph.edges.map((e) => [`${qubitKey(e.a)} – ${qubitKey(e.b)}`, String(e.weight)]) }
         const weights = args.weights as number[] | undefined
@@ -1811,7 +1810,7 @@ const OWN: Tool[] = [
       const theta = args.theta === undefined ? undefined : Number(args.theta)
       if (theta !== undefined && !Number.isFinite(theta)) reject('theta is a number')
       const steps = args.steps === undefined ? null : Number(args.steps)
-      if (steps !== null && (!Number.isInteger(steps) || steps < 4)) reject('steps is an integer of at least 4')
+      if (steps !== null && (!Number.isInteger(steps) || steps < 4)) reject(PROSE.quantumProcessingMcp_s434)
       const vqe = theta === undefined && steps !== null ? vqeSweep(terms, steps) : null
       const ansatz = ansatzCircuit(theta ?? vqe?.best.theta ?? 0)
       return {
@@ -1851,7 +1850,7 @@ const OWN: Tool[] = [
       const denseShor = askedN !== null && askedN >= 3n && askedN <= BigInt(Number.MAX_SAFE_INTEGER) && shorQubits < 24
       const nodes = args.nodes === undefined ? registerQubits() : Number(args.nodes)
       if (!Number.isInteger(n) || n < 1) reject('qubits is a positive integer')
-      if (!Number.isInteger(nodes) || nodes < 2) reject('nodes is an integer of at least 2')
+      if (!Number.isInteger(nodes) || nodes < 2) reject(PROSE.quantumProcessingMcp_s433)
       let a = 0
       if (denseShor && askedN !== null) { a = Number(getInteger(args.a, 'a', 7n) % askedN); const modulus = Number(askedN); while (a < 2 || gcd(a, modulus) !== 1) a++ }
       const wideQft = n >= 16
@@ -2030,7 +2029,7 @@ const treeMetrics = (artefacts: RunArtefacts = {}): Record<string, unknown> => {
 const apis = defineTool('tree', {
   name: 'apis',
   description: PROSE.quantumProcessingMcp_description327,
-  inputSchema: { type: 'object', properties: { doors: { description: PROSE.quantumProcessingMcp_description328 }, pricing: { type: 'boolean', description: 'the Cloudflare meters table' }, cost: { type: 'object', description: PROSE.quantumProcessingMcp_description329 }, headSamplingRate: { type: 'number', description: PROSE.quantumProcessingMcp_description330 }, headSamplingPermille: { type: 'number', description: 'the same rate in permille (10 is 1%)' }, readings: { type: 'object', description: PROSE.quantumProcessingMcp_description331 }, zone: { type: 'object', description: PROSE.quantumProcessingMcp_description332 }, index: { type: 'object', description: '{ payload?: { collections: [{ slug }], globals: [{ slug }], server? }, cloudflare?: { servers?, paths }, google?: Discovery document | [documents] | true for the endpoints table }' }, coverage: { description: PROSE.quantumProcessingMcp_description333 }, observe: { type: 'boolean', description: PROSE.quantumProcessingMcp_description334 }, shadcn: { description: PROSE.quantumProcessingMcp_description335 } } },
+  inputSchema: { type: 'object', properties: { doors: { description: PROSE.quantumProcessingMcp_description328 }, pricing: { type: 'boolean', description: 'the Cloudflare meters table' }, cost: { type: 'object', description: PROSE.quantumProcessingMcp_description329 }, headSamplingRate: { type: 'number', description: PROSE.quantumProcessingMcp_description330 }, headSamplingPermille: { type: 'number', description: PROSE.quantumProcessingMcp_s431 }, readings: { type: 'object', description: PROSE.quantumProcessingMcp_description331 }, zone: { type: 'object', description: PROSE.quantumProcessingMcp_description332 }, index: { type: 'object', description: '{ payload?: { collections: [{ slug }], globals: [{ slug }], server? }, cloudflare?: { servers?, paths }, google?: Discovery document | [documents] | true for the endpoints table }' }, coverage: { description: PROSE.quantumProcessingMcp_description333 }, observe: { type: 'boolean', description: PROSE.quantumProcessingMcp_description334 }, shadcn: { description: PROSE.quantumProcessingMcp_description335 } } },
   run: (args) => {
     const asked = Object.keys(args).length > 0
     const origin = isObj(args.doors) && typeof (args.doors as { origin?: unknown }).origin === 'string' ? (args.doors as { origin: string }).origin : undefined
@@ -2442,7 +2441,7 @@ const clone = defineTool('tree', {
 
 export const TOOLBOXES: Toolbox[] = [
   { name: 'google', idea: PROSE.quantumProcessingMcp_idea394, tools: [...OWN.filter((t) => t.toolbox === 'google'), GOOGLE_DOOR], examples: [], skill: { instructions: PROSE.quantumProcessingMcp_instructions395, directions: [PROSE.quantumProcessingMcp_s396], selftest: (ctx) => { const checks = ctx.examples.filter((e) => OWN.some((t) => t.name === e.tool && t.toolbox === 'google')).map((e) => { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }); const why = 'error' in r ? r.error.message : e.expect(r.result.structuredContent); return { id: `google:${e.id}`, passed: why === null, evidence: why ?? e.shows } }); return { passed: checks.every((c) => c.passed), checks } } } },
-  { name: 'tree', idea: PROSE.quantumProcessingMcp_idea397, tools: [...OWN.filter((t) => t.toolbox === 'tree'), metrics, textbook, css, dashboard, clone, apis], examples: [], skill: { instructions: PROSE.quantumProcessingMcp_instructions398, directions: [PROSE.quantumProcessingMcp_s399, PROSE.quantumProcessingMcp_s400], selftest: (ctx) => { const m = matchStatement(PROSE.quantumProcessingMcp_s401, ctx.handle, ctx.examples, ctx.leads); const k = combineLeads(ctx.leads, '0'.repeat(31) + '1'); const ses = runSession({ open: [{ id: 'x', title: 'read every session transcript', status: 'draft', started: true }], directives: [{ session: 's', at: '', text: PROSE.quantumProcessingMcp_text402 }, { session: 's', at: '', text: 'ok' }], breaks: [{ text: 'git push' }] }); const checks = [{ id: 'tree:match-serves', passed: m.verdict === 'served', evidence: `${m.verdict} via ${m.tool}` }, { id: 'tree:lead-cells', passed: k.cells.length === 432 && k.filled + k.empty === 432 && k.cells.reduce((n, c) => n + c.count, 0) === ctx.leads.length && k.default.cell === 1 && k.cells.every((c) => c.digits.reduce((n, d, i) => n + d * k.places[i]!, 0) === c.cell), evidence: proseFill(PROSE.quantumProcessingMcp_evidence403, k.says) }, { id: 'tree:session-partition', passed: ses.directives.folded === 1 && ses.directives.assents === 1 && ses.breaks['raw git commit or push in a shell'] === 1 && ses.items[0]?.started === true, evidence: ses.says }]; return { passed: checks.every((c) => c.passed), checks } } } },
+  { name: 'tree', idea: PROSE.quantumProcessingMcp_idea397, tools: [...OWN.filter((t) => t.toolbox === 'tree'), metrics, textbook, css, dashboard, clone, apis], examples: [], skill: { instructions: PROSE.quantumProcessingMcp_instructions398, directions: [PROSE.quantumProcessingMcp_s399, PROSE.quantumProcessingMcp_s400], selftest: (ctx) => { const m = matchStatement(PROSE.quantumProcessingMcp_s401, ctx.handle, ctx.examples, ctx.leads); const k = combineLeads(ctx.leads, '0'.repeat(31) + '1'); const ses = runSession({ open: [{ id: 'x', title: 'read every session transcript', status: 'draft', started: true }], directives: [{ session: 's', at: '', text: PROSE.quantumProcessingMcp_text402 }, { session: 's', at: '', text: 'ok' }], breaks: [{ text: 'git push' }] }); const checks = [{ id: 'tree:match-serves', passed: m.verdict === 'served', evidence: `${m.verdict} via ${m.tool}` }, { id: 'tree:lead-cells', passed: k.cells.length === 432 && k.filled + k.empty === 432 && k.cells.reduce((n, c) => n + c.count, 0) === ctx.leads.length && k.default.cell === 1 && k.cells.every((c) => c.digits.reduce((n, d, i) => n + d * k.places[i]!, 0) === c.cell), evidence: proseFill(PROSE.quantumProcessingMcp_evidence403, k.says) }, { id: 'tree:session-partition', passed: ses.directives.folded === 1 && ses.directives.assents === 1 && ses.breaks[PROSE.quantumProcessingLeads_s18] === 1 && ses.items[0]?.started === true, evidence: ses.says }]; return { passed: checks.every((c) => c.passed), checks } } } },
   FLOW,
   LANGUAGE,
   RAID,
@@ -2605,7 +2604,7 @@ const matchQuestions = (q: unknown) => {
   const read = answers.map((a) => ({ source: a.source, j: JSON.parse(a.text) as { items?: { question_id: number; link: string; tags: string[]; score: number; title: string }[]; backoff?: number; quota_remaining?: number } }))
   const rows = read.flatMap(({ source, j }) => (j.items ?? []).map((it) => { const m = matchStatement(unescape(it.title), handle, EXAMPLES, LEADS), r = m.route?.theorems?.[0] as { theorem: string; shared: string[]; routes: { example: string }[] } | undefined; return { source, id: it.question_id, link: it.link, tags: it.tags, score: it.score, verdict: m.verdict, routed: r ? { theorem: r.theorem, shared: r.shared, example: r.routes[0]?.example ?? null } : null, decided: m.verdict !== 'unknown' && !!r && r.shared.length >= 2 && r.routes.length > 0 } }))
   const byVerdict = Object.fromEntries((['served', 'impossible', 'unknown'] as const).map((v) => [v, rows.filter((r) => r.verdict === v).length]))
-  const leads = rows.filter((r) => !r.decided).map((r) => ({ id: `question-${r.source}-${r.id}`, source: r.link, statement: proseFill(PROSE.quantumProcessingMcp_statement419, r.tags.join(', ')), status: 'open' as const, reason: r.routed ? proseFill(PROSE.quantumProcessingMcp_s420, r.routed.shared.join(', '), r.routed.theorem) : 'matched by no tool, example or lead' }))
+  const leads = rows.filter((r) => !r.decided).map((r) => ({ id: `question-${r.source}-${r.id}`, source: r.link, statement: proseFill(PROSE.quantumProcessingMcp_statement419, r.tags.join(', ')), status: 'open' as const, reason: r.routed ? proseFill(PROSE.quantumProcessingMcp_s420, r.routed.shared.join(', '), r.routed.theorem) : PROSE.quantumProcessingMcp_s432 }))
   return { phase: 'matched' as const, questions: rows.length, byVerdict, decided: rows.filter((r) => r.decided).length, rows, leads, backoff: Math.max(0, ...read.map(({ j }) => j.backoff ?? 0)), quotaRemaining: Math.min(...read.map(({ j }) => j.quota_remaining ?? Infinity)), theorem: 'textbook_questions_matched' }
 }
 const CONTEXT: Context = { get handle() { return handle }, get examples() { return EXAMPLES }, get leads() { return LEADS }, call: (name, args = {}) => call(name, args).result?.structuredContent, selftest: (name, ctx) => TOOLBOXES.find((b) => b.name === name)?.skill.selftest(ctx) }
@@ -2663,7 +2662,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       if (!asked.access) return refused(id, asked)
       askedFirst = { server: asked.server, one: asked.one, first: asked.first, asked: asked.asked, tool: asked.tool }
     }
-    if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256, resource: RECEIPT_RESOURCE }, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online] }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${WELCOME}\n\n${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
+    if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256, resource: RECEIPT_RESOURCE }, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online] }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${WELCOME}\n\n${INSTRUCTIONS}\n\n${proseFill(PROSE.quantumProcessingMcp_scale, COIN_QUBIT_SPACE)}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
     // every tool declares its UI resource (MCP Apps, _meta.ui.resourceUri): a host that negotiates the extension renders the tool's result through it
     // every tool listed widget-skilled: its UI resource (the widget) and its toolbox's skill (the instructions a client follows, the directions it tests in)
     if (message.method === 'tools/list') {

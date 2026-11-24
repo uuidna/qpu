@@ -831,7 +831,7 @@ export const merkaba = (n: bigint) => {
     harmonicCells: cells.filter((cell) => cell.harmonic).length, exposedCells: cells.filter((cell) => cell.exposed).length,
     move: { forth: here.forth, counter: here.counter, meet: here.counter === here.index },
     cells, seats, hides: false as const, claimed: false as const,
-    next: { purpose: 'the analog residue is the cell a factor has to occupy' as const, hides: false as const, claimed: false as const },
+    next: { purpose: PROSE.quantumUuidIndex_s25, hides: false as const, claimed: false as const },
   }
 }
 

@@ -21,7 +21,7 @@ export const physics = (args: PhysicsArgs) => {
   const concept = exists(CONCEPT)
   const leaf = exists(installed.path)
   const entropy = {
-    law: 'first the dictionary meaning; then the meaning is verified' as const,
+    law: PROSE.quantumProcessingIsoDeliverables_s20,
     dictionary: { means: 'disorder; unpredictability; unavailable energy or information' as const },
     verified: {
       standard: 'ISO 80000-5:2019' as const,

@@ -213,7 +213,7 @@ export const guardUpstream = (plugin: ProgramPlugin) => {
     { id: 'definePlugin' as const, holds: plugin.standard === 'definePlugin', guard: 'Payload plugin guide: definePlugin' as const },
     { id: 'slug' as const, holds: plugin.slug === `qpu-program-${plugin.handle}` && /^qpu-program-[0-9a-f]{8}$/.test(plugin.slug), guard: 'slug qpu-program-<handle>' as const },
     { id: 'enabled-false' as const, holds: disabled === probe, guard: 'enabled: false returns incoming unchanged' as const },
-    { id: 'spread-collections' as const, holds: Array.isArray(enabled.collections) && enabled.collections.length === probe.collections.length && enabled.collections[0] === probe.collections[0], guard: 'collections spread; nothing dropped; no collection added' as const },
+    { id: 'spread-collections' as const, holds: Array.isArray(enabled.collections) && enabled.collections.length === probe.collections.length && enabled.collections[0] === probe.collections[0], guard: PROSE.quantumUuidProgramsIndex_s19 },
     { id: 'spread-globals' as const, holds: Array.isArray(enabled.globals) && enabled.globals.length === probe.globals.length && enabled.globals[0] === probe.globals[0], guard: 'globals spread' as const },
     { id: 'spread-plugins' as const, holds: Array.isArray(enabled.plugins) && enabled.plugins.length === probe.plugins.length && enabled.plugins[0] === probe.plugins[0], guard: 'plugins spread' as const },
     { id: 'spread-hooks' as const, holds: !!enabled.hooks && enabled.hooks.afterChange === probe.hooks.afterChange, guard: 'hooks spread' as const },
@@ -231,7 +231,7 @@ export const guardUpstream = (plugin: ProgramPlugin) => {
     standard: 'definePlugin' as const,
     guide: 'https://payloadcms.com/docs/plugins/overview' as const,
     reverseGuard: 'Zero edits to upstream MIT payloadcms/website files + NOTICE.md dual-license boundary' as const,
-    law: 'first the dictionary meaning; then the meaning is verified' as const,
+    law: PROSE.quantumProcessingIsoDeliverables_s20,
     plugin: plugin.slug,
     handle: plugin.handle,
     checks,
@@ -344,7 +344,7 @@ export const reflectProgramNeighbours = (handle: string) => {
     phase: 'reflect' as const,
     via: 'quantum' as const,
     theorem: 'textbook_neighbour_step' as const,
-    law: 'neighbours reflect and test each other' as const,
+    law: PROSE.quantumUuidProgramsIndex_s20,
     handle,
     address: around.address,
     path: around.path,
@@ -446,7 +446,7 @@ export const program = (handle: string) => {
   const bits = handleBits(handle)
   const object = place(handle)
   const depth = object.depth
-  if (depth > MAX_DEPTH || object.folders.length !== HANDLE_HEX || bits.some((row) => row.digit < 0 || row.digit > MAX_DEPTH)) throw new Error('a program is at most depth 7')
+  if (depth > MAX_DEPTH || object.folders.length !== HANDLE_HEX || bits.some((row) => row.digit < 0 || row.digit > MAX_DEPTH)) throw new Error(PROSE.quantumUuidProgramsIndex_s21)
   const plugin = programPlugin(handle)
   const upstream = guardUpstream(plugin)
   const around = quantumNeighbours(handle)
@@ -545,7 +545,7 @@ export const gateProgramFiles = (dataset = root.path) => {
   return {
     phase: 'gate' as const,
     via: 'index' as const,
-    law: 'spread in folders; every folder has index.*; code is index.* only' as const,
+    law: PROSE.quantumUuidProgramsIndex_s17,
     dictionary: { means: 'disorder; unpredictability; unavailable energy or information' as const },
     root: dataset,
     folders: folders.length,
@@ -618,7 +618,7 @@ export const sealProgramProducts = (handle: string) => {
     phase: 'seal' as const,
     via: 'payload' as const,
     theorem: 'textbook_plugin_combinations' as const,
-    law: 'index seals all neighbours via payload uuid product combinations' as const,
+    law: PROSE.quantumUuidProgramsIndex_s18,
     handle,
     path: around.path,
     address: around.address,
@@ -682,7 +682,7 @@ export const gateProgramSeal = (dataset = root.path, computed = sealLeaves(datas
     phase: 'gate' as const,
     via: 'online' as const,
     theorem: 'textbook_compete_knows' as const,
-    law: 'every folder has index sealing all neighbours that reflect and test each other in games and competitions online' as const,
+    law: PROSE.quantumUuidProgramsIndex_s15,
     dictionary: { means: 'disorder; unpredictability; unavailable energy or information' as const },
     root: dataset,
     files,
@@ -792,7 +792,7 @@ export const auditProgramNeighbours = (dataset = root.path, computed = sealLeave
     phase: 'audit' as const,
     via: 'online' as const,
     theorem: 'textbook_compete_knows' as const,
-    law: 'neighbours reflect and test each other in games and competitions online' as const,
+    law: PROSE.quantumUuidProgramsIndex_s16,
     degree: 6 as const,
     enqc: 'triangular lattice N0 = 6 — expected quantum channels normalised by node degree' as const,
     root: dataset,

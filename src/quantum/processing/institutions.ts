@@ -45,7 +45,7 @@ export const planInstitution = (r: InstitutionRequest) => {
   const all = listQuestions(); const chosen = r.theorems?.length ? all.filter((q) => r.theorems!.includes(q.theorem)) : all
   const course = r.course ?? '{courseId}'
   const coursework = chosen.map((q) => { const body = { title: q.theorem.replace(/^textbook_/, '').replace(/_/g, ' '), description: `${q.says}\n\n${q.ask}`, workType: 'SHORT_ANSWER_QUESTION', state: 'DRAFT', maxPoints: 1 }; return { theorem: q.theorem, ask: q.ask, rest: { method: 'POST', url: `https://classroom.googleapis.com/v1/courses/${course}/courseWork`, body }, entry: createCreateCall('entries', { kind: 'document', from: 'classroom', body: { kind: 'coursework', theorem: q.theorem, ask: q.ask, course } }) } })
-  const graded = (r.answers ?? []).map((a) => { const q = all.find((x) => x.theorem === a.theorem); const given = Number(a.answer); return { theorem: a.theorem, given: a.answer, correct: q ? given === q.answer && q.answer === q.recomputed : null, by: q ? PROSE.quantumProcessingInstitutions_s2 : 'no closed equation of that name' } })
+  const graded = (r.answers ?? []).map((a) => { const q = all.find((x) => x.theorem === a.theorem); const given = Number(a.answer); return { theorem: a.theorem, given: a.answer, correct: q ? given === q.answer && q.answer === q.recomputed : null, by: q ? PROSE.quantumProcessingInstitutions_s2 : PROSE.quantumProcessingInstitutions_s9 } })
   const doors = WORKSPACE_MCP.map((d) => ({ product: d.product, url: d.url, enable: d.enable, scopes: d.scopes.map((s) => WORKSPACE_SCOPE_PREFIX + s), renders: d.renders, lands: createCreateCall('entries', { kind: 'document', from: d.product.toLowerCase(), body: '<the record the door answered>' }) }))
   const acts = [
     ...(e.needs ? [`${e.needs} (${e.source})`] : []),
@@ -74,7 +74,7 @@ export const assessEducation = (proof: { scientific: readonly string[]; proved: 
   const address = uuid(canonicalText({ standard: 'ISO 21001:2025', proved, removed: proof.removed, category: proof.category }))
   return {
     phase: 'education' as const, standard: 'ISO 21001:2025' as const, strict: true as const, clauses: EDUCATION_CLAUSES,
-    requirement: { clause: '8.3.4.4' as const, name: 'a scientific name the textbook states' as const, cross: 'Lean cross formula: the sides evaluate to one value, the axioms it names develop to that value, and the kernel has accepted the theorem' as const, category: '8.7: fail either check and the name is removed from the Lean theorem category; a relation is filed under the scientific name' as const },
+    requirement: { clause: '8.3.4.4' as const, name: PROSE.quantumProcessingInstitutions_s8, cross: PROSE.quantumProcessingInstitutions_s7, category: '8.7: fail either check and the name is removed from the Lean theorem category; a relation is filed under the scientific name' as const },
     scientific: proof.scientific, proved, provedCount: proved.length, relations: proof.proved, removed: proof.removed, removedCount: proof.removed.length, category: proof.category, holds,
     address, traced: seal(address).valid,
     says: proseFill(PROSE.quantumProcessingInstitutions_says11, proved.length, proof.removed.length),

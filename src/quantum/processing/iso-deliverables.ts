@@ -13,13 +13,13 @@ export { ISO_DIMENSIONS }
  * Not a purpose dimension of its own; audit measures S = k ln W beside ISO 80000-10.
  */
 export const ISO_ENTROPY = {
-  law: 'first the dictionary meaning; then the meaning is verified' as const,
+  law: PROSE.quantumProcessingIsoDeliverables_s20,
   /** Step 1 — ordinary dictionary sense (disorder / unavailable energy or information). */
   dictionary: {
     word: 'entropy' as const,
     means: 'disorder; unpredictability; unavailable energy or information' as const,
     thermo: 'unavailability of a system\'s energy for conversion into work; degree of disorder' as const,
-    information: 'uncertainty or missing information over the possible microstates' as const,
+    information: PROSE.quantumProcessingIsoDeliverables_s19,
   },
   /** Step 2 — verification of that meaning under ISO 80000-5. */
   standard: 'ISO 80000-5:2019' as const,
@@ -410,7 +410,7 @@ export const extractIsoFromProducers = (raw: unknown = true) => {
     trinity,
     unlocked: trinity.unlocked,
     hidden: trinity.hidden,
-    ladder: { phase, better: 'open challenge via producer open data' as const, trinity: 'nist+cern+clay' as const },
+    ladder: { phase, better: PROSE.quantumProcessingIsoDeliverables_s21, trinity: 'nist+cern+clay' as const },
     holds,
     says: holds
       ? (answers === null

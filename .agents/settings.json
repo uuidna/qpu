@@ -1,0 +1,7 @@
+{"hooks":
+ {"PreToolUse":
+  [{"matcher": "Edit|Write|MultiEdit|NotebookEdit|Agent|Task|Workflow",
+    "hooks":
+    [{"type": "command",
+      "command":
+      "node \"$CLAUDE_PROJECT_DIR/src/quantum/processing/machine-run.ts\" hook pre-tool"}]}]}}

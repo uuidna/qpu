@@ -176,7 +176,7 @@ const SESSION_RULES: readonly [string, RegExp][] = [
 const QUALITY = /\b(clean\w*|fold\w*|dedup\w*|duplicat\w*|standard\w*|style|lint\w*|speed\w*|fast\w*|slow\w*|perform\w*|simplif\w*|consolidat\w*|entropy|refactor\w*|quality|efficien\w*|defragment\w*|remov\w*)\b/i
 // a proposal states an act when its title opens on a verb, not on a question word, a pronoun or a link, and names three stems at least
 const NOT_AN_ACT = /^(why|how|what|where|when|who|which|is|are|do|does|did|can|could|would|should|shall|will|and|but|or|i|you|we|it|this|that|these|those|there|so|if|then|also|ok|okay|yes|no|now|the|a|an|https?:)\b/i
-const STANDING = [PROSE.quantumProcessingLeads_s20, PROSE.quantumProcessingLeads_s21, 'no added collection', 'no caps on reads or walks', 'a Google CL description', 'measured by the gate', 'recorded in Payload Open work']
+const STANDING = [PROSE.quantumProcessingLeads_s20, PROSE.quantumProcessingLeads_s21, 'no added collection', PROSE.quantumProcessingLeads_s23, 'a Google CL description', 'measured by the gate', 'recorded in Payload Open work']
 const STOP = new Set(PROSE.quantumProcessingLeads_s22.split(' '))
 const leadStems = (text: string): Set<string> => new Set(text.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 4 && !STOP.has(w) && !/^\d+$/.test(w)).map((w) => w.replace(/(?:ings|ing|edly|ed|es|s|ly)$/, (m) => (w.length - m.length >= 4 ? '' : m))))
 type Directive = { session: string; at: string; text: string }

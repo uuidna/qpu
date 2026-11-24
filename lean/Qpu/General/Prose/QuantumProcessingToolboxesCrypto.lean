@@ -159,4 +159,6 @@ def quantumProcessingToolboxesCrypto_showsParts : String := "a sealed text answe
 def quantumProcessingToolboxesCrypto_showsBatch : String := "three texts sealed in one call, briefly: one { bytes, sha256, address } each, in order, and the Merkle root over all three with its own address"
 def quantumProcessingToolboxesCrypto_batchSays : String := "⟦0⟧ text(s) sealed, each under its own address; the Merkle root ⟦1⟧ seals them all, and any one changed changes the root"
 
+def quantumProcessingToolboxesCrypto_s148 : String := "decode takes an address or a uuid"
+
 end Prose

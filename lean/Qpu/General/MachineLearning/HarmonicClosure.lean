@@ -47,4 +47,29 @@ theorem closing_count : ((List.range 107).filter (fun t => Involute t == 100)).l
 theorem closing_set : (List.range 107).filter (fun t => Involute t == 100) =
     [23, 24, 25, 26, 27, 28, 53, 54, 55, 56, 57, 58, 83, 84, 85, 86, 87, 88] := by decide
 
+/-! ## The fold of 440 in 432
+
+The author's claim, as far as the kernel decides it: two taken from each 110 of a harmonic of 440 leaves the same
+harmonic of 432. Each theorem below is one named theorem of Lean's library applied to these numbers, for every natural
+number, so no bound is needed. -/
+
+/-- Every harmonic of 440 less two from each of its four 110s is the same harmonic of 432, by `Nat.mul_sub`. -/
+theorem fold_harmonic (n : Nat) : n * 432 = n * 440 - n * (4 * 2) := Nat.mul_sub n 440 (4 * 2)
+
+/-- The unfold gives the two back to each 110, by `Nat.mul_add`. -/
+theorem unfold_harmonic (n : Nat) : n * 440 = n * 432 + n * (4 * 2) := Nat.mul_add n 432 (4 * 2)
+
+/-- The folded harmonic never exceeds the harmonic it starts from, by `Nat.mul_le_mul_left` and `Nat.sub_le`. -/
+theorem fold_never_grows (n : Nat) : n * 432 ≤ n * 440 := Nat.mul_le_mul_left n (Nat.sub_le 440 (4 * 2))
+
+/-- A harmonic of 440 that fits in 64 bits folds to one that fits in them, by `Qpu.Harmonic.fold_never_grows` and
+`Nat.lt_of_le_of_lt`. -/
+theorem fold_within_64 (n : Nat) (h : n * 440 < 2 ^ 64) : n * 432 < 2 ^ 64 := Nat.lt_of_le_of_lt (fold_never_grows n) h
+
+/-- The reflection about the sum of the two ladders is its own inverse at every harmonic, by `Nat.sub_sub_self`. -/
+theorem fold_reflection (n x : Nat) (h : x ≤ n * 872) : n * 872 - (n * 872 - x) = x := Nat.sub_sub_self h
+
+/-- That reflection sends each harmonic of 440 to the same harmonic of 432, by `Nat.mul_sub`. -/
+theorem fold_reflects (n : Nat) : n * 432 = n * 872 - n * 440 := Nat.mul_sub n 872 440
+
 end Qpu.Harmonic

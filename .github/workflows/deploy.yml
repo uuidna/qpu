@@ -55,7 +55,8 @@ jobs:
           for host in $(node -e "import('./src/quantum/processing/config-index.ts').then((c) => console.log(Object.keys(c.TENANTS).join(' ')))")
           do
             site=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "https://$host/")
-            mcp=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "https://$host/api/mcp")
+            # Streamable HTTP answers a plain GET with 405: the endpoint is asked what it serves, as a client asks
+            mcp=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 60 -X POST -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' --data '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' "https://$host/api/mcp")
             echo "site $site mcp $mcp $host"
             if [ "$site" != "200" ] || [ "$mcp" != "200" ]; then fail=1; fi
           done

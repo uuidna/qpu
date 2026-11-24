@@ -15,4 +15,7 @@ def quantumProcessingExpressions_statement8 : String := "⟦0⟧ carries a verdi
 def quantumProcessingExpressions_reason9 : String := "the tree states only what the kernel accepts; match and compete decide, never prose"
 def quantumProcessingExpressions_says10 : String := "⟦0⟧ number(s) in ⟦1⟧ sentence(s) of ⟦2⟧ text(s): ⟦3⟧ rest on a textbook expression a client can evaluate, ⟦4⟧ are leads; ⟦5⟧ verdict word(s) beside the Clay problems"
 
+def quantumProcessingExpressions_s6 : String := "a term where a proposition is due"
+def quantumProcessingExpressions_s7 : String := "a truth where a number is due"
+
 end Prose

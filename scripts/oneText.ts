@@ -88,7 +88,8 @@ export const sections = [
 
 // the gateway: every usable source and every proof the text rests on, each a link the receipt covers
 const SITE = 'https://qpu.uuidna.com', REPO = `https://github.com/${RELEASE_REPOSITORY}`, TAG = `v${pkg.version}`
-const cited = [...new Set([...complying.flatMap((c) => [c.theorem, ...c.relatedTheorems]), ...NOVELTIES.map((n) => n.key), ...proved.map((c) => c.theorem), ...OPEN_CLAIMS.flatMap((c) => c.proved)])].filter((t) => moduleOf.has(t))
+// every theorem written by hand is named beside the Lean file that proves it, so no proof is left out of any copy of the text
+const cited = THEOREMS.map((t) => t.key)
 const byModule = Object.entries(cited.reduce<Record<string, string[]>>((m, t) => ({ ...m, [moduleOf.get(t)!]: [...(m[moduleOf.get(t)!] ?? []), t] }), {})).sort((a, b) => (a[0] < b[0] ? -1 : 1))
 const link = (label: string, url: string) => proseFill(PROSE.scriptsDoiRecord_link, label, url)
 const gateway = [
