@@ -23,7 +23,7 @@ lean_lib Qpu where
 With it, `Names` fails on a theorem that states the formula of another and is not named in `NamesBaseline`. -/
 @[default_target]
 lean_lib QpuGate where
-  roots := #[`Gate, `GateBaseline, `Names, `NamesBaseline]
+  roots := #[`Gate, `GateBaseline, `Names, `NamesBaseline, `Tex]
 
 lean_exe claims where
   root := `Qpu.Claims.Extract
