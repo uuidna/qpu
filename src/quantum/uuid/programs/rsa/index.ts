@@ -7,6 +7,7 @@ import { next, uuid } from '../../index.ts'
 import { createImpossible, decodeImpossible, orderFinding, seededTrapdoor, shorReduction } from '../../../processing/algorithms.ts'
 import { createdThousandExit } from '../../../processing/iso-exit.ts'
 import { program } from '../index.ts'
+import { placedAndTurned } from '../lean/index.ts'
 
 type Factored = { id: string; theorem: string; via: 'witness' | 'order' | 'reduction'; N: bigint; p: bigint; q: bigint; bits: number; factors: readonly bigint[]; verified: boolean; exit?: ReturnType<typeof createdThousandExit> }
 
@@ -51,8 +52,9 @@ const place = (row: Factored) => {
   const born = birth(address)
   const stepped = next(address)
   const moved = birth(stepped.next)
-  const placed = object.folders.join('') === handle && object.folders.length === 8 && installed.path === object.path && object.path === `${object.own}/index.ts` && installed.indexed === true && installed.depth === object.depth && object.fanout === 16 && object.span === '4294967296'
-  const turned = stepped.kept === true && stepped.back === true && stepped.around === true && stepped.sealed === true && stepped.places === 10 && stepped.all === true && stepped.aspects.length === 4 && stepped.handle === handle && stepped.rotated === `${stepped.program.slice(1)}${stepped.program[0]}` && moved.path === born.path && moved.handle === born.handle && moved.dnode.bonus.tail.join() === born.dnode.bonus.tail.join() && born.checksum === address && born.path === object.path && born.birth.folders.join('') === address.replace(/-/g, '')
+  const { placed, turned } = placedAndTurned({
+    object, handle, installed, stepped, moved, born, address,
+  })
   const primes = [row.p.toString(), row.q.toString()]
   const factors = row.factors.map((factor) => factor.toString())
   const product = row.p * row.q === row.N && factors.length === 2 && BigInt(factors[0]!) * BigInt(factors[1]!) === row.N

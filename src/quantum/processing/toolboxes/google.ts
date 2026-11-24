@@ -21,12 +21,13 @@ import { rbac } from '../api-mcp-rbac.ts'
 import { checkAccess, getAccess, listRolesFromGroups, type Ability } from '../access.ts'
 import { getWorkspace } from '../workspace.ts'
 import { TABLES } from '../tables-index.ts'
-import { defineTool, isObj, listTools } from '../toolbox.ts'
+import { defineTool, isObj, listTools, entriesOf } from '../toolbox.ts'
 import { flowWidget } from '../widgets.ts'
+import { HEXBIT_LAW } from '../../uuid/laws.ts'
 
 // the handler's call, bound by mcp.ts once it is defined: a toolbox imports nothing from the handler, so the chooser's import of raid
 // (raid → payload → google) no longer pulls the handler and its examples in while raid is still loading (the cycle that threw on RAID)
-type Call = (name: string, args: unknown) => { result?: { structuredContent?: any }; error?: { message: string } }
+import type { Call } from '../toolbox.ts'
 let boundCall: Call | null = null
 export const bindGoogleCall = (c: Call): void => { boundCall = c }
 const call: Call = (name, args) => { if (!boundCall) throw new Error(PROSE.quantumProcessingToolboxesGoogle_s1); return boundCall(name, args) }
@@ -237,7 +238,7 @@ const crossCapacity = (handles: number, qubits: number, perHandle: number, regis
 
 const qubitFigures = (value: unknown, found: number[] = []): number[] => {
   if (!value || typeof value !== 'object') return found
-  for (const [key, item] of Object.entries(value as Record<string, unknown>)) {
+  for (const [key, item] of entriesOf(value)) {
     if (typeof item === 'number' && Number.isInteger(item) && item > 0 && /qubit/i.test(key)) found.push(item)
     else if (item && typeof item === 'object') qubitFigures(item, found)
   }
@@ -289,7 +290,7 @@ const sellQubitCapacity = (challenges: readonly { id: string; category: string; 
     address, sealed: seal(address).valid, holds, formula, cross,
     gateway: 2 as const,
     ftl,
-    law: 'hexbit + 2 gateway bits teleport any hexbit faster than light' as const,
+    law: HEXBIT_LAW,
     theorem: 'textbook_hexbit_gateway_ftl' as const,
   }
 }

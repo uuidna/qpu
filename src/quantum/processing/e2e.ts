@@ -10,6 +10,7 @@ import { getEventData, rpcBody } from './discovery.ts'
 import { textbookLogicalError } from './qec.ts'
 import { handleOrCorrect } from './audit.ts'
 import { listTools, type Context } from './toolbox.ts'
+import { callEnvelope } from './toolbox.ts'
 
 type E2eRequest = { id: string; combo: string; tool: string; toolbox: string; from: 'example' | 'cell'; arguments: Record<string, unknown>; host: string; url: string; method: 'POST'; accept: string; headers: Record<string, string>; body: unknown; local: string; localError?: string }
 export type E2eAnswer = E2eRequest & { status: number; ms: number; text: string; etag?: string | null; address?: string | null; version?: string | null }
@@ -82,7 +83,7 @@ export const createE2eRequests = (ctx: Context, hosts: readonly string[], only?:
   return out
 }
 /** The tree's own answer to a call, hashed: recomputed by the handler, never a caller's. */
-export const tree = (ctx: Context) => (tool: string, args: Record<string, unknown>): { local: string; localError?: string } => { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: tool, arguments: args } }) as { result?: { structuredContent: unknown }; error?: { message: string } }; return r.result ? { local: hash(r.result.structuredContent) } : { local: hash({ error: r.error?.message }), localError: r.error?.message } }
+export const tree = (ctx: Context) => (tool: string, args: Record<string, unknown>): { local: string; localError?: string } => { const r = ctx.handle(callEnvelope(tool, args)) as { result?: { structuredContent: unknown }; error?: { message: string } }; return r.result ? { local: hash(r.result.structuredContent) } : { local: hash({ error: r.error?.message }), localError: r.error?.message } }
 /** What a body's value is recomputed from (the structuredContent, a refusal's message): a client keeps it, releases the rest (870 bodies ran the heap out). */
 export const witness = (text: string): string => { try { const j = JSON.parse(getEventData(text)) as Rpc; return JSON.stringify(j.error ? { error: { message: j.error.message } } : { result: j.result?.isError ? { isError: true, content: [{ text: j.result.content?.[0]?.text }] } : { structuredContent: j.result?.structuredContent } }) } catch { return text } }
 

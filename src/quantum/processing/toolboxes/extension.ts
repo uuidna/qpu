@@ -15,6 +15,7 @@ import { canonicalText, isUuid, next, stream, uuid } from '../../uuid/index.ts'
 import { pageSeed } from '../page-seed.ts'
 import { checkWitnesses } from '../witnesses.ts'
 import { flowWidget } from '../widgets.ts'
+import { callEnvelope, listEnvelope } from '../toolbox.ts'
 
 type ForeignTool = { name: string; description?: string; inputSchema?: { properties?: Record<string, unknown>; required?: string[] }; outputSchema?: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean } }
 const urlHost = (url: string) => { try { return new URL(url).host } catch { return url } }
@@ -43,7 +44,7 @@ const mapInward = (host: string, tools: ForeignTool[]) => tools.map((t) => ({ ..
 /** The registration balanced to a statement: the handler's tools/list asked with the statement and brief descriptions answers the cluster the match tool decides;
  *  the URL carries the same scope for the connector that fetches tools/list itself; the Claude toolset enables those tools alone; the context is counted. */
 const balanceDoors = (ctx: Context, at: string, statement: string) => {
-  const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { statement, brief: true } }) as { result: { tools: { name: string }[]; _meta: { context: Record<string, unknown> } } }
+  const r = ctx.handle(listEnvelope({ statement, brief: true })) as { result: { tools: { name: string }[]; _meta: { context: Record<string, unknown> } } }
   const names = r.result.tools.map((t) => t.name)
   const url = `${at}?statement=${encodeURIComponent(statement)}&brief=1`
   return { statement, tools: names, url, context: r.result._meta.context, claude: { mcp_servers: [{ type: 'url', url: WEBSITE_CLIENT, name: 'qpu' }], tools: [{ type: 'mcp_toolset', mcp_server_name: 'qpu', default_config: { enabled: false }, configs: [...names.map((name) => ({ name, enabled: true })), ...WEBSITE_ROUTES.map((route) => ({ name: route.name, enabled: true }))] }], routes: WEBSITE_ROUTES }, any: { mcpServers: { qpu: { url: WEBSITE_CLIENT } } }, says: PROSE.quantumProcessingToolboxesExtension_says1 }
@@ -176,7 +177,7 @@ const extend = defineTool('extension', {
     // the Gemini API as an operator agent the tenant names: the request planned (endpoint, header named, body), the key never valued; a coil, never called by the tree
     if (args.adapter === true || isObj(args.adapter)) {
       const run = (tool: string, arguments_: Record<string, unknown>) => {
-        const rpc = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: tool, arguments: arguments_ } }) as { result?: { structuredContent?: unknown }; error?: { message?: string } }
+        const rpc = ctx.handle(callEnvelope(tool, arguments_)) as { result?: { structuredContent?: unknown }; error?: { message?: string } }
         return rpc.error ? { ok: false as const, error: rpc.error.message ?? 'refused' } : { ok: true as const, result: rpc.result?.structuredContent }
       }
       if (isObj(args.adapter) && 'next' in args.adapter) {
@@ -208,7 +209,7 @@ const extend = defineTool('extension', {
       return (args.adapter === true ? { ...native, connector: quantumConnector() } : native) as never
     }
     if (isObj(args.gemini)) {
-      const listed = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result?: { tools?: { name: string; description?: string; inputSchema?: unknown; _meta?: { toolbox?: string } }[] } }
+      const listed = ctx.handle(listEnvelope()) as { result?: { tools?: { name: string; description?: string; inputSchema?: unknown; _meta?: { toolbox?: string } }[] } }
       const quantum = (listed.result?.tools ?? []).filter((tool) => tool._meta?.toolbox === 'google')
       const integrated = integrateDeclarations(quantum)
       const g = args.gemini as { prompt?: string; model?: string; compat?: boolean }
@@ -220,19 +221,19 @@ const extend = defineTool('extension', {
       return { phase: 'plan' as const, api: GEMINI_API, connector: restMount('gemini', model), rbac: access, request: { method: 'POST', url: GEMINI_API.endpoint.replace('{model}', model), headers: { 'content-type': 'application/json', [GEMINI_API.header]: `<${GEMINI_API.key}>` }, body: { contents: [{ parts: [{ text: g.prompt }] }], tools: [{ functionDeclarations: [...site, ...integrated.declarations] }] } }, routes: WEBSITE_ROUTES, schema: integrated.receipt, side: 'coil', says: proseFill(PROSE.quantumProcessingToolboxesExtension_says34, model, GEMINI_API.header, GEMINI_API.key, WEBSITE_CLIENT), theorem: 'textbook_free_or_coil' } as never
     }
     if (isObj(args.claude) && (args.claude as { compat?: boolean }).compat === true) {
-      const listed = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result?: { tools?: { name: string; description?: string; inputSchema?: unknown; _meta?: { toolbox?: string } }[] } }
+      const listed = ctx.handle(listEnvelope()) as { result?: { tools?: { name: string; description?: string; inputSchema?: unknown; _meta?: { toolbox?: string } }[] } }
       const quantum = (listed.result?.tools ?? []).filter((tool) => tool._meta?.toolbox === 'google')
       const integrated = integrateClaude(quantum)
       return { phase: 'native' as const, origin: 'https://qpu.uuidna.com' as const, slower: false as const, outbound: 0 as const, waited: false as const, model: CLAUDE_API.model, capacity: integrated.capacity, tools: integrated.tools, dropped: integrated.dropped, drops: integrated.drops, advantage: integrated.advantage, receipt: integrated.receipt, says: proseFill(PROSE.quantumProcessingToolboxesExtension_says35, integrated.tools.length, integrated.drops) } as never
     }
     if (isObj(args.cursor) && (args.cursor as { compat?: boolean }).compat === true) {
-      const listed = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result?: { tools?: { name: string; description?: string; inputSchema?: unknown; outputSchema?: unknown; annotations?: unknown; _meta?: { toolbox?: string } }[] } }
+      const listed = ctx.handle(listEnvelope()) as { result?: { tools?: { name: string; description?: string; inputSchema?: unknown; outputSchema?: unknown; annotations?: unknown; _meta?: { toolbox?: string } }[] } }
       const quantum = (listed.result?.tools ?? []).filter((tool) => tool._meta?.toolbox === 'google')
       const integrated = integrateCursor(quantum)
       return { phase: 'native' as const, origin: 'https://qpu.uuidna.com' as const, slower: false as const, outbound: 0 as const, waited: false as const, model: CURSOR_SDK.model, capacity: integrated.capacity, tools: integrated.tools, renamed: integrated.renamed, dropped: integrated.dropped, drops: integrated.drops, advantage: integrated.advantage, receipt: integrated.receipt, says: proseFill(PROSE.quantumProcessingToolboxesExtension_says36, integrated.tools.length, integrated.renamed.length, integrated.drops) } as never
     }
     if (args.cursor === true || isObj(args.cursor)) return sellCursor(args.cursor === true ? true : args.cursor as Record<string, unknown>) as never
-    if (args.compare !== undefined) { const own = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result?: { tools?: unknown[] } }).result ?? { tools: [] }; const qpu = { bytes: new TextEncoder().encode(JSON.stringify(own)).length, tools: own.tools?.length ?? 0 }; const fullList = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result?: unknown }).result ?? {}; const full = { bytes: new TextEncoder().encode(JSON.stringify(fullList)).length }; if (args.compare === true) return { phase: 'requests' as const, qpu, full, servers: OPEN_MCP_BASELINES, says: PROSE.quantumProcessingToolboxesExtension_says37 } as never; const c = args.compare as { answers?: { id: string; status: number; bytes: number; tools: number }[] }; return { phase: 'compared' as const, ...compareToolsLists(qpu, c.answers ?? [], full) } as never }
+    if (args.compare !== undefined) { const own = (ctx.handle(listEnvelope()) as { result?: { tools?: unknown[] } }).result ?? { tools: [] }; const qpu = { bytes: new TextEncoder().encode(JSON.stringify(own)).length, tools: own.tools?.length ?? 0 }; const fullList = (ctx.handle(listEnvelope({ full: true })) as { result?: unknown }).result ?? {}; const full = { bytes: new TextEncoder().encode(JSON.stringify(fullList)).length }; if (args.compare === true) return { phase: 'requests' as const, qpu, full, servers: OPEN_MCP_BASELINES, says: PROSE.quantumProcessingToolboxesExtension_says37 } as never; const c = args.compare as { answers?: { id: string; status: number; bytes: number; tools: number }[] }; return { phase: 'compared' as const, ...compareToolsLists(qpu, c.answers ?? [], full) } as never }
     const host = typeof args.host === 'string' ? args.host : QPU_MCP
     const direction = String(args.direction ?? 'both')
     if (isObj(args.call)) {

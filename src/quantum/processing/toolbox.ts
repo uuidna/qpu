@@ -27,10 +27,32 @@ export type Toolbox = { name: string; idea: string; tools: Tool[]; examples: Exa
 /** The full tools/list as the handler serves it, read whole: every tool of every toolbox with its schema and its _meta (the short list served by
  *  default is a view of this one). The one reader the toolboxes fold onto. */
 type ListedTool = { name: string; description: string; inputSchema: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean; idempotentHint?: boolean }; _meta?: { toolbox?: string; skill?: { instructions: string; directions: number }; ui?: { resourceUri?: string } } }
-export const listTools = (ctx: Pick<Context, 'handle'>): ListedTool[] => (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } }) as { result: { tools: ListedTool[] } }).result.tools
+export const listTools = (ctx: Pick<Context, 'handle'>): ListedTool[] => (ctx.handle(listEnvelope({ full: true })) as { result: { tools: ListedTool[] } }).result.tools
 /** An argument given as an object. */
 export const isObj = (x: unknown): x is Record<string, any> => !!x && typeof x === 'object'
 /** A selftest's checks folded into one place: each toolbox names its checks, and done() returns them with whether every one passed. */
+/** A check that records how long it took since the one before: where a run's time goes. */
+export const timedCheck = (checks: { id: string; passed: boolean; evidence: string; ms?: number }[], clock: () => number) => { let tick = clock(); return (id: string, passed: boolean, evidence: string): void => { const now = clock(); checks.push({ id, passed, evidence, ms: now - tick }); tick = now } }
+/** The text a client fetched for a URL, or the empty text where it fetched none. */
+export const answerText = (answers: Readonly<Record<string, unknown>>) => (url: string): string => { const a = answers[url]; return typeof a === 'string' ? a : '' }
+/** The entries of a value read as a record. */
+export const entriesOf = (value: unknown): [string, unknown][] => Object.entries(value as Record<string, unknown>)
+/** How many checks passed and failed, by the theorem each rests on. */
+export type TheoremTally = Record<string, { passed: number; failed: number }>
+/** A tool called by its name with its arguments, as a library call answers it. */
+export type Call = (name: string, args: unknown) => { result?: { structuredContent?: any }; error?: { message: string } }
+/** An op that is neither plan nor read is refused by name. */
+export const assertRead = (op: unknown): void => { if (op !== 'read') throw new Error(`op ${op} is not plan or read`) }
+/** The tools/call envelope, written in this one place: a tool by its name with its arguments. */
+export const callEnvelope = (name: string, args: unknown, id: number | string = 1) => ({ jsonrpc: '2.0' as const, id, method: 'tools/call' as const, params: { name, arguments: args } })
+/** The tools/list envelope, written in this one place. */
+export const listEnvelope = (params?: Record<string, unknown>, id: number | string = 1) => ({ jsonrpc: '2.0' as const, id, method: 'tools/list' as const, ...(params ? { params } : {}) })
+/** A signal that ends a request after its time: the one place a timeout is made. */
+export const within = (ms: number): AbortSignal => AbortSignal.timeout(ms)
+/** The head of a file, where a tool that wrote it says so: its first eight lines, as the entropy audit reads a head. */
+export const headOf = (text: string): string => text.split('\n').slice(0, 8).join('\n')
+/** A call that names nothing but selftest. */
+export const onlySelftest = (args: Readonly<Record<string, unknown>>): boolean => Object.keys(args).every((k) => k === 'selftest')
 export const createChecks = () => { const checks: Check[] = []; return { check: (id: string, passed: boolean, evidence: string) => { checks.push({ id, passed, evidence }) }, done: () => ({ passed: checks.every((c) => c.passed), checks }) } }
 /** The A432 series, each frequency reflected onto the hue circle. 432 reflects to 72. The rest sit on their own degrees. */
 const a432Harmonics = () => HARMONICS.map((hz) => ({ hz, hue: hue(hz) }))

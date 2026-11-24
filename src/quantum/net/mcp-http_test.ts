@@ -88,15 +88,15 @@ test('every tool carries the contract version the code derives, with the kernel\
   assert.deepEqual(served[0]._meta.contract, { ...kernel._meta.contract, tools: { kernel: kernel.tools.length, served: served.length } }, 'the SDK door: the same contract, both counts named')
 })
 
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: a refusal is one shape at every door: { error, code } in structuredContent with isError over the SDK, and in the kernel's JSON-RPC error data. */
-test('a refusal is one shape at every door: { error, code } in structuredContent with isError over the SDK, and in the kernel\'s JSON-RPC error data', async () => {
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a refusal is one shape at every door: { error, code, kind } in structuredContent with isError over the SDK, and in the kernel's JSON-RPC error data. */
+test('a refusal is one shape at every door: { error, code, kind } in structuredContent with isError over the SDK, and in the kernel\'s JSON-RPC error data', async () => {
   const { handle } = await import('../processing/mcp.ts')
   const kernel = async (params: object, method = 'tools/call') => ((await handle({ jsonrpc: '2.0', id: 1, method, params } as never)) as any).error
   const thrown = await kernel({ name: 'verify', arguments: { uuid: 'x' } }), unknown = await kernel({ name: 'no-such-tool' }), view = await kernel({ uri: 'ui://qpu/no-such-view' }, 'resources/read')
   assert.deepEqual([thrown.code, thrown.data.code, thrown.data.error === thrown.message], [-32602, 'invalid_params', true])
   assert.deepEqual([unknown.code, unknown.data.code, view.data.code], [-32601, 'not_found', 'invalid_params'])
   const answer = (await read(await post({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'verify', arguments: { uuid: 'x' } } }))).result
-  assert.deepEqual([answer.isError, answer.structuredContent, JSON.parse(answer.content[0].text)], [true, { error: thrown.message, code: 'invalid_params' }, { error: thrown.message, code: 'invalid_params' }])
+  assert.deepEqual([answer.isError, answer.structuredContent, JSON.parse(answer.content[0].text)], [true, { error: thrown.message, code: 'invalid_params', kind: 'validation' }, { error: thrown.message, code: 'invalid_params', kind: 'validation' }])
   const ok = (await read(await post({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'clay', arguments: {} } }))).result
   assert.ok(ok.isError === false && !('error' in ok.structuredContent), 'a successful answer keeps its own fields')
 })

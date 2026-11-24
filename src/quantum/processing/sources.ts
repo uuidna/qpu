@@ -11,7 +11,7 @@ import { compositions, uuid } from '../uuid/index.ts'
 import { pageSeed } from './page-seed.ts'
 import { summonCourt } from './toolboxes/legal.ts'
 import { PRECEDENCE } from './unit/license.ts'
-import { routeStatement } from './match.ts'
+import { routeStatement, routedStrongly as strong } from './match.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 import { TABLES } from './tables-index.ts'
@@ -137,7 +137,6 @@ export const listSources = (c: SourceContext, answers: readonly SourceAnswer[], 
   const uniqueBooks = [...new Map(books.map((b) => [`${b.source}:${b.id}`, b])).values()]
   // a book is reached when its best theorem shares two words or more with it: one word rare among the theorems can be common among books
   const routed = uniqueBooks.map((b) => ({ b, r: routeStatement(`${b.title} ${b.subjects.join(' ')}`, examples, 1) }))
-  const strong = (x: { r: ReturnType<typeof routeStatement> }) => x.r.routed && (x.r.theorems[0]?.shared.length ?? 0) >= 2
   const domain = new Set(routed.filter(strong).flatMap((x) => x.b.subjects))
   const reached = routed.filter(strong), inDomain = routed.filter((x) => !strong(x) && x.b.subjects.some((s) => domain.has(s))), outside = routed.length - reached.length - inDomain.length
   const byTheorem: Record<string, number> = {}; for (const x of reached) { const k = x.r.theorems[0]!.theorem; byTheorem[k] = (byTheorem[k] ?? 0) + 1 }

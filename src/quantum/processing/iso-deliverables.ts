@@ -4,6 +4,7 @@
 import { PROSE, proseFill } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
 import { ISO_DIMENSIONS } from './iso-index.ts'
+import { ENTROPY_LAW } from '../uuid/laws.ts'
 
 /** The ISO dimensions this tree names, as Lean lists them in Qpu.General.Iso. Quantum purity is gated on each of them. */
 export { ISO_DIMENSIONS }
@@ -13,7 +14,7 @@ export { ISO_DIMENSIONS }
  * Not a purpose dimension of its own; audit measures S = k ln W beside ISO 80000-10.
  */
 export const ISO_ENTROPY = {
-  law: 'first the dictionary meaning; then the meaning is verified' as const,
+  law: ENTROPY_LAW,
   /** Step 1 — ordinary dictionary sense (disorder / unavailable energy or information). */
   dictionary: {
     word: 'entropy' as const,

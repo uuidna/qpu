@@ -10,6 +10,7 @@ import { withX402 } from 'agents/x402'
 import { z } from 'zod'
 import { handle, type Rpc } from '../processing/mcp.ts'
 import { PROSE, proseFill } from '../processing/prose-index.ts'
+import { ERROR_KINDS, type ErrorCode } from '../processing/contract.ts'
 import { TABLES } from '../processing/tables-index.ts'
 import { TENANTS } from '../processing/unit/tenants.ts'
 import { MESSAGING_TOOLS, callMessaging, type MailboxNamespace } from './messaging.ts'
@@ -49,7 +50,7 @@ export const sealSettlement = <R extends { _meta?: Record<string, unknown> }>(r:
 export const DONATION = 'https://revolut.me/ceccec'
 const DONATION_RESOURCE = 'donation://qpu'
 /** A refusal as every door gives it: { error, code } in structuredContent, the pair the kernel's JSON-RPC error carries in data. */
-const refusal = (e: Answer['error']) => { const structured = { error: e?.data?.error ?? e?.message ?? 'no answer', code: e?.data?.code ?? 'refused' }; return { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: true } }
+const refusal = (e: Answer['error']) => { const code = (e?.data?.code && e.data.code in ERROR_KINDS ? e.data.code : 'internal_error') as ErrorCode, structured = { error: e?.data?.error ?? e?.message ?? 'no answer', code, kind: ERROR_KINDS[code] }; return { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: true } }
 
 /** One MCP SDK server over the kernel: each tool registered with its own schema, paid where the tenant names a wallet, free with a
  *  donation asked where it names none; the Worker serves it over Streamable HTTP, scripts/stdio.ts over stdio. */
@@ -67,8 +68,10 @@ export const mcpServer = async (env: Env) => {
     const meta = { ...t._meta, contract, ...(server ? {} : { donation }) }
     // a schema's default is a choice shown, never an argument the client gave
     const schema = z.fromJSONSchema(JSON.parse(JSON.stringify(t.inputSchema, (k, v) => (k === 'default' ? undefined : v)))) as z.ZodObject, run = async (args: Args) => { const r: any = await call(args); return (server ? r : { ...r, _meta: { ...r._meta, donation } }) as never }
-    if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations ?? {}, async (args: Args) => sealSettlement(await run(args))).update({ _meta: meta })
-    else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations, _meta: meta }, run)
+    // the answer's shape as the tool states it, published and never enforced: the keys are what its worked examples answered, and an answer may carry others
+    const stated = (t as { outputSchema?: { description?: string; properties?: object } }).outputSchema, outputSchema = z.looseObject({}).meta({ ...(stated?.description ? { description: stated.description } : {}), properties: stated?.properties ?? {} })
+    if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations ?? {}, async (args: Args) => sealSettlement(await run(args))).update({ _meta: meta, outputSchema })
+    else base.registerTool(t.name, { description: t.description, inputSchema: schema, outputSchema, annotations: t.annotations, _meta: meta }, run)
   }
   for (const r of resources) base.registerResource(r.name, r.uri, { description: r.description, mimeType: r.mimeType }, async (uri: URL) => (await kernel('resources/read', { uri: uri.href })).result as never)
   if (!server) base.registerResource('qpu · donation', DONATION_RESOURCE, { description: donation.request, mimeType: 'text/plain', _meta: { donation } }, async (uri: URL) => ({ contents: [{ uri: uri.href, mimeType: 'text/plain', text: donation.request, _meta: { donation } }] }))
@@ -91,5 +94,13 @@ export const serveMcp = async (request: Request, env: Env = (globalThis as { pro
   x402Of(env) // a tenant whose wallet is not an address is refused before anything is served
   const extra = typeof env.QPU_MCP_HOSTS === 'string' ? env.QPU_MCP_HOSTS.split(',').map((h) => h.trim()).filter(Boolean) : []
   const handler = createMcpHandler(() => mcpServer(new URL(request.url).hostname in TENANTS ? { ...env, QPU_X402_RECIPIENT: '' } : env), { route: new URL(request.url).pathname, responseMode: 'json', allowedHostnames: [...Object.keys(TENANTS), ...extra], allowedOriginHostnames: '*' })
-  return handler(request, env, { waitUntil: () => {}, passThroughOnException: () => {}, props: {} } as unknown as Parameters<typeof handler>[2])
+  // a client that accepts JSON alone is answered JSON: the transport underneath insists on an event stream beside it, so the stream is asked for here
+  // and its one message handed back as the plain JSON-RPC answer
+  const plain = request.method === 'POST' && !(request.headers.get('accept') ?? '').includes('text/event-stream')
+  const headers = new Headers(request.headers); if (plain) headers.set('accept', 'application/json, text/event-stream')
+  const response = await handler(plain ? new Request(request, { headers }) : request, env, { waitUntil: () => {}, passThroughOnException: () => {}, props: {} } as unknown as Parameters<typeof handler>[2])
+  if (!plain || !(response.headers.get('content-type') ?? '').includes('text/event-stream')) return response
+  const messages = (await response.text()).split('\n').filter((line) => line.startsWith('data: ')).map((line) => line.slice(6))
+  const answered = new Headers(response.headers); answered.set('content-type', 'application/json'); answered.delete('content-length')
+  return new Response(messages.length === 1 ? messages[0] : `[${messages.join(',')}]`, { status: response.status, headers: answered })
 }

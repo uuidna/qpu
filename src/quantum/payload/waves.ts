@@ -11,6 +11,7 @@ import { QUANTUM_TERMS } from '../processing/quantum-vocabulary.ts'
 import { utf8 } from '../processing/unit/hmac.ts'
 import { HARMONICS, KEY } from '../processing/unit/theme.ts'
 import { DEPLOY_STAGES, type DeployStage } from './deploy.ts'
+import { handleOfBytes } from '../fs/zfs/index.ts'
 
 export { DEPLOY_STAGES }
 
@@ -42,7 +43,7 @@ const sectionOf = (clause: string) => clause.split('.').slice(0, 2).join('.')
 /** The program is the object the filesystem adapter places. Eight levels, fanout 16, every handle. */
 const programWays = (text: string) => {
   const bytes = utf8(text).length
-  const handle = (BigInt(bytes) & 0xffffffffn).toString(16).padStart(8, '0')
+  const handle = handleOfBytes(bytes)
   const object = place(handle)
   return { handle, bytes, path: object.path, depth: object.depth, steps: object.count, chosen: object.pkg, fanout: object.fanout, span: object.span }
 }

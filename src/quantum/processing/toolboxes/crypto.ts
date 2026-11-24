@@ -5,7 +5,7 @@
 // of pieces, decided by integer comparisons before anything is computed. MCP shell over the pure surfaces in ../crypto.
 import { PROSE, proseFill } from '../prose-index.ts'
 import { getInteger, writeInteger, sqrtBig } from '../algorithms.ts'
-import { defineTool, isObj, unlimited, type Toolbox } from '../toolbox.ts'
+import { defineTool, isObj, unlimited, onlySelftest, assertRead, type Toolbox } from '../toolbox.ts'
 import { uuid, canonicalText, seal as uuidSeal, presentation, stream, neighbours, next, navigate, compositions, composition, compositionIndex, rosetta, merkaba, harmonicDefaults, dnaStream, hexToDna, uuidQubits, hexbit, organiseQubits, coins, type StreamQuery } from '../../uuid/index.ts'
 import { foldEntropy } from '../scan.ts'
 import { pqc, kemRound, dsaRound } from '../crypto/pqc.ts'
@@ -39,6 +39,7 @@ import {
   getGltf,
   type AttestAnswer,
   type CryptoConfig,
+  COMBINATORICS, QUENEAU, facePieces,
 } from '../crypto/index.ts'
 import { digitalRoot, trinityFor, faces, AXIOMS } from '../clay-register.ts'
 import { flowWidget } from '../widgets.ts'
@@ -49,6 +50,7 @@ import { listNumerals, speakHex, speakThousand } from '../i18n.ts'
 import { TABLES } from '../tables-index.ts'
 import { cryptoConfig } from '../crypto/config.ts'
 import { developViaHooks } from '../iso-develop.ts'
+import { callEnvelope } from '../toolbox.ts'
 
 /** Tenant crypto (attest, PQC, ISO/IEC 4879 quantum computers) via Payload MCP only — never hardcoded second doors. */
 const tenantCrypto = (args?: Record<string, unknown>): CryptoConfig => {
@@ -102,15 +104,6 @@ const unfoldPieces = (pieces: readonly { index: number; text: string; sha256?: s
 }
 
 
-const QUENEAU = Array.from({ length: 14 }, () => 10)
-const COMBINATORICS = [
-  { name: 'queneau', radices: QUENEAU, theorem: 'textbook_queneau_compositions', formula: '10 ^ 14' },
-  { name: 'plugins', radices: [2, 2, 2, 2, 2, 2, 2, 2, 2], theorem: 'textbook_plugin_combinations', formula: '2 ^ 9' },
-  { name: 'adapters', radices: [5, 5, 2], theorem: 'textbook_mixed_radix', formula: '5 * 5 * 2' },
-  { name: 'sets', radices: [3, 8], theorem: 'textbook_mixed_radix', formula: '3 * 8' },
-  { name: 'algorithm', radices: [7, 19, 1, 2, 6, 1, 1, 8, 2, 11], theorem: 'textbook_mixed_radix', formula: '7 * 19 * 1 * 2 * 6 * 1 * 1 * 8 * 2 * 11' },
-  { name: 'installations', radices: [3, 2, 5, 5, 2, 512], theorem: 'textbook_mixed_radix', formula: '3 * 2 * 5 * 5 * 2 * 512' },
-] as const
 /** schema.org microdata for one combination space: the list is the positions, the count is the product, and neither stores a composition. */
 const combinatoricsMicrodata = (space: { name: string; radices: readonly number[]; theorem: string; formula: string; count: bigint }) => {
   const identifier = uuid(canonicalText({ combinatorics: space.name, formula: space.formula, count: space.count.toString() }))
@@ -127,7 +120,7 @@ const fold = defineTool('crypto', {
   description: PROSE.quantumProcessingToolboxesCrypto_description6,
   inputSchema: { type: 'object', properties: { proven: { type: 'boolean', description: PROSE.quantumProcessingToolboxesCrypto_description7 }, superpositions: { description: PROSE.quantumProcessingToolboxesCrypto_description8 }, qubits: { description: PROSE.quantumProcessingToolboxesCrypto_description9 }, exchange: { description: PROSE.quantumProcessingToolboxesCrypto_description10 }, organise: { description: PROSE.quantumProcessingToolboxesCrypto_description11 }, coins: { type: 'array', items: { type: 'string' }, description: PROSE.quantumProcessingToolboxesCrypto_description12 }, speak: { anyOf: [{ type: 'string' }, { type: 'integer' }, { type: 'object' }], description: PROSE.quantumProcessingToolboxesCrypto_description13 }, split: { type: 'string', description: PROSE.quantumProcessingToolboxesCrypto_description14 }, harmonic: { type: 'object', description: '{ schema, referrer? }: the harmonic options by default of any schema — its enum properties a superposition of their combinations, the referrer\'s address (or the a432 key) choosing the default one by its remainder' }, decode: { type: 'object', description: '{ radices, address? | uuid? }: decoded algebraically, never by search — an address of the form index-digits (or either part alone) inverted in one step per position and checked against itself; a content address is one-way, so the request to find what it hides is refused with the court\'s case and no candidate is tried; free as pure algebra' }, radices: { type: 'array', items: { type: 'integer', minimum: 1 }, description: PROSE.quantumProcessingToolboxesCrypto_description15 }, rosetta: { type: 'array', items: { type: 'integer', minimum: 1 }, description: PROSE.quantumProcessingToolboxesCrypto_description16 }, order: { type: 'array', items: { type: 'integer', minimum: 0 }, description: PROSE.quantumProcessingToolboxesCrypto_description17 }, index: { type: 'string', description: PROSE.quantumProcessingToolboxesCrypto_description18 }, digits: { type: 'array', items: { type: 'integer', minimum: 0 }, description: PROSE.quantumProcessingToolboxesCrypto_description19 }, combinatorics: { type: 'boolean', description: PROSE.quantumProcessingToolboxesCrypto_description20 }, spaces: { type: 'object', description: '{ name: radices }: many combination spaces counted by the one primitive' }, hex: { type: 'string', description: PROSE.quantumProcessingToolboxesCrypto_description21 }, uuids: { type: 'array', items: { type: 'string' }, description: PROSE.quantumProcessingToolboxesCrypto_description22 }, neighbours: { type: 'string', description: PROSE.quantumProcessingToolboxesCrypto_description23 }, next: { type: 'string', description: PROSE.quantumProcessingToolboxesCrypto_description24 }, navigate: { type: 'string', description: PROSE.quantumProcessingToolboxesCrypto_description25 }, query: { type: 'object', description: PROSE.quantumProcessingToolboxesCrypto_description26 }, text: { type: 'string', description: PROSE.quantumProcessingToolboxesCrypto_description27 }, bound: { type: 'integer', minimum: 1, description: PROSE.quantumProcessingToolboxesCrypto_description28 }, key: { type: 'string', description: PROSE.quantumProcessingToolboxesCrypto_description29 }, pieces: { type: 'array', items: { type: 'object' }, description: PROSE.quantumProcessingToolboxesCrypto_description30 }, root: { type: 'string' }, withPieces: { type: 'boolean', description: PROSE.quantumProcessingToolboxesCrypto_description31 }, integers: { description: PROSE.quantumProcessingToolboxesCrypto_description32 }, dna: { description: PROSE.quantumProcessingToolboxesCrypto_description33 }, reflect: { description: PROSE.quantumProcessingToolboxesCrypto_description34 }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
-    if (Object.keys(args).every((k) => k === 'selftest')) return unlimited() as never
+    if (onlySelftest(args)) return unlimited() as never
     if (args.superpositions === true || isObj(args.superpositions)) {
       const spec = (args.superpositions === true ? {} : args.superpositions) as { reverse?: boolean; address?: string; hexbit?: number }
       const address = typeof spec.address === 'string' ? spec.address : typeof (args as { address?: unknown }).address === 'string' ? String((args as { address: string }).address) : '941ef62e-d97b-2438-bfc8-22ae9e5da781'
@@ -173,7 +166,7 @@ const fold = defineTool('crypto', {
       const faceCount = Math.max(2, Math.min(Number.isInteger(spec.faces) ? (spec.faces as number) : faces, hex.length, faces) & ~1)
       const L = hex.length, base = Math.floor(L / faceCount), rem = L - base * faceCount
       const W: number[] = [], off: number[] = []; for (let i = 0, s = 0; i < faceCount; i++) { const w = base + (i < rem ? 1 : 0); W.push(w); off.push(s); s += w }
-      const pieces = W.map((w, i) => BigInt('0x' + (hex.slice(off[i]!, off[i]! + w) || '0')))
+      const pieces = facePieces(hex, W, off)
       const half = faceCount / 2, witnesses: { N: string; d: string; orient: 0 | 1 }[] = [], dec = new Array<bigint>(faceCount)
       let reflections = 0, exactRefl = true, maxBlind = 0n
       for (let j = 0; j < half; j++) {
@@ -363,7 +356,7 @@ const attest = defineTool('crypto', {
       return { op, ...nistOpenData(args.nist ?? true) } as never
     }
     if (op === 'plan') return { op, apis: ATTEST_APIS, iso: cfg.iso, requests: ATTEST_APIS.filter((a) => a.open && !a.url.startsWith('tls://') && a.id !== 'crt-sh').map((a) => ({ id: a.id, url: a.url, accept: a.id === 'csrc-pqc' ? 'text/html' : 'application/json' })).concat(hosts.slice(0, 1).map((h) => ({ id: 'crt-sh', url: ATTEST_APIS.find((a) => a.id === 'crt-sh')!.url.replace('<host>', h), accept: 'application/json' }))), liveCertificates: hosts.map((h) => ({ id: `tls:${h}`, host: h, port: 443, answers: '{ notBefore, notAfter, issuer } as the client read them' })), theorems: ['textbook_hash_bits', 'textbook_beacon_period', 'textbook_chain_index_steps', 'textbook_chain_links_by_output', 'textbook_precommitment_is_sha512', 'textbook_tree_size_positive', 'textbook_acme_resources_five', 'textbook_cve_id_well_formed', 'textbook_cvss_bounded', 'textbook_dates_ordered', 'textbook_total_at_least_page', 'textbook_size_nonnegative', 'textbook_adler32_width', 'textbook_doi_well_formed', 'textbook_cert_validity_bound', 'textbook_now_within_validity', 'textbook_pqc_standards_three'], coordination: PROSE.quantumProcessingToolboxesCrypto_coordination99 }
-    if (op !== 'read') throw new Error(`op ${op} is not plan or read`)
+    assertRead(op)
     const answers = (Array.isArray(args.answers) ? args.answers : []) as AttestAnswer[]
     const r = attestAnswers(answers, typeof args.now === 'number' ? args.now : 0)
     return { op, ...r, says: proseFill(PROSE.quantumProcessingToolboxesCrypto_says100, Object.values(r.sources).filter((x) => x.status === 'read').length, Object.keys(r.sources).length, r.checked, r.violations.length, r.followUps.length ? `; ${r.followUps.length} follow-up(s) to read` : '') }
@@ -427,7 +420,7 @@ export const CRYPTO: Toolbox = {
     selftest: (ctx) => {
       const tools = new Set(['fold', 'seal', 'attest'])
       const checks = ctx.examples.filter((e) => tools.has(e.tool)).map((e) => {
-        const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } })
+        const r = ctx.handle(callEnvelope(e.tool, e.arguments))
         const why = 'error' in r && r.error ? String(r.error.message) : e.expect(r.result.structuredContent)
         return { id: `crypto:${e.id}`, passed: why === null, evidence: why ?? e.shows }
       })

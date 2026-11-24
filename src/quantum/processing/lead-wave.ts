@@ -9,6 +9,7 @@ import { CLAY_RELATIONS } from './clay-statements.ts'
 import { QUANTUM_TERMS } from './quantum-vocabulary.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { HARMONICS, KEY } from './unit/theme.ts'
+import { gcd } from './clay-register.ts'
 
 const WAVE_HZ = KEY
 const PITCH_HZ = 440
@@ -17,7 +18,6 @@ const PROTON_MASS = { mantissa: '167262192595', exponent: -38, uncertainty: '52'
 /** The integer part of the CODATA proton-electron mass ratio. 1836 = 34 × 54. */
 const PROTON_ELECTRON_INTEGER = 1836
 
-const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b))
 const bare440 = (text: string) => /(?<![\d])440(?![\d])/.test(text)
 const statesRatio = (text: string) => text.includes('432') && bare440(text) && text.includes('54') && text.includes('55')
 

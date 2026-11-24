@@ -16,6 +16,8 @@ import { TABLES } from '../tables-index.ts'
 import { claimNovelty } from '../claims.ts'
 import { competeProgramNeighbours } from '../../uuid/programs/index.ts'
 import { clock, stamp } from '../../uuid/programs/clock/index.ts'
+import type { TheoremTally } from '../toolbox.ts'
+import { assertRead } from '../toolbox.ts'
 
 type Claim = { id: string; source: string; text: string }
 type Call = { door: string; host: string; arguments: Record<string, unknown>; purpose: 'forensics' | 'verify' | 'legal' | 'security' | 'due-process' | 'prior-art' | 'licence' }
@@ -217,7 +219,7 @@ const legal = defineTool('legal', {
   widget: flowWidget,
 })
 
-const FIXTURE_TEXTS: Texts = { citation: 'cff-version: 1.2.0\ntitle: QPU\nauthors:\n  - family-names: Rouschev\n    given-names: Tsvetan\n    orcid: https://orcid.org/0009-0000-7312-9778\nlicense: CC-BY-NC-ND-4.0\n', zenodo: '{"creators":[{"name":"Rouschev, Tsvetan","orcid":"0009-0000-7312-9778"}],"license":"cc-by-nc-nd-4.0","title":"QPU"}', package: '{"name":"@uuidna/qpu","version":"1.4.0","license":"CC-BY-NC-ND-4.0","author":{"name":"Tsvetan Rouschev"}}', readme: '| Measure | Value |\n|---|---:|\n| Tests | 152 pass |\n', worker: PROSE.quantumProcessingToolboxesLegal_worker68, billing: 'verifySignature(secret) sameHex(expected, v1)', hmac: 'export const sameHex = (a, b) => { let d = 0; d |= a.charCodeAt(i) ^ b.charCodeAt(i) }', mcp: 'const BALANCER = new Map()' }
+const FIXTURE_TEXTS: Texts = { citation: 'cff-version: 1.2.0\ntitle: QPU\nauthors:\n  - family-names: Rouschev\n    given-names: Tsvetan\n    orcid: https://orcid.org/0009-0000-7312-9778\nlicense: CC-BY-NC-ND-4.0\n', zenodo: JSON.stringify({"creators":[{"name":"Rouschev, Tsvetan","orcid":"0009-0000-7312-9778"}],"license":"cc-by-nc-nd-4.0","title":"QPU"}), package: JSON.stringify({"name":"@uuidna/qpu","version":"1.4.0","license":"CC-BY-NC-ND-4.0","author":{"name":"Tsvetan Rouschev"}}), readme: '| Measure | Value |\n|---|---:|\n| Tests | 152 pass |\n', worker: PROSE.quantumProcessingToolboxesLegal_worker68, billing: 'verifySignature(secret) sameHex(expected, v1)', hmac: 'export const sameHex = (a, b) => { let d = 0; d |= a.charCodeAt(i) ^ b.charCodeAt(i) }', mcp: 'const BALANCER = new Map()' }
 
 /** The competitions with prizes and funding, their rules read at the source (2026-10-26) and judged against this tree's own evidence on every run:
  * a rule is satisfied, pending (the author's act), closed (the window has passed) or open (a lead). Nothing is claimed won; what the rules
@@ -328,7 +330,7 @@ const toDay = (d: string | null): number | null => (d ? Math.floor(Date.parse(d 
 /** The theorems over patents, verified on every patent read: the dates are ordered (priority ≤ filing ≤ publication, filing ≤ grant), the number is well formed for its office, and a granted patent\'s term ends twenty years after its filing (US utility, EP: Art. 63 EPC): every violation is named, never hidden. */
 const checkPatentTheorems = (patents: readonly Patent[]): { checked: number; passed: number; violations: { number: string; theorem: string; says: string }[]; byTheorem: Record<string, { passed: number; failed: number }> } => {
   const violations: { number: string; theorem: string; says: string }[] = []
-  const byTheorem: Record<string, { passed: number; failed: number }> = {}
+  const byTheorem: TheoremTally = {}
   const tally = (t: string, ok: boolean, number: string, says: string) => { byTheorem[t] = byTheorem[t] ?? { passed: 0, failed: 0 }; if (ok) byTheorem[t]!.passed += 1; else { byTheorem[t]!.failed += 1; violations.push({ number, theorem: t, says }) } }
   for (const p of patents) {
     const pr = toDay(p.priority), fi = toDay(p.filing), pu = toDay(p.publication), gr = toDay(p.grant)
@@ -352,7 +354,7 @@ const patents = defineTool('legal', {
     const queries = Array.isArray(args.queries) && args.queries.length ? args.queries.map(String) : [String(args.query ?? 'quantum error correction')]
     const count = typeof args.count === 'number' ? Math.max(1, Math.floor(args.count)) : 100 // no cap here: the host's own page size bounds an answer, and the client pages
     if (op === 'plan') return { op, apis: PATENT_APIS, open: PATENT_APIS.filter((a) => a.open).map((a) => a.id), keyed: PATENT_APIS.filter((a) => !a.open).map((a) => ({ id: a.id, key: a.key })), requests: [...queries.map((q) => ({ id: `patents:google:${q}`, api: 'google-patents', query: q, method: 'GET' as const, url: `https://patents.google.com/xhr/query?url=${encodeURIComponent(`q=${q.replace(/\s+/g, '+')}&num=${count}`)}`, accept: 'application/json' })), { id: 'patents:epo-dates', api: 'epo-publication-server', query: null, method: 'GET' as const, url: PATENT_APIS[1]!.url, accept: 'text/html' }], relatedMcps: PATENT_MCPS, theorems: ['textbook_patent_dates_ordered', 'textbook_patent_number_well_formed', 'textbook_patent_term_twenty_years'] }
-    if (op !== 'read') throw new Error(`op ${op} is not plan or read`)
+    assertRead(op)
     const answers = (Array.isArray(args.answers) ? args.answers : []) as { id: string; query?: string; text: string }[]
     const byQuery = answers.filter((a) => a.id.startsWith('patents:google:')).map((a) => ({ query: a.query ?? a.id.replace('patents:google:', ''), ...listPatents(String(a.text ?? '')) }))
     const epo = answers.find((a) => a.id === 'patents:epo-dates')

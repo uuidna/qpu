@@ -429,6 +429,8 @@ export const pauliProduct = (paulis: readonly ('X' | 'Y' | 'Z' | 'I')[]): Gate =
 
 /** The adjoint of a gate, G†: the conjugate transpose of its unitary. It is the inverse of any gate, so an echo can run
  *  its backward half with the true inverse of each operation rather than the operation itself. */
+/** Every cell of a square matrix of side dim, row by row. */
+export const eachCell = (dim: number, at: (r: number, k: number) => void): void => { for (let r = 0; r < dim; r++) for (let k = 0; k < dim; k++) at(r, k) }
 export const adjointGate = (gate: Gate): Gate => {
   const dim = 1 << gate.arity
   return defineGate({ name: `${gate.name}†`, arity: gate.arity, matrix: createMatrix(dim, (r, s) => { const [re, im] = gate.matrix[s * dim + r]!; return [re, -im] }) })
@@ -1069,9 +1071,7 @@ export const getExpectation = (result: DensityResult, observable: Record<string,
     op = multiply(op, expandUnitary(paulis[pauli], [i], n), dim)
   }
   let trace = 0
-  for (let r = 0; r < dim; r++) for (let k = 0; k < dim; k++) {
-    trace += result.density.re[r * dim + k]! * op.re[k * dim + r]! - result.density.im[r * dim + k]! * op.im[k * dim + r]!
-  }
+  eachCell(dim, (r, k) => { trace += result.density.re[r * dim + k]! * op.re[k * dim + r]! - result.density.im[r * dim + k]! * op.im[k * dim + r]! })
   return trace
 }
 

@@ -9,6 +9,7 @@ import { isoClassify } from '../iso-deliverables.ts'
 import { physicalEvidence, type DeviceReadings } from '../quantum-vocabulary.ts'
 import { CATALOGUE } from './billing.ts'
 import { flowWidget } from '../widgets.ts'
+import { askedPaths } from '../audit.ts'
 
 type Item = { name: string; sku?: string; description?: string; url?: string; image?: string; brand?: string; price?: number | string; currency?: string; availability?: string; variants?: readonly { name?: string; sku?: string; price: number | string; currency?: string; availability?: string }[] }
 /** One product of any caller's catalogue as a schema.org Product: one Offer per variant (or one at its own price), each in the ISO 4217 currency
@@ -70,7 +71,7 @@ const codes = defineTool('standards', {
 
 /** Every file against ISO_DIMENSIONS by what it cites: the paths first, as a readList, then each file read back as path → dimensions */
 const classifyFiles = (paths: unknown, files?: Readonly<Record<string, string>>) => {
-  const asked = (Array.isArray(paths) ? paths.map(String) : String(paths).split('\n')).filter(Boolean)
+  const asked = askedPaths(paths)
   if (!files) return { phase: 'classify' as const, readList: asked, says: `${asked.length} file(s) to read` }
   const classified = Object.fromEntries(asked.filter((p) => typeof files[p] === 'string').map((p) => [p, isoClassify(files[p]!)]))
   const unclassified = Object.keys(classified).filter((p) => classified[p]!.length === 0)
@@ -128,7 +129,7 @@ export const STANDARDS_BOX: Toolbox = {
       const joined = verifyIsoOnline({ status: 200, text: '{"reference":"ISO 9001:2015","id":62085,"currentStage":9093}\n{"reference":"ISO 639-1:2002","id":22109,"currentStage":9599}\n' })
       const named = joined.rows.find((row) => row.dimension === 'ISO 9001')
       const retired = joined.rows.find((row) => row.dimension === 'ISO 639-1')
-      const defined = verifyIsoOnline({ status: 200, text: '{"reference":"ISO 9001:2015","id":62085,"currentStage":9093,"title":{"en":"Quality management systems — Requirements"},"scope":{"en":"<p>This document specifies requirements.</p>"}}\n{"reference":"ISO 80000-10:2019/Amd 1:2025","id":1,"currentStage":6060,"supplementType":"Amd","title":{"en":"Amendment 1"}}\n{"reference":"ISO 80000-10:2019","id":64980,"currentStage":9093,"title":{"en":"Quantities and units — Part 10: Atomic and nuclear physics"},"scope":{"en":"<p>This document gives names, symbols, definitions and units.</p>"}}\n' })
+      const defined = verifyIsoOnline({ status: 200, text: [JSON.stringify({"reference":"ISO 9001:2015","id":62085,"currentStage":9093,"title":{"en":"Quality management systems — Requirements"},"scope":{"en":"<p>This document specifies requirements.</p>"}}), JSON.stringify({"reference":"ISO 80000-10:2019/Amd 1:2025","id":1,"currentStage":6060,"supplementType":"Amd","title":{"en":"Amendment 1"}}), JSON.stringify({"reference":"ISO 80000-10:2019","id":64980,"currentStage":9093,"title":{"en":PROSE.quantumProcessingToolboxesStandards_iso80000Part10},"scope":{"en":"<p>This document gives names, symbols, definitions and units.</p>"}}), ''].join('\n') })
       const quality = defined.rows.find((row) => row.dimension === 'ISO 9001')
       const quantity = defined.rows.find((row) => row.dimension === 'ISO 80000-10')
       check('standards:iso-online', plan.phase === 'requests' && plan.request.url === 'https://www.iso.org/open-data.html' && plan.defined === 0 && page.phase === 'requests' && page.request.url === 'https://www.iso.org/open-data/iso_deliverables_metadata.jsonl' && plan.holds === false && plan.asked === ISO_DIMENSIONS.length && joined.holds === false && joined.defined === 0 && named?.verified === true && named.defined === false && named.current === true && named.catalogue === 62085 && retired?.verified === true && retired.current === false && quality?.defined === true && quality.definition === 'This document specifies requirements.' && quality.title === 'Quality management systems — Requirements' && quantity?.reference === 'ISO 80000-10:2019' && quantity.defined === true && quantity.catalogue === 64980, proseFill(PROSE.quantumProcessingToolboxesStandards_s26, plan.asked))

@@ -13,13 +13,13 @@ import { askPayloadRbac } from './api-mcp-rbac.ts'
 import { ROLES } from './unit/roles.ts'
 import { createOpenapi } from './standards.ts'
 import { uuidQubits } from '../uuid/index.ts'
-import { AXIOMS } from './clay-register.ts'
+import { hexbitRegister } from './clay-register.ts'
 
 /** RFC 9728: the protected-resource metadata of /mcp, from the names alone — the issuer the tenant binds (QPU_OAUTH_ISSUER_<TENANT>, selected
  *  in the Payload admin, valued in the Worker's environment), the docket roles as scopes; no issuer named means the pure tools need no token
  *  and the docket takes the tenant's tokens by name. The same at the Worker and at the app; pure. */
 /** The register. One UUID holds the effective qubits. The next handle is another UUID, so the width has no ceiling. Not a hardware claim. */
-const register = uuidQubits(AXIOMS.find((row) => row.name === 'hexbit')!.value)
+const register = hexbitRegister()
 const QUANTUM_BOUNDS = { ceiling: null, capacity: 'unlimited' as const, qubits: register.effective, handles: register.handles.possible, scale: register.handles.capacity }
 const protectedResource = (origin: string, env?: Record<string, unknown>) => {
   const host = tenant(new URL(origin).hostname)

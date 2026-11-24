@@ -6,6 +6,7 @@ import { TOOLBOXES, handle } from '../src/quantum/processing/mcp.ts'
 import { ISO_CLAUSES, ISO_GROUPS, ISO_STANDARDS, ISO_VOCABULARY } from '../src/quantum/processing/iso-index.ts'
 import { THEOREMS } from '../src/quantum/processing/theorems-index.ts'
 import { page } from './oneText.ts'
+import { listEnvelope } from '../src/quantum/processing/toolbox.ts'
 
 type Proof = { key: string; module: string; statement: string; axioms: readonly string[] }
 type Subject = { type: 'DefinedTerm' | 'SoftwareApplication'; name: string; set?: string; code?: string }
@@ -81,7 +82,7 @@ for (const section of sections) {
 write(join(out, 'catalogue.md'), ['---', 'title: "Catalogue of claims"', '---', '', readFileSync('src/quantum/CATALOGUE.md', 'utf8')].join('\n'))
 const tools = TOOLBOXES.flatMap((box) => box.tools.map((tool) => ({ name: tool.name, toolbox: box.name, description: tool.description, inputSchema: tool.inputSchema })))
 write(join(out, 'public', 'mcp.json'), JSON.stringify({ live: 'POST /api/mcp', says: PROSE.scriptsSite_says1, tools }, null, 2))
-write(join('docs', 'public', 'mcp.json'), JSON.stringify({ tools: (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: unknown } }).result.tools }, null, 2))
+write(join('docs', 'public', 'mcp.json'), JSON.stringify({ tools: (handle(listEnvelope()) as { result: { tools: unknown } }).result.tools }, null, 2))
 write(join(out, '.vitepress', 'sidebar.json'), JSON.stringify(sidebar))
 // the home page is the one text the build writes (scripts/oneText.ts): the same as the README, the npm README and the Zenodo record
 write(join(out, 'index.md'), ['---', 'title: "Quantum Processing Unit"', PROSE.scriptsSite_s2, '---', '', '::: v-pre', '', page, '', ':::', ''].join('\n'))
