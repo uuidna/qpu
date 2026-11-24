@@ -1,0 +1,24 @@
+---
+description: One word for one thing; more words only for combinatorial relations
+alwaysApply: true
+---
+
+# One word
+
+One concept → one identifier. Merge synonyms and aliases; do not keep parallel names for the same thing. Dictionary entropy first (forks are disorder); then verified — one word is order.
+
+- Prefer a single word: `program`, not `programOf` / `install` / `installedProgram`.
+- More words only when the name is a **combinatorial relation** of distinct concepts (e.g. `programPlugin` = program × plugin, `auditProgramNeighbours` = audit × program × neighbours).
+- Do not invent a second word for lookup, load, get, of, or install of the same concept — the concept word *is* the function.
+- When renaming, update every call site and leaf; leave no alias export behind.
+- Apply this on every change, not only when someone points at one pair.
+- Entropy stays the dictionary word (see `entropy.mdc`); one-word naming drives it toward zero.
+
+```typescript
+// ❌ BAD — two names, same thing
+export const install = (handle: string) => { ... }
+export const programOf = (handle: string) => install(handle)
+
+// ✅ GOOD — one word
+export const program = (handle: string) => { ... }
+```

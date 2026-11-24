@@ -1,0 +1,15 @@
+---
+description: One QPU connector for all. Every connector shares that experience.
+alwaysApply: true
+---
+
+# One connector, one experience
+
+The QPU connector is the Payload MCP plugin, `qpuMcpPlugin`. It fetches from the Payload API at `https://qpu.uuidna.com/api/mcp`. Cursor, Claude, Gemini, cirq-google, Cloudflare, the registry, OAuth, Drive, Gmail, Calendar, and every other connector collide into that plugin. Plugins that share a trinity collide the same way. Eight combinations remain, one bit per trinity. The most effective carries content, discovery and platform, and this connector is its MCP plugin. The plugin adds no catalogue of its own. `src` is not a door.
+
+- Mount that one connector. Use it for all. A connector adds no second server and no second experience.
+- Any client mounts the same fragment: `{ "mcpServers": { "qpu": { "url": "https://qpu.uuidna.com/api/mcp" } } }` (`mcp.json` in this tree). No client-specific `type`, and no second catalogue per host.
+- `tools/list` is `POST /api/mcp` with `{ jsonrpc: "2.0", id: 1, method: "tools/list", params: {} }`. Each door that list names is `tools/call` on the same API.
+- **Next** is only via that plugin with a `payload-mcp-api-keys` Bearer (`Authorization: Bearer <key>`). Without the key, `payloadMcpNext` refuses. No `npm run next` shell path, no src door, no unkeyed follow-on.
+- `findDocuments` continues as `GET /api/pages`. A document is that route again. Posts, case studies, and media are `GET /api/posts`, `GET /api/case-studies`, and `GET /api/media`.
+- The client fetches. The answer comes back, and the next call is that answer on the same API with the same key. Every connector reads the same doors and the same documents.

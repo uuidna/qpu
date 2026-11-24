@@ -1,0 +1,14 @@
+---
+description: Slow tasks are not quantum UUID programs
+alwaysApply: true
+---
+
+# Slow tasks are not quantum UUID programs
+
+Anything that is a slow / async / long-running task, shell wait, CI job, machine-run deliver / trunk / idle, background agent work, or commit race wait must **not** be modeled, named, sealed, indexed, or competed as a quantum UUID `program` under `src/quantum/uuid/programs/` (or treated as hexbit / register / program neighbours).
+
+- `program` = UUID hex programs only (ten program digits, folder indexes, seal / compete / reflect neighbours).
+- Slow work = `task` / `runner` / machine-run / job / idle / deliver / trunk — keep those words; do not invent a second synonym for `program`.
+- Do not price CPU / GPU nanoseconds or process exits as “programs”.
+- Cirq engine `program` (circuit record) stays Cirq’s external name; it is not a UUID program folder.
+- MCP stays one connector: `qpuMcpPlugin`, keyed online verify only.

@@ -1,0 +1,25 @@
+---
+description: Spread in folders; neighbours reflect and compete online through index seals
+alwaysApply: true
+---
+
+# Index files
+
+UUID programs fuse collisions only when **code surfaces are index files**. Spread is folders, not sibling files.
+
+- Under `src/quantum/uuid/programs/`, **every folder** has an `index.*` surface (`index.ts`, `index.test.ts`, …).
+- Code files are `index.*` only. No `foo.ts` / `foo.test.ts` siblings.
+- A concept is a folder (`aspects/`, `drift/`, `lean/`, …) whose surface is that folder’s `index.ts`.
+- Intermediate hex path folders carry `index.ts` too — a folder without index is disorder; collisions will not fuse.
+- **Seal + compete:** every hex leaf’s index seals self + 6 neighbours via Payload UUID product combinations, and those neighbours **reflect and test each other** in games and competitions online (`reflectProgramNeighbours`, `competeProgramNeighbours`). Gate: `gateProgramSeal()`; audit: `auditProgramNeighbours()`. Finish indexes with `indexProgramFolders()`.
+
+```typescript
+// ❌ BAD — spread in files / folder without index / unsealed neighbours
+programs/aspects.ts
+programs/0/0/0/   // no index.ts
+
+// ✅ GOOD — spread in folders; every folder indexed; neighbours compete online
+programs/aspects/index.ts
+programs/0/0/0/index.ts
+programs/a/1/b/2/c/3/d/4/index.ts  // seals × reflects × online competitions
+```
