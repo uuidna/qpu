@@ -19,10 +19,11 @@ lean_lib Qpu where
   globs := #[.andSubmodules `Qpu]
 
 /-- The meaning gate, built by default: `lake build` fails on any violation of textbook meaning not named in
-`GateBaseline`, and on any named one that no longer stands. Meaning comes from Mathlib; nothing is written by hand. -/
+`GateBaseline`, and on any named one that no longer stands. Meaning comes from Mathlib; nothing is written by hand.
+With it, `Names` fails on a theorem that states the formula of another and is not named in `NamesBaseline`. -/
 @[default_target]
 lean_lib QpuGate where
-  roots := #[`Gate, `GateBaseline]
+  roots := #[`Gate, `GateBaseline, `Names, `NamesBaseline]
 
 lean_exe claims where
   root := `Qpu.Claims.Extract
@@ -254,7 +255,7 @@ script leanfiles do
   let listed ← IO.Process.output { cmd := "git", args := #["ls-files", "*.lean"] }
   let files := (listed.stdout.splitOn "\n").filter (· != "")
   let unchecked := files.filter fun file =>
-    !(file == "lakefile.lean" || file.startsWith "lean/Qpu/" || file == "lean/Qpu.lean" || file == "lean/Gate.lean" || file == "lean/GateBaseline.lean" || leanTools.contains file)
+    !(file == "lakefile.lean" || file.startsWith "lean/Qpu/" || file == "lean/Qpu.lean" || file == "lean/Gate.lean" || file == "lean/GateBaseline.lean" || file == "lean/Names.lean" || file == "lean/NamesBaseline.lean" || leanTools.contains file)
   -- `lean/` is kept as evidence: its files are named here on every run, and nothing is removed for the kernel's sake
   let evidence := unchecked.filter (·.startsWith "lean/")
   let skipped := unchecked.filter (!·.startsWith "lean/")
