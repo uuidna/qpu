@@ -4,6 +4,10 @@ The prose of `src/quantum/processing/toolboxes/repository.ts`. Each definition i
 
 namespace Prose
 
+def quantumProcessingToolboxesRepository_oneScript : String := "one script for all: every computation is a door of the one runner, so a commit adds no other entry point (no new file under scripts/, no new file that runs itself from the command line); k copies folded into one holder leave one (textbook_one_holder)"
+def quantumProcessingToolboxesRepository_oneScriptRefused : String := "⟦0⟧ would be another entry point; make it a door and run it through ⟦1⟧ step <tool> <json> --write"
+def quantumProcessingToolboxesRepository_oneScriptHolds : String := "no entry point added beside ⟦0⟧"
+
 def quantumProcessingToolboxesRepository_says1 : String := "⟦0⟧ literal(s) outside their registry (⟦1⟧ URLs and ⟦2⟧ paths read), ⟦3⟧ token(s) priced to the tree, listed and never blocking; a new one blocks its commit (the rule registered)"
 def quantumProcessingToolboxesRepository_source2 : String := "OpenAlex, sealed per theorem in the docket (textbook { claims })"
 def quantumProcessingToolboxesRepository_says3 : String := "⟦0⟧ of ⟦1⟧ theorems of the way recognised by a recorded confirmation; the rest unconfirmed, never called recognised"
