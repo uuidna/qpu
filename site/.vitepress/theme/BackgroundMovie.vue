@@ -2,8 +2,8 @@
 // The background movie: one canvas behind every page, one clock, two streams told apart.
 // The clock is the kernel's: a 12-hour dial whose hand is reflected by σ₁₂(x) = 12 − x and restored by the same reflection
 // (textbook_clock_clone_involution), and a ring of witnesses that moves 14 → 12 → 14 → 16 (textbook_witness_clock_move).
-// Stream one, the published experiments: every figure is evaluated from the statement the Lean kernel recorded
-// (Supremacy.willow_rcs, Supremacy.sycamore_rcs_within), drawn on one log-seconds axis against the feasibility bound.
+// Stream one, the published experiments: every figure is evaluated from the statement the Lean kernel recorded, and
+// the statements are found by their formulas (supremacy.data.ts), drawn on one log-seconds axis against the bound.
 // Stream two, the live model: this deployment's own /api/mcp (movie-live.ts). MovieCaption.vue says what both mean.
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { data } from './supremacy.data'
@@ -11,19 +11,15 @@ import { live, startLive } from './movie-live'
 
 const canvas = ref<HTMLCanvasElement | null>(null)
 
-/** A side of a recorded statement, evaluated: natural numbers joined by * and ^ (^ binds tighter, right to left). */
-const evaluate = (side: string): number => side.split('*').map((factor) => factor.split('^').map((n) => Number(n.trim())).reduceRight((exp, base) => base ** exp)).reduce((a, b) => a * b, 1)
-const sides = (key: string): [number, number] | null => {
-  const parts = data.theorems.find((t) => t.key === key)?.statement.split(/[<≤]/)
-  return parts && parts.length === 2 ? [evaluate(parts[0]!), evaluate(parts[1]!)] : null
-}
-const willow = sides('Supremacy.willow_rcs') // quantum seconds < classical seconds
-const sycamore = sides('Supremacy.sycamore_rcs_within') // classical 2022 seconds ≤ the bound
-const bound = sycamore?.[1] ?? null
+// the experiments as the loader found them by their formulas: the separated one (quantum seconds < classical seconds,
+// the bound between them) and the one within the bound (classical seconds ≤ the bound)
+const willow = data.experiments.separated[0]?.sides ?? null
+const sycamore = data.experiments.within[0]?.sides ?? null
+const bound = data.experiments.bound
 const label = computed(() => [
   `Willow RCS ${data.willow.qubits} qubits depth ${data.willow.depth}: ${data.willow.quantum} against an estimated ${data.willow.classical} classically`,
   live.value ? `live model ${live.value.effective} qubits (${live.value.formula}) answered in ${live.value.ms.toFixed(0)} ms` : 'live model pending',
-  `${data.theorems.length} kernel-checked theorems played`,
+  `${new Set([...data.played.flatMap((p) => p.keys), ...data.experiments.within.map((e) => e.key), ...data.experiments.separated.map((e) => e.key)]).size} kernel-checked theorems played`,
 ].join(' · '))
 
 const reduce = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches

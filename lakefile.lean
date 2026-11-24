@@ -80,6 +80,9 @@ def configFile : String := "lean/tools/Config.lean"
 /-- The Lean file that writes the stylesheet that reads a variation by its address in CSS alone. -/
 def cssFile : String := "lean/tools/Css.lean"
 
+/-- The Lean file that writes the plan by which the site's icon folds. -/
+def foldFile : String := "lean/tools/Fold.lean"
+
 /-- The Lean file that writes the register of standards. -/
 def isoFile : String := "lean/tools/Iso.lean"
 
@@ -126,6 +129,7 @@ def rendered : List (String × System.FilePath × System.FilePath) :=
   , (isoFile, ".lake" / "build" / "iso-index.ts", "src" / "quantum" / "processing" / "iso-index.ts")
   , (configFile, ".lake" / "build" / "config-index.ts", "src" / "quantum" / "processing" / "config-index.ts")
   , (cssFile, ".lake" / "build" / "advantage.css", "site" / ".vitepress" / "theme" / "advantage.css")
+  , (foldFile, ".lake" / "build" / "fold-index.ts", "site" / ".vitepress" / "theme" / "fold-index.ts")
   , (addressFile, ".lake" / "build" / "address-core.ts", "src" / "quantum" / "password" / "address-core.ts") ]
 
 /-- Lean writes the prose index, the theorem index, the textbook index, the blueprint, the nested catalogue, the
@@ -235,7 +239,7 @@ script applications do
   steps [("lake", #["build"]), ("lake", #["env", "lean", applicationsFile])]
 
 /-- The Lean files that write rendered output; `lake run verify` runs each of them. -/
-def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile, configFile, cssFile, addressFile, gapsFile]
+def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile, configFile, cssFile, foldFile, addressFile, gapsFile]
 
 /-- `lake run leanfiles`: no Lean file is skipped. Every `.lean` file the repository tracks is this lakefile, a module
 the build compiles, a tool `lake run verify` runs, or evidence kept under `lean/`, which is named and never removed. -/

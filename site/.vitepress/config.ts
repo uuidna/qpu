@@ -10,6 +10,7 @@ import { UNIT_CONCEPT_DOI } from '../../src/quantum/processing/release.ts'
 import { TENANTS } from '../../src/quantum/processing/unit/tenants.ts'
 import { coilColour, rgbOfHsl, toFrames } from '../../src/quantum/processing/unit/theme.ts'
 import { style } from '../../src/quantum/uuid/index.ts'
+import { FOLD } from './theme/fold-index.ts'
 
 // The sidebar is written beside this file by scripts/site.ts from the seed waves; the theme beside it
 // (./theme) registers the Vue components the generated pages use — the live MCP console and the qubit-price
@@ -28,7 +29,7 @@ const IMAGE = { url: `${HOST}/og.png`, width: 1200, height: 630, alt: NAME }
 // zero (textbook_div_zero), so a line runs from each digit to the centre. Each segment is as long at its middle as
 // the ring is thick, which the count of digits fixes: hole over ring = (n - pi) / (n + pi). The ground is the ink of
 // the licence's own address (style). Nothing here is drawn by hand: the icon and the social image are written at build.
-const DIGITS = toFrames('0123456789abcdef')
+const DIGITS = toFrames(Array.from({ length: FOLD.digits }, (_, d) => d.toString(FOLD.digits)).join(''))
 const numbers = (css: string) => css.match(/[\d.]+/g)!.map(Number)
 const [, SATURATION, LIGHTNESS] = numbers(coilColour().coin.css) as [number, number, number]
 const rgbOf = (h: number, s: number, l: number) => rgbOfHsl(h, s / 100, l / 100)
@@ -40,13 +41,15 @@ const TURN = (2 * Math.PI) / DIGITS.length
 // a line's width over the ring's radius, and how strongly it shows at the rim: one digit's share of the ring's thickness, and the hole's share of the ring
 const LINE = (1 - HOLE) / DIGITS.length, SHOWN = HOLE
 const at = (angle: number, radius: number) => `${(radius * Math.sin(angle)).toFixed(4)} ${(-radius * Math.cos(angle)).toFixed(4)}`
-// The icon folds, and holds what it needs. Sixteen digits are four bits, so four folds in half bring every digit onto
-// digit 0 and four more open the ring again, one fold for each period of the licence address's clock (style). A fold
-// turns the upper half of the positions still spread onto the lower half, about the boundary between them; seen from
-// above, a turn about a line is a scale across it, from 1 through 0 to -1. Folded colours add as light does. The icon
+// The icon folds, and holds what it needs. Lean writes the plan (lean/tools/Fold.lean, from
+// Advantage.fold_upper_onto_lower): how many digits stand in the ring, the half the places still spread fold onto at
+// each fold, and the folds each digit takes part in, after which every digit lies on digit 0. The same folds open the
+// ring again (Advantage.fold_unfold), one fold for each period of the licence address's clock (style). Here a fold is
+// only drawn: a turn about the boundary between the two halves, seen from above, is a scale across it from 1 through
+// 0 to -1. Folded colours add as light does. The icon
 // computes each digit's hue from the digit in its own CSS and carries the work's citation (SOFTWARE) as its metadata.
 // A reader that runs no CSS sees the ring open, in the same colours, which are also written on each segment.
-const FOLDS = Array.from({ length: Math.log2(DIGITS.length) }, (_, j) => ({ fold: j + 1, half: DIGITS.length >> (j + 1) }))
+const FOLDS = FOLD.halves.map((half, j) => ({ fold: j + 1, half }))
 const markSvg = () => {
   const beats = 2 * FOLDS.length, beat = (n: number) => `${(100 * n / beats).toFixed(3)}%`
   const css = [
@@ -58,15 +61,13 @@ const markSvg = () => {
   ].join('')
   const segment = (ink: readonly number[], i: number) => {
     const from = (i - 0.5) * TURN, to = (i + 0.5) * TURN, colour = hexOf(ink)
-    let place = i
     let body = `<linearGradient id="l${i}" gradientUnits="userSpaceOnUse" x1="${(HOLE * Math.sin(i * TURN)).toFixed(4)}" y1="${(-HOLE * Math.cos(i * TURN)).toFixed(4)}" x2="0" y2="0"><stop stop-color="${colour}" stop-opacity="${SHOWN.toFixed(4)}"/><stop offset="1" stop-color="${colour}" stop-opacity="0"/></linearGradient>`
       + `<path style="--d:${i}" fill="${colour}" d="M${at(from, 1)}A1 1 0 0 1 ${at(to, 1)}L${at(to, HOLE)}A${HOLE.toFixed(4)} ${HOLE.toFixed(4)} 0 0 0 ${at(from, HOLE)}Z"/>`
       + `<path stroke="url(#l${i})" stroke-width="${LINE.toFixed(4)}" d="M${at(i * TURN, HOLE)}L0 0"/>`
-    for (const { fold, half } of FOLDS) if (place >= half && place < 2 * half) {
+    for (const { fold, half } of FOLDS) if (FOLD.moves[i]![fold - 1]) {
       // the fold line leaves the centre at the boundary between the two halves: turn it onto the x axis, scale across it, turn back
       const turned = ((half - 0.5) * TURN * 180 / Math.PI - 90).toFixed(2)
       body = `<g transform="rotate(${turned})"><g class="f${fold}"><g transform="rotate(${-turned})">${body}</g></g></g>`
-      place = 2 * half - 1 - place
     }
     return body
   }

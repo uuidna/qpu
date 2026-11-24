@@ -74,6 +74,13 @@ theorem unrank_cons_address (s : Nat) (rest : List Nat) (i : Nat) :
   rw [Nat.one_mul] at h
   simp only [unrank, h]
 
+/-- A fold in half sends the upper half of a block onto the lower half, and only the upper half: a place of a block of `2 * h` places is in the upper half exactly when its mirror `Fin.rev` is in the lower. The site's icon folds by this (lean/tools/Fold.lean). By Fin.val_rev. -/
+theorem fold_upper_onto_lower (h : Nat) (i : Fin (2 * h)) : h ≤ i.val ↔ (Fin.rev i).val < h := by
+  rw [Fin.val_rev]; omega
+
+/-- The fold that closes a block opens it again: the mirror of the mirror of a place is the place. By Fin.rev_rev. -/
+theorem fold_unfold (n : Nat) (i : Fin n) : Fin.rev (Fin.rev i) = i := Fin.rev_rev i
+
 /-- A receipt of one read by address: the sides, the address read, and the digits found there. -/
 structure Receipt where
   /-- the size of each side of the space -/

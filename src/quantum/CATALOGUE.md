@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1578 products, 2 under a declared claim context and 1576 as the author's own statement, with 1076 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1580 products, 2 under a declared claim context and 1578 as the author's own statement, with 1076 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -1171,6 +1171,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (k : ℕ), (List.replicate k 2).length = k ∧ 2 ^ k ≤ Advantage.space (List.replicate k 2)
+```
+
+### `Advantage.fold_unfold`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ) (i : Fin n), i.rev.rev = i
+```
+
+### `Advantage.fold_upper_onto_lower`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (h : ℕ) (i : Fin (2 * h)), h ≤ ↑i ↔ ↑i.rev < h
 ```
 
 ### `Advantage.rank_unrank`

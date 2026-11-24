@@ -2,6 +2,8 @@
 // searched under: Mathlib db584cd6d46c92f209a44c0f1c829460d327499d, budget 200000, procedures gcongr, grind, nlinarith, omega, positivity
 export const GAPS = [
   {"key":"Advantage.advantage_unbounded","module":"Qpu.General.Advantage","parts":[{"library":["List.length_replicate"],"statement":"(List.replicate k 2).length = k"},{"own":["Advantage.space"],"statement":"2 ^ k ≤ Advantage.space (List.replicate k 2)"}]},
+  {"key":"Advantage.fold_unfold","module":"Qpu.General.Advantage","parts":[{"library":["Fin.rev_rev"],"statement":"i.rev.rev = i"}]},
+  {"key":"Advantage.fold_upper_onto_lower","module":"Qpu.General.Advantage","parts":[{"decided":"grind","statement":"h ≤ ↑i ↔ ↑i.rev < h"}]},
   {"key":"Advantage.rank_unrank","module":"Qpu.General.Advantage","parts":[{"own":["Advantage.rank","Advantage.unrank"],"statement":"Advantage.rank sizes (Advantage.unrank sizes i) = i"}]},
   {"key":"Advantage.reads_lt_space","module":"Qpu.General.Advantage","parts":[{"own":["Advantage.space"],"statement":"sizes.length < Advantage.space sizes"}]},
   {"key":"Advantage.receipt_exact","module":"Qpu.General.Advantage","parts":[{"own":["Advantage.rank","Advantage.Receipt.sizes","Advantage.Receipt.digits","Advantage.Receipt.index"],"statement":"Advantage.rank r.sizes r.digits = r.index"}]},
