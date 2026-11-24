@@ -9,7 +9,7 @@ import { createMcpHandler } from 'agents/mcp/server'
 import { withX402 } from 'agents/x402'
 import { z } from 'zod'
 import { handle, type Rpc } from '../processing/mcp.ts'
-import { PROSE } from '../processing/prose-index.ts'
+import { PROSE, proseFill } from '../processing/prose-index.ts'
 import { TENANTS } from '../processing/unit/tenants.ts'
 import { MESSAGING_TOOLS, callMessaging, type MailboxNamespace } from './messaging.ts'
 import { PROVER_TOOLS, callProver, type ProverNamespace } from './prover.ts'
@@ -53,11 +53,13 @@ export const x402Of = (env: Env) => {
  *  into the answer's _meta, which seals it beside it as x402/receipt. */
 export const sealSettlement = <R extends { _meta?: Record<string, unknown> }>(r: R): R => ({ ...r, _meta: new Proxy({ ...r._meta }, { set: (m, k, v) => { m[k as string] = v; if (k === 'x402/payment-response') m['x402/receipt'] = receiptOf('x402', v); return true } }) })
 
-/** One MCP SDK server over the kernel: each tool registered with its own schema, paid where the tenant names a wallet;
- *  the Worker serves it over Streamable HTTP, scripts/stdio.ts over stdio. */
+const DONATION = 'https://revolut.me/ceccec'
+
+/** One MCP SDK server over the kernel: each tool registered with its own schema, paid where the tenant names a wallet, free with a
+ *  donation asked where it names none; the Worker serves it over Streamable HTTP, scripts/stdio.ts over stdio. */
 export const mcpServer = async (env: Env) => {
-  const { info, tools, resources } = await surface(), terms = x402Of(env)
-  const base = new McpServer({ name: info.serverInfo?.name ?? 'qpu', version: info.serverInfo?.version ?? '0' }, { instructions: info.instructions })
+  const { info, tools, resources } = await surface(), terms = x402Of(env), donation = { url: DONATION, request: proseFill(PROSE.quantumNetMcpHttp_donationRequested, DONATION) }
+  const base = new McpServer({ name: info.serverInfo?.name ?? 'qpu', version: info.serverInfo?.version ?? '0' }, { instructions: terms ? info.instructions : `${info.instructions} ${donation.request}` })
   const server = terms ? withX402(base, terms) : null
   // where the Worker binds the rooms and the Lean prover, their tools are tools like the kernel's, charged the same way
   const rooms = env.MAILBOX as MailboxNamespace | undefined, prover = env.PROVER as ProverNamespace | undefined
@@ -65,7 +67,7 @@ export const mcpServer = async (env: Env) => {
   const all = [...tools.map((t: any) => [t, async (args: Args) => { const a = await kernel('tools/call', { name: t.name, arguments: args }); return a.result ?? { content: [{ type: 'text', text: a.error?.message ?? 'no answer' }], isError: true } }] as const), ...(rooms ? MESSAGING_TOOLS.map((t) => [t, (args: Args) => callMessaging(rooms, t.name, args)] as const) : []), ...(prover ? PROVER_TOOLS.map((t) => [t, (args: Args) => callProver(prover, args)] as const) : [])]
   for (const [t, call] of all) {
     // a schema's default is a choice shown, never an argument the client gave
-    const schema = z.fromJSONSchema(JSON.parse(JSON.stringify(t.inputSchema, (k, v) => (k === 'default' ? undefined : v)))) as z.ZodObject, run = async (args: Args) => (await call(args)) as never
+    const schema = z.fromJSONSchema(JSON.parse(JSON.stringify(t.inputSchema, (k, v) => (k === 'default' ? undefined : v)))) as z.ZodObject, run = async (args: Args) => { const r: any = await call(args); return (server ? r : { ...r, _meta: { ...r._meta, donation } }) as never }
     if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations ?? {}, async (args: Args) => sealSettlement(await run(args))).update({ _meta: t._meta })
     else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations, _meta: t._meta }, run)
   }
