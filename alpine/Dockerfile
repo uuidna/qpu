@@ -4,6 +4,8 @@
 # CI runs every gate in the runtime stage, the devcontainer develops in it, and the Cloudflare Lean container serves
 # the prover stage.
 ARG NODE=node:26-alpine3.22@sha256:c7932b9e5e337b0e733d6e16abc1b0e104759e8b05e59ed56586cce967d26dfe
+# glibc for workerd: the loader and libraries of Debian 12, at a pinned digest
+ARG GLIBC=debian:bookworm-slim@sha256:734a72b3d6142a71993b4bc580ca01d8ca687f77a2c422d96a961d3376b179bc
 
 # Lean from source at the commit lean-toolchain names (v4.33.0), so Mathlib's cache, built by that commit, loads; it
 # builds against GMP, libuv, OpenSSL 3 and the kernel headers, and the runtime stage carries the libraries it loads.
@@ -19,6 +21,8 @@ RUN git clone --filter=blob:none https://github.com/leanprover/lean4 /src/lean4 
  && make -C /src/lean4/build/release -j"$(nproc)" \
  && cp -r /src/lean4/build/release/stage1 /opt/lean
 
+FROM ${GLIBC} AS glibc
+
 # The environment every gate runs in: Lean and lake on PATH, a C toolchain for lake to build executables, Node and pnpm
 # (installed by npm: Node 25 and later ship no corepack), at the version the workflows pin. Lake links an executable,
 # Mathlib's cache first, against GMP, libuv and OpenSSL by their unversioned libraries, which Alpine ships in the -dev
@@ -27,7 +31,13 @@ FROM ${NODE} AS runtime
 RUN apk add --no-cache build-base git bash gmp-dev libuv-dev openssl-dev curl ca-certificates zstd \
  && npm install -g pnpm@10.34.9
 COPY --from=lean /opt/lean /opt/lean
-ENV PATH=/opt/lean/bin:${PATH}
+# workerd, the runtime wrangler and miniflare start, is linked against glibc, which Alpine does not have: glibc's
+# loader and libraries sit in a prefix of their own, and a wrapper runs the workerd the tree's dependencies install
+# through that loader. Miniflare starts the wrapper (MINIFLARE_WORKERD_PATH).
+COPY --from=glibc /usr/lib/x86_64-linux-gnu /opt/glibc
+RUN printf '#!/bin/sh\nexec /opt/glibc/ld-linux-x86-64.so.2 --library-path /opt/glibc "${QPU_ROOT:-/qpu}"/node_modules/.pnpm/@cloudflare+workerd-linux-64@*/node_modules/@cloudflare/workerd-linux-64/bin/workerd "$@"\n' > /usr/local/bin/workerd \
+ && chmod +x /usr/local/bin/workerd
+ENV PATH=/opt/lean/bin:${PATH} MINIFLARE_WORKERD_PATH=/usr/local/bin/workerd
 WORKDIR /qpu
 
 # The prover: qpu's Lean project with Mathlib's cache in place, served by alpine/prover-server.ts to the Prover Durable
