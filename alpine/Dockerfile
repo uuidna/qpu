@@ -37,6 +37,9 @@ COPY --from=lean /opt/lean /opt/lean
 COPY --from=glibc /usr/lib/x86_64-linux-gnu /opt/glibc
 RUN printf '#!/bin/sh\nexec /opt/glibc/ld-linux-x86-64.so.2 --library-path /opt/glibc "${QPU_ROOT:-/qpu}"/node_modules/.pnpm/@cloudflare+workerd-linux-64@*/node_modules/@cloudflare/workerd-linux-64/bin/workerd "$@"\n' > /usr/local/bin/workerd \
  && chmod +x /usr/local/bin/workerd
+# the tree is mounted at /qpu from a host whose user owns it: git trusts it there, so the machine door and the meaning
+# gate read the repository inside the image as they do outside
+RUN git config --system --add safe.directory /qpu
 ENV PATH=/opt/lean/bin:${PATH} MINIFLARE_WORKERD_PATH=/usr/local/bin/workerd
 WORKDIR /qpu
 
