@@ -19,10 +19,11 @@ lean_lib Qpu where
   globs := #[.andSubmodules `Qpu]
 
 /-- The meaning gate, built by default: `lake build` fails on any violation of textbook meaning not named in
-`GateBaseline`, and on any named one that no longer stands. Meaning comes from Mathlib; nothing is written by hand. -/
+`GateBaseline`, and on any named one that no longer stands. Meaning comes from Mathlib; nothing is written by hand.
+With it, `Names` fails on a theorem that states the formula of another and is not named in `NamesBaseline`. -/
 @[default_target]
 lean_lib QpuGate where
-  roots := #[`Gate, `GateBaseline]
+  roots := #[`Gate, `GateBaseline, `Names, `NamesBaseline]
 
 lean_exe claims where
   root := `Qpu.Claims.Extract
@@ -78,6 +79,15 @@ def catalogueFile : String := "lean/tools/Catalogue.lean"
 /-- The Lean file that writes the connector's configuration. -/
 def configFile : String := "lean/tools/Config.lean"
 
+/-- The Lean file that writes the stylesheet that reads a variation by its address in CSS alone. -/
+def cssFile : String := "lean/tools/Css.lean"
+
+/-- The Lean file that writes the plan by which the site's icon folds. -/
+def foldFile : String := "lean/tools/Fold.lean"
+
+/-- The Lean file that writes the site's pages whose body is one component of the theme. -/
+def pagesFile : String := "lean/tools/Pages.lean"
+
 /-- The Lean file that writes the register of standards. -/
 def isoFile : String := "lean/tools/Iso.lean"
 
@@ -123,6 +133,8 @@ def rendered : List (String × System.FilePath × System.FilePath) :=
   , (thousandFile, ".lake" / "build" / "thousand-index.ts", "src" / "quantum" / "processing" / "thousand-index.ts")
   , (isoFile, ".lake" / "build" / "iso-index.ts", "src" / "quantum" / "processing" / "iso-index.ts")
   , (configFile, ".lake" / "build" / "config-index.ts", "src" / "quantum" / "processing" / "config-index.ts")
+  , (cssFile, ".lake" / "build" / "advantage.css", "site" / ".vitepress" / "theme" / "advantage.css")
+  , (foldFile, ".lake" / "build" / "fold-index.ts", "site" / ".vitepress" / "theme" / "fold-index.ts")
   , (addressFile, ".lake" / "build" / "address-core.ts", "src" / "quantum" / "password" / "address-core.ts") ]
 
 /-- Lean writes the prose index, the theorem index, the textbook index, the blueprint, the nested catalogue, the
@@ -232,7 +244,7 @@ script applications do
   steps [("lake", #["build"]), ("lake", #["env", "lean", applicationsFile])]
 
 /-- The Lean files that write rendered output; `lake run verify` runs each of them. -/
-def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile, configFile, addressFile, gapsFile]
+def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile, configFile, cssFile, foldFile, pagesFile, addressFile, gapsFile]
 
 /-- `lake run leanfiles`: no Lean file is skipped. Every `.lean` file the repository tracks is this lakefile, a module
 the build compiles, a tool `lake run verify` runs, or evidence kept under `lean/`, which is named and never removed. -/
@@ -240,7 +252,7 @@ script leanfiles do
   let listed ← IO.Process.output { cmd := "git", args := #["ls-files", "*.lean"] }
   let files := (listed.stdout.splitOn "\n").filter (· != "")
   let unchecked := files.filter fun file =>
-    !(file == "lakefile.lean" || file.startsWith "lean/Qpu/" || file == "lean/Qpu.lean" || file == "lean/Gate.lean" || file == "lean/GateBaseline.lean" || leanTools.contains file)
+    !(file == "lakefile.lean" || file.startsWith "lean/Qpu/" || file == "lean/Qpu.lean" || file == "lean/Gate.lean" || file == "lean/GateBaseline.lean" || file == "lean/Names.lean" || file == "lean/NamesBaseline.lean" || leanTools.contains file)
   -- `lean/` is kept as evidence: its files are named here on every run, and nothing is removed for the kernel's sake
   let evidence := unchecked.filter (·.startsWith "lean/")
   let skipped := unchecked.filter (!·.startsWith "lean/")
@@ -272,7 +284,7 @@ script verify do
 /-- `lake run seed`: write the VitePress pages from the seeds Payload writes, and the draft applications and the
 prose pages from Lean. -/
 script seed do
-  steps [("node", #["scripts/site.ts"]), ("lake", #["run", "applications"]), ("lake", #["env", "lean", proseFile])]
+  steps [("node", #["scripts/site.ts"]), ("lake", #["run", "applications"]), ("lake", #["env", "lean", proseFile]), ("lake", #["env", "lean", pagesFile])]
 
 /-- `lake run site`: write the pages, then build the VitePress site. -/
 script site do

@@ -1,7 +1,7 @@
 // The MCP Apps surface: the extension, the ui:// view, the build address.
 import { PROSE } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
-import { KEY, hue } from './unit/theme.ts'
+import { KEY, SCAN, hue } from './unit/theme.ts'
 import { VERSION } from './unit/version.ts'
 import { uuid } from '../uuid/index.ts'
 
@@ -34,7 +34,7 @@ pre { background: var(--surface-1); border-radius: var(--radius); padding: var(-
   var seq = 0, view = document.getElementById('view'), args = document.getElementById('args'), pending = {}
   var send = function (m) { parent.postMessage(Object.assign({ jsonrpc: '2.0' }, m), '*') }
   // the device's randomness: the phase of the stream's animation at every interaction (eleven bits), the device's own nonce (thirty-two bits), the pointer; the phase set on the root so the CSS continues from it; every 36 samples the seal tool takes them through the host (a coil beyond the first period: the fusion)
-  var samples = [], period = ${key * 9}
+  var samples = [], period = ${key * SCAN.vortex}
   if ('${tool}' !== 'chat') document.addEventListener('pointerdown', function (e) { var a = document.getAnimations ? document.getAnimations()[0] : null; var phase = (a && typeof a.currentTime === 'number' ? a.currentTime : performance.now()) % period; var nonce = (self.crypto && crypto.getRandomValues) ? crypto.getRandomValues(new Uint32Array(1))[0] : 0; samples.push({ phase: phase, t: performance.now(), nonce: nonce, x: e.clientX, y: e.clientY }); document.documentElement.style.setProperty('--qpu-phase', String(Math.floor(phase))); if (samples.length % 36 === 0) send({ id: ++seq, method: 'tools/call', params: { name: 'seal', arguments: { text: location.href, entropy: samples.slice(-36) } } }) })
   var size = function () { send({ method: 'ui/notifications/size-changed', params: { height: document.documentElement.scrollHeight } }) }
   var render = function (r, el) {

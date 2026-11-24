@@ -10,23 +10,15 @@ import { withX402 } from 'agents/x402'
 import { z } from 'zod'
 import { handle, type Rpc } from '../processing/mcp.ts'
 import { PROSE, proseFill } from '../processing/prose-index.ts'
+import { TABLES } from '../processing/tables-index.ts'
 import { TENANTS } from '../processing/unit/tenants.ts'
 import { MESSAGING_TOOLS, callMessaging, type MailboxNamespace } from './messaging.ts'
 import { PROVER_TOOLS, callProver, type ProverNamespace } from './prover.ts'
 import { receiptOf } from '../uuid/programs/index.ts'
 
-// The real quantum market QPU is measured against (AWS Braket per-shot + its flat task fee; source:
-// quantumcomputingcost.com/aws-braket-pricing, 2026-02). A device's per-qubit price is its shot price over its
-// qubits; every real call also pays the task fee. Sourced market data, to refresh like a rate source.
-type Device = { provider: string; device: string; qubits: number; perShotUsd: number; taskFeeUsd: number }
-const QUANTUM_MARKET: readonly Device[] = [
-  { provider: 'Rigetti', device: 'Cepheus-1-108Q', qubits: 108, perShotUsd: 0.000425, taskFeeUsd: 0.30 },
-  { provider: 'IQM', device: 'Garnet', qubits: 20, perShotUsd: 0.00145, taskFeeUsd: 0.30 },
-  { provider: 'IQM', device: 'Emerald', qubits: 54, perShotUsd: 0.0016, taskFeeUsd: 0.30 },
-  { provider: 'IonQ', device: 'Forte', qubits: 36, perShotUsd: 0.08, taskFeeUsd: 0.30 },
-]
+// The quantum market QPU is measured against, a sourced table: a real call pays the task fee and one shot.
 const USDC = 1_000_000
-const cheapestRealCallUsd = (): number => Math.min(...QUANTUM_MARKET.map((d) => d.taskFeeUsd + d.perShotUsd))
+const cheapestRealCallUsd = (): number => Math.min(...TABLES.QUANTUM_MARKET.map((d) => d.taskFeeUsd + d.perShotUsd))
 /** The price of one call in USD: what quantum providers charge their clients for one call, the cheapest real call on the market. */
 export const callPriceUsd = (): number => Math.round(cheapestRealCallUsd() * USDC) / USDC
 
