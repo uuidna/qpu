@@ -9,6 +9,10 @@
 @property --qpu-d4 { syntax: '<integer>'; inherits: false; initial-value: 0; }
 @property --qpu-d5 { syntax: '<integer>'; inherits: false; initial-value: 0; }
 @property --qpu-d6 { syntax: '<integer>'; inherits: false; initial-value: 0; }
+@property --qpu-coin-hue { syntax: '<integer>'; inherits: true; initial-value: 0; }
+@property --qpu-coil-hue { syntax: '<integer>'; inherits: true; initial-value: 0; }
+:root { --qpu-key: 432; --qpu-coin-hue: mod(var(--qpu-key), 360); --qpu-coil-hue: calc(var(--qpu-coin-hue) + var(--qpu-key) / 9); }
+.qpu-coil-hue { color: hsl(var(--qpu-coil-hue) 100% 50%); }
 .qpu-address {
   --qpu-w6: 1;
   --qpu-w5: calc(var(--qpu-w6) * var(--qpu-s6, 1));

@@ -1,5 +1,6 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
+import { crc32, deflateSync } from 'node:zlib'
 import { SUPPORTED_PROTOCOL_VERSIONS } from '@modelcontextprotocol/server'
 import { defineConfig, type HeadConfig } from 'vitepress'
 import { VERSION } from '../../src/quantum/processing/unit/version.ts'
@@ -7,6 +8,8 @@ import { LICENSE, PRECEDENCE } from '../../src/quantum/processing/unit/license.t
 import { PROSE, proseFill } from '../../src/quantum/processing/prose-index.ts'
 import { UNIT_CONCEPT_DOI } from '../../src/quantum/processing/release.ts'
 import { TENANTS } from '../../src/quantum/processing/unit/tenants.ts'
+import { coilColour, rgbOfHsl, toFrames } from '../../src/quantum/processing/unit/theme.ts'
+import { style } from '../../src/quantum/uuid/index.ts'
 
 // The sidebar is written beside this file by scripts/site.ts from the seed waves; the theme beside it
 // (./theme) registers the Vue components the generated pages use — the live MCP console and the qubit-price
@@ -20,6 +23,49 @@ const MCP = `${HOST}/api/mcp`
 const HOSTS = new Intl.ListFormat('en').format(Object.keys(TENANTS))
 const REPOSITORY = 'https://github.com/uuidna/qpu'
 const IMAGE = { url: `${HOST}/og.png`, width: 1200, height: 630, alt: NAME }
+// The mark is zero. The sixteen hex digits stand around one hole, each at its own hue (a digit a hue, 22.5° apart:
+// theme.ts toFrames), in the saturation and lightness every QPU hue wears (coilColour). Every number over zero is
+// zero (textbook_div_zero), so a line runs from each digit to the centre. Each segment is as long at its middle as
+// the ring is thick, which the count of digits fixes: hole over ring = (n - pi) / (n + pi). The ground is the ink of
+// the licence's own address (style). Nothing here is drawn by hand: the icon and the social image are written at build.
+const DIGITS = toFrames('0123456789abcdef')
+const numbers = (css: string) => css.match(/[\d.]+/g)!.map(Number)
+const [, SATURATION, LIGHTNESS] = numbers(coilColour().coin.css) as [number, number, number]
+const rgbOf = (h: number, s: number, l: number) => rgbOfHsl(h, s / 100, l / 100)
+const hexOf = (rgb: readonly number[]) => `#${rgb.map((v) => v.toString(16).padStart(2, '0')).join('')}`
+const INKS = DIGITS.map((d) => rgbOf(d.hue!, SATURATION, LIGHTNESS))
+const GROUND = rgbOf(...(numbers(style(LICENSE.address).vars['--qpu-ink']) as [number, number, number]))
+const HOLE = (DIGITS.length - Math.PI) / (DIGITS.length + Math.PI)
+const TURN = (2 * Math.PI) / DIGITS.length
+// a line's width over the ring's radius, and how strongly it shows at the rim: one digit's share of the ring's thickness, and the hole's share of the ring
+const LINE = (1 - HOLE) / DIGITS.length, SHOWN = HOLE
+const at = (angle: number, radius: number) => `${(radius * Math.sin(angle)).toFixed(4)} ${(-radius * Math.cos(angle)).toFixed(4)}`
+const markSvg = () => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 2 2"><title>${NAME}</title>${INKS.map((ink, i) => {
+  const from = (i - 0.5) * TURN, to = (i + 0.5) * TURN, colour = hexOf(ink)
+  return `<linearGradient id="l${i}" gradientUnits="userSpaceOnUse" x1="${(HOLE * Math.sin(i * TURN)).toFixed(4)}" y1="${(-HOLE * Math.cos(i * TURN)).toFixed(4)}" x2="0" y2="0"><stop stop-color="${colour}" stop-opacity="${SHOWN.toFixed(4)}"/><stop offset="1" stop-color="${colour}" stop-opacity="0"/></linearGradient>`
+    + `<path fill="${colour}" d="M${at(from, 1)}A1 1 0 0 1 ${at(to, 1)}L${at(to, HOLE)}A${HOLE.toFixed(4)} ${HOLE.toFixed(4)} 0 0 0 ${at(from, HOLE)}Z"/>`
+    + `<path stroke="url(#l${i})" stroke-width="${LINE.toFixed(4)}" d="M${at(i * TURN, HOLE)}L0 0"/>`
+}).join('')}</svg>\n`
+// The social image: the same mark on its ground, each pixel the mean of nine samples, as an 8-bit RGB PNG (ISO/IEC 15948).
+const markPng = (width: number, height: number) => {
+  const radius = height * HOLE / 2, rows = Buffer.alloc(height * (1 + width * 3))
+  const sample = (x: number, y: number): readonly number[] => {
+    const r = Math.hypot(x, y) / radius, turn = ((Math.atan2(x, -y) / TURN) % DIGITS.length + DIGITS.length) % DIGITS.length, i = Math.round(turn) % DIGITS.length
+    if (r > 1) return GROUND
+    if (r >= HOLE) return INKS[i]!
+    const off = Math.abs(turn - Math.round(turn)) * TURN * r
+    const shown = off < LINE / 2 ? SHOWN * (r / HOLE) : 0
+    return GROUND.map((g, c) => g + (INKS[i]![c]! - g) * shown)
+  }
+  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+    const sum = [0, 0, 0]
+    for (const dy of [1, 3, 5]) for (const dx of [1, 3, 5]) sample(x + dx / 6 - width / 2, y + dy / 6 - height / 2).forEach((v, c) => { sum[c]! += v })
+    sum.forEach((v, c) => { rows[y * (1 + width * 3) + 1 + x * 3 + c] = Math.round(v / 9) })
+  }
+  const chunk = (type: string, data: Buffer) => { const body = Buffer.concat([Buffer.from(type, 'latin1'), data]), size = Buffer.alloc(4), sum = Buffer.alloc(4); size.writeUInt32BE(data.length); sum.writeUInt32BE(crc32(body)); return Buffer.concat([size, body, sum]) }
+  const header = Buffer.alloc(13); header.writeUInt32BE(width, 0); header.writeUInt32BE(height, 4); header.set([8, 2, 0, 0, 0], 8)
+  return Buffer.concat([Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', header), chunk('IDAT', deflateSync(rows, { level: 9 })), chunk('IEND', Buffer.alloc(0))])
+}
 const WEBSITE = `${HOST}/#website`
 const ORGANIZATION = `${HOST}/#organization`
 // the author, the ORCID, the work and its licence deed are the licence table's (unit/license.ts)
@@ -76,7 +122,7 @@ export default defineConfig({
   sitemap: { hostname: HOST },
   head: [
     ['link', { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' }],
-    ['meta', { name: 'theme-color', content: '#1b1b2a' }],
+    ['meta', { name: 'theme-color', content: hexOf(GROUND) }],
     ['meta', { name: 'author', content: AUTHOR.name }],
     // FAIR Signposting (signposting.org): the author, the persistent identifier to cite, and the licence, as typed links
     ['link', { rel: 'author', href: ORCID }],
@@ -148,7 +194,9 @@ export default defineConfig({
   // discovery document asks for (_headers, Workers static assets).
   buildEnd: (siteConfig) => {
     if (!pages.size) throw new Error('transformHead saw no page: llms.txt would be empty')
-    const out = (path: string, text: string) => { mkdirSync(dirname(join(siteConfig.outDir, path)), { recursive: true }); writeFileSync(join(siteConfig.outDir, path), text) }
+    const out = (path: string, text: string | Buffer) => { mkdirSync(dirname(join(siteConfig.outDir, path)), { recursive: true }); writeFileSync(join(siteConfig.outDir, path), text) }
+    out('favicon.svg', markSvg())
+    out('og.png', markPng(IMAGE.width, IMAGE.height))
     const card = {
       $schema: 'https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json',
       name: 'com.uuidna/qpu', version: VERSION, title: NAME,

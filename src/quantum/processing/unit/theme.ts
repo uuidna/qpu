@@ -19,6 +19,7 @@ export const HARMONICS = [432, 216, 108, 54, 27] as const
 export const hue = (hz: number): number => hz % 360
 
 type Cmyk = { c: number; m: number; y: number; k: number }
+type Rgb = [number, number, number]
 /** The UUID's middle part (time_mid, time_hi_and_version, clock_seq) as four CMYK channels from three hex digits each. */
 export const cmykOfUuid = (uuid: string): Cmyk => {
   const middle = uuid.replace(/-/g, '').slice(8, 20)
@@ -28,8 +29,8 @@ export const cmykOfUuid = (uuid: string): Cmyk => {
 /** When coins fuse to coils the colour is green, the heart chakra's (the fourth of seven): the coin's a432 hue (432 mod 360 = 72) advanced by a
  *  ninth of the key (432 / 9 = 48) is 120, green (textbook_coil_green); its CMYK is cyan and yellow full, no magenta, no black — the CSS variables
  *  --qpu-coin and --qpu-coil carry both hues, the block rule turns green under data-coil. */
-const cmykOfRgb = ([r, g, b]: [number, number, number]): Cmyk => { const k = 1 - Math.max(r, g, b) / 255; const f = (v: number) => (k === 1 ? 0 : Math.round(((1 - v / 255 - k) / (1 - k)) * 100) / 100); return { c: f(r), m: f(g), y: f(b), k: Math.round(k * 100) / 100 } }
-const rgbOfHsl = (h: number, s: number, l: number): [number, number, number] => { const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = l - c / 2; const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x]; return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)] }
+const cmykOfRgb = ([r, g, b]: Rgb): Cmyk => { const k = 1 - Math.max(r, g, b) / 255; const f = (v: number) => (k === 1 ? 0 : Math.round(((1 - v / 255 - k) / (1 - k)) * 100) / 100); return { c: f(r), m: f(g), y: f(b), k: Math.round(k * 100) / 100 } }
+export const rgbOfHsl = (h: number, s: number, l: number): Rgb => { const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = l - c / 2; const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x]; return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)] }
 /** The eight UUID versions are eight dimensions. Two versions a channel: 1 and 5 cyan, 2 and 6 magenta, 3 and 7 yellow, 4 and 8 black.
  *  The odd pairs are full and the even pairs are empty, which is the coil's CMYK. Their sum is 36, and 432 divides 36, so the a432 key opens it. */
 export const resonance = (key: number = KEY) => {
@@ -48,7 +49,7 @@ export const coilColour = (key: number = KEY) => {
   const rgb = rgbOfHsl(coil, 1, 0.5), cmyk = cmykOfRgb(rgb)
   return { coin: { hue: coin, css: `hsl(${coin} 62% 44%)`, says: PROSE.quantumProcessingUnitTheme_says3 }, coil: { hue: coil, css: `hsl(${coil} 62% 44%)`, rgb, cmyk, cmykCss: `device-cmyk(${cmyk.c} ${cmyk.m} ${cmyk.y} ${cmyk.k})`, chakra: { index: 4, of: 7, name: 'heart' }, says: PROSE.quantumProcessingUnitTheme_says4 }, theorem: 'textbook_coil_green', relation: `${key} % 360 + ${key} / 9 = ${coil}` }
 }
-const rgbOfCmyk = ({ c, m, y, k }: Cmyk): [number, number, number] => [Math.round(255 * (1 - c) * (1 - k)), Math.round(255 * (1 - m) * (1 - k)), Math.round(255 * (1 - y) * (1 - k))]
+const rgbOfCmyk = ({ c, m, y, k }: Cmyk): Rgb => [Math.round(255 * (1 - c) * (1 - k)), Math.round(255 * (1 - m) * (1 - k)), Math.round(255 * (1 - y) * (1 - k))]
 export const accentOfUuid = (uuid: string): string => { const [r, g, b] = rgbOfCmyk(cmykOfUuid(uuid)); return `rgb(${r} ${g} ${b})` }
 
 /** The program of a UUID presented by hue, moved by the params in the tail of the same UUID: the ten program digits (the channel's reading of
