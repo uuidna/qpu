@@ -19,6 +19,8 @@ const ROUTE_STOP = new Set(['many', 'much', 'more', 'most', 'when', 'what', 'whi
 export const routeStems = (text: string): Set<string> => new Set(text.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().replace(/[^a-z0-9\s_.-]/g, ' ').split(/[\s_.-]+/).filter((w) => w.length > 3 && !ROUTE_STOP.has(w)).map((w) => w.replace(/(ings?|ed|es|e|s)$/, '')).filter((w) => w.length > 2))
 let routeIndex: { key: string; says: string; lean: string; examples: readonly string[]; keyStems: Set<string>; stems: Set<string> }[] | null = null
 let routeIdf: Map<string, number> | null = null
+/** A statement routed strongly: its best theorem shares two words or more, since one word rare among the theorems can be common among the problems. */
+export const routedStrongly = (x: { r: ReturnType<typeof routeStatement> }): boolean => x.r.routed && (x.r.theorems[0]?.shared.length ?? 0) >= 2
 export const routeStatement = (statement: string, examples: readonly Example[], top?: number) => {
   if (!routeIndex || !routeIdf) {
     const textbook = new Set(TEXTBOOK_THEOREMS.map((t) => t.key))
@@ -63,6 +65,7 @@ const VERB = /\b(?:is|are|was|were|equals?|has|have|had|makes?|gives?|totals?)\b
 const CLAIM = new RegExp(`(${VERB}\\s*(?:to\\s+|about\\s+|exactly\\s+)?|=\\s*)?(?<![\\w.-])(\\d[\\d,.]*(?:e[-+]?\\d+)?)(%?)(?![.,]?\\w)(?!\\s*[+\\-−*/×·^]\\s*[\\w(])(\\s+(?!${VERB})[a-z]+)?`, 'gi')
 const RELATION = /(?<![\w.])[\d(][\d\s().,+\-*/%^×·−]*?(?:=|≠|≤|≥|<|>)[\d\s().,+\-*/%^×·−]*\d\)*/g
 import { uuid, navigate } from '../uuid/index.ts'
+import { listEnvelope } from './toolbox.ts'
 
 type Verdict = 'served' | 'impossible' | 'unknown'
 /** The unit's verdict vocabularies mapped onto this tree's, so a verdict crossing the border is translated, never guessed.
@@ -281,7 +284,7 @@ export const createMatcher = (handle: (m: Rpc) => any, allExamples: readonly Exa
 }
 
 const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Example[], leads: readonly Lead[]): Inner => {
-  const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { full: true } })
+  const list = handle(listEnvelope({ full: true }))
   const allTools: ToolSpec[] = 'result' in list ? list.result.tools : []
   const tools = allTools.filter((t) => !META.has(t.name) && !META_TOOLBOXES.has((t as { _meta?: { toolbox?: string } })._meta?.toolbox ?? ''))
   const callable = new Set(tools.map((t) => t.name))

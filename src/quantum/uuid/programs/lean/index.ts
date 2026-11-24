@@ -19,6 +19,9 @@ const modulesOf = (text: string) => {
 }
 
 /** All quantum UUID Lean programs, and the next step of each. */
+/** A program placed where its handle says and turned back to where it was born: the two facts every program built on a UUID program states. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const placedAndTurned = ({ object, handle, installed, stepped, moved, born, address }: Record<'object' | 'installed' | 'stepped' | 'moved' | 'born', any> & { handle: string; address: string }) => ({ placed: Boolean(object.folders.join('') === handle && object.folders.length === 8 && installed.path === object.path && object.path === `${object.own}/index.ts` && installed.indexed === true && installed.depth === object.depth && object.fanout === 16 && object.span === '4294967296'), turned: Boolean(stepped.kept === true && stepped.back === true && stepped.around === true && stepped.sealed === true && stepped.places === 10 && stepped.all === true && stepped.aspects.length === 4 && stepped.handle === handle && stepped.rotated === `${stepped.program.slice(1)}${stepped.program[0]}` && moved.path === born.path && moved.handle === born.handle && moved.dnode.bonus.tail.join() === born.dnode.bonus.tail.join() && born.checksum === address && born.path === object.path && born.birth.folders.join('') === address.replace(/-/g, '')) })
 export const leanPrograms = () => {
   const text = read(ROOT)
   if (text === null) throw new Error(PROSE.quantumUuidProgramsLeanIndex_s1)
@@ -32,8 +35,9 @@ export const leanPrograms = () => {
     const born = birth(address)
     const stepped = next(address)
     const moved = birth(stepped.next)
-    const placed = object.folders.join('') === handle && object.folders.length === 8 && installed.path === object.path && object.path === `${object.own}/index.ts` && installed.indexed === true && installed.depth === object.depth && object.fanout === 16 && object.span === '4294967296'
-    const turned = stepped.kept === true && stepped.back === true && stepped.around === true && stepped.sealed === true && stepped.places === 10 && stepped.all === true && stepped.aspects.length === 4 && stepped.handle === handle && stepped.rotated === `${stepped.program.slice(1)}${stepped.program[0]}` && moved.path === born.path && moved.handle === born.handle && moved.dnode.bonus.tail.join() === born.dnode.bonus.tail.join() && born.checksum === address && born.path === object.path && born.birth.folders.join('') === address.replace(/-/g, '')
+    const { placed, turned } = placedAndTurned({
+      object, handle, installed, stepped, moved, born, address,
+    })
     return {
       module,
       source,

@@ -8,6 +8,8 @@ import { TABLES as PAYLOAD_TABLES } from '../tables-index.ts'
 import { defineTool, createChecks, listTools, unlimited, type Toolbox, type Context } from '../toolbox.ts'
 import { LOCALES, TABLES, translate as vocabulary, listNumerals } from '../i18n.ts'
 import { flowWidget } from '../widgets.ts'
+import { callEnvelope } from '../toolbox.ts'
+import { linkedTheorems } from '../prose-links.ts'
 
 /** Every term the surface emits as a label a reader sees: statuses, verdicts, classes, phases and the headings of its pages. */
 const SURFACE_TERMS = PAYLOAD_TABLES.SURFACE_TERMS as unknown as readonly string[]
@@ -58,8 +60,7 @@ export const verifyProse = (asked: string) => {
   if (!name) return { phase: 'prose-verify' as const, found: false, asked, sentences: names.length, grounded: false, says: PROSE.quantumProcessingToolboxesLanguage_verify2 }
   const text = PROSE[name], stem = name.slice(0, name.lastIndexOf('_')), unit = `${stem[0]!.toUpperCase()}${stem.slice(1)}`
   const module = `Qpu.General.Prose.${unit}`, file = `lean/Qpu/General/Prose/${unit}.lean`
-  const words = new Set(text.match(/[A-Za-z_][\w.]*/g) ?? [])
-  const theorems = THEOREMS.filter((t) => /[_.]/.test(t.key) && words.has(t.key)).map((t) => ({ theorem: t.key, module: t.module, statement: t.statement, mathlib: t.module === 'Qpu.General.Meaning' }))
+  const theorems = linkedTheorems(text)
   const mathlib = theorems.filter((t) => t.mathlib).length
   return {
     phase: 'prose-verify' as const, found: true, name, module, file, text, sentences: names.length, theorems, grounded: theorems.length > 0, mathlib: mathlib > 0,
@@ -75,7 +76,7 @@ const prose = defineTool('language', {
     if (typeof args.verify === 'string') return verifyProse(args.verify)
     if (typeof args.tool !== 'string') return unlimited()
     const tool = args.tool; const locale = typeof args.locale === 'string' ? args.locale : 'en'
-    const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: tool, arguments: args.arguments ?? {} } })
+    const r = ctx.handle(callEnvelope(tool, args.arguments ?? {}))
     if ('error' in r) throw new Error(r.error.message)
     const boxName = listTools(ctx).find((t) => t.name === tool)?._meta?.toolbox ?? null
     const init = ctx.handle({ jsonrpc: '2.0', id: 0, method: 'initialize' }) as { result: { instructions: string } }
@@ -110,7 +111,7 @@ export const LANGUAGE: Toolbox = {
       check('language:coverage-measured', cov.terms > 0 && Array.isArray(cov.missing), `bg: ${cov.terms} terms, ${cov.missing.length} surface terms missing${cov.missing.length ? ` (${cov.missing.slice(0, 6).join(', ')})` : ''}`)
       const p = writeProse({ name: 'tree', idea: 'the tree knows itself', instructions: 'call match' }, 'clay', { total: 54, holding: 54, maxBits: 33 }, 'bg')
       check('language:prose-bg', p.sentences.length === 3 && p.text.includes('54') && /инструмент/.test(p.text), p.text)
-      const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'match', arguments: { statement: 'Разложи Ⰺⰴ с Shor', locale: 'bg' } } })
+      const r = ctx.handle(callEnvelope('match', { statement: 'Разложи Ⰺⰴ с Shor', locale: 'bg' }))
       check('language:match-in-bg', 'result' in r && r.result.structuredContent.read?.verdictIn === 'обслужена', 'result' in r ? `${r.result.structuredContent.verdict} → ${r.result.structuredContent.read?.verdictIn}` : r.error.message)
       return done()
     },

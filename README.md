@@ -12,7 +12,128 @@ The theorems written by hand, by family: Qpu.General.Textbook 743, Qpu.Processin
 
 360 textbook theorems, and a catalogue of 1207 products in 507 variants, each product a theorem of the kernel.
 
-50 tools are served over MCP: the kernel's 47, and 3 where the Worker binds its rooms and its Lean prover. The audit replays 508 worked examples against the kernel's tools; every answer is a block sealed under its UUID.
+50 tools are served over MCP: the kernel's 47, and 3 where the Worker binds its rooms and its Lean prover. The audit replays 517 worked examples against the kernel's tools; every answer is a block sealed under its UUID.
+
+## Quantum capacity, utilised by receipts
+
+```lean
+theorem textbook_hexbit_gateway_ftl : 32 * 4 - 4 - 2 = 122 ∧ 2 = 2 ∧ 1 < 16 ^ 10 ∧ 10 = 10 := by decide
+```
+
+| metrics.quantumCapacity.register |  |
+| --- | --- |
+| digits | 32 |
+| hexbit | 4 |
+| bits | 128 |
+| qubits | 128 |
+| version | 4 |
+| gateway | 2 |
+| free | 122 |
+| formula | 32 \* 4 - 4 - 2 = 122 |
+| theorem | textbook\_hexbit\_gateway\_ftl |
+| nist ∩ cern | `textbook_sha256_fips_180_4`, `textbook_sha3_fips_202`, `textbook_pqc_standards_three`, `textbook_coil_green` |
+| open | `teleport_faster_than_light` |
+
+| part | digits | bits | qubits | free |
+| --- | --- | --- | --- | --- |
+| handle | 8 | 32 | 32 | 32 |
+| version | 1 | 4 | 4 | 0 |
+| program | 10 | 40 | 40 | 40 |
+| variant | 1 | 4 | 4 | 2 |
+| tail | 12 | 48 | 48 | 48 |
+
+| metrics.quantumCapacity.receipt |  |
+| --- | --- |
+| coin | f4827920-6282-7019-a18c-4f357720f345 |
+| debit | usage:qubits |
+| credit | coins:register |
+| debits | 122 |
+| credits | 122 |
+| balanced | true |
+| sealed | true |
+
+| metrics.quantumCapacity.zero |  |
+| --- | --- |
+| temperatureK | 0 |
+| landauer | 0 |
+| teleported | 120 |
+| classical | 2 |
+| used | 122 |
+| left | 0 |
+| programs | 1099511627776 |
+| reads | 10 |
+| walked | false |
+| table | false |
+| ftl | true |
+| physics | true |
+| program | 83b4a0c1 |
+| law | hexbit + 2 gateway bits teleport any hexbit faster than light |
+
+| metrics.quantumCapacity.gate |  |
+| --- | --- |
+| used | 122 |
+| left | 0 |
+| full | true |
+| theorem | textbook\_capacity\_conserved |
+| holds | true |
+| evidence | 122 + 0 = 122; 122 = 122; 122 = 122 |
+
+| repository \{ stable \} |  |
+| --- | --- |
+| stable | true |
+| release | allowed |
+| entropy.files | 811 |
+| entropy.leads | 0 |
+| entropy.occurrences | 0 |
+| entropy.byKind | \{\} |
+
+| metrics.quantumCapacity.spaces |  |
+| --- | --- |
+| handles | 4294967296 |
+| programs | 1099511627776 |
+| addressable | 4722366482869645213696 |
+| onEveryHandle | 137438953472 |
+| perHandle | 32 |
+| unlimited | true |
+
+| scale | radix | qubits | handles | capacity |
+| --- | --- | --- | --- | --- |
+| 1 | 16 | 4 | 16 | 64 |
+| 2 | 16 | 8 | 256 | 2048 |
+| 3 | 16 | 12 | 4096 | 49152 |
+| 4 | 16 | 16 | 65536 | 1048576 |
+| 5 | 16 | 20 | 1048576 | 20971520 |
+| 6 | 16 | 24 | 16777216 | 402653184 |
+| 7 | 16 | 28 | 268435456 | 7516192768 |
+| 8 | 16 | 32 | 4294967296 | 137438953472 |
+
+| metrics.quantumCapacity.security | the exponent of 2 |
+| --- | --- |
+| address.bits | 122 |
+| address.preimage | \{"classical":122,"grover":61\} |
+| address.collision | \{"classical":61,"quantum":"122/3"\} |
+| address.floor | 128 |
+| address.meetsFloor | false |
+| digest.bits | 256 |
+| digest.preimage | \{"classical":256,"grover":128\} |
+| digest.collision | \{"classical":128,"quantum":"256/3"\} |
+| digest.floor | 128 |
+| digest.meetsFloor | true |
+| theorems | `textbook_grover_search`, `textbook_tamper_detected` |
+
+| metrics.quantumCapacity.public |  |
+| --- | --- |
+| `fold {"qubits":4}` | free under attribution |
+| `metrics {}` | a licence of the catalogue |
+| `verify {"uuid":"uuid","content":"content"}` | free under attribution |
+| licence | CC-BY-NC-ND-4.0 |
+| deed | <https://creativecommons.org/licenses/by-nc-nd/4.0/> |
+| url | <https://uuidna.com/license> |
+| terms | Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (<https://qpu.uuidna.com>). The a432 harmonic default is offered for free benefit under attribution. Every block carries its address and its SHA-256: a copy that no longer matches them is adapted material, which the NoDerivatives term does not let anyone share. |
+| attribution | Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (<https://orcid.org/0009-0000-7312-9778>) |
+| copyright | © 2025 Tsvetan Rouschev (<https://orcid.org/0009-0000-7312-9778>) |
+| representation | uuidna is represented by <https://uuidna.com> only; no handle or profile elsewhere speaks for the work unless licensed in writing by the author. |
+| disclaimer | Recomputable facts, not legal advice: the inputs a qualified attorney starts from, never the conclusion. |
 
 ## Google Quantum AI challenges completed in full compliance with their conditions
 
@@ -23,7 +144,7 @@ The theorems written by hand, by family: Qpu.General.Textbook 743, Qpu.Processin
 - Surface Code Below Threshold (Λ = 2.14), Repetition Code & Steane \[\[7,1,3\]\] CSS QEC (surface-code-qec): P\_L(p) = 3p² − 2p³ = 0.028 \< p = 0.1 ∧ Λ\_3,5,7 = 2.14 \> 1 ∧ Steane \[\[7,1,3\]\] = 14/14, proved by textbook\_bit\_flip\_purity, textbook\_steane, surfacecode\_all, textbook\_toric\_torus\_code and computed by the quantum-error-correction door; sealed as c7944e9f-9252-3f2f-a96e-06171a641ef7.
 - Random Circuit Sampling (RCS) & Cross-Entropy Benchmarking (XEB) Porter–Thomas Speckle (rcs-xeb-beyond-classical): Σ p\_k² \> 1/D ∧ 2/(D+1) \> 1/D (2 \* 16 \> 16 + 1 ∧ 16 + 1 \> 16), proved by textbook\_xeb and computed by the algorithm door; sealed as 801a59dc-a895-73b1-af83-f6a89161c0c5.
 - Quantum Echoes Out-of-Time-Order Correlator (OTOC) Time-Reversal Protocol on Willow (quantum-echoes-otoc): P(U† U \|0⟩ = \|0⟩) = 1 ∧ P(H† Z H \|0⟩ = \|0⟩) = 0 ∧ 65 ≤ 103 ≤ 105, proved by textbook\_echo\_qubits\_within\_willow, Qpu.Verify.Gate.h\_z\_h\_is\_two\_x and computed by the echo door; sealed as 9278d97b-36c7-4e06-962c-d3e55458972f.
-- Cirq State-Vector, Density-Matrix Kraus Channels & Willow Quantum Virtual Machine (cirq-qvm-simulation): Tr(ρ) = 1 ∧ Tr(ρ²) = 0.1² + 0.9² = 0.82 ∧ Cirq\_exports = 28 ∧ emulated = 15/15, proved by textbook\_cirq\_exports and computed by the circuit door; sealed as e93c3458-74db-32c2-b477-bda03123f4e6.
+- Cirq State-Vector, Density-Matrix Kraus Channels & Willow Quantum Virtual Machine (cirq-qvm-simulation): Tr(ρ) = 1 ∧ Tr(ρ²) = 0.1² + 0.9² = 0.82 ∧ Cirq\_exports = 28 ∧ emulated = 15/15, proved by textbook\_cirq\_exports and computed by the circuit door; sealed as b5648eb8-bf19-3908-8554-99c47b81f759.
 - ReCirq Sycamore QAOA Max-Cut, Shor Order-Finding & Bell CHSH Tsirelson Bound (recirq-qaoa-shor-algorithms): 7^4 ≡ 1 (mod 15) ∧ gcd(7² ± 1, 15) = (3, 5) ∧ E\_QAOA(α\*, β\*) \> E\_random ∧ S\_CHSH = 2√2 \> 2, proved by textbook\_shor\_fifteen\_order, qaoa\_all, textbook\_tsirelson, textbook\_order\_finding and computed by the algorithm door; sealed as d9e4efd5-e797-6131-aba2-09101beecd91.
 - OpenFermion H₂ STO-3G Molecular Integrals, Pauli Hamiltonian & VQE Ground Energy (openfermion-chemistry-h2): E\_VQE(θ\*) = min\_θ ⟨00\|exp(iθ Y⊗X) H exp(−iθ Y⊗X)\|00⟩ = E\_FCI = −1.137284 Ha \< E\_HF = −1.116759 Ha, proved by textbook\_h2\_below\_hartree\_fock and computed by the chemistry-simulation door; sealed as fb5f1d3a-d8b3-50d2-ae4c-2a8882bdd2e1.
 - Qualtran Fault-Tolerant Clifford+T Resource Counts & Willow Magic State Cultivation (qualtran-ftqc-magic-state): T(Toffoli) = 7 ∧ T(CS) = 3 ∧ T(T) = 1 ∧ T(Grover) = 7 ∧ T(QEC) = 21 ∧ F\_T(Willow) = 99.99%, proved by surfacecode\_all and computed by the fault-tolerant-design door; sealed as f49209a2-87b3-612a-a629-ba58077a7d34.
@@ -255,14 +376,14 @@ Every source and proof this text rests on, each a link: the doors to call, the p
 - Qpu.Processing.Verify.Uuid, proving `Qpu.Verify.Uuid.bands_cover_the_free_bits`, `Qpu.Verify.Uuid.distinct_slots_distinct_handles`, `Qpu.Verify.Uuid.free_is_122`, `Qpu.Verify.Uuid.program_capacity`, `Qpu.Verify.Uuid.slot_round_trips`, `Qpu.Verify.Uuid.slot_round_trips_max_program`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean>
 ---
 
-This text is one build receipt. Its UUID 25f6c5d9-6056-3eb2-9174-802f2da9546f is the address of the text above it, and its SHA-256 is 3a867eb6feb9be8c7cd932c4f1fce60a666d6bf49784233991428e6d859c7e87. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify \{ uuid, content \} at <https://qpu.uuidna.com/api/mcp>.
+This text is one build receipt. Its UUID d36b6c98-5ebd-2974-8d18-fc47fe63c899 is the address of the text above it, and its SHA-256 is ad877e03ebfaf92340503cd5a31847b7e7ef06d48988c36cacb70266afae3e14. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify \{ uuid, content \} at <https://qpu.uuidna.com/api/mcp>.
 
 <!-- hardware -->
 
 ## Hardware of the build that minted this receipt
 
-Every value below was read from the machine during the build, and its UUID eb33ee57-8e09-36a4-abed-95a81621edc1 is the address of the JSON beneath it, verifiable with verify \{ uuid, content \} like the text above. The machine holds an exact state vector of 29 qubits, since n qubits span 2^n basis states (Vocabulary.system\_dimension) at 16 bytes per complex amplitude; Willow has 105 qubits and Sycamore 54, as the processor door states them, and one UUID register carries 122 (Qubit.effective\_formula). The build took 2369 ms.
+Every value below was read from the machine during the build, and its UUID 822964ed-f443-574c-b733-317ec5e97114 is the address of the JSON beneath it, verifiable with verify \{ uuid, content \} like the text above. The machine holds an exact state vector of 29 qubits, since n qubits span 2^n basis states (Vocabulary.system\_dimension) at 16 bytes per complex amplitude; Willow has 105 qubits and Sycamore 54, as the processor door states them, and one UUID register carries 122 (Qubit.effective\_formula). The build took 3625 ms.
 
 ```json
-{"platform":"linux","release":"6.18.44-fc-v819","arch":"x64","endianness":"LE","cpu":"Intel(R) Xeon(R) Processor @ 2.30GHz","cores":4,"parallelism":4,"cpuMHz":0,"memoryBytes":16868675584,"freeMemoryBytes":15594160128,"load1":0.83,"load5":0.75,"load15":1.08,"uptimeS":5087,"node":"22.23.5","v8":"12.4.254.21-node.57","lean":"leanprover/lean4:v4.33.0","rssBytes":225472512,"heapUsedBytes":93248080,"stateVectorQubits":29,"willowQubits":105,"sycamoreQubits":54,"registerQubits":122,"buildMs":2369,"at":"2026-11-24T18:54:15.699Z"}
+{"platform":"linux","release":"6.18.44-fc-v819","arch":"x64","endianness":"LE","cpu":"Intel(R) Xeon(R) Processor @ 2.30GHz","cores":4,"parallelism":4,"cpuMHz":0,"memoryBytes":16868675584,"freeMemoryBytes":15532048384,"load1":1.64,"load5":2.44,"load15":2.09,"uptimeS":1462,"node":"22.23.5","v8":"12.4.254.21-node.57","lean":"leanprover/lean4:v4.33.0","rssBytes":248999936,"heapUsedBytes":116582888,"stateVectorQubits":29,"registersInMemory":1054292224,"registerQubitsInMemory":128623651328,"willowQubits":105,"sycamoreQubits":54,"registerQubits":122,"buildMs":3625,"at":"2026-11-24T22:08:27.838Z"}
 ```

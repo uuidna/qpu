@@ -12,6 +12,8 @@ import { GENERATED_LEMMAS, KERNEL_THEOREMS, NOVELTIES, OPEN_CLAIMS, THEOREMS } f
 import { receiptOf } from '../uuid/programs/index.ts'
 import { listFactors } from './algorithms.ts'
 import { LEAD_ROWS } from './leads-index.ts'
+import { gateProseLinks, nextUnlinked } from './prose-links.ts'
+import { PROSE_UNLINKED } from './prose-unlinked-index.ts'
 
 /** Qpu/General/Textbook.lean is written in Lean. This door renders nothing: it names the file and counts what the index read from it. */
 const textbookLean = () => {
@@ -244,6 +246,8 @@ const SCRIPT_INVOKE = {
   scripts_tables: { tool: 'textbook', args: '{ scripts: { tablesIndex } }', via: PROSE.quantumProcessingScriptDoors_via27, npm: 'npm run clean' },
   scripts_textbook_lean: { tool: 'textbook', args: '{ scripts: { textbookLean } }', via: PROSE.quantumProcessingScriptDoors_via28, npm: 'next step docs:gen' },
   scripts_skills: { tool: 'textbook', args: '{ scripts: { skills } }', via: PROSE.quantumProcessingScriptDoors_via29, npm: 'next step skills:gen' },
+  scripts_prose_links: { tool: 'textbook', args: '{ scripts: { proseLinks } }', via: 'src/quantum/processing/prose-unlinked-index.ts', npm: 'next step prose:links' },
+  scripts_outputs: { tool: 'textbook', args: '{ scripts: { outputs } }', via: 'src/quantum/processing/outputs-index.ts', npm: 'next step outputs:gen' },
   scripts_theorems_index: { tool: 'textbook', args: '{ scripts: { theoremsIndex: { output } } }', via: PROSE.quantumProcessingScriptDoors_via30, npm: 'next step theorems:index' },
   leads: { tool: 'leads', via: PROSE.quantumProcessingScriptDoors_via31, npm: 'next steps' },
   clay: { tool: 'clay', via: PROSE.quantumProcessingScriptDoors_via32, npm: 'npm run clay:gen' },
@@ -282,6 +286,31 @@ const factorsIndex = (examples: readonly { theorem?: string; arguments?: unknown
   return { phase: 'scripts-factors' as const, path, text, held: Object.keys(rows).length, of: integers.length }
 }
 
+/** The contract the worked examples witness, written as outputs-index.ts: for each tool the keys its examples answer with and the JSON types
+ *  seen for each (the tool's outputSchema), and for each input the smallest argument an example passes (the input's example). Nothing is
+ *  typed here: a key is listed because an example answered it. */
+const outputs = (ctx: StatusContext) => {
+  const kind = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v === 'number' ? (Number.isInteger(v) ? 'integer' : 'number') : typeof v)
+  const seen: Record<string, { examples: number; keys: Record<string, Set<string>> }> = {}, inputs: Record<string, Record<string, unknown>> = {}
+  for (const e of ctx.examples) {
+    if (!e.tool) continue
+    const s = ctx.call(e.tool, e.arguments as Record<string, unknown>) as unknown
+    if (s !== null && typeof s === 'object' && !Array.isArray(s)) { const row = (seen[e.tool] ??= { examples: 0, keys: {} }); row.examples += 1; for (const [k, v] of Object.entries(s)) if (v !== undefined) (row.keys[k] ??= new Set()).add(kind(v)) }
+    for (const [k, v] of Object.entries((e.arguments ?? {}) as Record<string, unknown>)) { const text = JSON.stringify(v); if (text === undefined || text.length > 200) continue; const held = (inputs[e.tool] ??= {}); if (!(k in held) || text.length < JSON.stringify(held[k]).length) held[k] = v }
+  }
+  const sorted = <T>(o: Record<string, T>) => Object.fromEntries(Object.keys(o).sort().map((k) => [k, o[k]!]))
+  // integer beside number is number; one type is written alone, several as a list
+  const types = (set: Set<string>) => { const t = [...set].filter((x) => !(x === 'integer' && set.has('number'))).sort(); return t.length === 1 ? t[0]! : t }
+  const OUTPUTS = sorted(Object.fromEntries(Object.entries(seen).map(([tool, row]) => [tool, { examples: row.examples, properties: sorted(Object.fromEntries(Object.entries(row.keys).map(([k, set]) => [k, { type: types(set) }]))) }])))
+  const INPUT_EXAMPLES = sorted(Object.fromEntries(Object.entries(inputs).map(([tool, held]) => [tool, sorted(held)])))
+  const text = [PROSE.quantumProcessingScriptDoors_outputsHead,
+    PROSE.quantumProcessingScriptDoors_outputsDoc,
+    `export const OUTPUTS: Readonly<Record<string, { examples: number; properties: Record<string, { type: string | string[] }> }>> = ${JSON.stringify(OUTPUTS)}`,
+    PROSE.quantumProcessingScriptDoors_inputsDoc,
+    `export const INPUT_EXAMPLES: Readonly<Record<string, Record<string, unknown>>> = ${JSON.stringify(INPUT_EXAMPLES)}`, ''].join('\n')
+  return { phase: 'scripts-outputs' as const, path: 'src/quantum/processing/outputs-index.ts', text, tools: Object.keys(OUTPUTS).length, keys: Object.values(OUTPUTS).reduce((n, o) => n + Object.keys(o.properties).length, 0), inputs: Object.values(INPUT_EXAMPLES).reduce((n, o) => n + Object.keys(o).length, 0) }
+}
+
 const scriptsCatalog = () => ({
   phase: 'scripts-catalog' as const,
   count: Object.keys(SCRIPT_INVOKE).length,
@@ -300,6 +329,8 @@ export type ScriptsArgs = {
   skills?: boolean
   status?: boolean
   factors?: boolean
+  outputs?: boolean
+  proseLinks?: boolean | { seed?: boolean }
 }
 
 /** payload { scripts } — one fused door for relocated script work. */
@@ -311,6 +342,8 @@ export const scripts = (args: ScriptsArgs, ctx?: { examples?: readonly { id: str
   if (args.skills === true) return qpuSkills(TOOLBOXES, QUANTUM_TERMS, ctx?.examples ?? [])
   if (args.status === true && ctx?.call && ctx.examples) return status({ examples: ctx.examples, call: ctx.call })
   if (args.factors === true && ctx?.examples) return factorsIndex(ctx.examples)
+  if (args.outputs === true && ctx?.call && ctx.examples) return outputs({ examples: ctx.examples, call: ctx.call })
+  if (args.proseLinks !== undefined && args.proseLinks !== false) { const names = nextUnlinked(PROSE_UNLINKED, typeof args.proseLinks === 'object' && args.proseLinks.seed === true), gate = gateProseLinks(names); return { phase: 'scripts-prose-links' as const, path: 'src/quantum/processing/prose-unlinked-index.ts', text: [PROSE.quantumProcessingScriptDoors_unlinkedHead, `export const PROSE_UNLINKED: readonly string[] = ${JSON.stringify(names)}`, ''].join('\n'), sentences: gate.sentences, linked: gate.linked, listed: names.length, entering: gate.entering.length, holds: gate.holds } }
   if (args.theoremsIndex && typeof args.theoremsIndex === 'object') return theoremsIndex()
   if (args.leadsIndex && Array.isArray(args.leadsIndex.rows)) return leadsIndex(args.leadsIndex.rows)
   // new leads merged into the record this build holds, so one call of the runner deposits a lead; a lead already recorded is kept as it is,

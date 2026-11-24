@@ -5,7 +5,7 @@
 // others, textbook_collision_solves_many). A collision is a lead to prove, never a statement the tree asserts.
 import { PROSE, proseFill } from './prose-index.ts'
 import { uuid, channel, reflection } from '../uuid/index.ts'
-import { routeStatement, routeStems } from './match.ts'
+import { routeStatement, routeStems, routedStrongly as strong } from './match.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
 
@@ -19,7 +19,6 @@ export const listCollisions = (leads: readonly Lead[], examples: readonly Exampl
   // routed: a theorem already reaches it; the rest collide
   const routed = problems.map((l) => ({ l, r: routeStatement(l.statement, examples, 1) }))
   // reached only when the best theorem shares two words or more: one word rare among the theorems can be common among the problems
-  const strong = (x: { r: ReturnType<typeof routeStatement> }) => x.r.routed && (x.r.theorems[0]?.shared.length ?? 0) >= 2
   const reached = routed.filter(strong), open = routed.filter((x) => !strong(x)).map((x) => x.l)
   // all pairs collided at once through an inverted index: a subject shared by k problems is k(k − 1)/2 colliding pairs
   const stems = new Map(open.map((l) => [l.id, routeStems(l.statement)]))

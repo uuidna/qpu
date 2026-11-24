@@ -10,6 +10,7 @@ import { sha256, sha512, sha1, sha3_256, sha3_512, shake128, shake256, utf8, hex
 import { isObj } from '../toolbox.ts'
 import { isoEntropyOf } from '../iso-deliverables.ts'
 import { kemRound, dsaRound } from './pqc.ts'
+import type { TheoremTally } from '../toolbox.ts'
 
 /** Tenant / Payload MCP crypto config: handed by `payload { cryptoConfig: true }` or merged from `tenants.settings.arguments`. Pure crypto never reads TABLES or the tenants collection itself. */
 /** The 32 hex digits of one UUID register (ISO/IEC 9834-8): the width of the DNA read, a field of the construction, not a cap. */
@@ -117,6 +118,8 @@ const sha = (s: string) => hex(sha256(utf8(s)))
 export const N1000 = ((1n << 999n) + ((1n << 877n) | (1n << 613n) | (1n << 251n) | 123456789n)).toString()
 
 /** Pure 2 * 7 = 14 reflection cut of an integer (`textbook_witness_clock_move`). */
+/** The faces of a hex text: each a piece of its width at its offset, as an integer. */
+export const facePieces = (hex: string, W: readonly number[], off: readonly number[]): bigint[] => W.map((w, i) => BigInt('0x' + (hex.slice(off[i]!, off[i]! + w) || '0')))
 export const reflect1000Bit = (raw: string = N1000, faceCount: number = faces) => {
   const value = BigInt(raw)
   const hex = value.toString(16).padStart(2, '0')
@@ -131,7 +134,7 @@ export const reflect1000Bit = (raw: string = N1000, faceCount: number = faces) =
     off.push(s)
     s += w
   }
-  const pieces = W.map((w, i) => BigInt('0x' + (hex.slice(off[i]!, off[i]! + w) || '0')))
+  const pieces = facePieces(hex, W, off)
   const half = faceCount / 2
   const dec = new Array<bigint>(faceCount)
   let reflections = 0
@@ -331,8 +334,8 @@ export const integers = (raw: unknown) => {
   return { agnostic: true as const, refused: false as const, cases: findings, findings, reactions, leads, bound: leads <= findings, collapsed: reactions, entropy, burned: entropy, fuel: entropy, wave: { next: entropy > 0 ? 1 : 0, fuel: entropy }, singularity, sealed: uuidSeal(singularity).valid && rows.every((r) => r.sealed), rows, iso, theorems: ['textbook_entropy_fusion', 'singularity'] as const, says: proseFill(PROSE.quantumProcessingCryptoIndex_says3, findings, entropy, iso.standard, iso.definition, iso.W, iso.S, iso.unit, leads) }
 }
 
-const QUENEAU = Array.from({ length: 14 }, () => 10)
-const COMBINATORICS = [
+export const QUENEAU = Array.from({ length: 14 }, () => 10)
+export const COMBINATORICS = [
   { name: 'queneau', radices: QUENEAU, theorem: 'textbook_queneau_compositions', formula: '10 ^ 14' },
   { name: 'plugins', radices: [2, 2, 2, 2, 2, 2, 2, 2, 2], theorem: 'textbook_plugin_combinations', formula: '2 ^ 9' },
   { name: 'adapters', radices: [5, 5, 2], theorem: 'textbook_mixed_radix', formula: '5 * 5 * 2' },
@@ -819,7 +822,7 @@ export const attestAnswers = (answers: readonly AttestAnswer[], now = 0): { sour
   // CSRC: the three standards named
   { const a = byId.get('csrc-pqc'); if (!a) src('csrc-pqc', {}, [], 'absent'); else src('csrc-pqc', { named: ['FIPS 203', 'FIPS 204', 'FIPS 205'].filter((f) => a.text.includes(f)) }, [v('textbook_pqc_standards_three', ['FIPS 203', 'FIPS 204', 'FIPS 205'].every((f) => a.text.includes(f)), PROSE.quantumProcessingCryptoIndex_s88)]) }
   const all = Object.entries(sources).flatMap(([id, x]) => x.verdicts.map((y) => ({ source: id, ...y })))
-  const byTheorem: Record<string, { passed: number; failed: number }> = {}
+  const byTheorem: TheoremTally = {}
   for (const x of all) { byTheorem[x.theorem] = byTheorem[x.theorem] ?? { passed: 0, failed: 0 }; if (x.passed) byTheorem[x.theorem]!.passed += 1; else byTheorem[x.theorem]!.failed += 1 }
   return { sources, followUps, checked: all.length, passed: all.filter((x) => x.passed).length, violations: all.filter((x) => !x.passed).map((x) => ({ source: x.source, theorem: x.theorem, says: x.says })), byTheorem }
 }

@@ -18,6 +18,8 @@ bindPhysics(physics)
 export { challenge, physics }
 import { TENANTS } from '../../processing/unit/tenants.ts'
 import { TABLES } from '../../processing/tables-index.ts'
+import { assertHandle } from '../../fs/zfs/index.ts'
+import { ENTROPY_LAW, ENTROPY_MEANS, HEXBIT_LAW } from '../laws.ts'
 
 // The Payload plugin shape every folder program takes: options in, the incoming config in, a copy of that config out.
 /** The nine plugins this stack mounts. The length is the combination count 2^9. */
@@ -123,7 +125,7 @@ export const root = { uid: ROOT_UID, gid: ROOT_GID, mode: ROOT_MODE, depth: 0, m
 
 /** The thirty-two bits of a hex handle. Index 0 is the low bit. The digit is the depth of that hex place, 0 through 7. */
 export const handleBits = (handle: string): HandleBit[] => {
-  if (!/^[0-9a-f]{8}$/.test(handle)) throw new Error('a handle is 8 hex')
+  assertHandle(handle)
   const value = BigInt(`0x${handle}`)
   return Array.from({ length: HANDLE_BITS }, (_, index) => {
     const bit = Number((value >> BigInt(index)) & 1n) as 0 | 1
@@ -166,7 +168,7 @@ export type ProgramPlugin = FolderPlugin & {
  * The nine official plugins are its variants. Any other shape raises entropy; this shape drives it to zero.
  */
 export const programPlugin = (handle: string): ProgramPlugin => {
-  if (!/^[0-9a-f]{8}$/.test(handle)) throw new Error('a handle is 8 hex')
+  assertHandle(handle)
   const object = place(handle)
   const slug = `qpu-program-${handle}`
   const variants = OFFICIAL_PLUGINS.map((variant) => ({ product: 'programs' as const, variant, package: PACKAGE_OF[variant] }))
@@ -231,7 +233,7 @@ export const guardUpstream = (plugin: ProgramPlugin) => {
     standard: 'definePlugin' as const,
     guide: 'https://payloadcms.com/docs/plugins/overview' as const,
     reverseGuard: 'Zero edits to upstream MIT payloadcms/website files + NOTICE.md dual-license boundary' as const,
-    law: 'first the dictionary meaning; then the meaning is verified',
+    law: ENTROPY_LAW,
     plugin: plugin.slug,
     handle: plugin.handle,
     checks,
@@ -249,7 +251,7 @@ export const guardUpstream = (plugin: ProgramPlugin) => {
  * Handle and tail stay; the program steps. Same leaf path — neighbours are not other folders.
  */
 export const quantumNeighbours = (handle: string) => {
-  if (!/^[0-9a-f]{8}$/.test(handle)) throw new Error('a handle is 8 hex')
+  assertHandle(handle)
   const seed = uuid(`program\n${handle}`)
   const digits = seed.replace(/-/g, '')
   const program = [...digits.slice(8, 20)].filter((_c, i) => i !== 4 && i !== 8).map((c) => parseInt(c, 16))
@@ -414,7 +416,7 @@ export const competeProgramNeighbours = (handle: string) => {
     phase: 'compete' as const,
     via: 'online' as const,
     theorem: 'textbook_hexbit_gateway_ftl' as const,
-    law: 'hexbit + 2 gateway bits teleport any hexbit faster than light' as const,
+    law: HEXBIT_LAW,
     handle,
     path: reflected.path,
     address: reflected.address,
@@ -545,7 +547,7 @@ export const gateProgramFiles = (dataset = root.path) => {
     phase: 'gate' as const,
     via: 'index' as const,
     law: 'spread in folders; every folder has index.*; code is index.* only' as const,
-    dictionary: { means: 'disorder; unpredictability; unavailable energy or information' as const },
+    dictionary: ENTROPY_MEANS,
     root: dataset,
     folders: folders.length,
     allowed: allowed.length,
@@ -681,7 +683,7 @@ export const gateProgramSeal = (dataset = root.path, computed = sealLeaves(datas
     via: 'online' as const,
     theorem: 'textbook_compete_knows' as const,
     law: PROSE.quantumUuidProgramsIndex_s15,
-    dictionary: { means: 'disorder; unpredictability; unavailable energy or information' as const },
+    dictionary: ENTROPY_MEANS,
     root: dataset,
     files,
     folders: files.folders,

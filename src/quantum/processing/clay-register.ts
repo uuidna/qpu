@@ -1,6 +1,7 @@
 import { PROSE, proseFill } from './prose-index.ts'
 import { CLAY_RELATIONS } from './clay-statements.ts'
 import { memo } from '../uuid/index.ts'
+import { uuidQubits } from '../uuid/index.ts'
 
 const MAX_SAFE = Number.MAX_SAFE_INTEGER
 const nat = (x: number, what: string): number => { if (!Number.isInteger(x) || x < 0 || x > MAX_SAFE) throw new Error(`${what} left the exact naturals: ${x}`); return x }
@@ -29,7 +30,7 @@ const periodAux = (fuel: number, a: number, m: number, r: number): number => (fu
 export const multiplicativePeriod = (a: number, m: number): number => periodAux(m, a, m, 1)
 const half = (a: number, m: number): number => powMod(a, Math.floor(multiplicativePeriod(a, m) / 2), m)
 
-const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b))
+export const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b))
 const totient = (nn: number): number => { let c = 0; for (let k = 1; k <= nn; k++) if (gcd(k, nn) === 1) c += 1; return c }
 const shorModulus = rays * (faces - seed)
 const shorBase = mint(n)
@@ -56,6 +57,8 @@ const qftDepth = (q: number): number => Math.max(0, 2 * q - 1)
 const qftStates = (q: number): number => nat(2 ** q, 'qftStates')
 const paulis = (nn: number): number => mint(2 * nn + 2)
 
+/** The register at the hexbit width the axioms state: the one place the width is read. */
+export const hexbitRegister = () => uuidQubits(AXIOMS.find((row) => row.name === 'hexbit')!.value)
 export const AXIOMS: readonly { name: string; formula: string; value: number }[] = [
   { name: 'n', formula: '["quantum", "processing", "unit"].length', value: n },
   { name: 'seed', formula: 'mint (n - n)', value: seed },

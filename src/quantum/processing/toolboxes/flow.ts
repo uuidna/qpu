@@ -20,6 +20,8 @@ import { createE2eRequests, decodeE2e, getE2ePage, tree, type E2eAnswer } from '
 import { standardsSeeds } from '../standards-e2e.ts'
 import { TENANTS } from '../unit/tenants.ts'
 import { clock, stamp } from '../../uuid/programs/clock/index.ts'
+import { callEnvelope } from '../toolbox.ts'
+import { coordinate, usageReport } from '../agents.ts'
 
 const BLOCK_IDS = new WeakMap<readonly unknown[], { example: string; id: string | undefined }[]>()
 /** Every example's block address, once per examples registry: the core's pure function of tool and arguments, no replay. */
@@ -77,9 +79,11 @@ const takeShare = <T>(list: readonly T[], index: number, count: number): T[] => 
 const shard = defineTool('flow', {
   name: 'shard',
   description: PROSE.quantumProcessingToolboxesFlow_description20,
-  inputSchema: { type: 'object', properties: { list: { type: 'array', description: 'the items (or their ids)' }, index: { type: 'integer', minimum: 0 }, count: { type: 'integer', minimum: 1 }, ...SELFTEST } },
+  inputSchema: { type: 'object', properties: { list: { type: 'array', description: 'the items (or their ids)' }, index: { type: 'integer', minimum: 0 }, count: { type: 'integer', minimum: 1 }, agents: { type: 'integer', minimum: 1, description: PROSE.quantumProcessingAgents_agents }, secret: { type: 'string', description: PROSE.quantumProcessingAgents_secret }, usage: { type: 'object', description: PROSE.quantumProcessingAgents_usage }, ...SELFTEST } },
   run: (args, ctx) => {
     const list = Array.isArray(args.list) ? args.list : []
+    if (isObj(args.usage)) return usageReport((args.usage as { calls?: unknown }).calls) as never
+    if (args.agents !== undefined) return coordinate(list, args.agents, args.secret) as never
     // any index and count, exactly: a count of 0 is read as 1 (one shard holds the list), an index at or above the count as its residue mod
     // the count, the same shard (textbook_shards_cover); the share is every position the residue names, in BigInt when the count is large
     const asked = { index: getInteger(args.index, 'index', 0n), count: getInteger(args.count, 'count', 1n) }, c = asked.count < 1n ? 1n : asked.count, i = asked.index % c
@@ -122,7 +126,7 @@ const readiness = defineTool('flow', {
     const sources = listSources(judged, ctx.leads)
     const plan = planBorder(discovery, probe)
     const auraSubjects = listBlockIds(ctx)
-    const unitPlan = [{ name: 'check_release_readiness', arguments: { sources } }, { name: 'get_rights', arguments: {} }, { name: 'compute_address', arguments: { value: 'qpu' } }, { name: 'get_vortex_reflection', arguments: {} }, { name: 'get_triad', arguments: {} }, { name: 'compute_double_torus', arguments: { addresses: auraSubjects.map((a) => a.id) } }, ...((ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'clay', arguments: { technique: 'reflection' } } }) as { result?: { structuredContent: { unitPlan: { name: string; arguments: Record<string, unknown> }[] } } }).result?.structuredContent.unitPlan ?? []), ...auraSubjects.map((a) => ({ name: 'compute_aura', arguments: { subject: a.id }, example: a.example }))]
+    const unitPlan = [{ name: 'check_release_readiness', arguments: { sources } }, { name: 'get_rights', arguments: {} }, { name: 'compute_address', arguments: { value: 'qpu' } }, { name: 'get_vortex_reflection', arguments: {} }, { name: 'get_triad', arguments: {} }, { name: 'compute_double_torus', arguments: { addresses: auraSubjects.map((a) => a.id) } }, ...((ctx.handle(callEnvelope('clay', { technique: 'reflection' })) as { result?: { structuredContent: { unitPlan: { name: string; arguments: Record<string, unknown> }[] } } }).result?.structuredContent.unitPlan ?? []), ...auraSubjects.map((a) => ({ name: 'compute_aura', arguments: { subject: a.id }, example: a.example }))]
     const base = { probe, judged, classes, sources, borderPlan: plan.calls, unfillable: plan.unfillable, unitPlan, leads: ctx.leads.length }
     if (!Array.isArray(args.border) || !args.unit) return { phase: 'plan' as const, served: classes.served, refuted: classes.refuted, trial: classes.trial, borderCalls: plan.calls.length, unitCalls: unitPlan.length, ...base }
     const border = [...getBorder(args.border as BorderAnswer[]), ...plan.unfillable]
@@ -173,6 +177,9 @@ export const FLOW: Toolbox = {
   examples: [
     { id: 'wave-requests', tool: 'wave', theorem: 'textbook_wave_requests_by_lead', arguments: { leads: ['willow-spec', 'repo-cirq'] }, shows: PROSE.quantumProcessingToolboxesFlow_shows45, expect: (s) => (s.phase === 'requests' && s.leads === 2 && s.requests > 0 && s.requestList.every((r: { leads: string[] }) => r.leads.length > 0) ? null : `${s.phase}, ${s.requests} requests for ${s.leads} leads`) },
     { id: 'readiness-plan', tool: 'readiness', theorem: 'textbook_readiness_judged', arguments: {}, shows: PROSE.quantumProcessingToolboxesFlow_shows46, expect: (s) => (s.phase === 'plan' && s.served + s.refuted + s.trial === s.leads && s.borderCalls === 0 && s.unitCalls >= 3 ? null : `${s.phase}: ${s.served}+${s.refuted}+${s.trial} of ${s.leads}, ${s.borderCalls} border calls`) },
+    { id: 'shard-agents', tool: 'shard', theorem: 'textbook_shards_disjoint', arguments: { list: ['a', 'b', 'c', 'd', 'e', 'f', 'g'], agents: 3 }, shows: PROSE.quantumProcessingAgents_showsAgents, expect: (s) => (s.phase === 'coordinate' && s.covered === true && s.rows.length === 3 && s.rows[1].shareList.join() === 'b,e' && s.largest === 3 && s.smallest === 2 && s.capacity.full === true && !('room' in s) ? null : JSON.stringify(s.rows)) },
+    { id: 'shard-agents-room', tool: 'shard', theorem: 'textbook_shards_cover', arguments: { list: ['a', 'b', 'c', 'd', 'e', 'f', 'g'], agents: 3, secret: 'only we know' }, shows: PROSE.quantumProcessingAgents_showsRoom, expect: (s) => (/^[0-9a-f]{64}$/.test(s.room.id) && s.room.names.join() === 'agent-0,agent-1,agent-2' && s.room.tools.join() === 'send,receive' ? null : JSON.stringify(s.room)) },
+    { id: 'shard-usage', tool: 'shard', theorem: 'textbook_coins_coils_balanced', arguments: { usage: { calls: [{ tool: 'fold', arguments: { qubits: 4 }, tokens: 500, bytes: 9000, ms: 12 }, { tool: 'fold', arguments: { qubits: 4 }, tokens: 500, bytes: 9000, ms: 12 }] } }, shows: PROSE.quantumProcessingAgents_showsUsage, expect: (s) => (s.phase === 'usage' && s.calls === 2 && s.distinct === 1 && s.again === 1 && s.ledger[0].debit === 12 && s.ledger[0].credit === 12 && s.ledger[1].credit === 9000 && s.kept === false && s.licence.spdx === 'CC-BY-NC-ND-4.0' ? null : JSON.stringify(s.ledger)) },
     { id: 'shard-share', tool: 'shard', theorem: 'textbook_shards_cover', arguments: { list: ['a', 'b', 'c', 'd', 'e', 'f', 'g'], index: 1, count: 4 }, shows: PROSE.quantumProcessingToolboxesFlow_shows47, expect: (s) => (s.share === 2 && s.shareList.join() === 'b,f' && s.items === 7 && s.theorems.length === 2 ? null : `${s.share} ${s.shareList}`) },
     { id: 'discover-lead-registry', tool: 'discover', theorem: 'textbook_mcp_directories', arguments: { lead: 'rbac-standards-as-subjects' }, shows: PROSE.quantumProcessingToolboxesFlow_shows48, expect: (s) => (s.phase === 'registry' && s.requests >= 1 && ['official', 'smithery', 'mcpservers.org'].every((d) => s.requestList.some((r: { directory: string }) => r.directory === d)) ? null : `${s.phase} ${s.requests}`) },
     { id: 'discover-requests', tool: 'discover', theorem: 'textbook_discovery_requests', arguments: { mcpHosts: [UNIT_MCP] }, shows: PROSE.quantumProcessingToolboxesFlow_shows49, expect: (s) => (s.phase === 'requests' && s.requests >= 3 + VERIFIERS.filter((v) => v.contract).length ? null : `${s.phase}, ${s.requests} requests`) },

@@ -2,6 +2,7 @@
 // waits for /health and forwards each request. Only worker.ts imports it: cloudflare:workers exists there alone.
 import { DurableObject } from 'cloudflare:workers'
 import { PROSE, proseFill } from '../processing/prose-index.ts'
+import { within } from '../processing/toolbox.ts'
 
 const PORT = 8080
 /** How long the container keeps Mathlib loaded after its last request. */
@@ -37,7 +38,7 @@ export class Prover extends DurableObject<Env> {
     let lastError: unknown
     for (let attempt = 0; attempt < 300; attempt++) {
       try {
-        const response = await port.fetch('http://container/health', { signal: AbortSignal.timeout(1000) })
+        const response = await port.fetch('http://container/health', { signal: within(1000) })
         await response.body?.cancel()
         if (response.ok) return
         lastError = new Error(`health ${response.status}`)

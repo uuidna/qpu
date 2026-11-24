@@ -17,6 +17,8 @@ export const LEAN_RESOURCE = "lean://qpu/theorems"
 export const INSERT_SCHEMA = { enum: ["EARLIEST","NEW","INLINE","NEW_THEN_INLINE"], default: "EARLIEST" }
 /** The coin qubit space, from Config.coinQubitSpace: the most remembered results a computation keeps at once. */
 export const COIN_QUBIT_SPACE = 16
+/** The bytes of answers a process remembers at once: 2 ^ 26, sixty-four mebibytes, half of the memory a Worker is given, so the answers kept can never be what ends it; past it the oldest answer is forgotten. */
+export const ANSWER_MEMORY_BYTES = 67108864
 /** The PBKDF2 iterations a password is hashed with, from Config.passwordHashIterations: the largest Payload offers that a Worker runs. */
 export const PASSWORD_HASH_ITERATIONS = 100000
 /** The workflows the repository tool serves, from Config.workflows. */

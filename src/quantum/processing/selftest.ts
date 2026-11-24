@@ -15,6 +15,8 @@ import { createMatcher } from './match.ts'
 import { decodeE2e, judgeRules, decodeValue, type E2eAnswer } from './e2e.ts'
 import { createRegistryRequests, listRelatedServers, rankBestDoors } from './discovery.ts'
 import { clock } from '../uuid/programs/clock/index.ts'
+import { timedCheck } from './toolbox.ts'
+import { callEnvelope } from './toolbox.ts'
 
 const UNIT = 'https://unit.test/mcp'
 const rpcOk = (result: unknown) => JSON.stringify({ jsonrpc: '2.0', id: 1, result })
@@ -42,8 +44,7 @@ const answerRequest = (r: Request): Answer => {
 /** The whole suite: every direction, every toolbox feeding the next. */
 export const runFlowSelftest = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[]): { passed: boolean; checks: Check[] } => {
   const checks: Check[] = []
-  let tick = clock()
-  const check = (id: string, passed: boolean, evidence: string) => { const now = clock(); checks.push({ id, passed, evidence, ms: now - tick }); tick = now }
+  const check = timedCheck(checks, clock)
   const safe = (id: string, f: () => void) => { try { f() } catch (e) { check(id, false, `threw: ${(e as Error).message}`) } }
 
   // discover: server → client → server
@@ -120,7 +121,7 @@ export const runFlowSelftest = (handle: (m: Rpc) => any, examples: readonly Exam
     // sharding: the shares of n shards cover the list exactly once
   {
     const list = Array.from({ length: 23 }, (_, i) => i)
-    const shares = [0, 1, 2, 3].map((i) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'shard', arguments: { list, index: i, count: 4 } } }) as { result: { structuredContent: { shareList: number[] } } }).result.structuredContent.shareList)
+    const shares = [0, 1, 2, 3].map((i) => (handle(callEnvelope('shard', { list, index: i, count: 4 })) as { result: { structuredContent: { shareList: number[] } } }).result.structuredContent.shareList)
     const union = shares.flat().sort((a, b) => a - b)
     check('shard:shares-cover-exactly-once', union.length === 23 && union.every((v, k) => v === k) && shares.every((s, i) => s.every((v) => v % 4 === i)), proseFill(PROSE.quantumProcessingSelftest_s23, shares.map((s) => s.length).join('+')))
   }

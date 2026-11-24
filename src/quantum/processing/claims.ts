@@ -7,6 +7,7 @@ import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { getStatement } from './expressions.ts'
 import { LICENSE, PRECEDENCE } from './unit/license.ts'
 import { createVerifyRequests } from './verifiers.ts'
+import { answerText } from './toolbox.ts'
 
 const PRECEDENCE_YEAR = 2026
 const words = (s: string) => new Set(s.toLowerCase().match(/[a-z]{4,}/g) ?? [])
@@ -44,7 +45,7 @@ export const claimNovelty = (raw: unknown) => {
     const verify = doi ? createVerifyRequests({ kind: 'doi', value: doi }) : []
     const search = statement ? { id: 'openalex-novelty' as const, method: 'GET' as const, url: `https://api.openalex.org/works?search=${encodeURIComponent(statement)}&filter=has_doi:true&per-page=25`, accept: 'application/json' as const, check: PROSE.quantumProcessingClaims_check1 } : null
     const answers = one.answers && typeof one.answers === 'object' ? one.answers as Record<string, unknown> : {}
-    const text = (url: string) => (typeof answers[url] === 'string' ? answers[url] : '')
+    const text = answerText(answers)
     const verified = doi !== '' && verify.length > 0 && verify.every((request) => { const body = text(request.url); return body.length > 0 && (!request.check.includes(LICENSE.author) || (body.includes(LICENSE.author) && body.includes(LICENSE.orcid))) })
     const searched = search ? text(search.url) : ''
     let results: { doi?: string; title?: string; publication_year?: number; authorships?: { author?: { display_name?: string } }[] }[] = []

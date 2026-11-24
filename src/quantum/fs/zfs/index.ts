@@ -9,8 +9,13 @@ const BITS = LEVELS * INDIRECT_SHIFT
 export const SPAN = 16n ** BigInt(LEVELS)
 const DATASET = 'src/quantum/uuid/programs'
 
+/** A handle is eight hex digits, checked in this one place. */
+export const assertHandle = (handle: string): void => { if (!/^[0-9a-f]{8}$/.test(handle)) throw new Error('a handle is 8 hex') }
+/** The handle a byte count names: its low thirty-two bits as eight hex digits. */
+export const handleOfBytes = (bytes: number): string => (BigInt(bytes) & 0xffffffffn).toString(16).padStart(8, '0')
+
 const objectOf = (handle: string) => {
-  if (!/^[0-9a-f]{8}$/.test(handle)) throw new Error('a handle is 8 hex')
+  assertHandle(handle)
   const folders = [...handle]
   const levels = folders.map((hex, at) => ({ level: LEVELS - 1 - at, hex, index: Number.parseInt(hex, 16), shift: (LEVELS - 1 - at) * INDIRECT_SHIFT }))
   const own = `${DATASET}/${folders.join('/')}`

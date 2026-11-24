@@ -3,7 +3,7 @@
 // tenant's signature.
 import { UUID_SHAPE } from '../config-index.ts'
 import { PROSE, proseFill } from '../prose-index.ts'
-import { defineTool, isObj, createChecks, unlimited, type Toolbox } from '../toolbox.ts'
+import { defineTool, isObj, createChecks, unlimited, answerText, type Toolbox } from '../toolbox.ts'
 import { hmacSha256, utf8, hex, sameHex, sha256 } from '../unit/hmac.ts'
 import { digitalRoot, trinityFor } from '../clay-register.ts'
 import { uuid, canonicalText, aspects, compositions, composition, seal, verify, channel, uuidFromParts } from '../../uuid/index.ts'
@@ -13,6 +13,7 @@ import { flowWidget } from '../widgets.ts'
 import { diffMembers, listRemedies, GENERATOR_REMEDIES } from '../audit.ts'
 import { TABLES } from '../tables-index.ts'
 import { seconds } from '../../uuid/programs/clock/index.ts'
+import { handleOfBytes } from '../../fs/zfs/index.ts'
 
 type Checkout = { tenant: string; host: string; subject: string; domains: string[]; mode: 'payment' | 'subscription'; price?: string; amount?: number; currency: string; successUrl: string; cancelUrl: string; customerEmail?: string }
 type StripeEvent = { id: string; type: string; created?: number; data?: { object?: Record<string, unknown> } }
@@ -215,7 +216,7 @@ export const accountBytes = (input: readonly string[] | number) => {
   const texts = typeof input === 'number' ? [String(input)] : input
   const bytes = typeof input === 'number' ? Math.max(0, Math.floor(input)) : texts.reduce((n, text) => n + utf8(text).length, 0)
   const bits = bytes * 8
-  const handle = (BigInt(bytes) & 0xffffffffn).toString(16).padStart(8, '0')
+  const handle = handleOfBytes(bytes)
   const content = channel(uuid(texts.join('\0')))
   const address = uuidFromParts(handle, content.program, content.tail)
   const reading = channel(address)
@@ -534,7 +535,7 @@ const authorClaim = (idea: unknown) => {
   const own = doi !== '' && PRECEDENCE.some((record) => record.doi === doi)
   const verify = own ? createVerifyRequests({ kind: 'doi', value: doi }) : []
   const answers = isObj(idea) && isObj(idea.answers) ? idea.answers : {}
-  const text = (url: string) => (typeof answers[url] === 'string' ? answers[url] : '')
+  const text = answerText(answers)
   const holds = (check: string, body: string) => (check.includes(LICENSE.author) ? body.includes(LICENSE.author) && body.includes(LICENSE.orcid) : body.length > 0)
   const verified = own && verify.length > 0 && verify.every((request) => holds(request.check, text(request.url)))
   return { user: 'author' as const, doi: doi || null, own, verified, verify }

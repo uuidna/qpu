@@ -373,8 +373,10 @@ export const qaoaEstimate = (graph: Graph, alpha: number, beta: number, shots = 
 
 /** The page's sweep: alpha and beta each over gridSize points of [0, 2π) (the page's comment states the half-open interval),
  *  scored by qaoaEstimate with the page's 20,000 shots, and the best chosen by argmax (the page's np.argmax). */
+/** The weight of every edge of a graph, summed. */
+export const totalWeight = (graph: Graph): number => graph.edges.reduce((sum, e) => sum + e.weight, 0)
 export const qaoaSweep = (graph: Graph, gridSize = 5, shots = 20000): { grid: number[]; best: { alpha: number; beta: number; value: number; expectedCut: number }; randomBaseline: number } => {
-  const total = graph.edges.reduce((sum, e) => sum + e.weight, 0)
+  const total = totalWeight(graph)
   const grid = Array.from({ length: gridSize }, (_, i) => (2 * Math.PI * i) / gridSize)
   let best = { alpha: 0, beta: 0, value: -Infinity, expectedCut: 0 }
   for (const alpha of grid) for (const beta of grid) {
@@ -654,14 +656,30 @@ const ecmSplit = (N: bigint): { factor: bigint; curves: number } | null => {
 type FactorList = { factors: bigint[]; left: bigint[]; reached: bigint | null; searched: bigint; verified: boolean }
 const factorMemo = new Map<string, FactorList>()
 
+/** Factorings found once by the search below and kept as certificates: the search is the cost (Lenstra's curves on 2^999 + 1 are tens of
+ *  seconds of CPU, more than one request may spend), the check is not. A certificate is never trusted: listFactors takes it only when every
+ *  factor is prime by Miller–Rabin and the factors multiply back to the integer; searchFactors is the search that wrote it, and the test
+ *  that runs the search asserts it writes the same list. reached and searched are the search's own, at the default budget of 2^12 reflections. */
+export const FACTOR_CERTIFICATES: Readonly<Record<string, { factors: readonly string[]; reached: string | null; searched: string }>> = {
+  [((1n << 999n) + 1n).toString()]: { factors: ["3","3","3","3","19","1777","3331","17539","23977","87211","304363","25781083","5814899281","97377658867","9853387597819","107775231312019","31031320083857011","241947707873451279499","1270593144646505233013326197403","356259709855840347814184579423977577883939818854919827419470712293459180335618566367184158250790959263766858787438019506310967435347190178144994691161"], reached: '198565310585409490039776', searched: '20744' },
+}
+/** The certificate of n as a list, or null where none is stored or the stored one does not check. */
+const certified = (n: bigint): FactorList | null => {
+  const c = FACTOR_CERTIFICATES[n.toString()]
+  if (!c) return null
+  const factors = c.factors.map(BigInt)
+  return factors.every((p) => testPrimality(p).prime) && factors.reduce((a, b) => a * b, 1n) === n ? { factors, left: [], reached: c.reached === null ? null : BigInt(c.reached), searched: BigInt(c.searched), verified: true } : null
+}
+
 /** The prime factors of n, any part still under the reflection search, the centre reached, the count searched, and the product check (textbook_factors_divide).
  *  A general integer: trial below 2^16, Miller–Rabin, then the σ-reflection. 2^k ± 1, including the 1000-bit integer 2^999 + 1: the cyclotomic pieces, then the same trial, then Lenstra's curves on a composite piece. A cofactor that remains is named. The product is checked.
- *  The same integer and budget return the stored list, and a complete list returns for any budget, so every door shares one factoring. */
+ *  The same integer and budget return the stored list, and a complete list returns for any budget, so every door shares one factoring; an integer
+ *  with a certificate that checks is answered by it, without the search. */
 export const listFactors = (n: bigint, reflections: bigint, from?: bigint): FactorList => {
   const key = `${n}:${reflections}:${from ?? ''}`
   const hit = factorMemo.get(key) ?? factorMemo.get(`${n}`)
   if (hit) return { factors: [...hit.factors], left: [...hit.left], reached: hit.reached, searched: hit.searched, verified: hit.verified }
-  const found = heldFactors(n) ?? listFactorsOnce(n, reflections, from)
+  const found = certified(n) ?? heldFactors(n) ?? searchFactors(n, reflections, from)
   factorMemo.set(found.left.length ? key : `${n}`, found) // a complete list answers every budget
   return { factors: [...found.factors], left: [...found.left], reached: found.reached, searched: found.searched, verified: found.verified }
 }
@@ -673,7 +691,8 @@ const heldFactors = (n: bigint): FactorList | undefined => {
   if (held && factors.reduce((a, b) => a * b, 1n) === n && factors.every((p) => testPrimality(p).prime)) return { factors, left: [], reached: held.reached === null ? null : BigInt(held.reached), searched: BigInt(held.searched), verified: true }
 }
 
-const listFactorsOnce = (n: bigint, reflections: bigint, from?: bigint): FactorList => {
+/** The search itself, with no memory and no certificate: what listFactors runs for an integer it has not met. */
+export const searchFactors = (n: bigint, reflections: bigint, from?: bigint): FactorList => {
   if (n < 2n) return { factors: [] as bigint[], left: n === 0n ? [0n] : [], reached: null as bigint | null, searched: 0n, verified: true }
   const pieces = algebraicPieces(n)
   if (!pieces) return factorClassical(n, reflections, from)

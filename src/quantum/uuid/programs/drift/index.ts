@@ -9,6 +9,7 @@ import { checkWitnesses } from '../../../processing/witnesses.ts'
 import { hex, sha256, utf8 } from '../../../processing/unit/hmac.ts'
 import { canonicalText, channel, coins, next as rotate, seal, uuidFromParts } from '../../index.ts'
 import { program } from '../index.ts'
+import { hyphenated } from '../../laws.ts'
 
 const FIELDS = ['family', 'hz', 'stated', 'difference', 'relations', 'next', 'solved', 'open', 'covers', 'own'] as const
 const TYPES = ['string', 'number', 'boolean', 'array', 'null'] as const
@@ -113,7 +114,7 @@ export const driftPrograms = (waves: ReturnType<typeof driftWaves> = driftWaves(
     const tampered = Array.from({ length: 32 }, (_, at) => {
       const nibble = (parseInt(digits[at]!, 16) + 1) % 16
       const flipped = `${digits.slice(0, at)}${nibble.toString(16)}${digits.slice(at + 1)}`
-      return `${flipped.slice(0, 8)}-${flipped.slice(8, 12)}-${flipped.slice(12, 16)}-${flipped.slice(16, 20)}-${flipped.slice(20)}`
+      return hyphenated(flipped)
     })
     const named = waves.rows[readParams.family]?.family ?? null
     const next = readParams.next === NONE ? null : waves.rows[readParams.next]?.family ?? null

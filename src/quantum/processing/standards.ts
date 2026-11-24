@@ -67,6 +67,7 @@ import { CATALOGUE, accountCoins, balance, combinationVariants, createLedger, fu
 import { THEOREMS } from './theorems-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { canonicalCoilUuid, fuseCoinsToCoilInfinityInOneUuid, mintTokenCoil, type TokenCoil } from './unit/coil.ts'
+import { near } from './quantum-vocabulary.ts'
 
 export const STANDARDS = TABLES.STANDARDS as readonly { id: string; name: string; contract: string; kind: 'vocabulary' | 'codes' | 'reference' }[]
 
@@ -195,8 +196,7 @@ export type IsoBlockchainStandardLayer = {
  */
 
 export const verifyIsoQuantumEquivalence = () => {
-  const near = (a: number, b: number, eps = 1e-9) => Math.abs(a - b) <= eps
-  const sim = new Simulator(seededRandom('iso-4879-quantum-equivalence'))
+    const sim = new Simulator(seededRandom('iso-4879-quantum-equivalence'))
   const dsim = new DensityMatrixSimulator()
 
   // --- 1. ISO/IEC 4879:2024 vocabulary entries the simulator exercises ---

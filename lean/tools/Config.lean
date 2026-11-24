@@ -27,7 +27,9 @@ def hookText (hook : String) : String :=
 /-- Wrangler's configuration, written by Lean, so the Worker's routes are the tenants of `Config.tenants` and of no
     other list. `/api/mcp` is served by `serveMcp` and every other path is the VitePress site `lake run site` builds.
     The migrations repeat the tags the live Worker holds (v2 deleted its only class). The prover is the prover stage of
-    the Alpine image, started by its Durable Object with no internet; local development runs the Worker without it. -/
+    the Alpine image, started by its Durable Object with no internet; local development runs the Worker without it.
+    One request may spend 300 000 ms of CPU, the most a Worker is given: the audit replays every example and the
+    default of 30 000 ms ended it with error 1102 before it answered. -/
 def wranglerText : String :=
   let obj := Json.mkObj
   let strs (xs : List String) : Json := Json.arr (xs.map Json.str).toArray
@@ -38,6 +40,7 @@ def wranglerText : String :=
        , ("assets", obj [("directory", "site/.vitepress/dist"), ("binding", "ASSETS"), ("run_worker_first", strs ["/", "/mcp"])])
        , ("migrations", Json.arr #[ obj [("tag", "v1"), ("new_sqlite_classes", strs ["DocketObject"])], obj [("tag", "v2"), ("deleted_classes", strs ["DocketObject"])]
                                  , obj [("tag", "v3"), ("new_sqlite_classes", strs ["Mailbox"])], obj [("tag", "v4"), ("new_sqlite_classes", strs ["Prover"])] ])
+       , ("limits", obj [("cpu_ms", (300000 : Nat))])
        , ("dev", obj [("enable_containers", false)])
        , ("containers", Json.arr #[obj [("class_name", "Prover"), ("image", "./alpine/Dockerfile"), ("image_build_context", "."), ("instance_type", "standard-4"), ("max_instances", (2 : Nat))]])
        , ("durable_objects", obj [("bindings", Json.arr #[obj [("name", "MAILBOX"), ("class_name", "Mailbox")], obj [("name", "PROVER"), ("class_name", "Prover")]])])
@@ -82,6 +85,8 @@ def configOut : System.FilePath := ".lake" / "build" / "config-index.ts"
     , s!"export const INSERT_SCHEMA = \{ enum: {strings insertStrategies}, default: {(Json.str insertDefault).compress} }"
     , "/** The coin qubit space, from Config.coinQubitSpace: the most remembered results a computation keeps at once. */"
     , s!"export const COIN_QUBIT_SPACE = {coinQubitSpace}"
+    , "/** The bytes of answers a process remembers at once: 2 ^ 26, sixty-four mebibytes, half of the memory a Worker is given, so the answers kept can never be what ends it; past it the oldest answer is forgotten. */"
+    , s!"export const ANSWER_MEMORY_BYTES = {(2 : Nat) ^ 26}"
     , "/** The PBKDF2 iterations a password is hashed with, from Config.passwordHashIterations: the largest Payload offers that a Worker runs. */"
     , s!"export const PASSWORD_HASH_ITERATIONS = {passwordHashIterations}"
     , "/** The workflows the repository tool serves, from Config.workflows. */"

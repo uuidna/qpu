@@ -4,8 +4,12 @@
 
 import { listGaps } from './gaps.ts'
 import { scripts, type ScriptsArgs } from './script-doors.ts'
-import { CHAT_SHARE, CLAY_FIRST, COIN_QUBIT_SPACE, FORMULA, INSERT_SCHEMA, LEAN_RESOURCE, NIBBLE_PRIMES, OFFICIAL_PLUGINS, PROTOCOL_VERSION } from './config-index.ts'
+import { CHAT_SHARE, CLAY_FIRST, COIN_QUBIT_SPACE, FORMULA, INSERT_SCHEMA, LEAN_RESOURCE, NIBBLE_PRIMES, OFFICIAL_PLUGINS, PROTOCOL_VERSION, ANSWER_MEMORY_BYTES } from './config-index.ts'
 import { PROSE, proseFill } from './prose-index.ts'
+import { ALTERNATIVES, BOUND_TOOLS, ERROR_KINDS, KERNEL_STATE, NOT_IDEMPOTENT, codeOfThrown, findAmbiguity, thrownText, type ErrorCode } from './contract.ts'
+import { INPUT_EXAMPLES, OUTPUTS } from './outputs-index.ts'
+import { capacityOf, quantumCapacity } from './capacity.ts'
+import { hexbitRegister as registerAtHexbit } from './clay-register.ts'
 import { GOOGLE_MCPS, QPU_MCP, mcpHostList } from './discovery.ts'
 import { GOOGLE_DOOR, bindGoogleCall } from './toolboxes/google.ts'
 import * as cirq from './cirq.ts'
@@ -58,7 +62,7 @@ import { WILLOW as WILLOW_PROC, ALL_PROCESSORS, QUANTUM_HARDWARE_STACK, DEVICES,
 import { engineReceipt } from './compat.ts'
 import { algorithmWidget, chemistryWidget, circuitWidget, echoBenchmarkWidget, echoWidget, errorCorrectionWidget, leadsWidget, entropyWidget, processorWidget, quantumlibWidget, repositoriesWidget, resourcesWidget, roadmapWidget, softwareWidget, statementsWidget, auditWidget, apisWidget, matchWidget, clayWidget, verifyWidget, seoWidget } from './widgets.ts'
 import { APPLICATIONS, ROADMAP } from './roadmap.ts'
-import { groverCircuit, inverseOperations, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, teleportProof, getInteger, pasteInteger, writeInteger, testPrimality, listFactors, shorReduction, createImpossible, decodeImpossible, orderFinding, orderWitness, sqrtBig, deutschJozsaCircuit, bernsteinVaziraniCircuit, simonCircuit, vqeGroundEnergy, chshValue, trotterFidelity, xebCollision, cloningFidelity, holevoChi, stabilizerCompression, cliffordOrder, htUniversality, steaneCorrection, courtState } from './algorithms.ts'
+import { groverCircuit, inverseOperations, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, totalWeight, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, teleportProof, getInteger, pasteInteger, writeInteger, testPrimality, listFactors, shorReduction, createImpossible, decodeImpossible, orderFinding, orderWitness, sqrtBig, deutschJozsaCircuit, bernsteinVaziraniCircuit, simonCircuit, vqeGroundEnergy, chshValue, trotterFidelity, xebCollision, cloningFidelity, holevoChi, stabilizerCompression, cliffordOrder, htUniversality, steaneCorrection, courtState } from './algorithms.ts'
 import { STATEMENTS, SOFTWARE, type StatementTopic } from './statements.ts'
 import { LEADS, leadCounts, combineLeads, listRunnableLeads, runSession, sitemapLeads, type Lead, type LeadStatus, type CellLead, type SessionInput } from './leads.ts'
 import { REPOSITORIES, PAYLOADCMS_MONOREPO_PACKAGES } from './repositories.ts'
@@ -67,7 +71,8 @@ import { BOHR_ANGSTROM, STO3G_H, TUTORIAL_ENERGIES, ansatzCircuit, energyAt, hyd
 import { CLIFFORD_CHECK_ARITY, countResources } from './counting.ts'
 import { stamp, tick } from '../uuid/programs/clock/index.ts'
 
-export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
+import type { Rpc } from './audit.ts'
+export type { Rpc }
 export type Reply =
   | { jsonrpc: '2.0'; id: number | string | null; result: unknown }
   | { jsonrpc: '2.0'; id: number | string | null; error: { code: number; message: string; data?: unknown } }
@@ -78,7 +83,7 @@ const ISO_QUANTUM_AI = {
   experience: 'iso-quantum-ai' as const,
   vocabulary: 'ISO/IEC 4879:2024' as const,
   entropy: {
-    law: 'first the dictionary meaning; then the meaning is verified',
+    law: ENTROPY_LAW,
     dictionary: 'disorder; unpredictability; unavailable energy or information' as const,
     verified: { standard: 'ISO 80000-5:2019' as const, definition: 'S = k ln W' as const },
   },
@@ -87,6 +92,7 @@ const ISO_QUANTUM_AI = {
 
 const INVALID_PARAMS = -32602
 const METHOD_NOT_FOUND = -32601
+const INTERNAL_ERROR = -32603
 
 class ParamError extends Error {}
 
@@ -320,7 +326,8 @@ const coverLeftovers = (left: readonly bigint[]) => {
   })
   const cover = entriesCover(developed.map((row) => ({ from: row.from, body: { code: 1, strategy: 'nonconforming', standard: 'ISO 9001', bits: row.width, formula: row.formula, iso: row.served.iso, docs: row.served.docs } })))
   return {
-    ...cover, via: 'hooks' as const, ...FORMULA_HOOKS,
+    ...cover, via: 'hooks' as const, manual: false as const, process: 'ISO 9001' as const, hooks: ['beforeChange', 'afterChange', 'afterRead'] as const,
+    ...HOOK_STEPS,
     documented: developed.every((row) => row.documented),
     developed: developed.map((row) => ({ from: row.from, bits: row.width, formula: row.formula, documented: row.documented })),
   }
@@ -706,6 +713,9 @@ import { extractFacts, createVerifyRequests } from './verifiers.ts'
 import { CRYPTO } from './toolboxes/crypto.ts'
 import { blockJsonLd, createOpenapi, OPENAPI_RESOURCE } from './standards.ts'
 import { cell } from './widgets.ts'
+import { ENTROPY_LAW } from '../uuid/laws.ts'
+import { HOOK_STEPS } from './iso-develop.ts'
+import { callEnvelope } from './toolbox.ts'
 export { cell }
 export { redact } from './machine.ts' // the leak table's redaction, for the generated plugin
 
@@ -878,7 +888,8 @@ const portToZero = (parts: readonly bigint[]) => {
     bit: 0 as const, bits: 0 as const, via: 'clay' as const,
     theorems: combos.products.length, axioms: combos.axioms.length, crossVerified: combos.crossVerified, verified: combos.verified, combinations: combos.space, problems: combos.problems, solved: combos.solved, depth: combos.depth,
     rows,
-    ...FORMULA_HOOKS, documented,
+    hooks: ['beforeChange', 'afterChange', 'afterRead'] as const, ...HOOK_STEPS,
+    manual: false as const, process: 'ISO 9001' as const, documented,
     open: true as const, closed: false as const, status: 'open' as const,
     holds: false as const,
   }
@@ -1336,7 +1347,7 @@ const OWN: Tool[] = [
           if (weights.length !== graph.edges.length) reject(proseFill(PROSE.quantumProcessingMcp_s139, graph.edges.length))
           graph.edges.forEach((e, i) => { e.weight = weights[i]! })
         }
-        const total = graph.edges.reduce((sum, e) => sum + e.weight, 0)
+        const total = totalWeight(graph)
         if (args.sweep === true) {
           const sweep = qaoaSweep(graph)
           return {
@@ -1520,7 +1531,7 @@ const OWN: Tool[] = [
         const askedN = getInteger(args.N, 'N')
         const width = askedN < 2n ? 0 : askedN.toString(2).length
         const circuitQubits = 3 * width
-        const register = uuidQubits(AXIOMS.find((row) => row.name === 'hexbit')!.value)
+        const register = registerAtHexbit()
         const qubits = register.effective
         const receipt = register.receipt
         const handles = register.handles
@@ -1660,7 +1671,7 @@ const OWN: Tool[] = [
   tool({
     name: 'leads',
     description: PROSE.quantumProcessingMcp_description166,
-    inputSchema: { type: 'object', properties: { develop: { description: PROSE.quantumProcessingMcp_description433 }, runnable: { type: 'object', description: PROSE.quantumProcessingMcp_description167 }, records: { type: 'array', items: { type: 'object' }, description: PROSE.quantumProcessingMcp_description168 }, lead: { type: 'object', description: PROSE.quantumProcessingMcp_description169 }, sitemap: { type: 'object', description: PROSE.quantumProcessingMcp_description170 }, ideas: { description: PROSE.quantumProcessingMcp_description171 }, client: { type: 'object', description: PROSE.quantumProcessingMcp_description172 }, consistent: { description: PROSE.quantumProcessingMcp_description173 }, collide: { type: 'boolean', description: PROSE.quantumProcessingMcp_description174 }, sources: { type: 'object', description: PROSE.quantumProcessingMcp_description175 }, session: { type: 'object', description: PROSE.quantumProcessingMcp_description177 }, combinations: { type: 'object', description: PROSE.quantumProcessingMcp_description178 }, byTheorem: { type: 'boolean', description: PROSE.quantumProcessingMcp_description179 }, domains: { description: PROSE.quantumProcessingMcp_description180 }, status: { enum: ['served', 'partial', 'blocked', 'out_of_scope', 'open'] }, ids: { type: 'array', items: { type: 'string' }, description: PROSE.quantumProcessingMcp_description181 } } },
+    inputSchema: { type: 'object', properties: { develop: { description: PROSE.quantumProcessingMcp_description433 }, runnable: { type: 'object', description: PROSE.quantumProcessingMcp_description167 }, records: { type: 'array', items: { type: 'object' }, description: PROSE.quantumProcessingMcp_description168 }, lead: { type: 'object', description: PROSE.quantumProcessingMcp_description169 }, sitemap: { type: 'object', description: PROSE.quantumProcessingMcp_description170 }, ideas: { description: PROSE.quantumProcessingMcp_description171 }, client: { type: 'object', description: PROSE.quantumProcessingMcp_description172 }, consistent: { description: PROSE.quantumProcessingMcp_description173 }, collide: { type: 'boolean', description: PROSE.quantumProcessingMcp_description174 }, sources: { type: 'object', description: PROSE.quantumProcessingMcp_description175 }, session: { type: 'object', description: PROSE.quantumProcessingMcp_description177 }, combinations: { type: 'object', description: PROSE.quantumProcessingMcp_description178 }, byTheorem: { type: 'boolean', description: PROSE.quantumProcessingMcp_description179 }, domains: { description: PROSE.quantumProcessingMcp_description180 }, status: { enum: ['served', 'partial', 'blocked', 'out_of_scope', 'open'] }, ids: { type: 'array', items: { type: 'string' }, description: PROSE.quantumProcessingMcp_description181 }, tool: { type: 'string', description: PROSE.quantumProcessingContract_tool }, limit: { type: 'integer', minimum: 1, maximum: 500, description: PROSE.quantumProcessingContract_limit }, offset: { type: 'integer', minimum: 0, description: PROSE.quantumProcessingContract_offset }, summary: { type: 'boolean', description: PROSE.quantumProcessingContract_summary } } },
     run: (args, ctx) => {
       const LEADS = ctx.leads
       // the door every lead's run names: the statement developed through the ISO 9001 process
@@ -1679,8 +1690,14 @@ const OWN: Tool[] = [
       const status = args.status as LeadStatus | undefined
       if (status !== undefined && !(status in leadCounts([]))) reject(proseFill(PROSE.quantumProcessingMcp_s191, String(status)))
       const ids = Array.isArray(args.ids) ? args.ids.map(String) : null
-      const leads = ids ? ids.map((id) => LEADS.find((l) => l.id === id)).filter((l): l is (typeof LEADS)[number] => l !== undefined && (status === undefined || l.status === status)) : LEADS.filter((l) => status === undefined || l.status === status)
-      return { leads, counts: leadCounts(LEADS), total: LEADS.length, ...(ids ? { named: ids.length, unknown: ids.filter((id) => !LEADS.some((l) => l.id === id)) } : {}) }
+      const door = typeof args.tool === 'string' ? args.tool : undefined, wanted = (l: (typeof LEADS)[number]) => (status === undefined || l.status === status) && (door === undefined || l.tool === door)
+      const matching = ids ? ids.map((id) => LEADS.find((l) => l.id === id)).filter((l): l is (typeof LEADS)[number] => l !== undefined && wanted(l)) : LEADS.filter(wanted)
+      // a page of the matching leads, or the counts alone: without limit, offset or summary the answer is every matching lead, as before
+      const paged = args.limit !== undefined || args.offset !== undefined, limit = args.limit === undefined ? 100 : Number(args.limit), offset = args.offset === undefined ? 0 : Number(args.offset)
+      if (paged && !(Number.isInteger(limit) && limit >= 1 && limit <= 500 && Number.isInteger(offset) && offset >= 0)) reject(PROSE.quantumProcessingContract_paged)
+      const byTool: Record<string, number> = {}; for (const l of matching) byTool[l.tool ?? ''] = (byTool[l.tool ?? ''] ?? 0) + 1
+      const leads = args.summary === true ? [] : paged ? matching.slice(offset, offset + limit) : matching
+      return { leads, counts: leadCounts(LEADS), total: LEADS.length, ...(args.summary === true || paged || door !== undefined ? { matching: matching.length } : {}), ...(args.summary === true ? { summary: true as const, matchingByStatus: leadCounts(matching), matchingByTool: byTool } : {}), ...(paged && args.summary !== true ? { limit, offset, next: offset + limit < matching.length ? offset + limit : null } : {}), ...(ids ? { named: ids.length, unknown: ids.filter((id) => !LEADS.some((l) => l.id === id)) } : {}) }
     },
     widget: leadsWidget,
   }),
@@ -1955,13 +1972,24 @@ const OWN: Tool[] = [
 ]
 
 const BALANCER = new Map<string, { structured: unknown; widget: string }>()
+// the answers remembered are bounded in bytes (ANSWER_MEMORY_BYTES, from Lean's Config): an answer is kept with its size, an answer asked again
+// becomes the newest, and past the bound the oldest is forgotten, so what the process remembers can never be what ends it
+const BALANCER_SIZE = new Map<string, number>()
+let BALANCER_BYTES = 0, BALANCER_FORGOTTEN = 0
+const remember = (address: string, answer: { structured: unknown; widget: string }): void => {
+  const size = answer.widget.length + (JSON.stringify(answer.structured)?.length ?? 0)
+  if (size > ANSWER_MEMORY_BYTES) return
+  while (BALANCER_BYTES + size > ANSWER_MEMORY_BYTES) { const oldest = BALANCER.keys().next().value as string; BALANCER_BYTES -= BALANCER_SIZE.get(oldest) ?? 0; BALANCER.delete(oldest); BALANCER_SIZE.delete(oldest); BALANCER_FORGOTTEN += 1 }
+  BALANCER.set(address, answer); BALANCER_SIZE.set(address, size); BALANCER_BYTES += size
+}
+const recall = (address: string) => { const held = BALANCER.get(address); if (held) { BALANCER.delete(address); BALANCER.set(address, held) } return held }
 
 const TELEPORTED = new Set<string>(), TELEPORT_USED = new Set<string>()
 let TELEPORT_HITS = 0
 
 export const balancerSnapshot = (p: { onlyNew?: boolean; used?: boolean } = {}): { address: string; structured: unknown; widget: string }[] => [...BALANCER.entries()].filter(([a]) => (!p.onlyNew || !TELEPORTED.has(a)) && (!p.used || TELEPORT_USED.has(a))).map(([address, v]) => ({ address, ...v }))
 
-export const balancerLoad = (blocks: readonly { address: string; structured: unknown; widget: string }[]): number => { let n = 0; for (const b of blocks) { if (typeof b.address !== 'string' || BALANCER.has(b.address)) continue; BALANCER.set(b.address, { structured: b.structured, widget: b.widget }); TELEPORTED.add(b.address); n += 1 } return n }
+export const balancerLoad = (blocks: readonly { address: string; structured: unknown; widget: string }[]): number => { let n = 0; for (const b of blocks) { if (typeof b.address !== 'string' || BALANCER.has(b.address)) continue; remember(b.address, { structured: b.structured, widget: b.widget }); TELEPORTED.add(b.address); n += 1 } return n }
 
 const OBSERVED = new Map<string, { calls: number; misses: number; ms: number; bytes: number; servedMs: number }>()
 const NESTED: number[] = []
@@ -2007,9 +2035,11 @@ const treeMetrics = (artefacts: RunArtefacts = {}): Record<string, unknown> => {
   const byStatus: Record<string, number> = {}; for (const l of LEADS) byStatus[l.status] = (byStatus[l.status] ?? 0) + 1
   const backed = EXAMPLES.filter((e) => e.theorem)
   return {
-    tools: TOOLS.length, toolboxes: TOOLBOXES.length, patterns: PATTERNS.length, patternsRecognised: EXAMPLES.filter((e) => e.tool === 'match' && typeof e.arguments.statement === 'string' && getPattern(e.arguments.statement)).length, examples: EXAMPLES.length, examplesBackedByTheorems: backed.length, examplesBackedRatio: Number((backed.length / EXAMPLES.length).toFixed(3)),
+    // the register's capacity as the fold door answers it (fold { qubits: 4 }), gated: capacity.ts
+    quantumCapacity: capacityOf(call('fold', { qubits: 4 }).result?.structuredContent),
+    tools: TOOLS.length, toolsBound: BOUND_TOOLS.length, toolsServed: TOOLS.length + BOUND_TOOLS.length, toolboxes: TOOLBOXES.length, patterns: PATTERNS.length, patternsRecognised: EXAMPLES.filter((e) => e.tool === 'match' && typeof e.arguments.statement === 'string' && getPattern(e.arguments.statement)).length, examples: EXAMPLES.length, examplesBackedByTheorems: backed.length, examplesBackedRatio: Number((backed.length / EXAMPLES.length).toFixed(3)),
     theoremsKernel: KERNEL_THEOREMS, theoremsHandWritten: THEOREMS.length, lemmasGenerated: GENERATED_LEMMAS, leads: LEADS.length, leadsByStatus: byStatus,
-    auditChecks: audit?.total ?? null, auditPassed: audit?.passed ?? null, auditFailed: audit?.failed ?? null, auditNested: audit === null, selftests: TOOLBOXES.map((b) => b.name), balancer: BALANCER.size, license: LICENSE.spdx, at: stamp(),
+    auditChecks: audit?.total ?? null, auditPassed: audit?.passed ?? null, auditFailed: audit?.failed ?? null, auditNested: audit === null, selftests: TOOLBOXES.map((b) => b.name), balancer: BALANCER.size, balancerBytes: BALANCER_BYTES, balancerBound: ANSWER_MEMORY_BYTES, balancerForgotten: BALANCER_FORGOTTEN, license: LICENSE.spdx, at: stamp(),
     // observability of this process: calls served from memory against computed, and where the computed milliseconds went
     balancerTeleported: TELEPORTED.size, balancerTeleportHits: TELEPORT_HITS, toolCalls: observed('calls'), toolMisses: observed('misses'), toolMs: observed('ms'),
     slowestTools: [...OBSERVED.entries()].sort((x, y) => y[1].ms - x[1].ms).slice(0, 6).map(([name, o]) => `${name} ${o.ms} ms / ${o.misses} computed / ${o.calls} asked / ${o.bytes} bytes`),
@@ -2440,7 +2470,7 @@ const clone = defineTool('tree', {
 })
 
 export const TOOLBOXES: Toolbox[] = [
-  { name: 'google', idea: PROSE.quantumProcessingMcp_idea394, tools: [...OWN.filter((t) => t.toolbox === 'google'), GOOGLE_DOOR], examples: [], skill: { instructions: PROSE.quantumProcessingMcp_instructions395, directions: [PROSE.quantumProcessingMcp_s396], selftest: (ctx) => { const checks = ctx.examples.filter((e) => OWN.some((t) => t.name === e.tool && t.toolbox === 'google')).map((e) => { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }); const why = 'error' in r ? r.error.message : e.expect(r.result.structuredContent); return { id: `google:${e.id}`, passed: why === null, evidence: why ?? e.shows } }); return { passed: checks.every((c) => c.passed), checks } } } },
+  { name: 'google', idea: PROSE.quantumProcessingMcp_idea394, tools: [...OWN.filter((t) => t.toolbox === 'google'), GOOGLE_DOOR], examples: [], skill: { instructions: PROSE.quantumProcessingMcp_instructions395, directions: [PROSE.quantumProcessingMcp_s396], selftest: (ctx) => { const checks = ctx.examples.filter((e) => OWN.some((t) => t.name === e.tool && t.toolbox === 'google')).map((e) => { const r = ctx.handle(callEnvelope(e.tool, e.arguments)); const why = 'error' in r ? r.error.message : e.expect(r.result.structuredContent); return { id: `google:${e.id}`, passed: why === null, evidence: why ?? e.shows } }); return { passed: checks.every((c) => c.passed), checks } } } },
   { name: 'tree', idea: PROSE.quantumProcessingMcp_idea397, tools: [...OWN.filter((t) => t.toolbox === 'tree'), metrics, textbook, css, dashboard, clone, apis], examples: [], skill: { instructions: PROSE.quantumProcessingMcp_instructions398, directions: [PROSE.quantumProcessingMcp_s399, PROSE.quantumProcessingMcp_s400], selftest: (ctx) => { const m = matchStatement(PROSE.quantumProcessingMcp_s401, ctx.handle, ctx.examples, ctx.leads); const k = combineLeads(ctx.leads, '0'.repeat(31) + '1'); const ses = runSession({ open: [{ id: 'x', title: 'read every session transcript', status: 'draft', started: true }], directives: [{ session: 's', at: '', text: PROSE.quantumProcessingMcp_text402 }, { session: 's', at: '', text: 'ok' }], breaks: [{ text: 'git push' }] }); const checks = [{ id: 'tree:match-serves', passed: m.verdict === 'served', evidence: `${m.verdict} via ${m.tool}` }, { id: 'tree:lead-cells', passed: k.cells.length === 432 && k.filled + k.empty === 432 && k.cells.reduce((n, c) => n + c.count, 0) === ctx.leads.length && k.default.cell === 1 && k.cells.every((c) => c.digits.reduce((n, d, i) => n + d * k.places[i]!, 0) === c.cell), evidence: proseFill(PROSE.quantumProcessingMcp_evidence403, k.says) }, { id: 'tree:session-partition', passed: ses.directives.folded === 1 && ses.directives.assents === 1 && ses.breaks[PROSE.quantumProcessingLeads_s18] === 1 && ses.items[0]?.started === true, evidence: ses.says }]; return { passed: checks.every((c) => c.passed), checks } } } },
   FLOW,
   LANGUAGE,
@@ -2470,7 +2500,8 @@ const toolboxLean = (box: Toolbox) => {
   return lean
 }
 const NAMES = TOOLS.map((t) => t.name), VIEWS = [...NAMES, 'chat'] // the MCP Apps views: every tool's and the chat's
-const CONTRACTS = TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema }))
+// the whole contract of a tool: what it is, what it takes, and what its worked examples answer with (the output schema tools/list states)
+const CONTRACTS = TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema, outputSchema: { type: 'object' as const, properties: OUTPUTS[name]?.properties ?? {} } }))
 /** The contract version: the package version and the content address of every tool's contract, derived from the code, never typed. */
 const CONTRACT = { version: VERSION, address: uuid(canonicalText(CONTRACTS)) }
 /** The order the tools are served in: the Clay set first (the register, the decider, the verifier), every other tool after them in its order; initialize builds its version over the same order, so the version names what is served. */
@@ -2587,7 +2618,7 @@ const chatCoverage = (chatArg: unknown) => {
   return chatShare(keys)
 }
 // the tools/call envelope, written once
-export const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { result?: { structuredContent?: any }; error?: { message: string } }
+export const call = (name: string, args: unknown) => handle(callEnvelope(name, args)) as { result?: { structuredContent?: any }; error?: { message: string } }
 bindGoogleCall(call) // the google toolbox reaches the handler through this binding, never by import
 // the theorems that count what the tools compute read it from here
 updateTheoremSources({ toolboxes: TOOLBOXES, call, googleMcps: GOOGLE_MCPS, get examples() { return EXAMPLES } })
@@ -2615,7 +2646,7 @@ const records = (args: Record<string, unknown>): Context => { const given = [...
 const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q.col}` : q.kind === 'line' ? `line:${q.x}` : `named:${q.name}`)
 
 /** A call the role may not make, refused as every refusal is: its JSON-RPC error carries { error, code } in data. */
-const refused = (id: Rpc['id'] | null, rbac: { role: string; action: string }): Reply => { const error = proseFill(PROSE.quantumProcessingMcp_message421, rbac.role, rbac.action); return { jsonrpc: '2.0', id, error: { code: INVALID_PARAMS, message: error, data: { rbac, error, code: 'refused' } } } as Reply }
+const refused = (id: Rpc['id'] | null, rbac: { role: string; action: string }): Reply => { const error = proseFill(PROSE.quantumProcessingMcp_message421, rbac.role, rbac.action); return { jsonrpc: '2.0', id, error: { code: INVALID_PARAMS, message: error, data: { rbac, error, code: 'refused', kind: ERROR_KINDS.refused } } } as Reply }
 export const handleBatch = (messages: readonly Rpc[]): (Reply | Promise<Reply>)[] => {
   const claimed = messages.map((m) => { const p = m.params; if (!p || typeof p !== 'object') return undefined; const role = (p as { role?: unknown; _meta?: { role?: unknown } }).role ?? (p as { _meta?: { role?: unknown } })._meta?.role; return typeof role === 'string' ? role : undefined }).find((role) => role !== undefined)
   const calls = messages.map((m) => askPayloadRbac(mcpHostList(), QPU_MCP, m.method, claimed))
@@ -2631,16 +2662,18 @@ export const caller = (name: string) => (args: Record<string, unknown> = {}): an
 const RECEIPT_RESOURCE = 'receipt://qpu'
 /** The welcome every client reads at initialize: the build's receipt, how to use the server and how to improve it. */
 const WELCOME = [proseFill(PROSE.quantumProcessingMcp_welcome, RECEIPT.uuid, RECEIPT.sha256, RECEIPT_RESOURCE), PROSE.quantumProcessingMcp_use, proseFill(PROSE.quantumProcessingMcp_improve, RECEIPT.mcp.replace(/\/api\/mcp$/, ''), LICENSE.spdx)].join(' ')
+/** The capacity the welcome states: the register's numbers as metrics carries them, with the gate every step is held to. */
+const welcomeCapacity = () => { const c = quantumCapacity(); return { free: c.register.free, formula: c.register.formula, used: c.used, left: c.left, full: c.full, perHandle: c.perHandle, handles: c.spaces.handles, onEveryHandle: c.spaces.onEveryHandle, unlimited: c.unlimited, coin: c.receipt.coin, balanced: c.receipt.balanced, sealed: c.receipt.sealed, gate: c.gate, public: { doors: c.public.doors, licence: c.public.licence, deed: c.public.deed, url: c.public.url } } }
 export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> => {
   if (Array.isArray(message)) return handleBatch(message as unknown as Rpc[]) as unknown as Reply
   const id = message.id ?? null
   // cheap gates leading every violator to court via its own MCP: the error carries the case computed (the rule, the theorem, the remedy, the call to file it)
   const leakProof = (found: number, redacted: number) => ({ theorem: 'textbook_leaks_redacted' as const, publish: 'textbook_redact_before_publish' as const, lean: 'found - redacted = 0' as const, found, redacted, holds: found - redacted === 0 })
-  const fail = (code: number, text: string): Reply => {
+  const fail = (code: number, text: string, stable: ErrorCode = code === METHOD_NOT_FOUND ? 'not_found' : 'invalid_params'): Reply => {
     const sealed = sealTokenLeaks(text)
     const taught = listRemedies([sealed.text])
     const manual = taught.unremedied
-    return { jsonrpc: '2.0', id, error: { code, message: sealed.text, data: { error: sealed.text, code: code === METHOD_NOT_FOUND ? 'not_found' : 'invalid_params', court: summonCourt({ gate: `${message.method}${(message as { params?: { name?: string } }).params?.name ? ` ${(message as { params: { name: string } }).params.name}` : ''}`, code, evidence: sealed.text }), leaks: { ...leakProof(sealed.found, sealed.redacted), kind: 'manual' as const, manual } } } }
+    return { jsonrpc: '2.0', id, error: { code, message: sealed.text, data: { error: sealed.text, code: stable, kind: ERROR_KINDS[stable], court: summonCourt({ gate: `${message.method}${(message as { params?: { name?: string } }).params?.name ? ` ${(message as { params: { name: string } }).params.name}` : ''}`, code, evidence: sealed.text }), leaks: { ...leakProof(sealed.found, sealed.redacted), kind: 'manual' as const, manual } } } }
   }
   const params = (message.params ?? {}) as Record<string, unknown>
   const ok = (result: unknown) => {
@@ -2662,7 +2695,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       if (!asked.access) return refused(id, asked)
       askedFirst = { server: asked.server, one: asked.one, first: asked.first, asked: asked.asked, tool: asked.tool }
     }
-    if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256, resource: RECEIPT_RESOURCE }, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online] }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${WELCOME}\n\n${INSTRUCTIONS}\n\n${proseFill(PROSE.quantumProcessingMcp_scale, COIN_QUBIT_SPACE)}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
+    if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256, resource: RECEIPT_RESOURCE }, quantumCapacity: welcomeCapacity(), experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online] }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${WELCOME}\n\nmetrics.quantumCapacity: ${JSON.stringify(welcomeCapacity())}\n\n${INSTRUCTIONS}\n\n${proseFill(PROSE.quantumProcessingMcp_scale, COIN_QUBIT_SPACE)}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
     // every tool declares its UI resource (MCP Apps, _meta.ui.resourceUri): a host that negotiates the extension renders the tool's result through it
     // every tool listed widget-skilled: its UI resource (the widget) and its toolbox's skill (the instructions a client follows, the directions it tests in)
     if (message.method === 'tools/list') {
@@ -2675,7 +2708,9 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       const box = typeof scope.toolbox === 'string' ? scope.toolbox : null
       const chosen = SERVED.filter((t) => (!wanted || wanted.includes(t.name)) && (!cluster || cluster.includes(t.name)) && (!box || t.toolbox === box))
       const full = scope.full === true || Boolean(wanted) || Boolean(box)
-      const brief = (d: string) => (full ? d : (d.match(/^[^.:]{1,160}/)?.[0] ?? d).trim())
+      // the first sentence whole: it ends at a full stop that a space or the end follows, so a host name, a version or a shape written with a colon does not cut it;
+      // a first sentence past 280 characters is cut at a word and says so with an ellipsis
+      const brief = (d: string) => { if (full) return d; const first = (/^[\s\S]*?\.(?=\s|$)/.exec(d)?.[0] ?? d).trim(); return first.length <= 280 ? first : `${first.slice(0, first.lastIndexOf(' ', 279))} …` }
       const briefSchema = (s: object): object => { if (full) return s; const x = s as { properties?: Record<string, { description?: string }> }; return x.properties ? { ...x, properties: Object.fromEntries(Object.entries(x.properties).map(([k, p]) => [k, typeof p.description === 'string' ? { ...p, description: brief(p.description) } : p])) } : s }
       // harmonic options by default: every enum of a tool's schema a superposition of its combinations, the referrer (params.prev) or the a432 key choosing the default one.
       // a quantum tool keeps that superposition and does not take the chosen value as its default: the tool stays unlimited
@@ -2694,7 +2729,13 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
         const properties = Object.fromEntries(Object.entries(x.properties ?? {}).filter(([k]) => !h.withheld.includes(k)).map(([k, p]) => [k, { ...p, ...(Array.isArray(p.enum) && role ? { enum: h.options[k] } : {}), ...(k in h.defaults ? { default: h.defaults[k] } : {}) }]))
         return { ...x, properties, ...(x.required ? { required: x.required.filter((r) => !h.withheld.includes(r)) } : {}), 'x-harmonic': stamp }
       }
-      const list = chosen.map(({ name, description, inputSchema, toolbox }) => { const box = TOOLBOXES.find((b) => b.name === toolbox); const online = (ISO_QUANTUM_AI.online as readonly string[]).includes(name); return { name, description: brief(description), inputSchema: harmonic(name, briefSchema(inputSchema), toolbox === 'google'), annotations: { title: name, readOnlyHint: true, idempotentHint: true, openWorldHint: online }, _meta: { toolbox, experience: ISO_QUANTUM_AI.experience, online, skill: { ...(full ? { instructions: box?.skill.instructions ?? '' } : {}), directions: box?.skill.directions.length ?? 0 }, ...(full && toolbox === 'google' ? { specific: a432Specific(name) } : {}), ...(full && box ? { lean: toolboxLean(box) } : {}), ui: { resourceUri: `ui://qpu/${name}`, visibility: ['model', 'app'] }, contract: CONTRACT } } })
+      // the contract beside each schema: a worked example of every input that has one, and the alternatives a call chooses among
+      const contracted = (tool: string, s: object): object => {
+        const x = s as { properties?: Record<string, object> }, examples = INPUT_EXAMPLES[tool] ?? {}, alternatives = ALTERNATIVES[tool]
+        return { ...x, ...(x.properties ? { properties: Object.fromEntries(Object.entries(x.properties).map(([k, p]) => [k, k in examples ? { ...p, examples: [examples[k]] } : p])) } : {}), ...(alternatives ? { 'x-alternatives': { says: proseFill(PROSE.quantumProcessingContract_alternatives, tool), oneOf: alternatives.map((a) => ({ inputs: a.keys, with: a.with ?? [] })) } } : {}) }
+      }
+      const outputOf = (tool: string) => { const o = OUTPUTS[tool]; return o ? { type: 'object' as const, description: proseFill(PROSE.quantumProcessingContract_output, o.examples), properties: o.properties } : { type: 'object' as const, description: PROSE.quantumProcessingContract_outputNone } }
+      const list = chosen.map(({ name, description, inputSchema, toolbox }) => { const box = TOOLBOXES.find((b) => b.name === toolbox); const online = (ISO_QUANTUM_AI.online as readonly string[]).includes(name); return { name, description: brief(description), inputSchema: harmonic(name, contracted(name, briefSchema(inputSchema)), toolbox === 'google'), outputSchema: outputOf(name), annotations: { title: name, readOnlyHint: true, idempotentHint: !(name in NOT_IDEMPOTENT), openWorldHint: online }, _meta: { toolbox, state: { writes: KERNEL_STATE.writes, idempotent: !(name in NOT_IDEMPOTENT), ...(full ? { says: KERNEL_STATE.says } : {}), ...(name in NOT_IDEMPOTENT ? { why: NOT_IDEMPOTENT[name] } : {}) }, experience: ISO_QUANTUM_AI.experience, online, skill: { ...(full ? { instructions: box?.skill.instructions ?? '' } : {}), directions: box?.skill.directions.length ?? 0 }, ...(full && toolbox === 'google' ? { specific: a432Specific(name) } : {}), ...(full && box ? { lean: toolboxLean(box) } : {}), ui: { resourceUri: `ui://qpu/${name}`, visibility: ['model', 'app'] }, contract: CONTRACT } } })
       const listed = accountBytes([JSON.stringify(list)]), whole = accountBytes([JSON.stringify(CONTRACTS)])
       const efficiency = measureContext(listed, whole)
       const kept = efficiency.tokens, fullTokens = efficiency.full, saved = efficiency.saved
@@ -2719,9 +2760,12 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       // The balancer: every tool is pure, so a call is a function of its arguments' canonical address (their keys in any order are one call);
       // computed once per process, served from memory after — the heavy computation inverted, the hardware cooled, the battery saved (lead qpu-balancer-perspective).
       const args = (params.arguments ?? {}) as Record<string, unknown>
+      // alternatives named together are refused by name before anything is computed: the first branch would have answered and the rest been dropped in silence
+      const clash = findAmbiguity(found.name, args)
+      if (clash !== null) return fail(INVALID_PARAMS, clash, 'ambiguous_arguments')
       const account = accountCoins(found.name, args)
       const address = uuid(`${found.name}${canonicalText(args)}`)
-      const cached = found.name === 'metrics' ? undefined : BALANCER.get(address)
+      const cached = found.name === 'metrics' ? undefined : recall(address)
       // exclusive time: a tool that calls tools (audit, metrics, match) is charged only for its own milliseconds; the nested ones are theirs
       const started = tick(); NESTED.push(0)
       const finish = (ran: { structured: unknown; widget: string }) => {
@@ -2731,7 +2775,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       const structured = sealedBody ? sealedBody.value : ran.structured
       const widget = sealedWidget ? sealedWidget.text : ran.widget
       const carried = { found: (sealedBody?.found ?? 0) + (sealedWidget?.found ?? 0), redacted: (sealedBody?.redacted ?? 0) + (sealedWidget?.redacted ?? 0) }
-      if (!cached) BALANCER.set(address, { structured, widget }); else if (TELEPORTED.has(address)) { TELEPORT_HITS += 1; TELEPORT_USED.add(address) }
+      if (!cached) remember(address, { structured, widget }); else if (TELEPORTED.has(address)) { TELEPORT_HITS += 1; TELEPORT_USED.add(address) }
       const children = NESTED.pop() ?? 0; const elapsed = tick() - started
       if (NESTED.length) NESTED[NESTED.length - 1]! += elapsed
       const o = OBSERVED.get(found.name) ?? { calls: 0, misses: 0, ms: 0, bytes: 0, servedMs: 0 }
@@ -2757,11 +2801,11 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       return ok(body)
       }
       const ran = cached ?? found.call(args, records(args))
-      if (thenable(ran)) return Promise.resolve(ran).then((resolved) => finish(resolved)).catch((error: unknown) => fail(INVALID_PARAMS, error instanceof Error ? error.message : String(error)))
+      if (thenable(ran)) return Promise.resolve(ran).then((resolved) => finish(resolved)).catch((error: unknown) => fail(codeOfThrown(error) === 'internal_error' ? INTERNAL_ERROR : INVALID_PARAMS, thrownText(error), codeOfThrown(error)))
       return finish(ran)
     }
     return fail(METHOD_NOT_FOUND, `method ${message.method} is not served`)
   } catch (error) {
-    return fail(INVALID_PARAMS, error instanceof Error ? error.message : String(error))
+    return fail(codeOfThrown(error) === 'internal_error' ? INTERNAL_ERROR : INVALID_PARAMS, thrownText(error), codeOfThrown(error))
   }
 }

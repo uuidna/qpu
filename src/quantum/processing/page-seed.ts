@@ -11,11 +11,11 @@ const lexicalParagraph = (t: string) => ({ type: 'paragraph' as const, version: 
 export type PageStatus = 'draft' | 'published'
 
 export const pageSeed = (title: string, text: string, id = uuid(canonicalText({ title, text }))) => {
-  const name = title.trim().slice(0, 120) || 'idea'
-  const slug = (formatSlug(name).slice(0, 80) || 'idea')
+  const name = title.trim() || 'idea'
+  const slug = (formatSlug(name) || 'idea')
   const lines = text.split(/\r?\n/).filter((l) => l.length > 0)
   const columnOne = { root: { type: 'root' as const, version: 1, direction: 'ltr' as const, format: '' as const, indent: 0, children: (lines.length ? lines : [text]).map(lexicalParagraph) } }
-  const description = (lines[0] ?? name).slice(0, 160)
+  const description = lines[0] ?? name
   return {
     id,
     sku: channel(id).sku,
