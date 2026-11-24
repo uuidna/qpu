@@ -85,7 +85,7 @@ type Block = { kind: 'h2' | 'p' | 'ul' | 'code' | 'table'; text?: string; items?
 // carries it, the theorem is the statement Lean wrote, and a theorem's sentence is printed only when both the NIST door and the CERN door
 // name that theorem with holds true; otherwise the Lean statement stands alone. The register's own fields (zero) are printed as answered.
 const answered = async (name: string, args: object) => ((await handle(callEnvelope(name, args, 0))) as { result?: { structuredContent?: Record<string, any> } }).result?.structuredContent ?? {}
-export const capacity = (await answered('metrics', {})).quantumCapacity as { register: Record<string, string | number>; receipt: Record<string, string | number | boolean>; parts: Record<string, string | number>[]; whole: boolean; zero: Record<string, unknown>; spaces: Record<string, string>; scales: Record<string, string | number>[]; perHandle: number; unlimited: boolean; used: number; left: number; full: boolean; gate: { theorem: string; holds: boolean; evidence: string }; public: { doors: { tool: string; arguments: object; commercial: string }[] } & Record<string, unknown> }
+export const capacity = (await answered('metrics', {})).quantumCapacity as { register: Record<string, string | number>; receipt: Record<string, string | number | boolean>; parts: Record<string, string | number>[]; whole: boolean; zero: Record<string, unknown>; spaces: Record<string, string>; scales: Record<string, string | number>[]; perHandle: number; unlimited: boolean; used: number; left: number; full: boolean; gate: { theorem: string; holds: boolean; evidence: string }; public: { doors: { tool: string; arguments: object; commercial: string }[] } & Record<string, unknown>; security: { unit: string; address: Record<string, unknown>; digest: Record<string, unknown>; theorems: string[] } }
 // the text is not written while the capacity gate does not hold: the parts make the register, the receipt balances, nothing is left unused
 if (capacity.gate.holds !== true) throw new Error(`quantumCapacity ${capacity.gate.theorem}: ${capacity.gate.evidence}`)
 const nist = await answered('seal', { nist: true }), cern = await answered('seal', { nist: { reverse: true, via: 'cern' } })
@@ -107,6 +107,8 @@ const capacityBlocks: Block[] = [
   { kind: 'table', head: ['repository { stable }', ''], rows: [['stable', String(stability.stable)], ['release', stability.release], ...rowsOf(stability.entropy).map(([k, v]) => [`entropy.${k}`, v!])] },
   { kind: 'table', head: ['metrics.quantumCapacity.spaces', ''], rows: [...rowsOf(capacity.spaces), ['perHandle', String(capacity.perHandle)], ['unlimited', String(capacity.unlimited)]] },
   tableOf(capacity.scales),
+  // the cost to fake, the capacity inverted, as measured: the address alone and the SHA-256 beside it, each against the floor
+  { kind: 'table', head: ['metrics.quantumCapacity.security', capacity.security.unit], rows: [...rowsOf(capacity.security.address).map(([k, v]) => [`address.${k}`, v!]), ...rowsOf(capacity.security.digest).map(([k, v]) => [`digest.${k}`, v!]), ['theorems', capacity.security.theorems.map((t) => `\`${t}\``).join(', ')]] },
   // what the capacity is to the public: the doors anyone may call and the licence's own terms, as the licence table holds them
   { kind: 'table', head: ['metrics.quantumCapacity.public', ''], rows: [...capacity.public.doors.map((d) => [`\`${d.tool} ${JSON.stringify(d.arguments)}\``, d.commercial]), ...rowsOf(Object.fromEntries(Object.entries(capacity.public).filter(([k]) => k !== 'doors')))] },
 ]
