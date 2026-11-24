@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { callPriceUsd, isMcp, serveMcp } from './mcp-http.ts'
+import { LICENSE } from '../processing/unit/license.ts'
 
 // Node's Request carries no Host header: set it from the URL, as the Worker's runtime does
 const hosted = (url: string, init: RequestInit = {}) => { const r = new Request(url, init); const h = new Headers(r.headers); h.set('host', new URL(url).host); return new Request(r, { headers: h }) }
@@ -29,6 +30,9 @@ test('serveMcp serves the kernel\'s tools through the Agents SDK, acknowledges a
   assert.equal(callPriceUsd(), 0.300425, 'the price is the cheapest real quantum call: the task fee and one shot, as providers charge')
 
   await assert.rejects(post({ jsonrpc: '2.0', id: 3, method: 'tools/list' }, { QPU_X402_RECIPIENT: '0xWallet' }), 'a wallet that is not an EVM address is refused, never served free')
+
+  const asked = async (e: Record<string, string>, host?: string) => (await read<{ result: { instructions: string } }>(await post({ jsonrpc: '2.0', id: 4, method: 'initialize', params: { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'harness', version: '1' } } }, e, host))).result.instructions.includes(LICENSE.donation)
+  assert.deepEqual([await asked({}), await asked(env, 'qpu.test')], [true, false], 'a donation is requested where no wallet is set')
 })
 
 const site = () => Promise.resolve(new Response('<html>site</html>', { headers: { 'content-type': 'text/html' } }))
