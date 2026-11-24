@@ -40,12 +40,39 @@ const TURN = (2 * Math.PI) / DIGITS.length
 // a line's width over the ring's radius, and how strongly it shows at the rim: one digit's share of the ring's thickness, and the hole's share of the ring
 const LINE = (1 - HOLE) / DIGITS.length, SHOWN = HOLE
 const at = (angle: number, radius: number) => `${(radius * Math.sin(angle)).toFixed(4)} ${(-radius * Math.cos(angle)).toFixed(4)}`
-const markSvg = () => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 2 2"><title>${NAME}</title>${INKS.map((ink, i) => {
-  const from = (i - 0.5) * TURN, to = (i + 0.5) * TURN, colour = hexOf(ink)
-  return `<linearGradient id="l${i}" gradientUnits="userSpaceOnUse" x1="${(HOLE * Math.sin(i * TURN)).toFixed(4)}" y1="${(-HOLE * Math.cos(i * TURN)).toFixed(4)}" x2="0" y2="0"><stop stop-color="${colour}" stop-opacity="${SHOWN.toFixed(4)}"/><stop offset="1" stop-color="${colour}" stop-opacity="0"/></linearGradient>`
-    + `<path fill="${colour}" d="M${at(from, 1)}A1 1 0 0 1 ${at(to, 1)}L${at(to, HOLE)}A${HOLE.toFixed(4)} ${HOLE.toFixed(4)} 0 0 0 ${at(from, HOLE)}Z"/>`
-    + `<path stroke="url(#l${i})" stroke-width="${LINE.toFixed(4)}" d="M${at(i * TURN, HOLE)}L0 0"/>`
-}).join('')}</svg>\n`
+// The icon folds, and holds what it needs. Sixteen digits are four bits, so four folds in half bring every digit onto
+// digit 0 and four more open the ring again, one fold for each period of the licence address's clock (style). A fold
+// turns the upper half of the positions still spread onto the lower half, about the boundary between them; seen from
+// above, a turn about a line is a scale across it, from 1 through 0 to -1. Folded colours add as light does. The icon
+// computes each digit's hue from the digit in its own CSS and carries the work's citation (SOFTWARE) as its metadata.
+// A reader that runs no CSS sees the ring open, in the same colours, which are also written on each segment.
+const FOLDS = Array.from({ length: Math.log2(DIGITS.length) }, (_, j) => ({ fold: j + 1, half: DIGITS.length >> (j + 1) }))
+const markSvg = () => {
+  const beats = 2 * FOLDS.length, beat = (n: number) => `${(100 * n / beats).toFixed(3)}%`
+  const css = [
+    `svg{--qpu-period:${style(LICENSE.address).vars['--qpu-period']}}`,
+    `path[style]{fill:hsl(calc(var(--d)*1turn/${DIGITS.length}) ${SATURATION}% ${LIGHTNESS}%)}`,
+    'path{mix-blend-mode:screen}',
+    ...FOLDS.map(({ fold }) => `.f${fold}{animation:f${fold} calc(${beats}*var(--qpu-period)) ease-in-out infinite}@keyframes f${fold}{0%,${beat(fold - 1)}{transform:scaleY(1)}${beat(fold)},${beat(beats - fold)}{transform:scaleY(-1)}${beat(beats - fold + 1)},100%{transform:scaleY(1)}}`),
+    '@media (prefers-reduced-motion:reduce){g{animation:none!important}}',
+  ].join('')
+  const segment = (ink: readonly number[], i: number) => {
+    const from = (i - 0.5) * TURN, to = (i + 0.5) * TURN, colour = hexOf(ink)
+    let place = i
+    let body = `<linearGradient id="l${i}" gradientUnits="userSpaceOnUse" x1="${(HOLE * Math.sin(i * TURN)).toFixed(4)}" y1="${(-HOLE * Math.cos(i * TURN)).toFixed(4)}" x2="0" y2="0"><stop stop-color="${colour}" stop-opacity="${SHOWN.toFixed(4)}"/><stop offset="1" stop-color="${colour}" stop-opacity="0"/></linearGradient>`
+      + `<path style="--d:${i}" fill="${colour}" d="M${at(from, 1)}A1 1 0 0 1 ${at(to, 1)}L${at(to, HOLE)}A${HOLE.toFixed(4)} ${HOLE.toFixed(4)} 0 0 0 ${at(from, HOLE)}Z"/>`
+      + `<path stroke="url(#l${i})" stroke-width="${LINE.toFixed(4)}" d="M${at(i * TURN, HOLE)}L0 0"/>`
+    for (const { fold, half } of FOLDS) if (place >= half && place < 2 * half) {
+      // the fold line leaves the centre at the boundary between the two halves: turn it onto the x axis, scale across it, turn back
+      const turned = ((half - 0.5) * TURN * 180 / Math.PI - 90).toFixed(2)
+      body = `<g transform="rotate(${turned})"><g class="f${fold}"><g transform="rotate(${-turned})">${body}</g></g></g>`
+      place = 2 * half - 1 - place
+    }
+    return body
+  }
+  const cited = JSON.stringify({ '@context': 'https://schema.org', ...SOFTWARE }).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 2 2"><title>${NAME}</title><metadata>${cited}</metadata><style>${css}</style><g style="isolation:isolate">${INKS.map(segment).join('')}</g></svg>\n`
+}
 // The social image: the same mark on its ground, each pixel the mean of nine samples, as an 8-bit RGB PNG (ISO/IEC 15948).
 const markPng = (width: number, height: number) => {
   const radius = height * HOLE / 2, rows = Buffer.alloc(height * (1 + width * 3))
