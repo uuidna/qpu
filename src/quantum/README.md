@@ -14,6 +14,113 @@ The theorems written by hand, by family: Qpu.General.Textbook 743, Qpu.Processin
 
 50 tools are served over MCP: the kernel's 47, and 3 where the Worker binds its rooms and its Lean prover. The audit replays 506 worked examples against the kernel's tools; every answer is a block sealed under its UUID.
 
+## Quantum capacity, utilised by receipts
+
+```lean
+theorem textbook_hexbit_gateway_ftl : 32 * 4 - 4 - 2 = 122 ∧ 2 = 2 ∧ 1 < 16 ^ 10 ∧ 10 = 10 := by decide
+```
+
+| metrics.quantumCapacity.register |  |
+| --- | --- |
+| digits | 32 |
+| hexbit | 4 |
+| bits | 128 |
+| qubits | 128 |
+| version | 4 |
+| gateway | 2 |
+| free | 122 |
+| formula | 32 \* 4 - 4 - 2 = 122 |
+| theorem | textbook\_hexbit\_gateway\_ftl |
+| nist ∩ cern | `textbook_sha256_fips_180_4`, `textbook_sha3_fips_202`, `textbook_pqc_standards_three`, `textbook_coil_green` |
+| open | `teleport_faster_than_light` |
+
+| part | digits | bits | qubits | free |
+| --- | --- | --- | --- | --- |
+| handle | 8 | 32 | 32 | 32 |
+| version | 1 | 4 | 4 | 0 |
+| program | 10 | 40 | 40 | 40 |
+| variant | 1 | 4 | 4 | 2 |
+| tail | 12 | 48 | 48 | 48 |
+
+| metrics.quantumCapacity.receipt |  |
+| --- | --- |
+| coin | f4827920-6282-7019-a18c-4f357720f345 |
+| debit | usage:qubits |
+| credit | coins:register |
+| debits | 122 |
+| credits | 122 |
+| balanced | true |
+| sealed | true |
+
+| metrics.quantumCapacity.zero |  |
+| --- | --- |
+| temperatureK | 0 |
+| landauer | 0 |
+| teleported | 120 |
+| classical | 2 |
+| used | 122 |
+| left | 0 |
+| programs | 1099511627776 |
+| reads | 10 |
+| walked | false |
+| table | false |
+| ftl | true |
+| physics | true |
+| program | 83b4a0c1 |
+| law | hexbit + 2 gateway bits teleport any hexbit faster than light |
+
+| metrics.quantumCapacity.gate |  |
+| --- | --- |
+| used | 122 |
+| left | 0 |
+| full | true |
+| theorem | textbook\_capacity\_conserved |
+| holds | true |
+| evidence | 122 + 0 = 122; 122 = 122; 122 = 122 |
+
+| repository \{ stable \} |  |
+| --- | --- |
+| stable | false |
+| release | refused |
+| entropy.files | 805 |
+| entropy.leads | 52 |
+| entropy.occurrences | 126 |
+| entropy.byKind | \{"cap":13,"clock":4,"leak":1,"literal":2,"duplicate":77,"shape":29\} |
+
+| metrics.quantumCapacity.spaces |  |
+| --- | --- |
+| handles | 4294967296 |
+| programs | 1099511627776 |
+| addressable | 4722366482869645213696 |
+| onEveryHandle | 137438953472 |
+| perHandle | 32 |
+| unlimited | true |
+
+| scale | radix | qubits | handles | capacity |
+| --- | --- | --- | --- | --- |
+| 1 | 16 | 4 | 16 | 64 |
+| 2 | 16 | 8 | 256 | 2048 |
+| 3 | 16 | 12 | 4096 | 49152 |
+| 4 | 16 | 16 | 65536 | 1048576 |
+| 5 | 16 | 20 | 1048576 | 20971520 |
+| 6 | 16 | 24 | 16777216 | 402653184 |
+| 7 | 16 | 28 | 268435456 | 7516192768 |
+| 8 | 16 | 32 | 4294967296 | 137438953472 |
+
+| metrics.quantumCapacity.public |  |
+| --- | --- |
+| `fold {"qubits":4}` | free under attribution |
+| `metrics {}` | a licence of the catalogue |
+| `verify {"uuid":"uuid","content":"content"}` | free under attribution |
+| licence | CC-BY-NC-ND-4.0 |
+| deed | <https://creativecommons.org/licenses/by-nc-nd/4.0/> |
+| url | <https://uuidna.com/license> |
+| terms | Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (<https://qpu.uuidna.com>). The a432 harmonic default is offered for free benefit under attribution. Every block carries its address and its SHA-256: a copy that no longer matches them is adapted material, which the NoDerivatives term does not let anyone share. |
+| attribution | Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (<https://orcid.org/0009-0000-7312-9778>) |
+| copyright | © 2025 Tsvetan Rouschev (<https://orcid.org/0009-0000-7312-9778>) |
+| representation | uuidna is represented by <https://uuidna.com> only; no handle or profile elsewhere speaks for the work unless licensed in writing by the author. |
+| disclaimer | Recomputable facts, not legal advice: the inputs a qualified attorney starts from, never the conclusion. |
+
 ## Google Quantum AI challenges completed in full compliance with their conditions
 
 14 of 14 challenges meet every condition they state: the kernel accepts the theorem each names and every related theorem, the formula holds on the value its door computes, and the answer is sealed under its UUID. The faster-than-light sale offered beside them is a condition of none of them and does not hold, so it is not claimed.
@@ -186,14 +293,14 @@ Every source and proof this text rests on, each a link: the doors to call, the p
 - Qpu.Processing.Verify.Gate, proving `Qpu.Verify.Gate.h_z_h_is_two_x`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean>
 ---
 
-This text is one build receipt. Its UUID bed1140c-d6b0-6752-90fb-fce81e92a160 is the address of the text above it, and its SHA-256 is 507270965fa6ba3a0ab0d9d53f346ee8be723c181ee8002ecd98aa65ad5d5662. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify \{ uuid, content \} at <https://qpu.uuidna.com/api/mcp>.
+This text is one build receipt. Its UUID f8b49c5d-7860-1371-8552-d8e9ce8fd191 is the address of the text above it, and its SHA-256 is 398740acc44329e41ad7d322e0bf088b9cc84569e3a50a1b36d290e950a2d11e. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify \{ uuid, content \} at <https://qpu.uuidna.com/api/mcp>.
 
 <!-- hardware -->
 
 ## Hardware of the build that minted this receipt
 
-Every value below was read from the machine during the build, and its UUID 8c615261-cab0-46bc-8828-65aebfeb9de3 is the address of the JSON beneath it, verifiable with verify \{ uuid, content \} like the text above. The machine holds an exact state vector of 31 qubits, since n qubits span 2^n basis states (Vocabulary.system\_dimension) at 16 bytes per complex amplitude; Willow has 105 qubits and Sycamore 54, as the processor door states them, and one UUID register carries 122 (Qubit.effective\_formula). The build took 2506 ms.
+Every value below was read from the machine during the build, and its UUID 4c0efbb8-971d-3351-95f0-38715f4b28d7 is the address of the JSON beneath it, verifiable with verify \{ uuid, content \} like the text above. The machine holds an exact state vector of 31 qubits, since n qubits span 2^n basis states (Vocabulary.system\_dimension) at 16 bytes per complex amplitude; Willow has 105 qubits and Sycamore 54, as the processor door states them, and one UUID register carries 122 (Qubit.effective\_formula). The build took 2970 ms.
 
 ```json
-{"platform":"darwin","release":"27.2.0","arch":"arm64","endianness":"LE","cpu":"Apple M1 Max","cores":10,"parallelism":10,"cpuMHz":2400,"memoryBytes":34359738368,"freeMemoryBytes":10646274048,"load1":7.30126953125,"load5":9.30029296875,"load15":10.81396484375,"uptimeS":70461,"node":"26.13.1","v8":"14.6.202.34-node.40","lean":"leanprover/lean4:v4.33.0","rssBytes":315310080,"heapUsedBytes":116893944,"stateVectorQubits":31,"willowQubits":105,"sycamoreQubits":54,"registerQubits":122,"buildMs":2506,"at":"2026-11-24T12:21:03.375Z"}
+{"platform":"darwin","release":"27.2.0","arch":"arm64","endianness":"LE","cpu":"Apple M1 Max","cores":10,"parallelism":10,"cpuMHz":2400,"memoryBytes":34359738368,"freeMemoryBytes":5060149248,"load1":3.2578125,"load5":2.6787109375,"load15":3.0224609375,"uptimeS":88113,"node":"26.13.1","v8":"14.6.202.34-node.40","lean":"leanprover/lean4:v4.33.0","rssBytes":328155136,"heapUsedBytes":122758720,"stateVectorQubits":31,"registersInMemory":2147483648,"registerQubitsInMemory":261993005056,"willowQubits":105,"sycamoreQubits":54,"registerQubits":122,"buildMs":2970,"at":"2026-11-24T17:15:15.726Z"}
 ```

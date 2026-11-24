@@ -8,6 +8,7 @@ import { CHAT_SHARE, CLAY_FIRST, FORMULA, INSERT_SCHEMA, LEAN_RESOURCE, NIBBLE_P
 import { PROSE, proseFill } from './prose-index.ts'
 import { ALTERNATIVES, BOUND_TOOLS, ERROR_KINDS, KERNEL_STATE, NOT_IDEMPOTENT, codeOfThrown, findAmbiguity, thrownText, type ErrorCode } from './contract.ts'
 import { INPUT_EXAMPLES, OUTPUTS } from './outputs-index.ts'
+import { capacityOf, quantumCapacity } from './capacity.ts'
 import { GOOGLE_MCPS, QPU_MCP, mcpHostList } from './discovery.ts'
 import { GOOGLE_DOOR, bindGoogleCall } from './toolboxes/google.ts'
 import * as cirq from './cirq.ts'
@@ -2017,6 +2018,8 @@ const treeMetrics = (artefacts: RunArtefacts = {}): Record<string, unknown> => {
   const byStatus: Record<string, number> = {}; for (const l of LEADS) byStatus[l.status] = (byStatus[l.status] ?? 0) + 1
   const backed = EXAMPLES.filter((e) => e.theorem)
   return {
+    // the register's capacity as the fold door answers it (fold { qubits: 4 }), gated: capacity.ts
+    quantumCapacity: capacityOf(call('fold', { qubits: 4 }).result?.structuredContent),
     tools: TOOLS.length, toolsBound: BOUND_TOOLS.length, toolsServed: TOOLS.length + BOUND_TOOLS.length, toolboxes: TOOLBOXES.length, patterns: PATTERNS.length, patternsRecognised: EXAMPLES.filter((e) => e.tool === 'match' && typeof e.arguments.statement === 'string' && getPattern(e.arguments.statement)).length, examples: EXAMPLES.length, examplesBackedByTheorems: backed.length, examplesBackedRatio: Number((backed.length / EXAMPLES.length).toFixed(3)),
     theoremsKernel: KERNEL_THEOREMS, theoremsHandWritten: THEOREMS.length, lemmasGenerated: GENERATED_LEMMAS, leads: LEADS.length, leadsByStatus: byStatus,
     auditChecks: audit?.total ?? null, auditPassed: audit?.passed ?? null, auditFailed: audit?.failed ?? null, auditNested: audit === null, selftests: TOOLBOXES.map((b) => b.name), balancer: BALANCER.size, license: LICENSE.spdx, at: stamp(),
@@ -2642,6 +2645,8 @@ export const caller = (name: string) => (args: Record<string, unknown> = {}): an
 const RECEIPT_RESOURCE = 'receipt://qpu'
 /** The welcome every client reads at initialize: the build's receipt, how to use the server and how to improve it. */
 const WELCOME = [proseFill(PROSE.quantumProcessingMcp_welcome, RECEIPT.uuid, RECEIPT.sha256, RECEIPT_RESOURCE), PROSE.quantumProcessingMcp_use, proseFill(PROSE.quantumProcessingMcp_improve, RECEIPT.mcp.replace(/\/api\/mcp$/, ''), LICENSE.spdx)].join(' ')
+/** The capacity the welcome states: the register's numbers as metrics carries them, with the gate every step is held to. */
+const welcomeCapacity = () => { const c = quantumCapacity(); return { free: c.register.free, formula: c.register.formula, used: c.used, left: c.left, full: c.full, perHandle: c.perHandle, handles: c.spaces.handles, onEveryHandle: c.spaces.onEveryHandle, unlimited: c.unlimited, coin: c.receipt.coin, balanced: c.receipt.balanced, sealed: c.receipt.sealed, gate: c.gate, public: { doors: c.public.doors, licence: c.public.licence, deed: c.public.deed, url: c.public.url } } }
 export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> => {
   if (Array.isArray(message)) return handleBatch(message as unknown as Rpc[]) as unknown as Reply
   const id = message.id ?? null
@@ -2673,7 +2678,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       if (!asked.access) return refused(id, asked)
       askedFirst = { server: asked.server, one: asked.one, first: asked.first, asked: asked.asked, tool: asked.tool }
     }
-    if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256, resource: RECEIPT_RESOURCE }, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online] }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${WELCOME}\n\n${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
+    if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256, resource: RECEIPT_RESOURCE }, quantumCapacity: welcomeCapacity(), experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online] }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${WELCOME}\n\nmetrics.quantumCapacity: ${JSON.stringify(welcomeCapacity())}\n\n${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
     // every tool declares its UI resource (MCP Apps, _meta.ui.resourceUri): a host that negotiates the extension renders the tool's result through it
     // every tool listed widget-skilled: its UI resource (the widget) and its toolbox's skill (the instructions a client follows, the directions it tests in)
     if (message.method === 'tools/list') {

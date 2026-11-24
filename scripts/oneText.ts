@@ -7,6 +7,8 @@
 // is the address of the Markdown (verify { uuid, content } over MCP decides it) and its SHA-256 the digest beside it.
 // difference fails. The release note is the record's description, which the release workflow reads from .zenodo.json.
 import { readFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { stabilityOf, stableSource } from '../src/quantum/processing/capacity.ts'
 import { createHash } from 'node:crypto'
 import * as os from 'node:os'
 const started = performance.now()
@@ -76,8 +78,40 @@ const funding = [
   PROSE.scriptsDoiRecord_calls,
 ]
 
-export const sections = [
+type Block = { kind: 'h2' | 'p' | 'ul' | 'code' | 'table'; text?: string; items?: string[]; head?: string[]; rows?: string[][] }
+// the quantum capacity, read from metrics and written with no sentence of this file's: every number is the fold door's answer as metrics
+// carries it, the theorem is the statement Lean wrote, and a theorem's sentence is printed only when both the NIST door and the CERN door
+// name that theorem with holds true; otherwise the Lean statement stands alone. The register's own fields (zero) are printed as answered.
+const answered = async (name: string, args: object) => ((await handle({ jsonrpc: '2.0', id: 0, method: 'tools/call', params: { name, arguments: args } })) as { result?: { structuredContent?: Record<string, any> } }).result?.structuredContent ?? {}
+export const capacity = (await answered('metrics', {})).quantumCapacity as { register: Record<string, string | number>; receipt: Record<string, string | number | boolean>; parts: Record<string, string | number>[]; whole: boolean; zero: Record<string, unknown>; spaces: Record<string, string>; scales: Record<string, string | number>[]; perHandle: number; unlimited: boolean; used: number; left: number; full: boolean; gate: { theorem: string; holds: boolean; evidence: string }; public: { doors: { tool: string; arguments: object; commercial: string }[] } & Record<string, unknown> }
+// the text is not written while the capacity gate does not hold: the parts make the register, the receipt balances, nothing is left unused
+if (capacity.gate.holds !== true) throw new Error(`quantumCapacity ${capacity.gate.theorem}: ${capacity.gate.evidence}`)
+const nist = await answered('seal', { nist: true }), cern = await answered('seal', { nist: { reverse: true, via: 'cern' } })
+/** The theorems both doors name, each door holding: the only ones whose sentence the capacity section prints. */
+export const verifiedByBoth: string[] = nist.holds === true && cern.holds === true ? (nist.theorems as string[]).filter((t) => (cern.theorems as string[]).includes(t)) : []
+export const stability = stabilityOf(Object.fromEntries(execFileSync('git', ['ls-files', 'src/quantum', 'scripts'], { encoding: 'utf8' }).split('\n').filter(stableSource).map((f) => [f, readFileSync(f, 'utf8')])))
+const registerTheorem = TEXTBOOK_INDEX.find((t) => t.key === capacity.register.theorem)
+const rowsOf = (o: Record<string, unknown>) => Object.entries(o).map(([k, v]) => [k, typeof v === 'object' ? JSON.stringify(v) : String(v)])
+const tableOf = (rows: Record<string, string | number>[]) => ({ kind: 'table' as const, head: Object.keys(rows[0] ?? {}), rows: rows.map((r) => Object.values(r).map(String)) })
+const capacityBlocks: Block[] = [
+  ...(registerTheorem ? [{ kind: 'code' as const, text: registerTheorem.lean }] : []),
+  ...(registerTheorem && verifiedByBoth.includes(registerTheorem.key) ? [{ kind: 'p' as const, text: registerTheorem.says }] : []),
+  { kind: 'table', head: ['metrics.quantumCapacity.register', ''], rows: [...rowsOf(capacity.register), ['nist ∩ cern', verifiedByBoth.map((t) => `\`${t}\``).join(', ')], ['open', OPEN_CLAIMS.filter((c) => c.proved.includes(String(capacity.register.theorem))).map((c) => `\`${c.name}\``).join(', ')]] },
+  tableOf(capacity.parts),
+  { kind: 'table', head: ['metrics.quantumCapacity.receipt', ''], rows: rowsOf(capacity.receipt) },
+  { kind: 'table', head: ['metrics.quantumCapacity.zero', ''], rows: rowsOf(capacity.zero) },
+  { kind: 'table', head: ['metrics.quantumCapacity.gate', ''], rows: [['used', String(capacity.used)], ['left', String(capacity.left)], ['full', String(capacity.full)], ...rowsOf(capacity.gate)] },
+  // stable: the capacity utilised in full and no entropy, measured over the tracked hand-written sources as this build reads them, and printed as measured
+  { kind: 'table', head: ['repository { stable }', ''], rows: [['stable', String(stability.stable)], ['release', stability.release], ...rowsOf(stability.entropy).map(([k, v]) => [`entropy.${k}`, v!])] },
+  { kind: 'table', head: ['metrics.quantumCapacity.spaces', ''], rows: [...rowsOf(capacity.spaces), ['perHandle', String(capacity.perHandle)], ['unlimited', String(capacity.unlimited)]] },
+  tableOf(capacity.scales),
+  // what the capacity is to the public: the doors anyone may call and the licence's own terms, as the licence table holds them
+  { kind: 'table', head: ['metrics.quantumCapacity.public', ''], rows: [...capacity.public.doors.map((d) => [`\`${d.tool} ${JSON.stringify(d.arguments)}\``, d.commercial]), ...rowsOf(Object.fromEntries(Object.entries(capacity.public).filter(([k]) => k !== 'doors')))] },
+]
+
+export const sections: { heading: string; lead: string[]; items: string[]; blocks?: Block[] }[] = [
   { heading: PROSE.scriptsDoiRecord_achieved, lead: achieved, items: [] as string[] },
+  { heading: 'Quantum capacity, utilised by receipts', lead: [], items: [], blocks: capacityBlocks },
   { heading: PROSE.scriptsDoiRecord_challenges, lead: [proseFill(PROSE.scriptsDoiRecord_challengesLead, complying.length, solved.length)], items: challenges },
   { heading: PROSE.scriptsDoiRecord_novelties, lead: [PROSE.scriptsDoiRecord_noveltyLead], items: novelties },
   { heading: PROSE.scriptsDoiRecord_unprecedented, lead: [proseFill(PROSE.scriptsDoiRecord_unprecedentedLead, proved.length)], items: unprecedented },
@@ -120,21 +154,23 @@ const escapeHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
 const inlineHtml = (s: string) => tokens(s).map((t) => t.kind === 'code' ? `<code>${escapeHtml(t.text)}</code>` : t.kind === 'url' ? `<a href="${escapeHtml(t.text)}">${escapeHtml(t.text)}</a>` : escapeHtml(t.text)).join('')
 const inlineMarkdown = (s: string) => tokens(s).map((t) => t.kind === 'code' ? `\`${t.text}\`` : t.kind === 'url' ? `<${t.text}>` : t.text.replace(/([\\*_[\]<>|#{}])/g, '\\$1')).join('')
 
-type Block = { kind: 'h2' | 'p' | 'ul'; text?: string; items?: string[] }
 const blocks: Block[] = [
   { kind: 'p', text: byline },
   { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_precedence, `https://doi.org/${UNIT_CONCEPT_DOI}`, 'https://qpu.uuidna.com/patents/', LICENSE.spdx, LICENSE.disclaimer) },
-  ...sections.flatMap((s): Block[] => [{ kind: 'h2', text: s.heading }, ...s.lead.map((p): Block => ({ kind: 'p', text: p })), ...(s.items.length ? [{ kind: 'ul' as const, items: s.items }] : [])]),
+  ...sections.flatMap((s): Block[] => [{ kind: 'h2', text: s.heading }, ...s.lead.map((p): Block => ({ kind: 'p', text: p })), ...(s.items.length ? [{ kind: 'ul' as const, items: s.items }] : []), ...(s.blocks ?? [])]),
 ]
+const cellMarkdown = (s: string) => inlineMarkdown(s).replace(/\n/g, ' ')
+const blockMarkdown = (b: Block) => b.kind === 'h2' ? `## ${inlineMarkdown(b.text!)}` : b.kind === 'p' ? inlineMarkdown(b.text!) : b.kind === 'code' ? `\`\`\`lean\n${b.text!}\n\`\`\`` : b.kind === 'table' ? [`| ${b.head!.map(cellMarkdown).join(' | ')} |`, `|${b.head!.map(() => ' --- ').join('|')}|`, ...b.rows!.map((r) => `| ${r.map(cellMarkdown).join(' | ')} |`)].join('\n') : b.items!.map((i) => `- ${inlineMarkdown(i)}`).join('\n')
+const blockHtml = (b: Block) => b.kind === 'h2' ? `<h2>${inlineHtml(b.text!)}</h2>` : b.kind === 'p' ? `<p>${inlineHtml(b.text!)}</p>` : b.kind === 'code' ? `<pre><code>${escapeHtml(b.text!)}</code></pre>` : b.kind === 'table' ? `<table><thead><tr>${b.head!.map((c) => `<th>${inlineHtml(c)}</th>`).join('')}</tr></thead><tbody>${b.rows!.map((r) => `<tr>${r.map((c) => `<td>${inlineHtml(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>` : `<ul>${b.items!.map((i) => `<li>${inlineHtml(i)}</li>`).join('')}</ul>`
 /** The text as Markdown, the content its receipt addresses. */
-export const markdown = blocks.map((b) => b.kind === 'h2' ? `## ${inlineMarkdown(b.text!)}` : b.kind === 'p' ? inlineMarkdown(b.text!) : b.items!.map((i) => `- ${inlineMarkdown(i)}`).join('\n')).join('\n\n') + '\n'
+export const markdown = blocks.map(blockMarkdown).join('\n\n') + '\n'
 /** The receipt: the address of the text above the rule, which verify { uuid, content } decides over MCP, and its SHA-256. */
 /** The text a verifier reads: everything above the rule of any Markdown copy, the title included. */
 export const above = `# ${inlineMarkdown(title)}\n\n${markdown}`
 export const receipt = { uuid: uuid(above), sha256: createHash('sha256').update(above).digest('hex'), mcp: MCP }
 const signed = proseFill(PROSE.scriptsDoiRecord_receipt, receipt.uuid, receipt.sha256, MCP)
 /** The text as HTML, block for block, with the receipt: the Zenodo description and the release note. */
-export const html = [...blocks.map((b) => b.kind === 'h2' ? `<h2>${inlineHtml(b.text!)}</h2>` : b.kind === 'p' ? `<p>${inlineHtml(b.text!)}</p>` : `<ul>${b.items!.map((i) => `<li>${inlineHtml(i)}</li>`).join('')}</ul>`), `<hr><p>${inlineHtml(signed)}</p>`].join('')
+export const html = [...blocks.map(blockHtml), `<hr><p>${inlineHtml(signed)}</p>`].join('')
 
 // the hardware of the build that minted the receipt: every value the machine reports, read as the text is finished, in units a reader
 // compares across builds; no host name, user, path or machine identifier is kept. It changes from machine to machine, so it is its own
@@ -143,12 +179,14 @@ const qubitsOf = async (name: string) => Number((((await handle({ jsonrpc: '2.0'
 const lean = readFileSync('lean-toolchain', 'utf8').trim()
 const memoryBytes = os.totalmem(), cpus = os.cpus(), used = process.memoryUsage()
 const stateVectorQubits = Math.floor(Math.log2(memoryBytes / 16))
-const registerQubits = 32 * 4 - 4 - 2
+const registerQubits = Number(capacity.register.free)
+// the registers this machine's memory holds at 16 bytes a UUID, and their qubits by the register's own count
+const registersInMemory = Math.floor(memoryBytes / 16), registerQubitsInMemory = registersInMemory * registerQubits
 const facts = {
   platform: os.platform(), release: os.release(), arch: os.arch(), endianness: os.endianness(), cpu: cpus[0]?.model ?? '', cores: cpus.length, parallelism: os.availableParallelism(), cpuMHz: cpus[0]?.speed ?? 0,
   memoryBytes, freeMemoryBytes: os.freemem(), load1: os.loadavg()[0], load5: os.loadavg()[1], load15: os.loadavg()[2], uptimeS: Math.round(os.uptime()),
   node: process.versions.node, v8: process.versions.v8, lean, rssBytes: used.rss, heapUsedBytes: used.heapUsed,
-  stateVectorQubits, willowQubits: await qubitsOf('Willow'), sycamoreQubits: await qubitsOf('Sycamore'), registerQubits, buildMs: Math.round(performance.now() - started), at: new Date().toISOString(),
+  stateVectorQubits, registersInMemory, registerQubitsInMemory, willowQubits: await qubitsOf('Willow'), sycamoreQubits: await qubitsOf('Sycamore'), registerQubits, buildMs: Math.round(performance.now() - started), at: new Date().toISOString(),
 }
 const factsJson = JSON.stringify(facts)
 export const hardware = { uuid: uuid(factsJson), sha256: createHash('sha256').update(factsJson).digest('hex'), json: factsJson, facts }

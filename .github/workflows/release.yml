@@ -44,6 +44,14 @@ jobs:
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: 26
+      # stable is the capacity utilised in full and no entropy (repository { stable }): the runner lists the tracked sources, the door measures
+      # them with the audit door's entropy, and a tree that is not stable is not released
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 10.34.9
+      - run: pnpm install --frozen-lockfile
+      - name: stable, the capacity utilised in full without entropy
+        run: node src/quantum/processing/machine-run.ts step repository '{"stable":{"listing":{"$run":{"cmd":"git","args":["ls-files","src/quantum","scripts"]}}}}' --json
       - name: the next tag, which the package states
         id: next
         run: |
