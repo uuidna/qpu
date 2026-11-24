@@ -51,7 +51,8 @@ export const spawnRun = (cmd: string, args: readonly string[], o: { cwd: string;
   })
 
 // A door step's arguments resolved in the child: { $file } is that file's text, { $exec } the output of the command over the script text a door answers.
-type Call = (name: string, args: unknown) => { result?: { structuredContent?: any }; error?: { message: string } }
+import type { Call } from './toolbox.ts'
+import { callEnvelope, headOf, listEnvelope, within } from './toolbox.ts'
 const resolveArgs = async (x: unknown, cwd: string, call: Call): Promise<unknown> => {
   if (Array.isArray(x)) return Promise.all(x.map((v) => resolveArgs(v, cwd, call)))
   if (!x || typeof x !== 'object') return x
@@ -77,7 +78,7 @@ type Block = { address: string; structured: unknown; widget: string }
 const memoryOf = (cwd: string) => {
   const root = join(cwd, 'src/quantum'), code = createHash('sha256')
   for (const f of (readdirSync(root, { recursive: true }) as string[]).filter((f) => /\.(ts|js|json)$/.test(f)).sort()) code.update(f).update(readFileSync(join(root, f)))
-  const base = join(cwd, '.qpu', 'memory'), dir = join(base, code.digest('hex').slice(0, 32))
+  const base = join(cwd, '.qpu', 'memory'), dir = join(base, code.digest('hex'))
   const read = (): Block[] => existsSync(dir) ? readdirSync(dir).flatMap((f) => readFileSync(join(dir, f), 'utf8').split('\n').flatMap((l) => { try { return l ? [JSON.parse(l) as Block] : [] } catch { return [] } })) : []
   const write = (blocks: readonly Block[]) => {
     const lines = blocks.flatMap((b) => { try { return [JSON.stringify(b)] } catch { return [] } })
@@ -102,14 +103,14 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   balancerLoad(memory.read())
   const args = await resolveArgs(JSON.parse(argsJson), cwd, call)
   // e2e asks each host once before it replays a single example: a host that does not answer tools/list as JSON-RPC is named
-  if (tool === 'e2e') for (const url of new Set((args as { hosts?: string[] }).hosts ?? [])) { const ok = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: PROSE.quantumProcessingMachineRun_accept1 }, body: '{"jsonrpc":"2.0","id":0,"method":"tools/list"}', signal: AbortSignal.timeout(20000) }).then((r) => /json|event-stream/.test(r.headers.get('content-type') ?? ''), () => false); if (!ok) { console.log(JSON.stringify({ error: proseFill(PROSE.quantumProcessingMachineRun_error2, url) })); process.exitCode = 1; return } }
+  if (tool === 'e2e') for (const url of new Set((args as { hosts?: string[] }).hosts ?? [])) { const ok = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', accept: PROSE.quantumProcessingMachineRun_accept1 }, body: '{"jsonrpc":"2.0","id":0,"method":"tools/list"}', signal: within(20000) }).then((r) => /json|event-stream/.test(r.headers.get('content-type') ?? ''), () => false); if (!ok) { console.log(JSON.stringify({ error: proseFill(PROSE.quantumProcessingMachineRun_error2, url) })); process.exitCode = 1; return } }
   const r = call(tool, args)
   if (r.error) { console.log(JSON.stringify({ error: r.error.message })); process.exitCode = 1; return }
   let s = r.result?.structuredContent ?? null
   // a door that answers with requests has them fetched, eight at a time, then answers again with them: e2e decodes here, every other door is asked with answers
   if (Array.isArray(s?.requestList) && !(args as { answers?: unknown }).answers) {
     type Asked = { url: string; method: string; accept: string; headers?: Record<string, string>; body?: unknown; timeoutMs?: number }
-    const fetchAll = async (requests: Asked[]) => { const list = [...requests], answers: unknown[] = []; await Promise.all(Array.from({ length: 8 }, async () => { for (let q = list.shift(); q; q = list.shift()) { const t0 = performance.now(); try { const res = await fetch(q.url, { method: q.method, headers: { 'content-type': 'application/json', accept: q.accept, ...q.headers }, body: q.body === undefined ? undefined : JSON.stringify(q.body), signal: AbortSignal.timeout(q.timeoutMs ?? 20000) }); answers.push({ ...q, status: res.status, ms: performance.now() - t0, text: await res.text(), etag: res.headers.get('etag') }) } catch (e) { answers.push({ ...q, status: 0, ms: performance.now() - t0, text: String(e) }) } } })); return answers }
+    const fetchAll = async (requests: Asked[]) => { const list = [...requests], answers: unknown[] = []; await Promise.all(Array.from({ length: 8 }, async () => { for (let q = list.shift(); q; q = list.shift()) { const t0 = performance.now(); try { const res = await fetch(q.url, { method: q.method, headers: { 'content-type': 'application/json', accept: q.accept, ...q.headers }, body: q.body === undefined ? undefined : JSON.stringify(q.body), signal: within(q.timeoutMs ?? 20000) }); answers.push({ ...q, status: res.status, ms: performance.now() - t0, text: await res.text(), etag: res.headers.get('etag') }) } catch (e) { answers.push({ ...q, status: 0, ms: performance.now() - t0, text: String(e) }) } } })); return answers }
     let answers = await fetchAll(s.requestList as Asked[])
     // in this process: the door's wrapper re-serialises e2e's bodies past a string's length
     if (tool === 'e2e') { const d = (await import('./e2e.ts')).decodeE2e(answers as never); s = { phase: 'decoded', ...d.outcomes, combos: d.combos, copies: d.copies, uncorrectableLeads: d.leads.filter((l) => l.id.startsWith('e2e-uncorrectable')).map((l) => l.id).join(' ') } }
@@ -147,6 +148,8 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
 }
 
 /** The runner's lanes from node:os: the cores scaled by the free share of memory (Supremacy.lanes_pos, lanes_le_cores). */
+/** A JSON file read and parsed, null when it is missing or is not JSON: the one reader. */
+export const readJson = <T>(path: string): T | null => { try { return JSON.parse(readFileSync(path, 'utf8')) as T } catch { return null } }
 export const lanesNow = () => Math.max(1, Math.min(availableParallelism(), Math.ceil((availableParallelism() * freemem()) / totalmem())))
 
 export type Receipt = { date: string; head: string; runner: string; offline: boolean; fast: boolean; lanes: number; steps: { name: string; status: 'green' | 'red' | 'skipped'; ms: number; via: NextStep['via']; tail: string; attempt: number }[]; green: number; red: number; skipped: number; wallMs: number; sumMs: number; speedup: number | null }
@@ -162,7 +165,7 @@ export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolea
     for (const s of NEXT_STEPS) {
       if (s.tool !== '*') { out.push(s); continue }
       const { handle } = await import('./mcp.ts') as { handle: (m: unknown) => { result?: { tools?: { name: string; inputSchema?: { properties?: Record<string, unknown> } }[] } } }
-      const tools = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }).result?.tools ?? []
+      const tools = handle(listEnvelope()).result?.tools ?? []
       for (const t of tools) if (t.inputSchema?.properties && Object.keys(s.arguments ?? {}).every((k) => k in t.inputSchema!.properties!)) out.push({ ...s, name: `${s.name}:${t.name}`, tool: t.name })
     }
     return out
@@ -184,7 +187,7 @@ export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolea
     const skip = s.needs === 'online' && o.offline ? 'offline' : s.long && o.fast ? 'fast' : null
     if (skip) { receipt.steps.push({ name: s.name, status: 'skipped', ms: 0, via: s.via, tail: skip, attempt }); say(`· ${s.name}: ${skip}`); return true }
     const t0 = clock(), at = kept(s)
-    if (existsSync(at)) { receipt.steps.push({ ...JSON.parse(readFileSync(at, 'utf8')), attempt }); say(`✓ ${s.name} (receipt ${at.slice(-41, -5)})`); return true }
+    if (existsSync(at)) { receipt.steps.push({ ...readJson<any>(at), attempt }); say(`✓ ${s.name} (receipt ${at.slice(-41, -5)})`); return true }
     const r = s.via === 'process' ? await spawnRun(s.cmd!, s.args!, { cwd: o.cwd, budgetMs: s.budgetMs }) : await spawnRun(process.execPath, [SELF, 'step', s.tool!, JSON.stringify(s.arguments ?? {}), ...(s.via === 'generator' ? ['--write'] : [])], { cwd: o.cwd, budgetMs: s.budgetMs })
     const out = `${r.stdout}${r.stderr ? `\n${r.stderr}` : ''}`, ok = r.status === 0 && !r.timedOut
     const failing = [...new Set(out.split('\n').filter((l) => /^(✖|✗|not ok) |error TS\d+|^\s*AssertionError|^error:/.test(l)))]
@@ -238,7 +241,7 @@ export const runMachine = async (args: Record<string, unknown>, cwd: string, onP
 
 /** The local Worker the e2e step replays against: kept when it answers on :3000, else started and stopped after. */
 const serveLocal = async (cwd: string) => {
-  const answers = async () => { try { return (await fetch('http://localhost:3000/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream' }, body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}', signal: AbortSignal.timeout(5000) })).ok } catch { return false } }
+  const answers = async () => { try { return (await fetch('http://localhost:3000/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream' }, body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}', signal: within(5000) })).ok } catch { return false } }
   if (await answers()) return null
   const child = spawn('npm', ['run', '-s', 'dev'], { cwd, detached: true, stdio: 'ignore' })
   for (let i = 0; i < 90 && !(await answers()); i++) await new Promise((r) => setTimeout(r, 1000))
@@ -302,7 +305,7 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
     if (s.kind === 'stage') {
       // a changed file whose head names its generator is staged with the commit
       const changed = (await git('diff', '--name-only')).split('\n').filter((p) => p && existsSync(join(cwd, p)))
-      const written = changed.filter((p) => GENERATED.test(readFileSync(join(cwd, p), 'utf8').slice(0, 800)))
+      const written = changed.filter((p) => GENERATED.test(headOf(readFileSync(join(cwd, p), 'utf8'))))
       const files = [...new Set([...(s.files ?? []).filter((p) => existsSync(join(cwd, p))), ...written])]; if (files.length) await git('add', '-u', '--', ...files)
       facts.automated = { drifted: [] as string[], staged: written }
       continue
@@ -320,7 +323,7 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   if (name === 'commit-msg') facts.message = readFileSync(rest[0]!, 'utf8')
   if (name === 'pre-commit') {
     const diff = await git('diff', '--cached', '-U0', '--no-color', '--no-renames', '--', ...LITERAL_ROOTS), generated: string[] = []
-    for (const f of [...diff.matchAll(/^\+\+\+ b\/(.+)$/gm)].map((m) => m[1]!)) if (GENERATED.test((await git('show', `:${f}`)).slice(0, 800))) generated.push(f)
+    for (const f of [...diff.matchAll(/^\+\+\+ b\/(.+)$/gm)].map((m) => m[1]!)) if (GENERATED.test(headOf(await git('show', `:${f}`)))) generated.push(f)
     // a merge adds no file the merged branch already holds: those paths are named, so a rule reading additions reads only this commit's own
     const added = (await git('diff', '--cached', '--name-only', '--diff-filter=A', '--no-renames', '--', ...LITERAL_ROOTS)).split('\n').filter(Boolean)
     const parents = added.length && (await git('rev-parse', '-q', '--verify', 'MERGE_HEAD')) ? (await git('ls-tree', '-r', '--name-only', 'MERGE_HEAD', '--', ...added)).split('\n').filter(Boolean) : []
@@ -330,16 +333,16 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
     const kernel = await import('./mcp.ts') as unknown as { handle: (m: object) => unknown; balancerLoad: (b: readonly Block[]) => number; balancerSnapshot: (p: { onlyNew?: boolean }) => Block[] }
     const { EXAMPLES } = await import('./examples.ts'), memory = memoryOf(cwd), slow = new Set<string>()
     kernel.balancerLoad(memory.read())
-    const tools = ((await kernel.handle({ jsonrpc: '2.0', id: 0, method: 'tools/list' })) as { result: { tools: { name: string }[] } }).result.tools
+    const tools = ((await kernel.handle(listEnvelope(undefined, 0))) as { result: { tools: { name: string }[] } }).result.tools
     const asked = [...EXAMPLES.map((e) => [e.tool, e.arguments] as const), ...tools.map((t) => [t.name, {}] as const)]
-    const time = async () => { let slowest = 0; for (const [tool, args] of asked) { const t0 = performance.now(); await kernel.handle({ jsonrpc: '2.0', id: 0, method: 'tools/call', params: { name: tool, arguments: args } }); const ms = performance.now() - t0; if (ms >= 1000) slow.add(uuid(`${tool}${canonicalText(args)}`)); slowest = Math.max(slowest, ms) } return slowest }
+    const time = async () => { let slowest = 0; for (const [tool, args] of asked) { const t0 = performance.now(); await kernel.handle(callEnvelope(tool, args, 0)); const ms = performance.now() - t0; if (ms >= 1000) slow.add(uuid(`${tool}${canonicalText(args)}`)); slowest = Math.max(slowest, ms) } return slowest }
     const computeMs = Math.round(await time())
     memory.write(kernel.balancerSnapshot({ onlyNew: true }).filter((b) => slow.has(b.address)))
     const readMs = Math.round(await time())
     facts.calls = { asked: asked.length, computeMs, readMs, seconds: Math.floor(readMs / 1000) }
   }
   if (name === 'pre-push') {
-    const dir = join(cwd, 'src/quantum'), pkg = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')), packed = JSON.parse((await spawnRun('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], { cwd: dir })).stdout || '[]')[0]?.files?.map((f: { path: string }) => `./${f.path}`) ?? null
+    const dir = join(cwd, 'src/quantum'), pkg = readJson<any>(join(dir, 'package.json')), packed = JSON.parse((await spawnRun('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], { cwd: dir })).stdout || '[]')[0]?.files?.map((f: { path: string }) => `./${f.path}`) ?? null
     facts.npm = { name: pkg.name, version: pkg.version, license: pkg.license, description: pkg.description, exports: pkg.exports, packed }
   }
   type Decision = { allowed: boolean; says?: string; rules: { rule: string; holds: boolean | null; evidence: string }[] }

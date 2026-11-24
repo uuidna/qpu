@@ -4,6 +4,7 @@
 import { PROSE, proseFill } from '../../../processing/prose-index.ts'
 import { channel, composition, compositionIndex, hexbit, rosetta, seal, style, uuid, uuidQubits } from '../../index.ts'
 import { program } from '../index.ts'
+import { hyphenated } from '../../laws.ts'
 
 export const SHADCN_MCP = {
   name: 'shadcn' as const,
@@ -34,7 +35,7 @@ const movedTail = (address: string) => {
   const at = 31
   const nibble = (parseInt(body[at]!, 16) + 1) % 16
   const flipped = `${body.slice(0, at)}${nibble.toString(16)}${body.slice(at + 1)}`
-  return `${flipped.slice(0, 8)}-${flipped.slice(8, 12)}-${flipped.slice(12, 16)}-${flipped.slice(16, 20)}-${flipped.slice(20)}`
+  return hyphenated(flipped)
 }
 
 const paint = (address: string, content: string, name: string) => {

@@ -372,8 +372,10 @@ export const qaoaEstimate = (graph: Graph, alpha: number, beta: number, shots = 
 
 /** The page's sweep: alpha and beta each over gridSize points of [0, 2π) (the page's comment states the half-open interval),
  *  scored by qaoaEstimate with the page's 20,000 shots, and the best chosen by argmax (the page's np.argmax). */
+/** The weight of every edge of a graph, summed. */
+export const totalWeight = (graph: Graph): number => graph.edges.reduce((sum, e) => sum + e.weight, 0)
 export const qaoaSweep = (graph: Graph, gridSize = 5, shots = 20000): { grid: number[]; best: { alpha: number; beta: number; value: number; expectedCut: number }; randomBaseline: number } => {
-  const total = graph.edges.reduce((sum, e) => sum + e.weight, 0)
+  const total = totalWeight(graph)
   const grid = Array.from({ length: gridSize }, (_, i) => (2 * Math.PI * i) / gridSize)
   let best = { alpha: 0, beta: 0, value: -Infinity, expectedCut: 0 }
   for (const alpha of grid) for (const beta of grid) {

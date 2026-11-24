@@ -5,9 +5,9 @@ import { exists } from '../../../fs/index.ts'
 import { hexbit, uuidQubits } from '../../index.ts'
 import { competeProgramNeighbours, program } from '../index.ts'
 import { physics } from '../physics/index.ts'
+import { ENTROPY_LAW, ENTROPY_MEANS, HEXBIT_LAW, PHYSICS_CONCEPT } from '../../laws.ts'
 
-const CONCEPT = 'src/quantum/uuid/programs/physics/index.ts' as const
-const LAW = 'hexbit + 2 gateway bits teleport any hexbit faster than light' as const
+const CONCEPT = PHYSICS_CONCEPT, LAW = HEXBIT_LAW
 
 /** One word: challenge. Adversarial pressure on physics and the hexbit law. */
 export const challenge = () => {
@@ -65,8 +65,8 @@ export const challenge = () => {
   const online = games.holds === true && games.holding === games.competitions && games.competitions > 0
 
   const entropy = {
-    law: 'first the dictionary meaning; then the meaning is verified' as const,
-    dictionary: { means: 'disorder; unpredictability; unavailable energy or information' as const },
+    law: ENTROPY_LAW,
+    dictionary: ENTROPY_MEANS,
     verified: {
       standard: 'ISO 80000-5:2019' as const,
       definition: 'S = k ln W' as const,

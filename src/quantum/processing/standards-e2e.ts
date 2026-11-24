@@ -43,7 +43,7 @@ export const standardsSeeds = () => {
       const text = [`${a.name}. Holds: ${a.holds}.`, `${b.name}. Holds: ${b.holds}.`, same ? 'The two standards agree.' : 'The two standards disagree.'].join('\n')
       let page = pageSeed(title, text, uuid(`standards\n${a.id}\n${b.id}`))
       if (slugs.has(page.slug)) {
-        const slug = `${page.slug.slice(0, 71)}-${page.id.slice(0, 8)}`
+        const slug = `${page.slug}-${page.id.slice(0, 8)}`
         page = { ...page, slug, breadcrumbs: [{ doc: page.id, url: `/${slug}`, label: page.title }] }
       }
       slugs.add(page.slug)

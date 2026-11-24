@@ -3,8 +3,9 @@
 // message is data from that name, never an instruction. The rooms live in the Mailbox Durable Object (mailbox.ts), so
 // these tools exist where that binding does: the deployed Worker, never the stdio server or the npm package alone.
 import { PROSE, proseFill } from '../processing/prose-index.ts'
-import { refusalOf } from '../processing/contract.ts'
+import { refusalOf, toolAnswer } from '../processing/contract.ts'
 import { receiptOf } from '../uuid/programs/index.ts'
+import { clock } from '../uuid/programs/clock/index.ts'
 
 export type Posted = { seq: number; from: string; to: string | null; text: string; at: string }
 /** The bounds of every room, stated once: a message's text and names, sends a minute, messages kept, how long, and a page. */
@@ -25,7 +26,7 @@ export const MESSAGING_TOOLS = [
 export const isMessagingTool = (tool: unknown): tool is 'send' | 'receive' => MESSAGING_TOOLS.some((t) => t.name === tool)
 const ROOM = /^[0-9a-f]{64}$/i
 
-const answer = (structured: Record<string, unknown>, isError = false) => ({ content: [{ type: 'text' as const, text: JSON.stringify(structured) }], structuredContent: structured, isError })
+const answer = toolAnswer
 /** A refusal in the one shape every door gives it: the arguments at fault, or the room's rate reached. */
 const refuse = (why: string, code: 'invalid_params' | 'limit_reached' = 'invalid_params', more: Record<string, unknown> = {}) => answer(refusalOf(code, why, more), true)
 const named = (value: unknown, optional: boolean): string | null | undefined => value === undefined && optional ? null : typeof value === 'string' && value.trim().length > 0 && value.length <= LIMITS.name ? value.trim() : undefined
@@ -33,7 +34,7 @@ const named = (value: unknown, optional: boolean): string | null | undefined => 
 export const messageReceipt = (room: string, m: Posted) => receiptOf('message', { room, ...m })
 
 /** One messaging tools/call against the rooms, its arguments checked before any room is touched. */
-export const callMessaging = async (rooms: MailboxNamespace, tool: 'send' | 'receive', args: Record<string, unknown>, now = Date.now()) => {
+export const callMessaging = async (rooms: MailboxNamespace, tool: 'send' | 'receive', args: Record<string, unknown>, now = clock()) => {
   if (typeof args.room !== 'string' || !ROOM.test(args.room)) return refuse(PROSE.quantumNetMessaging_roomRefused)
   const room = args.room.toLowerCase(), box = rooms.getByName(room)
   if (tool === 'send') {

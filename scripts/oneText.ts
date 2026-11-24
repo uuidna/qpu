@@ -25,8 +25,10 @@ import { DONATION, callPriceUsd } from '../src/quantum/net/mcp-http.ts'
 import { BOUND_TOOLS } from '../src/quantum/processing/contract.ts'
 import { LICENSE, PRECEDENCE } from '../src/quantum/processing/unit/license.ts'
 import { RELEASE_REPOSITORY, UNIT_CONCEPT_DOI } from '../src/quantum/processing/release.ts'
+import { callEnvelope, listEnvelope } from '../src/quantum/processing/toolbox.ts'
+import { readJson } from '../src/quantum/processing/machine-run.ts'
 
-export const pkg = JSON.parse(readFileSync('src/quantum/package.json', 'utf8')) as { name: string; version: string; description: string }
+export const pkg = readJson<{ name: string; version: string; description: string }>('src/quantum/package.json')!
 const LEAN_AXIOMS = new Set(['propext', 'Classical.choice', 'Quot.sound'])
 
 // what is achieved
@@ -34,7 +36,7 @@ const byHand = THEOREMS.length
 const leanOnly = THEOREMS.filter((t) => t.axioms.every((a) => LEAN_AXIOMS.has(a))).length
 const families = Object.entries(THEOREMS.reduce<Record<string, number>>((n, t) => ({ ...n, [t.module]: (n[t.module] ?? 0) + 1 }), {}))
   .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1)).map(([module, n]) => `${module} ${n}`).join(', ')
-const tools = ((await handle({ jsonrpc: '2.0', id: 0, method: 'tools/list' })) as { result?: { tools?: unknown[] } }).result?.tools?.length ?? 0
+const tools = ((await handle(listEnvelope(undefined, 0))) as { result?: { tools?: unknown[] } }).result?.tools?.length ?? 0
 // the tools the Worker serves beside the kernel's where it binds its rooms and its Lean prover: the count tools/list answers there
 const bound = BOUND_TOOLS.length
 const achieved = [
@@ -56,7 +58,7 @@ const unprecedented = proved.map((c) => proseFill(PROSE.scriptsDoiRecord_novelty
 // and every related theorem in the kernel, its formula holding on the value its door computes, its answer sealed); the bundle's
 // faster-than-light sale is a condition of no challenge and is never claimed for one
 type Challenge = { id: string; title: string; formula: string; theorem: string; relatedTheorems: readonly string[]; door: { tool: string }; kernelAccepted: boolean; holds: boolean; sealed: boolean; address: string }
-export const solved = ((await handle({ jsonrpc: '2.0', id: 0, method: 'tools/call', params: { name: 'google', arguments: { challenges: true } } })) as { result?: { structuredContent?: { challenges?: Challenge[] } } }).result?.structuredContent?.challenges ?? []
+export const solved = ((await handle(callEnvelope('google', { challenges: true }, 0))) as { result?: { structuredContent?: { challenges?: Challenge[] } } }).result?.structuredContent?.challenges ?? []
 export const complying = solved.filter((c) => c.kernelAccepted && c.holds && c.sealed && moduleOf.has(c.theorem) && c.relatedTheorems.every((t) => moduleOf.has(t)))
 const challenges = complying.map((c) => proseFill(PROSE.scriptsDoiRecord_challenge, c.title, c.id, c.formula, [c.theorem, ...c.relatedTheorems.filter((t) => t !== c.theorem)].join(', '), c.door.tool, c.address))
 
@@ -82,7 +84,7 @@ type Block = { kind: 'h2' | 'p' | 'ul' | 'code' | 'table'; text?: string; items?
 // the quantum capacity, read from metrics and written with no sentence of this file's: every number is the fold door's answer as metrics
 // carries it, the theorem is the statement Lean wrote, and a theorem's sentence is printed only when both the NIST door and the CERN door
 // name that theorem with holds true; otherwise the Lean statement stands alone. The register's own fields (zero) are printed as answered.
-const answered = async (name: string, args: object) => ((await handle({ jsonrpc: '2.0', id: 0, method: 'tools/call', params: { name, arguments: args } })) as { result?: { structuredContent?: Record<string, any> } }).result?.structuredContent ?? {}
+const answered = async (name: string, args: object) => ((await handle(callEnvelope(name, args, 0))) as { result?: { structuredContent?: Record<string, any> } }).result?.structuredContent ?? {}
 export const capacity = (await answered('metrics', {})).quantumCapacity as { register: Record<string, string | number>; receipt: Record<string, string | number | boolean>; parts: Record<string, string | number>[]; whole: boolean; zero: Record<string, unknown>; spaces: Record<string, string>; scales: Record<string, string | number>[]; perHandle: number; unlimited: boolean; used: number; left: number; full: boolean; gate: { theorem: string; holds: boolean; evidence: string }; public: { doors: { tool: string; arguments: object; commercial: string }[] } & Record<string, unknown> }
 // the text is not written while the capacity gate does not hold: the parts make the register, the receipt balances, nothing is left unused
 if (capacity.gate.holds !== true) throw new Error(`quantumCapacity ${capacity.gate.theorem}: ${capacity.gate.evidence}`)
@@ -175,7 +177,7 @@ export const html = [...blocks.map(blockHtml), `<hr><p>${inlineHtml(signed)}</p>
 // the hardware of the build that minted the receipt: every value the machine reports, read as the text is finished, in units a reader
 // compares across builds; no host name, user, path or machine identifier is kept. It changes from machine to machine, so it is its own
 // receipt (the address of its JSON) and the check of the one text leaves it out.
-const qubitsOf = async (name: string) => Number((((await handle({ jsonrpc: '2.0', id: 0, method: 'tools/call', params: { name: 'processor', arguments: { name } } })) as { result?: { structuredContent?: { qubits?: number } } }).result?.structuredContent?.qubits) ?? 0)
+const qubitsOf = async (name: string) => Number((((await handle(callEnvelope('processor', { name }, 0))) as { result?: { structuredContent?: { qubits?: number } } }).result?.structuredContent?.qubits) ?? 0)
 const lean = readFileSync('lean-toolchain', 'utf8').trim()
 const memoryBytes = os.totalmem(), cpus = os.cpus(), used = process.memoryUsage()
 const stateVectorQubits = Math.floor(Math.log2(memoryBytes / 16))

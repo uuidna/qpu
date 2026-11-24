@@ -32,7 +32,7 @@ import { codePoint } from './qec.ts'
 import { WILLOW, isBelowThreshold } from './processor.ts'
 import { canonicalText, channel, seal, uuid } from '../uuid/index.ts'
 
-const near = (a: number, b: number, eps = 1e-9) => Math.abs(a - b) <= eps
+export const near = (a: number, b: number, eps = 1e-9) => Math.abs(a - b) <= eps
 const probAt = (state: { amplitudes: [number, number][] }, i: number) => {
   const a = state.amplitudes[i]
   return a ? a[0] ** 2 + a[1] ** 2 : 0

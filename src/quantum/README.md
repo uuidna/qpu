@@ -80,12 +80,12 @@ theorem textbook_hexbit_gateway_ftl : 32 * 4 - 4 - 2 = 122 ∧ 2 = 2 ∧ 1 < 16 
 
 | repository \{ stable \} |  |
 | --- | --- |
-| stable | false |
-| release | refused |
-| entropy.files | 805 |
-| entropy.leads | 52 |
-| entropy.occurrences | 126 |
-| entropy.byKind | \{"cap":13,"clock":4,"leak":1,"literal":2,"duplicate":77,"shape":29\} |
+| stable | true |
+| release | allowed |
+| entropy.files | 806 |
+| entropy.leads | 0 |
+| entropy.occurrences | 0 |
+| entropy.byKind | \{\} |
 
 | metrics.quantumCapacity.spaces |  |
 | --- | --- |
@@ -130,7 +130,7 @@ theorem textbook_hexbit_gateway_ftl : 32 * 4 - 4 - 2 = 122 ∧ 2 = 2 ∧ 1 < 16 
 - Surface Code Below Threshold (Λ = 2.14), Repetition Code & Steane \[\[7,1,3\]\] CSS QEC (surface-code-qec): P\_L(p) = 3p² − 2p³ = 0.028 \< p = 0.1 ∧ Λ\_3,5,7 = 2.14 \> 1 ∧ Steane \[\[7,1,3\]\] = 14/14, proved by textbook\_bit\_flip\_purity, textbook\_steane, surfacecode\_all, textbook\_toric\_torus\_code and computed by the quantum-error-correction door; sealed as c7944e9f-9252-3f2f-a96e-06171a641ef7.
 - Random Circuit Sampling (RCS) & Cross-Entropy Benchmarking (XEB) Porter–Thomas Speckle (rcs-xeb-beyond-classical): Σ p\_k² \> 1/D ∧ 2/(D+1) \> 1/D (2 \* 16 \> 16 + 1 ∧ 16 + 1 \> 16), proved by textbook\_xeb and computed by the algorithm door; sealed as 801a59dc-a895-73b1-af83-f6a89161c0c5.
 - Quantum Echoes Out-of-Time-Order Correlator (OTOC) Time-Reversal Protocol on Willow (quantum-echoes-otoc): P(U† U \|0⟩ = \|0⟩) = 1 ∧ P(H† Z H \|0⟩ = \|0⟩) = 0 ∧ 65 ≤ 103 ≤ 105, proved by textbook\_echo\_qubits\_within\_willow, Qpu.Verify.Gate.h\_z\_h\_is\_two\_x and computed by the echo door; sealed as 9278d97b-36c7-4e06-962c-d3e55458972f.
-- Cirq State-Vector, Density-Matrix Kraus Channels & Willow Quantum Virtual Machine (cirq-qvm-simulation): Tr(ρ) = 1 ∧ Tr(ρ²) = 0.1² + 0.9² = 0.82 ∧ Cirq\_exports = 28 ∧ emulated = 15/15, proved by textbook\_cirq\_exports and computed by the circuit door; sealed as e93c3458-74db-32c2-b477-bda03123f4e6.
+- Cirq State-Vector, Density-Matrix Kraus Channels & Willow Quantum Virtual Machine (cirq-qvm-simulation): Tr(ρ) = 1 ∧ Tr(ρ²) = 0.1² + 0.9² = 0.82 ∧ Cirq\_exports = 28 ∧ emulated = 15/15, proved by textbook\_cirq\_exports and computed by the circuit door; sealed as b5648eb8-bf19-3908-8554-99c47b81f759.
 - ReCirq Sycamore QAOA Max-Cut, Shor Order-Finding & Bell CHSH Tsirelson Bound (recirq-qaoa-shor-algorithms): 7^4 ≡ 1 (mod 15) ∧ gcd(7² ± 1, 15) = (3, 5) ∧ E\_QAOA(α\*, β\*) \> E\_random ∧ S\_CHSH = 2√2 \> 2, proved by textbook\_shor\_fifteen\_order, qaoa\_all, textbook\_tsirelson, textbook\_order\_finding and computed by the algorithm door; sealed as d9e4efd5-e797-6131-aba2-09101beecd91.
 - OpenFermion H₂ STO-3G Molecular Integrals, Pauli Hamiltonian & VQE Ground Energy (openfermion-chemistry-h2): E\_VQE(θ\*) = min\_θ ⟨00\|exp(iθ Y⊗X) H exp(−iθ Y⊗X)\|00⟩ = E\_FCI = −1.137284 Ha \< E\_HF = −1.116759 Ha, proved by textbook\_h2\_below\_hartree\_fock and computed by the chemistry-simulation door; sealed as fb5f1d3a-d8b3-50d2-ae4c-2a8882bdd2e1.
 - Qualtran Fault-Tolerant Clifford+T Resource Counts & Willow Magic State Cultivation (qualtran-ftqc-magic-state): T(Toffoli) = 7 ∧ T(CS) = 3 ∧ T(T) = 1 ∧ T(Grover) = 7 ∧ T(QEC) = 21 ∧ F\_T(Willow) = 99.99%, proved by surfacecode\_all and computed by the fault-tolerant-design door; sealed as f49209a2-87b3-612a-a629-ba58077a7d34.
@@ -293,14 +293,14 @@ Every source and proof this text rests on, each a link: the doors to call, the p
 - Qpu.Processing.Verify.Gate, proving `Qpu.Verify.Gate.h_z_h_is_two_x`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean>
 ---
 
-This text is one build receipt. Its UUID f8b49c5d-7860-1371-8552-d8e9ce8fd191 is the address of the text above it, and its SHA-256 is 398740acc44329e41ad7d322e0bf088b9cc84569e3a50a1b36d290e950a2d11e. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify \{ uuid, content \} at <https://qpu.uuidna.com/api/mcp>.
+This text is one build receipt. Its UUID 23740d60-959d-7c8b-be9e-fb4be8cd8cfd is the address of the text above it, and its SHA-256 is 2f5a27e5e778215263e0aa6ae1366d54ade8c5e0515e4da3749392e054996827. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify \{ uuid, content \} at <https://qpu.uuidna.com/api/mcp>.
 
 <!-- hardware -->
 
 ## Hardware of the build that minted this receipt
 
-Every value below was read from the machine during the build, and its UUID 4c0efbb8-971d-3351-95f0-38715f4b28d7 is the address of the JSON beneath it, verifiable with verify \{ uuid, content \} like the text above. The machine holds an exact state vector of 31 qubits, since n qubits span 2^n basis states (Vocabulary.system\_dimension) at 16 bytes per complex amplitude; Willow has 105 qubits and Sycamore 54, as the processor door states them, and one UUID register carries 122 (Qubit.effective\_formula). The build took 2970 ms.
+Every value below was read from the machine during the build, and its UUID 0f5b4565-0068-3ccb-a462-dcdfeabc964b is the address of the JSON beneath it, verifiable with verify \{ uuid, content \} like the text above. The machine holds an exact state vector of 31 qubits, since n qubits span 2^n basis states (Vocabulary.system\_dimension) at 16 bytes per complex amplitude; Willow has 105 qubits and Sycamore 54, as the processor door states them, and one UUID register carries 122 (Qubit.effective\_formula). The build took 3028 ms.
 
 ```json
-{"platform":"darwin","release":"27.2.0","arch":"arm64","endianness":"LE","cpu":"Apple M1 Max","cores":10,"parallelism":10,"cpuMHz":2400,"memoryBytes":34359738368,"freeMemoryBytes":5060149248,"load1":3.2578125,"load5":2.6787109375,"load15":3.0224609375,"uptimeS":88113,"node":"26.13.1","v8":"14.6.202.34-node.40","lean":"leanprover/lean4:v4.33.0","rssBytes":328155136,"heapUsedBytes":122758720,"stateVectorQubits":31,"registersInMemory":2147483648,"registerQubitsInMemory":261993005056,"willowQubits":105,"sycamoreQubits":54,"registerQubits":122,"buildMs":2970,"at":"2026-11-24T17:15:15.726Z"}
+{"platform":"darwin","release":"27.2.0","arch":"arm64","endianness":"LE","cpu":"Apple M1 Max","cores":10,"parallelism":10,"cpuMHz":2400,"memoryBytes":34359738368,"freeMemoryBytes":5465178112,"load1":4.44091796875,"load5":3.78857421875,"load15":3.26220703125,"uptimeS":89447,"node":"26.13.1","v8":"14.6.202.34-node.40","lean":"leanprover/lean4:v4.33.0","rssBytes":333479936,"heapUsedBytes":123198232,"stateVectorQubits":31,"registersInMemory":2147483648,"registerQubitsInMemory":261993005056,"willowQubits":105,"sycamoreQubits":54,"registerQubits":122,"buildMs":3028,"at":"2026-11-24T17:37:29.864Z"}
 ```

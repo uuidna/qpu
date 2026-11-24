@@ -3,7 +3,7 @@
 // zero as it states it, the combination spaces and the eight scales of the handle. metrics carries it, the one text prints it, the welcome
 // states it, and every workflow step is gated on it: the parts make the register, the receipt balances and is sealed, and nothing is left unused.
 import { UUID_GROUPS } from './config-index.ts'
-import { uuidQubits } from '../uuid/index.ts'
+import { hexbitRegister } from './clay-register.ts'
 import { LICENSE } from './unit/license.ts'
 import { ALGEBRA_TOOLS } from './toolboxes/billing.ts'
 import { getEntropy } from './audit.ts'
@@ -50,5 +50,5 @@ export const stabilityOf = (files: Readonly<Record<string, string>>) => {
   const stable = c.gate.holds && c.full && leads.length === 0
   return { phase: 'stable' as const, stable, holds: stable, release: stable ? 'allowed' as const : 'refused' as const, capacity: { used: c.used, left: c.left, full: c.full, ...c.gate }, entropy: { files: Object.keys(files).length, leads: leads.length, occurrences: leads.reduce((n, l) => n + l.occurrences, 0), byKind } }
 }
-/** The capacity at the register's own width, straight from the function the fold door serves. */
-export const quantumCapacity = () => capacityOf(uuidQubits(4))
+/** The capacity at the hexbit width the axioms state, straight from the register the fold door serves. */
+export const quantumCapacity = () => capacityOf(hexbitRegister())

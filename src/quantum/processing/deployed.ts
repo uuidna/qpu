@@ -23,7 +23,7 @@ export const createDeployedRequests = (url: string, shards = 8): DeployedRequest
   ]
 }
 
-const brief = (x: unknown) => (typeof x === 'string' ? x : JSON.stringify(x) ?? String(x)).replace(/\s+/g, ' ').slice(0, 400)
+const brief = (x: unknown) => (typeof x === 'string' ? x : JSON.stringify(x) ?? String(x)).replace(/\s+/g, ' ')
 /** The structured answer of one tools/call, or the status and text the server gave in its place. */
 const read = (a: DeployedAnswer): { s: Record<string, any> | null; said: string } => {
   if (a.status !== 200) return { s: null, said: `HTTP ${a.status} ${brief(a.text)}` }

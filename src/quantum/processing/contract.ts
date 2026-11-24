@@ -15,6 +15,8 @@ export const ERROR_KINDS = {
 export type ErrorCode = keyof typeof ERROR_KINDS
 /** A refusal in the one shape every door gives it. */
 export const refusalOf = (code: ErrorCode, error: string, more: Record<string, unknown> = {}) => ({ error, code, kind: ERROR_KINDS[code], ...more })
+/** A tool's answer as MCP carries it: the structured content, and the same as text. */
+export const toolAnswer = (structured: Record<string, unknown>, isError = false) => ({ content: [{ type: 'text' as const, text: JSON.stringify(structured) }], structuredContent: structured, isError })
 /** A thrown error's code: a tool rejects arguments by throwing an Error; a TypeError or ReferenceError is the code's own fault. */
 export const codeOfThrown = (error: unknown): ErrorCode => (error instanceof TypeError || error instanceof ReferenceError ? 'internal_error' : 'invalid_params')
 export const thrownText = (error: unknown): string => { const text = error instanceof Error ? error.message : String(error); return codeOfThrown(error) === 'internal_error' ? proseFill(PROSE.quantumProcessingContract_internal, text) : text }

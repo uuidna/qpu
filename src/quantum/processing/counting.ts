@@ -7,23 +7,23 @@
 // non-Clifford gate, an arbitrary-angle rotation or a gate this repository has not decomposed, is listed and left uncounted,
 // and the count says so: no synthesis cost is invented.
 
-import { T, adjointGate, pauliProduct, type Circuit, type Gate } from './cirq.ts'
+import { T, adjointGate, eachCell, pauliProduct, type Circuit, type Gate } from './cirq.ts'
 
 type Complex = [number, number]
 type Matrix = Complex[]
 
 const mul = (a: Matrix, b: Matrix, dim: number): Matrix => {
   const out: Matrix = Array.from({ length: dim * dim }, () => [0, 0])
-  for (let r = 0; r < dim; r++) for (let k = 0; k < dim; k++) {
+  eachCell(dim, (r, k) => {
     const [ar, ai] = a[r * dim + k]!
-    if (ar === 0 && ai === 0) continue
+    if (ar === 0 && ai === 0) return
     for (let s = 0; s < dim; s++) {
       const [br, bi] = b[k * dim + s]!
       const o = out[r * dim + s]!
       o[0] += ar * br - ai * bi
       o[1] += ar * bi + ai * br
     }
-  }
+  })
   return out
 }
 const dagger = (a: Matrix, dim: number): Matrix => {

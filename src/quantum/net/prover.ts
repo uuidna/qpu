@@ -2,7 +2,7 @@
 // runs Lean's library search over every theorem (lean/tools/Gaps.lean). The prover runs in a Cloudflare Container with
 // no internet (prover-object.ts, alpine/prover-server.ts), so the tool exists where that binding does: the deployed Worker.
 import { PROSE, proseFill } from '../processing/prose-index.ts'
-import { refusalOf } from '../processing/contract.ts'
+import { refusalOf, toolAnswer } from '../processing/contract.ts'
 import { receiptOf } from '../uuid/programs/index.ts'
 
 /** The bounds of one check, stated once: the source's length and the seconds Lean may take; and the container's, which its server
@@ -22,7 +22,7 @@ type Checked = { ok?: unknown; timedOut?: unknown; ms?: unknown; messages?: unkn
 const noVerdict = (code: 'time_limit' | 'prover_failed' | 'prover_busy' | 'prover_unavailable', error: string, more: Record<string, unknown> = {}) => answer(refusalOf(code, error, { verdict: null, retryable: code !== 'time_limit', ...more }), true)
 const hasError = (messages: unknown) => Array.isArray(messages) && messages.some((m) => (m as { severity?: unknown } | null)?.severity === 'error')
 
-const answer = (structured: Record<string, unknown>, isError = false) => ({ content: [{ type: 'text' as const, text: JSON.stringify(structured) }], structuredContent: structured, isError })
+const answer = toolAnswer
 
 /** One lean tools/call against the prover: the source checked before the container is reached, and Lean's verdict sealed as a quantum receipt.
  *  A receipt is issued for a verdict alone: accepted (ok true), or rejected (ok false with at least one error message Lean wrote). It is the
@@ -44,11 +44,11 @@ export const callProver = async (prover: ProverNamespace, args: Record<string, u
     status = r.status; text = await r.text()
   } catch (e) { return unreachable(e) }
   let v: Checked
-  try { v = JSON.parse(text) as Checked } catch { v = { error: 'prover_failed', stderr: text.slice(0, 8192) } }
+  try { v = JSON.parse(text) as Checked } catch { v = { error: 'prover_failed', stderr: text } }
   if (status === 503 && v.error === 'prover_busy') { const seconds = typeof v.retryAfterSeconds === 'number' ? v.retryAfterSeconds : 30; return noVerdict('prover_busy', proseFill(PROSE.quantumNetProver_busy, seconds), { retryAfterSeconds: seconds }) }
   // a verdict is what Lean decided and nothing else: accepted, or rejected with an error of its own
   const accepted = status === 200 && v.ok === true && v.timedOut !== true && !hasError(v.messages), rejected = status === 200 && v.ok === false && v.timedOut !== true && hasError(v.messages)
   if (status === 200 && v.ok === false && v.timedOut === true) return noVerdict('time_limit', proseFill(PROSE.quantumNetProver_timeLimit, PROVER_LIMITS.seconds), { timedOut: true, ms: v.ms, messages: v.messages, toolchain: v.toolchain })
-  if (!accepted && !rejected) return noVerdict('prover_failed', proseFill(PROSE.quantumNetProver_failed, v.exit ?? status), { status, exit: v.exit ?? null, signal: v.signal ?? null, stderr: typeof v.stderr === 'string' ? v.stderr : text.slice(0, 8192), toolchain: v.toolchain })
+  if (!accepted && !rejected) return noVerdict('prover_failed', proseFill(PROSE.quantumNetProver_failed, v.exit ?? status), { status, exit: v.exit ?? null, signal: v.signal ?? null, stderr: typeof v.stderr === 'string' ? v.stderr : text, toolchain: v.toolchain })
   return answer({ ok: accepted, verdict: accepted ? 'accepted' : 'rejected', timedOut: false, ms: v.ms, messages: v.messages, toolchain: v.toolchain, receipt: receiptOf('lean', { source: args.source, ok: v.ok, messages: v.messages, toolchain: v.toolchain }) }, !accepted)
 }

@@ -6,6 +6,7 @@ import { ISO_DIMENSIONS } from './standards.ts'
 import { getAdvantage } from './audit.ts'
 import { ALL_PROCESSORS, DEVICES } from './processor.ts'
 import { CLAUDE_API, GEMINI_API } from './discovery.ts'
+import { entriesOf } from './toolbox.ts'
 
 /** The Schema fields the Gemini API publishes for a function declaration. A keyword outside this set is dropped and its meaning is kept in the description. */
 const GEMINI_SCHEMA = new Set(['type', 'format', 'description', 'nullable', 'enum', 'items', 'maxItems', 'minItems', 'properties', 'required', 'minimum', 'maximum', 'minLength', 'maxLength', 'pattern', 'example', 'anyOf', 'propertyOrdering', 'title'])
@@ -121,7 +122,7 @@ const stripSecrets = (value: unknown): unknown => {
   if (Array.isArray(value)) return value.map(stripSecrets)
   if (!value || typeof value !== 'object') return value
   const out: Record<string, unknown> = {}
-  for (const [key, item] of Object.entries(value as Record<string, unknown>)) {
+  for (const [key, item] of entriesOf(value)) {
     if (SECRET.test(key)) continue
     out[key] = stripSecrets(item)
   }

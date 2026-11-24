@@ -9,6 +9,7 @@ import { PROSE, proseFill } from './prose-index.ts'
 import { ALTERNATIVES, BOUND_TOOLS, ERROR_KINDS, KERNEL_STATE, NOT_IDEMPOTENT, codeOfThrown, findAmbiguity, thrownText, type ErrorCode } from './contract.ts'
 import { INPUT_EXAMPLES, OUTPUTS } from './outputs-index.ts'
 import { capacityOf, quantumCapacity } from './capacity.ts'
+import { hexbitRegister as registerAtHexbit } from './clay-register.ts'
 import { GOOGLE_MCPS, QPU_MCP, mcpHostList } from './discovery.ts'
 import { GOOGLE_DOOR, bindGoogleCall } from './toolboxes/google.ts'
 import * as cirq from './cirq.ts'
@@ -61,7 +62,7 @@ import { WILLOW as WILLOW_PROC, ALL_PROCESSORS, QUANTUM_HARDWARE_STACK, DEVICES,
 import { engineReceipt } from './compat.ts'
 import { algorithmWidget, chemistryWidget, circuitWidget, echoBenchmarkWidget, echoWidget, errorCorrectionWidget, leadsWidget, entropyWidget, processorWidget, quantumlibWidget, repositoriesWidget, resourcesWidget, roadmapWidget, softwareWidget, statementsWidget, auditWidget, apisWidget, matchWidget, clayWidget, verifyWidget, seoWidget } from './widgets.ts'
 import { APPLICATIONS, ROADMAP } from './roadmap.ts'
-import { groverCircuit, inverseOperations, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, teleportProof, getInteger, pasteInteger, writeInteger, testPrimality, listFactors, shorReduction, createImpossible, decodeImpossible, orderFinding, orderWitness, sqrtBig, deutschJozsaCircuit, bernsteinVaziraniCircuit, simonCircuit, vqeGroundEnergy, chshValue, trotterFidelity, xebCollision, cloningFidelity, holevoChi, stabilizerCompression, cliffordOrder, htUniversality, steaneCorrection, courtState } from './algorithms.ts'
+import { groverCircuit, inverseOperations, phaseEstimationCircuit, qaoaCircuit, qaoaExpectedCut, qaoaSweep, totalWeight, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, teleportProof, getInteger, pasteInteger, writeInteger, testPrimality, listFactors, shorReduction, createImpossible, decodeImpossible, orderFinding, orderWitness, sqrtBig, deutschJozsaCircuit, bernsteinVaziraniCircuit, simonCircuit, vqeGroundEnergy, chshValue, trotterFidelity, xebCollision, cloningFidelity, holevoChi, stabilizerCompression, cliffordOrder, htUniversality, steaneCorrection, courtState } from './algorithms.ts'
 import { STATEMENTS, SOFTWARE, type StatementTopic } from './statements.ts'
 import { LEADS, leadCounts, combineLeads, listRunnableLeads, runSession, sitemapLeads, type Lead, type LeadStatus, type CellLead, type SessionInput } from './leads.ts'
 import { REPOSITORIES, PAYLOADCMS_MONOREPO_PACKAGES } from './repositories.ts'
@@ -70,7 +71,8 @@ import { BOHR_ANGSTROM, STO3G_H, TUTORIAL_ENERGIES, ansatzCircuit, energyAt, hyd
 import { CLIFFORD_CHECK_ARITY, countResources } from './counting.ts'
 import { stamp, tick } from '../uuid/programs/clock/index.ts'
 
-export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
+import type { Rpc } from './audit.ts'
+export type { Rpc }
 export type Reply =
   | { jsonrpc: '2.0'; id: number | string | null; result: unknown }
   | { jsonrpc: '2.0'; id: number | string | null; error: { code: number; message: string; data?: unknown } }
@@ -81,7 +83,7 @@ const ISO_QUANTUM_AI = {
   experience: 'iso-quantum-ai' as const,
   vocabulary: 'ISO/IEC 4879:2024' as const,
   entropy: {
-    law: 'first the dictionary meaning; then the meaning is verified' as const,
+    law: ENTROPY_LAW,
     dictionary: 'disorder; unpredictability; unavailable energy or information' as const,
     verified: { standard: 'ISO 80000-5:2019' as const, definition: 'S = k ln W' as const },
   },
@@ -324,7 +326,7 @@ const coverLeftovers = (left: readonly bigint[]) => {
   const cover = entriesCover(developed.map((row) => ({ from: row.from, body: { code: 1, strategy: 'nonconforming', standard: 'ISO 9001', bits: row.width, formula: row.formula, iso: row.served.iso, docs: row.served.docs } })))
   return {
     ...cover, via: 'hooks' as const, manual: false as const, process: 'ISO 9001' as const, hooks: ['beforeChange', 'afterChange', 'afterRead'] as const,
-    beforeChange: 'the formula is recorded' as const, afterChange: 'the formula is handed to the docs door' as const, afterRead: 'the documented formula is served' as const,
+    ...HOOK_STEPS,
     documented: developed.every((row) => row.documented),
     developed: developed.map((row) => ({ from: row.from, bits: row.width, formula: row.formula, documented: row.documented })),
   }
@@ -710,6 +712,9 @@ import { extractFacts, createVerifyRequests } from './verifiers.ts'
 import { CRYPTO } from './toolboxes/crypto.ts'
 import { blockJsonLd, createOpenapi, OPENAPI_RESOURCE } from './standards.ts'
 import { cell } from './widgets.ts'
+import { ENTROPY_LAW } from '../uuid/laws.ts'
+import { HOOK_STEPS } from './iso-develop.ts'
+import { callEnvelope } from './toolbox.ts'
 export { cell }
 export { redact } from './machine.ts' // the leak table's redaction, for the generated plugin
 
@@ -882,7 +887,7 @@ const portToZero = (parts: readonly bigint[]) => {
     bit: 0 as const, bits: 0 as const, via: 'clay' as const,
     theorems: combos.products.length, axioms: combos.axioms.length, crossVerified: combos.crossVerified, verified: combos.verified, combinations: combos.space, problems: combos.problems, solved: combos.solved, depth: combos.depth,
     rows,
-    hooks: ['beforeChange', 'afterChange', 'afterRead'] as const, beforeChange: 'the formula is recorded' as const, afterChange: 'the formula is handed to the docs door' as const, afterRead: 'the documented formula is served' as const,
+    hooks: ['beforeChange', 'afterChange', 'afterRead'] as const, ...HOOK_STEPS,
     manual: false as const, process: 'ISO 9001' as const, documented,
     open: true as const, closed: false as const, status: 'open' as const,
     holds: false as const,
@@ -1341,7 +1346,7 @@ const OWN: Tool[] = [
           if (weights.length !== graph.edges.length) reject(proseFill(PROSE.quantumProcessingMcp_s139, graph.edges.length))
           graph.edges.forEach((e, i) => { e.weight = weights[i]! })
         }
-        const total = graph.edges.reduce((sum, e) => sum + e.weight, 0)
+        const total = totalWeight(graph)
         if (args.sweep === true) {
           const sweep = qaoaSweep(graph)
           return {
@@ -1525,7 +1530,7 @@ const OWN: Tool[] = [
         const askedN = getInteger(args.N, 'N')
         const width = askedN < 2n ? 0 : askedN.toString(2).length
         const circuitQubits = 3 * width
-        const register = uuidQubits(AXIOMS.find((row) => row.name === 'hexbit')!.value)
+        const register = registerAtHexbit()
         const qubits = register.effective
         const receipt = register.receipt
         const handles = register.handles
@@ -2453,7 +2458,7 @@ const clone = defineTool('tree', {
 })
 
 export const TOOLBOXES: Toolbox[] = [
-  { name: 'google', idea: PROSE.quantumProcessingMcp_idea394, tools: [...OWN.filter((t) => t.toolbox === 'google'), GOOGLE_DOOR], examples: [], skill: { instructions: PROSE.quantumProcessingMcp_instructions395, directions: [PROSE.quantumProcessingMcp_s396], selftest: (ctx) => { const checks = ctx.examples.filter((e) => OWN.some((t) => t.name === e.tool && t.toolbox === 'google')).map((e) => { const r = ctx.handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: e.tool, arguments: e.arguments } }); const why = 'error' in r ? r.error.message : e.expect(r.result.structuredContent); return { id: `google:${e.id}`, passed: why === null, evidence: why ?? e.shows } }); return { passed: checks.every((c) => c.passed), checks } } } },
+  { name: 'google', idea: PROSE.quantumProcessingMcp_idea394, tools: [...OWN.filter((t) => t.toolbox === 'google'), GOOGLE_DOOR], examples: [], skill: { instructions: PROSE.quantumProcessingMcp_instructions395, directions: [PROSE.quantumProcessingMcp_s396], selftest: (ctx) => { const checks = ctx.examples.filter((e) => OWN.some((t) => t.name === e.tool && t.toolbox === 'google')).map((e) => { const r = ctx.handle(callEnvelope(e.tool, e.arguments)); const why = 'error' in r ? r.error.message : e.expect(r.result.structuredContent); return { id: `google:${e.id}`, passed: why === null, evidence: why ?? e.shows } }); return { passed: checks.every((c) => c.passed), checks } } } },
   { name: 'tree', idea: PROSE.quantumProcessingMcp_idea397, tools: [...OWN.filter((t) => t.toolbox === 'tree'), metrics, textbook, css, dashboard, clone, apis], examples: [], skill: { instructions: PROSE.quantumProcessingMcp_instructions398, directions: [PROSE.quantumProcessingMcp_s399, PROSE.quantumProcessingMcp_s400], selftest: (ctx) => { const m = matchStatement(PROSE.quantumProcessingMcp_s401, ctx.handle, ctx.examples, ctx.leads); const k = combineLeads(ctx.leads, '0'.repeat(31) + '1'); const ses = runSession({ open: [{ id: 'x', title: 'read every session transcript', status: 'draft', started: true }], directives: [{ session: 's', at: '', text: PROSE.quantumProcessingMcp_text402 }, { session: 's', at: '', text: 'ok' }], breaks: [{ text: 'git push' }] }); const checks = [{ id: 'tree:match-serves', passed: m.verdict === 'served', evidence: `${m.verdict} via ${m.tool}` }, { id: 'tree:lead-cells', passed: k.cells.length === 432 && k.filled + k.empty === 432 && k.cells.reduce((n, c) => n + c.count, 0) === ctx.leads.length && k.default.cell === 1 && k.cells.every((c) => c.digits.reduce((n, d, i) => n + d * k.places[i]!, 0) === c.cell), evidence: proseFill(PROSE.quantumProcessingMcp_evidence403, k.says) }, { id: 'tree:session-partition', passed: ses.directives.folded === 1 && ses.directives.assents === 1 && ses.breaks['raw git commit or push in a shell'] === 1 && ses.items[0]?.started === true, evidence: ses.says }]; return { passed: checks.every((c) => c.passed), checks } } } },
   FLOW,
   LANGUAGE,
@@ -2601,7 +2606,7 @@ const chatCoverage = (chatArg: unknown) => {
   return chatShare(keys)
 }
 // the tools/call envelope, written once
-export const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { result?: { structuredContent?: any }; error?: { message: string } }
+export const call = (name: string, args: unknown) => handle(callEnvelope(name, args)) as { result?: { structuredContent?: any }; error?: { message: string } }
 bindGoogleCall(call) // the google toolbox reaches the handler through this binding, never by import
 // the theorems that count what the tools compute read it from here
 updateTheoremSources({ toolboxes: TOOLBOXES, call, googleMcps: GOOGLE_MCPS, get examples() { return EXAMPLES } })

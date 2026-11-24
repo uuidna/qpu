@@ -7,7 +7,7 @@
 import { WORKFLOWS } from '../config-index.ts'
 import { PROSE, proseFill } from '../prose-index.ts'
 import { getAnswer } from './extension.ts'
-import { defineTool, isObj, createChecks, unlimited, type Toolbox } from '../toolbox.ts'
+import { defineTool, isObj, createChecks, unlimited, onlySelftest, type Toolbox } from '../toolbox.ts'
 import { isContracted } from '../wave.ts'
 import { flowWidget } from '../widgets.ts'
 import { verifyTheorems } from '../verification.ts'
@@ -320,7 +320,7 @@ const repository = defineTool('repository', {
   description: PROSE.quantumProcessingToolboxesRepository_description107,
   inputSchema: { type: 'object', properties: { release: { type: 'object', description: PROSE.quantumProcessingToolboxesRepository_description108 }, deployed: { type: 'object', description: PROSE.quantumProcessingToolboxesRepository_deployed }, stable: { type: 'object', description: PROSE.quantumProcessingToolboxesRepository_stable }, status: { type: 'object', description: PROSE.quantumProcessingToolboxesRepository_description109 }, plasma: { type: 'object', description: PROSE.quantumProcessingToolboxesRepository_description110 }, penalties: { type: 'array', items: { type: 'object' }, description: PROSE.quantumProcessingToolboxesRepository_description111 }, steps: { type: 'object', description: PROSE.quantumProcessingToolboxesRepository_description112 }, docs: { type: 'object', description: PROSE.quantumProcessingToolboxesRepository_description113 }, capacity: { type: 'object', description: PROSE.quantumProcessingToolboxesRepository_description114 }, e2e: { type: 'object', description: PROSE.quantumProcessingToolboxesRepository_description115 }, penalty: { type: 'object', description: PROSE.quantumProcessingToolboxesRepository_description116 }, via: { type: 'string', enum: ['rest', 'mcp'], description: PROSE.quantumProcessingToolboxesRepository_description117 }, local: { type: 'object', description: '{ remote, head, branch, version, worktrees, branches, tags, conceptDoi }' }, contracts: { type: 'object' }, answers: { type: 'array', items: { type: 'object' } }, machine: { type: 'object', description: PROSE.quantumProcessingToolboxesRepository_description118 }, workflow: { type: 'string', enum: [...WORKFLOWS], description: PROSE.quantumProcessingToolboxesRepository_description119 }, offline: { type: 'boolean', description: PROSE.quantumProcessingToolboxesRepository_description120 }, facts: { type: 'object', description: PROSE.quantumProcessingToolboxesRepository_description121 }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
-    if (Object.keys(args).every((k) => k === 'selftest')) return unlimited() as never
+    if (onlySelftest(args)) return unlimited() as never
     if (isObj(args.machine)) {
       const m = args.machine as { actions?: boolean; next?: boolean; plan?: MachineRequest; record?: MachineRun }
       if (m.next === true) return nextWaves()
