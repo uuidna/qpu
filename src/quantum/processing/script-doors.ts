@@ -10,6 +10,7 @@ import { canonicalText, seal, uuid, uuidQubits } from '../uuid/index.ts'
 import { TOOLBOXES } from './mcp.ts'
 import { GENERATED_LEMMAS, KERNEL_THEOREMS, NOVELTIES, OPEN_CLAIMS, THEOREMS } from './theorems-index.ts'
 import { receiptOf } from '../uuid/programs/index.ts'
+import { LEAD_ROWS } from './leads-index.ts'
 
 /** Qpu/General/Textbook.lean is written in Lean. This door renders nothing: it names the file and counts what the index read from it. */
 const textbookLean = () => {
@@ -280,7 +281,7 @@ const scriptsCatalog = () => ({
 export type ScriptsArgs = {
   catalog?: boolean
   clay?: { lean?: string }
-  leadsIndex?: { rows?: LeadRow[] }
+  leadsIndex?: { rows?: LeadRow[]; add?: LeadRow[] }
   tablesIndex?: { tables?: Record<string, unknown[] | Record<string, unknown>>; prior?: Record<string, unknown>; dry?: boolean }
   textbookLean?: boolean
   blueprint?: { lean?: Record<string, string> }
@@ -299,6 +300,12 @@ export const scripts = (args: ScriptsArgs, ctx?: { examples?: readonly { id: str
   if (args.status === true && ctx?.call && ctx.examples) return status({ examples: ctx.examples, call: ctx.call })
   if (args.theoremsIndex && typeof args.theoremsIndex === 'object') return theoremsIndex()
   if (args.leadsIndex && Array.isArray(args.leadsIndex.rows)) return leadsIndex(args.leadsIndex.rows)
+  // new leads merged into the record this build holds, so one call of the runner deposits a lead; a lead already recorded is kept as it is,
+  // since a lead changes only by its own row and leaves only by a verdict
+  if (args.leadsIndex && Array.isArray(args.leadsIndex.add)) {
+    const known = new Set(LEAD_ROWS.map((l) => l.id)), fresh = args.leadsIndex.add.filter((l) => typeof l.id === 'string' && typeof l.statement === 'string' && typeof l.status === 'string' && !known.has(l.id) && known.add(l.id))
+    return { ...leadsIndex([...LEAD_ROWS, ...fresh]), added: fresh.map((l) => String(l.id)), kept: args.leadsIndex.add.length - fresh.length }
+  }
   if (args.tablesIndex && args.tablesIndex.tables && typeof args.tablesIndex.tables === 'object') {
     return tablesIndex(args.tablesIndex.tables, args.tablesIndex.prior ?? {}, args.tablesIndex.dry === true)
   }
