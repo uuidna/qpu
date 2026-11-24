@@ -229,7 +229,7 @@ export const hexbit = (address: string, width = 4) => {
 export type Step = { nibble: number; tool: string; arguments: Record<string, unknown> }
 /** A program compiled against the tools: each of the ten program nibbles picks a usable tool (not audit/match/verify), its enum parameters chosen by the
  *  nibble and its integer parameters read from the tail's three 16-bit values clamped into the schema's bounds; the first step is `next`. Pure; served by
- *  the Compile docs component (its use keeps it, textbook_program_compiles). */
+ *  the Compile docs component (its use keeps it). */
 export const compile = (program: readonly number[], tools: readonly { name: string; inputSchema: { properties?: Record<string, { type?: string; enum?: unknown[]; minimum?: number; maximum?: number; default?: unknown }>; required?: string[] } }[], message: { three16: readonly number[] }): { steps: Step[]; next: Step | undefined } => {
   const usable = tools.filter((t) => !['audit', 'match', 'verify'].includes(t.name))
   const steps: Step[] = program.map((nibble, i) => {

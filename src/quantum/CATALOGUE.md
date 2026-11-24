@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1576 products, 2 under a declared claim context and 1574 as the author's own statement, with 1076 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1580 products, 2 under a declared claim context and 1578 as the author's own statement, with 1075 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -1173,6 +1173,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (k : ℕ), (List.replicate k 2).length = k ∧ 2 ^ k ≤ Advantage.space (List.replicate k 2)
 ```
 
+### `Advantage.fold_unfold`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ) (i : Fin n), i.rev.rev = i
+```
+
+### `Advantage.fold_upper_onto_lower`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (h : ℕ) (i : Fin (2 * h)), h ≤ ↑i ↔ ↑i.rev < h
+```
+
 ### `Advantage.rank_unrank`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -1213,12 +1229,29 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (sizes : List ℕ), (∀ s ∈ sizes, 2 ≤ s) → 2 ^ sizes.length ≤ Advantage.space sizes
 ```
 
+### `Advantage.unrank_cons_address`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (s : ℕ) (rest : List ℕ) (i : ℕ),
+  Advantage.unrank (s :: rest) i = i / Advantage.space rest % s :: Advantage.unrank rest i
+```
+
 ### `Advantage.unrank_length`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
 ∀ (sizes : List ℕ) (i : ℕ), (Advantage.unrank sizes i).length = sizes.length
+```
+
+### `Advantage.unrank_mod`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (sizes : List ℕ) (k i : ℕ), Advantage.unrank sizes (i % (k * Advantage.space sizes)) = Advantage.unrank sizes i
 ```
 
 ### `Advantage.uuid_address`
@@ -6466,7 +6499,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_code_folds`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-commit-folds, repository-commit-grows, repository-commit-joined.
 
 ```lean
 ∀ (s a r : ℕ), a ≤ r → r ≤ s → s + a - r ≤ s
@@ -6474,7 +6507,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_code_folds_contrapositive`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-commit-folds, repository-commit-grows, repository-commit-joined.
 
 ```lean
 ∀ (s a r : ℕ), ¬s + a - r ≤ s → ¬(a ≤ r ∧ r ≤ s)
@@ -6482,7 +6515,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_code_folds_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-commit-folds, repository-commit-grows, repository-commit-joined.
 
 ```lean
 ∀ (s a r : ℕ), a ≤ r → r ≤ s → ∀ (σ : ℕ), σ - s ≤ σ - (s + a - r)
@@ -7705,7 +7738,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_google_one_door`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, textbook-rewrite.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, textbook-rewrite.
 
 ```lean
 ∀ (direct : ℕ), direct = 0 ↔ ¬0 < direct
@@ -7713,7 +7746,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_google_one_door_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, textbook-rewrite.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, textbook-rewrite.
 
 ```lean
 ∀ (direct : ℕ), ¬0 < direct ↔ direct = 0

@@ -11,4 +11,6 @@ def siteVitepressConfig_citeAuthor : String := "⟦0⟧, ORCID ⟦1⟧"
 def siteVitepressConfig_citeWork : String := "DOI ⟦0⟧, every version"
 def siteVitepressConfig_citeRecord : String := "DOI ⟦0⟧, cited as the author's own record"
 
+def siteVitepressConfig_possibilities : String := "VitePress possibilities"
+def siteVitepressConfig_possibilitiesSays : String := "Every possibility the installed VitePress offers and how this site uses each, computed at build from the package's own types, exports and components and from this site's config and theme."
 end Prose

@@ -268,13 +268,13 @@ theorem textbook_penalty_learned_prevents (learned raised : Bool) (h : learned =
 example := @textbook_penalty_learned_prevents
 /-- textbook_penalty_learned_prevents reflected by its shape, equality (examples: repository-penalty-learned, repository-penalty-learning) -/
 @[reflection] theorem textbook_penalty_learned_prevents_reflected (learned raised : Bool) (h : learned = true → raised = false) (hl : learned = true) : (false) = (raised) := Eq.symm (textbook_penalty_learned_prevents learned raised h hl)
-/-- code that folds never grows the tree: adding a bytes and removing r ≥ a leaves s + a − r ≤ s. From Mathlib's `tsub_le_iff_right`, `add_le_add_right`, `Nat.instOrderedSub`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` (examples: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes) -/
+/-- code that folds never grows the tree: adding a bytes and removing r ≥ a leaves s + a − r ≤ s. From Mathlib's `tsub_le_iff_right`, `add_le_add_right`, `Nat.instOrderedSub`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` (examples: repository-commit-folds, repository-commit-grows, repository-commit-joined) -/
 theorem textbook_code_folds (s a r : Nat) (h : a ≤ r) (hr : r ≤ s) : s + a - r ≤ s :=
   tsub_le_iff_right.mpr (add_le_add_right h s)
 example := @textbook_code_folds
-/-- textbook_code_folds reflected by its shape (examples: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes) -/
+/-- textbook_code_folds reflected by its shape (examples: repository-commit-folds, repository-commit-grows, repository-commit-joined) -/
 @[reflection] theorem textbook_code_folds_reflected (s a r : Nat) (h : a ≤ r) (hr : r ≤ s) (σ : Nat) : σ - (s) ≤ σ - (s + a - r) := Nat.sub_le_sub_left (textbook_code_folds s a r h hr) σ
-/-- the contrapositive of textbook_code_folds (examples: repository-commit-folds, repository-commit-grows, repository-commit-joined, repository-commit-payload-writes) -/
+/-- the contrapositive of textbook_code_folds (examples: repository-commit-folds, repository-commit-grows, repository-commit-joined) -/
 @[reflection] theorem textbook_code_folds_contrapositive (s a r : Nat) : ¬ (s + a - r ≤ s) → ¬ ((a ≤ r) ∧ (r ≤ s)) := fun hc hh => hc (textbook_code_folds s a r hh.1 hh.2)
 /-- when no new export is left unproven, every new export is proven: proven ≤ news and news − proven = 0 give proven = news. From Mathlib's `le_antisymm`, `tsub_eq_zero_iff_le`, `Nat.instCanonicallyOrderedAdd`, `Nat.instOrderedSub` (examples: repository-commit-folds, repository-commit-grows) -/
 theorem textbook_new_doors_proven (news proven : Nat) (hp : proven ≤ news) (hu : news - proven = 0) : proven = news :=
@@ -847,11 +847,11 @@ theorem textbook_commit_green (green skipped : Nat) : green + skipped + 0 = gree
 example := @textbook_commit_green
 /-- textbook_commit_green reflected by its shape (examples: repository-refuse-commit) -/
 @[reflection] theorem textbook_commit_green_reflected (green skipped : Nat) (σ : Nat) : σ - (green + skipped) = σ - (green + skipped + 0) := congrArg (σ - ·) (Eq.symm (textbook_commit_green green skipped))
-/-- a commit holds the rule google-via-payload exactly when its direct Google calls are zero, that is when they are not positive. From Mathlib's `not_lt` (examples: repository-google-via-payload, textbook-rewrite) -/
+/-- a commit holds the rule google-via-payload exactly when its direct Google calls are zero, that is when they are not positive. From Mathlib's `not_lt` (examples: repository-google-via-payload, repository-genuine, textbook-rewrite) -/
 theorem textbook_google_one_door (direct : Nat) : direct = 0 ↔ ¬ 0 < direct := by
   rw [not_lt, Nat.le_zero]
 example := @textbook_google_one_door
-/-- textbook_google_one_door reflected by its shape (examples: repository-google-via-payload, textbook-rewrite) -/
+/-- textbook_google_one_door reflected by its shape (examples: repository-google-via-payload, repository-genuine, textbook-rewrite) -/
 @[reflection] theorem textbook_google_one_door_reflected (direct : Nat) : (¬ 0 < direct) ↔ (direct = 0) := Iff.symm (textbook_google_one_door direct)
 /-- a Google call runs exactly when its violations sum to none, that is when each kind is none: a sum of naturals is zero iff every summand is. From Mathlib's `add_eq_zero` and `Unique.instSubsingleton` (examples: google-call-validated, google-call-endpoint, google-call-refused) -/
 theorem textbook_google_call_schema (unknown missing broken : ℕ) : unknown + missing + broken = 0 ↔ unknown = 0 ∧ missing = 0 ∧ broken = 0 := by

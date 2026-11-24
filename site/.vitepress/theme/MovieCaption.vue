@@ -5,8 +5,10 @@ import { computed, onMounted } from 'vue'
 import { data } from './supremacy.data'
 import { live, liveError, startLive } from './movie-live'
 
-const kernel = computed(() => data.theorems.map((t) => t.key))
-onMounted(startLive)
+// each formula the movie plays, with how many theorems of the kernel index state it, each experiment's statement,
+// and the equality the movie's clock is read from
+const kernel = computed(() => [...data.played.map((p) => `${p.formula} · ${p.keys.length}`), ...[...data.experiments.within, ...data.experiments.separated].map((e) => e.statement), ...(data.clock ? [data.clock.statement] : [])])
+onMounted(() => startLive(data.clock))
 </script>
 
 <template>
@@ -19,7 +21,7 @@ onMounted(startLive)
     </p>
     <p class="qpu-caption__limit">No program on classical hardware proves quantum supremacy, and no classical lower bound for these tasks is proved: the classical times are their authors' estimates.</p>
     <ul class="qpu-caption__kernel">
-      <li v-for="key in kernel" :key="key">✓ {{ key }}</li>
+      <li v-for="formula in kernel" :key="formula">✓ {{ formula }}</li>
       <li v-for="m in data.missing" :key="m" class="missing">✗ {{ m }}, not in the kernel index</li>
     </ul>
   </section>

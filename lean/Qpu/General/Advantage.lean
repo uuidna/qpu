@@ -56,6 +56,31 @@ theorem rank_unrank (sizes : List Nat) (i : Nat) (h : i < space sizes) : rank si
     rw [Nat.mod_eq_of_lt hdiv, ih (i % space rest) (Nat.mod_lt i hpos)]
     exact Nat.div_add_mod' i (space rest)
 
+/-- Reading an address reduced modulo any multiple of the space gives the same variation: the digits depend on the address modulo the space alone. By Nat.mod_mul_right_div_self and Nat.mod_mul_left_mod. -/
+theorem unrank_mod (sizes : List Nat) (k i : Nat) : unrank sizes (i % (k * space sizes)) = unrank sizes i := by
+  cases sizes with
+  | nil => rfl
+  | cons s rest =>
+    have hd : i % (k * (s * space rest)) / space rest % s = i / space rest % s := by
+      rw [show k * (s * space rest) = space rest * (k * s) by ac_rfl, Nat.mod_mul_right_div_self, Nat.mod_mul_left_mod]
+    have tl : i % (k * (s * space rest)) % space rest = i % space rest := by
+      rw [show k * (s * space rest) = (k * s) * space rest by ac_rfl, Nat.mod_mul_left_mod]
+    simp only [unrank, space, hd, tl]
+
+/-- Every digit is read from the address itself: the digit of a side is the address over the space of the sides after it, modulo the side, and the sides after it read the same address. No remainder is carried from side to side, so each digit is one division and one remainder, the form a stylesheet computes (lean/tools/Css.lean). By Advantage.unrank_mod. -/
+theorem unrank_cons_address (s : Nat) (rest : List Nat) (i : Nat) :
+    unrank (s :: rest) i = (i / space rest) % s :: unrank rest i := by
+  have h := unrank_mod rest 1 i
+  rw [Nat.one_mul] at h
+  simp only [unrank, h]
+
+/-- A fold in half sends the upper half of a block onto the lower half, and only the upper half: a place of a block of `2 * h` places is in the upper half exactly when its mirror `Fin.rev` is in the lower. The site's icon folds by this (lean/tools/Fold.lean). By Fin.val_rev. -/
+theorem fold_upper_onto_lower (h : Nat) (i : Fin (2 * h)) : h ≤ i.val ↔ (Fin.rev i).val < h := by
+  rw [Fin.val_rev]; omega
+
+/-- The fold that closes a block opens it again: the mirror of the mirror of a place is the place. By Fin.rev_rev. -/
+theorem fold_unfold (n : Nat) (i : Fin n) : Fin.rev (Fin.rev i) = i := Fin.rev_rev i
+
 /-- A receipt of one read by address: the sides, the address read, and the digits found there. -/
 structure Receipt where
   /-- the size of each side of the space -/

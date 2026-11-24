@@ -108,7 +108,6 @@ def quantumProcessingToolboxesRepository_s94 : String := "a Zenodo version witho
 def quantumProcessingToolboxesRepository_s95 : String := "the hooks hold no Payload MCP key"
 def quantumProcessingToolboxesRepository_s96 : String := "security add-generic-password -s qpu-app-key -a \"$USER\" -w stores it in the keychain once, the user's act; until then penalties queue in .qpu and nothing waits"
 def quantumProcessingToolboxesRepository_s97 : String := "gcloud auth application-default login is the user's; the adapters answer keyless meanwhile"
-def quantumProcessingToolboxesRepository_s98 : String := "the install is the user's; the tree builds on the installed one meanwhile"
 def quantumProcessingToolboxesRepository_s99 : String := "main is not protected at the remote"
 def quantumProcessingToolboxesRepository_s100 : String := "the setting is the user's; the hooks enforce the rules meanwhile"
 def quantumProcessingToolboxesRepository_s101 : String := "a second workspace holds work the main one does not see; merge or record it"
@@ -150,6 +149,9 @@ def quantumProcessingToolboxesRepository_s136 : String := "a refused request is 
 def quantumProcessingToolboxesRepository_s137 : String := "the page renders the tags row"
 def quantumProcessingToolboxesRepository_s138 : String := "three doors (⟦0⟧), their event-stream answers read into ⟦1⟧ branches, ⟦2⟧ tags, ⟦3⟧ release(s)"
 def quantumProcessingToolboxesRepository_postPush : String := "after push is the report of what left the machine: every remote-tracking ref that moved and the commit it now names; it cannot refuse, and a push to main is deployed by the deploy workflow"
+def quantumProcessingToolboxesRepository_genuine : String := "nothing shown is fake: no image is kept as a file where the build computes it, and no animation takes a typed time or count where a proven statement gives it"
+def quantumProcessingToolboxesRepository_genuineHolds : String := "nothing fake is shown"
+def quantumProcessingToolboxesRepository_genuineUnread : String := "what is shown was not searched"
 def quantumProcessingToolboxesRepository_report : String := "the act reported to the Payload app through its MCP door, which answers the decision; with no door in reach the decision is computed here"
 
 end Prose
