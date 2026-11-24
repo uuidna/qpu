@@ -345,6 +345,8 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
     const dir = join(cwd, 'src/quantum'), pkg = readJson<any>(join(dir, 'package.json')), packed = JSON.parse((await spawnRun('npm', ['pack', '--dry-run', '--json', '--ignore-scripts'], { cwd: dir })).stdout || '[]')[0]?.files?.map((f: { path: string }) => `./${f.path}`) ?? null
     facts.npm = { name: pkg.name, version: pkg.version, license: pkg.license, description: pkg.description, exports: pkg.exports, packed }
   }
+  // a push the commit's hook started carries the commit's context: the hook before the push is handed it with the commit and branch it is for
+  if (name === 'pre-push' && process.env.QPU_CONTEXT) facts.context = { given: process.env.QPU_CONTEXT, head: await git('rev-parse', 'HEAD'), branch: facts.branch }
   type Decision = { allowed: boolean; says?: string; rules: { rule: string; holds: boolean | null; evidence: string }[] }
   // a workflow after the act reports it to the door: the commit, and for a push every remote-tracking ref that moved (old, new, ref, as git hands them over)
   if (after) {
@@ -354,6 +356,26 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   const d = ask({ workflow: name, facts }).decision as Decision
   for (const r of d.rules) console.log(`${r.holds === true ? '✓' : r.holds === false ? '✗' : '?'} ${r.rule}: ${r.evidence}`)
   console.log(`hook ${name}: ${after ? 'reported' : d.allowed && !red ? 'allowed' : 'refused'}${d.says ? `: ${d.says}` : ''}`)
+  // one pipeline: the hook after a stage starts the next, handing it this stage's context; a rule that does not hold, a detached head or QPU_HOLD starts nothing
+  const branch = String(facts.branch ?? ''), chain = w.steps.find((s) => s.detach && (s.id === 'push' || s.id === 'ship'))
+  if (after && chain && branch && !process.env.QPU_HOLD && d.rules.every((r) => r.holds !== false)) {
+    const { pipelineContexts } = await import('./pipeline.ts'), head = await git('rev-parse', 'HEAD'), contexts = pipelineContexts(head, branch)
+    if (chain.id === 'push') {
+      console.log(`context commit ${contexts.commit.address}`)
+      const pushed = await spawnRun(chain.cmd!, chain.args ?? [], { cwd, env: { QPU_CONTEXT: contexts.commit.address }, onLine: (l) => console.log(l) })
+      console.log(`chain push: ${pushed.status === 0 ? 'pushed' : `exit ${pushed.status}`}`)
+    } else if (branch !== 'main' && rest.some((x, i) => i % 3 === 2 && x === `refs/remotes/origin/${branch}` && rest[i - 1] === head)) {
+      // this push moved the branch to this commit: its pull request is opened where none is and the branch is ahead of main
+      const open = await spawnRun('gh', ['pr', 'list', '--head', branch, '--state', 'open', '--json', 'url', '--jq', '.[0].url'], { cwd }), ahead = Number(await git('rev-list', '--count', `origin/main..${head}`))
+      console.log(`context push ${contexts.push.address}`)
+      if (open.status === 0 && open.stdout.trim()) console.log(`chain ship: ${open.stdout.trim()}`)
+      else if (open.status === 0 && ahead > 0) {
+        const body = `${await git('log', '-1', '--format=%b')}\n\ncontext: ${contexts.ship.address} (ship) ← ${contexts.push.address} (push) ← ${contexts.commit.address} (commit)`
+        const made = await spawnRun(chain.cmd!, [...(chain.args ?? []), '--head', branch, '--title', await git('log', '-1', '--format=%s'), '--body', body], { cwd })
+        console.log(`chain ship: ${made.status === 0 ? made.stdout.trim().split('\n').pop() : `exit ${made.status} ${made.stderr.trim().split('\n').pop()}`}`)
+      }
+    }
+  }
   // the act has already happened: a workflow after it reports and never refuses
   return !after && (red || !d.allowed) ? 1 : 0
 }

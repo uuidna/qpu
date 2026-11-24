@@ -82,7 +82,7 @@ theorem textbook_hexbit_gateway_ftl : 32 * 4 - 4 - 2 = 122 ∧ 2 = 2 ∧ 1 < 16 
 | --- | --- |
 | stable | true |
 | release | allowed |
-| entropy.files | 808 |
+| entropy.files | 809 |
 | entropy.leads | 0 |
 | entropy.occurrences | 0 |
 | entropy.byKind | \{\} |
@@ -293,14 +293,14 @@ Every source and proof this text rests on, each a link: the doors to call, the p
 - Qpu.Processing.Verify.Gate, proving `Qpu.Verify.Gate.h_z_h_is_two_x`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean>
 ---
 
-This text is one build receipt. Its UUID 31e7e6e4-2aeb-368a-8ce7-5dd9e789a334 is the address of the text above it, and its SHA-256 is 0c38d7062ea453a0a02b1301401babd3d7d702538968c266a7a1dc010b4d6e43. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify \{ uuid, content \} at <https://qpu.uuidna.com/api/mcp>.
+This text is one build receipt. Its UUID 5ff3e1ed-e64f-40b8-826d-af255e8c5a59 is the address of the text above it, and its SHA-256 is 71275da817d5d6e7fdbca527b014256ca3acee01e938dc6ffff45f31303e91ba. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify \{ uuid, content \} at <https://qpu.uuidna.com/api/mcp>.
 
 <!-- hardware -->
 
 ## Hardware of the build that minted this receipt
 
-Every value below was read from the machine during the build, and its UUID ffd7e3c3-7053-7ef4-8618-fd3c00319cc6 is the address of the JSON beneath it, verifiable with verify \{ uuid, content \} like the text above. The machine holds an exact state vector of 31 qubits, since n qubits span 2^n basis states (Vocabulary.system\_dimension) at 16 bytes per complex amplitude; Willow has 105 qubits and Sycamore 54, as the processor door states them, and one UUID register carries 122 (Qubit.effective\_formula). The build took 3111 ms.
+Every value below was read from the machine during the build, and its UUID b97d8f9f-5087-88c0-bb74-2d60f28ba206 is the address of the JSON beneath it, verifiable with verify \{ uuid, content \} like the text above. The machine holds an exact state vector of 31 qubits, since n qubits span 2^n basis states (Vocabulary.system\_dimension) at 16 bytes per complex amplitude; Willow has 105 qubits and Sycamore 54, as the processor door states them, and one UUID register carries 122 (Qubit.effective\_formula). The build took 2984 ms.
 
 ```json
-{"platform":"darwin","release":"27.2.0","arch":"arm64","endianness":"LE","cpu":"Apple M1 Max","cores":10,"parallelism":10,"cpuMHz":2400,"memoryBytes":34359738368,"freeMemoryBytes":76169216,"load1":5.4052734375,"load5":5.2607421875,"load15":5.84521484375,"uptimeS":93131,"node":"26.13.1","v8":"14.6.202.34-node.40","lean":"leanprover/lean4:v4.33.0","rssBytes":330268672,"heapUsedBytes":127073152,"stateVectorQubits":31,"registersInMemory":2147483648,"registerQubitsInMemory":261993005056,"willowQubits":105,"sycamoreQubits":54,"registerQubits":122,"buildMs":3111,"at":"2026-11-24T18:38:53.090Z"}
+{"platform":"darwin","release":"27.2.0","arch":"arm64","endianness":"LE","cpu":"Apple M1 Max","cores":10,"parallelism":10,"cpuMHz":2400,"memoryBytes":34359738368,"freeMemoryBytes":3851796480,"load1":6.232421875,"load5":6.38720703125,"load15":6.87841796875,"uptimeS":94150,"node":"26.13.1","v8":"14.6.202.34-node.40","lean":"leanprover/lean4:v4.33.0","rssBytes":328318976,"heapUsedBytes":127278944,"stateVectorQubits":31,"registersInMemory":2147483648,"registerQubitsInMemory":261993005056,"willowQubits":105,"sycamoreQubits":54,"registerQubits":122,"buildMs":2984,"at":"2026-11-24T18:55:52.229Z"}
 ```
