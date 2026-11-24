@@ -154,4 +154,6 @@ def quantumProcessingToolboxesCrypto_s147 : String := "refused: the widget sends
 def quantumProcessingToolboxesCrypto_says148 : String := "the widget accepted the token as a witness. the secret never travels. ISO/IEC 27001:2022 and ISO/IEC 27034 hold on that acceptance."
 def quantumProcessingToolboxesCrypto_description149 : String := "the widget accepts the credential and sends the sha-256 witness: { witness, via: \"widget\" }. the secret never travels and the client never has it in the result. ISO/IEC 27001:2022 and ISO/IEC 27034 hold on that acceptance"
 
+def quantumProcessingToolboxesCrypto_s148 : String := "decode takes an address or a uuid"
+
 end Prose

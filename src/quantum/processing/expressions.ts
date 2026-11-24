@@ -34,8 +34,8 @@ export const evaluate = (src: string, env: Env, mode?: { proposition?: boolean; 
   const text = proposition ? src.replaceAll('Nat.zero', '0').replace(/\s*:\s*(?:Int|Nat|Bool)\b/g, '') : src
   const ts = tokens(text); let p = 0; const parts: { text: string; left: string; op: string; right: string; holds: boolean }[] = []
   const peek = () => ts[p], take = () => ts[p++]!
-  const num = (v: Value): bigint => { if (typeof v !== 'bigint') throw new Error('a truth where a number is due'); return v }
-  const asBool = (v: Value): boolean => { if (v === true || v === 1n) return true; if (v === false || v === 0n) return false; throw new Error('a term where a proposition is due') }
+  const num = (v: Value): bigint => { if (typeof v !== 'bigint') throw new Error(PROSE.quantumProcessingExpressions_s7); return v }
+  const asBool = (v: Value): boolean => { if (v === true || v === 1n) return true; if (v === false || v === 0n) return false; throw new Error(PROSE.quantumProcessingExpressions_s6) }
   const eq = (a: Value, b: Value): boolean => Array.isArray(a) || Array.isArray(b) ? Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((x, i) => eq(x, b[i]!)) : a === b
   const hashFn = (name: string, args: Value[]): bigint => {
     const flat = (v: Value): string => Array.isArray(v) ? `[${v.map(flat).join(',')}]` : typeof v === 'boolean' ? String(v) : v.toString()

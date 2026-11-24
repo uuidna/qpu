@@ -92,7 +92,7 @@ const signStripe = (secret: string, timestamp: number, payload: string): string 
 const verifySignature = (secret: string, header: string, payload: string, now: number, toleranceSeconds = 300) => {
   const parts = Object.fromEntries(header.split(',').map((p) => p.trim().split('=') as [string, string]))
   const t = Number(parts.t); const v1 = parts.v1
-  if (!Number.isFinite(t) || !v1) return { valid: false, why: 'the header carries no t and v1', timestamp: null }
+  if (!Number.isFinite(t) || !v1) return { valid: false, why: PROSE.quantumProcessingToolboxesBilling_s143, timestamp: null }
   if (Math.abs(now - t) > toleranceSeconds) return { valid: false, why: proseFill(PROSE.quantumProcessingToolboxesBilling_why7, t, toleranceSeconds, now), timestamp: t }
   const expected = hex(hmacSha256(utf8(secret), utf8(`${t}.${payload}`)))
   return sameHex(expected, v1) ? { valid: true, why: PROSE.quantumProcessingToolboxesBilling_why8, timestamp: t } : { valid: false, why: PROSE.quantumProcessingToolboxesBilling_why9, timestamp: t }

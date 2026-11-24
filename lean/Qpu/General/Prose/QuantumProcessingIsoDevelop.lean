@@ -16,4 +16,6 @@ def quantumProcessingIsoDevelop_s9 : String := "a process that was not carried o
 def quantumProcessingIsoDevelop_s10 : String := "the released output is monitored: each dimension is measured by the open data, and ISO 639-1 names ISO 639:2023"
 def quantumProcessingIsoDevelop_s11 : String := "a release that did not hold is not monitored"
 
+def quantumProcessingIsoDevelop_s12 : String := "the formula is handed to the docs door"
+
 end Prose

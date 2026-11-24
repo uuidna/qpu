@@ -238,10 +238,10 @@ export const auditSecurity = (client: SecurityClient, developer: SecurityDevelop
   const u = client.payloadMcp?.unauthenticated ?? null
   c('payload-mcp-key', 'client', u === null || u === 401 || u === 403, u === null ? PROSE.quantumProcessingAudit_s32 : proseFill(PROSE.quantumProcessingAudit_s33, u), PROSE.quantumProcessingAudit_s34)
   const severe = (v: Record<string, number>) => (v.critical ?? 0) + (v.high ?? 0)
-  for (const [tree, v] of Object.entries(developer.vulnerabilities)) c(`dependencies:${tree}`, 'developer', severe(v) === 0, Object.keys(v).length ? Object.entries(v).map(([k, n]) => `${k} ${n}`).join(', ') : 'no vulnerabilities reported', 'npm audit fix or a pinned fixed version; a finding is a lead')
+  for (const [tree, v] of Object.entries(developer.vulnerabilities)) c(`dependencies:${tree}`, 'developer', severe(v) === 0, Object.keys(v).length ? Object.entries(v).map(([k, n]) => `${k} ${n}`).join(', ') : 'no vulnerabilities reported', PROSE.quantumProcessingAudit_s91)
   c('no-leaks', 'developer', developer.leaks === 0, `${developer.leaks} address(es) in the tree`, PROSE.quantumProcessingAudit_s35)
   c('no-autologin', 'developer', developer.autoLogin !== true, developer.autoLogin ? PROSE.quantumProcessingAudit_s36 : PROSE.quantumProcessingAudit_s37, PROSE.quantumProcessingAudit_s38)
-  c('env-named-not-valued', 'developer', developer.envExampleValueless, developer.envExampleValueless ? PROSE.quantumProcessingAudit_s39 : 'a value in the environment example', PROSE.quantumProcessingAudit_s40)
+  c('env-named-not-valued', 'developer', developer.envExampleValueless, developer.envExampleValueless ? PROSE.quantumProcessingAudit_s39 : PROSE.quantumProcessingAudit_s92, PROSE.quantumProcessingAudit_s40)
   c('access-rules', 'developer', /no one/.test(String(developer.access.entries?.update ?? '')) && /super admin/.test(String(developer.access.tenants?.write ?? '')), `entries.update: ${developer.access.entries?.update ?? 'unset'}; tenants.write: ${developer.access.tenants?.write ?? 'unset'}`, PROSE.quantumProcessingAudit_s41)
   c('hooks-guarded', 'developer', ['collisionGuard', 'firstUserBootstrap', 'appRequest'].every((h) => developer.hooks.includes(h)), `hooks: ${developer.hooks.join(', ') || 'none'}`, PROSE.quantumProcessingAudit_s42)
   c('signing-at-edge', 'developer', /ML-DSA|webcrypto_modern_algorithms/.test(developer.signing), developer.signing, PROSE.quantumProcessingAudit_s43)
@@ -595,7 +595,7 @@ export const scanLexical = (doc: unknown, tools: readonly string[]) => {
     nodes++; depth = Math.max(depth, d)
     const o = n as { type?: string; text?: string; url?: string; fields?: { url?: string; blockType?: string; tool?: string; arguments?: unknown; linkType?: string; uuid?: string }; children?: unknown[] }
     if (typeof o.type === 'string' && !(LEXICAL_NODE_TYPES as readonly string[]).includes(o.type)) findings.push({ at: path, kind: 'unknown-node', blocks: false, detail: o.type })
-    if (o.type === 'text' && typeof o.text === 'string') { texts[path] = o.text; if (/<\s*\/?\s*(script|iframe|object|embed|style|svg|img)\b|\bon[a-z]+\s*=/i.test(o.text)) findings.push({ at: path, kind: 'markup-in-text', blocks: false, detail: 'rendered as text, never as markup' }) }
+    if (o.type === 'text' && typeof o.text === 'string') { texts[path] = o.text; if (/<\s*\/?\s*(script|iframe|object|embed|style|svg|img)\b|\bon[a-z]+\s*=/i.test(o.text)) findings.push({ at: path, kind: 'markup-in-text', blocks: false, detail: PROSE.quantumProcessingAudit_s93 }) }
     const url = o.fields?.url ?? o.url
     if ((o.type === 'link' || o.type === 'autolink') && typeof url === 'string' && !/^(https?:\/\/|\/|#|\?)/i.test(url.trim())) findings.push({ at: path, kind: 'unsafe-url', blocks: true, detail: url.split(':')[0]! + ':' })
     // an internal path that names no slug or address cannot be resolved to a document: noted, never blocking

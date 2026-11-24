@@ -75,7 +75,7 @@ const gateNpmRelease = (pkg: NpmPackageFacts) => {
   const documented = typeof pkg.description === 'string' && pkg.description.trim().length > 0
   const iso = [
     { dimension: 'ISO/IEC 19770' as const, holds: nameOk && versionOk && licenseOk, evidence: nameOk && versionOk && licenseOk ? `${pkg.name}@${pkg.version} ${pkg.license}` : PROSE.quantumProcessingToolboxesRepository_s6 },
-    { dimension: 'ISO 9001' as const, holds: documented, evidence: documented ? PROSE.quantumProcessingToolboxesRepository_s7 : 'an empty description is not documented' },
+    { dimension: 'ISO 9001' as const, holds: documented, evidence: documented ? PROSE.quantumProcessingToolboxesRepository_s7 : PROSE.quantumProcessingToolboxesRepository_s139 },
   ]
   const verified = iso.every((row) => row.holds)
   const open = complete && verified

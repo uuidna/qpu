@@ -148,4 +148,6 @@ def quantumProcessingToolboxesLegal_shows141 : String := "A 401 at a REST gate i
 def quantumProcessingToolboxesLegal_shows142 : String := "A 412 at an edit is the collision rule: the edit names an address the document no longer folds to, and both addresses are answered."
 def quantumProcessingToolboxesLegal_shows143 : String := "A 405 at a gate is the method rule: the method is not one the gate answers, and the remedy names the methods the error lists."
 
+def quantumProcessingToolboxesLegal_s141 : String := "no publication in a qualifying outlet"
+
 end Prose

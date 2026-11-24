@@ -108,7 +108,7 @@ export const qpuSkills = (boxesIn: readonly SkillBox[], terms: readonly { clause
     ...frontmatter('qpu', proseFill(PROSE.quantumProcessingScriptDoors_s15, boxes.length)),
     '# QPU', '', PROSE.quantumProcessingScriptDoors_s16, '',
     '## Toolboxes', '', PROSE.quantumProcessingScriptDoors_s17, '| --- | --- | --- | --- | --- | --- |', ...rows.map((r) => `| \`${r.name}\` | ${cell(sentence(boxes.find((b) => b.name === r.toolbox)!.idea))} | ${r.tools} | ${r.examples} | ${r.terms.length} | \`${r.uuid}\` |`), '',
-    '## Vocabulary coverage (ISO/IEC 4879:2024)', '', proseFill(PROSE.quantumProcessingScriptDoors_s18, namedClauses.size, terms.length, checked.filter((c) => c.holds).length, processor ? `qpu-${processor}` : 'no toolbox', rows.reduce((n, r) => n + r.byText, 0)), '', ...(unnamed.length ? [PROSE.quantumProcessingScriptDoors_s19, '', ...unnamed.map((u) => `- ${u}`)] : ['Every term is named by a skill.']), '',
+    '## Vocabulary coverage (ISO/IEC 4879:2024)', '', proseFill(PROSE.quantumProcessingScriptDoors_s18, namedClauses.size, terms.length, checked.filter((c) => c.holds).length, processor ? `qpu-${processor}` : 'no toolbox', rows.reduce((n, r) => n + r.byText, 0)), '', ...(unnamed.length ? [PROSE.quantumProcessingScriptDoors_s19, '', ...unnamed.map((u) => `- ${u}`)] : [PROSE.quantumProcessingScriptDoors_s24]), '',
     '## Register', '', proseFill(PROSE.quantumProcessingScriptDoors_s20, qubits, qubitsFormula, indexAddress, rows.length), '',
   ].join('\n') }
   const all = [index, ...rows]

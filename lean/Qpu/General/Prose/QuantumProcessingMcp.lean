@@ -464,4 +464,11 @@ def quantumProcessingMcp_gaps434 : String := "true: the gaps of the library, as 
 
 def quantumProcessingMcp_says435 : String := "⟦0⟧ theorem(s) searched by Lean's library search: ⟦1⟧ conjunct(s) in the library or decided by it, ⟦2⟧ open, ⟦3⟧ undecided, ⟦4⟧ of this tree's own notions; ⟦5⟧ shown"
 
+def quantumProcessingMcp_s430 : String := "the residue is handed to the docs door"
+def quantumProcessingMcp_s431 : String := "the same rate in permille (10 is 1%)"
+def quantumProcessingMcp_s432 : String := "matched by no tool, example or lead"
+def quantumProcessingMcp_s433 : String := "nodes is an integer of at least 2"
+def quantumProcessingMcp_s434 : String := "steps is an integer of at least 4"
+def quantumProcessingMcp_s435 : String := "a program is a list of operations"
+
 end Prose
