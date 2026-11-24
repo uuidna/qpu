@@ -18,7 +18,7 @@ The client gathers with git: the remote url, HEAD, the branch, package.json's ve
 
 | Tool | Does | Arguments |
 | --- | --- | --- |
-| `repository` | Workspaces, branches, tags, releases, the registry and the workflows watched and verified online, pure. | `release`, `status`, `plasma`, `penalties`, `steps`, `docs`, `capacity`, `e2e`, `penalty`, `via`, `local`, `contracts`, `answers`, `machine`, `workflow`, `offline`, `facts`, `selftest` |
+| `repository` | Workspaces, branches, tags, releases, the registry and the workflows watched and verified online, pure. | `release`, `deployed`, `stable`, `status`, `plasma`, `penalties`, `steps`, `docs`, `capacity`, `e2e`, `penalty`, `via`, `local`, `contracts`, `answers`, `machine`, `workflow`, `offline`, `facts`, `selftest` |
 
 ## Examples
 
