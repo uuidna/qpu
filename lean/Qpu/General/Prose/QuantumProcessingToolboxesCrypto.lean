@@ -153,5 +153,10 @@ def quantumProcessingToolboxesCrypto_s146 : String := "refused: the widget sends
 def quantumProcessingToolboxesCrypto_s147 : String := "refused: the widget sends a sha-256 witness and the secret never travels"
 def quantumProcessingToolboxesCrypto_says148 : String := "the widget accepted the token as a witness. the secret never travels. ISO/IEC 27001:2022 and ISO/IEC 27034 hold on that acceptance."
 def quantumProcessingToolboxesCrypto_description149 : String := "the widget accepts the credential and sends the sha-256 witness: { witness, via: \"widget\" }. the secret never travels and the client never has it in the result. ISO/IEC 27001:2022 and ISO/IEC 27034 hold on that acceptance"
+def quantumProcessingToolboxesCrypto_texts : String := "many texts sealed in one call: one address per text, in the order given, and the RFC 6962 Merkle root over them with its own address, so a catalogue, a docket or a batch of records is sealed at once"
+def quantumProcessingToolboxesCrypto_brief : String := "only { bytes, sha256, address } for each text, without the post-quantum and ISO blocks every full answer repeats"
+def quantumProcessingToolboxesCrypto_showsParts : String := "a sealed text answers its address already split as a caller indexes it: the handle of 8 hex digits for a SKU, the program of 10 for an index, the tail of 12 for parameters, and the 122 free qubits of the register; with the 2 stamp nibbles they are the 32 of the address"
+def quantumProcessingToolboxesCrypto_showsBatch : String := "three texts sealed in one call, briefly: one { bytes, sha256, address } each, in order, and the Merkle root over all three with its own address"
+def quantumProcessingToolboxesCrypto_batchSays : String := "⟦0⟧ text(s) sealed, each under its own address; the Merkle root ⟦1⟧ seals them all, and any one changed changes the root"
 
 end Prose

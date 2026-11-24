@@ -436,3 +436,19 @@ test('every NIST scenario reverses via CERN and e2e against opendata.cern.ch', a
     assert.equal(read.followUps.length, 0)
   }
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: seal answers any caller's catalogue as is: the address split for indexing, many texts in one call under one Merkle root, and a brief answer without the repeated blocks. */
+test('seal answers any caller\'s catalogue as is: the address split for indexing, many texts in one call under one Merkle root, and a brief answer without the repeated blocks', () => {
+  const one = invoke('seal', { text: 'Договор за правна помощ' })
+  assert.equal(`${one.parts.handle}${one.parts.program.slice(0, 4)}`, one.address.replace(/-/g, '').slice(0, 12), 'the handle and the program read off the address')
+  assert.equal(one.parts.tail, one.address.slice(-12))
+  assert.ok(one.postQuantum, 'the full answer keeps its blocks')
+  assert.deepEqual(invoke('seal', { text: 'Договор за правна помощ', brief: true }), { bytes: one.bytes, sha256: one.sha256, address: one.address }, 'brief: only bytes, sha256 and address')
+  const texts = ['SKU-1 · 120 BGN', 'SKU-2 · 80 EUR', 'consultation · 1 h']
+  const batch = invoke('seal', { texts })
+  assert.deepEqual(batch.items.map((i: { address: string }) => i.address), texts.map((t) => invoke('seal', { text: t, brief: true }).address), 'one address per text, in order')
+  assert.equal(batch.root.sha256, invoke('seal', { merkle: { leaves: texts } }).root, 'the root is the RFC 6962 Merkle root of the texts')
+  assert.equal(batch.root.address, uuid(batch.root.sha256))
+  assert.notEqual(invoke('seal', { texts: [...texts.slice(0, 2), 'consultation · 2 h'] }).root.sha256, batch.root.sha256, 'one text changed changes the root')
+  assert.equal(call('seal', { texts: ['ok', 7] }).error?.message, 'texts[1] is a string')
+})

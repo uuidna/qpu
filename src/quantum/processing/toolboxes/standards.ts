@@ -10,14 +10,36 @@ import { physicalEvidence, type DeviceReadings } from '../quantum-vocabulary.ts'
 import { CATALOGUE } from './billing.ts'
 import { flowWidget } from '../widgets.ts'
 
+type Item = { name: string; sku?: string; description?: string; url?: string; image?: string; brand?: string; price?: number | string; currency?: string; availability?: string; variants?: readonly { name?: string; sku?: string; price: number | string; currency?: string; availability?: string }[] }
+/** One product of any caller's catalogue as a schema.org Product: one Offer per variant (or one at its own price), each in the ISO 4217 currency
+ *  it names (or the item's, or the call's), at the decimal price it states, sold by the seller the call names. */
+const productJsonLd = (item: Item, p: { currency?: unknown; seller?: unknown }) => {
+  if (!isObj(item) || typeof item.name !== 'string' || !item.name) throw new Error(PROSE.quantumProcessingToolboxesStandards_itemNamed)
+  const seller = typeof p.seller === 'string' ? { '@type': 'Organization', name: p.seller } : isObj(p.seller) ? p.seller : undefined
+  const offer = (o: { name?: string; sku?: string; price?: number | string; currency?: string; availability?: string }) => {
+    const asked = o.currency ?? item.currency ?? p.currency, currency = typeof asked === 'string' ? asked.toUpperCase() : '', price = Number(o.price)
+    if (!/^[A-Z]{3}$/.test(currency)) throw new Error(proseFill(PROSE.quantumProcessingToolboxesStandards_currencyShape, item.name, JSON.stringify(asked ?? null)))
+    if (o.price === undefined || o.price === '' || !Number.isFinite(price) || price < 0) throw new Error(proseFill(PROSE.quantumProcessingToolboxesStandards_priceShape, item.name, JSON.stringify(o.price ?? null)))
+    return { '@type': 'Offer', ...(o.name ? { name: o.name } : {}), ...(o.sku ? { sku: o.sku } : {}), price: String(o.price), priceCurrency: currency, availability: `https://schema.org/${o.availability ?? 'InStock'}`, ...(seller ? { seller } : {}) }
+  }
+  const offers = item.variants?.length ? item.variants.map(offer) : item.price !== undefined ? [offer(item)] : []
+  return { '@type': 'Product', name: item.name, ...Object.fromEntries((['sku', 'description', 'url', 'image'] as const).filter((k) => typeof item[k] === 'string').map((k) => [k, item[k]])), ...(item.brand ? { brand: { '@type': 'Brand', name: item.brand } } : {}), ...(offers.length ? { offers: offers.length === 1 ? offers[0] : offers } : {}) }
+}
+const OWNER = { author: { type: ['string', 'object'], description: PROSE.quantumProcessingToolboxesStandards_author }, publisher: { type: ['string', 'object'], description: PROSE.quantumProcessingToolboxesStandards_publisher }, isPartOf: { type: ['string', 'object'], description: PROSE.quantumProcessingToolboxesStandards_isPartOf }, license: { type: 'string', description: PROSE.quantumProcessingToolboxesStandards_license } }
+const owner = (args: Record<string, unknown>) => Object.fromEntries((['author', 'publisher', 'isPartOf', 'license'] as const).filter((k) => typeof args[k] === 'string' || (k !== 'license' && isObj(args[k]))).map((k) => [k, args[k]]))
+const ITEM = { type: 'object', required: ['name'], properties: { name: { type: 'string' }, sku: { type: 'string' }, description: { type: 'string' }, url: { type: 'string' }, image: { type: 'string' }, brand: { type: 'string' }, price: { type: ['number', 'string'] }, currency: { type: 'string' }, availability: { type: 'string' }, variants: { type: 'array', items: { type: 'object', required: ['price'], properties: { name: { type: 'string' }, sku: { type: 'string' }, price: { type: ['number', 'string'] }, currency: { type: 'string' }, availability: { type: 'string' } } } } } }
+
 const jsonld = defineTool('standards', {
   name: 'jsonld',
   description: PROSE.quantumProcessingToolboxesStandards_description1,
-  inputSchema: { type: 'object', properties: { kind: { type: 'string', enum: ['block', 'page', 'offer', 'catalogue'] }, tool: { type: 'string' }, id: { type: 'string' }, description: { type: 'string' }, url: { type: 'string' }, title: { type: 'string' }, uuid: { type: 'string' }, locale: { type: 'string', enum: Object.keys(LOCALES) }, product: { type: 'string' }, variant: { type: 'string' }, currency: { type: 'string' }, selftest: { type: 'boolean' } } },
+  inputSchema: { type: 'object', properties: { kind: { type: 'string', enum: ['block', 'page', 'offer', 'catalogue'] }, tool: { type: 'string' }, id: { type: 'string' }, description: { type: 'string' }, url: { type: 'string' }, title: { type: 'string' }, uuid: { type: 'string' }, locale: { type: 'string', description: PROSE.quantumProcessingToolboxesStandards_locale }, ...OWNER, product: { type: 'string' }, variant: { type: 'string' }, currency: { type: 'string' }, item: { ...ITEM, description: PROSE.quantumProcessingToolboxesStandards_item }, items: { type: 'array', items: ITEM, description: PROSE.quantumProcessingToolboxesStandards_items }, seller: { type: ['string', 'object'], description: PROSE.quantumProcessingToolboxesStandards_seller }, name: { type: 'string', description: PROSE.quantumProcessingToolboxesStandards_catalogueName }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
     const kind = String(args.kind ?? 'block')
-    if (kind === 'block') return { kind, jsonLd: blockJsonLd({ tool: String(args.tool ?? 'qpu'), id: String(args.id ?? ''), description: String(args.description ?? ''), url: typeof args.url === 'string' ? args.url : undefined, locale: typeof args.locale === 'string' ? args.locale : undefined }) }
-    if (kind === 'page') return { kind, jsonLd: pageJsonLd({ url: String(args.url ?? 'https://qpu.uuidna.com/'), title: String(args.title ?? '@uuidna/qpu'), description: String(args.description ?? ''), uuid: typeof args.uuid === 'string' ? args.uuid : undefined, locale: typeof args.locale === 'string' ? args.locale : undefined }) }
+    if (kind === 'block') return { kind, jsonLd: blockJsonLd({ tool: String(args.tool ?? 'qpu'), id: String(args.id ?? ''), description: String(args.description ?? ''), url: typeof args.url === 'string' ? args.url : undefined, locale: typeof args.locale === 'string' ? args.locale : undefined, ...owner(args) }) }
+    if (kind === 'page') return { kind, jsonLd: pageJsonLd({ url: String(args.url ?? 'https://qpu.uuidna.com/'), title: String(args.title ?? '@uuidna/qpu'), description: String(args.description ?? ''), uuid: typeof args.uuid === 'string' ? args.uuid : undefined, locale: typeof args.locale === 'string' ? args.locale : undefined, ...owner(args) }) }
+    // the caller's own catalogue: its products, variants, prices and currency, sold by the seller it names
+    if (kind === 'offer' && isObj(args.item)) { const product = productJsonLd(args.item as Item, args); return { kind, offers: [product.offers ?? []].flat().length, jsonLd: { '@context': 'https://schema.org', ...product } } }
+    if (kind === 'catalogue' && Array.isArray(args.items)) { const products = (args.items as Item[]).map((i) => productJsonLd(i, args)); return { kind, offers: products.reduce((n, p) => n + [p.offers ?? []].flat().length, 0), products: products.length, jsonLd: { '@context': 'https://schema.org', '@type': 'OfferCatalog', ...(typeof args.name === 'string' ? { name: args.name } : {}), itemListElement: products } } }
     const currency = String(args.currency ?? 'eur')
     const offers = CATALOGUE.filter((v) => (kind === 'offer' ? v.product === args.product && v.variant === args.variant : true) && currency in v.amounts).map((v) => offerJsonLd({ product: v.product, variant: v.variant, unit: v.unit, interval: v.interval, currency, amount: v.amounts[currency]!, description: v.description }))
     if (kind === 'offer' && !offers.length) throw new Error(`no variant ${String(args.product)} ${String(args.variant)} in ${currency}`)
@@ -29,11 +51,18 @@ const jsonld = defineTool('standards', {
 const codes = defineTool('standards', {
   name: 'codes',
   description: PROSE.quantumProcessingToolboxesStandards_description2,
-  inputSchema: { type: 'object', properties: { cldr: { type: 'object', description: '{ languages, currencies, territories }: the CLDR JSON documents as fetched' }, territories: { type: 'array', items: { type: 'string' } }, selftest: { type: 'boolean' } } },
+  inputSchema: { type: 'object', properties: { cldr: { type: 'object', description: '{ languages, currencies, territories }: the CLDR JSON documents as fetched' }, locales: { type: 'array', items: { type: 'string' }, description: PROSE.quantumProcessingToolboxesStandards_locales }, currencies: { type: 'array', items: { type: 'string' }, description: PROSE.quantumProcessingToolboxesStandards_currencies }, territories: { type: 'array', items: { type: 'string' } }, selftest: { type: 'boolean' } } },
   run: (args, ctx) => {
-    const mine = { locales: Object.keys(LOCALES), currencies: [...new Set(CATALOGUE.flatMap((v) => Object.keys(v.amounts)))], territories: Array.isArray(args.territories) ? args.territories.map(String) : ['BG', 'US'] }
-    if (!args.cldr) return { phase: 'plan' as const, locales: mine.locales.length, currencies: mine.currencies.length, territories: mine.territories.length, standards: STANDARDS.filter((s) => s.kind === 'codes').map((s) => ({ id: s.id, contract: s.contract })), mine }
-    const v = validateCodes(listCodes(args.cldr as Parameters<typeof listCodes>[0]), mine)
+    const list = (v: unknown) => (Array.isArray(v) ? v.map(String) : null)
+    const mine = { locales: list(args.locales) ?? Object.keys(LOCALES), currencies: list(args.currencies) ?? [...new Set(CATALOGUE.flatMap((v) => Object.keys(v.amounts)))], territories: list(args.territories) ?? ['BG', 'US'] }
+    const documents = STANDARDS.filter((s) => s.kind === 'codes')
+    if (!args.cldr) return { phase: 'plan' as const, locales: mine.locales.length, currencies: mine.currencies.length, territories: mine.territories.length, standards: documents.map((s) => ({ id: s.id, contract: s.contract })), requestList: documents.map((s) => ({ id: s.id.replace(/^cldr-/, ''), method: 'GET', url: s.contract, accept: 'application/json' })), mine }
+    // a CLDR document of the wrong shape is refused by name, never read as an empty list
+    if (!isObj(args.cldr)) throw new Error(PROSE.quantumProcessingToolboxesStandards_cldrShape)
+    const read = listCodes(args.cldr as Parameters<typeof listCodes>[0]), given = args.cldr as Record<string, unknown>
+    const wrong = (['languages', 'currencies', 'territories'] as const).filter((k) => given[k] !== undefined && read[k].size === 0)
+    if (wrong.length || (given.languages === undefined && given.currencies === undefined)) throw new Error(proseFill(PROSE.quantumProcessingToolboxesStandards_cldrDocument, wrong.length ? wrong.join(', ') : 'languages, currencies'))
+    const v = validateCodes(read, mine)
     return { phase: 'validated' as const, languagesValidCount: v.languagesValid.length, languagesUnknownCount: v.languagesUnknown.length, currenciesValidCount: v.currenciesValid.length, currenciesUnknownCount: v.currenciesUnknown.length, territoriesValidCount: v.territoriesValid.length, territoriesUnknownCount: v.territoriesUnknown.length, ...v, leads: [...v.languagesUnknown.map((c) => ({ id: `code-language-${c}`, statement: proseFill(PROSE.quantumProcessingToolboxesStandards_statement3, c), status: 'open', reason: PROSE.quantumProcessingToolboxesStandards_reason4 })), ...v.currenciesUnknown.map((c) => ({ id: `code-currency-${c}`, statement: proseFill(PROSE.quantumProcessingToolboxesStandards_statement5, c), status: 'open', reason: PROSE.quantumProcessingToolboxesStandards_reason6 }))] }
   },
   widget: flowWidget,

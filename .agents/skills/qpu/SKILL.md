@@ -22,7 +22,7 @@ The quantum processing unit as skills: one per toolbox, generated from the toolb
 | `qpu-repository` | the repository watched: every workspace, branch, tag and release here compared with the remote and the archive online, every disagreement a lead. | 1 | 1 | 0 | `d5534926-469b-43c3-ad84-5ecc5d001db7` |
 | `qpu-standards` | the standards fused: schema.org on every block, page and offer; ISO 8601, 639-1, 4217 and 3166-1 in every date, language, price and country, validated against the CLDR lists discovery reads as contracts. | 3 | 4 | 0 | `d5e9aae5-3084-4d67-a7c8-de316acc5fce` |
 | `qpu-extension` | QPU the natural extension of every MCP and every MCP of QPU: a host's tools read into doors of this catalogue by the same reading discovery uses, a foreign door served by one request the client fetches, and this catalogue expressed as the registration any MCP client mounts; tenant configurable through the hosts and tokens a tenant names. | 1 | 19 | 4 | `faa2029c-83ad-8dad-9c15-810d72aca56e` |
-| `qpu-crypto` | the split folds: what a place cannot hold is folded into pieces it can, each addressed by content and the whole by its pieces; a key names its piece; the bound is a reflective boundary that decides by comparison before computing. | 3 | 41 | 6 | `cca07823-09e0-5a48-8a42-e9f332e79b23` |
+| `qpu-crypto` | the split folds: what a place cannot hold is folded into pieces it can, each addressed by content and the whole by its pieces; a key names its piece; the bound is a reflective boundary that decides by comparison before computing. | 3 | 43 | 6 | `cca07823-09e0-5a48-8a42-e9f332e79b23` |
 
 ## Vocabulary coverage (ISO/IEC 4879:2024)
 

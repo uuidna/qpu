@@ -87,7 +87,7 @@ export const listCodes = (cldr: { languages?: unknown; currencies?: unknown; ter
 export const validateCodes = (codes: Codes, mine: { locales: readonly string[]; currencies: readonly string[]; territories?: readonly string[] }): { languagesValid: string[]; languagesUnknown: string[]; currenciesValid: string[]; currenciesUnknown: string[]; territoriesValid: string[]; territoriesUnknown: string[]; measured: boolean } => {
   const measured = codes.languages.size > 0 && codes.currencies.size > 0
   const split = (list: readonly string[], set: Set<string>, norm: (s: string) => string) => ({ valid: list.filter((c) => set.has(norm(c))), unknown: set.size ? list.filter((c) => !set.has(norm(c))) : [] })
-  const l = split(mine.locales, codes.languages, (s) => s.toLowerCase()); const c = split(mine.currencies, codes.currencies, (s) => s.toUpperCase()); const t = split(mine.territories ?? [], codes.territories, (s) => s.toUpperCase())
+  const l = split(mine.locales, codes.languages, (s) => { const tag = s.replace(/_/g, '-'); return codes.languages.has(tag) ? tag : tag.split('-')[0]!.toLowerCase() }); const c = split(mine.currencies, codes.currencies, (s) => s.toUpperCase()); const t = split(mine.territories ?? [], codes.territories, (s) => s.toUpperCase())
   return { languagesValid: l.valid, languagesUnknown: l.unknown, currenciesValid: c.valid, currenciesUnknown: c.unknown, territoriesValid: t.valid, territoriesUnknown: t.unknown, measured }
 }
 /** Which standard document a text is: the schema.org JSON-LD vocabulary, or a CLDR list. */

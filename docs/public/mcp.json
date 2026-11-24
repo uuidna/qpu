@@ -3497,7 +3497,7 @@
               "offer",
               "catalogue"
             ],
-            "default": "catalogue"
+            "default": "block"
           },
           "tool": {
             "type": "string"
@@ -3519,20 +3519,32 @@
           },
           "locale": {
             "type": "string",
-            "enum": [
-              "en",
-              "bg",
-              "de",
-              "fr",
-              "es",
-              "it",
-              "ru",
-              "zh",
-              "ja",
-              "pt",
-              "nl"
+            "description": "the language of the content as a BCP 47 tag (ISO 639 with region or script), any the caller writes in"
+          },
+          "author": {
+            "type": [
+              "string",
+              "object"
             ],
-            "default": "fr"
+            "description": "the author of the block or page"
+          },
+          "publisher": {
+            "type": [
+              "string",
+              "object"
+            ],
+            "description": "the publisher of the block or page"
+          },
+          "isPartOf": {
+            "type": [
+              "string",
+              "object"
+            ],
+            "description": "the site or work it is part of"
+          },
+          "license": {
+            "type": "string",
+            "description": "the URL of the licence the caller publishes it under; a page on another site than qpu's carries none unless given one"
           },
           "product": {
             "type": "string"
@@ -3543,13 +3555,163 @@
           "currency": {
             "type": "string"
           },
+          "item": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "sku": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "image": {
+                "type": "string"
+              },
+              "brand": {
+                "type": "string"
+              },
+              "price": {
+                "type": [
+                  "number",
+                  "string"
+                ]
+              },
+              "currency": {
+                "type": "string"
+              },
+              "availability": {
+                "type": "string"
+              },
+              "variants": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "price"
+                  ],
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "sku": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": [
+                        "number",
+                        "string"
+                      ]
+                    },
+                    "currency": {
+                      "type": "string"
+                    },
+                    "availability": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "with kind offer"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "sku": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "image": {
+                  "type": "string"
+                },
+                "brand": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": [
+                    "number",
+                    "string"
+                  ]
+                },
+                "currency": {
+                  "type": "string"
+                },
+                "availability": {
+                  "type": "string"
+                },
+                "variants": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "price"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "sku": {
+                        "type": "string"
+                      },
+                      "price": {
+                        "type": [
+                          "number",
+                          "string"
+                        ]
+                      },
+                      "currency": {
+                        "type": "string"
+                      },
+                      "availability": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "with kind catalogue"
+          },
+          "seller": {
+            "type": [
+              "string",
+              "object"
+            ],
+            "description": "who sells the caller's products"
+          },
+          "name": {
+            "type": "string",
+            "description": "the name of the caller's catalogue"
+          },
           "selftest": {
             "type": "boolean"
           }
         },
         "x-harmonic": {
-          "combinations": "44",
-          "index": "36",
+          "combinations": "4",
+          "index": "0",
           "from": "a432"
         }
       },
@@ -3584,6 +3746,20 @@
           "cldr": {
             "type": "object",
             "description": "{ languages, currencies, territories }"
+          },
+          "locales": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "the caller's own languages to validate (BCP 47 or ISO 639 codes); by default the tree's locales"
+          },
+          "currencies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "the caller's own currencies to validate (ISO 4217 codes); by default the tree's catalogue currencies"
           },
           "territories": {
             "type": "array",
@@ -3978,6 +4154,18 @@
           },
           "text": {
             "type": "string"
+          },
+          "texts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "many texts sealed in one call"
+          },
+          "brief": {
+            "type": "boolean",
+            "description": "only { bytes, sha256, address } for each text, without the post-quantum and ISO blocks every full answer repeats"
           },
           "nist": {
             "description": "true"
