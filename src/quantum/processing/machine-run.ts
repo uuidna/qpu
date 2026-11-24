@@ -5,14 +5,14 @@
 // file (`step <tool> <json>`) calling the handler as a library (the same code the door serves), each generator writing the path and text its
 // door answers, each process step the command the table names; a step past its budget is killed with its process group and recorded red; the
 // red steps are retried once after the generators ran; the receipt is the last line, `RECEIPT {json}`, the body of the machine's entry.
-import { AFTER_HOOKS } from './config-index.ts'
+import { AFTER_HOOKS, AGENT_CONFIRM_RULES, AGENT_HOOKS } from './config-index.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
 import { THEOREMS } from './theorems-index.ts'
 import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { existsSync, mkdirSync, readdirSync, readFileSync, readlinkSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { existsSync, mkdirSync, readdirSync, readFileSync, readlinkSync, rmSync, statSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
+import { dirname, join, resolve, sep } from 'node:path'
 import { availableParallelism, freemem, homedir, tmpdir, totalmem } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { MACHINE_ACTIONS, MACHINE_RUNNER, NEXT_STEPS, forecastTimes, redact, type NextStep } from './machine.ts'
@@ -297,12 +297,32 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   return !after && (red || !d.allowed) ? 1 : 0
 }
 
+/** An agent hook as the client of its workflow: the call the harness hands over on stdin (the tool, the path a write names, the session's transcript)
+ *  and what git and that transcript measure (the milliseconds since a commit last landed, the bytes the session has written) are the facts; the
+ *  decision is printed as the harness reads it: deny where a rule refuses, ask where every refused rule is one the owner confirms, nothing where all hold. */
+const runAgentHook = async (name: string, cwd: string) => {
+  const { call } = await import('./mcp.ts') as { call: Call }
+  const asked = JSON.parse(readFileSync(0, 'utf8') || '{}') as { hook_event_name?: string; tool_name?: string; tool_input?: { file_path?: string; notebook_path?: string }; transcript_path?: string }
+  const git = async (at: string, ...a: string[]) => (await spawnRun('git', a, { cwd: at })).stdout.trim()
+  const path = asked.tool_input?.file_path ?? asked.tool_input?.notebook_path, file = path === undefined ? null : resolve(cwd, path)
+  // where a write lands: in this tree, in another repository (its own court decides there), or outside every repository
+  const held = (dir: string): string => (existsSync(dir) || dir === dirname(dir) ? dir : held(dirname(dir)))
+  const writes = file === null ? null : file.startsWith(cwd + sep) ? 'tree' : (await git(held(dirname(file)), 'rev-parse', '--show-toplevel')) ? 'repository' : 'outside'
+  const size = (p: string): number => { try { const s = statSync(p); return s.isDirectory() ? readdirSync(p).reduce((n, f) => n + size(join(p, f)), 0) : s.size } catch { return 0 } }
+  const transcript = asked.transcript_path ?? null
+  const facts = { tool: { name: asked.tool_name ?? '', writes }, landed: { ms: clock() - 1000 * Number(await git(cwd, 'log', '-1', '--format=%ct')), bytes: transcript ? size(transcript) + size(transcript.replace(/\.jsonl$/, '')) : 0 } }
+  const r = call('repository', { workflow: name, facts }); if (r.error) throw new Error(r.error.message)
+  const d = r.result!.structuredContent.decision as { allowed: boolean; violated: string[]; unknown: string[]; rules: { rule: string; holds: boolean | null; evidence: string }[] }
+  if (!d.allowed) console.log(JSON.stringify({ hookSpecificOutput: { hookEventName: asked.hook_event_name, permissionDecision: d.unknown.length === 0 && d.violated.every((rule) => (AGENT_CONFIRM_RULES as readonly string[]).includes(rule)) ? 'ask' : 'deny', permissionDecisionReason: d.rules.filter((x) => x.holds !== true).map((x) => `${x.rule}: ${x.evidence}`).join('; ') } }))
+  return 0
+}
+
 // the runner from the command line: `step <tool> <json> [--write]` (the child of a door step), `next [--offline] [--fast]`, or any allowed action
 if (process.argv[1] && SELF === fileURLToPath(new URL(process.argv[1], 'file://')) ) {
   const [, , action, ...rest] = process.argv
   // the arguments as JSON, or @<file> holding the JSON (a list of texts outgrows an argument)
   if (action === 'step') await runStepChild(rest[0]!, rest[1]?.startsWith('@') ? readFileSync(rest[1].slice(1), 'utf8') : rest[1] ?? '{}', rest.includes('--write'), process.cwd(), rest.includes('--json'))
-  else if (action === 'hook') process.exitCode = await runHook(rest[0] ?? '', rest.slice(1), process.cwd())
+  else if (action === 'hook') process.exitCode = (AGENT_HOOKS as readonly string[]).includes(rest[0] ?? '') ? await runAgentHook(rest[0]!, process.cwd()) : await runHook(rest[0] ?? '', rest.slice(1), process.cwd())
   else if (action === 'next') { const r = await runNext({ cwd: process.cwd(), offline: rest.includes('--offline'), fast: rest.includes('--fast'), generators: rest.includes('--generators') }); process.exitCode = r.red ? 1 : 0 }
   else if (action) { const r = await runMachine({ action, confirm: rest.includes('--confirm'), message: rest.includes('-m') ? rest[rest.indexOf('-m') + 1] : undefined, branch: rest.includes('--branch') ? rest[rest.indexOf('--branch') + 1] : undefined }, process.cwd()); console.log(JSON.stringify(r.answer)); process.exitCode = (r as { record?: { ok: boolean } }).record?.ok === false ? 1 : 0 }
   else console.log(proseFill(PROSE.quantumProcessingMachineRun_s4, MACHINE_RUNNER, MACHINE_ACTIONS.map((a) => a.id).join(' | ')))

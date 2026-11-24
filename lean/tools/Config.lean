@@ -43,6 +43,14 @@ def wranglerText : String :=
        , ("durable_objects", obj [("bindings", Json.arr #[obj [("name", "MAILBOX"), ("class_name", "Mailbox")], obj [("name", "PROVER"), ("class_name", "Prover")]])])
        , ("observability", obj [("enabled", true), ("head_sampling_rate", Json.num ⟨1, 1⟩)]) ]).pretty ++ "\n"
 
+/-- The harness's settings, written by Lean: before a tool of `Config.agentWriteTools` or `Config.agentSpawnTools` runs,
+    the harness hands the call to the machine runner, the client of the agent hook's workflow, which asks the repository
+    tool and prints the decision. -/
+def agentSettingsText : String :=
+  let obj := Json.mkObj
+  let hook (workflow : String) : Json := Json.arr #[obj [("matcher", Json.str ("|".intercalate (agentWriteTools ++ agentSpawnTools))), ("hooks", Json.arr #[obj [("type", Json.str "command"), ("command", Json.str s!"node \"$CLAUDE_PROJECT_DIR/src/quantum/processing/machine-run.ts\" hook {workflow}")]])]]
+  (obj [("hooks", obj (agentEvents.map fun (workflow, event) => (event, hook workflow)))]).pretty ++ "\n"
+
 /-- Where the rendered index is written. -/
 def configOut : System.FilePath := ".lake" / "build" / "config-index.ts"
 
@@ -82,6 +90,14 @@ def configOut : System.FilePath := ".lake" / "build" / "config-index.ts"
     , s!"export const GIT_HOOKS = {strings gitHooks} as const"
     , "/** The workflows that run after the act and cannot refuse it, from Config.afterHooks. */"
     , s!"export const AFTER_HOOKS = {strings afterHooks} as const"
+    , "/** The workflows the harness of an agent starts before it runs a tool, from Config.agentEvents. */"
+    , s!"export const AGENT_HOOKS = {strings (agentEvents.map (·.1))} as const"
+    , "/** The harness tools that write a file, from Config.agentWriteTools. */"
+    , s!"export const AGENT_WRITE_TOOLS = {strings agentWriteTools} as const"
+    , "/** The harness tools that spawn agents, from Config.agentSpawnTools. */"
+    , s!"export const AGENT_SPAWN_TOOLS = {strings agentSpawnTools} as const"
+    , "/** The rules of an agent hook that ask the owner instead of refusing, from Config.agentConfirmRules. */"
+    , s!"export const AGENT_CONFIRM_RULES = {strings agentConfirmRules} as const"
     , "/** The groups of a UUID as it is written, from Advantage.uuidGroups: the hexadecimal digits between its dashes. */"
     , s!"export const UUID_GROUPS = {(Json.arr (Advantage.uuidGroups.map fun n => Json.num n).toArray).compress} as const"
     , "/** The shape of a UUID as a pattern, built from its groups; every check of a UUID in the code reads this one. */"
@@ -91,6 +107,7 @@ def configOut : System.FilePath := ".lake" / "build" / "config-index.ts"
     , "" ]
   IO.FS.createDirAll (".lake" / "build")
   IO.FS.writeFile (".lake" / "build" / "wrangler.jsonc") wranglerText
+  IO.FS.writeFile (".lake" / "build" / "claude-settings.json") agentSettingsText
   -- each git hook is the client of its workflow: one line that hands the hook to the machine runner, which asks the
   -- repository tool for the workflow, walks its steps and obeys the decision
   IO.FS.createDirAll (".lake" / "build" / "githooks")

@@ -3438,7 +3438,8 @@
               "post-push",
               "prepare-commit-msg",
               "ci",
-              "pre-deploy"
+              "pre-deploy",
+              "pre-tool"
             ],
             "description": "the git hook or the CI as a client MCP workflow",
             "default": "pre-commit"
@@ -3456,7 +3457,7 @@
           }
         },
         "x-harmonic": {
-          "combinations": "16",
+          "combinations": "18",
           "index": "0",
           "from": "a432"
         }

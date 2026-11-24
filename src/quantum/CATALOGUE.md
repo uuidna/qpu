@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1580 products, 2 under a declared claim context and 1578 as the author's own statement, with 1075 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1584 products, 2 under a declared claim context and 1582 as the author's own statement, with 1078 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -1798,7 +1798,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 (Config.gitHooks.all fun hook => Config.workflows.contains hook) = true ∧
-  List.filter (fun w => !Config.gitHooks.contains w) Config.workflows = ["ci", "pre-deploy"]
+  (Config.agentEvents.all fun hook => Config.workflows.contains hook.1 && !Config.gitHooks.contains hook.1) = true ∧
+    List.filter (fun w => !Config.gitHooks.contains w && !(List.map (fun x => x.1) Config.agentEvents).contains w)
+        Config.workflows =
+      ["ci", "pre-deploy"]
 ```
 
 ### `Config.hook_files_distinct`
@@ -4955,6 +4958,38 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ## Qpu.General.Meaning.Config
 
+### `agentConfirmRules_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentConfirmRules = Config.agentConfirmRules.headD default :: Config.agentConfirmRules.tail
+```
+
+### `agentEvents_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentEvents = Config.agentEvents.headD default :: Config.agentEvents.tail
+```
+
+### `agentSpawnTools_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentSpawnTools = Config.agentSpawnTools.headD default :: Config.agentSpawnTools.tail
+```
+
+### `agentWriteTools_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentWriteTools = Config.agentWriteTools.headD default :: Config.agentWriteTools.tail
+```
+
 ### `tenants_eq_cons`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -7738,7 +7773,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_google_one_door`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, textbook-rewrite.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, repository-doored, textbook-rewrite.
 
 ```lean
 ∀ (direct : ℕ), direct = 0 ↔ ¬0 < direct
@@ -7746,7 +7781,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_google_one_door_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, textbook-rewrite.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, repository-doored, textbook-rewrite.
 
 ```lean
 ∀ (direct : ℕ), ¬0 < direct ↔ direct = 0
@@ -9497,7 +9532,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_penalty_time_heat_monotone`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-waiting.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-waiting, repository-timed.
 
 ```lean
 ∀ (b w w' c c' : ℕ), w ≤ w' → c ≤ c' → w - b + (c - b) ≤ w' - b + (c' - b)

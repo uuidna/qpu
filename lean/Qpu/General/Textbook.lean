@@ -167,7 +167,7 @@ theorem textbook_penalty_once {α : Type} [DecidableEq α] (s : Finset α) (a : 
 example := @textbook_penalty_once
 /-- textbook_penalty_once reflected by its shape (examples: repository-penalty-once) -/
 @[reflection] theorem textbook_penalty_once_reflected {α : Type} [DecidableEq α] (s : Finset α) (a : α) (h : a ∈ s) : (s) = (insert a s) := Eq.symm (textbook_penalty_once s a h)
-/-- a waiting price never falls as a task gets slower or hotter: truncated subtraction of the budget is monotone and sums of monotone terms are monotone. From Mathlib's `add_le_add`, `tsub_le_tsub_right`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `covariant_swap_add_of_covariant_add` and `Nat.instOrderedSub` (examples: repository-penalty-waiting) -/
+/-- a waiting price never falls as a task gets slower or hotter: truncated subtraction of the budget is monotone and sums of monotone terms are monotone. From Mathlib's `add_le_add`, `tsub_le_tsub_right`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `covariant_swap_add_of_covariant_add` and `Nat.instOrderedSub` (examples: repository-penalty-waiting, repository-timed) -/
 theorem textbook_penalty_time_heat_monotone (b w w' c c' : ℕ) (hw : w ≤ w') (hc : c ≤ c') : (w - b) + (c - b) ≤ (w' - b) + (c' - b) :=
   add_le_add (tsub_le_tsub_right hw b) (tsub_le_tsub_right hc b)
 example := @textbook_penalty_time_heat_monotone
@@ -847,11 +847,11 @@ theorem textbook_commit_green (green skipped : Nat) : green + skipped + 0 = gree
 example := @textbook_commit_green
 /-- textbook_commit_green reflected by its shape (examples: repository-refuse-commit) -/
 @[reflection] theorem textbook_commit_green_reflected (green skipped : Nat) (σ : Nat) : σ - (green + skipped) = σ - (green + skipped + 0) := congrArg (σ - ·) (Eq.symm (textbook_commit_green green skipped))
-/-- a commit holds the rule google-via-payload exactly when its direct Google calls are zero, that is when they are not positive. From Mathlib's `not_lt` (examples: repository-google-via-payload, repository-genuine, textbook-rewrite) -/
+/-- a commit holds the rule google-via-payload exactly when its direct Google calls are zero, that is when they are not positive. From Mathlib's `not_lt` (examples: repository-google-via-payload, repository-genuine, repository-doored, textbook-rewrite) -/
 theorem textbook_google_one_door (direct : Nat) : direct = 0 ↔ ¬ 0 < direct := by
   rw [not_lt, Nat.le_zero]
 example := @textbook_google_one_door
-/-- textbook_google_one_door reflected by its shape (examples: repository-google-via-payload, repository-genuine, textbook-rewrite) -/
+/-- textbook_google_one_door reflected by its shape (examples: repository-google-via-payload, repository-genuine, repository-doored, textbook-rewrite) -/
 @[reflection] theorem textbook_google_one_door_reflected (direct : Nat) : (¬ 0 < direct) ↔ (direct = 0) := Iff.symm (textbook_google_one_door direct)
 /-- a Google call runs exactly when its violations sum to none, that is when each kind is none: a sum of naturals is zero iff every summand is. From Mathlib's `add_eq_zero` and `Unique.instSubsingleton` (examples: google-call-validated, google-call-endpoint, google-call-refused) -/
 theorem textbook_google_call_schema (unknown missing broken : ℕ) : unknown + missing + broken = 0 ↔ unknown = 0 ∧ missing = 0 ∧ broken = 0 := by
