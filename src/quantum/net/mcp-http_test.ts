@@ -24,8 +24,13 @@ test('serveMcp serves the kernel\'s tools through the Agents SDK, acknowledges a
   const ask = async (body: unknown, e: object) => (await read(await post(body, e, 'qpu.test'))).result, none = { QPU_MCP_HOSTS: 'qpu.test' }
   const free = await ask(call, none), { url, request } = free._meta.donation, paid = await ask(call, env), required = paid._meta['x402/error']
   assert.ok(free.content && url === 'https://revolut.me/ceccec' && request.includes(url), 'no wallet: a donation is asked beside the answer')
-  assert.equal((await ask(initialize, none)).instructions.split(request).length, 2, 'and once in the instructions')
-  assert.ok(!JSON.stringify([paid, await ask(initialize, env)]).includes('revolut'), 'a wallet: none is asked')
+  assert.ok(!(await ask(initialize, none)).instructions.includes(url), 'and never in the instructions, where a payment request reads as an injection')
+  const listed = (await ask({ jsonrpc: '2.0', id: 4, method: 'resources/list', params: {} }, none)).resources.find((r: any) => r.uri === 'donation://qpu')
+  const [text] = (await ask({ jsonrpc: '2.0', id: 5, method: 'resources/read', params: { uri: 'donation://qpu' } }, none)).contents
+  assert.ok(listed.description === request && text.text === request, 'it is a resource, listed with the sentence that names the address')
+  assert.ok((await ask({ jsonrpc: '2.0', id: 6, method: 'tools/list', params: {} }, none)).tools.every((t: any) => t._meta.donation.url === url), 'and every tool lists it in its _meta')
+  const asked = await Promise.all([initialize, { jsonrpc: '2.0', id: 4, method: 'resources/list', params: {} }, { jsonrpc: '2.0', id: 6, method: 'tools/list', params: {} }].map((b) => ask(b, env)))
+  assert.ok(!JSON.stringify([paid, ...asked]).includes('revolut'), 'a wallet: none is asked')
   assert.equal(required.x402Version, 2)
   assert.equal(required.error, 'PAYMENT_REQUIRED', 'a call without a payment is challenged')
   assert.equal(Number(required.accepts[0]!.amount), Math.round(callPriceUsd() * 1e6), 'the challenge asks the derived price')
@@ -71,3 +76,27 @@ test('a settled payment is sealed as the SDK writes it, beside the settlement', 
   assert.deepEqual([result._meta['x402/receipt'].kind, result._meta['x402/receipt'].sealed, JSON.parse(JSON.stringify(result))._meta['x402/receipt'].address.length], ['x402', true, 36])
 })
 
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every tool carries the contract version the code derives, with the kernel's count and the served count named. */
+test('every tool carries the contract version the code derives, with the kernel\'s count and the served count named', async () => {
+  const [{ handle }, { VERSION }] = await Promise.all([import('../processing/mcp.ts'), import('../processing/unit/version.ts')])
+  const kernel = ((await handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' } as never)) as any).result
+  assert.equal(kernel._meta.contract.version, VERSION)
+  assert.match(kernel._meta.contract.address, /^[0-9a-f-]{36}$/)
+  assert.ok(kernel.tools.every((t: any) => t._meta.contract.address === kernel._meta.contract.address), 'the kernel: one contract on the list and on every tool')
+  const served = (await read(await post({ jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} }))).result.tools
+  assert.deepEqual(served[0]._meta.contract, { ...kernel._meta.contract, tools: { kernel: kernel.tools.length, served: served.length } }, 'the SDK door: the same contract, both counts named')
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a refusal is one shape at every door: { error, code } in structuredContent with isError over the SDK, and in the kernel's JSON-RPC error data. */
+test('a refusal is one shape at every door: { error, code } in structuredContent with isError over the SDK, and in the kernel\'s JSON-RPC error data', async () => {
+  const { handle } = await import('../processing/mcp.ts')
+  const kernel = async (params: object, method = 'tools/call') => ((await handle({ jsonrpc: '2.0', id: 1, method, params } as never)) as any).error
+  const thrown = await kernel({ name: 'verify', arguments: { uuid: 'x' } }), unknown = await kernel({ name: 'no-such-tool' }), view = await kernel({ uri: 'ui://qpu/no-such-view' }, 'resources/read')
+  assert.deepEqual([thrown.code, thrown.data.code, thrown.data.error === thrown.message], [-32602, 'invalid_params', true])
+  assert.deepEqual([unknown.code, unknown.data.code, view.data.code], [-32601, 'not_found', 'invalid_params'])
+  const answer = (await read(await post({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'verify', arguments: { uuid: 'x' } } }))).result
+  assert.deepEqual([answer.isError, answer.structuredContent, JSON.parse(answer.content[0].text)], [true, { error: thrown.message, code: 'invalid_params' }, { error: thrown.message, code: 'invalid_params' }])
+  const ok = (await read(await post({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'clay', arguments: {} } }))).result
+  assert.ok(ok.isError === false && !('error' in ok.structuredContent), 'a successful answer keeps its own fields')
+})

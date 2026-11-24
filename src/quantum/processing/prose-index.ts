@@ -2957,7 +2957,7 @@ const SENTENCES = {
   scriptsDoiRecord_receipt: "This text is one build receipt. Its UUID ⟦0⟧ is the address of the text above it, and its SHA-256 is ⟦1⟧. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify { uuid, content } at ⟦2⟧.",
   scriptsDoiRecord_receiptDoc: "The build receipt: the UUID and SHA-256 of the one text, the same in the home page, the README, the npm package and the Zenodo record.",
   scriptsDoiRecord_s2: "the home page, the README, the npm README and the Zenodo record differ from the one text the build writes: run lake run index and commit the result",
-  scriptsDoiRecord_served: "⟦0⟧ tools are served over MCP, and the audit replays ⟦1⟧ worked examples against them; every answer is a block sealed under its UUID.",
+  scriptsDoiRecord_served: "⟦0⟧ tools are served over MCP: the kernel's ⟦1⟧, and ⟦2⟧ where the Worker binds its rooms and its Lean prover. The audit replays ⟦3⟧ worked examples against the kernel's tools; every answer is a block sealed under its UUID.",
   scriptsDoiRecord_textDoc: "The text the receipt addresses, served as a resource so a client verifies it with verify { uuid, content }.",
   scriptsDoiRecord_title: "⟦0⟧ v⟦1⟧: ⟦2⟧",
   scriptsDoiRecord_unprecedented: "Laws no earlier DOI-registered work was found to state",

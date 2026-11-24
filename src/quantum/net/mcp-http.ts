@@ -31,7 +31,7 @@ const cheapestRealCallUsd = (): number => Math.min(...QUANTUM_MARKET.map((d) => 
 export const callPriceUsd = (): number => Math.round(cheapestRealCallUsd() * USDC) / USDC
 
 type Env = Record<string, unknown>
-type Answer = { result?: Record<string, any>; error?: { message: string } }
+type Answer = { result?: Record<string, any>; error?: { message: string; data?: { error?: string; code?: string } } }
 const kernel = async (method: string, params: unknown = {}) => (await handle({ jsonrpc: '2.0', id: 0, method, params } as Rpc)) as Answer
 let listed: Promise<{ info: Record<string, any>; tools: Record<string, any>[]; resources: Record<string, any>[] }> | undefined
 /** What the kernel serves, read once: its server info and instructions, its tools, and the ui:// views they render in. */
@@ -53,26 +53,33 @@ export const x402Of = (env: Env) => {
  *  into the answer's _meta, which seals it beside it as x402/receipt. */
 export const sealSettlement = <R extends { _meta?: Record<string, unknown> }>(r: R): R => ({ ...r, _meta: new Proxy({ ...r._meta }, { set: (m, k, v) => { m[k as string] = v; if (k === 'x402/payment-response') m['x402/receipt'] = receiptOf('x402', v); return true } }) })
 
-/** Where a host that names no wallet asks for a donation. */
+/** Where a host that names no wallet asks for a donation: in a resource and in every tool's _meta, never in the instructions. */
 export const DONATION = 'https://revolut.me/ceccec'
+const DONATION_RESOURCE = 'donation://qpu'
+/** A refusal as every door gives it: { error, code } in structuredContent, the pair the kernel's JSON-RPC error carries in data. */
+const refusal = (e: Answer['error']) => { const structured = { error: e?.data?.error ?? e?.message ?? 'no answer', code: e?.data?.code ?? 'refused' }; return { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: true } }
 
 /** One MCP SDK server over the kernel: each tool registered with its own schema, paid where the tenant names a wallet, free with a
  *  donation asked where it names none; the Worker serves it over Streamable HTTP, scripts/stdio.ts over stdio. */
 export const mcpServer = async (env: Env) => {
-  const { info, tools, resources } = await surface(), terms = x402Of(env), donation = { url: DONATION, request: proseFill(PROSE.quantumNetMcpHttp_donationRequested, DONATION) }
-  const base = new McpServer({ name: info.serverInfo?.name ?? 'qpu', version: info.serverInfo?.version ?? '0' }, { instructions: terms ? info.instructions : `${info.instructions} ${donation.request}` })
+  const { info, tools, resources } = await surface(), terms = x402Of(env), donation = { url: DONATION, request: proseFill(PROSE.quantumNetMcpHttp_donationRequested, DONATION), resource: DONATION_RESOURCE }
+  const base = new McpServer({ name: info.serverInfo?.name ?? 'qpu', version: info.serverInfo?.version ?? '0' }, { instructions: info.instructions })
   const server = terms ? withX402(base, terms) : null
   // where the Worker binds the rooms and the Lean prover, their tools are tools like the kernel's, charged the same way
   const rooms = env.MAILBOX as MailboxNamespace | undefined, prover = env.PROVER as ProverNamespace | undefined
   type Args = Record<string, unknown>
-  const all = [...tools.map((t: any) => [t, async (args: Args) => { const a = await kernel('tools/call', { name: t.name, arguments: args }); return a.result ?? { content: [{ type: 'text', text: a.error?.message ?? 'no answer' }], isError: true } }] as const), ...(rooms ? MESSAGING_TOOLS.map((t) => [t, (args: Args) => callMessaging(rooms, t.name, args)] as const) : []), ...(prover ? PROVER_TOOLS.map((t) => [t, (args: Args) => callProver(prover, args)] as const) : [])]
+  const all = [...tools.map((t: any) => [t, async (args: Args) => { const a = await kernel('tools/call', { name: t.name, arguments: args }); return a.result ?? refusal(a.error) }] as const), ...(rooms ? MESSAGING_TOOLS.map((t) => [t, (args: Args) => callMessaging(rooms, t.name, args)] as const) : []), ...(prover ? PROVER_TOOLS.map((t) => [t, (args: Args) => callProver(prover, args)] as const) : [])]
+  // the contract the kernel derives, on every tool, with both counts named: the kernel's tools and the tools this server serves
+  const contract = { ...tools[0]?._meta?.contract, tools: { kernel: tools.length, served: all.length } }
   for (const [t, call] of all) {
+    const meta = { ...t._meta, contract, ...(server ? {} : { donation }) }
     // a schema's default is a choice shown, never an argument the client gave
     const schema = z.fromJSONSchema(JSON.parse(JSON.stringify(t.inputSchema, (k, v) => (k === 'default' ? undefined : v)))) as z.ZodObject, run = async (args: Args) => { const r: any = await call(args); return (server ? r : { ...r, _meta: { ...r._meta, donation } }) as never }
-    if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations ?? {}, async (args: Args) => sealSettlement(await run(args))).update({ _meta: t._meta })
-    else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations, _meta: t._meta }, run)
+    if (server) server.paidTool(t.name, t.description, callPriceUsd(), schema.shape, t.annotations ?? {}, async (args: Args) => sealSettlement(await run(args))).update({ _meta: meta })
+    else base.registerTool(t.name, { description: t.description, inputSchema: schema, annotations: t.annotations, _meta: meta }, run)
   }
   for (const r of resources) base.registerResource(r.name, r.uri, { description: r.description, mimeType: r.mimeType }, async (uri: URL) => (await kernel('resources/read', { uri: uri.href })).result as never)
+  if (!server) base.registerResource('qpu · donation', DONATION_RESOURCE, { description: donation.request, mimeType: 'text/plain', _meta: { donation } }, async (uri: URL) => ({ contents: [{ uri: uri.href, mimeType: 'text/plain', text: donation.request, _meta: { donation } }] }))
   return base
 }
 

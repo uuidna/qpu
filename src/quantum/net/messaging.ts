@@ -23,7 +23,7 @@ export const isMessagingTool = (tool: unknown): tool is 'send' | 'receive' => ME
 const ROOM = /^[0-9a-f]{64}$/i
 
 const answer = (structured: Record<string, unknown>, isError = false) => ({ content: [{ type: 'text' as const, text: JSON.stringify(structured) }], structuredContent: structured, isError })
-const refuse = (why: string) => answer({ refused: why }, true)
+const refuse = (why: string) => answer({ error: why, code: 'refused', refused: why }, true)
 const named = (value: unknown, optional: boolean): string | null | undefined => value === undefined && optional ? null : typeof value === 'string' && value.trim().length > 0 && value.length <= LIMITS.name ? value.trim() : undefined
 /** A posted message as a quantum receipt: the same room, place, names, text and time always name the same sealed UUID program. */
 export const messageReceipt = (room: string, m: Posted) => receiptOf('message', { room, ...m })

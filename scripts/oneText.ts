@@ -20,6 +20,8 @@ import { EXAMPLES } from '../src/quantum/processing/examples.ts'
 import { TOOLBOXES, handle } from '../src/quantum/processing/mcp.ts'
 import { uuid } from '../src/quantum/uuid/index.ts'
 import { DONATION, callPriceUsd } from '../src/quantum/net/mcp-http.ts'
+import { MESSAGING_TOOLS } from '../src/quantum/net/messaging.ts'
+import { PROVER_TOOLS } from '../src/quantum/net/prover.ts'
 import { LICENSE, PRECEDENCE } from '../src/quantum/processing/unit/license.ts'
 import { RELEASE_REPOSITORY, UNIT_CONCEPT_DOI } from '../src/quantum/processing/release.ts'
 
@@ -32,11 +34,13 @@ const leanOnly = THEOREMS.filter((t) => t.axioms.every((a) => LEAN_AXIOMS.has(a)
 const families = Object.entries(THEOREMS.reduce<Record<string, number>>((n, t) => ({ ...n, [t.module]: (n[t.module] ?? 0) + 1 }), {}))
   .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1)).map(([module, n]) => `${module} ${n}`).join(', ')
 const tools = ((await handle({ jsonrpc: '2.0', id: 0, method: 'tools/list' })) as { result?: { tools?: unknown[] } }).result?.tools?.length ?? 0
+// the tools the Worker serves beside the kernel's where it binds its rooms and its Lean prover: the count tools/list answers there
+const bound = MESSAGING_TOOLS.length + PROVER_TOOLS.length
 const achieved = [
   proseFill(PROSE.scriptsDoiRecord_kernel, KERNEL_THEOREMS, byHand, GENERATED_LEMMAS, leanOnly),
   proseFill(PROSE.scriptsDoiRecord_families, families),
   proseFill(PROSE.scriptsDoiRecord_catalogue, TEXTBOOK_INDEX.length, NESTED_COUNTS.products, NESTED_COUNTS.variants),
-  proseFill(PROSE.scriptsDoiRecord_served, tools, EXAMPLES.length),
+  proseFill(PROSE.scriptsDoiRecord_served, tools + bound, tools, bound, EXAMPLES.length),
 ]
 
 // novelties: the theorems the tree declares new (the novelty register Lean writes), each proposed for Mathlib

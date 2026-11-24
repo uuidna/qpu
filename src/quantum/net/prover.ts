@@ -22,7 +22,7 @@ export const callProver = async (prover: ProverNamespace, args: Record<string, u
     const r = await lean.fetch(new Request('http://prover/gaps', { method: 'POST' }))
     return answer(await r.json() as Record<string, unknown>, !r.ok)
   }
-  if (typeof args.source !== 'string' || args.source.length === 0 || args.source.length > PROVER_LIMITS.source) return answer({ refused: proseFill(PROSE.quantumNetProver_sourceRefused, PROVER_LIMITS.source) }, true)
+  if (typeof args.source !== 'string' || args.source.length === 0 || args.source.length > PROVER_LIMITS.source) { const why = proseFill(PROSE.quantumNetProver_sourceRefused, PROVER_LIMITS.source); return answer({ error: why, code: 'invalid_params', refused: why }, true) }
   const r = await lean.fetch(new Request('http://prover/check', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ source: args.source, seconds: PROVER_LIMITS.seconds }) }))
   const verdict = await r.json() as { ok?: boolean; messages?: unknown; toolchain?: string }
   return answer({ ...verdict, receipt: receiptOf('lean', { source: args.source, ok: verdict.ok, messages: verdict.messages, toolchain: verdict.toolchain }) }, !r.ok || verdict.ok !== true)

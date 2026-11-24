@@ -2472,6 +2472,8 @@ const toolboxLean = (box: Toolbox) => {
 }
 const NAMES = TOOLS.map((t) => t.name), VIEWS = [...NAMES, 'chat'] // the MCP Apps views: every tool's and the chat's
 const CONTRACTS = TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema }))
+/** The contract version: the package version and the content address of every tool's contract, derived from the code, never typed. */
+const CONTRACT = { version: VERSION, address: uuid(canonicalText(CONTRACTS)) }
 /** The order the tools are served in: the Clay set first (the register, the decider, the verifier), every other tool after them in its order; initialize builds its version over the same order, so the version names what is served. */
 const SERVED: Tool[] = [...TOOLS].sort((a, b) => { const i = CLAY_FIRST.indexOf(a.name), j = CLAY_FIRST.indexOf(b.name); return (i < 0 ? CLAY_FIRST.length : i) - (j < 0 ? CLAY_FIRST.length : j) })
 /** The chat as the one door an MCP client needs: a statement (or a call) answered under the caller's role, never an error thrown back.
@@ -2613,13 +2615,15 @@ const records = (args: Record<string, unknown>): Context => { const given = [...
 
 const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q.col}` : q.kind === 'line' ? `line:${q.x}` : `named:${q.name}`)
 
+/** A call the role may not make, refused as every refusal is: its JSON-RPC error carries { error, code } in data. */
+const refused = (id: Rpc['id'] | null, rbac: { role: string; action: string }): Reply => { const error = proseFill(PROSE.quantumProcessingMcp_message421, rbac.role, rbac.action); return { jsonrpc: '2.0', id, error: { code: INVALID_PARAMS, message: error, data: { rbac, error, code: 'refused' } } } as Reply }
 export const handleBatch = (messages: readonly Rpc[]): (Reply | Promise<Reply>)[] => {
   const claimed = messages.map((m) => { const p = m.params; if (!p || typeof p !== 'object') return undefined; const role = (p as { role?: unknown; _meta?: { role?: unknown } }).role ?? (p as { _meta?: { role?: unknown } })._meta?.role; return typeof role === 'string' ? role : undefined }).find((role) => role !== undefined)
   const calls = messages.map((m) => askPayloadRbac(mcpHostList(), QPU_MCP, m.method, claimed))
   return messages.map((m, i) => {
     const call = calls[i]!
     if (call.access) return handle(m, true)
-    return { jsonrpc: '2.0', id: m.id ?? null, error: { code: INVALID_PARAMS, message: proseFill(PROSE.quantumProcessingMcp_message421, call.role, call.action), data: { rbac: call } } }
+    return refused(m.id ?? null, call)
   })
 }
 
@@ -2637,7 +2641,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
     const sealed = sealTokenLeaks(text)
     const taught = listRemedies([sealed.text])
     const manual = taught.unremedied
-    return { jsonrpc: '2.0', id, error: { code, message: sealed.text, data: { court: summonCourt({ gate: `${message.method}${(message as { params?: { name?: string } }).params?.name ? ` ${(message as { params: { name: string } }).params.name}` : ''}`, code, evidence: sealed.text }), leaks: { ...leakProof(sealed.found, sealed.redacted), kind: 'manual' as const, manual } } } }
+    return { jsonrpc: '2.0', id, error: { code, message: sealed.text, data: { error: sealed.text, code: code === METHOD_NOT_FOUND ? 'not_found' : 'invalid_params', court: summonCourt({ gate: `${message.method}${(message as { params?: { name?: string } }).params?.name ? ` ${(message as { params: { name: string } }).params.name}` : ''}`, code, evidence: sealed.text }), leaks: { ...leakProof(sealed.found, sealed.redacted), kind: 'manual' as const, manual } } } }
   }
   const params = (message.params ?? {}) as Record<string, unknown>
   const ok = (result: unknown) => {
@@ -2656,7 +2660,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
     if (!decided) {
       const claimed = typeof params.role === 'string' ? params.role : undefined
       const asked = askPayloadRbac(mcpHostList(), QPU_MCP, message.method, claimed)
-      if (!asked.access) return { jsonrpc: '2.0', id, error: { code: INVALID_PARAMS, message: proseFill(PROSE.quantumProcessingMcp_message421, asked.role, asked.action), data: { rbac: asked } } }
+      if (!asked.access) return refused(id, asked)
       askedFirst = { server: asked.server, one: asked.one, first: asked.first, asked: asked.asked, tool: asked.tool }
     }
     if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256, resource: RECEIPT_RESOURCE }, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online] }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${WELCOME}\n\n${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
@@ -2691,11 +2695,11 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
         const properties = Object.fromEntries(Object.entries(x.properties ?? {}).filter(([k]) => !h.withheld.includes(k)).map(([k, p]) => [k, { ...p, ...(Array.isArray(p.enum) && role ? { enum: h.options[k] } : {}), ...(k in h.defaults ? { default: h.defaults[k] } : {}) }]))
         return { ...x, properties, ...(x.required ? { required: x.required.filter((r) => !h.withheld.includes(r)) } : {}), 'x-harmonic': stamp }
       }
-      const list = chosen.map(({ name, description, inputSchema, toolbox }) => { const box = TOOLBOXES.find((b) => b.name === toolbox); const online = (ISO_QUANTUM_AI.online as readonly string[]).includes(name); return { name, description: brief(description), inputSchema: harmonic(name, briefSchema(inputSchema), toolbox === 'google'), annotations: { title: name, readOnlyHint: true, idempotentHint: true, openWorldHint: online }, _meta: { toolbox, experience: ISO_QUANTUM_AI.experience, online, skill: { ...(full ? { instructions: box?.skill.instructions ?? '' } : {}), directions: box?.skill.directions.length ?? 0 }, ...(full && toolbox === 'google' ? { specific: a432Specific(name) } : {}), ...(full && box ? { lean: toolboxLean(box) } : {}), ui: { resourceUri: `ui://qpu/${name}`, visibility: ['model', 'app'] } } } })
+      const list = chosen.map(({ name, description, inputSchema, toolbox }) => { const box = TOOLBOXES.find((b) => b.name === toolbox); const online = (ISO_QUANTUM_AI.online as readonly string[]).includes(name); return { name, description: brief(description), inputSchema: harmonic(name, briefSchema(inputSchema), toolbox === 'google'), annotations: { title: name, readOnlyHint: true, idempotentHint: true, openWorldHint: online }, _meta: { toolbox, experience: ISO_QUANTUM_AI.experience, online, skill: { ...(full ? { instructions: box?.skill.instructions ?? '' } : {}), directions: box?.skill.directions.length ?? 0 }, ...(full && toolbox === 'google' ? { specific: a432Specific(name) } : {}), ...(full && box ? { lean: toolboxLean(box) } : {}), ui: { resourceUri: `ui://qpu/${name}`, visibility: ['model', 'app'] }, contract: CONTRACT } } })
       const listed = accountBytes([JSON.stringify(list)]), whole = accountBytes([JSON.stringify(CONTRACTS)])
       const efficiency = measureContext(listed, whole)
       const kept = efficiency.tokens, fullTokens = efficiency.full, saved = efficiency.saved
-      return ok({ tools: list, _meta: { context: { tools: list.length, of: TOOLS.length, chars: listed.bytes, tokens: kept, fullChars: whole.bytes, fullTokens, saved, balanced: Boolean(wanted || cluster || !full), full, bytes: listed, efficiency, formula: { theorem: 'textbook_context_balanced' as const, lean: 'full - kept + kept = full' as const, full: fullTokens, kept, saved, holds: efficiency.holds }, bill: getBill({ tokens: kept, bits: listed.bits, coins: efficiency.coins, saved: { tokens: saved, bits: whole.bits - listed.bits } }), says: PROSE.quantumProcessingMcp_says422 } } })
+      return ok({ tools: list, _meta: { contract: CONTRACT, context: { tools: list.length, of: TOOLS.length, chars: listed.bytes, tokens: kept, fullChars: whole.bytes, fullTokens, saved, balanced: Boolean(wanted || cluster || !full), full, bytes: listed, efficiency, formula: { theorem: 'textbook_context_balanced' as const, lean: 'full - kept + kept = full' as const, full: fullTokens, kept, saved, holds: efficiency.holds }, bill: getBill({ tokens: kept, bits: listed.bits, coins: efficiency.coins, saved: { tokens: saved, bits: whole.bits - listed.bits } }), says: PROSE.quantumProcessingMcp_says422 } } })
     }
     // the UI resources: one ui://qpu/<tool> per tool, the app shell served over the standard resource methods, nothing bypassed
     if (message.method === 'resources/list') return ok({ resources: [...VIEWS.map((v) => { const u = ui(v); return { uri: u.uri, name: u.name, description: v === 'chat' ? PROSE.quantumProcessingMcp_s423 : proseFill(PROSE.quantumProcessingMcp_s424, v), mimeType: u.mimeType, _meta: { ui: { csp: u.csp, prefersBorder: u.prefersBorder } } } }), { uri: RECEIPT_RESOURCE, name: 'qpu · receipt', description: PROSE.quantumProcessingMcp_receiptResource, mimeType: 'text/markdown', _meta: { receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256 } } }, { uri: OPENAPI_RESOURCE, name: 'qpu · openapi', description: PROSE.quantumProcessingMcp_description426, mimeType: 'application/json' }, { uri: LEAN_RESOURCE, name: 'qpu · lean', description: PROSE.quantumProcessingMcp_description427, mimeType: 'application/json' }] })
