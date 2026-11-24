@@ -19,17 +19,20 @@ const ROUTE_STOP = new Set(['many', 'much', 'more', 'most', 'when', 'what', 'whi
 export const routeStems = (text: string): Set<string> => new Set(text.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().replace(/[^a-z0-9\s_.-]/g, ' ').split(/[\s_.-]+/).filter((w) => w.length > 3 && !ROUTE_STOP.has(w)).map((w) => w.replace(/(ings?|ed|es|e|s)$/, '')).filter((w) => w.length > 2))
 let routeIndex: { key: string; says: string; lean: string; examples: readonly string[]; keyStems: Set<string>; stems: Set<string> }[] | null = null
 let routeIdf: Map<string, number> | null = null
+// the examples naming a theorem are read from the examples each call hands in, never from the first caller's: the index is built once from the
+// theorems alone, so a route is a function of the statement and the examples given, whatever was asked before
+const namedBy = new WeakMap<readonly Example[], Map<string, string[]>>()
+const namedOf = (examples: readonly Example[]) => { let named = namedBy.get(examples); if (!named) { named = new Map(); for (const e of examples) if (e.theorem) named.set(e.theorem, [...(named.get(e.theorem) ?? []), e.id]); namedBy.set(examples, named) } return named }
 /** A statement routed strongly: its best theorem shares two words or more, since one word rare among the theorems can be common among the problems. */
 export const routedStrongly = (x: { r: ReturnType<typeof routeStatement> }): boolean => x.r.routed && (x.r.theorems[0]?.shared.length ?? 0) >= 2
 export const routeStatement = (statement: string, examples: readonly Example[], top?: number) => {
   if (!routeIndex || !routeIdf) {
     const textbook = new Set(TEXTBOOK_THEOREMS.map((t) => t.key))
     // a textbook theorem routes by its key and what it says, any other by its key and its module; the examples naming it are its routes
-    const named = new Map<string, string[]>(); for (const e of examples) if (e.theorem) named.set(e.theorem, [...(named.get(e.theorem) ?? []), e.id])
     const key = (k: string) => routeStems(k.replace(/^textbook_/, '').replace(/^Qpu\./, ''))
     routeIndex = [
-      ...TEXTBOOK_THEOREMS.filter((t) => KERNEL.has(t.key)).map((t) => { const keyStems = key(t.key); return { key: t.key, says: t.says, lean: t.lean, examples: [...new Set([...t.examples, ...(named.get(t.key) ?? [])])], keyStems, stems: new Set([...keyStems, ...routeStems(t.says)]) } }),
-      ...THEOREMS.filter((t) => !textbook.has(t.key)).map((t) => { const keyStems = key(t.key); return { key: t.key, says: `${t.module}: ${t.statement}`, lean: `theorem ${t.key} : ${t.statement}`, examples: named.get(t.key) ?? [], keyStems, stems: new Set([...keyStems, ...routeStems(t.module.replace(/^Qpu\./, ''))]) } }),
+      ...TEXTBOOK_THEOREMS.filter((t) => KERNEL.has(t.key)).map((t) => { const keyStems = key(t.key); return { key: t.key, says: t.says, lean: t.lean, examples: t.examples, keyStems, stems: new Set([...keyStems, ...routeStems(t.says)]) } }),
+      ...THEOREMS.filter((t) => !textbook.has(t.key)).map((t) => { const keyStems = key(t.key); return { key: t.key, says: `${t.module}: ${t.statement}`, lean: `theorem ${t.key} : ${t.statement}`, examples: [] as readonly string[], keyStems, stems: new Set([...keyStems, ...routeStems(t.module.replace(/^Qpu\./, ''))]) } }),
     ]
     const df = new Map<string, number>(); for (const t of routeIndex) for (const w of t.stems) df.set(w, (df.get(w) ?? 0) + 1)
     routeIdf = new Map([...df].map(([w, n]) => [w, Math.log(routeIndex!.length / n)]))
@@ -38,8 +41,8 @@ export const routeStatement = (statement: string, examples: readonly Example[], 
   const s = routeStems(statement)
   const row = (t: NonNullable<typeof routeIndex>[number]) => { const shared = [...t.stems].filter((w) => s.has(w)); const subject = shared.filter((w) => t.keyStems.has(w)); return { t, shared, subject, weight: shared.reduce((n, w) => n + (routeIdf!.get(w) ?? 0) * (t.keyStems.has(w) ? 2 : 1), 0) } }
   const ranked = routeIndex.map(row).filter((r) => r.t.says === statement || ((r.shared.length >= 2 || r.subject.length >= 1) && r.weight >= ROUTE_THRESHOLD)).sort((a, b) => Number(b.t.says === statement) - Number(a.t.says === statement) || b.weight - a.weight || a.t.key.localeCompare(b.t.key)).slice(0, top ?? Infinity) // top undefined: every theorem past the threshold, used at once (no cap — both sides, however many)
-  const byId = new Map(examples.map((e) => [e.id, e]))
-  const theorems = ranked.map((r) => ({ theorem: r.t.key, lean: r.t.lean, says: r.t.says, shared: r.shared, subject: r.subject, weight: Math.round(r.weight * 100) / 100, routes: r.t.examples.map((id) => byId.get(id)).filter((e): e is Example => !!e).map((e) => ({ example: e.id, call: { name: e.tool, arguments: e.arguments } })) }))
+  const byId = new Map(examples.map((e) => [e.id, e])), named = namedOf(examples)
+  const theorems = ranked.map((r) => ({ theorem: r.t.key, lean: r.t.lean, says: r.t.says, shared: r.shared, subject: r.subject, weight: Math.round(r.weight * 100) / 100, routes: [...new Set([...r.t.examples, ...(named.get(r.t.key) ?? [])])].map((id) => byId.get(id)).filter((e): e is Example => !!e).map((e) => ({ example: e.id, call: { name: e.tool, arguments: e.arguments } })) }))
   return { routed: theorems.length > 0, theorems, threshold: ROUTE_THRESHOLD, theorem: 'textbook_route_or_lead', says: theorems.length ? proseFill(PROSE.quantumProcessingMatch_s1, theorems.map((t) => t.theorem).join(', ')) : PROSE.quantumProcessingMatch_s2 }
 }
 /** a route needs the weight of a word only one or two theorems use plus another: ln(n / 2) for the rarest is about four and a half */

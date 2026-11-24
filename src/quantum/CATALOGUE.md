@@ -1048,7 +1048,7 @@ period 2 35 = 12 ∧
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-Qpu.openClaims.length = 3
+Qpu.openClaims.length = 4
 ```
 
 ## Qpu.Communication.Coil
@@ -14542,7 +14542,7 @@ Qpu.Verify.Uuid.decode (Qpu.Verify.Uuid.encode 65535 42) = (65535, 42)
 
 ## Open claims
 
-3 claim(s) say more than the kernel accepted. Each is kept as an underclaim: the theorems that state what is proved toward it are named, and the rest is a theorem still to prove. None is a product.
+4 claim(s) say more than the kernel accepted. Each is kept as an underclaim: the theorems that state what is proved toward it are named, and the rest is a theorem still to prove. None is a product.
 
 ### `thousand_bit_by_quantum_supremacy` (open)
 
@@ -14567,3 +14567,11 @@ The hexbit and two gateway bits teleport any hexbit faster than light.
 Proved toward it: `textbook_hexbit_gateway_ftl`, `QuantumCommunication.teleport_exact`, `QuantumCommunication.teleport_no_signalling`.
 
 Missing: The kernel proves the count of free qubits the sentence names and that teleportation is exact once the two classical bits arrive. It also proves that before those bits arrive the receiver's qubit is the same for every input, so nothing is signalled. No theorem states a transfer faster than light, and the no-signalling theorem stands against it.
+
+### `captain_coins_meet_post_quantum_standards` (open)
+
+The captain coins meet all post-quantum standards from all aspects, including programmable currency as required and publicly funded by the EU.
+
+Proved toward it: `textbook_pqc_standards_three`, `textbook_tamper_detected`, `textbook_grover_search`.
+
+Missing: The kernel proves the sizes of the FIPS 203, 204 and 205 parameter sets this tree computes, that a digest of 256 bits leaves 128 against a quantum search, and the square root Grover's search takes. A coin's address alone has 122 free bits, 61 against a quantum search, which is below that floor of 128; the coin meets it only with the SHA-256 it carries beside the address. No definition of a captain coin is in the tree, no EU requirement for a programmable currency is cited, and no record of public funding is held. Meeting a standard is a certification its body gives, and none is recorded here.

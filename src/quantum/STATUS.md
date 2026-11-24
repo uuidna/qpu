@@ -45,3 +45,4 @@
 | `thousand_bit_by_quantum_supremacy`: The thousand-bit challenge is solved by full quantum supremacy. | `textbook_thousand_bit_width`, `textbook_thousand_bit_three_divides`, `Advantage.receipt_exact`, `Advantage.advantage_unbounded` |
 | `merkaba_trajectories_cover_all_dimensions`: When all merkabas move, the trajectories of their folding edges cover every dimension in analog, so teleporting loses nothing. | — |
 | `teleport_faster_than_light`: The hexbit and two gateway bits teleport any hexbit faster than light. | `textbook_hexbit_gateway_ftl`, `QuantumCommunication.teleport_exact`, `QuantumCommunication.teleport_no_signalling` |
+| `captain_coins_meet_post_quantum_standards`: The captain coins meet all post-quantum standards from all aspects, including programmable currency as required and publicly funded by the EU. | `textbook_pqc_standards_three`, `textbook_tamper_detected`, `textbook_grover_search` |
