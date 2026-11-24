@@ -2,7 +2,7 @@
   "name": "qpu",
   "version": "1.0.0",
   "description": "qpu.uuidna.com: the quantum MCP catalogue at /api/mcp beside its Lean-written VitePress site, on a Cloudflare Worker",
-  "license": "MIT",
+  "license": "CC-BY-NC-ND-4.0",
   "type": "module",
   "scripts": {
     "prepare": "git config core.hooksPath .githooks || exit 0",

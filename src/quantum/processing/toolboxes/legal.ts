@@ -140,7 +140,13 @@ const planLegal = (claims: readonly Claim[], discovery: Pick<Discovery, 'doors'>
 
 type Finding = { claim: string; door: string; verdict: string | null; clean: boolean | null; violations: number; violationKinds: string[]; note: string; receipt: string | null; refusal: string | null }
 /** The answers read: verdicts per claim, drift between the unit's facts and the tree's licence, security findings, due process gaps. */
-const auditClaims = (claims: readonly Claim[], answers: readonly Answer[], security: readonly { id: string; passed: boolean; evidence: string }[]) => {
+/** An answer as a host gives it: an agnostic host (list_tools and call_tool, as the unit serves its doors) returns each door's result as the
+ *  JSON text of its content, often followed by more parts (the licence line), so the whole text or its first part that parses as an
+ *  object is read as the object it states; anything else is kept as it came. */
+const parsed = (text: string): unknown => { try { return JSON.parse(text) } catch { return undefined } }
+const readAnswer = (answer: unknown): unknown => typeof answer !== 'string' ? answer : parsed(answer) ?? answer.split('\n').map(parsed).find((v) => v !== null && typeof v === 'object') ?? answer
+const auditClaims = (claims: readonly Claim[], given: readonly Answer[], security: readonly { id: string; passed: boolean; evidence: string }[]) => {
+  const answers = given.map((a) => (a.answer === undefined ? a : { ...a, answer: readAnswer(a.answer) }))
   const findings: Finding[] = []
   for (const a of answers.filter((x) => x.purpose === 'forensics' || x.purpose === 'verify')) {
     const claim = claims.find((c) => c.text === (a.arguments.statement as string))?.id ?? '?'
@@ -405,6 +411,9 @@ export const LEGAL: Toolbox = {
       const answers: Answer[] = [...plan.calls.map((c): Answer => c.purpose === 'forensics' ? { ...c, answer: { verdict: 'UNVERIFIED', clean: true, violations: [], receipt: 'r', note: 'no decidable test' } } : c.purpose === 'verify' ? { ...c, answer: { verdict: 'UNVERIFIED', receipt: 'r2' } } : c.door === 'get_rights' ? { ...c, answer: { holder: `${LICENSE.author} (https://qpu.uuidna.com)`, license: LICENSE.spdx, licenseAddress: LICENSE.address, imprint: 'other-imprint', receipt: 'r3' } } : c.door === 'audit_security' ? { ...c, answer: { checks: 7, passed: 7, failed: 0, receipt: 'r4' } } : c.door === 'compute_prior_art' ? { ...c, refusal: PROSE.quantumProcessingToolboxesLegal_refusal132 } : { ...c, answer: { receipt: 'r5' } })]
       const audit = auditClaims(claims, answers, sec)
       check('legal:audit-read', audit.findings.length === claims.length * 2 && audit.verdicts.UNVERIFIED === claims.length * 2 && audit.violations === 0 && audit.drift.length === 1 && audit.drift[0]!.startsWith('imprint') && audit.refusals === 1 && audit.securityDoors.find((d) => d.door === 'audit_security')?.failed === 0, `${audit.findings.length} findings, drift ${audit.drift.join('; ')}, refusals ${audit.refusals}`)
+      // an agnostic host (list_tools and call_tool) hands each door's result back as JSON text with more parts after it: the same audit
+      const asText = answers.map((a): Answer => (a.answer === undefined ? a : { ...a, answer: `${JSON.stringify(a.answer)}\n${LICENSE.attribution}` }))
+      check('legal:agnostic-answers', JSON.stringify(auditClaims(claims, asText, sec)) === JSON.stringify(audit), PROSE.quantumProcessingToolboxesLegal_agnostic)
       check('legal:page', getLegalPage(audit, plan, '2026-01-01').includes(PROSE.quantumProcessingToolboxesLegal_s133), PROSE.quantumProcessingToolboxesLegal_s134)
       const run = (t: Texts) => ctx.call('legal', { texts: t, answers: [] }) as { id: string; sha256: string }
       const a1 = run(FIXTURE_TEXTS); const a2 = run(FIXTURE_TEXTS); const a3 = run({ ...FIXTURE_TEXTS, readme: FIXTURE_TEXTS.readme + '| Tampered | yes |\n' })

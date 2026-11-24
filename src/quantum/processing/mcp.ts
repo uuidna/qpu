@@ -25,6 +25,7 @@ import { capabilities } from '../engine/index.ts'
 import { listAlpine, portAlpine } from './alpine.ts'
 import { pageSeed } from './page-seed.ts'
 import { INSTRUCTIONS, LICENSE } from './unit/license.ts'
+import { RECEIPT, RECEIPT_TEXT } from './receipt-index.ts'
 import { QPU_ORIGIN, tenantAddress } from './unit/index.ts'
 import { VERSION } from './unit/version.ts'
 import { AXIOMS, evaluate as clayEvaluate, recomputeClay, recomputeClayPravets, reflectionOfRegister, digitalRoot, trinityFor, mint, bits, amplitudes } from './clay-register.ts'
@@ -2623,6 +2624,10 @@ export const handleBatch = (messages: readonly Rpc[]): (Reply | Promise<Reply>)[
 }
 
 export const caller = (name: string) => (args: Record<string, unknown> = {}): any => { const r = call(name, args); if (r.error) throw new Error(r.error.message); return r.result!.structuredContent }
+/** The one text this build is, served as a resource: its receipt is the address of exactly this text. */
+const RECEIPT_RESOURCE = 'receipt://qpu'
+/** The welcome every client reads at initialize: the build's receipt, how to use the server and how to improve it. */
+const WELCOME = [proseFill(PROSE.quantumProcessingMcp_welcome, RECEIPT.uuid, RECEIPT.sha256, RECEIPT_RESOURCE), PROSE.quantumProcessingMcp_use, proseFill(PROSE.quantumProcessingMcp_improve, RECEIPT.mcp.replace(/\/api\/mcp$/, ''), LICENSE.spdx)].join(' ')
 export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> => {
   if (Array.isArray(message)) return handleBatch(message as unknown as Rpc[]) as unknown as Reply
   const id = message.id ?? null
@@ -2654,7 +2659,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       if (!asked.access) return { jsonrpc: '2.0', id, error: { code: INVALID_PARAMS, message: proseFill(PROSE.quantumProcessingMcp_message421, asked.role, asked.action), data: { rbac: asked } } }
       askedFirst = { server: asked.server, one: asked.one, first: asked.first, asked: asked.asked, tool: asked.tool }
     }
-    if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online] }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
+    if (message.method === 'initialize') return ok({ protocolVersion: PROTOCOL_VERSION, capabilities: { tools: {}, resources: {}, extensions: { [MCP_APPS.extension]: { mimeTypes: [MCP_APPS.mimeType] } }, ...capabilities() }, serverInfo: { name: 'qpu', version: VERSION, build: build(SERVED.map((t) => t.name)), license: LICENSE.spdx, author: LICENSE.author, receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256, resource: RECEIPT_RESOURCE }, experience: ISO_QUANTUM_AI.experience, vocabulary: ISO_QUANTUM_AI.vocabulary, entropy: ISO_QUANTUM_AI.entropy, online: { doors: [...ISO_QUANTUM_AI.online] }, ...(askedFirst ? { rbac: askedFirst } : {}) }, instructions: `${WELCOME}\n\n${INSTRUCTIONS}\n\nToolboxes: ${TOOLBOXES.map((b) => `${b.name} (${b.tools.map((t) => t.name).join(', ')}): ${b.idea}. ${b.skill.instructions}`).join('\n')}` })
     // every tool declares its UI resource (MCP Apps, _meta.ui.resourceUri): a host that negotiates the extension renders the tool's result through it
     // every tool listed widget-skilled: its UI resource (the widget) and its toolbox's skill (the instructions a client follows, the directions it tests in)
     if (message.method === 'tools/list') {
@@ -2693,10 +2698,11 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       return ok({ tools: list, _meta: { context: { tools: list.length, of: TOOLS.length, chars: listed.bytes, tokens: kept, fullChars: whole.bytes, fullTokens, saved, balanced: Boolean(wanted || cluster || !full), full, bytes: listed, efficiency, formula: { theorem: 'textbook_context_balanced' as const, lean: 'full - kept + kept = full' as const, full: fullTokens, kept, saved, holds: efficiency.holds }, bill: getBill({ tokens: kept, bits: listed.bits, coins: efficiency.coins, saved: { tokens: saved, bits: whole.bits - listed.bits } }), says: PROSE.quantumProcessingMcp_says422 } } })
     }
     // the UI resources: one ui://qpu/<tool> per tool, the app shell served over the standard resource methods, nothing bypassed
-    if (message.method === 'resources/list') return ok({ resources: [...VIEWS.map((v) => { const u = ui(v); return { uri: u.uri, name: u.name, description: v === 'chat' ? PROSE.quantumProcessingMcp_s423 : proseFill(PROSE.quantumProcessingMcp_s424, v), mimeType: u.mimeType, _meta: { ui: { csp: u.csp, prefersBorder: u.prefersBorder } } } }), { uri: OPENAPI_RESOURCE, name: 'qpu · openapi', description: PROSE.quantumProcessingMcp_description426, mimeType: 'application/json' }, { uri: LEAN_RESOURCE, name: 'qpu · lean', description: PROSE.quantumProcessingMcp_description427, mimeType: 'application/json' }] })
+    if (message.method === 'resources/list') return ok({ resources: [...VIEWS.map((v) => { const u = ui(v); return { uri: u.uri, name: u.name, description: v === 'chat' ? PROSE.quantumProcessingMcp_s423 : proseFill(PROSE.quantumProcessingMcp_s424, v), mimeType: u.mimeType, _meta: { ui: { csp: u.csp, prefersBorder: u.prefersBorder } } } }), { uri: RECEIPT_RESOURCE, name: 'qpu · receipt', description: PROSE.quantumProcessingMcp_receiptResource, mimeType: 'text/markdown', _meta: { receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256 } } }, { uri: OPENAPI_RESOURCE, name: 'qpu · openapi', description: PROSE.quantumProcessingMcp_description426, mimeType: 'application/json' }, { uri: LEAN_RESOURCE, name: 'qpu · lean', description: PROSE.quantumProcessingMcp_description427, mimeType: 'application/json' }] })
     if (message.method === 'resources/templates/list') return ok({ resourceTemplates: [{ uriTemplate: 'ui://qpu/{tool}', name: 'qpu · a tool\'s view', mimeType: MCP_APPS.mimeType, description: PROSE.quantumProcessingMcp_description428 }] })
     if (message.method === 'resources/read') {
       const uri = String(params.uri ?? ''), read = (mimeType: string, text: string, more = {}) => ok({ contents: [{ uri, mimeType, text, ...more }] })
+      if (uri === RECEIPT_RESOURCE) return read('text/markdown', RECEIPT_TEXT, { _meta: { receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256 } } })
       if (uri === LEAN_RESOURCE) return read('application/json', JSON.stringify(leanLedger(), null, 1))
       if (uri === OPENAPI_RESOURCE) return read('application/json', JSON.stringify(createOpenapi('https://qpu.uuidna.com', CONTRACTS), null, 1))
       const name = /^ui:\/\/qpu\/([a-z0-9_-]+)$/.exec(uri)?.[1]

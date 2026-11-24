@@ -5,6 +5,7 @@ import { dirname, join } from 'node:path'
 import { TOOLBOXES, handle } from '../src/quantum/processing/mcp.ts'
 import { ISO_CLAUSES, ISO_GROUPS, ISO_STANDARDS, ISO_VOCABULARY } from '../src/quantum/processing/iso-index.ts'
 import { THEOREMS } from '../src/quantum/processing/theorems-index.ts'
+import { page } from './oneText.ts'
 
 type Proof = { key: string; module: string; statement: string; axioms: readonly string[] }
 type Subject = { type: 'DefinedTerm' | 'SoftwareApplication'; name: string; set?: string; code?: string }
@@ -82,17 +83,6 @@ const tools = TOOLBOXES.flatMap((box) => box.tools.map((tool) => ({ name: tool.n
 write(join(out, 'public', 'mcp.json'), JSON.stringify({ live: 'POST /api/mcp', says: PROSE.scriptsSite_says1, tools }, null, 2))
 write(join('docs', 'public', 'mcp.json'), JSON.stringify({ tools: (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: unknown } }).result.tools }, null, 2))
 write(join(out, '.vitepress', 'sidebar.json'), JSON.stringify(sidebar))
-const supremacy = THEOREMS.filter((t) => t.module === 'Qpu.General.Supremacy').map(({ key, module, statement, axioms }) => ({ key, module, statement, axioms }))
-write(join(out, 'index.md'), [
-  '---', 'title: "Quantum Processing Unit"', PROSE.scriptsSite_s2, '---', '',
-  '# Quantum Processing Unit', '',
-  PROSE.scriptsSite_s3, '',
-  `- ${pages} pages in ${sections.length} sections, ${proofs} kernel-checked proofs as microdata, listed in the sidebar`,
-  `- [The MCP catalogue](/mcp.json): ${tools.length} tools in ${TOOLBOXES.length} toolboxes, as \`tools/list\` answers them. Calls go to \`POST /api/mcp\` on the live site.`,
-  '- [Catalogue of claims](/catalogue): every theorem the kernel accepted, as a product claimed by its author',
-  '- [Draft applications](/patents/): one draft per theoretical use, written by Lean from its inline docs and frontmatter',
-  '- [Prose](/prose/): every sentence, by the Lean definition that states it; [prose.json](/prose.json) is the same list for a client', '',
-  PROSE.scriptsSite_proofs1, '',
-  microdata({ type: 'DefinedTerm', name: 'quantum supremacy' }, supremacy), '',
-].join('\n'))
+// the home page is the one text the build writes (scripts/oneText.ts): the same as the README, the npm README and the Zenodo record
+write(join(out, 'index.md'), ['---', 'title: "Quantum Processing Unit"', PROSE.scriptsSite_s2, '---', '', '::: v-pre', '', page, '', ':::', ''].join('\n'))
 console.log(JSON.stringify({ pages, proofs, sections: sections.length, tools: tools.length, out }))

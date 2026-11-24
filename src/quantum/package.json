@@ -3,6 +3,7 @@
   "description": "An exact quantum processing unit served over MCP",
   "version": "1.1.1",
   "license": "CC-BY-NC-ND-4.0",
+  "author": "Tsvetan Rouschev (https://orcid.org/0009-0000-7312-9778)",
   "private": true,
   "type": "module",
   "exports": {
