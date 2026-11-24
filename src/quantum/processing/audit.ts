@@ -472,13 +472,13 @@ export const sealTokenLeaks = (text: string) => {
   const redacted = found - left
   return { text: out, found, redacted, left, holds: left === 0 && found - redacted === 0, theorem: 'textbook_leaks_redacted' as const, publish: 'textbook_redact_before_publish' as const, lean: 'found - redacted = 0' as const }
 }
-/** The same seal on a JSON value: a clean value stays the same object; a value that held a token is parsed back without it. */
+/** The same seal on a JSON value. The value is always parsed back from its sealed text, so the answer a caller in this process holds is the answer a client reads: nothing only this process could see, a shared reference or an undefined field, is left to rely on. */
 export const sealJson = (value: unknown) => {
   if (typeof value === 'string') { const sealed = sealTokenLeaks(value); return { ...sealed, value: sealed.text } }
   let raw = ''
   try { raw = JSON.stringify(value) ?? '' } catch { return { ...sealTokenLeaks(''), value } }
   const sealed = sealTokenLeaks(raw)
-  return { ...sealed, value: sealed.found === 0 ? value : JSON.parse(sealed.text) as unknown }
+  return { ...sealed, value: raw === '' ? value : JSON.parse(sealed.text) as unknown }
 }
 
 export const runAudit = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: Context) => { passed: boolean; checks: Check[] } } }[] = [], known: Readonly<Record<string, string>> = {}, code: string | null = null, shard: { i: number; n: number } | null = null): Audit => {
