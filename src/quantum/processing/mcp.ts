@@ -4,7 +4,7 @@
 
 import { listGaps } from './gaps.ts'
 import { scripts, type ScriptsArgs } from './script-doors.ts'
-import { CHAT_SHARE, CLAY_FIRST, FORMULA, INSERT_SCHEMA, LEAN_RESOURCE, NIBBLE_PRIMES, OFFICIAL_PLUGINS, PROTOCOL_VERSION } from './config-index.ts'
+import { CHAT_SHARE, CLAY_FIRST, FORMULA, INSERT_SCHEMA, LEAN_RESOURCE, NIBBLE_PRIMES, OFFICIAL_PLUGINS, PROTOCOL_VERSION, ANSWER_MEMORY_BYTES } from './config-index.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 import { ALTERNATIVES, BOUND_TOOLS, ERROR_KINDS, KERNEL_STATE, NOT_IDEMPOTENT, codeOfThrown, findAmbiguity, thrownText, type ErrorCode } from './contract.ts'
 import { INPUT_EXAMPLES, OUTPUTS } from './outputs-index.ts'
@@ -1971,13 +1971,24 @@ const OWN: Tool[] = [
 ]
 
 const BALANCER = new Map<string, { structured: unknown; widget: string }>()
+// the answers remembered are bounded in bytes (ANSWER_MEMORY_BYTES, from Lean's Config): an answer is kept with its size, an answer asked again
+// becomes the newest, and past the bound the oldest is forgotten, so what the process remembers can never be what ends it
+const BALANCER_SIZE = new Map<string, number>()
+let BALANCER_BYTES = 0, BALANCER_FORGOTTEN = 0
+const remember = (address: string, answer: { structured: unknown; widget: string }): void => {
+  const size = answer.widget.length + (JSON.stringify(answer.structured)?.length ?? 0)
+  if (size > ANSWER_MEMORY_BYTES) return
+  while (BALANCER_BYTES + size > ANSWER_MEMORY_BYTES) { const oldest = BALANCER.keys().next().value as string; BALANCER_BYTES -= BALANCER_SIZE.get(oldest) ?? 0; BALANCER.delete(oldest); BALANCER_SIZE.delete(oldest); BALANCER_FORGOTTEN += 1 }
+  BALANCER.set(address, answer); BALANCER_SIZE.set(address, size); BALANCER_BYTES += size
+}
+const recall = (address: string) => { const held = BALANCER.get(address); if (held) { BALANCER.delete(address); BALANCER.set(address, held) } return held }
 
 const TELEPORTED = new Set<string>(), TELEPORT_USED = new Set<string>()
 let TELEPORT_HITS = 0
 
 export const balancerSnapshot = (p: { onlyNew?: boolean; used?: boolean } = {}): { address: string; structured: unknown; widget: string }[] => [...BALANCER.entries()].filter(([a]) => (!p.onlyNew || !TELEPORTED.has(a)) && (!p.used || TELEPORT_USED.has(a))).map(([address, v]) => ({ address, ...v }))
 
-export const balancerLoad = (blocks: readonly { address: string; structured: unknown; widget: string }[]): number => { let n = 0; for (const b of blocks) { if (typeof b.address !== 'string' || BALANCER.has(b.address)) continue; BALANCER.set(b.address, { structured: b.structured, widget: b.widget }); TELEPORTED.add(b.address); n += 1 } return n }
+export const balancerLoad = (blocks: readonly { address: string; structured: unknown; widget: string }[]): number => { let n = 0; for (const b of blocks) { if (typeof b.address !== 'string' || BALANCER.has(b.address)) continue; remember(b.address, { structured: b.structured, widget: b.widget }); TELEPORTED.add(b.address); n += 1 } return n }
 
 const OBSERVED = new Map<string, { calls: number; misses: number; ms: number; bytes: number; servedMs: number }>()
 const NESTED: number[] = []
@@ -2027,7 +2038,7 @@ const treeMetrics = (artefacts: RunArtefacts = {}): Record<string, unknown> => {
     quantumCapacity: capacityOf(call('fold', { qubits: 4 }).result?.structuredContent),
     tools: TOOLS.length, toolsBound: BOUND_TOOLS.length, toolsServed: TOOLS.length + BOUND_TOOLS.length, toolboxes: TOOLBOXES.length, patterns: PATTERNS.length, patternsRecognised: EXAMPLES.filter((e) => e.tool === 'match' && typeof e.arguments.statement === 'string' && getPattern(e.arguments.statement)).length, examples: EXAMPLES.length, examplesBackedByTheorems: backed.length, examplesBackedRatio: Number((backed.length / EXAMPLES.length).toFixed(3)),
     theoremsKernel: KERNEL_THEOREMS, theoremsHandWritten: THEOREMS.length, lemmasGenerated: GENERATED_LEMMAS, leads: LEADS.length, leadsByStatus: byStatus,
-    auditChecks: audit?.total ?? null, auditPassed: audit?.passed ?? null, auditFailed: audit?.failed ?? null, auditNested: audit === null, selftests: TOOLBOXES.map((b) => b.name), balancer: BALANCER.size, license: LICENSE.spdx, at: stamp(),
+    auditChecks: audit?.total ?? null, auditPassed: audit?.passed ?? null, auditFailed: audit?.failed ?? null, auditNested: audit === null, selftests: TOOLBOXES.map((b) => b.name), balancer: BALANCER.size, balancerBytes: BALANCER_BYTES, balancerBound: ANSWER_MEMORY_BYTES, balancerForgotten: BALANCER_FORGOTTEN, license: LICENSE.spdx, at: stamp(),
     // observability of this process: calls served from memory against computed, and where the computed milliseconds went
     balancerTeleported: TELEPORTED.size, balancerTeleportHits: TELEPORT_HITS, toolCalls: observed('calls'), toolMisses: observed('misses'), toolMs: observed('ms'),
     slowestTools: [...OBSERVED.entries()].sort((x, y) => y[1].ms - x[1].ms).slice(0, 6).map(([name, o]) => `${name} ${o.ms} ms / ${o.misses} computed / ${o.calls} asked / ${o.bytes} bytes`),
@@ -2753,7 +2764,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       if (clash !== null) return fail(INVALID_PARAMS, clash, 'ambiguous_arguments')
       const account = accountCoins(found.name, args)
       const address = uuid(`${found.name}${canonicalText(args)}`)
-      const cached = found.name === 'metrics' ? undefined : BALANCER.get(address)
+      const cached = found.name === 'metrics' ? undefined : recall(address)
       // exclusive time: a tool that calls tools (audit, metrics, match) is charged only for its own milliseconds; the nested ones are theirs
       const started = tick(); NESTED.push(0)
       const finish = (ran: { structured: unknown; widget: string }) => {
@@ -2763,7 +2774,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       const structured = sealedBody ? sealedBody.value : ran.structured
       const widget = sealedWidget ? sealedWidget.text : ran.widget
       const carried = { found: (sealedBody?.found ?? 0) + (sealedWidget?.found ?? 0), redacted: (sealedBody?.redacted ?? 0) + (sealedWidget?.redacted ?? 0) }
-      if (!cached) BALANCER.set(address, { structured, widget }); else if (TELEPORTED.has(address)) { TELEPORT_HITS += 1; TELEPORT_USED.add(address) }
+      if (!cached) remember(address, { structured, widget }); else if (TELEPORTED.has(address)) { TELEPORT_HITS += 1; TELEPORT_USED.add(address) }
       const children = NESTED.pop() ?? 0; const elapsed = tick() - started
       if (NESTED.length) NESTED[NESTED.length - 1]! += elapsed
       const o = OBSERVED.get(found.name) ?? { calls: 0, misses: 0, ms: 0, bytes: 0, servedMs: 0 }

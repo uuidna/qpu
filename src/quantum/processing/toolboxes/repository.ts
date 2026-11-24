@@ -366,6 +366,8 @@ export const REPOSITORY: Toolbox = {
   idea: PROSE.quantumProcessingToolboxesRepository_idea124,
   tools: [repository],
   examples: [
+    { id: 'repository-stable', tool: 'repository', theorem: 'textbook_capacity_conserved', arguments: { stable: {}, files: { 'src/quantum/processing/pure.ts': 'export const at = () => Date.now()' } }, shows: PROSE.quantumProcessingToolboxesRepository_showsStable, expect: (s) => (s.phase === 'stable' && s.stable === false && s.release === 'refused' && s.capacity.full === true && s.entropy.leads === 1 && s.entropy.byKind.clock === 1 ? null : JSON.stringify(s.entropy)) },
+    { id: 'repository-deployed-plan', tool: 'repository', theorem: 'textbook_shards_cover', arguments: { deployed: {} }, shows: PROSE.quantumProcessingToolboxesRepository_showsDeployed, expect: (s) => (s.phase === 'requests' && s.requests === 12 && s.requestList.filter((q: { kind: string }) => q.kind === 'audit').length === 8 ? null : String(s.requests)) },
     { id: 'repository-watch', tool: 'repository', theorem: 'textbook_repository_watch_leads', arguments: { local: LOCAL, answers: ANSWERS }, shows: PROSE.quantumProcessingToolboxesRepository_shows125, expect: (s) => (s.phase === 'watch' && s.leads === 14 && s.watch.npm.behind === true && s.watch.runs.red.join() === 'publish' && s.watch.workflows.onlyRemote.join() === 'publish.yml,codeql.yml' && s.watch.tags.mismatch.join() === 'v1.4.0' && s.watch.releases.withoutTag.join() === 'v0.9.0' && s.watch.zenodo.withoutRelease.join() === '1.1.1' ? null : `${s.phase} ${s.leads} leads: ${s.watch?.leads.map((l: { id: string }) => l.id).join(', ')}`) },
   ],
   skill: {

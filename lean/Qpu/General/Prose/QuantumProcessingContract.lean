@@ -18,5 +18,8 @@ def quantumProcessingContract_paged : String := "limit is an integer from 1 to 5
 def quantumProcessingContract_state : String := "computes from its arguments and writes nothing that outlives the call; an answer may be kept in the memory of the process that computed it"
 def quantumProcessingContract_fresh : String := "draws fresh randomness when no seed is given, so two calls with the same arguments differ"
 def quantumProcessingContract_clock : String := "reads the clock and the process's own counters, so two calls with the same arguments differ"
+def quantumProcessingContract_showsSummary : String := "The leads as counts alone: no lead is listed, and the counts by status and by tool sum to the total."
+def quantumProcessingContract_showsPage : String := "The first five open leads and the offset of the page that follows."
+def quantumProcessingContract_showsTool : String := "The leads of one door alone, counted: those whose tool is processor."
 
 end Prose
