@@ -139,14 +139,15 @@ export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolea
   const wall0 = clock()
   const lanes = lanesNow()
   const head = (await spawnRun('git', ['rev-parse', '--short', 'HEAD'], { cwd: o.cwd })).stdout.trim()
-  // the wildcard step expanded from tools/list: every tool whose schema names selftest
+  // the wildcard step expanded from tools/list: one tool of each toolbox whose schema names selftest, since every tool of a toolbox
+  // answers the same toolbox selftest (toolbox.ts defineTool)
   const expand = async (): Promise<NextStep[]> => {
     const out: NextStep[] = []
     for (const s of NEXT_STEPS) {
       if (s.tool !== '*') { out.push(s); continue }
-      const { handle } = await import('./mcp.ts') as { handle: (m: unknown) => { result?: { tools?: { name: string; inputSchema?: { properties?: Record<string, unknown> } }[] } } }
-      const tools = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }).result?.tools ?? []
-      for (const t of tools) if (t.inputSchema?.properties && Object.keys(s.arguments ?? {}).every((k) => k in t.inputSchema!.properties!)) out.push({ ...s, name: `${s.name}:${t.name}`, tool: t.name })
+      const { handle } = await import('./mcp.ts') as { handle: (m: unknown) => { result?: { tools?: { name: string; inputSchema?: { properties?: Record<string, unknown> }; _meta?: { toolbox?: string } }[] } } }
+      const tools = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }).result?.tools ?? [], asked = new Set<string>()
+      for (const t of tools) { const box = t._meta?.toolbox ?? t.name; if (t.inputSchema?.properties && Object.keys(s.arguments ?? {}).every((k) => k in t.inputSchema!.properties!) && !asked.has(box)) out.push({ ...s, name: `${s.name}:${asked.add(box) && box}`, tool: t.name }) }
     }
     return out
   }

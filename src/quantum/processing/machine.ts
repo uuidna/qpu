@@ -116,8 +116,8 @@ export const machineStatus = (s: { events: readonly StreamEvent[]; times?: Recor
 // tests, the Lean kernel). A wave waits for the one before it (textbook_next_waves_ordered); the lanes of a wave are bounded by the cores and
 // by the memory (lanes × heap ≤ capacity); a step past its budget is killed and recorded red, never waited for; a red step is retried once
 // after the generators ran. `{ $file: path }` in a door's arguments is that file's text; `{ $exec: { cmd, args, script } }` is the output of
-// that command over the script text another door answers. `{ tool: '*', arguments: { selftest: true } }` is every tool whose schema names
-// selftest, expanded at run time from tools/list. offline skips the steps that need the network; fast skips the long ones (the pre-commit form).
+// that command over the script text another door answers. `{ tool: '*', arguments: { selftest: true } }` is one tool of each toolbox whose
+// schema names selftest, expanded at run time from tools/list. offline skips the steps that need the network; fast skips the long ones (the pre-commit form).
 export type NextStep = { name: string; wave: number; budgetMs: number; via: 'door' | 'generator' | 'process'; tool?: string; arguments?: Record<string, unknown>; cmd?: string; args?: readonly string[]; needs?: 'online'; long?: true; shards?: number }
 export const NEXT_STEPS: readonly NextStep[] = [
   { name: 'clay:gen', wave: 1, budgetMs: 120_000, via: 'generator', tool: 'textbook', arguments: { scripts: { clay: { lean: { $file: 'lean/Qpu/General/Clay.lean' } } } } },
