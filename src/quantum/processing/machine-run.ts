@@ -28,7 +28,7 @@ const lakeOf = () => [`${homedir()}/.elan/toolchains/leanprover--lean4---v4.33.0
 const cmdOf = (cmd: string) => (cmd === 'lake' ? lakeOf() : cmd)
 
 /** One command with no shell: its lines streamed, the whole kept, the process group killed at the budget (a grandchild outlived its npx parent). */
-export const spawnRun = (cmd: string, args: readonly string[], o: { cwd: string; input?: string | null; budgetMs?: number; env?: Record<string, string>; onLine?: (line: string) => void } ): Promise<Run> =>
+export const spawnRun = (cmd: string, args: readonly string[], o: { cwd: string; input?: string | null; budgetMs?: number; /** a variable given as undefined is withheld from the command */ env?: Record<string, string | undefined>; onLine?: (line: string) => void } ): Promise<Run> =>
   new Promise((resolve) => {
     const t0 = clock()
     const child = spawn(cmdOf(cmd), [...args], { cwd: o.cwd, shell: false, detached: process.platform !== 'win32', env: { ...process.env, FORCE_COLOR: '0', ...(o.env ?? {}) } })
@@ -256,7 +256,10 @@ const inStagedTree = async (cwd: string, cmd: string, args: readonly string[], o
     await git(['checkout-index', '--all', `--prefix=${dir}${sep}`])
     writeFileSync(join(dir, '.git'), `gitdir: ${gitDir}\n`)
     for (const name of ['node_modules', '.lake', '.qpu']) { const top = join(cwd, name); if (existsSync(top)) link(realpathSync(top), top, join(dir, name)) }
-    const r = await spawnRun(cmd, args, { cwd: dir, env: { ...env, QPU_STAGED_FROM: cwd }, onLine })
+    // the command finds the repository through the copy's .git and is told the index by name; git's own variables are withheld from it, because a
+    // tool it runs that keeps repositories of its own (Lake, in .lake/packages) would read this repository in their place and delete what it took for changed
+    const index = process.env.GIT_INDEX_FILE ? resolve(cwd, process.env.GIT_INDEX_FILE) : undefined
+    const r = await spawnRun(cmd, args, { cwd: dir, env: { GIT_DIR: undefined, GIT_INDEX_FILE: undefined, GIT_WORK_TREE: undefined, QPU_STAGED_INDEX: index, QPU_STAGED_AT: realpathSync(dir), QPU_STAGED_FROM: cwd }, onLine })
     const moved = [...(await indexed())].filter(([p, blob]) => before.get(p) !== blob && lstatSync(join(dir, p), { throwIfNoEntry: false })?.isFile())
     const present = moved.filter(([p]) => existsSync(join(cwd, p)))
     const hashed = present.length ? (await git(['hash-object', '--stdin-paths'], present.map(([p]) => p).join('\n'))).split('\n') : []
@@ -266,10 +269,14 @@ const inStagedTree = async (cwd: string, cmd: string, args: readonly string[], o
   } finally { rmSync(dir, { recursive: true, force: true }) }
 }
 
+/** The index this repository's own git reads in a hook: the one the commit holds, named by the staged run for its copy alone, so a runner at work
+ *  on any other tree reads that tree's own; git's own where none is named. */
+const indexEnv = (cwd: string) => (process.env.QPU_STAGED_INDEX && process.env.QPU_STAGED_AT === realpathSync(cwd) ? { GIT_INDEX_FILE: process.env.QPU_STAGED_INDEX } : undefined)
+
 /** The fakes the table names, found in the tracked tree: each finder is one git command over its paths, and what a kernel theorem or the
  *  finder's standing list holds is no finding. The hooks decide by them, the `fakes` action prints them, and the deploy runs that action first. */
 const findFakes = async (cwd: string): Promise<string[]> => {
-  const held = new Set<string>(THEOREMS.map((t) => t.key)), git = async (...a: string[]) => (await spawnRun('git', a, { cwd })).stdout.trim()
+  const held = new Set<string>(THEOREMS.map((t) => t.key)), git = async (...a: string[]) => (await spawnRun('git', a, { cwd, env: indexEnv(cwd) })).stdout.trim()
   return (await Promise.all(TABLES.FAKES.map(async (k) => [...new Set((await git(...k.git, '--', ...k.paths)).split('\n'))].filter((l) => l && !('standing' in k && (held.has(l) || (k.standing as readonly string[]).includes(l)))).map((l) => `${k.fake}: ${l}`)))).flat()
 }
 
@@ -282,7 +289,7 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   if (name === 'pre-commit' && !process.env.QPU_STAGED_FROM) return (await inStagedTree(cwd, process.execPath, [MACHINE_RUNNER, 'hook', name, ...rest], (l) => console.log(l))).status === 0 ? 0 : 1
   const { call } = await import('./mcp.ts') as { call: Call }, { LITERAL_ROOTS } = await import('./audit.ts')
   const ask = (a: Record<string, unknown>) => { const r = call('repository', a); if (r.error) throw new Error(r.error.message); return r.result!.structuredContent }
-  const git = async (...a: string[]) => (await spawnRun('git', a, { cwd })).stdout.trim()
+  const git = async (...a: string[]) => (await spawnRun('git', a, { cwd, env: indexEnv(cwd) })).stdout.trim()
   // a workflow after the act reports through the door, so its door is asked for; the others run here, offline
   const after = (AFTER_HOOKS as readonly string[]).includes(name)
   const w = ask({ workflow: name, offline: !after }).workflow as { steps: { id: string; kind: string; detach?: boolean; cmd?: string; args?: string[]; files?: string[] }[] }
