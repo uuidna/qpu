@@ -272,6 +272,7 @@ export default defineConfig({
       { text: 'Catalogue', link: '/catalogue' },
       { text: 'Draft applications', link: '/patents/' },
       { text: 'Prose', link: '/prose/' },
+      { text: PROSE.siteVitepressConfig_possibilities, link: '/vitepress' },
       { text: 'MCP', items: [
         { text: 'Catalogue (JSON)', link: '/mcp.json', target: '_blank' },
         { text: 'Live endpoint /api/mcp', link: '/api/mcp', target: '_blank' },

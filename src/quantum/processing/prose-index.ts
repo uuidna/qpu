@@ -2921,6 +2921,8 @@ const SENTENCES = {
   siteVitepressConfig_citeRecord: "DOI ⟦0⟧, cited as the author's own record",
   siteVitepressConfig_citeWork: "DOI ⟦0⟧, every version",
   siteVitepressConfig_endpoint: "Model Context Protocol, Streamable HTTP transport (POST JSON-RPC), protocol versions ⟦0⟧. Every method, tools/call included, is free on ⟦1⟧: no payment is asked.",
+  siteVitepressConfig_possibilities: "VitePress possibilities",
+  siteVitepressConfig_possibilitiesSays: "Every possibility the installed VitePress offers and how this site uses each, computed at build from the package's own types, exports and components and from this site's config and theme.",
   siteVitepressConfig_webApi: "Model Context Protocol server over Streamable HTTP; every call is free on ⟦0⟧",
 }
 /** Every sentence the tree says, by the name Lean gives it. */
