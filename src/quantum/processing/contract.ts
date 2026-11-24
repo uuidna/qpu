@@ -32,7 +32,7 @@ export const ALTERNATIVES: Readonly<Record<string, readonly Alternative[]>> = {
     { keys: ['navigate'], with: ['query'] }, { keys: ['uuids'], with: ['query'] }, { keys: ['pieces'], with: ['root', 'withPieces'] }, { keys: ['text'], with: ['bound', 'key', 'withPieces'] },
   ],
   seal: [
-    { keys: ['token'] }, { keys: ['nist'] }, { keys: ['aead'], with: ['text'] }, { keys: ['x25519'] }, { keys: ['pbkdf2'] }, { keys: ['receipts'] }, { keys: ['merkle'] }, { keys: ['pqc'] }, { keys: ['kem'] },
+    { keys: ['token'] }, { keys: ['nist'] }, { keys: ['aead'], with: ['text'] }, { keys: ['x25519'] }, { keys: ['pbkdf2'] }, { keys: ['receipts'] }, { keys: ['merkle'] }, { keys: ['witnesses'] }, { keys: ['pqc'] }, { keys: ['kem'] },
     { keys: ['slh'], with: ['text'] }, { keys: ['ed25519'], with: ['text'] }, { keys: ['constants'], with: ['text'] }, { keys: ['texts'], with: ['brief'] }, { keys: ['gltf'], with: ['text'] }, { keys: ['artifacts'], with: ['text'] }, { keys: ['tamper'], with: ['text'] },
     { keys: ['text'], with: ['brief', 'fips180', 'sha3', 'shake', 'ecdsa', 'entropy', 'key', 'sign', 'referer'] },
   ],

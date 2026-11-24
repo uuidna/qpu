@@ -12,7 +12,7 @@ The theorems written by hand, by family: Qpu.General.Textbook 743, Qpu.Processin
 
 360 textbook theorems, and a catalogue of 1197 products in 505 variants, each product a theorem of the kernel.
 
-50 tools are served over MCP: the kernel's 47, and 3 where the Worker binds its rooms and its Lean prover. The audit replays 514 worked examples against the kernel's tools; every answer is a block sealed under its UUID.
+50 tools are served over MCP: the kernel's 47, and 3 where the Worker binds its rooms and its Lean prover. The audit replays 515 worked examples against the kernel's tools; every answer is a block sealed under its UUID.
 
 ## Quantum capacity, utilised by receipts
 
@@ -82,7 +82,7 @@ theorem textbook_hexbit_gateway_ftl : 32 * 4 - 4 - 2 = 122 ∧ 2 = 2 ∧ 1 < 16 
 | --- | --- |
 | stable | true |
 | release | allowed |
-| entropy.files | 808 |
+| entropy.files | 811 |
 | entropy.leads | 0 |
 | entropy.occurrences | 0 |
 | entropy.byKind | \{\} |
@@ -106,6 +106,20 @@ theorem textbook_hexbit_gateway_ftl : 32 * 4 - 4 - 2 = 122 ∧ 2 = 2 ∧ 1 < 16 
 | 6 | 16 | 24 | 16777216 | 402653184 |
 | 7 | 16 | 28 | 268435456 | 7516192768 |
 | 8 | 16 | 32 | 4294967296 | 137438953472 |
+
+| metrics.quantumCapacity.security | the exponent of 2 |
+| --- | --- |
+| address.bits | 122 |
+| address.preimage | \{"classical":122,"grover":61\} |
+| address.collision | \{"classical":61,"quantum":"122/3"\} |
+| address.floor | 128 |
+| address.meetsFloor | false |
+| digest.bits | 256 |
+| digest.preimage | \{"classical":256,"grover":128\} |
+| digest.collision | \{"classical":128,"quantum":"256/3"\} |
+| digest.floor | 128 |
+| digest.meetsFloor | true |
+| theorems | `textbook_grover_search`, `textbook_tamper_detected` |
 
 | metrics.quantumCapacity.public |  |
 | --- | --- |
@@ -293,14 +307,14 @@ Every source and proof this text rests on, each a link: the doors to call, the p
 - Qpu.Processing.Verify.Gate, proving `Qpu.Verify.Gate.h_z_h_is_two_x`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean>
 ---
 
-This text is one build receipt. Its UUID 31e7e6e4-2aeb-368a-8ce7-5dd9e789a334 is the address of the text above it, and its SHA-256 is 0c38d7062ea453a0a02b1301401babd3d7d702538968c266a7a1dc010b4d6e43. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify \{ uuid, content \} at <https://qpu.uuidna.com/api/mcp>.
+This text is one build receipt. Its UUID c83fe63a-e740-840e-9910-6e7974de3a8a is the address of the text above it, and its SHA-256 is 4bc1bec0060d12846bee0a0b2addc4cb80262a06637de01542d62997dc86c127. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify \{ uuid, content \} at <https://qpu.uuidna.com/api/mcp>.
 
 <!-- hardware -->
 
 ## Hardware of the build that minted this receipt
 
-Every value below was read from the machine during the build, and its UUID 6843528f-de5f-66aa-9846-655557aab7ef is the address of the JSON beneath it, verifiable with verify \{ uuid, content \} like the text above. The machine holds an exact state vector of 31 qubits, since n qubits span 2^n basis states (Vocabulary.system\_dimension) at 16 bytes per complex amplitude; Willow has 105 qubits and Sycamore 54, as the processor door states them, and one UUID register carries 122 (Qubit.effective\_formula). The build took 2961 ms.
+Every value below was read from the machine during the build, and its UUID 2ee2762f-76ae-2705-bc4a-81f63e08f685 is the address of the JSON beneath it, verifiable with verify \{ uuid, content \} like the text above. The machine holds an exact state vector of 31 qubits, since n qubits span 2^n basis states (Vocabulary.system\_dimension) at 16 bytes per complex amplitude; Willow has 105 qubits and Sycamore 54, as the processor door states them, and one UUID register carries 122 (Qubit.effective\_formula). The build took 3004 ms.
 
 ```json
-{"platform":"darwin","release":"27.2.0","arch":"arm64","endianness":"LE","cpu":"Apple M1 Max","cores":10,"parallelism":10,"cpuMHz":2400,"memoryBytes":34359738368,"freeMemoryBytes":3798974464,"load1":3.47802734375,"load5":5.12255859375,"load15":4.5146484375,"uptimeS":91613,"node":"26.13.1","v8":"14.6.202.34-node.40","lean":"leanprover/lean4:v4.33.0","rssBytes":327270400,"heapUsedBytes":124004800,"stateVectorQubits":31,"registersInMemory":2147483648,"registerQubitsInMemory":261993005056,"willowQubits":105,"sycamoreQubits":54,"registerQubits":122,"buildMs":2961,"at":"2026-11-24T18:13:35.276Z"}
+{"platform":"darwin","release":"27.2.0","arch":"arm64","endianness":"LE","cpu":"Apple M1 Max","cores":10,"parallelism":10,"cpuMHz":2400,"memoryBytes":34359738368,"freeMemoryBytes":4979687424,"load1":5.6103515625,"load5":6.7001953125,"load15":7.62158203125,"uptimeS":95812,"node":"26.13.1","v8":"14.6.202.34-node.40","lean":"leanprover/lean4:v4.33.0","rssBytes":332251136,"heapUsedBytes":120314720,"stateVectorQubits":31,"registersInMemory":2147483648,"registerQubitsInMemory":261993005056,"willowQubits":105,"sycamoreQubits":54,"registerQubits":122,"buildMs":3004,"at":"2026-11-24T19:23:34.482Z"}
 ```

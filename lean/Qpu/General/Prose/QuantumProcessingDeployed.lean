@@ -10,7 +10,7 @@ def quantumProcessingDeployed_failsRejected : String := "Lean rejected the theor
 def quantumProcessingDeployed_failsWrong : String := "Lean must reject the theorem that does not hold, 1 + 1 = 3, with an error message of its own, and the server answered: ⟦0⟧"
 def quantumProcessingDeployed_selftestPassed : String := "The selftest of ⟦0⟧ passed its ⟦1⟧ checks in ⟦2⟧ ms."
 def quantumProcessingDeployed_selftestWrong : String := "The selftest of ⟦0⟧ must pass every check, and the server answered: ⟦1⟧"
-def quantumProcessingDeployed_shardPassed : String := "Audit share ⟦0⟧ of ⟦1⟧ replayed ⟦2⟧ checks and none failed, in ⟦3⟧ ms."
+def quantumProcessingDeployed_shardPassed : String := "Audit share ⟦0⟧ of ⟦1⟧ replayed ⟦2⟧ checks and none failed, in ⟦3⟧ ms (textbook_shards_cover)."
 def quantumProcessingDeployed_shardWrong : String := "Audit share ⟦0⟧ of ⟦1⟧ must replay with no failed check, and the server answered: ⟦2⟧"
 def quantumProcessingDeployed_retry : String := "⟦0⟧ is asked again, attempt ⟦1⟧ of ⟦2⟧, because the prover gave no verdict (⟦3⟧): ⟦4⟧"
 def quantumProcessingDeployed_unanswered : String := "no answer was handed back for this request"

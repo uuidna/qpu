@@ -17,6 +17,15 @@ const publicUse = () => ({
 
 type Register = { digits: number; hexbit: number; gateway: number; hex: number; version: number; variant: number; effective: number; handles: { perHandle: number; capacity: string; fractal: boolean; scales: { scale: number; radix: number; qubits: number; handles: string; capacity: string }[]; says: string }; organised: { fingerprint: { combinations: string }; combination: { combinations: string }; zero: Record<string, unknown> }; receipt: { coin: string; formula: string; debits: number; credits: number; balanced: boolean; sealed: boolean; theorem: string; line: { debit: string; credit: string } } }
 
+/** The cost to fake an address, measured from the capacity inverted: f free bits are 2^f addresses, so finding the content of one given address
+ *  is 2^f tries classically and 2^(f/2) by Grover's search (textbook_grover_search), and finding any two contents with one address is 2^(f/2)
+ *  by the birthday bound and 2^(f/3) by quantum collision search. The floor is 128 bits against a quantum search (textbook_tamper_detected:
+ *  256 / 2 = 128). The address alone is measured against it as it stands, and so is the SHA-256 every block carries beside its address. */
+export const costToFake = (free: number, digestBits = 256, floor = 128) => {
+  const measure = (bits: number) => ({ bits, preimage: { classical: bits, grover: bits / 2 }, collision: { classical: bits / 2, quantum: `${bits}/3` }, floor, meetsFloor: bits / 2 >= floor })
+  return { unit: 'the exponent of 2' as const, address: measure(free), digest: measure(digestBits), theorems: ['textbook_grover_search', 'textbook_tamper_detected'] as const }
+}
+
 /** The capacity read from a register's answer; holds only when the parts make the whole, the receipt balances and is sealed, and used + left
  *  is the free register with nothing left (textbook_capacity_conserved: used + (capacity − used) = capacity). */
 export const capacityOf = (answer: unknown) => {
@@ -37,6 +46,7 @@ export const capacityOf = (answer: unknown) => {
     scales: q.handles.scales, perHandle: q.handles.perHandle, unlimited: q.handles.fractal,
     used, left, full: used === q.effective && left === 0,
     public: publicUse(),
+    security: costToFake(q.effective),
     gate: { theorem: 'textbook_capacity_conserved' as const, holds: whole && balanced && used + left === q.effective && left === 0, evidence: `${used} + ${left} = ${q.effective}; ${q.receipt.debits} = ${q.receipt.credits}; ${sum('free')} = ${q.effective}` },
   }
 }

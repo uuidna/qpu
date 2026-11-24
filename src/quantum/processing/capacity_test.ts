@@ -6,7 +6,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { call, handle } from './mcp.ts'
 import { execFileSync } from 'node:child_process'
-import { capacityOf, quantumCapacity, stabilityOf, stableSource } from './capacity.ts'
+import { capacityOf, costToFake, quantumCapacity, stabilityOf, stableSource } from './capacity.ts'
 import { WORKFLOWS } from './config-index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { LICENSE } from './unit/license.ts'
@@ -69,6 +69,17 @@ test('the welcome states the capacity, and the one text prints it from metrics w
   assert.deepEqual([init.serverInfo.quantumCapacity.public.licence, init.serverInfo.quantumCapacity.public.deed], [LICENSE.spdx, LICENSE.deed])
   // the same text is the home page, and the build's hardware states how many registers its memory holds by the same count
   assert.ok(/"registersInMemory":\d+,"registerQubitsInMemory":\d+/.test(readme))
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the cost to fake is the capacity inverted, and the address alone is stated below the floor the digest beside it meets. */
+test('the cost to fake is the capacity inverted, and the address alone is stated below the floor the digest beside it meets', () => {
+  const s = quantumCapacity().security
+  assert.deepEqual([s.address.bits, s.address.preimage, s.address.collision, s.address.floor, s.address.meetsFloor], [122, { classical: 122, grover: 61 }, { classical: 61, quantum: '122/3' }, 128, false])
+  assert.deepEqual([s.digest.bits, s.digest.preimage.grover, s.digest.collision.classical, s.digest.meetsFloor], [256, 128, 128, true])
+  // more capacity, more cost: every free bit doubles the tries, and two halve to one under Grover's search
+  assert.deepEqual([costToFake(124).address.preimage.grover - costToFake(122).address.preimage.grover, costToFake(256).address.meetsFloor, costToFake(254).address.meetsFloor], [1, true, false])
+  const readme = readFileSync('README.md', 'utf8')
+  assert.ok(readme.includes('| address.meetsFloor | false |') && readme.includes('| digest.meetsFloor | true |'))
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: stable is the capacity utilised in full without entropy: a clock in a source is entropy, so time alone makes a tree unstable and its release refused. */
