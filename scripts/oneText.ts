@@ -20,8 +20,7 @@ import { EXAMPLES } from '../src/quantum/processing/examples.ts'
 import { TOOLBOXES, handle } from '../src/quantum/processing/mcp.ts'
 import { uuid } from '../src/quantum/uuid/index.ts'
 import { DONATION, callPriceUsd } from '../src/quantum/net/mcp-http.ts'
-import { MESSAGING_TOOLS } from '../src/quantum/net/messaging.ts'
-import { PROVER_TOOLS } from '../src/quantum/net/prover.ts'
+import { BOUND_TOOLS } from '../src/quantum/processing/contract.ts'
 import { LICENSE, PRECEDENCE } from '../src/quantum/processing/unit/license.ts'
 import { RELEASE_REPOSITORY, UNIT_CONCEPT_DOI } from '../src/quantum/processing/release.ts'
 
@@ -35,7 +34,7 @@ const families = Object.entries(THEOREMS.reduce<Record<string, number>>((n, t) =
   .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1)).map(([module, n]) => `${module} ${n}`).join(', ')
 const tools = ((await handle({ jsonrpc: '2.0', id: 0, method: 'tools/list' })) as { result?: { tools?: unknown[] } }).result?.tools?.length ?? 0
 // the tools the Worker serves beside the kernel's where it binds its rooms and its Lean prover: the count tools/list answers there
-const bound = MESSAGING_TOOLS.length + PROVER_TOOLS.length
+const bound = BOUND_TOOLS.length
 const achieved = [
   proseFill(PROSE.scriptsDoiRecord_kernel, KERNEL_THEOREMS, byHand, GENERATED_LEMMAS, leanOnly),
   proseFill(PROSE.scriptsDoiRecord_families, families),
