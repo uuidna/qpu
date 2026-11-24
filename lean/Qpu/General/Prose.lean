@@ -8,6 +8,7 @@ import Qpu.General.Prose.QuantumNetMessaging
 import Qpu.General.Prose.QuantumNetProver
 import Qpu.General.Prose.ScriptsStdio
 import Qpu.General.Prose.SiteVitepressConfig
+import Qpu.General.Prose.LeanToolsZenodo
 import Qpu.General.Prose.QuantumOsAlpinePackages
 import Qpu.General.Prose.QuantumPasswordAddress
 import Qpu.General.Prose.QuantumPayloadDeploy

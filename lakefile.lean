@@ -86,6 +86,9 @@ def foldFile : String := "lean/tools/Fold.lean"
 /-- The Lean file that writes the site's pages whose body is one component of the theme. -/
 def pagesFile : String := "lean/tools/Pages.lean"
 
+/-- The Lean file that writes the metadata Zenodo reads when it archives a release. -/
+def zenodoFile : String := "lean/tools/Zenodo.lean"
+
 /-- The Lean file that writes the register of standards. -/
 def isoFile : String := "lean/tools/Iso.lean"
 
@@ -133,6 +136,7 @@ def rendered : List (String × System.FilePath × System.FilePath) :=
   , (configFile, ".lake" / "build" / "config-index.ts", "src" / "quantum" / "processing" / "config-index.ts")
   , (cssFile, ".lake" / "build" / "advantage.css", "site" / ".vitepress" / "theme" / "advantage.css")
   , (foldFile, ".lake" / "build" / "fold-index.ts", "site" / ".vitepress" / "theme" / "fold-index.ts")
+  , (zenodoFile, ".lake" / "build" / "zenodo.json", ".zenodo.json")
   , (addressFile, ".lake" / "build" / "address-core.ts", "src" / "quantum" / "password" / "address-core.ts") ]
 
 /-- Lean writes the prose index, the theorem index, the textbook index, the blueprint, the nested catalogue, the
@@ -242,7 +246,7 @@ script applications do
   steps [("lake", #["build"]), ("lake", #["env", "lean", applicationsFile])]
 
 /-- The Lean files that write rendered output; `lake run verify` runs each of them. -/
-def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile, configFile, cssFile, foldFile, pagesFile, addressFile, gapsFile]
+def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile, configFile, cssFile, foldFile, pagesFile, zenodoFile, addressFile, gapsFile]
 
 /-- `lake run leanfiles`: no Lean file is skipped. Every `.lean` file the repository tracks is this lakefile, a module
 the build compiles, a tool `lake run verify` runs, or evidence kept under `lean/`, which is named and never removed. -/

@@ -1,0 +1,32 @@
+{"version": "1.1.1",
+ "upload_type": "software",
+ "title": "@uuidna/qpu: An exact quantum processing unit served over MCP",
+ "related_identifiers":
+ [{"resource_type": "publication-softwaredocumentation",
+   "relation": "isDocumentedBy",
+   "identifier": "https://qpu.uuidna.com"},
+  {"resource_type": "publication-softwaredocumentation",
+   "relation": "isDocumentedBy",
+   "identifier": "https://qpu.psg.bg"},
+  {"resource_type": "publication",
+   "relation": "references",
+   "identifier": "https://doi.org/10.5281/zenodo.21781602"}],
+ "notes":
+ "Funding open to the work: a donation at https://revolut.me/ceccec; a call on a host the tenants do not name, paid through x402 at 0.300425 USD, the cheapest real quantum call on the market; and a licence from the author for commercial use (https://qpu.uuidna.com). This record names no funder award. Every count and identity in this record is computed from the build of version 1.1.1 by lean/tools/Zenodo.lean.",
+ "license": "cc-by-nc-nd-4.0",
+ "keywords":
+ ["tree",
+  "google",
+  "flow",
+  "language",
+  "raid",
+  "billing",
+  "legal",
+  "repository",
+  "standards",
+  "extension",
+  "crypto"],
+ "description":
+ "<p>1580 theorems the Lean kernel holds, 557 of them on no axiom at all; 47 tools in 11 toolboxes, served over MCP at qpu.uuidna.com, qpu.psg.bg; of 544 conjuncts put to Mathlib's library search, 401 are closed by a library theorem or a library procedure, 50 remain open, and 93 are undecided within the search's budget.</p>",
+ "creators": [{"orcid": "0009-0000-7312-9778", "name": "Rouschev, Tsvetan"}],
+ "access_right": "open"}
