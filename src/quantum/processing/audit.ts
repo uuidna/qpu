@@ -595,7 +595,7 @@ export const scanLexical = (doc: unknown, tools: readonly string[]) => {
     nodes++; depth = Math.max(depth, d)
     const o = n as { type?: string; text?: string; url?: string; fields?: { url?: string; blockType?: string; tool?: string; arguments?: unknown; linkType?: string; uuid?: string }; children?: unknown[] }
     if (typeof o.type === 'string' && !(LEXICAL_NODE_TYPES as readonly string[]).includes(o.type)) findings.push({ at: path, kind: 'unknown-node', blocks: false, detail: o.type })
-    if (o.type === 'text' && typeof o.text === 'string') { texts[path] = o.text; if (/<\s*\/?\s*(script|iframe|object|embed|style|svg|img)\b|\bon[a-z]+\s*=/i.test(o.text)) findings.push({ at: path, kind: 'markup-in-text', blocks: false, detail: PROSE.quantumProcessingAudit_s93 }) }
+    if (o.type === 'text' && typeof o.text === 'string') { texts[path] = o.text; if (/<\s*\/?\s*(script|iframe|object|embed|style|svg|img)\b|\bon[a-z]+\s*=/i.test(o.text)) findings.push({ at: path, kind: 'markup-in-text', blocks: false, detail: 'rendered as text, never as markup' }) }
     const url = o.fields?.url ?? o.url
     if ((o.type === 'link' || o.type === 'autolink') && typeof url === 'string' && !/^(https?:\/\/|\/|#|\?)/i.test(url.trim())) findings.push({ at: path, kind: 'unsafe-url', blocks: true, detail: url.split(':')[0]! + ':' })
     // an internal path that names no slug or address cannot be resolved to a document: noted, never blocking

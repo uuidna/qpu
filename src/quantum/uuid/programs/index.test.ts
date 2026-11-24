@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import { auditProgramNeighbours, sealLeavesSplit, challenge, competeProgramNeighbours, gateProgramFiles, guardUpstream, indexProgramFolders, productCombinations, program, programPlugin, reflectProgramNeighbours, sealProgramProducts } from './index.ts'
+import { PROSE } from '../../processing/prose-index.ts'
 
 /** Challenge physics and laws under adversarial register pressure. */
 /** The neighbour audit, computed once for the tests that read it. */
@@ -32,7 +33,7 @@ void test('challenge physics and laws under adversarial register pressure', () =
 /** Neighbours reflect and test each other in games and competitions online. */
 void test('neighbours reflect and test each other in games and competitions online', async () => {
   const audit = await neighbours()
-  assert.equal(audit.law, 'neighbours reflect and test each other in games and competitions online')
+  assert.equal(audit.law, PROSE.quantumUuidProgramsIndex_s16)
   assert.equal(audit.via, 'online')
   assert.equal(audit.holds, true, audit.says + (audit.failed[0] ? ` first=${audit.failed[0].handle}` : ''))
   assert.equal(audit.holding, audit.folders)

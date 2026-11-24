@@ -213,7 +213,7 @@ export const guardUpstream = (plugin: ProgramPlugin) => {
     { id: 'definePlugin' as const, holds: plugin.standard === 'definePlugin', guard: 'Payload plugin guide: definePlugin' as const },
     { id: 'slug' as const, holds: plugin.slug === `qpu-program-${plugin.handle}` && /^qpu-program-[0-9a-f]{8}$/.test(plugin.slug), guard: 'slug qpu-program-<handle>' as const },
     { id: 'enabled-false' as const, holds: disabled === probe, guard: 'enabled: false returns incoming unchanged' as const },
-    { id: 'spread-collections' as const, holds: Array.isArray(enabled.collections) && enabled.collections.length === probe.collections.length && enabled.collections[0] === probe.collections[0], guard: PROSE.quantumUuidProgramsIndex_s19 },
+    { id: 'spread-collections' as const, holds: Array.isArray(enabled.collections) && enabled.collections.length === probe.collections.length && enabled.collections[0] === probe.collections[0], guard: 'collections spread; nothing dropped; no collection added' as const },
     { id: 'spread-globals' as const, holds: Array.isArray(enabled.globals) && enabled.globals.length === probe.globals.length && enabled.globals[0] === probe.globals[0], guard: 'globals spread' as const },
     { id: 'spread-plugins' as const, holds: Array.isArray(enabled.plugins) && enabled.plugins.length === probe.plugins.length && enabled.plugins[0] === probe.plugins[0], guard: 'plugins spread' as const },
     { id: 'spread-hooks' as const, holds: !!enabled.hooks && enabled.hooks.afterChange === probe.hooks.afterChange, guard: 'hooks spread' as const },
@@ -231,7 +231,7 @@ export const guardUpstream = (plugin: ProgramPlugin) => {
     standard: 'definePlugin' as const,
     guide: 'https://payloadcms.com/docs/plugins/overview' as const,
     reverseGuard: 'Zero edits to upstream MIT payloadcms/website files + NOTICE.md dual-license boundary' as const,
-    law: PROSE.quantumProcessingIsoDeliverables_s20,
+    law: 'first the dictionary meaning; then the meaning is verified',
     plugin: plugin.slug,
     handle: plugin.handle,
     checks,
@@ -445,7 +445,7 @@ export const program = (handle: string) => {
   const bits = handleBits(handle)
   const object = place(handle)
   const depth = object.depth
-  if (depth > MAX_DEPTH || object.folders.length !== HANDLE_HEX || bits.some((row) => row.digit < 0 || row.digit > MAX_DEPTH)) throw new Error(PROSE.quantumUuidProgramsIndex_s21)
+  if (depth > MAX_DEPTH || object.folders.length !== HANDLE_HEX || bits.some((row) => row.digit < 0 || row.digit > MAX_DEPTH)) throw new Error('a program is at most depth 7')
   const plugin = programPlugin(handle)
   const upstream = guardUpstream(plugin)
   const around = quantumNeighbours(handle)
@@ -544,7 +544,7 @@ export const gateProgramFiles = (dataset = root.path) => {
   return {
     phase: 'gate' as const,
     via: 'index' as const,
-    law: PROSE.quantumUuidProgramsIndex_s17,
+    law: 'spread in folders; every folder has index.*; code is index.* only' as const,
     dictionary: { means: 'disorder; unpredictability; unavailable energy or information' as const },
     root: dataset,
     folders: folders.length,

@@ -23,8 +23,6 @@ def quantumProcessingIsoDeliverables_s16 : String := "NIST and CERN as producers
 def quantumProcessingIsoDeliverables_s17 : String := "extracted ISO standards from NIST and CERN producing; Clay trinity unlocks all ⟦0⟧ perspectives"
 def quantumProcessingIsoDeliverables_s18 : String := "NIST/CERN/Clay producer trinity did not hold — re-hand answers or check hidden perspectives"
 
-def quantumProcessingIsoDeliverables_s19 : String := "uncertainty or missing information over the possible microstates"
-def quantumProcessingIsoDeliverables_s20 : String := "first the dictionary meaning; then the meaning is verified"
-def quantumProcessingIsoDeliverables_s21 : String := "open challenge via producer open data"
+def quantumProcessingIsoDeliverables_s19 : String := "uncertainty or missing information over the possible microstates (textbook_entropy_fusion)"
 
 end Prose

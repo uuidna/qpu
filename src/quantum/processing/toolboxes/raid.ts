@@ -49,7 +49,7 @@ export const createValidation = (v: Validation) => {
     : v.helper === 'confirmation' ? `value === siblingData?.${v.name}Confirmation || ${say('doesn\'t match confirmation')}`
     : v.helper === 'comparison' ? `(${o.greaterThan !== undefined ? `value > ${typeof o.greaterThan === 'string' ? `siblingData?.${o.greaterThan}` : o.greaterThan}` : 'true'} && ${o.lessThan !== undefined ? `value < ${typeof o.lessThan === 'string' ? `siblingData?.${o.lessThan}` : o.lessThan}` : 'true'}) || ${say('is out of comparison')}`
     : v.helper === 'format' ? `new RegExp(${JSON.stringify(o.with ?? '.*')}).test(String(value ?? '')) || ${say('is invalid')}`
-    : v.helper === 'inclusion' ? `${JSON.stringify(o.in ?? [])}.includes(value) || ${say(PROSE.quantumProcessingToolboxesRaid_s25)}`
+    : v.helper === 'inclusion' ? `${JSON.stringify(o.in ?? [])}.includes(value) || ${say('is not included in the list')}`
     : v.helper === 'exclusion' ? `!${JSON.stringify(o.in ?? [])}.includes(value) || ${say('is reserved')}`
     : v.helper === 'length' ? `String(value ?? '').length === ${o.is} || ${say(proseFill(PROSE.quantumProcessingToolboxesRaid_s24, o.is))}`
     : v.helper === 'numericality' ? (field.type = 'number', o.minimum !== undefined && (field.min = o.minimum), o.maximum !== undefined && (field.max = o.maximum), o.onlyInteger ? `Number.isInteger(value) || ${say('must be an integer')}` : null)

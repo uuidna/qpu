@@ -111,6 +111,5 @@ def quantumProcessingIdeas_says104 : String := "⟦0⟧ lead(s) developed in ⟦
 def quantumProcessingIdeas_s105 : String := "⟦0⟧ is empty. ⟦1⟧ lead(s) developed and removed. ⟦2⟧ exit codes, starting at 0, each an ISO 9001 strategy. ⟦3⟧ entries cover ⟦4⟧ exits⟦5⟧"
 def quantumProcessingIdeas_s106 : String := "⟦0⟧ file(s) remain in ⟦1⟧. ⟦2⟧ entries cover ⟦3⟧ exits"
 
-def quantumProcessingIdeas_s107 : String := "Moderation records a decision on a record."
 
 end Prose

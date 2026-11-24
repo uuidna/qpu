@@ -75,7 +75,7 @@ export const WILLOW = {
   /** Magic state cultivation on Willow, as the Google blog states it: a 40-fold reduction in errors against un-cultivated
    *  states, T-states at a logical fidelity of 99.99%, grafted from a distance-3 color code to a distance-5 surface code */
   magicStateCultivation: { errorReductionFactor: 40, logicalFidelity: 0.9999, colorCodeDistance: 3, surfaceCodeDistance: 5 },
-  /** The Willow error-correction preprint, PROSE.quantumProcessingProcessor_s10 (arXiv 2408.13687, the
+  /** The Willow error-correction preprint, "Quantum error correction below the surface code threshold" (arXiv 2408.13687, the
    *  paper the homepage links as Nature): the distance-7 and distance-5 memories and the figures its abstract states. */
   errorCorrectionPreprint: {
     distances: [5, 7],

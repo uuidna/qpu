@@ -29,6 +29,6 @@ def quantumProcessingLeads_s22 : String := "this that with from have what when t
 def quantumProcessingLeads_closes23 : String := "when its probe answers without the blocker; never a wait"
 def quantumProcessingLeads_says24 : String := "⟦0⟧ directive(s) from ⟦1⟧ session(s): ⟦2⟧ folded, ⟦3⟧ proposed in ⟦4⟧ item(s), ⟦5⟧ acted on where said, ⟦6⟧ assent(s); next: ⟦7⟧ item(s) in ⟦8⟧ parallel wave(s), quality first (⟦9⟧ wave(s)); ⟦10⟧ lead(s) unpaid until a quality wave frees their bytes"
 
-def quantumProcessingLeads_s23 : String := "no caps on reads or walks"
+def quantumProcessingLeads_s23 : String := "no caps on reads or walks (textbook_caps_removed)"
 
 end Prose

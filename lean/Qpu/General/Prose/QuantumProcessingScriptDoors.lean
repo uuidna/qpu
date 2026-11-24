@@ -58,6 +58,6 @@ def quantumProcessingScriptDoors_novelties48 : String := "Novelties: theorems th
 def quantumProcessingScriptDoors_columns49 : String := "novelty · prior art · receipt"
 def quantumProcessingScriptDoors_none50 : String := "none yet: a novelty enters when the gate admits it with its prior-art dossier"
 
-def quantumProcessingScriptDoors_s24 : String := "Every term is named by a skill."
+def quantumProcessingScriptDoors_s24 : String := "Every term is named by a skill (textbook_skills_complete)."
 
 end Prose

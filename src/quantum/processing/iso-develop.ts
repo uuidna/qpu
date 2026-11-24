@@ -162,7 +162,7 @@ export const serveViaHooks = (theorems: readonly string[] = DECODE_THEOREMS) => 
   const recorded = (iso: { formula: string }) => 'documented' in iso && iso.documented === true
   return {
     via: 'hooks' as const, manual: false as const, process: 'ISO 9001' as const, hooks: served.hooks,
-    beforeChange: 'the formula is recorded' as const, afterChange: PROSE.quantumProcessingIsoDevelop_s12, afterRead: 'the documented formula is served' as const,
+    beforeChange: 'the formula is recorded' as const, afterChange: 'the formula is handed to the docs door' as const, afterRead: 'the documented formula is served' as const,
     documented: recorded(served.iso) && developed.every((row) => recorded(row.iso)),
     developed: developed.map((row) => ({ theorem: row.iso.theorem, documented: recorded(row.iso), formula: row.iso.formula })),
     served,

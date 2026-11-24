@@ -99,8 +99,7 @@ def quantumProcessingAudit_why92 : String := "a fixture that shows a cap keeps i
 def quantumProcessingAudit_why93 : String := "an API's own bound in its query; name it from the API's documentation, never as a number of ours"
 def quantumProcessingAudit_says94 : String := "⟦0⟧ cap(s) removed in ⟦1⟧ file(s); ⟦2⟧ bound(s) kept as cited or as fixtures"
 
-def quantumProcessingAudit_s91 : String := "npm audit fix or a pinned fixed version; a finding is a lead"
-def quantumProcessingAudit_s92 : String := "a value in the environment example"
-def quantumProcessingAudit_s93 : String := "rendered as text, never as markup"
+def quantumProcessingAudit_s91 : String := "npm audit fix or a pinned fixed version; a finding is a lead (textbook_security_perspectives)"
+def quantumProcessingAudit_s92 : String := "a value in the environment example (textbook_security_perspectives)"
 
 end Prose

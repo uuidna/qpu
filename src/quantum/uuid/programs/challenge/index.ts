@@ -65,7 +65,7 @@ export const challenge = () => {
   const online = games.holds === true && games.holding === games.competitions && games.competitions > 0
 
   const entropy = {
-    law: PROSE.quantumProcessingIsoDeliverables_s20,
+    law: 'first the dictionary meaning; then the meaning is verified',
     dictionary: { means: 'disorder; unpredictability; unavailable energy or information' as const },
     verified: {
       standard: 'ISO 80000-5:2019' as const,

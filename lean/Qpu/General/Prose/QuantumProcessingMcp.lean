@@ -464,12 +464,7 @@ def quantumProcessingMcp_gaps434 : String := "true: the gaps of the library, as 
 
 def quantumProcessingMcp_says435 : String := "⟦0⟧ theorem(s) searched by Lean's library search: ⟦1⟧ conjunct(s) in the library or decided by it, ⟦2⟧ open, ⟦3⟧ undecided, ⟦4⟧ of this tree's own notions; ⟦5⟧ shown"
 
-def quantumProcessingMcp_s430 : String := "the residue is handed to the docs door"
-def quantumProcessingMcp_s431 : String := "the same rate in permille (10 is 1%)"
-def quantumProcessingMcp_s432 : String := "matched by no tool, example or lead"
-def quantumProcessingMcp_s433 : String := "nodes is an integer of at least 2"
-def quantumProcessingMcp_s434 : String := "steps is an integer of at least 4"
-def quantumProcessingMcp_s435 : String := "a program is a list of operations"
+def quantumProcessingMcp_s432 : String := "matched by no tool, example or lead (textbook_questions_matched)"
 
 def quantumProcessingMcp_scale : String := "To scale a long task, split its list with shard { list, index, count: ⟦0⟧ }, one call for each index below ⟦0⟧: the shares cover the list exactly once (textbook_shards_cover, textbook_shards_disjoint). Every answer is sealed under its address, so an answer already held is checked with verify { uuid, content } in one step and is not asked again (textbook_court_audits_repo)."
 def quantumProcessingMcp_welcome : String := "Welcome. This server is the build whose receipt is ⟦0⟧ (SHA-256 ⟦1⟧), and the same text is its home page, its README, its npm package and its Zenodo record. Read that text from the resource ⟦2⟧ and verify it yourself with verify { uuid: \"⟦0⟧\", content } on what you read: a copy that does not verify is not this build."

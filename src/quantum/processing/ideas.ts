@@ -32,7 +32,7 @@ const DRAFTS: readonly Draft[] = [
   { folder: 'zenodo-rdm', slug: 'communities', source: ZENODO, title: 'Communities', statement: PROSE.quantumProcessingIdeas_statement3 },
   { folder: 'zenodo-rdm', slug: 'subcommunities', source: ZENODO, title: 'Subcommunities', statement: PROSE.quantumProcessingIdeas_statement4 },
   { folder: 'zenodo-rdm', slug: 'curation', source: ZENODO, title: 'Curation', statement: PROSE.quantumProcessingIdeas_statement5 },
-  { folder: 'zenodo-rdm', slug: 'moderation', source: ZENODO, title: 'Moderation', statement: PROSE.quantumProcessingIdeas_s107 },
+  { folder: 'zenodo-rdm', slug: 'moderation', source: ZENODO, title: 'Moderation', statement: 'Moderation records a decision on a record.' },
   { folder: 'zenodo-rdm', slug: 'legacy', source: ZENODO, title: 'Legacy deposit', statement: PROSE.quantumProcessingIdeas_statement6 },
   { folder: 'zenodo-rdm', slug: 'github', source: ZENODO, title: 'GitHub release', statement: PROSE.quantumProcessingIdeas_statement7 },
   { folder: 'zenodo-rdm', slug: 'exporter', source: ZENODO, title: 'Exporter', statement: PROSE.quantumProcessingIdeas_statement8 },

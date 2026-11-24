@@ -78,7 +78,7 @@ const ISO_QUANTUM_AI = {
   experience: 'iso-quantum-ai' as const,
   vocabulary: 'ISO/IEC 4879:2024' as const,
   entropy: {
-    law: PROSE.quantumProcessingIsoDeliverables_s20,
+    law: 'first the dictionary meaning; then the meaning is verified',
     dictionary: 'disorder; unpredictability; unavailable energy or information' as const,
     verified: { standard: 'ISO 80000-5:2019' as const, definition: 'S = k ln W' as const },
   },
@@ -134,7 +134,7 @@ const engineCall = (raw: Record<string, unknown>) => {
   const processor = String(raw.processor ?? 'Willow')
   if (!(processor in DEVICES)) reject(proseFill(PROSE.quantumProcessingMcp_s2, processor, Object.keys(DEVICES).join(', ')))
   const program = isObj(raw.program) ? raw.program as { operations?: OperationJson[]; measure?: MeasureJson } : {}
-  if (!Array.isArray(program.operations) || program.operations.length === 0) reject(PROSE.quantumProcessingMcp_s435)
+  if (!Array.isArray(program.operations) || program.operations.length === 0) reject('a program is a list of operations')
   const prepared = circuit(program.operations, 'EARLIEST', program.measure)
   toDevice(DEVICES[processor as keyof typeof DEVICES]).validateCircuit(prepared)
   const programId = uuid(canonicalText({ processor, operations: program.operations, measure: program.measure ?? null }))
@@ -309,7 +309,7 @@ const factorExit = (complete: boolean, receipt?: string, digest?: string, leftov
   return { ...row, closed: complete, open: !complete, status: complete ? 'factored' as const : 'open' as const, ...(receipt ? { receipt, readingSha256: digest } : {}), next }
 }
 
-const FORMULA_HOOKS = { manual: false as const, process: 'ISO 9001' as const, hooks: ['beforeChange', 'afterChange', 'afterRead'] as const, beforeChange: 'the formula is recorded' as const, afterChange: PROSE.quantumProcessingIsoDevelop_s12, afterRead: 'the documented formula is served' as const }
+const FORMULA_HOOKS = { manual: false as const, process: 'ISO 9001' as const, hooks: ['beforeChange', 'afterChange', 'afterRead'] as const, beforeChange: 'the formula is recorded' as const, afterChange: 'the formula is handed to the docs door' as const, afterRead: 'the documented formula is served' as const }
 const coverLeftovers = (left: readonly bigint[]) => {
   const developed = left.map((part) => {
     const width = part.toString(2).length
@@ -565,7 +565,7 @@ const imprintRegister = (n: bigint) => {
   })
   const frames = merkaba(n)
   const developed = developViaHooks({ formula: `${n} = ${frames.quotient} * ${frames.scale} + ${frames.residue}`, product: 'merkaba', variant: frames.exposed ? 'analog' : 'harmonic', title: 'merkaba', theorem: 'textbook_mixed_radix' })
-  return { bits, qubits, handles: spread.handles, effective: spread.effective, unlimited: true as const, ceiling: null, capacity: 'unlimited' as const, via: 'uuid' as const, superposition: amplitude, formula: spread.formula, root, sealed: imprints.every((row) => row.sealed), validated: imprints.every((row) => row.validated && row.sealed), imprints, frames, hooks: { via: 'hooks' as const, hooks: developed.hooks, beforeChange: 'the residue is recorded' as const, afterChange: PROSE.quantumProcessingMcp_s430, afterRead: 'the exposed residue is served' as const, documented: developed.iso.documented === true, formula: developed.iso.formula, iso: developed.iso, docs: developed.docs } }
+  return { bits, qubits, handles: spread.handles, effective: spread.effective, unlimited: true as const, ceiling: null, capacity: 'unlimited' as const, via: 'uuid' as const, superposition: amplitude, formula: spread.formula, root, sealed: imprints.every((row) => row.sealed), validated: imprints.every((row) => row.validated && row.sealed), imprints, frames, hooks: { via: 'hooks' as const, hooks: developed.hooks, beforeChange: 'the residue is recorded' as const, afterChange: 'the residue is handed to the docs door' as const, afterRead: 'the exposed residue is served' as const, documented: developed.iso.documented === true, formula: developed.iso.formula, iso: developed.iso, docs: developed.docs } }
 }
 
 const hexbitRegister = (part: bigint) => {
@@ -1328,7 +1328,7 @@ const OWN: Tool[] = [
       if (name === 'qaoa') {
         if (args.nodes === undefined) { const width = registerQubits(); return { ...uuidCapacity(name, width), name, qubits: width, nodes: width, sampled: false as const, summary: [['Nodes', String(width)], ['Graph', 'the UUID register'], ['Qubits', String(width)]], header: ['Fact', 'Value'], rows: [['register', String(width)]] } }
         const requested = Number(args.nodes)
-        if (!Number.isInteger(requested) || requested < 2) reject(PROSE.quantumProcessingMcp_s433)
+        if (!Number.isInteger(requested) || requested < 2) reject('nodes is an integer of at least 2')
         const graph = pageInstance(DEVICES.Sycamore, requested)
         if (graph.nodes.length >= 16) return { ...uuidCapacity(name, graph.nodes.length), name, qubits: graph.nodes.length, nodes: graph.nodes.length, edges: graph.edges.length, sampled: false, summary: [['Device', 'Sycamore'], ['Nodes', String(graph.nodes.length)], ['Edges', String(graph.edges.length)], ['Qubits', String(graph.nodes.length)]], header: ['Edge', 'Weight'], rows: graph.edges.map((e) => [`${qubitKey(e.a)} – ${qubitKey(e.b)}`, String(e.weight)]) }
         const weights = args.weights as number[] | undefined
@@ -1810,7 +1810,7 @@ const OWN: Tool[] = [
       const theta = args.theta === undefined ? undefined : Number(args.theta)
       if (theta !== undefined && !Number.isFinite(theta)) reject('theta is a number')
       const steps = args.steps === undefined ? null : Number(args.steps)
-      if (steps !== null && (!Number.isInteger(steps) || steps < 4)) reject(PROSE.quantumProcessingMcp_s434)
+      if (steps !== null && (!Number.isInteger(steps) || steps < 4)) reject('steps is an integer of at least 4')
       const vqe = theta === undefined && steps !== null ? vqeSweep(terms, steps) : null
       const ansatz = ansatzCircuit(theta ?? vqe?.best.theta ?? 0)
       return {
@@ -1850,7 +1850,7 @@ const OWN: Tool[] = [
       const denseShor = askedN !== null && askedN >= 3n && askedN <= BigInt(Number.MAX_SAFE_INTEGER) && shorQubits < 24
       const nodes = args.nodes === undefined ? registerQubits() : Number(args.nodes)
       if (!Number.isInteger(n) || n < 1) reject('qubits is a positive integer')
-      if (!Number.isInteger(nodes) || nodes < 2) reject(PROSE.quantumProcessingMcp_s433)
+      if (!Number.isInteger(nodes) || nodes < 2) reject('nodes is an integer of at least 2')
       let a = 0
       if (denseShor && askedN !== null) { a = Number(getInteger(args.a, 'a', 7n) % askedN); const modulus = Number(askedN); while (a < 2 || gcd(a, modulus) !== 1) a++ }
       const wideQft = n >= 16
@@ -2029,7 +2029,7 @@ const treeMetrics = (artefacts: RunArtefacts = {}): Record<string, unknown> => {
 const apis = defineTool('tree', {
   name: 'apis',
   description: PROSE.quantumProcessingMcp_description327,
-  inputSchema: { type: 'object', properties: { doors: { description: PROSE.quantumProcessingMcp_description328 }, pricing: { type: 'boolean', description: 'the Cloudflare meters table' }, cost: { type: 'object', description: PROSE.quantumProcessingMcp_description329 }, headSamplingRate: { type: 'number', description: PROSE.quantumProcessingMcp_description330 }, headSamplingPermille: { type: 'number', description: PROSE.quantumProcessingMcp_s431 }, readings: { type: 'object', description: PROSE.quantumProcessingMcp_description331 }, zone: { type: 'object', description: PROSE.quantumProcessingMcp_description332 }, index: { type: 'object', description: '{ payload?: { collections: [{ slug }], globals: [{ slug }], server? }, cloudflare?: { servers?, paths }, google?: Discovery document | [documents] | true for the endpoints table }' }, coverage: { description: PROSE.quantumProcessingMcp_description333 }, observe: { type: 'boolean', description: PROSE.quantumProcessingMcp_description334 }, shadcn: { description: PROSE.quantumProcessingMcp_description335 } } },
+  inputSchema: { type: 'object', properties: { doors: { description: PROSE.quantumProcessingMcp_description328 }, pricing: { type: 'boolean', description: 'the Cloudflare meters table' }, cost: { type: 'object', description: PROSE.quantumProcessingMcp_description329 }, headSamplingRate: { type: 'number', description: PROSE.quantumProcessingMcp_description330 }, headSamplingPermille: { type: 'number', description: 'the same rate in permille (10 is 1%)' }, readings: { type: 'object', description: PROSE.quantumProcessingMcp_description331 }, zone: { type: 'object', description: PROSE.quantumProcessingMcp_description332 }, index: { type: 'object', description: '{ payload?: { collections: [{ slug }], globals: [{ slug }], server? }, cloudflare?: { servers?, paths }, google?: Discovery document | [documents] | true for the endpoints table }' }, coverage: { description: PROSE.quantumProcessingMcp_description333 }, observe: { type: 'boolean', description: PROSE.quantumProcessingMcp_description334 }, shadcn: { description: PROSE.quantumProcessingMcp_description335 } } },
   run: (args) => {
     const asked = Object.keys(args).length > 0
     const origin = isObj(args.doors) && typeof (args.doors as { origin?: unknown }).origin === 'string' ? (args.doors as { origin: string }).origin : undefined
