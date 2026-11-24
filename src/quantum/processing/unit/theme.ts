@@ -96,7 +96,7 @@ export const getCss = (key: number = KEY): string => {
     PROSE.quantumProcessingUnitTheme_s19,
     PROSE.quantumProcessingUnitTheme_s20,
     PROSE.quantumProcessingUnitTheme_s21,
-    proseFill(PROSE.quantumProcessingUnitTheme_s22, 36 * 100, period),
+    proseFill(PROSE.quantumProcessingUnitTheme_s22, SCAN.frames * 100, period, SCAN.frames),
     proseFill(PROSE.quantumProcessingUnitTheme_s23, key * 9),
     PROSE.quantumProcessingUnitTheme_s24,
     PROSE.quantumProcessingUnitTheme_s25, // important: the block's own accent is inline, and only an important rule outranks it

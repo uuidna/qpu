@@ -90,7 +90,7 @@ const repaint = () => paint(performance.now())
 
 onMounted(() => {
   frame = requestAnimationFrame(tick)
-  startLive()
+  startLive(data.clock)
   window.addEventListener('resize', repaint)
 })
 onBeforeUnmount(() => { cancelAnimationFrame(frame); window.removeEventListener('resize', repaint) })
