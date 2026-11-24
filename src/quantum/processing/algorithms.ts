@@ -8,6 +8,7 @@ import { Circuit, CNOT, CZ, DensityMatrixSimulator, getExpectation, H, LineQubit
 import { numpyWeights } from './unit/random.ts'
 import { uuid } from '../uuid/index.ts'
 import { sha256, utf8, hex, rsaModPow as powMod } from './unit/hmac.ts'
+import { HELD_FACTORS } from './factors-index.ts'
 
 /** The quantum Fourier transform, as the Cirq page builds it: a Hadamard on each qubit, then a controlled phase CZ**(1/2^k)
  *  from each later qubit onto it. The page notes the output comes in reversed bit order unless swaps are added, so the swaps
@@ -660,9 +661,16 @@ export const listFactors = (n: bigint, reflections: bigint, from?: bigint): Fact
   const key = `${n}:${reflections}:${from ?? ''}`
   const hit = factorMemo.get(key) ?? factorMemo.get(`${n}`)
   if (hit) return { factors: [...hit.factors], left: [...hit.left], reached: hit.reached, searched: hit.searched, verified: hit.verified }
-  const found = listFactorsOnce(n, reflections, from)
+  const found = heldFactors(n) ?? listFactorsOnce(n, reflections, from)
   factorMemo.set(found.left.length ? key : `${n}`, found) // a complete list answers every budget
   return { factors: [...found.factors], left: [...found.left], reached: found.reached, searched: found.searched, verified: found.verified }
+}
+
+/** The complete list factors-index.ts holds for n, taken only when it checks as a computed list does: its product is n and every factor
+ *  passes testPrimality. A row that does not check is ignored and n is factored afresh (textbook_court_audits_repo). */
+const heldFactors = (n: bigint): FactorList | undefined => {
+  const held = HELD_FACTORS[`${n}`], factors = held?.factors.map(BigInt) ?? []
+  if (held && factors.reduce((a, b) => a * b, 1n) === n && factors.every((p) => testPrimality(p).prime)) return { factors, left: [], reached: held.reached === null ? null : BigInt(held.reached), searched: BigInt(held.searched), verified: true }
 }
 
 const listFactorsOnce = (n: bigint, reflections: bigint, from?: bigint): FactorList => {
