@@ -7,7 +7,7 @@
   "scripts": {
     "prepare": "git config core.hooksPath .githooks || exit 0",
     "dev": "wrangler dev --port 3000",
-    "deploy": "lake run site && wrangler deploy",
+    "deploy": "node src/quantum/processing/machine-run.ts fakes && lake run site && wrangler deploy",
     "lean:check": "lake run check",
     "lean:index": "lake run index",
     "site:seed": "lake run seed",

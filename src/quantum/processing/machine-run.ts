@@ -266,6 +266,13 @@ const inStagedTree = async (cwd: string, cmd: string, args: readonly string[], o
   } finally { rmSync(dir, { recursive: true, force: true }) }
 }
 
+/** The fakes the table names, found in the tracked tree: each finder is one git command over its paths, and what a kernel theorem or the
+ *  finder's standing list holds is no finding. The hooks decide by them, the `fakes` action prints them, and the deploy runs that action first. */
+const findFakes = async (cwd: string): Promise<string[]> => {
+  const held = new Set<string>(THEOREMS.map((t) => t.key)), git = async (...a: string[]) => (await spawnRun('git', a, { cwd })).stdout.trim()
+  return (await Promise.all(TABLES.FAKES.map(async (k) => [...new Set((await git(...k.git, '--', ...k.paths)).split('\n'))].filter((l) => l && !('standing' in k && (held.has(l) || (k.standing as readonly string[]).includes(l)))).map((l) => `${k.fake}: ${l}`)))).flat()
+}
+
 /** A git hook as the client of its workflow (repository { workflow }): its steps walked as the door answers them (next run here, a command spawned,
  *  the generated files compared before they are staged), the facts read (the receipt, the staged diff of the hand-written roots, the workflow files,
  *  the message, the packed package, the gate's decoding) and the decision obeyed: a refused rule or a red step ends the hook with status 1. */
@@ -299,8 +306,7 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   }
   const flows = join(cwd, '.github/workflows')
   facts.workflows = existsSync(flows) ? Object.fromEntries(readdirSync(flows).filter((f) => /\.ya?ml$/.test(f)).map((f) => [`.github/workflows/${f}`, readFileSync(join(flows, f), 'utf8')])) : null
-  const held = new Set<string>(THEOREMS.map((t) => t.key))
-  facts.fakes = (await Promise.all(TABLES.FAKES.map(async (k) => [...new Set((await git(...k.git, '--', ...k.paths)).split('\n'))].filter((l) => l && !('standing' in k && (held.has(l) || (k.standing as readonly string[]).includes(l)))).map((l) => `${k.fake}: ${l}`)))).flat()
+  facts.fakes = await findFakes(cwd)
   if (name === 'commit-msg') facts.message = readFileSync(rest[0]!, 'utf8')
   if (name === 'pre-commit') {
     const diff = await git('diff', '--cached', '-U0', '--no-color', '--no-renames', '--', ...LITERAL_ROOTS), generated: string[] = []
@@ -363,6 +369,8 @@ if (process.argv[1] && SELF === fileURLToPath(new URL(process.argv[1], 'file://'
   if (action === 'step') await runStepChild(rest[0]!, rest[1]?.startsWith('@') ? readFileSync(rest[1].slice(1), 'utf8') : rest[1] ?? '{}', rest.includes('--write'), process.cwd(), rest.includes('--json'))
   // `staged <cmd> [args…]`: the command run in a checkout of the index (inStagedTree), its status the runner's
   else if (action === 'staged') process.exitCode = (await inStagedTree(process.cwd(), rest[0]!, rest.slice(1), (l) => console.log(l))).status ?? 1
+  // `fakes`: every fake the table's finders name in the tracked tree, one a line; status 1 when any stands
+  else if (action === 'fakes') { const found = await findFakes(process.cwd()); for (const f of found) console.log(f); process.exitCode = found.length ? 1 : 0 }
   else if (action === 'hook') process.exitCode = (AGENT_HOOKS as readonly string[]).includes(rest[0] ?? '') ? await runAgentHook(rest[0]!, process.cwd()) : await runHook(rest[0] ?? '', rest.slice(1), process.cwd())
   else if (action === 'next') { const r = await runNext({ cwd: process.cwd(), offline: rest.includes('--offline'), fast: rest.includes('--fast'), generators: rest.includes('--generators') }); process.exitCode = r.red ? 1 : 0 }
   else if (action) { const r = await runMachine({ action, confirm: rest.includes('--confirm'), message: rest.includes('-m') ? rest[rest.indexOf('-m') + 1] : undefined, branch: rest.includes('--branch') ? rest[rest.indexOf('--branch') + 1] : undefined }, process.cwd()); console.log(JSON.stringify(r.answer)); process.exitCode = (r as { record?: { ok: boolean } }).record?.ok === false ? 1 : 0 }

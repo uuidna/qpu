@@ -205,10 +205,10 @@ const isCoinCall = (tool: string, args?: Record<string, unknown>) => ALGEBRA_TOO
 export const fuseCall = (tool: string, args?: Record<string, unknown>) => { const coin = isCoinCall(tool, args); return { tool, side: (coin ? 'coin' : 'coil') as 'coin' | 'coil', crossing: coin ? PROSE.quantumProcessingToolboxesBilling_s45 : PROSE.quantumProcessingToolboxesBilling_s46, licence: coin ? PROSE.quantumProcessingToolboxesBilling_s47 : PROSE.quantumProcessingToolboxesBilling_s48, back: PROSE.quantumProcessingToolboxesBilling_back49, theorem: 'textbook_free_or_coil' } }
 /** The coins of a call, booked before it runs. One request coin, and a coil when the call leaves the algebra. Tokens stay 0: no answer exists yet, so none can be read off prose that has not been written (textbook_coins_coils_balanced). A turn with no call books nothing. */
 export const accountCoins = (tool?: string, args?: Record<string, unknown>) => {
-  if (!tool) return { advance: true as const, before: true as const, tool: null, side: null, coins: 0 as const, coils: 0 as const, tokens: 0 as const, entropy: 0 as const, debits: 0, credits: 0, balanced: true as const, hallucination: false as const, theorem: 'textbook_coins_coils_balanced' as const }
+  if (!tool) return { advance: true as const, before: true as const, tool: null, side: null, coins: 0 as const, coils: 0 as const, tokens: 0 as const, debits: 0, credits: 0, balanced: true as const, hallucination: false as const, theorem: 'textbook_coins_coils_balanced' as const }
   const side = fuseCall(tool, args).side
   const coins = 1, coils = side === 'coil' ? 1 : 0, debits = coins + coils, credits = debits
-  return { advance: true as const, before: true as const, tool, side, coins, coils, tokens: 0 as const, entropy: 0 as const, debits, credits, balanced: debits === credits, hallucination: false as const, theorem: 'textbook_coins_coils_balanced' as const }
+  return { advance: true as const, before: true as const, tool, side, coins, coils, tokens: 0 as const, debits, credits, balanced: debits === credits, hallucination: false as const, theorem: 'textbook_coins_coils_balanced' as const }
 }
 /** Eight bits to a byte is the handle (8 hex, the byte count). The program and the params are the rest of the content's own UUID, stamped into that same address. The version and variant nibbles stay the stamp. */
 export const accountBytes = (input: readonly string[] | number) => {

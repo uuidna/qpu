@@ -237,7 +237,6 @@ export const guardUpstream = (plugin: ProgramPlugin) => {
     checks,
     passed: checks.filter((row) => row.holds).length,
     total: checks.length,
-    entropy: holds ? 0 as const : 1 as const,
     holds,
     says: holds
       ? proseFill(PROSE.quantumUuidProgramsIndex_s1, plugin.slug, checks.length, checks.length)
@@ -553,7 +552,6 @@ export const gateProgramFiles = (dataset = root.path) => {
     refused,
     missing: refused.length,
     holds,
-    entropy: holds ? 0 as const : 1 as const,
     says: holds
       ? proseFill(PROSE.quantumUuidProgramsIndex_s8, folders.length, allowed.length, dataset)
       : proseFill(PROSE.quantumUuidProgramsIndex_s9, refused.length, refused.slice(0, 8).join(', '), refused.length > 8 ? '…' : ''),
@@ -698,7 +696,6 @@ export const gateProgramSeal = (dataset = root.path, computed = sealLeaves(datas
     refused,
     failed: rows.filter((row) => !row.holds),
     holds,
-    entropy: holds ? 0 as const : 1 as const,
     says: !files.holds
       ? files.says
       : holds

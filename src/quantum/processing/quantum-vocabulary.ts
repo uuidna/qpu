@@ -246,7 +246,6 @@ export const quantumStandards = () => {
     standard: STANDARD,
     via: 'uuid' as const,
     dry: true as const,
-    entropy: 0 as const,
     terms,
     total: terms.length,
     holding,

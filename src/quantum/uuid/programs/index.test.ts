@@ -63,7 +63,6 @@ void test('programs tree: every folder has index.*; neighbours reflect and compe
   const gate = (await neighbours()).seal
   assert.equal(gate.holds, true, gate.says + (gate.refused[0] ? ` first=${gate.refused[0]}` : ''))
   assert.equal(gate.refused.length, 0)
-  assert.equal(gate.entropy, 0)
   assert.equal(gate.degree, 6)
   assert.equal(gate.combinations, 8)
   assert.ok(gate.competitions > 0)
@@ -86,7 +85,6 @@ void test('each UUID program is a Payload plugin guarded to upstream definePlugi
   assert.equal(plugin.slug, `qpu-program-${handle}`)
   assert.equal(plugin.package, '@payloadcms/plugin-mcp')
   assert.equal(guard.holds, true)
-  assert.equal(guard.entropy, 0)
   assert.equal(guard.passed, guard.total)
   assert.equal(guard.standard, 'definePlugin')
   assert.ok(guard.reverseGuard.includes('payloadcms/website'))

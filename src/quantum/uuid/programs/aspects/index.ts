@@ -44,7 +44,7 @@ export const aspectPrograms = () => {
     }
   })
   const handles = new Set(rows.map((row) => row.handle))
-  const verified = rows.filter((row) => row.sealed && row.indexed && row.depth === 7 && row.steps === 8 && row.used === row.count && row.path === `src/quantum/uuid/programs/${[...row.handle].join('/')}/index.ts` && row.handle === row.address.slice(0, 8) && row.plugin.holds && row.plugin.standard === 'definePlugin' && row.plugin.slug === `qpu-program-${row.handle}` && row.upstream.holds && row.upstream.entropy === 0).length
+  const verified = rows.filter((row) => row.sealed && row.indexed && row.depth === 7 && row.steps === 8 && row.used === row.count && row.path === `src/quantum/uuid/programs/${[...row.handle].join('/')}/index.ts` && row.handle === row.address.slice(0, 8) && row.plugin.holds && row.plugin.standard === 'definePlugin' && row.plugin.slug === `qpu-program-${row.handle}` && row.upstream.holds).length
   const recomputed = rows.length - verified
   const advantage = {
     copies: rows.length,
