@@ -7,6 +7,12 @@ count (two per layer, from coins), the cost-layer ZZ gates over e edges, and the
 is quantified over all layers, edges and qubits — unlimited parameters — with the textbook values kept as
 kernel-decided controls. -/
 
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
 def qaoaParams (p : Nat) : Nat := coins * p
 def qaoaZz (p e : Nat) : Nat := p * e
 def qaoaX (p q : Nat) : Nat := p * q
@@ -14,10 +20,6 @@ def qaoaX (p q : Nat) : Nat := p * q
 /-- Every layer adds exactly coins = 2 parameters, for every p. -/
 theorem qaoaParams_succ (p : Nat) : qaoaParams (p + 1) = qaoaParams p + coins := by
   rw [qaoaParams, qaoaParams, Nat.mul_succ]
-
-/-- The parameter count is always even: two angles per layer, for every p. -/
-theorem qaoaParams_twice (p : Nat) : qaoaParams p = 2 * p := by
-  rw [qaoaParams, coins_two]
 
 /-- One more layer costs e more ZZ gates, for every layer count and edge set. -/
 theorem qaoaZz_succ_layer (p e : Nat) : qaoaZz (p + 1) e = qaoaZz p e + e := by

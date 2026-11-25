@@ -18,7 +18,7 @@ import { TABLES } from './tables-index.ts'
 import { listDeclarations, removeDead, auditPrograms, scanLexical, runAudit, getEntropy, uncap, diffMembers, auditSecurity, listRemedies, repair, getAdvantage, getAddressedByTheorem, getBill, FALLBACKS, FALLBACK_ADAPTERS, handleOrCorrect, linkAxioms, listLeaks, sealJson, sealTokenLeaks } from './audit.ts'
 import { TEXTBOOK_THEOREMS, getReflections, searchTextbookPrograms } from './textbook-theorems.ts'
 import { NESTED as NESTED_CATALOGUE, NESTED_COUNTS } from './nested-index.ts'
-import { THOUSAND, THOUSAND_SHARED } from './thousand-index.ts'
+import { THOUSAND, THOUSAND_SHARED, THOUSAND_WALK } from './thousand-index.ts'
 import { updateTheoremSources } from './textbook-measured.ts'
 import { crossVerifiedFormula, developViaHooks, serveViaHooks } from './iso-develop.ts'
 import { cryptoConfig } from './crypto/config.ts'
@@ -694,7 +694,7 @@ const finishFactor = (n: bigint, a?: bigint, reflections = 1n << 12n, from?: big
 
 import { a432Specific, defineTool, isObj, unlimited, type Tool, type Toolbox, type Context } from './toolbox.ts'
 import { FLOW } from './toolboxes/flow.ts'
-import { KERNEL_THEOREMS, GENERATED_LEMMAS, THEOREMS } from './theorems-index.ts'
+import { KERNEL_THEOREMS, GENERATED_LEMMAS, THEOREMS, THEOREM_KEYS } from './theorems-index.ts'
 import { PATTERNS, getPattern } from './match.ts'
 import { sha256, utf8, hex } from './unit/hmac.ts'
 import { flowWidget } from './widgets.ts'
@@ -1922,9 +1922,10 @@ const OWN: Tool[] = [
   tool({
     name: 'clay',
     description: PROSE.quantumProcessingMcp_description288,
-    inputSchema: { type: 'object', properties: { thousand: { description: PROSE.quantumProcessingMcp_thousand1 }, name: { type: 'string', description: PROSE.quantumProcessingMcp_description289 }, lean: { type: 'boolean', description: PROSE.quantumProcessingMcp_description290 }, technique: { type: 'string', enum: ['reflection'], description: PROSE.quantumProcessingMcp_description291 }, unit: { type: 'array', items: { type: 'object' }, description: PROSE.quantumProcessingMcp_description292 }, catalog: { type: 'boolean', description: PROSE.quantumProcessingMcp_description293 }, combinations: { type: 'boolean', description: PROSE.quantumProcessingMcp_description294 }, chess: { type: 'boolean', description: PROSE.quantumProcessingMcp_description295 }, nist: { type: 'object', description: PROSE.quantumProcessingMcp_description296 }, cern: { type: 'object', description: PROSE.quantumProcessingMcp_description297 }, solve: { type: 'boolean', description: PROSE.quantumProcessingMcp_description298 }, drift: { type: 'boolean', description: PROSE.quantumProcessingMcp_description299 }, readme: { description: PROSE.quantumProcessingMcp_description300 }, pravets: { type: 'boolean', description: PROSE.quantumProcessingMcp_description301 } } },
+    inputSchema: { type: 'object', properties: { thousand: { description: PROSE.quantumProcessingMcp_thousand1 }, walk: { description: PROSE.quantumProcessingMcp_walk }, name: { type: 'string', description: PROSE.quantumProcessingMcp_description289 }, lean: { type: 'boolean', description: PROSE.quantumProcessingMcp_description290 }, technique: { type: 'string', enum: ['reflection'], description: PROSE.quantumProcessingMcp_description291 }, unit: { type: 'array', items: { type: 'object' }, description: PROSE.quantumProcessingMcp_description292 }, catalog: { type: 'boolean', description: PROSE.quantumProcessingMcp_description293 }, combinations: { type: 'boolean', description: PROSE.quantumProcessingMcp_description294 }, chess: { type: 'boolean', description: PROSE.quantumProcessingMcp_description295 }, nist: { type: 'object', description: PROSE.quantumProcessingMcp_description296 }, cern: { type: 'object', description: PROSE.quantumProcessingMcp_description297 }, solve: { type: 'boolean', description: PROSE.quantumProcessingMcp_description298 }, drift: { type: 'boolean', description: PROSE.quantumProcessingMcp_description299 }, readme: { description: PROSE.quantumProcessingMcp_description300 }, pravets: { type: 'boolean', description: PROSE.quantumProcessingMcp_description301 } } },
     run: (args) => {
       if (args.thousand === true || typeof args.thousand === 'string') return thousandTable(args.thousand) as never
+      if (args.walk === true || isObj(args.walk)) return clayWalk(args.walk === true ? true : args.walk as Record<string, unknown>) as never
       if (args.drift === true) return driftPrograms() as never
       const base = recomputeClay()
       const all = { ...base, relations: base.relations.map((r) => { const theorems = clayCaseTheorems(r); const variants = theorems.map((t) => ({ product: t.theorem, variant: t.case })); return { ...r, case: variants[0]?.variant ?? r.name, product: variants[0]?.product ?? null, variant: variants[0]?.variant ?? r.name, variants, theorems } }) }
@@ -2085,6 +2086,50 @@ const apis = defineTool('tree', {
   widget: apisWidget as never,
 })
 const metrics = defineTool('tree', { name: 'metrics', description: PROSE.quantumProcessingMcp_description337, inputSchema: { type: 'object', properties: { artefacts: { type: 'object', description: PROSE.quantumProcessingMcp_description338 } } }, run: (args) => treeMetrics((args.artefacts ?? {}) as RunArtefacts), widget: flowWidget })
+
+/** The walk of the register's qubits Lean writes (lean/tools/Thousand.lean): k qubits hold a superposition of 2 ^ k states, and the cluster of that
+ *  superposition is every family formula that reaches it, each with the theorem of Qpu.General.Meaning that binds the formula to its library notion at
+ *  every size. Walked when every qubit count below the bound has its cluster. Discovered is the share of the cluster members a kernel theorem holds, and
+ *  a member no theorem holds is unclaimed. A relation of the register needs as many qubits as its value has bits, each one of these clusters; so do the
+ *  NIST beacon board and the CERN checksum, whose widths the chess board states. Pure. */
+const clayWalk = (asked: true | Record<string, unknown>) => {
+  const formulas = THOUSAND_WALK.formulas.map((f) => ({ family: f.family, formula: f.name, theorem: f.binding !== null && THEOREM_KEYS.has(f.binding) ? f.binding : null, reaches: f.reaches, levels: BigInt(`0x${f.levels}`) }))
+  const levels = Array.from({ length: THOUSAND_WALK.qubits }, (_, k) => formulas.filter((f) => ((f.levels >> BigInt(k)) & 1n) === 1n).map(({ family, formula, theorem }) => ({ family, formula, theorem })))
+  const complete = (cluster: (typeof levels)[number]) => cluster.length > 0 && cluster.every((m) => m.theorem !== null)
+  const register = recomputeClay()
+  const level = (k: number) => { const cluster = levels[k]!, value = 2n ** BigInt(k); return { qubits: k, superposition: `2 ^ ${k}`, value: value.toString(), bits: value.toString(2).length, cluster, families: new Set(cluster.map((m) => m.family)).size, discovered: complete(cluster), claimedBy: register.relations.filter((r) => BigInt(r.sides[0]!.value) === value).map((r) => r.name) } }
+  if (asked !== true && typeof asked.formula === 'string') {
+    // one formula alone: the theorem that binds it, how many examples it has below the bound as Lean counted them, and the qubit counts it reaches
+    const f = formulas.find((x) => x.formula === asked.formula), row = THOUSAND.find((x) => x.name === asked.formula)
+    if (!f || !row) throw new Error(`formula is one of ${formulas.map((x) => x.formula).join(', ')}`)
+    const reached = levels.flatMap((c, k) => (c.some((m) => m.formula === f.formula) ? [k] : []))
+    return { phase: 'walk' as const, family: f.family, formula: f.formula, theorem: f.theorem, discovered: f.theorem !== null, examples: row.examples, first: row.first, last: row.last, reaches: f.reaches, qubits: { first: reached[0] ?? null, last: reached.at(-1) ?? null }, theorems: ['Thousand.meaning_sound'] as const, says: proseFill(PROSE.quantumProcessingMcp_walkFormula, f.formula, f.family, f.theorem ?? '', row.examples.length, f.reaches, levels.length) }
+  }
+  if (asked !== true) {
+    const k = asked.qubits
+    if (typeof k !== 'number' || !Number.isInteger(k) || k < 0 || k >= levels.length) throw new Error(`qubits is in 0..${levels.length - 1}`)
+    const one = level(k)
+    return { phase: 'walk' as const, ...one, theorems: ['Thousand.meaning_sound', 'textbook_clay_register_width'] as const, says: proseFill(PROSE.quantumProcessingMcp_walkLevel, k, one.bits, one.cluster.length, one.families, one.cluster.filter((m) => m.theorem !== null).length) }
+  }
+  const members = levels.reduce((n, c) => n + c.length, 0), held = levels.reduce((n, c) => n + c.filter((m) => m.theorem !== null).length, 0)
+  const unclaimed = levels.flatMap((c, k) => c.filter((m) => m.theorem === null).map((m) => ({ qubits: k, family: m.family, formula: m.formula })))
+  const walked = levels.length === THOUSAND_WALK.qubits && levels.every((c) => c.length > 0)
+  const discovered = `${members ? Math.floor((held * 100) / members) : 0}%`
+  // the qubit counts that share one cluster, in the order the walk meets them
+  const shapes = Map.groupBy(levels.map((cluster, k) => ({ k, cluster })), (l) => l.cluster.map((m) => m.formula).join(' '))
+  const clusters = [...shapes.values()].map((rows) => ({ levels: rows.length, first: rows[0]!.k, last: rows.at(-1)!.k, families: new Set(rows[0]!.cluster.map((m) => m.family)).size, cluster: rows[0]!.cluster }))
+  const relations = register.relations.map((r) => { const need = levels.slice(0, r.bits); return { relation: r.name, value: r.sides[0]!.value, qubits: r.bits, members: need.reduce((n, c) => n + c.length, 0), discovered: need.length === r.bits && need.every(complete) } })
+  const needed = relations.reduce((n, r) => n + r.qubits, 0)
+  const board = recognise([], {}), nist = board.bits, cern = board.cern.adlerHex * (board.bits / board.hex)
+  return {
+    phase: 'walk' as const, bound: `2 ^ ${THOUSAND_WALK.qubits}`, qubits: levels.length, walked, discovered, members, held, claimed: levels.filter(complete).length, unclaimed,
+    formulas: formulas.map(({ family, formula, theorem, reaches }) => ({ family, formula, theorem, reaches })), clusters,
+    register: { relations: relations.length, qubits: needed, widest: register.maxBits, discovered: relations.every((r) => r.discovered), rows: relations },
+    nist: level(nist), cern: level(cern),
+    theorems: ['Thousand.meaning_sound', 'textbook_clay_register_width'] as const,
+    says: proseFill(PROSE.quantumProcessingMcp_walkSays, levels.length, `2 ^ ${THOUSAND_WALK.qubits}`, members, held, discovered, unclaimed.length, relations.length, needed, nist, cern),
+  }
+}
 
 /** The thousand-bit table Lean writes (Qpu.General.Thousand): each family formula with the number of its examples below
  *  2 ^ 1000, its first and last examples and the last one's reflection, and the numbers more than one formula reaches. Pure. */

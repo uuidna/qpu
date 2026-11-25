@@ -7,6 +7,12 @@ states, the fusion-space dimension, and the fusion entropy all follow the doubli
 scaling used in anyon-based topological quantum computing. Positivity and exact doubling are quantified over all n —
 unlimited fusion levels — with the textbook values kept as kernel-decided controls. -/
 
+/-- `a ^ b` computes `a` to the power of `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `^` in identifiers is `pow`.-/
 def fusionStates (nn : Nat) : Nat := mint nn
 def fusionDim (nn : Nat) : Nat := mint nn
 def fusionEntropy (nn : Nat) : Nat := mint nn

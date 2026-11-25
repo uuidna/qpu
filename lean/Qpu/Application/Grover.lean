@@ -7,7 +7,28 @@ every size statement is quantified over k; the closed values are kept as kernel-
 controls. π is carried by the proven Zu Chongzhi rational pi_zu (355/113) written over
 the lattice constants — 355 = plane·(faces−seed) − n·n, 113 = plane·hexbit + seed. -/
 
+/-- `a / b` computes the result of dividing `a` by `b`.
+The meaning of this notation is type-dependent.
+* For most types like `Nat`, `Int`, `Rat`, `Real`, `a / 0` is defined to be `0`.
+* For `Nat`, `a / b` rounds downwards.
+* For `Int`, `a / b` rounds downwards if `b` is positive or upwards if `b` is negative.
+  It is implemented as `Int.ediv`, the unique function satisfying
+  `a % b + b * (a / b) = a` and `0 ≤ a % b < natAbs b` for `b ≠ 0`.
+  Other rounding conventions are available using the functions
+  `Int.fdiv` (floor rounding) and `Int.tdiv` (truncation rounding).
+* For `Float`, `a / 0` follows the IEEE 754 semantics for division,
+  usually resulting in `inf` or `nan`. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `/` in identifiers is `div`.-/
 def groverIters (k : Nat) : Nat := (plane * (faces - seed) - n * n) * mint k / (coins * coins * (plane * hexbit + seed))
+/-- `a ^ b` computes `a` to the power of `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `^` in identifiers is `pow`.-/
 def groverSize (k : Nat) : Nat := mint (2 * k)
 
 /-- Unlimited growth: the database for k+1 qubit pairs is exactly four times the

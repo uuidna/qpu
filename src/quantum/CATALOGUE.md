@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1596 products, 2 under a declared claim context and 1594 as the author's own statement, with 1078 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1631 products, 2 under a declared claim context and 1629 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -936,14 +936,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (p : ℕ), qaoaParams (p + 1) = qaoaParams p + coins
-```
-
-### `qaoaParams_twice`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (p : ℕ), qaoaParams p = 2 * p
 ```
 
 ### `qaoaX_succ_layer`
@@ -4898,6 +4890,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (a b : ℕ), _root_.gcd a b = a.gcd b
 ```
 
+### `chimera_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (m : ℕ), chimera m = 8 * m ^ 2
+```
+
 ### `choose_eq_nat_choose`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -4930,6 +4930,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (t : ℕ), choose (t + 1) 2 = choose t 2 + t
 ```
 
+### `cliffordOrder_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), cliffordOrder nn = 2 ^ (2 * nn) * (2 ^ (nn * nn) * ∏ i ∈ Finset.range nn, (2 ^ (2 * (i + 1)) - 1))
+```
+
 ### `factorial_eq_nat_factorial`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -4954,6 +4962,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (n : ℕ), fibFusion n = Nat.fib n
 ```
 
+### `fusionStates_eq_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), fusionStates nn = 2 ^ nn
+```
+
 ### `gcdAux_eq_nat_gcd`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -4962,12 +4978,44 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (fuel a b : ℕ), b ≤ fuel → gcdAux fuel a b = a.gcd b
 ```
 
+### `groverIters_eq_div`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), groverIters k = 355 * 2 ^ k / 452
+```
+
+### `groverSize_eq_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), groverSize k = 2 ^ (2 * k)
+```
+
 ### `hexbit_paired_completely`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
 hexbit = 4 ∧ choose hexbit 2 = 6 ∧ choose hexbit 3 = 4 ∧ choose hexbit 3 * choose 3 2 = 2 * choose hexbit 2
+```
+
+### `isingFusion_eq_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (m : ℕ), isingFusion m = 2 ^ (m - 1)
+```
+
+### `levelGap_eq_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), levelGap k = 2 ^ k
 ```
 
 ### `mint_eq_two_pow`
@@ -4986,6 +5034,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (t : ℕ), 3 * t.choose 3 = (t - 2) * t.choose 2
 ```
 
+### `paulis_eq_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), paulis nn = 2 ^ (2 * nn + 2)
+```
+
+### `pegasus_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (m : ℕ), pegasus m = 24 * m * (m - 1)
+```
+
 ### `powModAux_eq`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -5002,12 +5066,44 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (a e m : ℕ), powMod a e m = a ^ e % m
 ```
 
+### `qaoaParams_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (p : ℕ), qaoaParams p = 2 * p
+```
+
+### `qftDepth_eq_sub`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (q : ℕ), qftDepth q = 2 * q - 1
+```
+
 ### `qftGates_eq_nat_choose`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
 ∀ (q : ℕ), qftGates q = (q + 1).choose 2
+```
+
+### `qftStates_eq_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (q : ℕ), qftStates q = 2 ^ q
+```
+
+### `qftSwaps_eq_div`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (q : ℕ), qftSwaps q = q / 2
 ```
 
 ### `six_mul_choose_three_eq_trinities`
@@ -5024,6 +5120,62 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (t : ℕ), 6 * t.choose 3 = t * (t - 1) * (t - 2)
+```
+
+### `stabProd_eq_prod`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), stabProd k = ∏ i ∈ Finset.range k, (2 ^ (i + 1) + 1)
+```
+
+### `stabStates_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), stabStates nn = 2 ^ nn * ∏ i ∈ Finset.range nn, (2 ^ (i + 1) + 1)
+```
+
+### `surfaceCorrectable_eq_div`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (d : ℕ), surfaceCorrectable d = (d - 1) / 2
+```
+
+### `surfacePhysical_eq_add`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (d : ℕ), surfacePhysical d = 2 * d ^ 2 - 2 * d + 1
+```
+
+### `sympProd_eq_prod`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (j : ℕ), sympProd j = ∏ i ∈ Finset.range j, (2 ^ (2 * (i + 1)) - 1)
+```
+
+### `symplectic_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), symplectic nn = 2 ^ (nn * nn) * ∏ i ∈ Finset.range nn, (2 ^ (2 * (i + 1)) - 1)
+```
+
+### `thermal_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (millikelvin : ℕ), thermal millikelvin = 1380649 * millikelvin * 10
 ```
 
 ### `trinities_of_pairs`
@@ -5704,6 +5856,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ {α : Type u_1} [inst : BooleanAlgebra α] (can cannot : α), ¬(can = ⊤ ∧ cannot = ⊥) → ¬can ⊓ cannotᶜ = ⊤
 ```
 
+### `textbook_acme_resources_five`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} [inst : DecidableEq α] (needed directory : Finset α), needed \ directory = ∅ ↔ needed ⊆ directory
+```
+
+### `textbook_acme_resources_five_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} [inst : DecidableEq α] (needed directory : Finset α), needed ⊆ directory ↔ needed \ directory = ∅
+```
+
 ### `textbook_actions_pinned`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-actions-tag-pinned, repository-actions-sha-pinned.
@@ -5734,6 +5902,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ {α β : Type} (f : α ↪ β) (a b : α), a = b ↔ f a = f b
+```
+
+### `textbook_adler32_width`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (checksum : ℕ), (Nat.digits 16 checksum).length ≤ 8 ↔ checksum < 16 ^ 8
+```
+
+### `textbook_adler32_width_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (checksum : ℕ), checksum < 16 ^ 8 ↔ (Nat.digits 16 checksum).length ≤ 8
 ```
 
 ### `textbook_advantage_unbounded`
@@ -6370,6 +6554,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
   [AddLeftReflectLE α] (i k : α), k = i + k - i
 ```
 
+### `textbook_chain_links_by_output`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), ((Finset.range (n + 1)).erase 0).card = n
+```
+
+### `textbook_chain_links_by_output_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n = ((Finset.range (n + 1)).erase 0).card
+```
+
 ### `textbook_chat_call_or_question`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: chat-question, chat-choice, chat-routes, chat-not-object, imagine-integer-llm, chat-account, chat-thousand, textbook-chat-plan, textbook-chat-coverage.
@@ -6931,6 +7131,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
   faces.card = (Finset.filter triangle faces).card + {x ∈ faces | ¬triangle x}.card
 ```
 
+### `textbook_cve_id_well_formed`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (digits : ℕ), 4 ≤ digits → 9 + 4 ≤ 9 + digits
+```
+
 ### `textbook_cvss_bounded`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -7214,6 +7422,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (m n : ℕ) (x : Fin m × Fin n), x = finProdFinEquiv.symm (finProdFinEquiv x) ∧ ↑x.2 + n * ↑x.1 = ↑(finProdFinEquiv x)
+```
+
+### `textbook_doi_well_formed`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (registrant suffix : ℕ), 4 ≤ registrant → 1 ≤ suffix → 3 + 4 + 1 + 1 ≤ 3 + registrant + 1 + suffix
 ```
 
 ### `textbook_double_entry`
@@ -8637,6 +8853,24 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
                         σ - 999 < σ - 6 ∧ σ - 91 = σ - 7 * 13 ∧ σ - 35 = σ - (2 * 347 + 10) / (2 * 10)
 ```
 
+### `textbook_literal_in_registry`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-literals.
+
+```lean
+∀ {α : Type u_1} [inst : DecidableEq α] (literals registry : Finset α),
+  (literals \ registry).card + (literals ∩ registry).card = literals.card
+```
+
+### `textbook_literal_in_registry_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} [inst : DecidableEq α] (literals registry : Finset α),
+  literals.card = (literals \ registry).card + (literals ∩ registry).card
+```
+
 ### `textbook_long_action_queued`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-next-long.
@@ -9130,6 +9364,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ {α : Type u_1} (s : Finset α) (prior : α → ℕ), s.card = {a ∈ s | prior a = 0}.card + {a ∈ s | ¬prior a = 0}.card
+```
+
+### `textbook_now_within_validity`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (notBefore notAfter now : ℕ), now ∈ Set.Icc notBefore notAfter ↔ notBefore ≤ now ∧ now ≤ notAfter
+```
+
+### `textbook_now_within_validity_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (notBefore notAfter now : ℕ), notBefore ≤ now ∧ now ≤ notAfter ↔ now ∈ Set.Icc notBefore notAfter
 ```
 
 ### `textbook_number_operator`
@@ -9795,6 +10045,24 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
         σ - 3 = σ - (205 - 202) ∧
           σ - 1184 = σ - (384 * 3 + 32) ∧
             σ - 1088 = σ - 32 * (10 * 3 + 4) ∧ σ - 7856 = σ - 16 * (1 + 14 * (1 + 12) + 63 + 7 * 35)
+```
+
+### `textbook_precommitment_is_sha512`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} {β : Type u_2} (hash : α → β) (committed revealed : α),
+  hash revealed ≠ hash committed → revealed ≠ committed
+```
+
+### `textbook_precommitment_is_sha512_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} {β : Type u_2} (hash : α → β) (committed revealed : α),
+  hash revealed ≠ hash committed → committed ≠ revealed
 ```
 
 ### `textbook_prices_are_variants_times_currencies`
@@ -10874,6 +11142,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (u v c l : ℕ), v ≤ u → c + l = v → u = c + l + (u - v)
 ```
 
+### `textbook_size_nonnegative`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (sizes : List ℕ), 0 ≤ sizes.sum
+```
+
 ### `textbook_size_ratio_bound`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: css-compare, extend-compare.
@@ -11296,6 +11572,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```lean
 ∀ {F : Type} [inst : DecidableEq F] {n : ℕ} (d t : ℕ) (c₁ c₂ x : Fin n → F),
   (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → 2 * t < d → hammingDist c₁ x ≤ t → hammingDist x c₂ ≤ t → c₂ = c₁
+```
+
+### `textbook_total_at_least_page`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} (page all : Finset α), page ⊆ all → page.card ≤ all.card
 ```
 
 ### `textbook_translate_phrases`

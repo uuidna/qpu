@@ -417,6 +417,94 @@ const runAgentHook = async (name: string, cwd: string) => {
   return 0
 }
 
+// Work that was done by hand becomes the runner's own. settle: the index, the generators and the seed run in rounds until the tree they
+// write stops changing, then the check. sync: the default branch is fetched and this branch moved forward to it, only by fast-forward.
+// ratchet: the Lean library is built and the meaning gate writes its list again. intake: the work kept outside the tree is taken in
+// (runIntake below).
+const BASE_BRANCH = 'main'
+const SETTLE = { rounds: 4, steps: [['lake', ['run', 'index']], [process.execPath, [MACHINE_RUNNER, 'next', '--generators']], ['lake', ['run', 'seed']]] as const, check: ['lake', ['run', 'check']] as const }
+const shown = (cmd: string, args: readonly string[]) => [cmd === process.execPath ? 'node' : cmd, ...args].join(' ')
+/** Where the device's own reading starts in a file the build writes: what follows it differs at every run, so nothing compares it. */
+export const HARDWARE_MARK = '<!-- hardware -->'
+/** The tree the generators write, as one digest: every path git names as changed, with its content up to the hardware mark. */
+const treeState = async (cwd: string) => {
+  const names = (await spawnRun('git', ['status', '--porcelain=v1', '-z'], { cwd })).stdout.split('\0').filter(Boolean).map((row) => row.slice(3)).sort()
+  const digest = createHash('sha256')
+  for (const name of names) { digest.update(`${name}\0`); try { const bytes = readFileSync(join(cwd, name)), at = bytes.indexOf(HARDWARE_MARK); digest.update(at < 0 ? bytes : bytes.subarray(0, at)) } catch { digest.update('\0') } }
+  return digest.digest('hex')
+}
+const runSettle = async (cwd: string): Promise<number> => {
+  let before = await treeState(cwd)
+  for (let round = 1; round <= SETTLE.rounds; round++) {
+    for (const [cmd, args] of SETTLE.steps) { const r = await spawnRun(cmd, args, { cwd }); console.log(`${r.status === 0 ? '✓' : '✗'} ${shown(cmd, args)} (${r.ms} ms)`); if (r.status !== 0) { console.log(`${r.stdout}${r.stderr}`.trim().split('\n').slice(-12).join('\n')); return 1 } }
+    const after = await treeState(cwd)
+    console.log(`round ${round}: ${after === before ? 'settled' : 'changed'}`)
+    if (after === before) { const c = await spawnRun(SETTLE.check[0], SETTLE.check[1], { cwd }); console.log(`${c.status === 0 ? '✓' : '✗'} ${shown(...SETTLE.check)} (${c.ms} ms)`); return c.status === 0 ? 0 : 1 }
+    before = after
+  }
+  console.log(`✗ ${SETTLE.rounds} rounds: still changing`)
+  return 1
+}
+const runSync = async (cwd: string): Promise<number> => {
+  for (const args of [['fetch', 'origin', BASE_BRANCH], ['merge', '--ff-only', 'FETCH_HEAD']]) { const r = await spawnRun('git', args, { cwd }); console.log(`${r.status === 0 ? '✓' : '✗'} git ${args.join(' ')}: ${`${r.stdout}${r.stderr}`.trim().split('\n').pop() ?? ''}`); if (r.status !== 0) return 1 }
+  return 0
+}
+const runRatchet = async (cwd: string): Promise<number> => {
+  for (const [args, env] of [[['build', 'Qpu'], {}], [['env', 'lean', 'lean/Gate.lean'], { MEANING_RATCHET: '1' }]] as const) { const r = await spawnRun('lake', args, { cwd, env }); console.log(`${r.status === 0 ? '✓' : '✗'} ${shown('lake', args)}: ${`${r.stdout}${r.stderr}`.trim().split('\n').pop() ?? ''}`); if (r.status !== 0) return 1 }
+  return 0
+}
+const INTAKE = { scripts: /\.(py|ts|mts|cts|mjs|cjs|js|sh)$/, skipped: /(^|\/)(node_modules|\.git|\.lake)(\/|$)/, scriptBytes: 1 << 18, door: /(?:mcp\.mjs|d\.py)['", ]+['"]?([a-z][a-z-]*)|callEnvelope\('([a-z_]+)'|["']action["']: ?["']([a-z-]+)["']/g, argv: /\[\s*['"](git|lake|node|npx|pnpm|npm|curl|tsc|python3|docker)['"]\s*(?:,\s*\[?\s*['"]([a-z][a-z0-9:-]*)['"])?/g, shell: /^[ \t]*(?:[A-Z_]+=\S+[ \t]+)*(git|lake|node|npx|pnpm|npm|curl|tsc|python3|docker)(?:[ \t]+([a-z][a-z0-9:-]*))?(?![\w./])/gm, runner: /mcp\.mjs|d\.py|machine-run\.ts/ }
+/** The work kept outside the tree taken in. Every file is read once and named by its SHA-256, so a content that stands in many places is one piece:
+ *  the merge is the RFC 6962 root the seal door computes over the distinct digests in order, decided from the digests alone, wherever the files lay.
+ *  A script is read for the doors it calls and for the commands it runs past them; each such command is set beside the door action that already
+ *  covers it, or stands as one still to add. The answer holds counts, digests and command names only: no path and no content leaves the list file. */
+const runIntake = async (roots: readonly string[], cwd: string): Promise<number> => {
+  if (!roots.length) { console.log(JSON.stringify({ phase: 'intake', roots: 0, asked: 'QPU_SCRATCH' })); return 1 }
+  const started = clock()
+  const { call } = await import('./mcp.ts') as { call: Call }
+  const files: { path: string; bytes: number; sha256: string }[] = [], kinds: Record<string, { files: number; bytes: number }> = {}, doors: Record<string, number> = {}, direct: Record<string, number> = {}
+  const count = (into: Record<string, number>, key: string) => { into[key] = (into[key] ?? 0) + 1 }
+  const sha256 = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex')
+  // the tree's own files by content: a copy of one of them outside the tree is the tree's, and is not read as work done past the doors
+  const tracked = new Set((await spawnRun('git', ['ls-files', '-z'], { cwd })).stdout.split('\0').filter(Boolean).flatMap((name) => { try { return [sha256(readFileSync(join(cwd, name)))] } catch { return [] } }))
+  let ofTree = 0
+  const walk = (at: string, root: string, n: number): void => {
+    let s; try { s = lstatSync(at) } catch { return }
+    if (s.isSymbolicLink()) return
+    if (s.isDirectory()) { let names: string[]; try { names = readdirSync(at).sort() } catch { return }; for (const name of names) walk(join(at, name), root, n); return }
+    if (!s.isFile()) return
+    let bytes: Buffer; try { bytes = readFileSync(at) } catch { return }
+    const path = `${n}/${relative(root, at) || '.'}`, kind = /\.([A-Za-z0-9]+)$/.exec(at)?.[1]?.toLowerCase() ?? ''
+    const digest = sha256(bytes)
+    files.push({ path, bytes: bytes.length, sha256: digest })
+    kinds[kind] = { files: (kinds[kind]?.files ?? 0) + 1, bytes: (kinds[kind]?.bytes ?? 0) + bytes.length }
+    if (tracked.has(digest)) { ofTree += 1; return }
+    if (INTAKE.scripts.test(at) && !INTAKE.skipped.test(path) && bytes.length <= INTAKE.scriptBytes) {
+      const text = bytes.toString('utf8')
+      for (const m of text.matchAll(INTAKE.door)) count(doors, (m[1] ?? m[2] ?? m[3])!)
+      // a command runs where it heads an argument vector, or a line of a shell script; one that starts the door's own client or the runner is a call
+      // through the door, counted above
+      for (const m of [...text.matchAll(INTAKE.argv), ...(at.endsWith('.sh') ? text.matchAll(INTAKE.shell) : [])]) if (!INTAKE.runner.test(text.slice(m.index, m.index + m[0].length + 80).split('\n')[0]!)) count(direct, m[2] ? `${m[1]} ${m[2]}` : m[1]!)
+    }
+  }
+  roots.forEach((root, n) => walk(resolve(cwd, root), resolve(cwd, root), n))
+  const sizes = new Map(files.map((f) => [f.sha256, f.bytes])), distinct = [...sizes.keys()].sort(), total = files.reduce((n, f) => n + f.bytes, 0)
+  const merged = call('seal', { merkle: { leaves: distinct, hex: true } }); if (merged.error) throw new Error(merged.error.message)
+  const root = String(merged.result!.structuredContent.root), held = [...sizes.values()].reduce((n, b) => n + b, 0)
+  const address = uuid(`intake;${canonicalText({ rfc: 6962, root, distinct: distinct.length, bytes: held })}`), handle = address.slice(0, 8)
+  const ranked = (of: Record<string, number>) => Object.entries(of).sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
+  const covering = (command: string) => { const [cmd, sub] = command.split(' '); return MACHINE_ACTIONS.find((a) => a.cmd === cmd && a.args[0] === sub)?.id ?? null }
+  const ms = clock() - started
+  const answer = {
+    phase: 'intake', roots: roots.length, files: files.length, bytes: total, distinct: distinct.length, distinctBytes: held, repeatedBytes: total - held, ofTree, rfc: 6962, root, address, handle,
+    kinds: Object.fromEntries(Object.entries(kinds).sort((a, b) => b[1].bytes - a[1].bytes).slice(0, 12)), doors: Object.fromEntries(ranked(doors)),
+    direct: ranked(direct).map(([command, uses]) => ({ command, uses, action: covering(command) })), ms, bytesPerSecond: ms > 0 ? Math.round((total * 1000) / ms) : null,
+  }
+  const out = join(cwd, '.qpu', 'intake'); mkdirSync(out, { recursive: true }); writeFileSync(join(out, `${handle}.json`), JSON.stringify({ ...answer, list: files }))
+  console.log(JSON.stringify(answer))
+  return 0
+}
+
 // the runner from the command line: `step <tool> <json> [--write]` (the child of a door step), `next [--offline] [--fast]`, or any allowed action
 if (process.argv[1] && SELF === fileURLToPath(new URL(process.argv[1], 'file://')) ) {
   const [, , action, ...rest] = process.argv
@@ -428,6 +516,11 @@ if (process.argv[1] && SELF === fileURLToPath(new URL(process.argv[1], 'file://'
   else if (action === 'fakes') { const found = await findFakes(process.cwd()); for (const f of found) console.log(f); process.exitCode = found.length ? 1 : 0 }
   else if (action === 'hook') process.exitCode = (AGENT_HOOKS as readonly string[]).includes(rest[0] ?? '') ? await runAgentHook(rest[0]!, process.cwd()) : await runHook(rest[0] ?? '', rest.slice(1), process.cwd())
   else if (action === 'next') { const r = await runNext({ cwd: process.cwd(), offline: rest.includes('--offline'), fast: rest.includes('--fast'), generators: rest.includes('--generators') }); process.exitCode = r.red ? 1 : 0 }
+  // the work once done by hand: `settle`, `sync`, `ratchet`, and `intake [dir…]` (the directories QPU_SCRATCH names where none is given)
+  else if (action === 'settle') process.exitCode = await runSettle(process.cwd())
+  else if (action === 'sync') process.exitCode = await runSync(process.cwd())
+  else if (action === 'ratchet') process.exitCode = await runRatchet(process.cwd())
+  else if (action === 'intake') process.exitCode = await runIntake(rest.length ? rest : (process.env.QPU_SCRATCH ?? '').split(':').filter(Boolean), process.cwd())
   else if (action) { const r = await runMachine({ action, confirm: rest.includes('--confirm'), message: rest.includes('-m') ? rest[rest.indexOf('-m') + 1] : undefined, branch: rest.includes('--branch') ? rest[rest.indexOf('--branch') + 1] : undefined }, process.cwd()); console.log(JSON.stringify(r.answer)); process.exitCode = (r as { record?: { ok: boolean } }).record?.ok === false ? 1 : 0 }
   else console.log(proseFill(PROSE.quantumProcessingMachineRun_s4, MACHINE_RUNNER, MACHINE_ACTIONS.map((a) => a.id).join(' | ')))
 }

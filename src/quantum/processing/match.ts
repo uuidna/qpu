@@ -291,7 +291,8 @@ const createInnerMatcher = (handle: (m: Rpc) => any, allExamples: readonly Examp
   const allTools: ToolSpec[] = 'result' in list ? list.result.tools : []
   const tools = allTools.filter((t) => !META.has(t.name) && !META_TOOLBOXES.has((t as { _meta?: { toolbox?: string } })._meta?.toolbox ?? ''))
   const callable = new Set(tools.map((t) => t.name))
-  const examples = allExamples.filter((e) => callable.has(e.tool))
+  // an example made by rule carries no words of its own: a statement is matched against what is written
+  const examples = allExamples.filter((e) => callable.has(e.tool) && e.made !== true)
   const toolText = (t: ToolSpec) => `${t.name} ${t.description} ${Object.keys(t.inputSchema.properties ?? {}).join(' ')} ${Object.values(t.inputSchema.properties ?? {}).flatMap((p) => (p.enum ?? []).map(String)).join(' ')}`
   // an example's arguments enter the index by their words, never their keys (a key named `now` is no statement about now)
   const leaves = (v: unknown): string[] => (typeof v === 'string' ? [v] : typeof v === 'number' ? [String(v)] : Array.isArray(v) ? v.flatMap(leaves) : v && typeof v === 'object' ? Object.values(v as Record<string, unknown>).flatMap(leaves) : [])

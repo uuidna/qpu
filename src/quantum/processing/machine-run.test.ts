@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url'
 import { lanesNow } from './machine-run.ts'
 import { THEOREMS } from './theorems-index.ts'
 import { TABLES } from './tables-index.ts'
+import { call } from './mcp.ts'
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the runner's lanes, read from node:os now, lie between one and the cores, as Supremacy.lanes_pos and Supremacy.lanes_le_cores prove. */
 test("the runner's lanes, read from node:os now, lie between one and the cores, as Supremacy.lanes_pos and Supremacy.lanes_le_cores prove", () => {
@@ -106,4 +107,31 @@ test("a step run on the staged tree is handed none of git's own variables, so a 
     assert.equal(r.status, 0, r.stdout + r.stderr)
     assert.deepEqual(JSON.parse(/SEEN (.+)/.exec(r.stdout)![1]!), { dir: null, index: null, tree: null, named: index, own: gitDir, other: remote })
   } finally { rmSync(repo, { recursive: true, force: true }); rmSync(tools, { recursive: true, force: true }) }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the work once done by hand is the door's: settle, sync, ratchet and intake are actions the runner itself answers, and an intake names each content once and each command by the action that covers it. */
+test('the work once done by hand is the door\'s: settle, sync, ratchet and intake are actions the runner itself answers, and an intake names each content once and each command by the action that covers it', () => {
+  const rows = TABLES.MACHINE_ROWS as readonly { id: string; kind: string; cmd?: string; args: readonly string[] }[]
+  for (const id of ['settle', 'sync', 'ratchet', 'intake']) assert.deepEqual(rows.filter((r) => r.id === id).map((r) => [r.cmd, ...r.args]), [['node', 'src/quantum/processing/machine-run.ts', id]], id)
+  const runner = fileURLToPath(new URL('./machine-run.ts', import.meta.url)), dir = mkdtempSync(join(tmpdir(), 'qpu-intake-'))
+  try {
+    mkdirSync(join(dir, 'work'))
+    writeFileSync(join(dir, 'work', 'a.txt'), 'one content')
+    writeFileSync(join(dir, 'work', 'b.txt'), 'one content')
+    writeFileSync(join(dir, 'work', 'run.py'), "subprocess.run(['git', 'status'])\nsubprocess.run(['node', '.wrangler/mcp.mjs', 'seal', '{}'])\nsubprocess.run(['git', 'mv', 'a', 'b'])\n")
+    const out = spawnSync(process.execPath, [runner, 'intake', 'work'], { cwd: dir, encoding: 'utf8' })
+    assert.equal(out.status, 0, out.stderr)
+    const answer = JSON.parse(out.stdout.trim().split('\n').pop()!)
+    assert.deepEqual([answer.phase, answer.roots, answer.files, answer.distinct, answer.repeatedBytes, answer.ofTree], ['intake', 1, 3, 2, 'one content'.length, 0])
+    assert.deepEqual(answer.doors, { seal: 1 })
+    assert.deepEqual(answer.direct, [{ command: 'git mv', uses: 1, action: null }, { command: 'git status', uses: 1, action: 'status' }])
+    // the merge is the seal door's root over the distinct digests in order, and the list stays beside the tree that asked
+    const list = JSON.parse(readFileSync(join(dir, '.qpu', 'intake', `${answer.handle}.json`), 'utf8')).list as { path: string; sha256: string }[]
+    assert.deepEqual(list.map((f) => f.path), ['0/a.txt', '0/b.txt', '0/run.py'])
+    const leaves = [...new Set(list.map((f) => f.sha256))].sort()
+    assert.equal(call('seal', { merkle: { leaves, hex: true } }).result!.structuredContent.root, answer.root)
+    assert.equal(JSON.stringify(answer).includes(dir), false)
+    // with no directory named there is nothing to take in
+    assert.equal(spawnSync(process.execPath, [runner, 'intake'], { cwd: dir, encoding: 'utf8', env: { ...process.env, QPU_SCRATCH: '' } }).status, 1)
+  } finally { rmSync(dir, { recursive: true, force: true }) }
 })
