@@ -28,6 +28,7 @@ import { quantumCapacity, stabilityOf, stableSource } from '../capacity.ts'
 import { TEXTBOOK_THEOREMS } from '../textbook-theorems.ts'
 import { gateProseLinks } from '../prose-links.ts'
 import { checkContext } from '../pipeline.ts'
+import { gateVerified } from '../verified.ts'
 
 /** The theorems the one passable way rests on, and what the literature and the hosts say of them: each one's claim as the sealed OpenAlex search
  *  and the readers' confirmations left it (nothing recognised without a recorded confirmation; a theorem never searched is unasked), and the e2e
@@ -160,7 +161,9 @@ const planSteps = (steps: readonly { name: string; key: string | null; outputs?:
   return { plan, run, reuse, steps: steps.length, says: proseFill(PROSE.quantumProcessingToolboxesRepository_says16, run.length, steps.length, reuse.length), theorem: 'textbook_hook_steps_monotone' }
 }
 export const GENERATED_FILES = TABLES.GENERATED_FILES
-export const WORKFLOW_RULES: readonly { rule: string; theorem: string; appliesTo: readonly WorkflowName[]; says: string; decide: (f: WorkflowFacts) => { holds: boolean | null; evidence: string } }[] = [
+export const WORKFLOW_RULES: readonly { rule: string; theorem: string; first?: true; appliesTo: readonly WorkflowName[]; says: string; decide: (f: WorkflowFacts) => { holds: boolean | null; evidence: string } }[] = [
+  // first, and decided before any step runs: the one text states only theorems Lean holds that both the NIST door and the CERN door name
+  { rule: 'verified', theorem: 'textbook_physical_evidence', first: true, appliesTo: WORKFLOWS, says: PROSE.quantumProcessingToolboxesRepository_verified, decide: () => { const g = gateVerified(); return { holds: g.holds, evidence: g.evidence } } },
   { rule: 'green', theorem: 'textbook_commit_green', appliesTo: ['pre-commit', 'pre-push', 'ci', 'pre-deploy'], says: PROSE.quantumProcessingToolboxesRepository_says17, decide: (f) => { if (!f.receipt?.steps) return { holds: null, evidence: 'no receipt' }; const steps = Object.values(Object.fromEntries(f.receipt.steps.map((s) => [s.name, s]))), red = steps.filter((s) => s.status === 'red').map((s) => s.name); return { holds: red.length === 0, evidence: red.length ? `red: ${red.join(', ')}` : `${steps.filter((s) => s.status === 'green').length} green, ${steps.filter((s) => s.status === 'skipped').length} skipped, 0 red` } } },
   { rule: 'decoded', theorem: 'textbook_majority_of_three', appliesTo: ['pre-push'], says: PROSE.quantumProcessingToolboxesRepository_says18, decide: (f) => { const e = f.e2e; if (!e || typeof e.uncorrectable !== 'number') return { holds: null, evidence: PROSE.quantumProcessingToolboxesRepository_evidence19 }; return { holds: e.uncorrectable === 0, evidence: `agree ${e.agree ?? '?'}, erased ${e.erased ?? '?'}, uncorrectable ${e.uncorrectable}` } } },
   { rule: 'packaged', theorem: 'textbook_coverage_bounded', appliesTo: ['pre-push'], says: PROSE.quantumProcessingToolboxesRepository_says20, decide: (f) => { if (!f.npm) return { holds: null, evidence: PROSE.quantumProcessingToolboxesRepository_evidence21 }; const g = gateNpmRelease(f.npm); return { holds: g.tag && g.push, evidence: g.says } } },
@@ -201,7 +204,7 @@ const decideWorkflow = (name: WorkflowName, given: WorkflowFacts) => {
   const facts = gatherFacts(given)
   // a violated rule holds when a waiver stands for it: its author's roles may waive it here by the rule abilities Payload holds (a cannot binds every role)
   const abilities = ((TABLES as Record<string, unknown>).RULE_ABILITIES ?? []) as readonly Ability[], waiver = (rule: string) => (given.waivers ?? []).find((w) => w.rule === rule && checkAccess(abilities, w.roles, 'rules', 'waive', { rule, branch: given.branch ?? null, workflow: name }))
-  const rules = WORKFLOW_RULES.filter((r) => r.appliesTo.includes(name)).map((r) => ({ rule: r.rule, theorem: r.theorem, says: r.says, ...r.decide(facts) })).map((r) => { const w = r.holds === false ? waiver(r.rule) : undefined; return w ? { ...r, holds: true as const, waived: { by: w.by, reason: w.reason }, evidence: `waived by ${w.by}: ${w.reason} (was: ${r.evidence})` } : r })
+  const rules = WORKFLOW_RULES.filter((r) => r.appliesTo.includes(name)).map((r) => ({ rule: r.rule, theorem: r.theorem, ...(r.first ? { first: true as const } : {}), says: r.says, ...r.decide(facts) })).map((r) => { const w = r.holds === false ? waiver(r.rule) : undefined; return w ? { ...r, holds: true as const, waived: { by: w.by, reason: w.reason }, evidence: `waived by ${w.by}: ${w.reason} (was: ${r.evidence})` } : r })
   // every workflow hard-fails: a rule violated or unmeasured is a violation, and any violation refuses
   const violated = rules.filter((r) => r.holds === false), unknown = rules.filter((r) => r.holds === null)
   const violations = [...violated.map((r) => recordViolation(r.rule, r.rule, r.evidence, r.theorem)), ...unknown.map((r) => recordViolation('unmeasured', r.rule, r.evidence, r.theorem))], allowed = !violations.length, strict = true

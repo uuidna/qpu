@@ -8,7 +8,7 @@ import { PROSE } from '../src/quantum/processing/prose-index.ts'
 import { TOOLBOXES } from '../src/quantum/processing/mcp.ts'
 import { LICENSE, PRECEDENCE } from '../src/quantum/processing/unit/license.ts'
 import { RELEASE_REPOSITORY, UNIT_CONCEPT_DOI } from '../src/quantum/processing/release.ts'
-import { above, available, beforeHardware, claims, complying, hardware, htmlWithHardware, novelties, page, pkg, receipt, solved, title } from './oneText.ts'
+import { HARDWARE_MARK, above, beforeHardware, hardware, htmlWithHardware, page, pkg, receipt, receipts, title, verified } from './oneText.ts'
 
 const record = {
   title,
@@ -29,9 +29,12 @@ const record = {
 const runtime = [
   `// ${PROSE.scriptsDoiRecord_generated}`,
   `/** ${PROSE.scriptsDoiRecord_receiptDoc} */`,
-  `export const RECEIPT = ${JSON.stringify({ uuid: receipt.uuid, sha256: receipt.sha256, title, version: pkg.version, mcp: receipt.mcp })} as const`,
+  `export const RECEIPT = ${JSON.stringify({ uuid: receipt.uuid, sha256: receipt.sha256, title, version: pkg.version, mcp: receipt.mcp, merge: receipt.merge, parts: receipt.parts })} as const`,
   `/** ${PROSE.scriptsDoiRecord_textDoc} */`,
   `export const RECEIPT_TEXT: string = ${JSON.stringify(above)}`,
+  `export const RECEIPTS: readonly Record<string, unknown>[] = ${JSON.stringify(receipts)}`,
+  `// ${HARDWARE_MARK}`,
+  `export const RECEIPT_DEVICE: Record<string, unknown> = ${JSON.stringify(hardware.jsonLd)}`,
   '',
 ].join('\n')
 const copies: readonly [string, string][] = [
@@ -51,7 +54,7 @@ for (const [path, text] of copies) {
   if (check && !agrees) drift += 1
   console.log(JSON.stringify({ check, agrees, written: !check && committed !== text, path }))
 }
-console.log(JSON.stringify({ receipt: receipt.uuid, hardware: hardware.uuid, challenges: `${complying.length}/${solved.length}`, novelties: novelties.length, claims: claims.length, calls: available.length }))
+console.log(JSON.stringify({ receipt: receipt.uuid, merge: receipt.merge.uuid, parts: receipt.parts.length, verified: verified.length, hardware: hardware.uuid }))
 if (drift > 0) {
   console.error(PROSE.scriptsDoiRecord_s2)
   process.exit(1)

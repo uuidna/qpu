@@ -152,6 +152,7 @@ def quantumProcessingToolboxesRepository_postPush : String := "after push is the
 def quantumProcessingToolboxesRepository_genuine : String := "nothing shown is fake: no image is kept as a file where the build computes it, and no animation takes a typed time or count where a proven statement gives it"
 def quantumProcessingToolboxesRepository_genuineHolds : String := "nothing fake is shown"
 def quantumProcessingToolboxesRepository_genuineUnread : String := "what is shown was not searched"
+def quantumProcessingToolboxesRepository_verified : String := "the one text states only theorems Lean holds that the NIST door and the CERN door both name while each holds, each the kind of one receipt, and it is decided first: a workflow whose text names any other theorem runs no step (textbook_physical_evidence)"
 def quantumProcessingToolboxesRepository_preTool : String := "before the harness of an agent runs a tool: decided by the rules over the call the harness hands over and what git and the session measure; no step (Config.git_hooks_are_workflows)"
 def quantumProcessingToolboxesRepository_doored : String := "a file changes only through the machine door: the harness's own write tools are not used in the tree, and nothing is written outside a repository (textbook_google_one_door)"
 def quantumProcessingToolboxesRepository_dooredHolds : String := "no write by the harness in the tree or outside a repository (textbook_google_one_door)"

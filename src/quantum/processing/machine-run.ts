@@ -314,6 +314,9 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   const after = (AFTER_HOOKS as readonly string[]).includes(name)
   const w = ask({ workflow: name, offline: !after }).workflow as { steps: { id: string; kind: string; detach?: boolean; cmd?: string; args?: string[]; files?: string[] }[] }
   const facts: Record<string, unknown> = { branch: await git('branch', '--show-current') }
+  // first and fast: a rule the door marks first is decided before any step runs, and a workflow it refuses runs none
+  const first = after ? [] : (ask({ workflow: name, facts }).decision as { rules: { rule: string; first?: boolean; holds: boolean | null; evidence: string }[] }).rules.filter((r) => r.first && r.holds === false)
+  if (first.length) { for (const r of first) console.log(`✗ ${r.rule}: ${r.evidence}`); console.log(`hook ${name}: refused first: ${first.map((r) => r.rule).join(', ')}`); return 1 }
   let red = false
   for (const s of w.steps) {
     if (red || s.detach || (s.kind !== 'run' && s.kind !== 'stage')) continue
