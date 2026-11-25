@@ -63,3 +63,20 @@ jobs:
       - name: hand the build back to the runner
         if: always()
         run: sudo chown -R "$(id -u):$(id -g)" .lake
+  # The image the Worker's Lean container runs, built the way the deploy builds it: its last layer asks the prover, as the
+  # user the server runs as, for one theorem that holds, one that does not and one that needs Mathlib. A branch whose
+  # prover image does not build is red here, before it lands, and not after an hour of the deploy. The layers the gates
+  # job keeps are read and none is kept from here: the layer that holds Mathlib is rebuilt in minutes.
+  prover:
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository || !startsWith(github.head_ref, 'claude/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: alpine/Dockerfile
+          target: prover
+          cache-from: type=gha

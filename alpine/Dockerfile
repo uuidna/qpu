@@ -46,14 +46,18 @@ WORKDIR /qpu
 # The prover: qpu's Lean project with Mathlib's cache in place, served by alpine/prover-server.ts to the Prover Durable
 # Object (src/quantum/net/prover-object.ts), which starts it with no internet. The project is root's and read-only to
 # the unprivileged user the server runs as, so no check can change what the next one is checked against; only the gap
-# run's own outputs are writable. Lean's environment is written once here, as lake names it, so no request runs lake;
-# the last step checks one theorem that holds, one that does not and one that needs Mathlib, as the user the server
-# runs as: an image whose prover gives a wrong answer, or none, is not built, so it is never deployed.
+# run's own outputs are writable. Mathlib's cache unpacks its compiled files readable by their owner alone, so the layer
+# that fetches them makes the project readable by every user and leaves it writable by root alone: a later layer would
+# hold a second copy of every file whose mode it changed. Lean's environment is written once here, as lake names it, so
+# no request runs lake; the last step checks one theorem that holds, one that does not and one that needs Mathlib, as
+# the user the server runs as: an image whose prover gives a wrong answer, or none, is not built, so it is never
+# deployed.
 FROM runtime AS prover
 COPY lean-toolchain lakefile.lean lake-manifest.json ./
 COPY lean ./lean
 RUN lake exe cache get && lake build \
- && touch .lake/build/gaps-0-of-3.jsonl .lake/build/gaps-1-of-3.jsonl .lake/build/gaps-2-of-3.jsonl .lake/build/gaps-index.ts
+ && touch .lake/build/gaps-0-of-3.jsonl .lake/build/gaps-1-of-3.jsonl .lake/build/gaps-2-of-3.jsonl .lake/build/gaps-index.ts \
+ && chmod -R a+rX .lake
 COPY alpine/prover-server.ts ./alpine/
 RUN node alpine/prover-server.ts --write-env && adduser -D -H prover && chown prover .lake/build/gaps-*
 USER prover
