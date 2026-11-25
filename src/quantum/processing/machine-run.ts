@@ -442,7 +442,7 @@ const runSettle = async (cwd: string): Promise<number> => {
     if (after === before) { const c = await spawnRun(SETTLE.check[0], SETTLE.check[1], { cwd }); console.log(`${c.status === 0 ? '✓' : '✗'} ${shown(...SETTLE.check)} (${c.ms} ms)`); return c.status === 0 ? 0 : 1 }
     before = after
   }
-  console.log(`✗ ${SETTLE.rounds} rounds and the tree still changes`)
+  console.log(`✗ ${SETTLE.rounds} rounds: still changing`)
   return 1
 }
 const runSync = async (cwd: string): Promise<number> => {

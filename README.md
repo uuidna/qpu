@@ -225,9 +225,9 @@
 
 | receipt |  |
 | --- | --- |
-| uuid | d41bd16c-8e81-8ff8-bb16-0cd21e458381 |
-| handle | `d41bd16c` |
-| sha256 | 0accbb2d3307f50830b1b69150c0e420ad2bacbb04c27bacf56af38b3e12658b |
+| uuid | 8b83e5b5-205d-84fb-83a6-b3f35300147f |
+| handle | `8b83e5b5` |
+| sha256 | bcb1ecdab826dffbefc91e71e1e0cdb50b073219320f9278bb8eb659560f366b |
 
 | hardware |  |
 | --- | --- |
@@ -246,39 +246,39 @@
 | cores | 4 |
 | parallelism | 4 |
 | cpuMHz | 0, 0, 0, 0 |
-| cpuUserMs | 13508650 |
+| cpuUserMs | 15145060 |
 | cpuNiceMs | 0 |
-| cpuSysMs | 1882600 |
-| cpuIdleMs | 54908600 |
+| cpuSysMs | 2227160 |
+| cpuIdleMs | 58631420 |
 | cpuIrqMs | 0 |
 | memoryBytes | 16868675584 |
-| freeMemoryBytes | 15078199296 |
-| load1 | 2.07 |
-| load5 | 1.88 |
-| load15 | 1.95 |
-| uptimeS | 18148 |
+| freeMemoryBytes | 15351709696 |
+| load1 | 2.01 |
+| load5 | 1.6 |
+| load15 | 1.65 |
+| uptimeS | 19595 |
 | diskBytes | 270553174016 |
-| diskFreeBytes | 232527609856 |
-| diskAvailableBytes | 35856048128 |
+| diskFreeBytes | 232210743296 |
+| diskAvailableBytes | 35539181568 |
 | diskBlockBytes | 4096 |
 | inodes | 16777216 |
-| inodesFree | 14914570 |
+| inodesFree | 14906341 |
 | networkInterfaces | 2 |
 | lean | leanprover/lean4:v4.33.0 |
-| rssBytes | 172556288 |
-| heapTotalBytes | 79114240 |
-| heapUsedBytes | 51998376 |
-| externalBytes | 17972058 |
-| arrayBuffersBytes | 707416 |
-| processUserMicros | 2296298 |
-| processSystemMicros | 145249 |
-| maxRssKb | 168512 |
-| pageFaults | 38897 |
+| rssBytes | 163766272 |
+| heapTotalBytes | 77885440 |
+| heapUsedBytes | 50049264 |
+| externalBytes | 18179239 |
+| arrayBuffersBytes | 914597 |
+| processUserMicros | 2631860 |
+| processSystemMicros | 165644 |
+| maxRssKb | 159928 |
+| pageFaults | 39126 |
 | fsReads | 0 |
 | fsWrites | 0 |
-| contextSwitches | 809 |
-| buildMs | 1106 |
-| at | 2026-11-25T08:59:06.670Z |
+| contextSwitches | 802 |
+| buildMs | 1346 |
+| at | 2026-11-25T09:23:13.778Z |
 
 | hardware.versions |  |
 | --- | --- |

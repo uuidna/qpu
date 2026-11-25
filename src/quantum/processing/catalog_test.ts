@@ -1,7 +1,7 @@
 // The kernel as a catalog (catalog.ts): products, variants and orders in the ecommerce collections' own shapes, each document a receipt.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { CATALOG_COLLECTIONS, catalogDoc, catalogOrder, catalogProduct, catalogSeeds, catalogSummary, type CatalogDoc } from './catalog.ts'
+import { CATALOG_COLLECTIONS, CATALOG_RELATIONS, catalogDoc, catalogOrder, catalogProduct, catalogSeeds, catalogSummary, recognisePayload, seedCatalog, type CatalogDoc } from './catalog.ts'
 import { CLAY_RELATIONS } from './clay-statements.ts'
 import { EXAMPLES } from './examples.ts'
 import { call } from './mcp.ts'
@@ -75,4 +75,25 @@ test('a variant ordered costs nothing, its order is one receipt, and the receipt
   assert.throws(() => catalogOrder(EXAMPLES, { ...asked, product: 'no_such_theorem' }))
   // no detail of a person is in an order
   assert.deepEqual(Object.keys(o.order.data).sort(), ['amount', 'items', 'status', 'transactions'])
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: where Payload is installed the catalog is created collection by collection, each receipt handed on as the id Payload gave; where it is not, it is recognised as absent and nothing is created. */
+test('where Payload is installed the catalog is created collection by collection, each receipt handed on as the id Payload gave; where it is not, it is recognised as absent and nothing is created', async () => {
+  // a stand-in for Payload's create: every document is given the next number as its id, as a database does
+  const made: { collection: string; data: Record<string, unknown> }[] = []
+  const sdk = { create: async (args: { collection: string; data: Record<string, unknown> }) => { made.push(args); return { id: made.length } } }
+  const few = EXAMPLES.filter((e) => e.theorem === 'textbook_clay_register_width')
+  const s = catalogSummary(few), seeded = await seedCatalog(sdk, few, 50)
+  assert.deepEqual(seeded.created, s.collections)
+  assert.equal(seeded.receipts, made.length)
+  assert.deepEqual([...new Set(made.map((m) => m.collection))], [...CATALOG_COLLECTIONS])
+  // no receipt is left where a relation stands: each names the number Payload gave, of a document created before it
+  const at = (collection: string) => made.flatMap((m, i) => (m.collection === collection ? [i + 1] : []))
+  const types = new Set(at('variantTypes')), options = new Set(at('variantOptions')), products = new Set(at('products'))
+  assert.equal(made.filter((m) => m.collection === 'variantOptions').every((m) => types.has(m.data.variantType as number)), true)
+  assert.equal(made.filter((m) => m.collection === 'products').every((m) => (m.data.variantTypes as number[]).every((id) => types.has(id))), true)
+  assert.equal(made.filter((m) => m.collection === 'variants').every((m) => products.has(m.data.product as number) && (m.data.options as number[]).length === 2 && (m.data.options as number[]).every((id) => options.has(id))), true)
+  assert.deepEqual(Object.keys(CATALOG_RELATIONS), [...CATALOG_COLLECTIONS])
+  // this tree does not install Payload: its SDK does not resolve, so the site serves the catalog and no seeder runs
+  assert.deepEqual(await recognisePayload(), { installed: false, sdk: null })
 })

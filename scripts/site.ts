@@ -7,6 +7,8 @@ import { ISO_CLAUSES, ISO_GROUPS, ISO_STANDARDS, ISO_VOCABULARY } from '../src/q
 import { THEOREMS } from '../src/quantum/processing/theorems-index.ts'
 import { page } from './oneText.ts'
 import { listEnvelope } from '../src/quantum/processing/toolbox.ts'
+import { catalogProduct, catalogSummary } from '../src/quantum/processing/catalog.ts'
+import { EXAMPLES } from '../src/quantum/processing/examples.ts'
 
 type Proof = { key: string; module: string; statement: string; axioms: readonly string[] }
 type Subject = { type: 'DefinedTerm' | 'SoftwareApplication'; name: string; set?: string; code?: string }
@@ -84,6 +86,12 @@ const tools = TOOLBOXES.flatMap((box) => box.tools.map((tool) => ({ name: tool.n
 write(join(out, 'public', 'mcp.json'), JSON.stringify({ live: 'POST /api/mcp', says: PROSE.scriptsSite_says1, tools }, null, 2))
 write(join('docs', 'public', 'mcp.json'), JSON.stringify({ tools: (handle(listEnvelope()) as { result: { tools: unknown } }).result.tools }, null, 2))
 write(join(out, '.vitepress', 'sidebar.json'), JSON.stringify(sidebar))
+// the catalog's index: its count as the catalog states it, then every product by module, each a link to the page its route writes
+const counted = catalogSummary(EXAMPLES)
+const facts: [string, string][] = [['products', String(counted.products)], ['examples', String(counted.examples)], ['witnesses', String(counted.witnesses)], ['variants', String(counted.variants)], ['walked', String(counted.walked)], ['discovered', counted.discovered], ['unclaimed', String(counted.unclaimed.products)], ['price', String(counted.funding.price)], ['funding', counted.funding.donation], ['root', `\`${counted.receipt.root}\``], ['receipt', `\`${counted.receipt.address}\``], ['documents', ['/api/catalog', ...counted.order.filter((c) => c !== 'variants').map((c) => `/api/${c}`)].join(' ')]]
+write(join(out, 'catalog', 'index.md'), ['---', 'title: "Products"', `description: ${yaml(counted.says)}`, '---', '', '# Products', '', '| | |', '|---|---|', ...facts.map(([k, v]) => `| ${k} | ${v} |`), '', ...[...Map.groupBy(THEOREMS, (t) => t.module)].flatMap(([module, rows]) => [`## ${plain(module)}`, '', ...rows.map((t) => `- [${plain(t.key)}](/catalog/${catalogProduct(EXAMPLES, t.key).product.id})`), ''])].join('\n'))
+// the page every product is routed through (site/catalog/[product].paths.ts): its heading is the theorem and its body the route's content
+write(join(out, 'catalog', '[product].md'), ['---', 'layout: doc', '---', '', '# {{ $params.theorem }}', '', '<!-- @content -->', ''].join('\n'))
 // the home page is the one text the build writes (scripts/oneText.ts): the same as the README, the npm README and the Zenodo record
 write(join(out, 'index.md'), ['---', 'title: "Quantum Processing Unit"', PROSE.scriptsSite_s2, '---', '', '::: v-pre', '', page, '', ':::', ''].join('\n'))
 console.log(JSON.stringify({ pages, proofs, sections: sections.length, tools: tools.length, out }))

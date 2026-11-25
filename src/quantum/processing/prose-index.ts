@@ -964,6 +964,7 @@ const SENTENCES = {
   quantumProcessingExamples_showsCloudflareAdapters: "The adapters configuration names, for each adapter, the Cloudflare bindings it needs: the declared are the needed when none is missing (textbook_bindings_bound).",
   quantumProcessingExamples_showsCodesPlan: "The codes tool with no lists given plans the three CLDR requests and names the eleven locales it will validate (textbook_codes_locales).",
   quantumProcessingExamples_showsDoored: "A write by the harness's own tool outside every repository is refused before it runs by doored: a scratchpad holds nothing the doors cannot give, and in the tree the machine door's patch is the only writer (textbook_google_one_door).",
+  quantumProcessingExamples_showsEvaluated: "⟦0⟧ evaluated at the first values that meet its premises, every side computed in exact integers (textbook_expressions_evaluate): its example is made from its own statement.",
   quantumProcessingExamples_showsGenuine: "What is shown but kept by hand is refused at commit and at push by genuine: an image kept as a file, or an animation with a typed time, is a fake, and one fake found is enough to refuse.",
   quantumProcessingExamples_showsJsonldBlock: "The block as JSON-LD: the author is a Person whose @id is the ORCID, sixteen digits in four groups with three dashes, nineteen characters (textbook_orcid_digits).",
   quantumProcessingExamples_showsJsonldCatalogue: "The catalogue as JSON-LD: an OfferCatalog whose offers are the nine the catalogue holds (textbook_catalogue_offers).",

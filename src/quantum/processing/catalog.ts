@@ -85,7 +85,7 @@ export const catalogProduct = (examples: readonly Example[], key: string) => {
 export const catalogSeeds = (examples: readonly Example[], collection: string, page = 1, limit = 100) => {
   const c = catalog(examples)
   if (!(CATALOG_COLLECTIONS as readonly string[]).includes(collection)) throw new Error(`collection is one of ${CATALOG_COLLECTIONS.join(', ')}`)
-  if (!Number.isInteger(page) || page < 1 || !Number.isInteger(limit) || limit < 1) throw new Error(`page ${page} and limit ${limit} are positive integers`)
+  if (!Number.isInteger(page) || page < 1 || !Number.isInteger(limit) || limit < 1) throw new Error(`page ${page}, limit ${limit}: positive integers`)
   const from = (page - 1) * limit
   const all = (): CatalogDoc[] => collection === 'variantTypes' ? TYPES.map((name) => c.types[name]) : collection === 'variantOptions' ? [...c.witnessOptions.values(), ...c.exampleOptions.values()] : []
   // products and variants are built for the page asked alone
@@ -101,7 +101,7 @@ export const catalogOrder = (examples: readonly Example[], asked: { product?: un
   if (!row) throw new Error(`no theorem ${String(asked.product)}`)
   const { product, variants } = variantsOf(c, row)
   const variant = variants.find((v) => v.data.example === asked.example && v.data.witness === asked.witness)
-  if (!variant) throw new Error(row.examples.length ? `example is one of ${row.examples.join(', ')} and witness one of ${c.faces.join(', ')}` : `${row.theorem.key} has no example yet`)
+  if (!variant) throw new Error(!row.examples.length ? `${row.theorem.key} has no example yet` : row.examples.includes(String(asked.example)) ? `witness is one of ${c.faces.join(', ')}` : `example is one of ${row.examples.join(', ')}`)
   const items = [{ product: product.id, variant: variant.id, quantity: 1 }]
   const transaction = catalogDoc('transactions', { items, status: 'succeeded', amount: 0 })
   const order = catalogDoc('orders', { items, transactions: [transaction.id], status: 'completed', amount: 0 })
@@ -114,4 +114,29 @@ export const catalogOrder = (examples: readonly Example[], asked: { product?: un
     licence: LICENSE.spdx, theorems: ['textbook_cuboctahedron_faces', 'textbook_sigma_involution', 'textbook_hexbit_gateway_ftl'] as const,
     says: proseFill(PROSE.quantumProcessingCatalog_order, row.theorem.key, String(asked.example), String(asked.witness), variants.length, row.examples.length, c.faces.length, register.effective),
   }
+}
+
+/** The fields of each collection that name another document by its receipt. */
+export const CATALOG_RELATIONS: Record<(typeof CATALOG_COLLECTIONS)[number], readonly string[]> = { variantTypes: [], variantOptions: ['variantType'], products: ['variantTypes'], variants: ['product', 'options'] }
+/** What a seeder needs of Payload: the create its SDK and its local API both have, answering the created document. */
+export type CatalogSdk = { create: (args: { collection: string; data: Record<string, unknown> }) => Promise<{ id: string | number }> }
+/** The catalog created where Payload is installed, in the collections its ecommerce plugin owns: each collection in order and a page at a time, and
+ *  where a document names another by its receipt, the id Payload gave that other one is handed on in its place. */
+export const seedCatalog = async (sdk: CatalogSdk, examples: readonly Example[], limit = 100) => {
+  const given = new Map<string, string | number>(), created: Record<string, number> = {}
+  const handed = (v: unknown): unknown => (Array.isArray(v) ? v.map(handed) : typeof v === 'string' && given.has(v) ? given.get(v) : v)
+  for (const collection of CATALOG_COLLECTIONS) for (let page = 1; ; page++) {
+    const found = catalogSeeds(examples, collection, page, limit)
+    for (const { id, ...data } of found.docs) {
+      const made = await sdk.create({ collection, data: Object.fromEntries(Object.entries(data).map(([k, v]) => [k, CATALOG_RELATIONS[collection].includes(k) ? handed(v) : v])) })
+      given.set(id, made.id); created[collection] = (created[collection] ?? 0) + 1
+    }
+    if (!found.hasNextPage) break
+  }
+  return { phase: 'seeded' as const, created, receipts: given.size }
+}
+/** Payload recognised as installed: its SDK resolves from this tree. Where it does not, the site serves the catalog as it stands. */
+export const recognisePayload = async (): Promise<{ installed: boolean; sdk: ((baseURL: string) => CatalogSdk) | null }> => {
+  const name = '@payloadcms/sdk'
+  try { const { PayloadSDK } = await import(name) as { PayloadSDK: new (o: { baseURL: string }) => CatalogSdk }; return { installed: true, sdk: (baseURL) => new PayloadSDK({ baseURL }) } } catch { return { installed: false, sdk: null } }
 }

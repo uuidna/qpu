@@ -132,6 +132,7 @@ export const NEXT_STEPS: readonly NextStep[] = [
   { name: 'blueprint:gen', wave: 1.8, budgetMs: 120_000, via: 'generator', tool: 'textbook', arguments: { scripts: { blueprint: { lean: { $lean: true } } } } },
   { name: 'dead', wave: 2, budgetMs: 300_000, via: 'door', tool: 'audit', arguments: { dead: { output: { $run: { cmd: 'npx', args: ['tsc', '--noEmit', '-p', 'tsconfig.json', '--noUnusedLocals', '--pretty', 'false'] } } } } },
   { name: 'typecheck', wave: 2, budgetMs: 900_000, via: 'process', cmd: 'npx', args: ['tsc', '--noEmit', '-p', 'tsconfig.json'] },
+  { name: 'prose', wave: 2, budgetMs: 300_000, via: 'process', cmd: 'lake', args: ['run', 'prose'] },
   { name: 'test', wave: 2, budgetMs: 600_000, via: 'process', cmd: 'npm', args: ['test'] },
   { name: 'selftest', wave: 2, budgetMs: 300_000, via: 'door', tool: '*', arguments: { selftest: true } },
   { name: 'imagine', wave: 3, budgetMs: 300_000, via: 'door', tool: 'imagine', arguments: { open: 8 }, long: true },
