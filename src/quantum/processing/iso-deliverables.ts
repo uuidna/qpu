@@ -20,7 +20,7 @@ export const ISO_ENTROPY = {
     word: 'entropy' as const,
     means: 'disorder; unpredictability; unavailable energy or information' as const,
     thermo: 'unavailability of a system\'s energy for conversion into work; degree of disorder' as const,
-    information: 'uncertainty or missing information over the possible microstates' as const,
+    information: PROSE.quantumProcessingIsoDeliverables_s19,
   },
   /** Step 2 — verification of that meaning under ISO 80000-5. */
   standard: 'ISO 80000-5:2019' as const,

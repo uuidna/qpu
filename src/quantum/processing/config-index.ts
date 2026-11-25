@@ -22,11 +22,19 @@ export const ANSWER_MEMORY_BYTES = 67108864
 /** The PBKDF2 iterations a password is hashed with, from Config.passwordHashIterations: the largest Payload offers that a Worker runs. */
 export const PASSWORD_HASH_ITERATIONS = 100000
 /** The workflows the repository tool serves, from Config.workflows. */
-export const WORKFLOWS = ["pre-commit","commit-msg","pre-push","post-commit","post-push","prepare-commit-msg","ci","pre-deploy"] as const
+export const WORKFLOWS = ["pre-commit","commit-msg","pre-push","post-commit","post-push","prepare-commit-msg","ci","pre-deploy","pre-tool"] as const
 /** The workflows git starts, from Config.gitHooks. */
 export const GIT_HOOKS = ["pre-commit","commit-msg","pre-push","post-commit","post-push","prepare-commit-msg"] as const
 /** The workflows that run after the act and cannot refuse it, from Config.afterHooks. */
 export const AFTER_HOOKS = ["post-commit","post-push"] as const
+/** The workflows the harness of an agent starts before it runs a tool, from Config.agentEvents. */
+export const AGENT_HOOKS = ["pre-tool"] as const
+/** The harness tools that write a file, from Config.agentWriteTools. */
+export const AGENT_WRITE_TOOLS = ["Edit","Write","MultiEdit","NotebookEdit"] as const
+/** The harness tools that spawn agents, from Config.agentSpawnTools. */
+export const AGENT_SPAWN_TOOLS = ["Agent","Task","Workflow"] as const
+/** The rules of an agent hook that ask the owner instead of refusing, from Config.agentConfirmRules. */
+export const AGENT_CONFIRM_RULES = ["timed"] as const
 /** The groups of a UUID as it is written, from Advantage.uuidGroups: the hexadecimal digits between its dashes. */
 export const UUID_GROUPS = [8,4,4,4,12] as const
 /** The shape of a UUID as a pattern, built from its groups; every check of a UUID in the code reads this one. */

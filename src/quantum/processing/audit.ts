@@ -239,10 +239,10 @@ export const auditSecurity = (client: SecurityClient, developer: SecurityDevelop
   const u = client.payloadMcp?.unauthenticated ?? null
   c('payload-mcp-key', 'client', u === null || u === 401 || u === 403, u === null ? PROSE.quantumProcessingAudit_s32 : proseFill(PROSE.quantumProcessingAudit_s33, u), PROSE.quantumProcessingAudit_s34)
   const severe = (v: Record<string, number>) => (v.critical ?? 0) + (v.high ?? 0)
-  for (const [tree, v] of Object.entries(developer.vulnerabilities)) c(`dependencies:${tree}`, 'developer', severe(v) === 0, Object.keys(v).length ? Object.entries(v).map(([k, n]) => `${k} ${n}`).join(', ') : 'no vulnerabilities reported', 'npm audit fix or a pinned fixed version; a finding is a lead')
+  for (const [tree, v] of Object.entries(developer.vulnerabilities)) c(`dependencies:${tree}`, 'developer', severe(v) === 0, Object.keys(v).length ? Object.entries(v).map(([k, n]) => `${k} ${n}`).join(', ') : 'no vulnerabilities reported', PROSE.quantumProcessingAudit_s91)
   c('no-leaks', 'developer', developer.leaks === 0, `${developer.leaks} address(es) in the tree`, PROSE.quantumProcessingAudit_s35)
   c('no-autologin', 'developer', developer.autoLogin !== true, developer.autoLogin ? PROSE.quantumProcessingAudit_s36 : PROSE.quantumProcessingAudit_s37, PROSE.quantumProcessingAudit_s38)
-  c('env-named-not-valued', 'developer', developer.envExampleValueless, developer.envExampleValueless ? PROSE.quantumProcessingAudit_s39 : 'a value in the environment example', PROSE.quantumProcessingAudit_s40)
+  c('env-named-not-valued', 'developer', developer.envExampleValueless, developer.envExampleValueless ? PROSE.quantumProcessingAudit_s39 : PROSE.quantumProcessingAudit_s92, PROSE.quantumProcessingAudit_s40)
   c('access-rules', 'developer', /no one/.test(String(developer.access.entries?.update ?? '')) && /super admin/.test(String(developer.access.tenants?.write ?? '')), `entries.update: ${developer.access.entries?.update ?? 'unset'}; tenants.write: ${developer.access.tenants?.write ?? 'unset'}`, PROSE.quantumProcessingAudit_s41)
   c('hooks-guarded', 'developer', ['collisionGuard', 'firstUserBootstrap', 'appRequest'].every((h) => developer.hooks.includes(h)), `hooks: ${developer.hooks.join(', ') || 'none'}`, PROSE.quantumProcessingAudit_s42)
   c('signing-at-edge', 'developer', /ML-DSA|webcrypto_modern_algorithms/.test(developer.signing), developer.signing, PROSE.quantumProcessingAudit_s43)
@@ -475,13 +475,13 @@ export const sealTokenLeaks = (text: string) => {
   const redacted = found - left
   return { text: out, found, redacted, left, holds: left === 0 && found - redacted === 0, theorem: 'textbook_leaks_redacted' as const, publish: 'textbook_redact_before_publish' as const, lean: 'found - redacted = 0' as const }
 }
-/** The same seal on a JSON value: a clean value stays the same object; a value that held a token is parsed back without it. */
+/** The same seal on a JSON value. The value is always parsed back from its sealed text, so the answer a caller in this process holds is the answer a client reads: nothing only this process could see, a shared reference or an undefined field, is left to rely on. */
 export const sealJson = (value: unknown) => {
   if (typeof value === 'string') { const sealed = sealTokenLeaks(value); return { ...sealed, value: sealed.text } }
   let raw = ''
   try { raw = JSON.stringify(value) ?? '' } catch { return { ...sealTokenLeaks(''), value } }
   const sealed = sealTokenLeaks(raw)
-  return { ...sealed, value: sealed.found === 0 ? value : JSON.parse(sealed.text) as unknown }
+  return { ...sealed, value: raw === '' ? value : JSON.parse(sealed.text) as unknown }
 }
 
 export const runAudit = (handle: (m: Rpc) => any, examples: readonly Example[], leads: readonly Lead[], toolboxes: readonly { name: string; tools: { name: string }[]; skill: { selftest: (ctx: Context) => { passed: boolean; checks: Check[] } } }[] = [], known: Readonly<Record<string, string>> = {}, code: string | null = null, shard: { i: number; n: number } | null = null): Audit => {

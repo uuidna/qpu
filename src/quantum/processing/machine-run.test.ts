@@ -1,12 +1,13 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { availableParallelism, tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { lanesNow } from './machine-run.ts'
 import { THEOREMS } from './theorems-index.ts'
+import { TABLES } from './tables-index.ts'
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the runner's lanes, read from node:os now, lie between one and the cores, as Supremacy.lanes_pos and Supremacy.lanes_le_cores prove. */
 test("the runner's lanes, read from node:os now, lie between one and the cores, as Supremacy.lanes_pos and Supremacy.lanes_le_cores prove", () => {
@@ -53,5 +54,56 @@ test('a step run on the staged tree decides by the index alone, an unstaged chan
     const red = run()
     assert.equal(red.status, 1, red.out)
     assert.equal(readFileSync(join(repo, 'gate.txt'), 'utf8'), 'green\n')
+  } finally { rmSync(repo, { recursive: true, force: true }); rmSync(tools, { recursive: true, force: true }) }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the tree holds none of the fakes the table names, and an entropy typed as a number is found where it is written. */
+test('the tree holds none of the fakes the table names, and an entropy typed as a number is found where it is written', () => {
+  const runner = fileURLToPath(new URL('./machine-run.ts', import.meta.url)), root = fileURLToPath(new URL('../../..', import.meta.url))
+  const { GIT_DIR: _d, GIT_INDEX_FILE: _i, GIT_WORK_TREE: _w, ...env } = process.env
+  const fakes = (cwd: string) => { const r = spawnSync(process.execPath, [runner, 'fakes'], { cwd, env, encoding: 'utf8' }); return { status: r.status, lines: r.stdout.split('\n').filter(Boolean), err: r.stderr } }
+  const here = fakes(root)
+  assert.deepEqual(here.lines, [])
+  assert.equal(here.status, 0, here.err)
+  const name = 'an entropy typed as a number'
+  assert.ok(TABLES.FAKES.some((k) => k.fake === name))
+  // a tree of its own with the fake written in it; the word and the number are joined here so this file holds no such line
+  const repo = mkdtempSync(join(tmpdir(), 'qpu-fakes-test-'))
+  try {
+    const git = (...a: string[]) => execFileSync('git', a, { cwd: repo, env, encoding: 'utf8' })
+    git('init', '-q'); mkdirSync(join(repo, 'src'))
+    writeFileSync(join(repo, 'src', 'typed.ts'), `export const answer = { ${['entropy', ': 0'].join('')} }\n`)
+    writeFileSync(join(repo, 'src', 'measured.ts'), `export const answer = (text: string) => ({ ${['entropy', ': text.length'].join('')} })\n`)
+    git('add', '.')
+    const there = fakes(repo)
+    assert.equal(there.status, 1, there.err)
+    assert.deepEqual(there.lines.map((l) => l.split(':').slice(0, 2).join(':')), [`${name}: src/typed.ts`])
+  } finally { rmSync(repo, { recursive: true, force: true }) }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a step run on the staged tree is handed none of git's own variables, so a tool with repositories of its own reads its own, and the index is named to it. */
+test("a step run on the staged tree is handed none of git's own variables, so a tool with repositories of its own reads its own, and the index is named to it", () => {
+  const runner = fileURLToPath(new URL('./machine-run.ts', import.meta.url))
+  const repo = mkdtempSync(join(tmpdir(), 'qpu-staged-env-')), tools = mkdtempSync(join(tmpdir(), 'qpu-staged-envstep-'))
+  const { GIT_DIR: _d, GIT_INDEX_FILE: _i, GIT_WORK_TREE: _w, ...env } = process.env
+  const git = (...a: string[]) => execFileSync('git', a, { cwd: repo, env, encoding: 'utf8' })
+  try {
+    git('init', '-q'); git('config', 'user.email', '[email]'); git('config', 'user.name', 'step'); git('config', 'commit.gpgsign', 'false')
+    writeFileSync(join(repo, 'a.txt'), 'a\n'); git('add', '.'); git('commit', '-q', '-m', 'first')
+    // another repository beside it, as a package manager keeps
+    const other = join(tools, 'package'), remote = 'https://example.invalid/package'
+    mkdirSync(other); execFileSync('git', ['init', '-q'], { cwd: other, env }); execFileSync('git', ['remote', 'add', 'origin', remote], { cwd: other, env })
+    const step = join(tools, 'step.mjs')
+    writeFileSync(step, [
+      "import { execFileSync } from 'node:child_process'",
+      "const git = (cwd, ...a) => execFileSync('git', a, { cwd, encoding: 'utf8' }).trim()",
+      "const e = process.env",
+      "console.log('SEEN ' + JSON.stringify({ dir: e.GIT_DIR ?? null, index: e.GIT_INDEX_FILE ?? null, tree: e.GIT_WORK_TREE ?? null, named: e.QPU_STAGED_INDEX ?? null, own: git(process.cwd(), 'rev-parse', '--absolute-git-dir'), other: git(process.argv[2], 'remote', 'get-url', 'origin') }))",
+    ].join('\n'))
+    // as git runs a hook in a linked worktree: its directory and its index are both named
+    const gitDir = git('rev-parse', '--absolute-git-dir').trim(), index = join(gitDir, 'index')
+    const r = spawnSync(process.execPath, [runner, 'staged', process.execPath, step, other], { cwd: repo, env: { ...env, GIT_DIR: gitDir, GIT_INDEX_FILE: index }, encoding: 'utf8' })
+    assert.equal(r.status, 0, r.stdout + r.stderr)
+    assert.deepEqual(JSON.parse(/SEEN (.+)/.exec(r.stdout)![1]!), { dir: null, index: null, tree: null, named: index, own: gitDir, other: remote })
   } finally { rmSync(repo, { recursive: true, force: true }); rmSync(tools, { recursive: true, force: true }) }
 })

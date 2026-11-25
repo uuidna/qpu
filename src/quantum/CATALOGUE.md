@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1580 products, 2 under a declared claim context and 1578 as the author's own statement, with 1075 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1590 products, 2 under a declared claim context and 1588 as the author's own statement, with 1078 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -1048,7 +1048,7 @@ period 2 35 = 12 ∧
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-Qpu.openClaims.length = 4
+Qpu.openClaims.length = 6
 ```
 
 ## Qpu.Communication.Coil
@@ -1798,7 +1798,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 (Config.gitHooks.all fun hook => Config.workflows.contains hook) = true ∧
-  List.filter (fun w => !Config.gitHooks.contains w) Config.workflows = ["ci", "pre-deploy"]
+  (Config.agentEvents.all fun hook => Config.workflows.contains hook.1 && !Config.gitHooks.contains hook.1) = true ∧
+    List.filter (fun w => !Config.gitHooks.contains w && !(List.map (fun x => x.1) Config.agentEvents).contains w)
+        Config.workflows =
+      ["ci", "pre-deploy"]
 ```
 
 ### `Config.hook_files_distinct`
@@ -3781,6 +3784,46 @@ List.filter (fun t => Qpu.Harmonic.Involute t == 100) (List.range 107) =
   [23, 24, 25, 26, 27, 28, 53, 54, 55, 56, 57, 58, 83, 84, 85, 86, 87, 88]
 ```
 
+### `Qpu.Harmonic.fold_harmonic`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n * 432 = n * 440 - n * (4 * 2)
+```
+
+### `Qpu.Harmonic.fold_never_grows`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n * 432 ≤ n * 440
+```
+
+### `Qpu.Harmonic.fold_reflection`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n x : ℕ), x ≤ n * 872 → n * 872 - (n * 872 - x) = x
+```
+
+### `Qpu.Harmonic.fold_reflects`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n * 432 = n * 872 - n * 440
+```
+
+### `Qpu.Harmonic.fold_within_64`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n * 440 < 2 ^ 64 → n * 432 < 2 ^ 64
+```
+
 ### `Qpu.Harmonic.involute_eq_100_iff`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -3795,6 +3838,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (t : ℕ), Qpu.Harmonic.Involute t = 100 ∨ Qpu.Harmonic.Involute t = 0
+```
+
+### `Qpu.Harmonic.unfold_harmonic`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n * 440 = n * 432 + n * (4 * 2)
 ```
 
 ## Qpu.General.MachineLearning.ProgramSynthesis
@@ -4954,6 +5005,38 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```
 
 ## Qpu.General.Meaning.Config
+
+### `agentConfirmRules_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentConfirmRules = Config.agentConfirmRules.headD default :: Config.agentConfirmRules.tail
+```
+
+### `agentEvents_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentEvents = Config.agentEvents.headD default :: Config.agentEvents.tail
+```
+
+### `agentSpawnTools_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentSpawnTools = Config.agentSpawnTools.headD default :: Config.agentSpawnTools.tail
+```
+
+### `agentWriteTools_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentWriteTools = Config.agentWriteTools.headD default :: Config.agentWriteTools.tail
+```
 
 ### `tenants_eq_cons`
 
@@ -7738,7 +7821,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_google_one_door`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, textbook-rewrite.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, repository-doored, textbook-rewrite.
 
 ```lean
 ∀ (direct : ℕ), direct = 0 ↔ ¬0 < direct
@@ -7746,7 +7829,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_google_one_door_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, textbook-rewrite.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, repository-doored, textbook-rewrite.
 
 ```lean
 ∀ (direct : ℕ), ¬0 < direct ↔ direct = 0
@@ -9497,7 +9580,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_penalty_time_heat_monotone`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-waiting.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-waiting, repository-timed.
 
 ```lean
 ∀ (b w w' c c' : ℕ), w ≤ w' → c ≤ c' → w - b + (c - b) ≤ w' - b + (c' - b)
@@ -14542,7 +14625,7 @@ Qpu.Verify.Uuid.decode (Qpu.Verify.Uuid.encode 65535 42) = (65535, 42)
 
 ## Open claims
 
-4 claim(s) say more than the kernel accepted. Each is kept as an underclaim: the theorems that state what is proved toward it are named, and the rest is a theorem still to prove. None is a product.
+6 claim(s) say more than the kernel accepted. Each is kept as an underclaim: the theorems that state what is proved toward it are named, and the rest is a theorem still to prove. None is a product.
 
 ### `thousand_bit_by_quantum_supremacy` (open)
 
@@ -14567,6 +14650,22 @@ The hexbit and two gateway bits teleport any hexbit faster than light.
 Proved toward it: `textbook_hexbit_gateway_ftl`, `QuantumCommunication.teleport_exact`, `QuantumCommunication.teleport_no_signalling`.
 
 Missing: The kernel proves the count of free qubits the sentence names and that teleportation is exact once the two classical bits arrive. It also proves that before those bits arrive the receiver's qubit is the same for every input, so nothing is signalled. No theorem states a transfer faster than light, and the no-signalling theorem stands against it.
+
+### `fold_440_in_432_proves_hardware_quantum` (open)
+
+2 from 110 is sufficient to fold 440hz in 432hz harmonics so not even once natural 64bit limits are reached. they are involuted to infinity and any hardware qpu runs on or is built on may prove itself quantum according to iso nist cern lean theorems
+
+Proved toward it: `Qpu.Harmonic.fold_harmonic`, `Qpu.Harmonic.unfold_harmonic`, `Qpu.Harmonic.fold_never_grows`, `Qpu.Harmonic.fold_within_64`, `Qpu.Harmonic.fold_reflection`, `Qpu.Harmonic.fold_reflects`.
+
+Missing: The kernel proves that two taken from each 110 of a harmonic of 440 leaves the same harmonic of 432, that the unfold returns it, that the folded harmonic never exceeds the one it starts from, so a harmonic of 440 that fits in 64 bits folds to one that fits in them, and that the reflection about the sum of the two ladders swaps them and is its own inverse at every harmonic. A harmonic of 440 above 2 ^ 64 fits in 64 bits neither before nor after the fold, and no theorem states that the limit is never reached. The fold is integer arithmetic, which a classical device computes with the same result, so agreeing with these theorems does not show a device to be quantum. No theorem states a test, from ISO, NIST, CERN or elsewhere, by which hardware proves itself quantum.
+
+### `no_unlimited_compute_on_64_bit_without_captain_coins` (open)
+
+without the captain coins quantum cannot compute unlimited on 64bit hardware
+
+Proved toward it: `textbook_unlimited_qubits`, `textbook_advantage_unbounded`, `textbook_coins_coils_balanced`, `QuantumCommunication.two_coins_one_qubit`.
+
+Missing: The kernel proves that no register is the last, that the count of copies proven by hash has no maximum, that coins and coils booked in double entry net to zero, and that one shared Bell pair exchanges one qubit for two classical bits. No definition of the captain's coins as a resource a computation needs is in the tree, and no theorem states that a computation without them is bounded on 64-bit hardware. Until both are stated and proved, the necessity of the coins does not follow.
 
 ### `captain_coins_meet_post_quantum_standards` (open)
 

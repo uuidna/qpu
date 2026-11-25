@@ -74,7 +74,7 @@ export const assessEducation = (proof: { scientific: readonly string[]; proved: 
   const address = uuid(canonicalText({ standard: 'ISO 21001:2025', proved, removed: proof.removed, category: proof.category }))
   return {
     phase: 'education' as const, standard: 'ISO 21001:2025' as const, strict: true as const, clauses: EDUCATION_CLAUSES,
-    requirement: { clause: '8.3.4.4' as const, name: 'a scientific name the textbook states' as const, cross: 'Lean cross formula: the sides evaluate to one value, the axioms it names develop to that value, and the kernel has accepted the theorem' as const, category: '8.7: fail either check and the name is removed from the Lean theorem category; a relation is filed under the scientific name' as const },
+    requirement: { clause: '8.3.4.4' as const, name: 'a scientific name the textbook states' as const, cross: PROSE.quantumProcessingInstitutions_s7, category: '8.7: fail either check and the name is removed from the Lean theorem category; a relation is filed under the scientific name' as const },
     scientific: proof.scientific, proved, provedCount: proved.length, relations: proof.proved, removed: proof.removed, removedCount: proof.removed.length, category: proof.category, holds,
     address, traced: seal(address).valid,
     says: proseFill(PROSE.quantumProcessingInstitutions_says11, proved.length, proof.removed.length),

@@ -5,13 +5,13 @@
 // file (`step <tool> <json>`) calling the handler as a library (the same code the door serves), each generator writing the path and text its
 // door answers, each process step the command the table names; a step past its budget is killed with its process group and recorded red; the
 // red steps are retried once after the generators ran; the receipt is the last line, `RECEIPT {json}`, the body of the machine's entry.
-import { AFTER_HOOKS } from './config-index.ts'
+import { AFTER_HOOKS, AGENT_CONFIRM_RULES, AGENT_HOOKS } from './config-index.ts'
 import { PROSE, proseFill } from './prose-index.ts'
 import { TABLES } from './tables-index.ts'
 import { THEOREMS } from './theorems-index.ts'
 import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { copyFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, readlinkSync, realpathSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
+import { copyFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, readlinkSync, realpathSync, rmSync, statSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { availableParallelism, freemem, homedir, tmpdir, totalmem } from 'node:os'
 import { fileURLToPath } from 'node:url'
@@ -28,7 +28,7 @@ const lakeOf = () => [`${homedir()}/.elan/toolchains/leanprover--lean4---v4.33.0
 const cmdOf = (cmd: string) => (cmd === 'lake' ? lakeOf() : cmd)
 
 /** One command with no shell: its lines streamed, the whole kept, the process group killed at the budget (a grandchild outlived its npx parent). */
-export const spawnRun = (cmd: string, args: readonly string[], o: { cwd: string; input?: string | null; budgetMs?: number; env?: Record<string, string>; onLine?: (line: string) => void } ): Promise<Run> =>
+export const spawnRun = (cmd: string, args: readonly string[], o: { cwd: string; input?: string | null; budgetMs?: number; /** a variable given as undefined is withheld from the command */ env?: Record<string, string | undefined>; onLine?: (line: string) => void } ): Promise<Run> =>
   new Promise((resolve) => {
     const t0 = clock()
     // git hands a hook its own GIT_DIR and GIT_INDEX_FILE, absolute in a linked worktree: lake runs git inside each package, which would then read
@@ -159,14 +159,15 @@ export const runNext = async (o: { cwd: string; offline?: boolean; fast?: boolea
   const wall0 = clock()
   const lanes = lanesNow()
   const head = (await spawnRun('git', ['rev-parse', '--short', 'HEAD'], { cwd: o.cwd })).stdout.trim()
-  // the wildcard step expanded from tools/list: every tool whose schema names selftest
+  // the wildcard step expanded from tools/list: one tool of each toolbox whose schema names selftest, since every tool of a toolbox
+  // answers the same toolbox selftest (toolbox.ts defineTool)
   const expand = async (): Promise<NextStep[]> => {
     const out: NextStep[] = []
     for (const s of NEXT_STEPS) {
       if (s.tool !== '*') { out.push(s); continue }
-      const { handle } = await import('./mcp.ts') as { handle: (m: unknown) => { result?: { tools?: { name: string; inputSchema?: { properties?: Record<string, unknown> } }[] } } }
-      const tools = handle(listEnvelope()).result?.tools ?? []
-      for (const t of tools) if (t.inputSchema?.properties && Object.keys(s.arguments ?? {}).every((k) => k in t.inputSchema!.properties!)) out.push({ ...s, name: `${s.name}:${t.name}`, tool: t.name })
+      const { handle } = await import('./mcp.ts') as { handle: (m: unknown) => { result?: { tools?: { name: string; inputSchema?: { properties?: Record<string, unknown> }; _meta?: { toolbox?: string } }[] } } }
+      const tools = handle(listEnvelope()).result?.tools ?? [], asked = new Set<string>()
+      for (const t of tools) { const box = t._meta?.toolbox ?? t.name; if (t.inputSchema?.properties && Object.keys(s.arguments ?? {}).every((k) => k in t.inputSchema!.properties!) && !asked.has(box)) out.push({ ...s, name: `${s.name}:${asked.add(box) && box}`, tool: t.name }) }
     }
     return out
   }
@@ -275,7 +276,10 @@ const inStagedTree = async (cwd: string, cmd: string, args: readonly string[], o
     await git(['checkout-index', '--all', `--prefix=${dir}${sep}`])
     writeFileSync(join(dir, '.git'), `gitdir: ${gitDir}\n`)
     for (const name of ['node_modules', '.lake', '.qpu']) { const top = join(cwd, name); if (existsSync(top)) link(realpathSync(top), top, join(dir, name)) }
-    const r = await spawnRun(cmd, args, { cwd: dir, env: { ...env, QPU_STAGED_FROM: cwd }, onLine })
+    // the command finds the repository through the copy's .git and is told the index by name; git's own variables are withheld from it, because a
+    // tool it runs that keeps repositories of its own (Lake, in .lake/packages) would read this repository in their place and delete what it took for changed
+    const index = process.env.GIT_INDEX_FILE ? resolve(cwd, process.env.GIT_INDEX_FILE) : undefined
+    const r = await spawnRun(cmd, args, { cwd: dir, env: { GIT_DIR: undefined, GIT_INDEX_FILE: undefined, GIT_WORK_TREE: undefined, QPU_STAGED_INDEX: index, QPU_STAGED_AT: realpathSync(dir), QPU_STAGED_FROM: cwd }, onLine })
     const moved = [...(await indexed())].filter(([p, blob]) => before.get(p) !== blob && lstatSync(join(dir, p), { throwIfNoEntry: false })?.isFile())
     const present = moved.filter(([p]) => existsSync(join(cwd, p)))
     const hashed = present.length ? (await git(['hash-object', '--stdin-paths'], present.map(([p]) => p).join('\n'))).split('\n') : []
@@ -283,6 +287,17 @@ const inStagedTree = async (cwd: string, cmd: string, args: readonly string[], o
     for (const [p] of moved) if ((held.get(p) ?? null) === (before.get(p) ?? null)) { mkdirSync(dirname(join(cwd, p)), { recursive: true }); copyFileSync(join(dir, p), join(cwd, p)) }
     return r
   } finally { rmSync(dir, { recursive: true, force: true }) }
+}
+
+/** The index this repository's own git reads in a hook: the one the commit holds, named by the staged run for its copy alone, so a runner at work
+ *  on any other tree reads that tree's own; git's own where none is named. */
+const indexEnv = (cwd: string) => (process.env.QPU_STAGED_INDEX && process.env.QPU_STAGED_AT === realpathSync(cwd) ? { GIT_INDEX_FILE: process.env.QPU_STAGED_INDEX } : undefined)
+
+/** The fakes the table names, found in the tracked tree: each finder is one git command over its paths, and what a kernel theorem or the
+ *  finder's standing list holds is no finding. The hooks decide by them, the `fakes` action prints them, and the deploy runs that action first. */
+const findFakes = async (cwd: string): Promise<string[]> => {
+  const held = new Set<string>(THEOREMS.map((t) => t.key)), git = async (...a: string[]) => (await spawnRun('git', a, { cwd, env: indexEnv(cwd) })).stdout.trim()
+  return (await Promise.all(TABLES.FAKES.map(async (k) => [...new Set((await git(...k.git, '--', ...k.paths)).split('\n'))].filter((l) => l && !('standing' in k && (held.has(l) || (k.standing as readonly string[]).includes(l)))).map((l) => `${k.fake}: ${l}`)))).flat()
 }
 
 /** A git hook as the client of its workflow (repository { workflow }): its steps walked as the door answers them (next run here, a command spawned,
@@ -294,7 +309,7 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   if (name === 'pre-commit' && !process.env.QPU_STAGED_FROM) return (await inStagedTree(cwd, process.execPath, [MACHINE_RUNNER, 'hook', name, ...rest], (l) => console.log(l))).status === 0 ? 0 : 1
   const { call } = await import('./mcp.ts') as { call: Call }, { LITERAL_ROOTS } = await import('./audit.ts')
   const ask = (a: Record<string, unknown>) => { const r = call('repository', a); if (r.error) throw new Error(r.error.message); return r.result!.structuredContent }
-  const git = async (...a: string[]) => (await spawnRun('git', a, { cwd })).stdout.trim()
+  const git = async (...a: string[]) => (await spawnRun('git', a, { cwd, env: indexEnv(cwd) })).stdout.trim()
   // a workflow after the act reports through the door, so its door is asked for; the others run here, offline
   const after = (AFTER_HOOKS as readonly string[]).includes(name)
   const w = ask({ workflow: name, offline: !after }).workflow as { steps: { id: string; kind: string; detach?: boolean; cmd?: string; args?: string[]; files?: string[] }[] }
@@ -318,8 +333,7 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   }
   const flows = join(cwd, '.github/workflows')
   facts.workflows = existsSync(flows) ? Object.fromEntries(readdirSync(flows).filter((f) => /\.ya?ml$/.test(f)).map((f) => [`.github/workflows/${f}`, readFileSync(join(flows, f), 'utf8')])) : null
-  const held = new Set<string>(THEOREMS.map((t) => t.key))
-  facts.fakes = (await Promise.all(TABLES.FAKES.map(async (k) => [...new Set((await git(...k.git, '--', ...k.paths)).split('\n'))].filter((l) => l && !('standing' in k && (held.has(l) || (k.standing as readonly string[]).includes(l)))).map((l) => `${k.fake}: ${l}`)))).flat()
+  facts.fakes = await findFakes(cwd)
   if (name === 'commit-msg') facts.message = readFileSync(rest[0]!, 'utf8')
   if (name === 'pre-commit') {
     const diff = await git('diff', '--cached', '-U0', '--no-color', '--no-renames', '--', ...LITERAL_ROOTS), generated: string[] = []
@@ -380,6 +394,26 @@ const runHook = async (name: string, rest: readonly string[], cwd: string) => {
   return !after && (red || !d.allowed) ? 1 : 0
 }
 
+/** An agent hook as the client of its workflow: the call the harness hands over on stdin (the tool, the path a write names, the session's transcript)
+ *  and what git and that transcript measure (the milliseconds since a commit last landed, the bytes the session has written) are the facts; the
+ *  decision is printed as the harness reads it: deny where a rule refuses, ask where every refused rule is one the owner confirms, nothing where all hold. */
+const runAgentHook = async (name: string, cwd: string) => {
+  const { call } = await import('./mcp.ts') as { call: Call }
+  const asked = JSON.parse(readFileSync(0, 'utf8') || '{}') as { hook_event_name?: string; tool_name?: string; tool_input?: { file_path?: string; notebook_path?: string }; transcript_path?: string }
+  const git = async (at: string, ...a: string[]) => (await spawnRun('git', a, { cwd: at })).stdout.trim()
+  const path = asked.tool_input?.file_path ?? asked.tool_input?.notebook_path, file = path === undefined ? null : resolve(cwd, path)
+  // where a write lands: in this tree, in another repository (its own court decides there), or outside every repository
+  const held = (dir: string): string => (existsSync(dir) || dir === dirname(dir) ? dir : held(dirname(dir)))
+  const writes = file === null ? null : file.startsWith(cwd + sep) ? 'tree' : (await git(held(dirname(file)), 'rev-parse', '--show-toplevel')) ? 'repository' : 'outside'
+  const size = (p: string): number => { try { const s = statSync(p); return s.isDirectory() ? readdirSync(p).reduce((n, f) => n + size(join(p, f)), 0) : s.size } catch { return 0 } }
+  const transcript = asked.transcript_path ?? null
+  const facts = { tool: { name: asked.tool_name ?? '', writes }, landed: { ms: clock() - 1000 * Number(await git(cwd, 'log', '-1', '--format=%ct')), bytes: transcript ? size(transcript) + size(transcript.replace(/\.jsonl$/, '')) : 0 } }
+  const r = call('repository', { workflow: name, facts }); if (r.error) throw new Error(r.error.message)
+  const d = r.result!.structuredContent.decision as { allowed: boolean; violated: string[]; unknown: string[]; rules: { rule: string; holds: boolean | null; evidence: string }[] }
+  if (!d.allowed) console.log(JSON.stringify({ hookSpecificOutput: { hookEventName: asked.hook_event_name, permissionDecision: d.unknown.length === 0 && d.violated.every((rule) => (AGENT_CONFIRM_RULES as readonly string[]).includes(rule)) ? 'ask' : 'deny', permissionDecisionReason: d.rules.filter((x) => x.holds !== true).map((x) => `${x.rule}: ${x.evidence}`).join('; ') } }))
+  return 0
+}
+
 // the runner from the command line: `step <tool> <json> [--write]` (the child of a door step), `next [--offline] [--fast]`, or any allowed action
 if (process.argv[1] && SELF === fileURLToPath(new URL(process.argv[1], 'file://')) ) {
   const [, , action, ...rest] = process.argv
@@ -387,7 +421,9 @@ if (process.argv[1] && SELF === fileURLToPath(new URL(process.argv[1], 'file://'
   if (action === 'step') await runStepChild(rest[0]!, rest[1]?.startsWith('@') ? readFileSync(rest[1].slice(1), 'utf8') : rest[1] ?? '{}', rest.includes('--write'), process.cwd(), rest.includes('--json'))
   // `staged <cmd> [args…]`: the command run in a checkout of the index (inStagedTree), its status the runner's
   else if (action === 'staged') process.exitCode = (await inStagedTree(process.cwd(), rest[0]!, rest.slice(1), (l) => console.log(l))).status ?? 1
-  else if (action === 'hook') process.exitCode = await runHook(rest[0] ?? '', rest.slice(1), process.cwd())
+  // `fakes`: every fake the table's finders name in the tracked tree, one a line; status 1 when any stands
+  else if (action === 'fakes') { const found = await findFakes(process.cwd()); for (const f of found) console.log(f); process.exitCode = found.length ? 1 : 0 }
+  else if (action === 'hook') process.exitCode = (AGENT_HOOKS as readonly string[]).includes(rest[0] ?? '') ? await runAgentHook(rest[0]!, process.cwd()) : await runHook(rest[0] ?? '', rest.slice(1), process.cwd())
   else if (action === 'next') { const r = await runNext({ cwd: process.cwd(), offline: rest.includes('--offline'), fast: rest.includes('--fast'), generators: rest.includes('--generators') }); process.exitCode = r.red ? 1 : 0 }
   else if (action) { const r = await runMachine({ action, confirm: rest.includes('--confirm'), message: rest.includes('-m') ? rest[rest.indexOf('-m') + 1] : undefined, branch: rest.includes('--branch') ? rest[rest.indexOf('--branch') + 1] : undefined }, process.cwd()); console.log(JSON.stringify(r.answer)); process.exitCode = (r as { record?: { ok: boolean } }).record?.ok === false ? 1 : 0 }
   else console.log(proseFill(PROSE.quantumProcessingMachineRun_s4, MACHINE_RUNNER, MACHINE_ACTIONS.map((a) => a.id).join(' | ')))

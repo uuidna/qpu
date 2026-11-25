@@ -146,4 +146,6 @@ def quantumProcessingToolboxesBilling_s140 : String := "a source 7 % off the med
 def quantumProcessingToolboxesBilling_s141 : String := "432.00 € is 483.54 $ and 844.92 лв at these rates, to the cent"
 def quantumProcessingToolboxesBilling_s142 : String := "psg prices in euro; .bg is euro since 2026; .com is dollar"
 
+def quantumProcessingToolboxesBilling_s143 : String := "the header carries no t and v1 (textbook_webhook_tolerance)"
+
 end Prose

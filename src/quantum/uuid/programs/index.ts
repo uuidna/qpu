@@ -239,7 +239,6 @@ export const guardUpstream = (plugin: ProgramPlugin) => {
     checks,
     passed: checks.filter((row) => row.holds).length,
     total: checks.length,
-    entropy: holds ? 0 as const : 1 as const,
     holds,
     says: holds
       ? proseFill(PROSE.quantumUuidProgramsIndex_s1, plugin.slug, checks.length, checks.length)
@@ -346,7 +345,7 @@ export const reflectProgramNeighbours = (handle: string) => {
     phase: 'reflect' as const,
     via: 'quantum' as const,
     theorem: 'textbook_neighbour_step' as const,
-    law: 'neighbours reflect and test each other' as const,
+    law: PROSE.quantumUuidProgramsIndex_s20,
     handle,
     address: around.address,
     path: around.path,
@@ -555,7 +554,6 @@ export const gateProgramFiles = (dataset = root.path) => {
     refused,
     missing: refused.length,
     holds,
-    entropy: holds ? 0 as const : 1 as const,
     says: holds
       ? proseFill(PROSE.quantumUuidProgramsIndex_s8, folders.length, allowed.length, dataset)
       : proseFill(PROSE.quantumUuidProgramsIndex_s9, refused.length, refused.slice(0, 8).join(', '), refused.length > 8 ? '…' : ''),
@@ -620,7 +618,7 @@ export const sealProgramProducts = (handle: string) => {
     phase: 'seal' as const,
     via: 'payload' as const,
     theorem: 'textbook_plugin_combinations' as const,
-    law: 'index seals all neighbours via payload uuid product combinations' as const,
+    law: PROSE.quantumUuidProgramsIndex_s18,
     handle,
     path: around.path,
     address: around.address,
@@ -684,7 +682,7 @@ export const gateProgramSeal = (dataset = root.path, computed = sealLeaves(datas
     phase: 'gate' as const,
     via: 'online' as const,
     theorem: 'textbook_compete_knows' as const,
-    law: 'every folder has index sealing all neighbours that reflect and test each other in games and competitions online' as const,
+    law: PROSE.quantumUuidProgramsIndex_s15,
     dictionary: ENTROPY_MEANS,
     root: dataset,
     files,
@@ -700,7 +698,6 @@ export const gateProgramSeal = (dataset = root.path, computed = sealLeaves(datas
     refused,
     failed: rows.filter((row) => !row.holds),
     holds,
-    entropy: holds ? 0 as const : 1 as const,
     says: !files.holds
       ? files.says
       : holds
@@ -794,7 +791,7 @@ export const auditProgramNeighbours = (dataset = root.path, computed = sealLeave
     phase: 'audit' as const,
     via: 'online' as const,
     theorem: 'textbook_compete_knows' as const,
-    law: 'neighbours reflect and test each other in games and competitions online' as const,
+    law: PROSE.quantumUuidProgramsIndex_s16,
     degree: 6 as const,
     enqc: 'triangular lattice N0 = 6 — expected quantum channels normalised by node degree' as const,
     root: dataset,

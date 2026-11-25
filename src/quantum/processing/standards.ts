@@ -680,7 +680,6 @@ export const verifyIsoQuantumEquivalence = () => {
     sealed: seal(address).valid && standards.sealed,
     via: standards.via,
     dry: standards.dry,
-    entropy: standards.entropy,
     vocabularyAddress: standards.address,
     counts: {
       postulatesTotal: noLessPostulates.length,

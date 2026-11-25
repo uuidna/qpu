@@ -1,7 +1,7 @@
 // The leak scanner stays linear on adversarial input; addresses are built from parts so purify passes this file.
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { listLeaks, sealTokenLeaks } from './audit.ts'
+import { listLeaks, sealJson, sealTokenLeaks } from './audit.ts'
 
 const at = (local: string) => `${local}@${['evilcorp', 'net'].join('.')}`
 
@@ -40,4 +40,16 @@ test('a token leak is sealed by the Lean formula found - redacted = 0', () => {
   assert.equal(encoded.text.includes(token), false)
   assert.equal(encoded.found - encoded.redacted, 0)
   assert.equal(encoded.holds, true)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a sealed JSON value is the value a client reads. */
+test('a sealed JSON value is the value a client reads', () => {
+  const shared = { tool: 'algorithm' }, sealed = sealJson({ run: shared, lead: { run: shared }, absent: undefined })
+  const value = sealed.value as { run: object; lead: { run: object } }
+  assert.equal(sealed.found, 0)
+  assert.notEqual(value.run, value.lead.run)
+  assert.deepEqual(value, { run: { tool: 'algorithm' }, lead: { run: { tool: 'algorithm' } } })
+  assert.equal('absent' in value, false)
+  assert.equal(sealJson(undefined).value, undefined)
+  assert.equal(sealJson('plain').value, 'plain')
 })

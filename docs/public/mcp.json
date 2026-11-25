@@ -104,7 +104,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -185,7 +185,7 @@
       },
       "outputSchema": {
         "type": "object",
-        "description": "An object of 84 key(s); tools/list with tools naming match states them (textbook_context_balanced)."
+        "description": "An object of 83 key(s); tools/list with tools naming match states them (textbook_context_balanced)."
       },
       "annotations": {
         "title": "match",
@@ -213,7 +213,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -373,7 +373,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -440,7 +440,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -773,7 +773,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -1016,7 +1016,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -1063,7 +1063,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -1116,7 +1116,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -1363,7 +1363,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -1410,7 +1410,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -1504,7 +1504,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -1556,7 +1556,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -1612,7 +1612,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -1699,7 +1699,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -1792,7 +1792,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -1872,7 +1872,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -1935,7 +1935,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -2073,7 +2073,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -2173,7 +2173,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -2220,7 +2220,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -2369,7 +2369,7 @@
       },
       "outputSchema": {
         "type": "object",
-        "description": "An object of 154 key(s); tools/list with tools naming textbook states them (textbook_context_balanced)."
+        "description": "An object of 153 key(s); tools/list with tools naming textbook states them (textbook_context_balanced)."
       },
       "annotations": {
         "title": "textbook",
@@ -2397,7 +2397,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -2467,7 +2467,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -2520,7 +2520,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -2576,7 +2576,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -2659,7 +2659,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -2735,7 +2735,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -2798,7 +2798,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -2881,7 +2881,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -2967,7 +2967,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -3038,7 +3038,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -3109,7 +3109,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -3196,7 +3196,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -3274,7 +3274,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -3381,7 +3381,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -3557,7 +3557,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -3647,7 +3647,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -3733,7 +3733,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -3815,7 +3815,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -3905,7 +3905,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -3998,7 +3998,8 @@
               "post-push",
               "prepare-commit-msg",
               "ci",
-              "pre-deploy"
+              "pre-deploy",
+              "pre-tool"
             ],
             "description": "the git hook or the CI as a client MCP workflow: its steps, strictness and what each does; machine-run.ts hook <name> walks them",
             "default": "pre-commit"
@@ -4016,7 +4017,7 @@
           }
         },
         "x-harmonic": {
-          "combinations": "16",
+          "combinations": "18",
           "index": "0",
           "from": "a432"
         }
@@ -4052,7 +4053,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -4319,7 +4320,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -4388,7 +4389,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -4450,7 +4451,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -4564,7 +4565,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -4933,7 +4934,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -5234,7 +5235,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     },
@@ -5327,7 +5328,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "2db4e2d7-db26-36d3-9a7a-93bbe19852cb"
+          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
         }
       }
     }

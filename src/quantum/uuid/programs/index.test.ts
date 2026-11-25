@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import { auditProgramNeighbours, sealLeavesSplit, challenge, competeProgramNeighbours, gateProgramFiles, guardUpstream, indexProgramFolders, productCombinations, program, programPlugin, reflectProgramNeighbours, sealProgramProducts } from './index.ts'
+import { PROSE } from '../../processing/prose-index.ts'
 
 /** Challenge physics and laws under adversarial register pressure. */
 /** The neighbour audit, computed once for the tests that read it. */
@@ -32,7 +33,7 @@ void test('challenge physics and laws under adversarial register pressure', () =
 /** Neighbours reflect and test each other in games and competitions online. */
 void test('neighbours reflect and test each other in games and competitions online', async () => {
   const audit = await neighbours()
-  assert.equal(audit.law, 'neighbours reflect and test each other in games and competitions online')
+  assert.equal(audit.law, PROSE.quantumUuidProgramsIndex_s16)
   assert.equal(audit.via, 'online')
   assert.equal(audit.holds, true, audit.says + (audit.failed[0] ? ` first=${audit.failed[0].handle}` : ''))
   assert.equal(audit.holding, audit.folders)
@@ -63,7 +64,6 @@ void test('programs tree: every folder has index.*; neighbours reflect and compe
   const gate = (await neighbours()).seal
   assert.equal(gate.holds, true, gate.says + (gate.refused[0] ? ` first=${gate.refused[0]}` : ''))
   assert.equal(gate.refused.length, 0)
-  assert.equal(gate.entropy, 0)
   assert.equal(gate.degree, 6)
   assert.equal(gate.combinations, 8)
   assert.ok(gate.competitions > 0)
@@ -86,7 +86,6 @@ void test('each UUID program is a Payload plugin guarded to upstream definePlugi
   assert.equal(plugin.slug, `qpu-program-${handle}`)
   assert.equal(plugin.package, '@payloadcms/plugin-mcp')
   assert.equal(guard.holds, true)
-  assert.equal(guard.entropy, 0)
   assert.equal(guard.passed, guard.total)
   assert.equal(guard.standard, 'definePlugin')
   assert.ok(guard.reverseGuard.includes('payloadcms/website'))
