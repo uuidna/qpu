@@ -47,8 +47,11 @@ jobs:
           node-version: 26
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Lean writes the pages, VitePress builds them, Wrangler deploys the Worker
-        run: pnpm run deploy
+      # The Worker and the site go live first, in minutes: wrangler deploys them and leaves the Lean container as it
+      # runs. The container's image follows; it takes the hour its Lean build takes, so what the build states is not
+      # held back by it, and an image that does not build leaves the Worker and the site deployed.
+      - name: Lean writes the pages, VitePress builds them, Wrangler deploys the Worker and the site
+        run: pnpm run deploy --containers-rollout=none
       - name: smoke /api/mcp and the site on both hostnames
         run: |
           fail=0
@@ -61,6 +64,8 @@ jobs:
             if [ "$site" != "200" ] || [ "$mcp" != "200" ]; then fail=1; fi
           done
           exit "$fail"
+      - name: Wrangler builds the image of the Lean container and deploys it
+        run: pnpm exec wrangler deploy
       # the gate after the deploy (src/quantum/processing/deployed.ts), asked of the live server the way a client asks: one
       # theorem Lean must accept and one it must reject with its own error, the crypto selftests, and the audit in eight
       # shares. A wrong answer fails the deploy and names what the server said; a prover still starting is asked again,

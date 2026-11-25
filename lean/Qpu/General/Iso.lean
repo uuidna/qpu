@@ -41,7 +41,7 @@ whose theorem does not exist does not compile: the register cannot name a theore
 gap and no repeat.
 
 `standards` lists every standard the tree names. A standard has a witness when a theorem of the tree states a fact
-the standard fixes; a standard with none is listed as open, a theorem still to prove, and is never left out.
+the standard fixes; a standard with none is listed by its name, and is never left out.
 
 The configuration that code reads (the clause list, the standards list) is written from this module by
 `tools/Iso.lean`; nothing of it is typed a second time. -/

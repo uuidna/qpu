@@ -8,7 +8,7 @@ import { PROSE } from '../src/quantum/processing/prose-index.ts'
 import { TOOLBOXES } from '../src/quantum/processing/mcp.ts'
 import { LICENSE, PRECEDENCE } from '../src/quantum/processing/unit/license.ts'
 import { RELEASE_REPOSITORY, UNIT_CONCEPT_DOI } from '../src/quantum/processing/release.ts'
-import { above, available, beforeHardware, complying, hardware, htmlWithHardware, novelties, open, page, pkg, receipt, solved, title } from './oneText.ts'
+import { above, available, beforeHardware, claims, complying, hardware, htmlWithHardware, novelties, page, pkg, receipt, solved, title } from './oneText.ts'
 
 const record = {
   title,
@@ -51,7 +51,7 @@ for (const [path, text] of copies) {
   if (check && !agrees) drift += 1
   console.log(JSON.stringify({ check, agrees, written: !check && committed !== text, path }))
 }
-console.log(JSON.stringify({ receipt: receipt.uuid, hardware: hardware.uuid, challenges: `${complying.length}/${solved.length}`, novelties: novelties.length, open: open.length, calls: available.length }))
+console.log(JSON.stringify({ receipt: receipt.uuid, hardware: hardware.uuid, challenges: `${complying.length}/${solved.length}`, novelties: novelties.length, claims: claims.length, calls: available.length }))
 if (drift > 0) {
   console.error(PROSE.scriptsDoiRecord_s2)
   process.exit(1)

@@ -66,10 +66,39 @@ theorem fold_never_grows (n : Nat) : n * 432 ≤ n * 440 := Nat.mul_le_mul_left 
 `Nat.lt_of_le_of_lt`. -/
 theorem fold_within_64 (n : Nat) (h : n * 440 < 2 ^ 64) : n * 432 < 2 ^ 64 := Nat.lt_of_le_of_lt (fold_never_grows n) h
 
+/-- A value a 64-bit word holds is below 2 ^ 64, by `Fin.is_lt`. -/
+theorem word_bounded (x : Fin (2 ^ 64)) : x.val < 2 ^ 64 := Fin.is_lt x
+
 /-- The reflection about the sum of the two ladders is its own inverse at every harmonic, by `Nat.sub_sub_self`. -/
 theorem fold_reflection (n x : Nat) (h : x ≤ n * 872) : n * 872 - (n * 872 - x) = x := Nat.sub_sub_self h
 
 /-- That reflection sends each harmonic of 440 to the same harmonic of 432, by `Nat.mul_sub`. -/
 theorem fold_reflects (n : Nat) : n * 432 = n * 872 - n * 440 := Nat.mul_sub n 872 440
+
+/-! ## The merkaba: the 6 × 7 frame and the 7 × 6 frame
+
+The uuid tree computes a merkaba as two frames over the same cells, spun in opposite directions, and every natural
+number as its quotient times the frame plus its cell. These are the facts of that frame. The passage between the two
+frames and its return is `textbook_mixed_radix`. -/
+
+/-- The 6 × 7 frame and the 7 × 6 frame hold the same count of cells, by `Nat.mul_comm`. -/
+theorem merkaba_frames_agree : 6 * 7 = 7 * 6 := Nat.mul_comm 6 7
+
+/-- Every natural number is its quotient times the frame plus its cell, so the frame loses nothing of it, by
+`Nat.div_add_mod'`. -/
+theorem merkaba_fits (n : Nat) : n / (6 * 7) * (6 * 7) + n % (6 * 7) = n := Nat.div_add_mod' n (6 * 7)
+
+/-- The cell of every natural number is inside the frame, by `Nat.mod_lt`, `Nat.mul_pos` and `Nat.succ_pos`. -/
+theorem merkaba_cell_inside (n : Nat) : n % (6 * 7) < 6 * 7 := Nat.mod_lt n (Nat.mul_pos (Nat.succ_pos 5) (Nat.succ_pos 6))
+
+/-- Every cell of the frame is the cell of a natural number, itself, so the frame leaves no cell uncovered, by
+`Nat.mod_eq_of_lt`. -/
+theorem merkaba_cells_covered (c : Nat) (h : c < 6 * 7) : c % (6 * 7) = c := Nat.mod_eq_of_lt h
+
+/-- A full turn of the frame returns every number to its cell, by `Nat.add_mod_right`. -/
+theorem merkaba_turn_returns (c : Nat) : (c + 6 * 7) % (6 * 7) = c % (6 * 7) := Nat.add_mod_right c (6 * 7)
+
+/-- A cell and the cell the counter spin sends it to complete the frame, by `Nat.add_sub_of_le`. -/
+theorem merkaba_spins_meet (c : Nat) (h : c ≤ 6 * 7) : c + (6 * 7 - c) = 6 * 7 := Nat.add_sub_of_le h
 
 end Qpu.Harmonic
