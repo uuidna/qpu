@@ -36,7 +36,7 @@ import { AXIOMS, evaluate as clayEvaluate, recomputeClay, recomputeClayPravets, 
 import { recognise } from '../apps/index.ts'
 import { composePage } from './compose.ts'
 import { mayChoose, ROLE_RANK, type Role } from './unit/roles.ts'
-import { evaluate, evaluateTheorem, getStatement, listExpressions, getProse, bindingFor } from './expressions.ts'
+import { evaluate, evaluateKernel, evaluateTheorem, getStatement, listExpressions, getProse, bindingFor } from './expressions.ts'
 import { getTheorem, verifyTheorems } from './verification.ts'
 import { checkWitnesses, mergeWitnesses, witnessMove } from './witnesses.ts'
 import { planClaims, listClaims } from './claims.ts'
@@ -2228,7 +2228,7 @@ const textbook = defineTool('tree', {
     if (Array.isArray(args.mix)) return mixTextbooks(args.mix, args.page, args.receipt) as never
     if (args.nested === true || typeof args.nested === 'string') return nestedCatalogue(args.nested) as never
     if (typeof args.search === 'string') return searchTextbookPrograms(args.search, EXAMPLES) as never
-    if (isObj(args.evaluate)) { const e = args.evaluate as { theorem?: string; values?: Record<string, number | string> }; if (typeof e.theorem !== 'string') return listExpressions(); return evaluateTheorem(e.theorem, e.values ?? {}) }
+    if (isObj(args.evaluate)) { const e = args.evaluate as { theorem?: string; values?: Record<string, number | string> }; if (typeof e.theorem !== 'string') return listExpressions(); return TEXTBOOK_THEOREMS.some((t) => t.key === e.theorem) || !THEOREM_KEYS.has(e.theorem) ? evaluateTheorem(e.theorem, e.values ?? {}) : evaluateKernel(e.theorem, e.values ?? {}) }
     if (args.chat === true || isObj(args.chat)) return chatCoverage(args.chat)
     if (args.google === true || isObj(args.google)) {
       const rows = TEXTBOOK_THEOREMS.map((t) => { const s = getStatement(t.lean); return { theorem: t.key, formula: s.conclusion } })

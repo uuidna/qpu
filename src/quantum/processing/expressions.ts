@@ -4,6 +4,8 @@
 import { PROSE, proseFill } from './prose-index.ts'
 import { div, mod, mul, natSub, pow } from '../apps/index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
+import { THEOREMS } from './theorems-index.ts'
+import { AXIOMS, CLAY_FUNCTIONS } from './clay-register.ts'
 import { routeStatement } from './match.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
@@ -29,7 +31,7 @@ type Value = bigint | boolean | Value[]
 const FUNCS: Record<string, (a: bigint[]) => bigint> = { 'Nat.gcd': ([a, b]) => { let x = a!, y = b!; while (y) [x, y] = [y, mod(x, y)]; return x }, max: ([a, b]) => (a! > b! ? a! : b!), min: ([a, b]) => (a! < b! ? a! : b!), 'Nat.succ': ([a]) => a! + 1n, 'Nat.pred': ([a]) => (a! > 0n ? a! - 1n : 0n) }
 /** A recursive-descent evaluator: ∨ < ∧ < ¬ < comparison < + − < × / % < ^ (right) < application < atom; booleans and naturals kept apart.
  *  proposition: true also reads an implication, a biconditional, && || !, if-then-else, a tuple, Nat.zero, a cast and an uninterpreted function. */
-export const evaluate = (src: string, env: Env, mode?: { proposition?: boolean; functions?: readonly string[] }): { value: Value; parts: { text: string; left: string; op: string; right: string; holds: boolean }[] } => {
+export const evaluate = (src: string, env: Env, mode?: { proposition?: boolean; functions?: readonly string[]; defs?: Readonly<Record<string, { arity: number; f: (args: bigint[]) => bigint }>> }): { value: Value; parts: { text: string; left: string; op: string; right: string; holds: boolean }[] } => {
   const proposition = mode?.proposition === true, fns = new Set(mode?.functions ?? [])
   const text = proposition ? src.replaceAll('Nat.zero', '0').replace(/\s*:\s*(?:Int|Nat|Bool)\b/g, '') : src
   const ts = tokens(text); let p = 0; const parts: { text: string; left: string; op: string; right: string; holds: boolean }[] = []
@@ -57,6 +59,9 @@ export const evaluate = (src: string, env: Env, mode?: { proposition?: boolean; 
       if (proposition && k.v === 'if') { const c = formula(); if (take()?.v !== 'then') throw new Error('unread if'); const a = formula(); if (take()?.v !== 'else') throw new Error('unread if'); const b = formula(); return asBool(c) ? a : b }
       if (k.v === 'true') return true; if (k.v === 'false') return false
       if (FUNCS[k.v]) { const args: bigint[] = []; while (peek() && (peek()!.t === 'num' || peek()!.t === 'lp' || (peek()!.t === 'id' && !FUNCS[peek()!.v] && (!proposition || (peek()!.v !== 'then' && peek()!.v !== 'else' && !fns.has(peek()!.v)))))) args.push(num(atom())); return FUNCS[k.v]!(args) }
+      // a definition handed in is applied to as many atoms as its arity, binding tighter than any operator
+      const def = mode?.defs?.[k.v]
+      if (def) return def.f(Array.from({ length: def.arity }, () => num(atom())))
       if (proposition && fns.has(k.v)) { const args: Value[] = []; while (peek() && peek()!.t !== 'op' && peek()!.t !== 'rp' && !(peek()!.t === 'id' && (peek()!.v === 'then' || peek()!.v === 'else'))) args.push(atom()); return hashFn(k.v, args) }
       if (k.v in env) return env[k.v]!
       throw new Error(`the variable ${k.v} has no value`)
@@ -101,7 +106,7 @@ export const evaluate = (src: string, env: Env, mode?: { proposition?: boolean; 
     try { iff() } finally { parts.length = mark; if (saved === undefined) delete env[name.v]; else env[name.v] = saved }
     const body = ts.slice(from, p).map((tok) => tok.v).join(' ')
     const last = ts[from + 1]!.v === '<' ? n - 1 : n
-    for (let i = 0; i <= last; i++) if (evaluate(body, { ...env, [name.v]: BigInt(i) }, { proposition: true, functions: [...fns] }).value !== true) return false
+    for (let i = 0; i <= last; i++) if (evaluate(body, { ...env, [name.v]: BigInt(i) }, { ...mode, proposition: true, functions: [...fns] }).value !== true) return false
     return true
   }
   const value = proposition ? formula() : disj(); if (p < ts.length) throw new Error(`unread ${ts.slice(p).map((x) => x.v).join(' ')}`)
@@ -183,6 +188,64 @@ export const bindingFor = (key: string): Record<string, string> | null => {
     for (const n of domain(s.variables[i]!)) { const hit = rec(i + 1, { ...acc, [s.variables[i]!]: n }); if (hit) return hit }
     return null
   }
+  return rec(0, {})
+}
+
+/** The definitions the clay register ports, as the evaluator applies them, and the constants of the lattice as its environment. */
+type Defs = Readonly<Record<string, { arity: number; f: (args: bigint[]) => bigint }>>
+const LATTICE = (): { env: Env; defs: Defs } => ({
+  env: Object.fromEntries(AXIOMS.map((a) => [a.name, BigInt(a.value)])),
+  defs: Object.fromEntries(Object.entries(CLAY_FUNCTIONS).map(([name, { arity, f }]) => [name, { arity, f: (args: bigint[]) => { if (args.some((a) => a > BigInt(Number.MAX_SAFE_INTEGER))) throw new Error(`${name} past the safe integers`); return BigInt(f(...args.map(Number))) } }])),
+})
+/** The parts of a text at an operator outside every bracket. */
+const topLevel = (s: string, op: string): string[] => { const out: string[] = []; let d = 0, from = 0; for (let i = 0; i < s.length; i++) { const c = s[i]!; if ('(⟨[{'.includes(c)) d++; else if (')⟩]}'.includes(c)) d--; else if (d === 0 && s.startsWith(op, i)) { out.push(s.slice(from, i).trim()); from = i + op.length } } return [...out, s.slice(from).trim()] }
+/** A theorem of the kernel read from the statement Lean printed: the naturals it binds, its premises and its conclusion. A binder of any other type,
+ *  or a quantifier inside the body, leaves it unread (null). Each bound name is renamed v0, v1, …, so a Greek letter or a subscript reads as any other. */
+export const kernelStatement = (statement: string) => {
+  let rest = statement.trim(); const variables: string[] = [], bounds: string[] = []
+  // every leading ∀: groups of naturals, or one natural with its bound, the way Lean prints ∀ c < 42, … (the bound becomes a premise)
+  while (rest.startsWith('∀')) {
+    const [head, ...body] = topLevel(rest.slice(1), ',')
+    if (!body.length) return null
+    const bounded = /^\s*([^\s(){}<≤>≥,]+)\s*([<≤])\s*(.+)$/.exec(head!)
+    if (bounded) { variables.push(bounded[1]!); bounds.push(`${bounded[1]} ${bounded[2]} ${bounded[3]!.trim()}`) }
+    else {
+      const before = variables.length
+      for (const g of head!.matchAll(/[({]([^(){}:]+):\s*([^(){}]+)[)}]/g)) { if (g[2]!.trim() !== 'ℕ') return null; variables.push(...g[1]!.trim().split(/\s+/)) }
+      if (variables.length === before || head!.replace(/[({][^(){}]*[)}]/g, '').trim()) return null
+    }
+    rest = body.join(',').trim()
+  }
+  if (bounds.length) rest = [...bounds, rest].join(' → ')
+  if (/[∀∃λ]|fun /.test(rest)) return null
+  const name = (v: string) => new RegExp(`(?<![\\w'\\u2080-\\u2089\\u0370-\\u03ff])${v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\w'\\u2080-\\u2089\\u0370-\\u03ff])`, 'g')
+  for (const [i, v] of variables.entries()) rest = rest.replace(name(v), `v${i}`)
+  const parts = topLevel(rest, '→')
+  return { variables, premises: parts.slice(0, -1), conclusion: parts.at(-1)! }
+}
+/** Any theorem of the kernel evaluated as a tool, over the lattice: values for its naturals in, each premise and the conclusion computed out. */
+export const evaluateKernel = (key: string, values: Readonly<Record<string, number | string>> = {}) => {
+  const t = THEOREMS.find((x) => x.key === key)
+  if (!t) throw new Error(`no kernel theorem ${key}`)
+  const s = kernelStatement(t.statement), head = { theorem: key, module: t.module, statement: t.statement }
+  if (!s) return { ...head, evaluable: false, reason: PROSE.quantumProcessingExpressions_reason2, needs: [] as string[] }
+  const needs = s.variables.filter((v) => values[v] === undefined)
+  if (needs.length) return { ...head, evaluable: true, variables: s.variables, needs, computed: null }
+  const { env, defs } = LATTICE(), read = { proposition: true, defs }
+  for (const [i, v] of s.variables.entries()) env[`v${i}`] = BigInt(String(values[v]))
+  try {
+    const premises = s.premises.map((text) => ({ text, ...evaluate(text, env, read) }))
+    const met = premises.every((p) => p.value === true), c = evaluate(s.conclusion, env, read)
+    return { ...head, evaluable: true, variables: s.variables, needs: [] as string[], values: Object.fromEntries(s.variables.map((v) => [v, String(values[v])])), hypotheses: premises.map((p) => ({ text: p.text, holds: p.value === true, parts: p.parts })), premises: met, conclusion: { text: s.conclusion, holds: c.value === true, parts: c.parts }, holds: !met || c.value === true }
+  } catch (e) { return { ...head, evaluable: false, reason: (e as Error).message, needs: [] as string[] } }
+}
+/** Values that meet a kernel theorem's premises and make its conclusion hold, the first found among small numerals: the closed as they stand. */
+export const kernelBindingFor = (key: string): Record<string, string> | null => {
+  const t = THEOREMS.find((x) => x.key === key), s = t ? kernelStatement(t.statement) : null
+  if (!s || s.variables.length > 6) return null
+  const numerals = s.variables.length > 4 ? ['1', '2', '0', '3'] : ['1', '2', '0', '3', '5', '10']
+  const fit = (values: Record<string, string>) => { const r = evaluateKernel(key, values); return 'holds' in r && r.evaluable && r.premises === true && r.holds === true ? values : null }
+  const rec = (i: number, acc: Record<string, string>): Record<string, string> | null => { if (i === s.variables.length) return fit(acc); for (const n of numerals) { const hit = rec(i + 1, { ...acc, [s.variables[i]!]: n }); if (hit) return hit } return null }
   return rec(0, {})
 }
 

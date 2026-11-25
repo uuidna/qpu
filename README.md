@@ -225,9 +225,9 @@
 
 | receipt |  |
 | --- | --- |
-| uuid | 650bfc8b-0afe-2bd0-a6ff-c6a9f45a36d4 |
-| handle | `650bfc8b` |
-| sha256 | d019db714a0353d14be5618cfc15f48e089e3b53632983ad8c4acb418a853a49 |
+| uuid | 19d48591-33a2-355a-b075-925aca392328 |
+| handle | `19d48591` |
+| sha256 | 72e5e968119552c94f9adbfdd0bc8cfe86b3d6f9163caabf01abd1ef390ed718 |
 
 | hardware |  |
 | --- | --- |
@@ -246,39 +246,39 @@
 | cores | 4 |
 | parallelism | 4 |
 | cpuMHz | 0, 0, 0, 0 |
-| cpuUserMs | 20438740 |
-| cpuNiceMs | 2390 |
-| cpuSysMs | 2934990 |
-| cpuIdleMs | 65509190 |
+| cpuUserMs | 21689860 |
+| cpuNiceMs | 7550 |
+| cpuSysMs | 3142330 |
+| cpuIdleMs | 68303720 |
 | cpuIrqMs | 0 |
 | memoryBytes | 16868675584 |
-| freeMemoryBytes | 15178031104 |
-| load1 | 2.19 |
-| load5 | 2.22 |
-| load15 | 2.48 |
-| uptimeS | 22853 |
+| freeMemoryBytes | 15249494016 |
+| load1 | 1.94 |
+| load5 | 1.44 |
+| load15 | 1.87 |
+| uptimeS | 23926 |
 | diskBytes | 270553174016 |
-| diskFreeBytes | 232152297472 |
-| diskAvailableBytes | 35480735744 |
+| diskFreeBytes | 232145547264 |
+| diskAvailableBytes | 35473985536 |
 | diskBlockBytes | 4096 |
 | inodes | 16777216 |
-| inodesFree | 14906068 |
+| inodesFree | 14905995 |
 | networkInterfaces | 2 |
 | lean | leanprover/lean4:v4.33.0 |
-| rssBytes | 164286464 |
-| heapTotalBytes | 78479360 |
-| heapUsedBytes | 57636512 |
-| externalBytes | 17911546 |
-| arrayBuffersBytes | 646904 |
-| processUserMicros | 2484683 |
-| processSystemMicros | 124281 |
-| maxRssKb | 160436 |
-| pageFaults | 39201 |
+| rssBytes | 172933120 |
+| heapTotalBytes | 80736256 |
+| heapUsedBytes | 54169216 |
+| externalBytes | 17974451 |
+| arrayBuffersBytes | 709809 |
+| processUserMicros | 2581013 |
+| processSystemMicros | 168992 |
+| maxRssKb | 168880 |
+| pageFaults | 39006 |
 | fsReads | 0 |
 | fsWrites | 0 |
-| contextSwitches | 835 |
-| buildMs | 1191 |
-| at | 2026-11-25T10:17:31.694Z |
+| contextSwitches | 1025 |
+| buildMs | 999 |
+| at | 2026-11-25T10:35:25.007Z |
 
 | hardware.versions |  |
 | --- | --- |

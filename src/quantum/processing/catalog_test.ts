@@ -7,6 +7,7 @@ import { EXAMPLES } from './examples.ts'
 import { call } from './mcp.ts'
 import { THEOREMS } from './theorems-index.ts'
 import { THOUSAND_WALK } from './thousand-index.ts'
+import { evaluateKernel, kernelBindingFor, kernelStatement } from './expressions.ts'
 import { canonicalText, uuid } from '../uuid/index.ts'
 
 const sealed = (d: CatalogDoc) => d.id === uuid(`${d.collection};${canonicalText(d.data)}`)
@@ -96,4 +97,35 @@ test('where Payload is installed the catalog is created collection by collection
   assert.deepEqual(Object.keys(CATALOG_RELATIONS), [...CATALOG_COLLECTIONS])
   // this tree does not install Payload: its SDK does not resolve, so the site serves the catalog and no seeder runs
   assert.deepEqual(await recognisePayload(), { installed: false, sdk: null })
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a theorem of the kernel stated over the naturals is evaluated from the statement Lean printed, at values that meet its premises, none the kernel holds evaluates false, and each one bound has its example. */
+test('a theorem of the kernel stated over the naturals is evaluated from the statement Lean printed, at values that meet its premises, none the kernel holds evaluates false, and each one bound has its example', () => {
+  assert.deepEqual(kernelStatement('∀ c < 6 * 7, c % (6 * 7) = c'), { variables: ['c'], premises: ['v0 < 6 * 7'], conclusion: 'v0 % (6 * 7) = v0' })
+  assert.deepEqual(kernelStatement('∀ (g₁ Δ : ℕ), g₁ ≤ Δ → Δ - g₁ + g₁ = Δ'), { variables: ['g₁', 'Δ'], premises: ['v0 ≤ v1'], conclusion: 'v1 - v0 + v0 = v1' })
+  assert.equal(kernelStatement('∀ (s : Finset ℕ), s.card = s.card'), null)
+  const closed = evaluateKernel('Qpu.Harmonic.merkaba_frames_agree')
+  assert.deepEqual([closed.evaluable, 'premises' in closed && closed.premises, 'holds' in closed && closed.holds], [true, true, true])
+  // a premise that fails holds the theorem vacuously; the binding found meets it
+  const outside = evaluateKernel('Qpu.Harmonic.merkaba_cells_covered', { c: 50 }), found = kernelBindingFor('Qpu.Harmonic.merkaba_cells_covered')!
+  assert.deepEqual(['premises' in outside && outside.premises, 'holds' in outside && outside.holds], [false, true])
+  const inside = evaluateKernel('Qpu.Harmonic.merkaba_cells_covered', found)
+  assert.deepEqual(['premises' in inside && inside.premises, 'holds' in inside && inside.holds], [true, true])
+  // the clay register's own port agrees with the kernel wherever a premise holds, at every small value of up to two naturals
+  let checked = 0
+  for (const t of THEOREMS) {
+    const s = kernelStatement(t.statement)
+    if (!s || s.variables.length > 2) continue
+    for (const c of s.variables.reduce<number[][]>((acc) => acc.flatMap((x) => [0, 1, 2, 3, 7].map((n) => [...x, n])), [[]])) {
+      const values: Record<string, number> = Object.fromEntries(s.variables.map((v, i) => [v, c[i]!]))
+      const r = evaluateKernel(t.key, values)
+      if (r.evaluable && 'premises' in r && r.premises === true) { assert.equal(r.holds, true, `${t.key} at ${JSON.stringify(values)}`); checked += 1 }
+    }
+  }
+  assert.ok(checked > 1000, `${checked} evaluations compared with the kernel`)
+  // each theorem the evaluator binds has a variant in the catalog, and the door computes it
+  const unbound = THEOREMS.filter((t) => kernelBindingFor(t.key) && !catalogProduct(EXAMPLES, t.key).discovered).map((t) => t.key)
+  assert.deepEqual(unbound, [])
+  const door = call('textbook', { evaluate: { theorem: 'mint_eq_two_pow', values: { k: 10 } } }).result!.structuredContent
+  assert.deepEqual([door.holds, door.conclusion.parts[0].left, door.conclusion.parts[0].right], [true, '1024', '1024'])
 })

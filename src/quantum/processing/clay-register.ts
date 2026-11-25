@@ -88,6 +88,9 @@ const FUNCTIONS: Record<string, { arity: number; f: (...a: number[]) => number }
   qftGates: { arity: 1, f: (k) => qftGates(k!) }, qftDepth: { arity: 1, f: (k) => qftDepth(k!) }, qftStates: { arity: 1, f: (k) => qftStates(k!) }, paulis: { arity: 1, f: (k) => paulis(k!) },
 }
 
+/** The definitions of the tree the register ports one for one, by name and arity: what any statement over the lattice may apply. */
+export const CLAY_FUNCTIONS: Readonly<Record<string, { arity: number; f: (...a: number[]) => number }>> = FUNCTIONS
+
 type Tok = { t: 'num'; v: number } | { t: 'id'; v: string } | { t: 'op'; v: string }
 const lex = (src: string): Tok[] => { const out: Tok[] = []; const re = /\s*(\d+|[A-Za-z_][A-Za-z0-9_']*|[-+*/%^()])/gy; let m: RegExpExecArray | null; let i = 0; while (i < src.length) { re.lastIndex = i; m = re.exec(src); if (!m) throw new Error(`cannot read "${src.slice(i)}"`); const s = m[1]!; out.push(/^\d/.test(s) ? { t: 'num', v: Number(s) } : /^[A-Za-z_]/.test(s) ? { t: 'id', v: s } : { t: 'op', v: s }); i = re.lastIndex } return out }
 export const evaluate = (src: string): number => {
