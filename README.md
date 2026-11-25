@@ -225,9 +225,9 @@
 
 | receipt |  |
 | --- | --- |
-| uuid | 8b83e5b5-205d-84fb-83a6-b3f35300147f |
-| handle | `8b83e5b5` |
-| sha256 | bcb1ecdab826dffbefc91e71e1e0cdb50b073219320f9278bb8eb659560f366b |
+| uuid | 650bfc8b-0afe-2bd0-a6ff-c6a9f45a36d4 |
+| handle | `650bfc8b` |
+| sha256 | d019db714a0353d14be5618cfc15f48e089e3b53632983ad8c4acb418a853a49 |
 
 | hardware |  |
 | --- | --- |
@@ -246,39 +246,39 @@
 | cores | 4 |
 | parallelism | 4 |
 | cpuMHz | 0, 0, 0, 0 |
-| cpuUserMs | 15145060 |
-| cpuNiceMs | 0 |
-| cpuSysMs | 2227160 |
-| cpuIdleMs | 58631420 |
+| cpuUserMs | 20438740 |
+| cpuNiceMs | 2390 |
+| cpuSysMs | 2934990 |
+| cpuIdleMs | 65509190 |
 | cpuIrqMs | 0 |
 | memoryBytes | 16868675584 |
-| freeMemoryBytes | 15351709696 |
-| load1 | 2.01 |
-| load5 | 1.6 |
-| load15 | 1.65 |
-| uptimeS | 19595 |
+| freeMemoryBytes | 15178031104 |
+| load1 | 2.19 |
+| load5 | 2.22 |
+| load15 | 2.48 |
+| uptimeS | 22853 |
 | diskBytes | 270553174016 |
-| diskFreeBytes | 232210743296 |
-| diskAvailableBytes | 35539181568 |
+| diskFreeBytes | 232152297472 |
+| diskAvailableBytes | 35480735744 |
 | diskBlockBytes | 4096 |
 | inodes | 16777216 |
-| inodesFree | 14906341 |
+| inodesFree | 14906068 |
 | networkInterfaces | 2 |
 | lean | leanprover/lean4:v4.33.0 |
-| rssBytes | 163766272 |
-| heapTotalBytes | 77885440 |
-| heapUsedBytes | 50049264 |
-| externalBytes | 18179239 |
-| arrayBuffersBytes | 914597 |
-| processUserMicros | 2631860 |
-| processSystemMicros | 165644 |
-| maxRssKb | 159928 |
-| pageFaults | 39126 |
+| rssBytes | 164286464 |
+| heapTotalBytes | 78479360 |
+| heapUsedBytes | 57636512 |
+| externalBytes | 17911546 |
+| arrayBuffersBytes | 646904 |
+| processUserMicros | 2484683 |
+| processSystemMicros | 124281 |
+| maxRssKb | 160436 |
+| pageFaults | 39201 |
 | fsReads | 0 |
 | fsWrites | 0 |
-| contextSwitches | 802 |
-| buildMs | 1346 |
-| at | 2026-11-25T09:23:13.778Z |
+| contextSwitches | 835 |
+| buildMs | 1191 |
+| at | 2026-11-25T10:17:31.694Z |
 
 | hardware.versions |  |
 | --- | --- |

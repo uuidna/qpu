@@ -543,5 +543,6 @@ def quantumProcessingExamples_showsClayWalkQubits : String := "The qubit count o
 def quantumProcessingExamples_showsClayClaimed : String := "⟦0⟧ by name, each side recomputed in exact integers: one conjunct of the register's conjunction (clay_wings), its example made from the register itself."
 def quantumProcessingExamples_showsWalkClaimed : String := "⟦0⟧ alone on the walk: the theorem ⟦1⟧ binds it to its library notion at every size, so every example of it is held (Thousand.meaning_sound). The example is made from the walk Lean writes, one for each family formula."
 def quantumProcessingExamples_showsEvaluated : String := "⟦0⟧ evaluated at the first values that meet its premises, every side computed in exact integers (textbook_expressions_evaluate): its example is made from its own statement."
+def quantumProcessingExamples_showsLiterals : String := "The literals of a file audited: of two URLs taken from the licence table, the one its registry holds is clean and the other is found outside it, priced to the tree and never blocking; the two make all the literals (textbook_literal_in_registry)."
 
 end Prose
