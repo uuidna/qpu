@@ -1,12 +1,12 @@
 // A page for every product of the catalog: the theorem, the receipt that is its id, and its variants, each worked example from each
-// witness. The paths and the rows come from the catalog itself (src/quantum/processing/catalog.ts), so a theorem the kernel gains has its
+// witness. The paths and the rows come from the catalog itself (src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts), so a theorem the kernel gains has its
 // page at the next build and nothing here is written by hand. The page is served at the product's id, the same id its REST document has.
 // The seed writes site/catalog/[product].paths.ts, which re-exports these routes: every file of the site outside .vitepress is the seed's.
 import { defineRoutes } from 'vitepress'
-import { catalogProduct } from '../../src/quantum/processing/catalog.ts'
-import { EXAMPLES } from '../../src/quantum/processing/examples.ts'
-import { THEOREMS } from '../../src/quantum/processing/theorems-index.ts'
-import { LICENSE } from '../../src/quantum/processing/unit/license.ts'
+import { catalogProduct } from '../../src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts'
+import { EXAMPLES } from '../../src/quantum/uuid/programs/9/d/4/f/e/4/4/2/index.ts'
+import { THEOREMS } from '../../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
+import { LICENSE } from '../../src/quantum/uuid/programs/a/f/3/d/e/a/5/f/index.ts'
 
 const cell = (text: string) => text.replace(/\|/g, '\\|').replace(/\s+/g, ' ')
 const table = (head: readonly string[], rows: readonly (readonly string[])[]) => [`| ${head.join(' | ')} |`, `|${head.map(() => '---').join('|')}|`, ...rows.map((row) => `| ${row.map(cell).join(' | ')} |`)]

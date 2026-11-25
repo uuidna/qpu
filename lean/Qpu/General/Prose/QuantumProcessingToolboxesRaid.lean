@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingToolboxesRaid
-The prose of `src/quantum/processing/toolboxes/raid.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/9/a/1/5/3/0/4/2/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose

@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumPayloadDeploy
-The prose of `src/quantum/payload/deploy.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/9/6/9/4/a/5/e/4/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose

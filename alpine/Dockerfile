@@ -44,7 +44,7 @@ ENV PATH=/opt/lean/bin:${PATH} MINIFLARE_WORKERD_PATH=/usr/local/bin/workerd
 WORKDIR /qpu
 
 # The prover: qpu's Lean project with Mathlib's cache in place, served by alpine/prover-server.ts to the Prover Durable
-# Object (src/quantum/net/prover-object.ts), which starts it with no internet. The project is root's and read-only to
+# Object (src/quantum/uuid/programs/3/6/6/e/b/a/3/b/index.ts), which starts it with no internet. The project is root's and read-only to
 # the unprivileged user the server runs as, so no check can change what the next one is checked against; only the gap
 # run's own outputs are writable. Mathlib's cache unpacks its compiled files readable by their owner alone, so the layer
 # that fetches them makes the project readable by every user and leaves it writable by root alone: a later layer would

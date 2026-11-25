@@ -4,10 +4,10 @@
 // Each copy ends with the hardware receipt of the build that wrote it, which differs from machine to machine: with --check nothing is
 // written, every copy is compared up to its hardware mark, and a difference fails.
 import { readFileSync, writeFileSync } from 'node:fs'
-import { PROSE } from '../src/quantum/processing/prose-index.ts'
-import { TOOLBOXES } from '../src/quantum/processing/mcp.ts'
-import { LICENSE, PRECEDENCE } from '../src/quantum/processing/unit/license.ts'
-import { RELEASE_REPOSITORY, UNIT_CONCEPT_DOI } from '../src/quantum/processing/release.ts'
+import { PROSE } from '../src/quantum/uuid/programs/5/9/e/4/9/1/a/4/index.ts'
+import { TOOLBOXES } from '../src/quantum/uuid/programs/3/8/5/9/0/2/0/f/index.ts'
+import { LICENSE, PRECEDENCE } from '../src/quantum/uuid/programs/a/f/3/d/e/a/5/f/index.ts'
+import { RELEASE_REPOSITORY, UNIT_CONCEPT_DOI } from '../src/quantum/uuid/programs/6/6/5/9/1/f/5/8/index.ts'
 import { HARDWARE_MARK, above, beforeHardware, hardware, htmlWithHardware, page, pkg, receipt, receipts, title, verified } from './oneText.ts'
 
 const record = {
@@ -38,7 +38,7 @@ const runtime = [
   '',
 ].join('\n')
 const copies: readonly [string, string][] = [
-  ['src/quantum/processing/receipt-index.ts', runtime],
+  ['src/quantum/uuid/programs/2/b/c/0/d/1/3/d/index.ts', runtime],
   ['.zenodo.json', JSON.stringify(record, null, 2) + '\n'],
   ['README.md', page],
   ['src/quantum/README.md', page],

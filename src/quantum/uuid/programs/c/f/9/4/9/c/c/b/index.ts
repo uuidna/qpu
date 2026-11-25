@@ -1,0 +1,53 @@
+// A URL that names no route is answered anyway: the combination of the cached assets its words select — the generated code
+// (every file of the full stack), the SDK module, the shadcn registry items, the examples' blocks — computed in real time from
+// the handler alone, every asset at its content address and verified (verify: the seal, the content), the combination at the
+// address of its parts (ETag by content, 304 by involution). The fallback for anything, and a billed answer: one coil of the
+// metered variant for the author's coins, and a sublicence at the tenant's own Stripe when the tenant resells it (the licence
+// chain, link by link: textbook_licence_chain). Four kinds of asset, fifteen non-empty combinations (textbook_url_combinations).
+import { PROSE, proseFill } from '../../../../../../../../5/9/e/4/9/1/a/4/index.ts'
+import type { Context } from '../../../../../../../../d/e/7/d/b/7/1/6/index.ts'
+import { uuid, verify, PRESENTABLE_ITEMS } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { wordStems } from '../../../../../../../../5/b/3/0/7/9/e/2/index.ts'
+import { orderUsage, chainLicence } from '../../../../../../../../4/5/8/2/8/f/3/f/index.ts'
+import { coilColour } from '../../../../../../../../7/2/1/a/a/e/7/d/index.ts'
+
+const ASSET_KINDS = ['code', 'sdk', 'registry', 'block'] as const
+type AssetKind = typeof ASSET_KINDS[number]
+type Asset = { kind: AssetKind; id: string; url: string; address: string; bytes: number; verified: boolean; stems: string[]; score: number; text?: string; tool?: string; replay?: { tool: string; arguments: Record<string, unknown> } }
+
+const intersect = (a: Set<string>, b: Set<string>) => [...a].filter((x) => b.has(x))
+
+/** Every cached asset the handler can compute, each at its address: the SDK, the registry items, the examples' blocks. */
+const listAssets = (ctx: Context, origin: string): Omit<Asset, 'score'>[] => {
+  const sdk = (ctx.handle({ jsonrpc: '2.0', id: 1, method: 'resources/read', params: { uri: 'sdk://qpu/lib' } }) as { result?: { contents?: { text?: string }[] } }).result?.contents?.[0]?.text ?? ''
+  const textAsset = (kind: AssetKind, id: string, text: string, url: string): Omit<Asset, 'score'> => { const address = uuid(text); return { kind, id, url, address, bytes: text.length, verified: verify(address, text).valid, stems: [...wordStems(id.replace(/\.[a-z]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2'))], text } }
+  const idAsset = (kind: AssetKind, id: string, url: string, stems: string, extra: Partial<Asset> = {}): Omit<Asset, 'score'> => { const address = uuid(`${kind}:${id}`); return { kind, id, url, address, bytes: 0, verified: verify(address).valid, stems: [...wordStems(stems)], ...extra } }
+  return [
+    ...(sdk ? [textAsset('sdk', 'lib/qpu-sdk.ts', sdk, `${origin}/lib/qpu-sdk.ts`)] : []),
+    ...PRESENTABLE_ITEMS.map((item) => idAsset('registry', item, `${origin}/r/${item}.json`, `${item} registry shadcn`)),
+    ...ctx.examples.map((e) => idAsset('block', e.id, `${origin}/mcp`, `${e.id} ${e.tool} ${e.theorem ?? ''}`, { tool: e.tool, replay: { tool: 'textbook', arguments: { reuse: e.id } } })),
+  ]
+}
+
+/** The combination the URL names: the assets whose stems its words share, ranked; the code joined; the whole addressed, verified and billed. */
+export const composePage = (path: string, ctx: Context, origin = 'https://qpu.uuidna.com', tenant = 'uuidna', currency = 'eur') => {
+  const clean = path.split('?')[0]!.split('#')[0]!
+  const ext = /\.(tsx?|jsx?|json|css|md|html)$/.exec(clean)?.[1] ?? null
+  const words = wordStems(clean.replace(/\.[a-z]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2'))
+  const all = listAssets(ctx, origin)
+  const selected: Asset[] = all.map((a) => ({ ...a, score: intersect(words, new Set(a.stems)).length })).filter((a) => a.score > 0).sort((a, b) => b.score - a.score || ASSET_KINDS.indexOf(a.kind) - ASSET_KINDS.indexOf(b.kind) || a.id.localeCompare(b.id))
+  const code = selected.filter((a) => a.text !== undefined).map((a) => `// ── ${a.id} · ${a.address} · ${a.bytes} bytes · ${a.verified ? 'verified' : 'unverified'}\n${a.text}`).join('\n\n')
+  const kinds = [...new Set(selected.map((a) => a.kind))]
+  const address = selected.length ? uuid(selected.map((a) => `${a.kind}:${a.id}:${a.address}`).join('\n')) : null
+  const verified = selected.length > 0 && selected.every((a) => a.verified)
+  // the bill: the composition is one call and a coil (no pure algebra), priced by the metered variant for the author's coins; a tenant that resells it sublicenses it at its own Stripe
+  const order = orderUsage(1, currency, undefined, { free: 0, coils: 1, commercial: tenant !== 'uuidna' }) // the author's own domain serves it under the non-commercial term; a tenant reselling it is commercial: the coil priced
+  const licence = chainLicence(['author', tenant, 'customer'])
+  return {
+    path: clean, words: [...words], ext, kinds, combinations: 2 ** ASSET_KINDS.length - 1, theorem: 'textbook_url_combinations',
+    count: selected.length, assets: selected.map(({ text: _t, ...a }) => { void _t; return a }), code: code || null, codeBytes: code.length, address, verified,
+    serve: ext && /^(tsx?|jsx?)$/.test(ext) ? PROSE.quantumProcessingCompose_s1 : ext === 'json' || !ext ? PROSE.quantumProcessingCompose_s2 : 'application/json: the combination',
+    bill: { calls: 1, free: 0, coils: 1, colour: coilColour().coil, order, author: { coins: 2, says: PROSE.quantumProcessingCompose_says3 }, licence },
+    says: selected.length ? proseFill(PROSE.quantumProcessingCompose_s4, selected.length, kinds.length, address) : PROSE.quantumProcessingCompose_s5,
+  }
+}

@@ -15,5 +15,5 @@
     "types": ["node"]
   },
   "include": ["src/quantum/**/*.ts", "scripts/**/*.ts", "alpine/**/*.ts"],
-  "exclude": ["node_modules", "legacy", "src/quantum/net/worker.ts", "src/quantum/net/mailbox.ts", "src/quantum/net/prover-object.ts"]
+  "exclude": ["node_modules", "legacy", "src/quantum/uuid/programs/8/7/b/1/e/7/e/9/index.ts", "src/quantum/uuid/programs/6/1/8/6/1/c/e/2/index.ts", "src/quantum/uuid/programs/3/6/6/e/b/a/3/b/index.ts"]
 }

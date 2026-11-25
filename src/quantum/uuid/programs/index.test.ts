@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import { auditProgramNeighbours, sealLeavesSplit, challenge, competeProgramNeighbours, gateProgramFiles, guardUpstream, indexProgramFolders, productCombinations, program, programPlugin, reflectProgramNeighbours, sealProgramProducts } from './index.ts'
-import { PROSE } from '../../processing/prose-index.ts'
+import { PROSE } from './5/9/e/4/9/1/a/4/index.ts'
 
 /** Challenge physics and laws under adversarial register pressure. */
 /** The neighbour audit, computed once for the tests that read it. */

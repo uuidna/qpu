@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingCryptoCross
-The prose of `src/quantum/processing/crypto/cross.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/3/1/0/2/7/5/b/a/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose

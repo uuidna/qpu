@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumOsAlpinePackages
-The prose of `src/quantum/os/alpine/packages.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/2/4/a/2/d/a/5/c/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose

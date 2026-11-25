@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumNetProver
-The prose of `src/quantum/net/prover.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/6/a/b/e/3/a/d/f/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose

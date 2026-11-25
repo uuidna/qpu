@@ -1,14 +1,14 @@
 // The site from the quantum tree, each page with its kernel-checked proofs as schema.org microdata.
-import { PROSE } from '../src/quantum/processing/prose-index.ts'
+import { PROSE } from '../src/quantum/uuid/programs/5/9/e/4/9/1/a/4/index.ts'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { TOOLBOXES, handle } from '../src/quantum/processing/mcp.ts'
-import { ISO_CLAUSES, ISO_GROUPS, ISO_STANDARDS, ISO_VOCABULARY } from '../src/quantum/processing/iso-index.ts'
-import { THEOREMS } from '../src/quantum/processing/theorems-index.ts'
+import { TOOLBOXES, handle } from '../src/quantum/uuid/programs/3/8/5/9/0/2/0/f/index.ts'
+import { ISO_CLAUSES, ISO_GROUPS, ISO_STANDARDS, ISO_VOCABULARY } from '../src/quantum/uuid/programs/b/4/2/5/4/0/d/7/index.ts'
+import { THEOREMS } from '../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
 import { page } from './oneText.ts'
-import { listEnvelope } from '../src/quantum/processing/toolbox.ts'
-import { catalogProduct, catalogSummary } from '../src/quantum/processing/catalog.ts'
-import { EXAMPLES } from '../src/quantum/processing/examples.ts'
+import { listEnvelope } from '../src/quantum/uuid/programs/d/e/7/d/b/7/1/6/index.ts'
+import { catalogProduct, catalogSummary } from '../src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts'
+import { EXAMPLES } from '../src/quantum/uuid/programs/9/d/4/f/e/4/4/2/index.ts'
 
 type Proof = { key: string; module: string; statement: string; axioms: readonly string[] }
 type Subject = { type: 'DefinedTerm' | 'SoftwareApplication'; name: string; set?: string; code?: string }
