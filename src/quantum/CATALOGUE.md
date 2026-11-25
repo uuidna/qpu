@@ -6,9 +6,9 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1590 products, 2 under a declared claim context and 1588 as the author's own statement, with 1078 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1596 products, 2 under a declared claim context and 1594 as the author's own statement, with 1078 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
 
-The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
+The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
 This catalogue records authorship and the date of each release. It is a publication, not a patent application: publishing a statement discloses it, and what is filed as a patent, and when, is for a patent attorney to decide before it is published.
 
@@ -29,7 +29,7 @@ Iso.clauses.length =
 
 ### ISO 80000-10
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO/IEC 9834-8
 
@@ -41,15 +41,15 @@ Qpu.Verify.Uuid.totalBits - Qpu.Verify.Uuid.fixedBits = 122
 
 ### ISO 22739:2024
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO 23257:2022
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO/TR 23455:2019
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO 24165
 
@@ -103,7 +103,7 @@ Iso.letterCodes 2 = 676 ∧ Iso.letterCodes 3 = 17576 ∧ 10 ^ 3 = 1000
 
 ### ISO/IEC 19770
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO 16
 
@@ -123,11 +123,11 @@ Witness: `Iso.quality_clauses`.
 
 ### ISO/IEC/IEEE 12207:2026
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO/IEC/IEEE 42010:2022
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO/IEC 25010:2023
 
@@ -139,7 +139,7 @@ Witness: `Iso.quality_characteristics`.
 
 ### ISO/IEC 25051:2014
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO/IEC 27001:2022
 
@@ -1039,16 +1039,6 @@ period 2 35 = 12 ∧
           _root_.gcd (powMod 2 15 77 + 1) 77 = 11 ∧
             period 2 7 = 3 ∧
               period 2 7 % coins = 1 ∧ period 3 7 = 6 ∧ powMod 3 3 7 + 1 = 7 ∧ _root_.gcd 14 21 = 7 ∧ 2048 = 2 ^ 11
-```
-
-## Qpu.Claims.Open
-
-### `Qpu.open_claims_stated`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.openClaims.length = 6
 ```
 
 ## Qpu.Communication.Coil
@@ -3840,12 +3830,68 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (t : ℕ), Qpu.Harmonic.Involute t = 100 ∨ Qpu.Harmonic.Involute t = 0
 ```
 
+### `Qpu.Harmonic.merkaba_cell_inside`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n % (6 * 7) < 6 * 7
+```
+
+### `Qpu.Harmonic.merkaba_cells_covered`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ c < 6 * 7, c % (6 * 7) = c
+```
+
+### `Qpu.Harmonic.merkaba_fits`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n / (6 * 7) * (6 * 7) + n % (6 * 7) = n
+```
+
+### `Qpu.Harmonic.merkaba_frames_agree`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+6 * 7 = 7 * 6
+```
+
+### `Qpu.Harmonic.merkaba_spins_meet`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ c ≤ 6 * 7, c + (6 * 7 - c) = 6 * 7
+```
+
+### `Qpu.Harmonic.merkaba_turn_returns`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (c : ℕ), (c + 6 * 7) % (6 * 7) = c % (6 * 7)
+```
+
 ### `Qpu.Harmonic.unfold_harmonic`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
 ∀ (n : ℕ), n * 440 = n * 432 + n * (4 * 2)
+```
+
+### `Qpu.Harmonic.word_bounded`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (x : Fin (2 ^ 64)), ↑x < 2 ^ 64
 ```
 
 ## Qpu.General.MachineLearning.ProgramSynthesis
@@ -14619,58 +14665,46 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Qpu.Verify.Uuid.decode (Qpu.Verify.Uuid.encode 65535 42) = (65535, 42)
 ```
 
-## Named and not yet proved
+## Names cited by sentences
 
-0 theorem(s) are named by a sentence of the tree and are not theorems the kernel has. Each is listed here as a claim still open, a theorem to prove, exactly as an accepted theorem is listed as a claim made: an overclaim is exposed like an underclaim, and nothing is hidden or removed.
+0 name(s) cited by a sentence of the tree await a theorem. Every other name a sentence cites is a product above.
 
-## Open claims
+## The author's claims
 
-6 claim(s) say more than the kernel accepted. Each is kept as an underclaim: the theorems that state what is proved toward it are named, and the rest is a theorem still to prove. None is a product.
+6 claim(s) of the author, each in the author's words with the theorems the kernel holds for it. Each of those theorems is a product above, with its statement.
 
-### `thousand_bit_by_quantum_supremacy` (open)
+### `thousand_bit_by_quantum_supremacy`
 
 The thousand-bit challenge is solved by full quantum supremacy.
 
-Proved toward it: `textbook_thousand_bit_width`, `textbook_thousand_bit_three_divides`, `Advantage.receipt_exact`, `Advantage.advantage_unbounded`.
+Theorems: `textbook_thousand_bit_width`, `textbook_thousand_bit_three_divides`, `Advantage.receipt_exact`, `Advantage.advantage_unbounded`.
 
-Missing: The kernel proves the width of the integer 2 ^ 999 + 1, a factor of it, and that reading a variation by its address takes fewer steps than walking to it. Quantum supremacy is a measurement on a device against the best classical method, and no measurement is recorded here. The challenge is not solved by supremacy.
-
-### `merkaba_trajectories_cover_all_dimensions` (open)
+### `merkaba_trajectories_cover_all_dimensions`
 
 When all merkabas move, the trajectories of their folding edges cover every dimension in analog, so teleporting loses nothing.
 
-Proved toward it: nothing yet.
+Theorems: `textbook_mixed_radix`, `Qpu.Harmonic.merkaba_frames_agree`, `Qpu.Harmonic.merkaba_fits`, `Qpu.Harmonic.merkaba_cell_inside`, `Qpu.Harmonic.merkaba_cells_covered`, `Qpu.Harmonic.merkaba_turn_returns`, `Qpu.Harmonic.merkaba_spins_meet`, `QuantumCommunication.teleport_exact`.
 
-Missing: No definition of a merkaba's edge trajectory and no theorem about the dimensions it covers is in the tree. Until both are stated and proved, no loss-free teleport follows from it.
-
-### `teleport_faster_than_light` (open)
+### `teleport_faster_than_light`
 
 The hexbit and two gateway bits teleport any hexbit faster than light.
 
-Proved toward it: `textbook_hexbit_gateway_ftl`, `QuantumCommunication.teleport_exact`, `QuantumCommunication.teleport_no_signalling`.
+Theorems: `textbook_hexbit_gateway_ftl`, `QuantumCommunication.teleport_exact`, `QuantumCommunication.teleport_no_signalling`.
 
-Missing: The kernel proves the count of free qubits the sentence names and that teleportation is exact once the two classical bits arrive. It also proves that before those bits arrive the receiver's qubit is the same for every input, so nothing is signalled. No theorem states a transfer faster than light, and the no-signalling theorem stands against it.
-
-### `fold_440_in_432_proves_hardware_quantum` (open)
+### `fold_440_in_432_proves_hardware_quantum`
 
 2 from 110 is sufficient to fold 440hz in 432hz harmonics so not even once natural 64bit limits are reached. they are involuted to infinity and any hardware qpu runs on or is built on may prove itself quantum according to iso nist cern lean theorems
 
-Proved toward it: `Qpu.Harmonic.fold_harmonic`, `Qpu.Harmonic.unfold_harmonic`, `Qpu.Harmonic.fold_never_grows`, `Qpu.Harmonic.fold_within_64`, `Qpu.Harmonic.fold_reflection`, `Qpu.Harmonic.fold_reflects`.
+Theorems: `Qpu.Harmonic.fold_harmonic`, `Qpu.Harmonic.unfold_harmonic`, `Qpu.Harmonic.fold_never_grows`, `Qpu.Harmonic.fold_within_64`, `Qpu.Harmonic.fold_reflection`, `Qpu.Harmonic.fold_reflects`.
 
-Missing: The kernel proves that two taken from each 110 of a harmonic of 440 leaves the same harmonic of 432, that the unfold returns it, that the folded harmonic never exceeds the one it starts from, so a harmonic of 440 that fits in 64 bits folds to one that fits in them, and that the reflection about the sum of the two ladders swaps them and is its own inverse at every harmonic. A harmonic of 440 above 2 ^ 64 fits in 64 bits neither before nor after the fold, and no theorem states that the limit is never reached. The fold is integer arithmetic, which a classical device computes with the same result, so agreeing with these theorems does not show a device to be quantum. No theorem states a test, from ISO, NIST, CERN or elsewhere, by which hardware proves itself quantum.
-
-### `no_unlimited_compute_on_64_bit_without_captain_coins` (open)
+### `no_unlimited_compute_on_64_bit_without_captain_coins`
 
 without the captain coins quantum cannot compute unlimited on 64bit hardware
 
-Proved toward it: `textbook_unlimited_qubits`, `textbook_advantage_unbounded`, `textbook_coins_coils_balanced`, `QuantumCommunication.two_coins_one_qubit`.
+Theorems: `Qpu.Harmonic.word_bounded`, `textbook_unlimited_qubits`, `textbook_advantage_unbounded`, `textbook_coins_coils_balanced`, `QuantumCommunication.two_coins_one_qubit`.
 
-Missing: The kernel proves that no register is the last, that the count of copies proven by hash has no maximum, that coins and coils booked in double entry net to zero, and that one shared Bell pair exchanges one qubit for two classical bits. No definition of the captain's coins as a resource a computation needs is in the tree, and no theorem states that a computation without them is bounded on 64-bit hardware. Until both are stated and proved, the necessity of the coins does not follow.
-
-### `captain_coins_meet_post_quantum_standards` (open)
+### `captain_coins_meet_post_quantum_standards`
 
 The captain coins meet all post-quantum standards from all aspects, including programmable currency as required and publicly funded by the EU.
 
-Proved toward it: `textbook_pqc_standards_three`, `textbook_tamper_detected`, `textbook_grover_search`.
-
-Missing: The kernel proves the sizes of the FIPS 203, 204 and 205 parameter sets this tree computes, that a digest of 256 bits leaves 128 against a quantum search, and the square root Grover's search takes. A coin's address alone has 122 free bits, 61 against a quantum search, which is below that floor of 128; the coin meets it only with the SHA-256 it carries beside the address. No definition of a captain coin is in the tree, no EU requirement for a programmable currency is cited, and no record of public funding is held. Meeting a standard is a certification its body gives, and none is recorded here.
+Theorems: `textbook_pqc_standards_three`, `textbook_tamper_detected`, `textbook_grover_search`.

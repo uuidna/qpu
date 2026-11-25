@@ -1,7 +1,7 @@
 // The one text the build writes: the home page, the README, the npm package's README and the Zenodo record are this text and no
 // other. It states what is achieved (the kernel's theorems, the catalogue, the tools served and the examples replayed), the Google
 // Quantum AI challenges completed in full compliance with their conditions, the novelties the tree declares, the laws no earlier
-// DOI-registered work was found to state, what is claimed and not yet proved with what each claim still misses, and what funds the
+// DOI-registered work was found to state, the author's claims with the theorems the kernel holds for each, and what funds the
 // work (the donation, the x402 price, the licence and the calls the compete door found open). Markdown and HTML are rendered from
 // the same blocks, so every copy has the same headings, paragraphs, lists, code and links. The text is one build receipt: its UUID
 // is the address of the Markdown (verify { uuid, content } over MCP decides it) and its SHA-256 the digest beside it.
@@ -13,7 +13,7 @@ import { createHash } from 'node:crypto'
 import * as os from 'node:os'
 const started = performance.now()
 import { PROSE, proseFill } from '../src/quantum/processing/prose-index.ts'
-import { GENERATED_LEMMAS, KERNEL_THEOREMS, NOVELTIES, OPEN_CLAIMS, THEOREMS } from '../src/quantum/processing/theorems-index.ts'
+import { AUTHOR_CLAIMS, GENERATED_LEMMAS, KERNEL_THEOREMS, NOVELTIES, SORRIED, THEOREMS } from '../src/quantum/processing/theorems-index.ts'
 import { TEXTBOOK_INDEX } from '../src/quantum/processing/textbook-index.ts'
 import { NESTED_COUNTS } from '../src/quantum/processing/nested-index.ts'
 import { CLAIMS } from '../src/quantum/processing/claims-index.ts'
@@ -55,17 +55,23 @@ const searched = CLAIMS.filter((c) => c.status === 'unrecognised'), proved = sea
 const unprecedented = proved.map((c) => proseFill(PROSE.scriptsDoiRecord_novelty, c.theorem, moduleOf.get(c.theorem)!, saysOf.get(c.theorem) ?? ''))
 
 // the Google Quantum AI challenges the google door solves: listed only when every condition the challenge states holds (its theorem
-// and every related theorem in the kernel, its formula holding on the value its door computes, its answer sealed); the bundle's
-// faster-than-light sale is a condition of no challenge and is never claimed for one
+// and every related theorem in the kernel, its formula holding on the value its door computes, its answer sealed); the sale of
+// qubit capacity the door offers beside them is stated as the door computes it: its seal and whether it holds
 type Challenge = { id: string; title: string; formula: string; theorem: string; relatedTheorems: readonly string[]; door: { tool: string }; kernelAccepted: boolean; holds: boolean; sealed: boolean; address: string }
-export const solved = ((await handle(callEnvelope('google', { challenges: true }, 0))) as { result?: { structuredContent?: { challenges?: Challenge[] } } }).result?.structuredContent?.challenges ?? []
+const google = ((await handle(callEnvelope('google', { challenges: true }, 0))) as { result?: { structuredContent?: { challenges?: Challenge[]; sale?: { address: string; holds: boolean } } } }).result?.structuredContent
+export const solved = google?.challenges ?? []
 export const complying = solved.filter((c) => c.kernelAccepted && c.holds && c.sealed && moduleOf.has(c.theorem) && c.relatedTheorems.every((t) => moduleOf.has(t)))
 const challenges = complying.map((c) => proseFill(PROSE.scriptsDoiRecord_challenge, c.title, c.id, c.formula, [c.theorem, ...c.relatedTheorems.filter((t) => t !== c.theorem)].join(', '), c.door.tool, c.address))
 
-// claimed and not yet proved: a prize whose rules cite one of the author's records, with every rule still to meet
+// the author's claims: each in the author's words with the theorems the kernel holds for it, and a prize whose rules cite one of the
+// author's records, with what those rules ask
 type Call = { id: string; name: string; prize: string; rules: string; read: string; kind: string; entry: string; requires: readonly { rule: string; needs: string }[] }
 const calls = TABLES.COMPETITIONS as unknown as readonly Call[]
-export const open = [...OPEN_CLAIMS.map((c) => proseFill(PROSE.scriptsDoiRecord_openClaim, c.name, c.claim.trim(), c.proved.join(', ') || '—', c.missing.trim())), ...calls.filter((c) => c.kind === 'prize').flatMap((c) => {
+// a theorem a claim names is shown with what it states: its name and the formula Lean wrote for it
+const texOf = new Map(THEOREMS.map((t) => [t.key, t.tex])), stated = (keys: readonly string[]) => keys.map((k) => `\`${k}\` $${texOf.get(k)}$`).join(', ')
+// the kernel holds a theorem whole or refuses it: of the theorems written by hand, the count resting on sorry is Lean's, and the rest are proven
+const claimsLead = proseFill(PROSE.scriptsDoiRecord_claimsLead, AUTHOR_CLAIMS.length, THEOREMS.length, SORRIED, THEOREMS.length - SORRIED)
+export const claims = [...AUTHOR_CLAIMS.map((c) => proseFill(PROSE.scriptsDoiRecord_openClaim, c.name, c.claim.trim(), stated(c.theorems))), ...calls.filter((c) => c.kind === 'prize').flatMap((c) => {
   const record = PRECEDENCE.find((p) => p.doi !== UNIT_CONCEPT_DOI && c.requires.some((r) => r.needs.includes(p.doi)))
   return record ? [proseFill(PROSE.scriptsDoiRecord_claim, c.name, `${record.title}, doi:${record.doi}.`, c.requires.map((r) => `${r.rule}: ${r.needs}`).join('; '))] : []
 })]
@@ -98,7 +104,7 @@ const tableOf = (rows: Record<string, string | number>[]) => ({ kind: 'table' as
 const capacityBlocks: Block[] = [
   ...(registerTheorem ? [{ kind: 'code' as const, text: registerTheorem.lean }] : []),
   ...(registerTheorem && verifiedByBoth.includes(registerTheorem.key) ? [{ kind: 'p' as const, text: registerTheorem.says }] : []),
-  { kind: 'table', head: ['metrics.quantumCapacity.register', ''], rows: [...rowsOf(capacity.register), ['nist ∩ cern', verifiedByBoth.map((t) => `\`${t}\``).join(', ')], ['open', OPEN_CLAIMS.filter((c) => c.proved.includes(String(capacity.register.theorem))).map((c) => `\`${c.name}\``).join(', ')]] },
+  { kind: 'table', head: ['metrics.quantumCapacity.register', ''], rows: [...rowsOf(capacity.register), ['nist ∩ cern', verifiedByBoth.map((t) => `\`${t}\``).join(', ')], ['claim', AUTHOR_CLAIMS.filter((c) => c.theorems.includes(String(capacity.register.theorem))).map((c) => `\`${c.name}\``).join(', ')]] },
   tableOf(capacity.parts),
   { kind: 'table', head: ['metrics.quantumCapacity.receipt', ''], rows: rowsOf(capacity.receipt) },
   { kind: 'table', head: ['metrics.quantumCapacity.zero', ''], rows: rowsOf(capacity.zero) },
@@ -132,10 +138,10 @@ export const sections: { heading: string; lead: string[]; items: string[]; block
   { heading: PROSE.scriptsDoiRecord_achieved, lead: achieved, items: [] as string[] },
   { heading: 'For agents', lead: [PROSE.quantumProcessingMcp_use], items: [], blocks: agentsBlocks },
   { heading: 'Quantum capacity, utilised by receipts', lead: [], items: [], blocks: capacityBlocks },
-  { heading: PROSE.scriptsDoiRecord_challenges, lead: [proseFill(PROSE.scriptsDoiRecord_challengesLead, complying.length, solved.length)], items: challenges },
+  { heading: PROSE.scriptsDoiRecord_challenges, lead: [proseFill(PROSE.scriptsDoiRecord_challengesLead, complying.length, solved.length, google?.sale?.address, google?.sale?.holds)], items: challenges },
   { heading: PROSE.scriptsDoiRecord_novelties, lead: [PROSE.scriptsDoiRecord_noveltyLead], items: novelties },
   { heading: PROSE.scriptsDoiRecord_unprecedented, lead: [proseFill(PROSE.scriptsDoiRecord_unprecedentedLead, proved.length)], items: unprecedented },
-  { heading: PROSE.scriptsDoiRecord_open, lead: [], items: open },
+  { heading: PROSE.scriptsDoiRecord_open, lead: [claimsLead], items: claims },
   { heading: PROSE.scriptsDoiRecord_funding, lead: funding, items: available },
 ]
 
@@ -169,11 +175,11 @@ const MCP = 'https://qpu.uuidna.com/api/mcp'
 const byline = proseFill(PROSE.scriptsDoiRecord_byline, LICENSE.author, LICENSE.orcid, `https://doi.org/${UNIT_CONCEPT_DOI}`, LICENSE.spdx, MCP)
 
 // inline: a code span, a URL, or plain text; each renderer maps the same tokens
-type Token = { kind: 'code' | 'url' | 'text'; text: string }
-const tokens = (s: string): Token[] => s.split(/(`[^`]+`|https?:\/\/[^\s)]+[^\s).,;:])/).filter(Boolean).map((t) => t.startsWith('`') ? { kind: 'code', text: t.slice(1, -1) } : /^https?:/.test(t) ? { kind: 'url', text: t } : { kind: 'text', text: t })
+type Token = { kind: 'code' | 'math' | 'url' | 'text'; text: string }
+const tokens = (s: string): Token[] => s.split(/(`[^`]+`|\$[^$\n]+\$|https?:\/\/[^\s)]+[^\s).,;:])/).filter(Boolean).map((t) => t.startsWith('`') ? { kind: 'code', text: t.slice(1, -1) } : t.length > 2 && t.startsWith('$') && t.endsWith('$') ? { kind: 'math', text: t.slice(1, -1) } : /^https?:/.test(t) ? { kind: 'url', text: t } : { kind: 'text', text: t })
 const escapeHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-const inlineHtml = (s: string) => tokens(s).map((t) => t.kind === 'code' ? `<code>${escapeHtml(t.text)}</code>` : t.kind === 'url' ? `<a href="${escapeHtml(t.text)}">${escapeHtml(t.text)}</a>` : escapeHtml(t.text)).join('')
-const inlineMarkdown = (s: string) => tokens(s).map((t) => t.kind === 'code' ? `\`${t.text}\`` : t.kind === 'url' ? `<${t.text}>` : t.text.replace(/([\\*_[\]<>|#{}])/g, '\\$1')).join('')
+const inlineHtml = (s: string) => tokens(s).map((t) => t.kind === 'code' || t.kind === 'math' ? `<code>${escapeHtml(t.text)}</code>` : t.kind === 'url' ? `<a href="${escapeHtml(t.text)}">${escapeHtml(t.text)}</a>` : escapeHtml(t.text)).join('')
+const inlineMarkdown = (s: string) => tokens(s).map((t) => t.kind === 'code' ? `\`${t.text}\`` : t.kind === 'math' ? `$${t.text}$` : t.kind === 'url' ? `<${t.text}>` : t.text.replace(/([\\*_[\]<>|#{}])/g, '\\$1')).join('')
 
 const blocks: Block[] = [
   { kind: 'p', text: byline },

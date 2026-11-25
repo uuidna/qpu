@@ -8,7 +8,7 @@ import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
 import { QUANTUM_TERMS, quantumVocabulary } from './quantum-vocabulary.ts'
 import { canonicalText, seal, uuid, uuidQubits } from '../uuid/index.ts'
 import { TOOLBOXES } from './mcp.ts'
-import { GENERATED_LEMMAS, KERNEL_THEOREMS, NOVELTIES, OPEN_CLAIMS, THEOREMS } from './theorems-index.ts'
+import { AUTHOR_CLAIMS, GENERATED_LEMMAS, KERNEL_THEOREMS, NOVELTIES, THEOREMS } from './theorems-index.ts'
 import { receiptOf } from '../uuid/programs/index.ts'
 import { listFactors } from './algorithms.ts'
 import { LEAD_ROWS } from './leads-index.ts'
@@ -271,9 +271,9 @@ const status = (ctx: StatusContext) => {
     `## ${proseFill(PROSE.quantumProcessingScriptDoors_clay41, c.holding, c.total)}`, '',
     `## ${PROSE.quantumProcessingScriptDoors_factor42}`, '', ...table(PROSE.quantumProcessingScriptDoors_columns46, factored.map(({ id, s }) => [code(id), s.bits, s.factors.length, s.left.length, s.complete, s.verified, code(s.theorem), code(receiptOf('factor', { id, factors: s.factors, left: s.left, complete: s.complete }).handle)])),
     `## ${PROSE.quantumProcessingScriptDoors_novelties48}`, '', ...table(PROSE.quantumProcessingScriptDoors_columns49, NOVELTIES.length ? NOVELTIES.map((n) => [code(n.key), n.doc.split('Prior art: ')[1] ?? '—', code(receiptOf('novelty', n).handle)]) : [[PROSE.quantumProcessingScriptDoors_none50, '—', '—']]),
-    `## ${PROSE.quantumProcessingScriptDoors_open43}`, '', ...table(PROSE.quantumProcessingScriptDoors_columns47, OPEN_CLAIMS.map((o) => [`${code(o.name)}: ${o.claim}`, o.proved.map(code).join(', ') || '—']))].join('\n')
+    `## ${PROSE.quantumProcessingScriptDoors_open43}`, '', ...table(PROSE.quantumProcessingScriptDoors_columns47, AUTHOR_CLAIMS.map((o) => [`${code(o.name)}: ${o.claim}`, o.theorems.map(code).join(', ')]))].join('\n')
   const holds = g.allHold === true && g.sealed === true && c.holding === c.total && factored.every(({ s }) => s.verified === true) && factored[0]!.s.complete === true
-  return { phase: 'scripts-status' as const, path: 'src/quantum/STATUS.md', text, holds, receipt: receiptOf('status', text), says: proseFill(PROSE.quantumProcessingScriptDoors_says44, g.holding, g.total, c.holding, c.total, factored.length, OPEN_CLAIMS.length, holds) }
+  return { phase: 'scripts-status' as const, path: 'src/quantum/STATUS.md', text, holds, receipt: receiptOf('status', text), says: proseFill(PROSE.quantumProcessingScriptDoors_says44, g.holding, g.total, c.holding, c.total, factored.length, AUTHOR_CLAIMS.length, holds) }
 }
 
 /** factors-index.ts: the complete prime list of each integer a factoring example names, factored once and held, so a later process checks

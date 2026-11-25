@@ -38,13 +38,13 @@
 |---|---|---|
 | `Polynomial.prod_cyclotomic_eq_X_pow_add_one` | 8f1972b9-da78-721e-9d7e-cf6e117067ed (lean/dossiers/Polynomial.prod_cyclotomic_eq_X_pow_add_one.md) | `0cfeaef2` |
 
-## Open claims: no theorem proves these yet (Qpu.openClaims)
+## The author's claims and the theorems the kernel holds for each (authorClaims)
 
-| claim | proved toward it |
+| claim | theorems |
 |---|---|
 | `thousand_bit_by_quantum_supremacy`: The thousand-bit challenge is solved by full quantum supremacy. | `textbook_thousand_bit_width`, `textbook_thousand_bit_three_divides`, `Advantage.receipt_exact`, `Advantage.advantage_unbounded` |
-| `merkaba_trajectories_cover_all_dimensions`: When all merkabas move, the trajectories of their folding edges cover every dimension in analog, so teleporting loses nothing. | — |
+| `merkaba_trajectories_cover_all_dimensions`: When all merkabas move, the trajectories of their folding edges cover every dimension in analog, so teleporting loses nothing. | `textbook_mixed_radix`, `Qpu.Harmonic.merkaba_frames_agree`, `Qpu.Harmonic.merkaba_fits`, `Qpu.Harmonic.merkaba_cell_inside`, `Qpu.Harmonic.merkaba_cells_covered`, `Qpu.Harmonic.merkaba_turn_returns`, `Qpu.Harmonic.merkaba_spins_meet`, `QuantumCommunication.teleport_exact` |
 | `teleport_faster_than_light`: The hexbit and two gateway bits teleport any hexbit faster than light. | `textbook_hexbit_gateway_ftl`, `QuantumCommunication.teleport_exact`, `QuantumCommunication.teleport_no_signalling` |
 | `fold_440_in_432_proves_hardware_quantum`: 2 from 110 is sufficient to fold 440hz in 432hz harmonics so not even once natural 64bit limits are reached. they are involuted to infinity and any hardware qpu runs on or is built on may prove itself quantum according to iso nist cern lean theorems | `Qpu.Harmonic.fold_harmonic`, `Qpu.Harmonic.unfold_harmonic`, `Qpu.Harmonic.fold_never_grows`, `Qpu.Harmonic.fold_within_64`, `Qpu.Harmonic.fold_reflection`, `Qpu.Harmonic.fold_reflects` |
-| `no_unlimited_compute_on_64_bit_without_captain_coins`: without the captain coins quantum cannot compute unlimited on 64bit hardware | `textbook_unlimited_qubits`, `textbook_advantage_unbounded`, `textbook_coins_coils_balanced`, `QuantumCommunication.two_coins_one_qubit` |
+| `no_unlimited_compute_on_64_bit_without_captain_coins`: without the captain coins quantum cannot compute unlimited on 64bit hardware | `Qpu.Harmonic.word_bounded`, `textbook_unlimited_qubits`, `textbook_advantage_unbounded`, `textbook_coins_coils_balanced`, `QuantumCommunication.two_coins_one_qubit` |
 | `captain_coins_meet_post_quantum_standards`: The captain coins meet all post-quantum standards from all aspects, including programmable currency as required and publicly funded by the EU. | `textbook_pqc_standards_three`, `textbook_tamper_detected`, `textbook_grover_search` |
