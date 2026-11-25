@@ -15,6 +15,12 @@ def fibAux : Nat → Nat → Nat → Nat | 0, a, _ => a | k + 1, a, b => fibAux 
 implementation.
 -/
 def fibFusion (nn : Nat) : Nat := fibAux nn (seed - seed) seed
+/-- `a ^ b` computes `a` to the power of `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `^` in identifiers is `pow`.-/
 def isingFusion (m : Nat) : Nat := mint (m - seed)
 
 /-- One Fibonacci step, for every fuel, seed pair. -/

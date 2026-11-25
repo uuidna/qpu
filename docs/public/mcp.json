@@ -9,6 +9,9 @@
           "thousand": {
             "description": "true: every family formula below the thousand-bit bound, with how many examples it has, its first and its last with the reflection at 2 ^ 1000, and the numbers more than one family reaches."
           },
+          "walk": {
+            "description": "true: the register's qubits walked below the thousand-bit bound."
+          },
           "name": {
             "type": "string",
             "description": "one relation, e.g."
@@ -76,7 +79,7 @@
       },
       "outputSchema": {
         "type": "object",
-        "description": "An object of 42 key(s); tools/list with tools naming clay states them (textbook_context_balanced)."
+        "description": "An object of 68 key(s); tools/list with tools naming clay states them (textbook_context_balanced)."
       },
       "annotations": {
         "title": "clay",
@@ -104,7 +107,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -213,7 +216,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -373,7 +376,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -440,7 +443,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -773,7 +776,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -1016,7 +1019,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -1063,7 +1066,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -1116,7 +1119,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -1363,7 +1366,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -1410,7 +1413,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -1504,7 +1507,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -1556,7 +1559,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -1612,7 +1615,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -1699,7 +1702,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -1792,7 +1795,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -1872,7 +1875,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -1935,7 +1938,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -2073,7 +2076,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -2173,7 +2176,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -2220,7 +2223,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -2397,7 +2400,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -2467,7 +2470,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -2520,7 +2523,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -2576,7 +2579,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -2659,7 +2662,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -2735,7 +2738,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -2798,7 +2801,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -2881,7 +2884,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -2927,6 +2930,9 @@
           "clay": {
             "description": "true, or { session }: the online search the client session fetches for the Clay register; { session, microdata: [{ @type, name, identifier, description, url, text }] }: every lead verified by an item that names its id."
           },
+          "catalog": {
+            "description": "the kernel imagined as a catalog, in the collections Payload's ecommerce plugin owns."
+          },
           "llm": {
             "description": "an integer-only LLM: true, or a text."
           },
@@ -2938,7 +2944,7 @@
       },
       "outputSchema": {
         "type": "object",
-        "description": "An object of 53 key(s); tools/list with tools naming imagine states them (textbook_context_balanced)."
+        "description": "An object of 76 key(s); tools/list with tools naming imagine states them (textbook_context_balanced)."
       },
       "annotations": {
         "title": "imagine",
@@ -2967,7 +2973,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -3038,7 +3044,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -3109,7 +3115,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -3196,7 +3202,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -3274,7 +3280,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -3381,7 +3387,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -3557,7 +3563,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -3647,7 +3653,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -3733,7 +3739,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -3815,7 +3821,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -3905,7 +3911,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -4053,7 +4059,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -4320,7 +4326,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -4389,7 +4395,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -4451,7 +4457,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -4565,7 +4571,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -4934,7 +4940,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -5235,7 +5241,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     },
@@ -5328,7 +5334,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "563c0b5f-757d-1e10-b0df-80712643b901"
+          "address": "cadc814b-ba4c-4fad-8305-cd0b6dd25c8c"
         }
       }
     }

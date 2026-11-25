@@ -14,6 +14,12 @@ def planck : Nat := 662607015
 def boltzmann : Nat := 1380649
 def transmon : Nat := 5
 def photon : Nat := planck * transmon
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
 def thermal (millikelvin : Nat) : Nat := boltzmann * millikelvin * 10
 theorem temperature : photon / thermal 10 = 23 ∧ photon / thermal 100 = 2 ∧ photon / thermal 4000 = 0 ∧ 4000 / 100 = 40 ∧ 100 / 10 = 10 ∧ 10 < 35 := ⟨rfl, rfl, rfl, rfl, rfl, Nat.le_of_ble_eq_true rfl⟩
 def bcs : Nat := 352
@@ -27,7 +33,12 @@ theorem cooling_stays_positive (t a n : Nat) (ht : 0 < t) (ha : 0 < a) : 0 < t *
 theorem cooling_strictly_decreases (t a b n : Nat) (ht : 0 < t) (ha : 0 < a) (hab : a < b) : t * a ^ n * a < t * a ^ n * b :=
   Nat.mul_lt_mul_of_pos_left hab (Nat.mul_pos ht (Nat.pow_pos ha))
 
-/-- the many-body gap at level k, on the doubling mint -/
+/-- `a ^ b` computes `a` to the power of `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `^` in identifiers is `pow`.-/
 def levelGap (k : Nat) : Nat := mint k
 
 /-- The gap never shrinks with level, for all level pairs. -/

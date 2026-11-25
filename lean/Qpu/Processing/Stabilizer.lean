@@ -7,8 +7,24 @@ n-qubit stabilizer states (2^n times the product of 2^i+1 for i up to n), the or
 phases, and the order of a stabilizer subgroup. Step, positivity and growth laws are quantified over all n —
 unlimited qubits — with the textbook values kept as kernel-decided controls. -/
 
+/-- `∏ x ∈ s, f x` is the product of `f x` as `x` ranges over the elements of the finite set `s`.
+
+When the index type is a `Fintype`, the notation `∏ x, f x`, is a shorthand for
+`∏ x ∈ Finset.univ, f x`. -/
 def stabProd : Nat → Nat | 0 => 1 | k + 1 => (mint (k + 1) + 1) * stabProd k
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
 def stabStates (nn : Nat) : Nat := mint nn * stabProd nn
+/-- `a ^ b` computes `a` to the power of `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `^` in identifiers is `pow`.-/
 def paulis (nn : Nat) : Nat := mint (2 * nn + 2)
 def stabSubgroup (nn : Nat) : Nat := mint nn
 

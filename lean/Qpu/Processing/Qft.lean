@@ -7,8 +7,36 @@ textbook values kept as kernel-decided controls. -/
 coefficients. For the fact that this is the number of `k`-element-subsets of an `n`-element
 set, see `Finset.card_powersetCard`. -/
 def qftGates (q : Nat) : Nat := q * (q + 1) / 2
+/-- `a / b` computes the result of dividing `a` by `b`.
+The meaning of this notation is type-dependent.
+* For most types like `Nat`, `Int`, `Rat`, `Real`, `a / 0` is defined to be `0`.
+* For `Nat`, `a / b` rounds downwards.
+* For `Int`, `a / b` rounds downwards if `b` is positive or upwards if `b` is negative.
+  It is implemented as `Int.ediv`, the unique function satisfying
+  `a % b + b * (a / b) = a` and `0 ≤ a % b < natAbs b` for `b ≠ 0`.
+  Other rounding conventions are available using the functions
+  `Int.fdiv` (floor rounding) and `Int.tdiv` (truncation rounding).
+* For `Float`, `a / 0` follows the IEEE 754 semantics for division,
+  usually resulting in `inf` or `nan`. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `/` in identifiers is `div`.-/
 def qftSwaps (q : Nat) : Nat := q / 2
+/-- `a - b` computes the difference of `a` and `b`.
+The meaning of this notation is type-dependent.
+* For natural numbers, this operator saturates at 0: `a - b = 0` when `a ≤ b`. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `-` in identifiers is `sub` (when used as a binary operator).-/
 def qftDepth (q : Nat) : Nat := 2 * q - 1
+/-- `a ^ b` computes `a` to the power of `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `^` in identifiers is `pow`.-/
 def qftStates (q : Nat) : Nat := 2 ^ q
 
 /-- The output dimension is never zero, for every qubit count. -/

@@ -144,7 +144,7 @@ export const NEXT_STEPS: readonly NextStep[] = [
 export const MACHINE_RUNNER = 'src/quantum/processing/machine-run.ts'
 /** The actions longer than a request: the Payload MCP's machine tool queues each as a job and answers the job's id at once; the queue runs it
  *  in child processes and writes its record as an entry (textbook_long_action_queued). Every other action answers within the request. */
-export const LONG_ACTIONS: readonly string[] = ['next', 'regenerate']
+export const LONG_ACTIONS: readonly string[] = ['next', 'regenerate', 'settle', 'ratchet', 'intake']
 /** The waves of next in their order, and the bound on the lanes of each: min(cores, ⌊capacity ÷ heap⌋), the formula the runner applies. */
 export const nextWaves = (steps: readonly NextStep[] = NEXT_STEPS) => {
   const waves = [...new Set(steps.map((s) => s.wave))].sort((a, b) => a - b)

@@ -7,8 +7,24 @@ mint: the order of the symplectic group Sp(2n, 2) — 2^(n^2) times the product 
 n-qubit Clifford group order. Step and positivity laws are quantified over all n, j — unlimited qubit counts — with
 the textbook values kept as kernel-decided controls. -/
 
+/-- `∏ x ∈ s, f x` is the product of `f x` as `x` ranges over the elements of the finite set `s`.
+
+When the index type is a `Fintype`, the notation `∏ x, f x`, is a shorthand for
+`∏ x ∈ Finset.univ, f x`. -/
 def sympProd : Nat → Nat | 0 => 1 | j + 1 => (mint (2 * (j + 1)) - 1) * sympProd j
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
 def symplectic (nn : Nat) : Nat := mint (nn * nn) * sympProd nn
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
 def cliffordOrder (nn : Nat) : Nat := mint (2 * nn) * symplectic nn
 
 /-- One symplectic factor, for every j. -/

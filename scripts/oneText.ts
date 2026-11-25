@@ -15,7 +15,7 @@ import { handle } from '../src/quantum/processing/mcp.ts'
 import { uuid } from '../src/quantum/uuid/index.ts'
 import { RELEASE_REPOSITORY } from '../src/quantum/processing/release.ts'
 import { callEnvelope } from '../src/quantum/processing/toolbox.ts'
-import { readJson } from '../src/quantum/processing/machine-run.ts'
+import { HARDWARE_MARK, readJson } from '../src/quantum/processing/machine-run.ts'
 import { deviceJsonLd, isProperties, isRows, receiptBody, receiptJsonLd, receiptText, type Json } from '../src/quantum/processing/receipts.ts'
 import { verifiedByBoth } from '../src/quantum/processing/verified.ts'
 
@@ -140,7 +140,7 @@ const [deviceItem] = await sealAll([receiptText('hardware', facts)])
 export const hardware = { uuid: deviceItem!.address, sha256: deviceItem!.sha256, facts, jsonLd: deviceJsonLd({ kind: 'hardware', body: facts, address: deviceItem!.address, sha256: deviceItem!.sha256, site: SITE }) }
 const hardwareBlocks = blocksOf(hardware.jsonLd, 'additionalProperty')
 /** Where the hardware begins in every copy: the one text is compared up to this mark, never past it. */
-export const HARDWARE_MARK = '<!-- hardware -->'
+export { HARDWARE_MARK }
 export const htmlWithHardware = `${html}${HARDWARE_MARK}${hardwareBlocks.map(blockHtml).join('')}`
 /** The page every Markdown copy is: the title, the text, the receipt under a rule, and the hardware receipt of the build. */
 export const page = `${above}---\n\n${blockMarkdown(signed)}\n\n${HARDWARE_MARK}\n\n${hardwareBlocks.map(blockMarkdown).join('\n\n')}\n`
