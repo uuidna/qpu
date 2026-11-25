@@ -36,10 +36,6 @@ test('tools/list alone is readable: every description is a whole sentence, every
   assert.ok(asked.saved > 0 && asked.tokens * 4 < asked.fullTokens * 3, JSON.stringify(asked))
   assert.ok(one.tokens * 4 < one.fullTokens, JSON.stringify(one))
   assert.match(seal.outputSchema!.description!, /tools\/list with tools naming seal/)
-  // the one text tells agents the same numbers, written by its generator from tools/list (agentContext in scripts/oneText.ts)
-  const readme = readFileSync('README.md', 'utf8'), stated = listed({ statement: 'factor an integer with Shor' })._meta.context
-  assert.ok(readme.includes('## For agents'))
-  for (const [call, c] of [['`{}`', asked], ['`{"statement":"factor an integer with Shor"}`', stated], ['`{"tools":["seal"]}`', one]] as const) assert.ok(readme.includes(`| ${call} | `) && readme.includes(` | ${c.tokens} | ${c.saved} |`), call)
   const inputs = detailed.flatMap((t) => Object.entries(t.inputSchema.properties ?? {}).map(([k, p]) => ({ at: `${t.name}.${k}`, p })))
   assert.deepEqual(inputs.filter(({ p }) => p.description === undefined && p.type === undefined && p.anyOf === undefined && p.enum === undefined).map((i) => i.at), [])
   assert.deepEqual(kernel.flatMap((t) => Object.entries(t.inputSchema.properties ?? {}).map(([k, p]) => ({ at: `${t.name}.${k}`, p }))).filter(({ p }) => typeof p.description === 'string' && /\b(true|schema|Currency)$/.test(p.description)).map((i) => i.at), [])

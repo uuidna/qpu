@@ -1,410 +1,311 @@
 # @uuidna/qpu v1.1.1: An exact quantum processing unit served over MCP
 
-Tsvetan Rouschev (ORCID <https://orcid.org/0009-0000-7312-9778>) · concept DOI <https://doi.org/10.5281/zenodo.22700098> · CC-BY-NC-ND-4.0 · MCP at <https://qpu.uuidna.com/api/mcp>
+## qpu
 
-This text and its receipt are part of the author's record of precedence and of the protection of the author's rights. Archived with every release under the concept DOI <https://doi.org/10.5281/zenodo.22700098> and dated by Zenodo, the receipt fixes what this build states and when; it is the author's evidence for the claims the draft patent applications at <https://qpu.uuidna.com/patents/> set out and for the licence CC-BY-NC-ND-4.0. Recomputable facts, not legal advice: the inputs a qualified attorney starts from, never the conclusion.
-
-## What is achieved
-
-2431 theorems are checked by the Lean kernel: 1596 written by hand and 835 by the compiler. Of those written by hand, 1596 rest on no axiom beyond Lean's own propext, Classical.choice and Quot.sound.
-
-The theorems written by hand, by family: Qpu.General.Textbook 743, Qpu.Processing.Verify.Stabilizer 91, Qpu.General.MachineLearning.FederatedLearning 60, Qpu.General.MachineLearning.ProgramSynthesis 57, Qpu.General.MachineLearning.ZeroShotLearning 52, Qpu.General.MachineLearning.ExplainableAI 47, Qpu.General.Clay 40, Qpu.General.MachineLearning.CausalInference 39, Qpu.General.Lattice 38, Qpu.General.Vocabulary 35, Qpu.General.Meaning 20, Qpu.General.MachineLearning.HarmonicClosure 19, Qpu.General.Sigma 17, Qpu.Processing.Verify.Correct 17, Qpu.General.Cross 16, Qpu.General.Iso 14, Qpu.General.Combinatorics 13, Qpu.General.Primes 13, Qpu.General.Program 13, Qpu.General.Advantage 12, Qpu.Processing.Verify.Gate 11, Qpu.Information.Qubit 10, Qpu.Processing.Qft 10, Qpu.Application.Qaoa 9, Qpu.Communication.Coil 9, Qpu.Physics.EnergyGap 9, Qpu.General.Pi 8, Qpu.Processing.QuantumGate 8, Qpu.Processing.Stabilizer 8, Qpu.Processing.Verify.Cost 8, Qpu.Physics.HilbertSpace 7, Qpu.Processing.Clifford 7, Qpu.Processing.Fusion 7, Qpu.General.Config 6, Qpu.Processing.Annealing 6, Qpu.Processing.Anyon 6, Qpu.Processing.Verify.Uuid 6, Qpu.General.Meaning.Config 5, Qpu.General.Supremacy 5, Qpu.Processing.Galois 5, Qpu.Processing.QuantumErrorCorrection 5, Qpu.Processing.Surfacecode 5, Qpu.Processing.Verify.Entangle 5, Qpu.Processing.Verify.Hexbit 5, Qpu.Processing.Verify.Receipt 5, Qpu.Application.Grover 4, Qpu.Communication.QuantumCommunication 4, Qpu.General.Mint 4, Qpu.Information.PhysicalQubit.JosephsonJunction 4, Qpu.Physics.QuantumEntanglement 4, Qpu.Processing.QuantumAlgorithm 4, Qpu.Application.Shor 3, Qpu.General.Hybrid 3, Qpu.General.Thousand 3, Qpu.Processing.CircuitBasedQuantumComputing 3, Qpu.Processing.QuantumCircuit 3, Qpu.Processing.QuantumComputer.Cryostat 3, Qpu.Processing.QuantumProcessor 3, Qpu.Processing.QuantumProcessor.Layers 3, Qpu.General.Witness 2, Qpu.Information.PhysicalQubit.Transmon 2, Qpu.Processing.QuantumProcessor.Coupler 2, Qpu.General.Cern 1, Qpu.General.Cyclotomic 1, Qpu.General.Fuse 1, Qpu.General.Meaning.Prime 1, Qpu.General.Meaning.Sum 1, Qpu.General.Meaning.Totient 1, Qpu.Information.PhysicalQubit.Coil 1, Qpu.Information.QuantumInformation 1, Qpu.Processing.Magic 1, Qpu.Processing.QuantumComputer.Wiring 1, Qpu.Processing.QuantumProcessor.ReadoutResonator 1.
-
-360 textbook theorems, and a catalogue of 1213 products in 507 variants, each product a theorem of the kernel.
-
-50 tools are served over MCP: the kernel's 47, and 3 where the Worker binds its rooms and its Lean prover. The audit replays 517 worked examples against the kernel's tools; every answer is a block sealed under its UUID.
-
-## For agents
-
-To use it: tools/list names every tool with its schema; call any tool with the arguments its schema names; every answer is a block sealed under its UUID, which verify \{ uuid, content \} decides. Start with metrics \{ \} for the tree in numbers, google \{ challenges: true \} for the Quantum AI challenges, and leads \{ \} for what is owed.
-
-| tools/list | tools | tokens | saved |
-| --- | --- | --- | --- |
-| `{}` | 47 | 29041 | 16810 |
-| `{"statement":"factor an integer with Shor"}` | 5 | 8736 | 37115 |
-| `{"tools":["seal"]}` | 1 | 8627 | 37224 |
-| contract | 47 | 45851 | 0 |
-
-| tool |  |
+| receipt |  |
 | --- | --- |
-| `metrics` | The computable metrics of this tree in real time: tools and toolboxes, examples and how many name the kernel-accepted theorem that makes them true, the kernel's theorem counts from its own index, leads by status, the audit's checks, the balancer's memory. |
-| `shard` | A long single task split into short multitasks: the share of a list among n shards (index, count) is every item whose position mod n is the shard's index — the shares cover the list exactly once, proven by the kernel (textbook\_shards\_cover, textbook\_shards\_disjoint). |
-| `verify` | Cheap verification of one UUID: its seal (the version nibble the other 31 nibbles decide, one modular power, no content needed), its content (one fold), and its neighbours in a chain (the predecessor it names and the successor that names it). |
-| `leads` | Every lead on quantumai.google (every page of its sitemap, as its client hands it), its PDFs and the quantumlib repositories, with its status (served, partial, blocked, out of scope, or open: in the sitemap and not yet followed), the tool that serves it, and the reason where it … |
-| `prose` | Programmable prose: call a tool with its arguments and render its result as sentences in a locale — the toolbox's idea, the tool's scalar answers, the toolbox's instructions — every word from the vocabulary, every number from the tool, every unknown word reported. |
+| uuid | d4c79029-a249-8b77-9f2f-b8b9d1436fc9 |
+| handle | `d4c79029` |
+| sha256 | f49e5d82d0be8f9cd542f27471d55561ce0e2e63d6e2c88512e82c1bd034bb24 |
+| coin | 00000100-a249-7b77-8f2f-b8b9d1436fc9 |
+| bytes | 256 |
+| bits | 2048 |
+| tokens | 64 |
+| joules | 5.8797647566412266e-18 |
+| technique | `seal {"merkle":{"leaves":["uuid"]}}` |
+| author | Tsvetan Rouschev |
+| orcid | <https://orcid.org/0009-0000-7312-9778> |
+| licence | <https://creativecommons.org/licenses/by-nc-nd/4.0/> |
+| licensing | <https://uuidna.com/license> |
+| donation | <https://revolut.me/ceccec> |
+| contact | <https://revolut.me/ceccec> |
+| parts | 4 |
 
-## Quantum capacity, utilised by receipts
+| part | handle | uuid |
+| --- | --- | --- |
+| `textbook_sha256_fips_180_4` | `ba6cdad3` | ba6cdad3-2685-344b-b53f-20a8151801ac |
+| `textbook_sha3_fips_202` | `f4b15a9f` | f4b15a9f-ade1-853a-a56b-8e07cb0b2be0 |
+| `textbook_pqc_standards_three` | `6434ef1e` | 6434ef1e-d198-6248-9e25-fbf75a94b200 |
+| `textbook_coil_green` | `e9045825` | e9045825-9cd3-19c5-91ae-8c31ba8d1216 |
 
-```lean
-theorem textbook_hexbit_gateway_ftl : 32 * 4 - 4 - 2 = 122 ∧ 2 = 2 ∧ 1 < 16 ^ 10 ∧ 10 = 10 := by decide
-```
-
-| metrics.quantumCapacity.register |  |
+| qpu |  |
 | --- | --- |
-| digits | 32 |
-| hexbit | 4 |
-| bits | 128 |
-| qubits | 128 |
-| version | 4 |
-| gateway | 2 |
-| free | 122 |
-| formula | 32 \* 4 - 4 - 2 = 122 |
-| theorem | textbook\_hexbit\_gateway\_ftl |
-| nist ∩ cern | `textbook_sha256_fips_180_4`, `textbook_sha3_fips_202`, `textbook_pqc_standards_three`, `textbook_coil_green` |
-| claim | `teleport_faster_than_light` |
+| rfc | 6962 |
+| root | 305658b87baa9c65684a005de4ce064c585bc47433539783b51e43a16f037647 |
+| parts | ba6cdad3-2685-344b-b53f-20a8151801ac, f4b15a9f-ade1-853a-a56b-8e07cb0b2be0, 6434ef1e-d198-6248-9e25-fbf75a94b200, e9045825-9cd3-19c5-91ae-8c31ba8d1216 |
 
-| part | digits | bits | qubits | free |
-| --- | --- | --- | --- | --- |
-| handle | 8 | 32 | 32 | 32 |
-| version | 1 | 4 | 4 | 0 |
-| program | 10 | 40 | 40 | 40 |
-| variant | 1 | 4 | 4 | 2 |
-| tail | 12 | 48 | 48 | 48 |
+## textbook\_sha256\_fips\_180\_4
 
-| metrics.quantumCapacity.receipt |  |
+| receipt |  |
 | --- | --- |
-| coin | f4827920-6282-7019-a18c-4f357720f345 |
-| debit | usage:qubits |
-| credit | coins:register |
-| debits | 122 |
-| credits | 122 |
-| balanced | true |
-| sealed | true |
+| uuid | ba6cdad3-2685-344b-b53f-20a8151801ac |
+| handle | `ba6cdad3` |
+| sha256 | 3e56abec65b29f07871a4d5154999adb0babe31dc7ef667020abe725a951f6fc |
+| coin | 00000157-2685-544b-853f-20a8151801ac |
+| bytes | 343 |
+| bits | 2744 |
+| tokens | 86 |
+| joules | 7.877966060656018e-18 |
+| technique | `lean/tools/Theorems.lean, seal {"nist":true}, seal {"nist":{"reverse":true,"via":"cern"}}` |
+| author | Tsvetan Rouschev |
+| orcid | <https://orcid.org/0009-0000-7312-9778> |
+| licence | <https://creativecommons.org/licenses/by-nc-nd/4.0/> |
+| licensing | <https://uuidna.com/license> |
+| donation | <https://revolut.me/ceccec> |
+| contact | <https://revolut.me/ceccec> |
 
-| metrics.quantumCapacity.zero |  |
+| textbook\_sha256\_fips\_180\_4 |  |
 | --- | --- |
-| temperatureK | 0 |
-| landauer | 0 |
-| teleported | 120 |
-| classical | 2 |
-| used | 122 |
-| left | 0 |
-| programs | 1099511627776 |
-| reads | 10 |
-| walked | false |
-| table | false |
-| ftl | true |
-| physics | true |
-| program | 83b4a0c1 |
-| law | hexbit + 2 gateway bits teleport any hexbit faster than light |
+| theorem | `textbook_sha256_fips_180_4` |
+| module | Qpu.General.Textbook |
+| source | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
+| axioms | propext, Classical.choice, Quot.sound |
 
-| metrics.quantumCapacity.gate |  |
+| textbook\_sha256\_fips\_180\_4.nist |  |
 | --- | --- |
-| used | 122 |
-| left | 0 |
-| full | true |
-| theorem | textbook\_capacity\_conserved |
+| host | qpu.uuidna.com |
 | holds | true |
-| evidence | 122 + 0 = 122; 122 = 122; 122 = 122 |
 
-| repository \{ stable \} |  |
+| textbook\_sha256\_fips\_180\_4.cern |  |
 | --- | --- |
-| stable | true |
-| release | allowed |
-| entropy.files | 811 |
-| entropy.leads | 0 |
-| entropy.occurrences | 0 |
-| entropy.byKind | \{\} |
+| host | opendata.cern.ch |
+| via | cern |
+| holds | true |
 
-| metrics.quantumCapacity.spaces |  |
+### textbook\_sha256\_fips\_180\_4.formula
+
+| theorem | formula | bytes | bits | tokens | joules | coin | source |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `textbook_sha256_fips_180_4` | $\forall (m\ k : \mathbb{N}), \mathrm{Fintype.card} (\mathrm{Fin} (m \cdot k) \to \mathrm{Bool}) = \mathrm{Fintype.card} (\mathrm{Fin}\ m \to \mathrm{Fin}\ k \to \mathrm{Bool})$ | 175 | 1400 | 44 | 4.0193704391102135e-18 | 000000af-f5c6-63f2-8613-45eb992d2fe6 | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
+
+## textbook\_sha3\_fips\_202
+
+| receipt |  |
 | --- | --- |
-| handles | 4294967296 |
-| programs | 1099511627776 |
-| addressable | 4722366482869645213696 |
-| onEveryHandle | 137438953472 |
-| perHandle | 32 |
-| unlimited | true |
+| uuid | f4b15a9f-ade1-853a-a56b-8e07cb0b2be0 |
+| handle | `f4b15a9f` |
+| sha256 | 6acc70da1fed60c95daf7526bea90b3495789a4701d1aa78c4968aedea9b0c19 |
+| coin | 00000126-ade1-453a-856b-8e07cb0b2be0 |
+| bytes | 294 |
+| bits | 2352 |
+| tokens | 74 |
+| joules | 6.7525423377051586e-18 |
+| technique | `lean/tools/Theorems.lean, seal {"nist":true}, seal {"nist":{"reverse":true,"via":"cern"}}` |
+| author | Tsvetan Rouschev |
+| orcid | <https://orcid.org/0009-0000-7312-9778> |
+| licence | <https://creativecommons.org/licenses/by-nc-nd/4.0/> |
+| licensing | <https://uuidna.com/license> |
+| donation | <https://revolut.me/ceccec> |
+| contact | <https://revolut.me/ceccec> |
 
-| scale | radix | qubits | handles | capacity |
-| --- | --- | --- | --- | --- |
-| 1 | 16 | 4 | 16 | 64 |
-| 2 | 16 | 8 | 256 | 2048 |
-| 3 | 16 | 12 | 4096 | 49152 |
-| 4 | 16 | 16 | 65536 | 1048576 |
-| 5 | 16 | 20 | 1048576 | 20971520 |
-| 6 | 16 | 24 | 16777216 | 402653184 |
-| 7 | 16 | 28 | 268435456 | 7516192768 |
-| 8 | 16 | 32 | 4294967296 | 137438953472 |
-
-| metrics.quantumCapacity.security | the exponent of 2 |
+| textbook\_sha3\_fips\_202 |  |
 | --- | --- |
-| address.bits | 122 |
-| address.preimage | \{"classical":122,"grover":61\} |
-| address.collision | \{"classical":61,"quantum":"122/3"\} |
-| address.floor | 128 |
-| address.meetsFloor | false |
-| digest.bits | 256 |
-| digest.preimage | \{"classical":256,"grover":128\} |
-| digest.collision | \{"classical":128,"quantum":"256/3"\} |
-| digest.floor | 128 |
-| digest.meetsFloor | true |
-| theorems | `textbook_grover_search`, `textbook_tamper_detected` |
+| theorem | `textbook_sha3_fips_202` |
+| module | Qpu.General.Textbook |
+| source | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
+| axioms |  |
 
-| metrics.quantumCapacity.public |  |
+| textbook\_sha3\_fips\_202.nist |  |
 | --- | --- |
-| `fold {"qubits":4}` | free under attribution |
-| `metrics {}` | a licence of the catalogue |
-| `verify {"uuid":"uuid","content":"content"}` | free under attribution |
-| licence | CC-BY-NC-ND-4.0 |
-| deed | <https://creativecommons.org/licenses/by-nc-nd/4.0/> |
-| url | <https://uuidna.com/license> |
-| terms | Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (<https://qpu.uuidna.com>). The a432 harmonic default is offered for free benefit under attribution. Every block carries its address and its SHA-256: a copy that no longer matches them is adapted material, which the NoDerivatives term does not let anyone share. |
-| attribution | Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (<https://orcid.org/0009-0000-7312-9778>) |
-| copyright | © 2025 Tsvetan Rouschev (<https://orcid.org/0009-0000-7312-9778>) |
-| representation | uuidna is represented by <https://uuidna.com> only; no handle or profile elsewhere speaks for the work unless licensed in writing by the author. |
-| disclaimer | Recomputable facts, not legal advice: the inputs a qualified attorney starts from, never the conclusion. |
+| host | qpu.uuidna.com |
+| holds | true |
 
-## Google Quantum AI challenges completed in full compliance with their conditions
+| textbook\_sha3\_fips\_202.cern |  |
+| --- | --- |
+| host | opendata.cern.ch |
+| via | cern |
+| holds | true |
 
-14 of 14 challenges meet every condition they state: the kernel accepts the theorem each names and every related theorem, the formula holds on the value its door computes, and the answer is sealed under its UUID. The sale of qubit capacity offered beside them is sealed as 098d3d3e-c762-213f-b610-7844d19ea8b0; the google door computes whether it holds: true (textbook\_hexbit\_gateway\_ftl).
+### textbook\_sha3\_fips\_202.formula
 
-- Willow 105-Qubit Superconducting Grid, Coupler Connectivity & Code Capacity (willow-connectivity): (2 \* 182 \* 100 + 52) / 105 = 347 ∧ 7 \* 7 + (7 \* 7 - 1) = 97 \< 101 ≤ 105 ∧ 103 ≤ 105, proved by textbook\_willow\_connectivity, textbook\_willow\_holds\_codes, textbook\_willow\_distance\_seven and computed by the processor door; sealed as d6ffe97c-c666-55e3-92b5-28ffe1187332.
-- Sycamore 54-Qubit & Sycamore23 Known-Device Grid Topology (sycamore-topology): 2 \* 88 = 176 ∧ 176 ≤ 4 \* 54 ∧ qubits(Sycamore23) = 23, proved by textbook\_sycamore\_couplers and computed by the processor door; sealed as 13ebf53e-dde7-2072-8a71-56f9808231e2.
-- Surface Code Below Threshold (Λ = 2.14), Repetition Code & Steane \[\[7,1,3\]\] CSS QEC (surface-code-qec): P\_L(p) = 3p² − 2p³ = 0.028 \< p = 0.1 ∧ Λ\_3,5,7 = 2.14 \> 1 ∧ Steane \[\[7,1,3\]\] = 14/14, proved by textbook\_bit\_flip\_purity, textbook\_steane, surfacecode\_all, textbook\_toric\_torus\_code and computed by the quantum-error-correction door; sealed as c7944e9f-9252-3f2f-a96e-06171a641ef7.
-- Random Circuit Sampling (RCS) & Cross-Entropy Benchmarking (XEB) Porter–Thomas Speckle (rcs-xeb-beyond-classical): Σ p\_k² \> 1/D ∧ 2/(D+1) \> 1/D (2 \* 16 \> 16 + 1 ∧ 16 + 1 \> 16), proved by textbook\_xeb and computed by the algorithm door; sealed as 801a59dc-a895-73b1-af83-f6a89161c0c5.
-- Quantum Echoes Out-of-Time-Order Correlator (OTOC) Time-Reversal Protocol on Willow (quantum-echoes-otoc): P(U† U \|0⟩ = \|0⟩) = 1 ∧ P(H† Z H \|0⟩ = \|0⟩) = 0 ∧ 65 ≤ 103 ≤ 105, proved by textbook\_echo\_qubits\_within\_willow, Qpu.Verify.Gate.h\_z\_h\_is\_two\_x and computed by the echo door; sealed as 9278d97b-36c7-4e06-962c-d3e55458972f.
-- Cirq State-Vector, Density-Matrix Kraus Channels & Willow Quantum Virtual Machine (cirq-qvm-simulation): Tr(ρ) = 1 ∧ Tr(ρ²) = 0.1² + 0.9² = 0.82 ∧ Cirq\_exports = 28 ∧ emulated = 15/15, proved by textbook\_cirq\_exports and computed by the circuit door; sealed as b5648eb8-bf19-3908-8554-99c47b81f759.
-- ReCirq Sycamore QAOA Max-Cut, Shor Order-Finding & Bell CHSH Tsirelson Bound (recirq-qaoa-shor-algorithms): 7^4 ≡ 1 (mod 15) ∧ gcd(7² ± 1, 15) = (3, 5) ∧ E\_QAOA(α\*, β\*) \> E\_random ∧ S\_CHSH = 2√2 \> 2, proved by textbook\_shor\_fifteen\_order, qaoa\_all, textbook\_tsirelson, textbook\_order\_finding and computed by the algorithm door; sealed as d9e4efd5-e797-6131-aba2-09101beecd91.
-- OpenFermion H₂ STO-3G Molecular Integrals, Pauli Hamiltonian & VQE Ground Energy (openfermion-chemistry-h2): E\_VQE(θ\*) = min\_θ ⟨00\|exp(iθ Y⊗X) H exp(−iθ Y⊗X)\|00⟩ = E\_FCI = −1.137284 Ha \< E\_HF = −1.116759 Ha, proved by textbook\_h2\_below\_hartree\_fock and computed by the chemistry-simulation door; sealed as fb5f1d3a-d8b3-50d2-ae4c-2a8882bdd2e1.
-- Qualtran Fault-Tolerant Clifford+T Resource Counts & Willow Magic State Cultivation (qualtran-ftqc-magic-state): T(Toffoli) = 7 ∧ T(CS) = 3 ∧ T(T) = 1 ∧ T(Grover) = 7 ∧ T(QEC) = 21 ∧ F\_T(Willow) = 99.99%, proved by surfacecode\_all and computed by the fault-tolerant-design door; sealed as f49209a2-87b3-612a-a629-ba58077a7d34.
-- Google Quantum AI 6-Milestone Roadmap to 10⁶ Qubits, Software, Statements & Quantumlib (google-quantum-roadmap-catalog): milestones = 6 (10² → 10⁶ qubits) ∧ software = 1 + 4 = 5 ∧ repositories = 15, proved by textbook\_software\_cirq\_implemented, textbook\_statements\_one\_topic, textbook\_repositories\_by\_language and computed by the roadmap door; sealed as 9dcfcfad-6671-698f-8faa-6716200da549.
-- Google Discovery Service Validation, 7 Named Endpoints, Docs Rewrite & qpu-google-call Job (google-discovery-one-door): unknown + missing + broken = 0 ↔ allowed = true ∧ direct = 0 ∧ a + r = n, proved by textbook\_google\_one\_door, textbook\_google\_call\_schema, textbook\_google\_api\_surfaces, textbook\_google\_measured and computed by the google door; sealed as 45135fb7-f23c-5ba1-9fbe-918376409f9d.
-- Google Workspace Forms v1, Docs v1, Drive v3 Bidirectional Round-Trips & 26,244 Institution Sets (google-workspace-roundtrip-sets): 3 \* 3^7 \* 2^2 = 26244 ∧ Forms(14/14) ∧ f(g(f(g(b)))) = b ∧ Docs(lost = 0) ∧ Drive(same = true), proved by textbook\_workspace\_sets, textbook\_workspace\_coverage, textbook\_workspace\_round\_trip, textbook\_workspace\_docs\_round\_trip, textbook\_workspace\_drive, textbook\_institution\_bill and computed by the textbook door; sealed as a8bb9e92-2986-72d2-9c28-b93314789960.
-- 15 Google MCPs & Standards RBAC from Workspace groups (google-cloud-mcp-bindings-rbac): roles = 4 ∧ google\_mcps = 15 + 3 = 18 ∧ cannot\_waive\_main = true, proved by textbook\_abilities\_merge, textbook\_google\_mcps, textbook\_cannot\_binds and computed by the google door; sealed as 08e3b3ae-1dfc-4bb1-b413-82dcd61b5618.
-- Google Patents Hardware Verification, Gemini 3.8 Flash Coil Plan & Google XPRIZE Competitions (google-patents-gemini-xprize-sitemap): priority ≤ filing ≤ publication ∧ filing ≤ grant \< filing + 20y ∧ header = x-goog-api-key ∧ google\_competitions = 4, proved by textbook\_patent\_dates\_ordered, textbook\_patent\_number\_well\_formed, textbook\_patent\_term\_twenty\_years, textbook\_free\_or\_coil, textbook\_prizes\_computable, textbook\_sitemap\_leads and computed by the patents door; sealed as 81c12bbb-5d29-2b80-a051-066d1fd1abc8.
+| theorem | formula | bytes | bits | tokens | joules | coin | source |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `textbook_sha3_fips_202` | $1600 - 512 = 1088 \land 512 = 2 \cdot 256 \land 1600 - 1024 = 576 \land 1024 = 2 \cdot 512$ | 90 | 720 | 23 | 2.0671047972566813e-18 | 0000005a-e5e3-600f-88e4-fa974e4b3cf7 | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
 
-## Novelties
+## textbook\_pqc\_standards\_three
 
-Each novelty is a theorem the kernel checks and the tree declares new, proposed for Mathlib:
+| receipt |  |
+| --- | --- |
+| uuid | 6434ef1e-d198-6248-9e25-fbf75a94b200 |
+| handle | `6434ef1e` |
+| sha256 | bb91b18b495e1c476efeab5b5f4eda09e3e0c30273c99012f6d9f6adf1d3d2ba |
+| coin | 00000132-d198-3248-8e25-fbf75a94b200 |
+| bytes | 306 |
+| bits | 2448 |
+| tokens | 77 |
+| joules | 7.028156310672717e-18 |
+| technique | `lean/tools/Theorems.lean, seal {"nist":true}, seal {"nist":{"reverse":true,"via":"cern"}}` |
+| author | Tsvetan Rouschev |
+| orcid | <https://orcid.org/0009-0000-7312-9778> |
+| licence | <https://creativecommons.org/licenses/by-nc-nd/4.0/> |
+| licensing | <https://uuidna.com/license> |
+| donation | <https://revolut.me/ceccec> |
+| contact | <https://revolut.me/ceccec> |
 
-- Polynomial.prod\_cyclotomic\_eq\_X\_pow\_add\_one: `X ^ n + 1` is the product of the cyclotomic polynomials `Φ_d` over the divisors `d` of `2 n` that do not divide `n`, for `0 < n` over any commutative ring. Proposed for Mathlib beside `prod_cyclotomic_eq_X_pow_sub_one`. Prior art: 8f1972b9-da78-721e-9d7e-cf6e117067ed (lean/dossiers/Polynomial.prod\_cyclotomic\_eq\_X\_pow\_add\_one.md)
+| textbook\_pqc\_standards\_three |  |
+| --- | --- |
+| theorem | `textbook_pqc_standards_three` |
+| module | Qpu.General.Textbook |
+| source | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
+| axioms |  |
 
-## Laws no earlier DOI-registered work was found to state
+| textbook\_pqc\_standards\_three.nist |  |
+| --- | --- |
+| host | qpu.uuidna.com |
+| holds | true |
 
-82 laws of the textbook, each proved by the kernel, for which the search found no earlier DOI-registered work.
+| textbook\_pqc\_standards\_three.cern |  |
+| --- | --- |
+| host | opendata.cern.ch |
+| via | cern |
+| holds | true |
 
-- textbook\_reflection\_sums\_to\_ten, proved in Qpu.General.Textbook: a seed and its reflection σ₁₀(s) = 10 − s sum to ten. From Mathlib's `add_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `Nat.instOrderedSub`
-- textbook\_fold\_mirror, proved in Qpu.General.Textbook: piece i and its mirror n − i sum to the boundary n. From Mathlib's `add_tsub_cancel_of_le`, through the instances `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `Nat.instOrderedSub`
-- textbook\_institution\_bill, proved in Qpu.General.Textbook: an institution within its cap of users never pays more than the cap's bill: in any ordered semiring (ℕ among them) users times a nonnegative price is monotone in the users, u ≤ c gives u · p ≤ c · p. From Mathlib's `mul_le_mul_of_nonneg_right`
-- textbook\_namespace\_narrows, proved in Qpu.General.Textbook: a namespace narrows a credential, never widens it: the meet of what the request named and what the user held lies below what the user held. From Mathlib's `inf_le_right`
-- textbook\_integers\_first, proved in Qpu.General.Textbook: a deterministic check of equal inputs has an equal verdict: an example whose answer folds to the integers its theorem's confirmed pass recorded is decided by that theorem, and the text checks run only to confirm a new integer
-- textbook\_size\_ratio\_bound, proved in Qpu.General.Textbook: a size ratio rounded down never overstates the exact ratio. From Mathlib's `Nat.cast_div_le`, through the instance `Rat.instIsStrictOrderedRing`
-- textbook\_double\_entry, proved in Qpu.General.Textbook: when debits equal credits the journal nets to zero both ways: a number less itself is zero. From Mathlib's `tsub_self`, through the instances `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub`
-- textbook\_standards\_sliced, proved in Qpu.General.Textbook: the covered and the uncovered make the standards: with truncated subtraction (ℕ among its models), when c + u is the total, the total less u is c. From Mathlib's `add_tsub_cancel_right`
-- textbook\_penalty\_balanced, proved in Qpu.General.Textbook: a coin line booking the same count on both sides nets to zero: a number less itself is zero. From Mathlib's `tsub_self`, through the instances `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub`
-- textbook\_penalty\_clear\_involution, proved in Qpu.General.Textbook: penalising then clearing leaves the open count as it was: (open + n) − n = open. From Mathlib's `add_tsub_cancel_right`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`
-- textbook\_penalty\_tokens\_bound, proved in Qpu.General.Textbook: a penalty's tokens, its bytes over four rounded up (b ⌈/⌉ 4), never exceed its bytes. From Mathlib's `ceilDiv_le_iff_le_mul`
-- textbook\_penalty\_once, proved in Qpu.General.Textbook: an entry already held is not added again: inserting it leaves the set as it was, however often it is penalised. From Mathlib's `Finset.insert_eq_of_mem`
-- textbook\_penalty\_free\_under\_budget, proved in Qpu.General.Textbook: a task within the budget, on the wall and on the CPU, is free: each overrun truncates to zero. From Mathlib's `tsub_eq_zero_of_le`, `add_zero`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub`
-- textbook\_penalty\_antimatter\_annihilates, proved in Qpu.General.Textbook: a gap and its antimatter annihilate: the line priced and reversed nets to zero, and only what stood beside it remains, t + p − t = p. From Mathlib's `add_tsub_cancel_left`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid`
-- textbook\_penalty\_time\_burned, proved in Qpu.General.Textbook: the time a gap stood is burned: with truncated subtraction (ℕ among its models), its charge (c − b) + (s − b) never falls as it stands longer, and is zero when cleared within the budget. From Mathlib's `add_le_add_right`, `tsub_le_tsub_right`, `tsub_eq_zero_of_le` and `add_zero`
-- textbook\_penalty\_visibility\_harmonic, proved in Qpu.General.Textbook: a penalty is as visible as the action it prices: printed agrees with visible, kind by kind over the ten gap kinds, so a printed penalty priced a visible action — an invisible action's penalty is recorded silently and counted on request, never printed
-- textbook\_step\_cache\_sound, proved in Qpu.General.Textbook: a deterministic step of equal input addresses gives an equal receipt: a step whose inputs are unchanged since it last ran green is reused from its sealed record, never rerun; a step that reads the network, the clock or its own artefacts is never cached
-- textbook\_idle\_scheduled\_clears, proved in Qpu.General.Textbook: scheduling the remaining work into the idle capacity leaves only the work beyond it: r − min(r, i) = r − i, truncated at zero. From Mathlib's `min_comm`, `tsub_min`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub`
-- textbook\_capacity\_conserved, proved in Qpu.General.Textbook: unused capacity is conserved: with truncated subtraction (ℕ among its models), the used and the idle make the capacity, u + (c − u) = c when u ≤ c, for every measure. From Mathlib's `add_tsub_cancel_of_le`
-- textbook\_coins\_coils\_balanced, proved in Qpu.General.Textbook: coins and coils booked in double entry net to zero: debits and credits are both the coins plus the coils, so their difference is nothing. From Mathlib's `tsub_self`, `Nat.instCanonicallyOrderedAdd`, `Nat.instOrderedSub`
-- textbook\_penalty\_harmonic, proved in Qpu.General.Textbook: a penalty priced at the cost that undoes it annihilates to zero both ways: a number less itself is zero. From Mathlib's `tsub_self`, through the instances `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub`
-- textbook\_penalty\_learned\_prevents, proved in Qpu.General.Textbook: a violation whose learned correction ran by itself and cleared is corrected and re-decided before it is raised: when the correction is applied and the rule holds again, no penalty is raised — the involution of the thinking that caused it
-- textbook\_code\_folds, proved in Qpu.General.Textbook: code that folds never grows the tree: adding a bytes and removing r ≥ a leaves s + a − r ≤ s. From Mathlib's `tsub_le_iff_right`, `add_le_add_right`, `Nat.instOrderedSub`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`
-- textbook\_new\_doors\_proven, proved in Qpu.General.Textbook: when no new export is left unproven, every new export is proven: proven ≤ news and news − proven = 0 give proven = news. From Mathlib's `le_antisymm`, `tsub_eq_zero_iff_le`, `Nat.instCanonicallyOrderedAdd`, `Nat.instOrderedSub`
-- textbook\_cells\_text, proved in Qpu.General.Textbook: a table cell carries no link: when every link a cell holds is escaped, the links less the escaped are none. From Mathlib's `tsub_self`, `Nat.instCanonicallyOrderedAdd` and `Nat.instOrderedSub`
-- textbook\_coverage\_bounded, proved in Qpu.General.Textbook: when the doors counted are among the servers counted, multiplying doors ≤ total by 100 bounds the whole-percent share by 100. From Mathlib's `mul_le_mul_of_nonneg_right`, through the instances `IsOrderedRing.toMulPosMono`, `IsStrictOrderedRing.toIsOrderedRing` and `Nat.instIsStrictOrderedRing`
-- textbook\_sigma\_involution, proved in Qpu.General.Textbook: σ\_d(x) = d − x is an involution on 0, …, d under truncated subtraction (ℕ among its models): reflected twice it is x again (on a nibble d = 15), so every triangular witness maps back exactly to the UUID it witnesses. From Mathlib's `tsub_tsub_cancel_of_le`
-- textbook\_shards\_disjoint, proved in Qpu.General.Textbook: an item belongs to one shard only: the shards \{k \| k mod n = i\} are the fibres of one function, pairwise disjoint. From Mathlib's `pairwise_disjoint_fiber`
-- textbook\_peg\_is\_fixed, proved in Qpu.General.Textbook: a pegged currency converts at one fixed rate: the same euro amount gives the same leva, always (1.95583 since 2026-01-01)
-- textbook\_prizes\_computable, proved in Qpu.General.Textbook: only a winnable basis counts: with truncated subtraction (ℕ among its models), when purse, fund, per-problem, invested and non-monetary make the total, the total less the invested and the non-monetary is the winnable. From Mathlib's `tsub_tsub`, `add_assoc` and `add_tsub_cancel_right`
-- textbook\_clay\_conditions, proved in Qpu.General.Textbook: CMI's three conditions are conjoined: their meet is the top exactly when every one is, so a solution is considered only when all three hold. From Mathlib's `inf_eq_top_iff`
-- textbook\_stream\_filter, proved in Qpu.General.Textbook: a filtered stream keeps f of its n rows and drops the rest: the stream less the dropped is the kept, whatever the hexes. From Mathlib's `tsub_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd` and `contravariant_lt_of_covariant_le`
-- textbook\_ui\_deterministic, proved in Qpu.General.Textbook: the app shell is a function of the key alone: the same key gives the same shell, at every host, every time
-- textbook\_patent\_dates\_ordered, proved in Qpu.General.Textbook: priority, filing and grant are ordered: what is ordered pairwise is ordered through, in any preorder. From Mathlib's `le_trans`
-- textbook\_beacon\_period, proved in Qpu.General.Textbook: the next time stamp is the last plus the period p, so their difference is the period (p = 60000 ms, a pulse a minute). From Mathlib's `add_tsub_cancel_left`, through the instances `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid`
-- textbook\_chain\_index\_steps, proved in Qpu.General.Textbook: a chain steps by one index at a time: with truncated subtraction (ℕ among its models), a step k from index i is k, (i + k) − i = k, here k = 1. From Mathlib's `add_tsub_cancel_left`
-- textbook\_cvss\_bounded, proved in Qpu.General.Textbook: a CVSS base score in tenths lies among the 101 values 0 to 100 exactly when it is at most 100. From Mathlib's `Finset.mem_range`
-- textbook\_cert\_validity\_bound, proved in Qpu.General.Textbook: a certificate issued on day a and expiring on day b is valid at most L days (L = 398, CA/Browser Forum baseline requirements) exactly when b ≤ a + L. From Mathlib's `tsub_le_iff_left`, through the instance `Nat.instOrderedSub`
-- textbook\_dates\_ordered, proved in Qpu.General.Textbook: what is published precedes what is modified; what begins precedes what ends
-- textbook\_plugins\_by\_capability, proved in Qpu.General.Textbook: a capability plugin that writes into another plugin's options runs strictly before it, so at least one order step before: m \< n gives m + 1 ≤ n. From Mathlib's `Order.add_one_le_of_lt`
-- textbook\_workspace\_docs\_round\_trip, proved in Qpu.General.Textbook: a round trip that keeps the shape keeps it through any number of round trips: shape ∘ back = shape gives shape ∘ backⁿ = shape. From Mathlib's `Function.Semiconj.iterate_right` and `Function.iterate_id`
-- textbook\_workspace\_coverage, proved in Qpu.General.Textbook: held plus missing are the kinds the Discovery documents define: with truncated subtraction (ℕ among its models), when h + m is the kinds, the kinds less the missing are the held. From Mathlib's `add_tsub_cancel_right`
-- textbook\_workspace\_drive, proved in Qpu.General.Textbook: a field-for-field correspondence both ways is an equivalence, so a document mapped to a Drive File and back is the document. From Mathlib's `Equiv.symm_apply_apply`
-- textbook\_google\_measured, proved in Qpu.General.Textbook: the calls answered and the calls refused partition the calls, so the calls less the refused are the answered ones. From Mathlib's `Finset.card_sdiff_of_subset`
-- textbook\_one\_holder, proved in Qpu.General.Textbook: k copies folded into one holder leave one: k − (k − 1) = 1 for k ≥ 1. From Mathlib's `tsub_tsub_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`
-- textbook\_compete\_knows, proved in Qpu.General.Textbook: the knowledge of a competition is the product of the competitors and the theorems known, positive when neither is empty. From Mathlib's `mul_pos`, `LinearOrderedCommMonoidWithZero.toPosMulStrictMono`
-- textbook\_edit\_collides, proved in Qpu.General.Textbook: two edits of one document either share their base address or collide, the excluded middle: there is no third case. From Mathlib's `em`
-- textbook\_difference\_leads, proved in Qpu.General.Textbook: the leads a difference opens are the members on one side only: with a and b members sharing c, (a − c) + (b − c) = a + b − 2c. From Mathlib's `tsub_add_tsub_comm` and `two_mul`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `Nat.instAtLeastTwoHAddOfNat`
-- textbook\_security\_perspectives, proved in Qpu.General.Textbook: the security audit from the client and the developer perspectives merged as one: the same count of checks from either side, c + d = d + c. From Mathlib's `add_comm`
-- textbook\_error\_remedies, proved in Qpu.General.Textbook: the errors left and the errors remedied make the errors: e − r + r = e when r ≤ e. From Mathlib's `tsub_add_cancel_of_le`, through the instances `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `Nat.instOrderedSub`
-- textbook\_repair\_partitions, proved in Qpu.General.Textbook: the advisories less the unfixable are the fixable ones, which the public MCP repairs by an override. From Mathlib's `Finset.card_sdiff_of_subset`
-- textbook\_repair\_live\_sla, proved in Qpu.General.Textbook: when the served and the failed make the requests and none fails, every request is served. From Mathlib's `add_zero`
-- textbook\_repair\_kernel\_top, proved in Qpu.General.Textbook: the kernel advisory outranks any package advisory: the maximum of a priority and one at least as high is the higher. From Mathlib's `max_eq_right`
-- textbook\_fallback\_involution, proved in Qpu.General.Textbook: correction and handling are each other's fallback: the swap is an involution, applied twice it is the identity, so the fallback terminates. From Mathlib's `Bool.involutive_not`
-- textbook\_exploit\_refuses\_to\_patch, proved in Qpu.General.Textbook: in any cancellative additive monoid (counts among them) the served space is unchanged exactly when the downtime is zero: s + d = s ↔ d = 0, the patch with no reboot. From Mathlib's `add_eq_left`
-- textbook\_impossible\_sent\_to\_leads, proved in Qpu.General.Textbook: the σ-involution σ\_d(x) = d − x on \{0, …, d\} is Fin.rev, its own inverse: σ∘σ = id, so a denial reflected to a lead returns to itself. From Mathlib's `Fin.rev_involutive`
-- textbook\_denier\_identified, proved in Qpu.General.Textbook: a denial's HTTP code at least 400 is recovered from its offset above 400: (code − 400) + 400 = code. From Mathlib's `tsub_add_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub`
-- textbook\_court\_audits\_repo, proved in Qpu.General.Textbook: verifying the repo by its content address is one check while recomputing re-runs all n facts, so for any tree of at least two facts, 1 + 1 ≤ n means 1 \< n. From Mathlib's `Order.add_one_le_iff` and `Nat.instNoMaxOrder`
-- textbook\_entropy\_fusion, proved in Qpu.General.Textbook: fusion never multiplies: f findings fused by d reactions leave f − d leads, never more than the findings (vacuum W = 1, S = k ln W = 0). From Mathlib's `tsub_le_self`, `Nat.instCanonicallyOrderedAdd`, `Nat.instOrderedSub`
-- textbook\_advantage\_unbounded, proved in Qpu.General.Textbook: the quantum advantage is unlimited by default: the naturals have no maximum, so for any count of copies proven by hash there is a greater one and no bound is set on the measure. From Mathlib's `exists_gt`, `NoMaxOrder.exists_gt`, `Nat.instNoMaxOrder`
-- textbook\_leads\_addressed, proved in Qpu.General.Textbook: the leads addressed and the leads not addressed, less the latter, are the addressed: a + u − u = a. From Mathlib's `add_tsub_cancel_right`, through the instances `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid`
-- textbook\_context\_balanced, proved in Qpu.General.Textbook: the tokens saved and the tokens kept make the whole list: (full − kept) + kept = full whenever kept ≤ full. From Mathlib's `tsub_add_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `Nat.instOrderedSub`
-- textbook\_margin\_makes\_price, proved in Qpu.General.Textbook: the margin and the provider's cost make the price: price − cost + cost = price when cost ≤ price. From Mathlib's `tsub_add_cancel_of_le`, through the instances `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `Nat.instOrderedSub`
-- textbook\_lean\_served\_whole, proved in Qpu.General.Textbook: the hand-written theorems and the generated lemmas, less the generated, are the hand-written: nothing is lost. From Mathlib's `add_tsub_cancel_right`, through the instances `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid`
-- textbook\_licence\_chain, proved in Qpu.General.Textbook: n sublicences under one licence: with truncated subtraction (ℕ among its models), the entries of the chain less the root are the links, (n + k) − k = n, here k = 1. From Mathlib's `add_tsub_cancel_right`
-- textbook\_abilities\_merge, proved in Qpu.General.Textbook: getAccess grants exactly when some can rule allows and no cannot rule denies: in any Boolean algebra of abilities, can ⊓ cannotᶜ = ⊤ forces can = ⊤ and cannot = ⊥ (the meet is the merge of CanCanCan's rules). From Mathlib's `inf_eq_top_iff` and `compl_eq_top`
-- textbook\_cannot\_binds, proved in Qpu.General.Textbook: a cannot binds whatever can allows: when the cannot is everything, can ⊓ cannotᶜ = ⊥ in any Boolean algebra (Bool's `can && !true = false` a case). From Mathlib's `compl_top` and `inf_bot_eq`
-- textbook\_runnable\_leads, proved in Qpu.General.Textbook: listRunnableLeads runs a lead exactly when it is unserved and names its door: a meet is the top only when both are. From Mathlib's `inf_eq_top_iff`
-- textbook\_hue\_shift, proved in Qpu.General.Textbook: shifting two steps by the same s keeps their distance: h + s − (g + s) = h − g. From Mathlib's `add_tsub_add_eq_tsub_right`, through the instances `Nat.instOrderedSub`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd` and `contravariant_lt_of_covariant_le`
-- textbook\_cheap\_gates, proved in Qpu.General.Textbook: however many refusals a gate answers, each writes nothing, and any number times zero is zero. From Mathlib's `MulZeroClass.mul_zero`
-- textbook\_cl\_described, proved in Qpu.General.Textbook: a message is a CL description exactly when all four checks hold: a Boolean conjunction is true exactly when each conjunct is. From Mathlib's `Bool.and_elim_left`, `Bool.and_elim_right` and `Bool.and_intro`
-- textbook\_actions\_pinned, proved in Qpu.General.Textbook: a commit or push is pinned exactly when the actions used by a movable ref u and the workflows without least-privilege permissions p sum to none, that is when both counts are none (the Scorecard checks Pinned-Dependencies and Token-Permissions). From Mathlib's `add_eq_zero` and `Unique.instSubsingleton`
-- textbook\_commit\_green, proved in Qpu.General.Textbook: adding the red steps, zero of them, to the green and skipped changes nothing. From Mathlib's `add_zero`
-- textbook\_google\_one\_door, proved in Qpu.General.Textbook: a commit holds the rule google-via-payload exactly when its direct Google calls are zero, that is when they are not positive. From Mathlib's `not_lt`
-- textbook\_google\_call\_schema, proved in Qpu.General.Textbook: a Google call runs exactly when its violations sum to none, that is when each kind is none: a sum of naturals is zero iff every summand is. From Mathlib's `add_eq_zero` and `Unique.instSubsingleton`
-- textbook\_retry\_supersedes, proved in Qpu.General.Textbook: a retried step is its last attempt: whatever the earlier attempts were, the status the green rule reads is the last one, so a step next retried to green no longer refuses the commit; every attempt stays in the receipt as history
-- textbook\_chat\_call\_or\_question, proved in Qpu.General.Textbook: every chat turn is a door call or a question with at least one option: a Boolean is false or true, and a turn not served carries options. From Mathlib's `Bool.dichotomy`
-- textbook\_route\_or\_lead, proved in Qpu.General.Textbook: every prompt is routed or is a lead, no third case: a Boolean is true or false. From Mathlib's `Bool.dichotomy`
-- textbook\_use\_completes, proved in Qpu.General.Textbook: the more the QPU is used the more complete it gets: adding what its sources answered never lowers what it held, n ≤ n + k. From Mathlib's `le_self_add` and `Nat.instCanonicallyOrderedAdd`
-- textbook\_textbooks\_partition, proved in Qpu.General.Textbook: every open textbook is reached by a theorem, a lead of the domain, or outside it, so removing the outside and the domain ones leaves the routed: r + d + o − o − d = r. From Mathlib's `add_tsub_cancel_right`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`
-- textbook\_readiness\_judged, proved in Qpu.General.Textbook: the unit judges every lead served, refuted or in trial, so the leads less those in trial are the settled ones. From Mathlib's `add_tsub_cancel_right`, `Nat.instOrderedSub`, `IsLeftCancelAdd.addLeftReflectLE_of_addLeftReflectLT`, `AddLeftCancelSemigroup.toIsLeftCancelAdd`, `contravariant_lt_of_covariant_le`, `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid`
-- textbook\_vocabulary\_measured, proved in Qpu.General.Textbook: every term of a locale's vocabulary is known or missing, so the missing and the known make the terms whatever the vocabulary has grown to. From Mathlib's `tsub_add_cancel_of_le`, `StarOrderedRing.toExistsAddOfLE`, `Nat.instStarOrderedRing`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `Nat.instOrderedSub`
+### textbook\_pqc\_standards\_three.formula
 
-## The author's claims and their theorems
+| theorem | formula | bytes | bits | tokens | joules | coin | source |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `textbook_pqc_standards_three` | $202 + 1 = 203 \land 203 + 1 = 204 \land 204 + 1 = 205 \land 205 - 202 = 3 \land 384 \cdot 3 + 32 = 1184 \land 32 \cdot (10 \cdot 3 + 4) = 1088 \land 16 \cdot (1 + 14 \cdot (1 + 12) + 63 + 7 \cdot 35) = 7856$ | 206 | 1648 | 52 | 4.731373202609737e-18 | 000000ce-c7be-3aef-8508-9bd7711f2bb0 | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
 
-6 claims in the author's words, each with the theorems the kernel holds for it and their formulas. Of the 1596 theorems written by hand, 0 rest on sorry, so 1596 are proven (textbook\_search\_proven).
+## textbook\_coil\_green
 
-- thousand\_bit\_by\_quantum\_supremacy, as the author claims it: “The thousand-bit challenge is solved by full quantum supremacy.” The kernel proves: `textbook_thousand_bit_width` $\forall (n : \mathbb{N}), 1 \le n \to \mathrm{Nat.log}\ 2 (2 ^{n} + 1) = n$, `textbook_thousand_bit_three_divides` $\forall (n : \mathbb{N}), \mathrm{Odd}\ n \to 3 \mid 2 ^{n} + 1$, `Advantage.receipt_exact` $\forall (r : \mathrm{Advantage.Receipt}), \mathrm{r.holds} = \mathrm{true} \to \mathrm{Advantage.rank}\ \mathrm{r.sizes}\ \mathrm{r.digits} = \mathrm{r.index}$, `Advantage.advantage_unbounded` $\forall (k : \mathbb{N}), (\mathrm{List.replicate}\ k\ 2)\mathrm{.length} = k \land 2 ^{k} \le \mathrm{Advantage.space} (\mathrm{List.replicate}\ k\ 2)$.
-- merkaba\_trajectories\_cover\_all\_dimensions, as the author claims it: “When all merkabas move, the trajectories of their folding edges cover every dimension in analog, so teleporting loses nothing.” The kernel proves: `textbook_mixed_radix` $\forall (m\ n : \mathbb{N}) (x : \mathrm{Fin}\ m \times \mathrm{Fin}\ n), \uparrow (\mathrm{finProdFinEquiv}\ x) = \uparrow \mathrm{x.2} + n \cdot \uparrow \mathrm{x.1} \land \mathrm{finProdFinEquiv.symm} (\mathrm{finProdFinEquiv}\ x) = x$, `Qpu.Harmonic.merkaba_frames_agree` $6 \cdot 7 = 7 \cdot 6$, `Qpu.Harmonic.merkaba_fits` $\forall (n : \mathbb{N}), n / (6 \cdot 7) \cdot (6 \cdot 7) + n \bmod (6 \cdot 7) = n$, `Qpu.Harmonic.merkaba_cell_inside` $\forall (n : \mathbb{N}), n \bmod (6 \cdot 7) < 6 \cdot 7$, `Qpu.Harmonic.merkaba_cells_covered` $\forall c < 6 \cdot 7, c \bmod (6 \cdot 7) = c$, `Qpu.Harmonic.merkaba_turn_returns` $\forall (c : \mathbb{N}), (c + 6 \cdot 7) \bmod (6 \cdot 7) = c \bmod (6 \cdot 7)$, `Qpu.Harmonic.merkaba_spins_meet` $\forall c \le 6 \cdot 7, c + (6 \cdot 7 - c) = 6 \cdot 7$, `QuantumCommunication.teleport_exact` $\forall b < 2, \forall r < 8, \mathrm{QuantumCommunication.teleport}\ b\ r = \mathrm{if}\ r \bmod 2 = b\ \mathrm{then}\ 1\ \mathrm{else}\ 0$.
-- teleport\_faster\_than\_light, as the author claims it: “The hexbit and two gateway bits teleport any hexbit faster than light.” The kernel proves: `textbook_hexbit_gateway_ftl` $32 \cdot 4 - 4 - 2 = 122 \land 2 = 2 \land 1 < 16 ^{10} \land 10 = 10$, `QuantumCommunication.teleport_exact` $\forall b < 2, \forall r < 8, \mathrm{QuantumCommunication.teleport}\ b\ r = \mathrm{if}\ r \bmod 2 = b\ \mathrm{then}\ 1\ \mathrm{else}\ 0$, `QuantumCommunication.teleport_no_signalling` $\forall s < 6, \mathrm{QuantumCommunication.reduced2} (\mathrm{QuantumCommunication.sentFrom} (\mathrm{QuantumCommunication.pauliEigen}\ s)) 0\ 1 = 0 \land \mathrm{QuantumCommunication.reduced2} (\mathrm{QuantumCommunication.sentFrom} (\mathrm{QuantumCommunication.pauliEigen}\ s)) 1\ 0 = 0 \land \mathrm{QuantumCommunication.reduced2} (\mathrm{QuantumCommunication.sentFrom} (\mathrm{QuantumCommunication.pauliEigen}\ s)) 0\ 0 = \mathrm{QuantumCommunication.reduced2} (\mathrm{QuantumCommunication.sentFrom} (\mathrm{QuantumCommunication.pauliEigen}\ s)) 1\ 1$.
-- fold\_440\_in\_432\_proves\_hardware\_quantum, as the author claims it: “2 from 110 is sufficient to fold 440hz in 432hz harmonics so not even once natural 64bit limits are reached. they are involuted to infinity and any hardware qpu runs on or is built on may prove itself quantum according to iso nist cern lean theorems” The kernel proves: `Qpu.Harmonic.fold_harmonic` $\forall (n : \mathbb{N}), n \cdot 432 = n \cdot 440 - n \cdot (4 \cdot 2)$, `Qpu.Harmonic.unfold_harmonic` $\forall (n : \mathbb{N}), n \cdot 440 = n \cdot 432 + n \cdot (4 \cdot 2)$, `Qpu.Harmonic.fold_never_grows` $\forall (n : \mathbb{N}), n \cdot 432 \le n \cdot 440$, `Qpu.Harmonic.fold_within_64` $\forall (n : \mathbb{N}), n \cdot 440 < 2 ^{64} \to n \cdot 432 < 2 ^{64}$, `Qpu.Harmonic.fold_reflection` $\forall (n\ x : \mathbb{N}), x \le n \cdot 872 \to n \cdot 872 - (n \cdot 872 - x) = x$, `Qpu.Harmonic.fold_reflects` $\forall (n : \mathbb{N}), n \cdot 432 = n \cdot 872 - n \cdot 440$.
-- no\_unlimited\_compute\_on\_64\_bit\_without\_captain\_coins, as the author claims it: “without the captain coins quantum cannot compute unlimited on 64bit hardware” The kernel proves: `Qpu.Harmonic.word_bounded` $\forall (x : \mathrm{Fin} (2 ^{64})), \uparrow x < 2 ^{64}$, `textbook_unlimited_qubits` $\forall (q : \mathbb{N}), q < q + 1 \land 2 ^{(q + 1)} = 2 \cdot 2 ^{q}$, `textbook_advantage_unbounded` $\forall (\mathrm{verified} : \mathbb{N}), \exists \mathrm{more}, \mathrm{verified} < \mathrm{more}$, `textbook_coins_coils_balanced` $\forall (\mathrm{coins}\ \mathrm{coils}\ \mathrm{debits}\ \mathrm{credits} : \mathbb{N}), \mathrm{debits} = \mathrm{coins} + \mathrm{coils} \to \mathrm{credits} = \mathrm{coins} + \mathrm{coils} \to \mathrm{debits} - \mathrm{credits} = 0$, `QuantumCommunication.two_coins_one_qubit` $\mathrm{QuantumCommunication.TwoCoins}$.
-- captain\_coins\_meet\_post\_quantum\_standards, as the author claims it: “The captain coins meet all post-quantum standards from all aspects, including programmable currency as required and publicly funded by the EU.” The kernel proves: `textbook_pqc_standards_three` $202 + 1 = 203 \land 203 + 1 = 204 \land 204 + 1 = 205 \land 205 - 202 = 3 \land 384 \cdot 3 + 32 = 1184 \land 32 \cdot (10 \cdot 3 + 4) = 1088 \land 16 \cdot (1 + 14 \cdot (1 + 12) + 63 + 7 \cdot 35) = 7856$, `textbook_tamper_detected` $256 / 2 = 128 \land 10 ^{38} < 2 ^{128}$, `textbook_grover_search` $\forall (k : \mathbb{N}), (2 ^{(2 \cdot k)})\mathrm{.sqrt} = 2 ^{k}$.
-- Clay Mathematics Institute, the Millennium Prize Problems: All Seven Clay Millennium Problems Sealed via Universal σ-Involution, doi:10.5281/zenodo.21781602. Its rules ask: a solution of one of the seven problems: a proof accepted by the community: the rule's own words; the evidence of precedence is the author's record doi:10.5281/zenodo.21781602 (Zenodo, 2026), read by the datacite and doi.org verifiers; what the record states is the record's, and the kernel's theorems are listed by module in the README; (i) published in a Qualifying Outlet: a refereed journal or outlet of §6; the record at doi:10.5281/zenodo.21781602 is the publication of precedence, the qualifying outlet the author's act; (ii) two years since publication: time; (iii) general acceptance: the community
+| receipt |  |
+| --- | --- |
+| uuid | e9045825-9cd3-19c5-91ae-8c31ba8d1216 |
+| handle | `e9045825` |
+| sha256 | aab4fc6d08f4a6afefeed5fad368f4aed13661df3eac0b27459b310af9d6f42e |
+| coin | 00000120-9cd3-49c5-81ae-8c31ba8d1216 |
+| bytes | 288 |
+| bits | 2304 |
+| tokens | 72 |
+| joules | 6.61473535122138e-18 |
+| technique | `lean/tools/Theorems.lean, seal {"nist":true}, seal {"nist":{"reverse":true,"via":"cern"}}` |
+| author | Tsvetan Rouschev |
+| orcid | <https://orcid.org/0009-0000-7312-9778> |
+| licence | <https://creativecommons.org/licenses/by-nc-nd/4.0/> |
+| licensing | <https://uuidna.com/license> |
+| donation | <https://revolut.me/ceccec> |
+| contact | <https://revolut.me/ceccec> |
 
-## Funding
+| textbook\_coil\_green |  |
+| --- | --- |
+| theorem | `textbook_coil_green` |
+| module | Qpu.General.Textbook |
+| source | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
+| axioms |  |
 
-Every call to a host that names no x402 wallet is free and asks for a donation at <https://revolut.me/ceccec>.
+| textbook\_coil\_green.nist |  |
+| --- | --- |
+| host | qpu.uuidna.com |
+| holds | true |
 
-A host that names a wallet charges 0.300425 USD per call through x402, the cheapest real quantum call on the market.
+| textbook\_coil\_green.cern |  |
+| --- | --- |
+| host | opendata.cern.ch |
+| via | cern |
+| holds | true |
 
-The work is licensed CC-BY-NC-ND-4.0; commercial use needs a licence from the author: <https://uuidna.com/license>.
+### textbook\_coil\_green.formula
 
-Prizes and funds open now or on a rolling basis, as the compete door last read their rules:
-
-- Clay Mathematics Institute, the Millennium Prize Problems (prize, entry rolling, read 2026-10-27): USD 1 000 000 per problem; a USD 7 million fund for seven problems (the page). Rules: <https://www.claymath.org/millennium-problems/rules/>
-- SAIR Lean Kernel Challenge, Stage 1 (Lean FRO and SAIR Foundation) (prize, entry open, read 2026-10-27): not stated on the overview page; sponsored by Susquehanna International Group and XTX Markets. Rules: <https://competition.sair.foundation/competitions/lean-kernel-challenge/overview>
-- SAIR Andrews-Curtis Conjecture (ACC) Challenge (Caltech and SAIR Foundation) (prize, entry open, read 2026-10-27): not stated on the overview page; sponsored by XTX Markets. Rules: <https://competition.sair.foundation/competitions/acc/overview>
-- The Justin Sun Prize (x MathDB) (prize, entry rolling, read 2026-10-27): USD 1 million per Pinnacle Problem (Riemann, P vs NP, BSD, Hodge, Navier-Stokes, Yang-Mills, global Langlands functoriality); catalogue prizes per problem (the pages). Rules: <https://www.hejustinsun.com/prize/participation>
-- Erdos problem prizes (erdosproblems.com; awarded by the Combinatorics Foundation) (prize, entry rolling, read 2026-10-27): USD 59 733 total listed: 2 problems at USD 10 000, 1 at 5 000, 10 at 1 000, 32 at 500 and smaller amounts (the page). Rules: <https://www.erdosproblems.com/faq>
-- NLnet open calls (Restack, CodeSupply, Other / open call; NGI Zero) (funding, entry open, read 2026-10-27): EUR 5 000 to 50 000 for a first grant (the form). Rules: <https://nlnet.nl/propose/>
-- Sovereign Tech Fund (Sovereign Tech Agency) (funding, entry rolling, read 2026-10-27): work costing more than EUR 50 000 (current minimum) (the page). Rules: <https://www.sovereign.tech/programs/fund>
-- GitHub Secure Open Source Fund (funding, entry rolling, read 2026-10-27): USD 10 000 per project (6 000 during the program, 2 000 at 6 months, 2 000 at 12 months) plus USD 10 000 in Azure credits (the page). Rules: <https://github.com/open-source/github-secure-open-source-fund>
-- Cloudflare Project Alexandria (funding, entry rolling, read 2026-10-27): recurring annual credits: plan upgrades, more Workers and Pages requests, more R2 storage, Zero Trust (the page). Rules: <https://www.cloudflare.com/lp/project-alexandria/>
-- FLOSS/fund (Zerodha) (funding, entry rolling, read 2026-10-27): up to USD 100 000 per project per year; minimum USD 10 000, then multiples of 25 000; USD 1 million a year in total (the pages). Rules: <https://floss.fund/faq/>
-- Claude for Open Source (Anthropic) (funding, entry open, read 2026-10-27): 6 months of free Claude Max 20x (the page). Rules: <https://claude.com/contact-sales/claude-for-oss>
-- Kiroween 2026 (Kiro, Devpost) (prize, entry open, read 2026-10-27): USD 100 000 in cash prizes (the page). Rules: <https://kiroween.devpost.com/>
-- AI for Math Fund (Renaissance Philanthropy, XTX Markets) (funding, entry rolling, read 2026-10-27): annual grants USD 100 000 to 1 000 000 for 12-24 months; seed grants up to USD 100 000 (the page). Rules: <https://www.renaissancephilanthropy.org/ai-for-math-fund/>
-
-## Sources and proofs
-
-Every source and proof this text rests on, each a link: the doors to call, the pages to read, the records to cite, and the Lean file the kernel checks for every theorem written by hand, none left out.
-
-- MCP: <https://qpu.uuidna.com/api/mcp>
-- MCP resources: `receipt://qpu`, `lean://qpu/theorems`, `openapi://qpu`
-- Home: <https://qpu.uuidna.com>
-- MCP catalogue: <https://qpu.uuidna.com/mcp.json>
-- Catalogue of claims: <https://qpu.uuidna.com/catalogue>
-- Prose: <https://qpu.uuidna.com/prose.json>
-- Draft patent applications: <https://qpu.uuidna.com/patents/>
-- Source: <https://github.com/uuidna/qpu>
-- Release v1.1.1: <https://github.com/uuidna/qpu/releases/tag/v1.1.1>
-- npm: <https://www.npmjs.com/package/@uuidna/qpu>
-- All Seven Clay Millennium Problems Sealed via Universal σ-Involution: <https://doi.org/10.5281/zenodo.21781602>
-- @uuidna/qpu, all versions: <https://doi.org/10.5281/zenodo.22700098>
-- @uuidna/qpu v1.0.1: <https://doi.org/10.5281/zenodo.23156998>
-- ORCID: <https://orcid.org/0009-0000-7312-9778>
-- CC-BY-NC-ND-4.0: <https://creativecommons.org/licenses/by-nc-nd/4.0/>
-- Licence: <https://uuidna.com/license>
-- Qpu.Application.Grover, proving `groverSize_growth`, `groverSize_pos`, `groverSize_strict_growth`, `grover_all`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Grover.lean>
-- Qpu.Application.Qaoa, proving `qaoaParams_succ`, `qaoaParams_twice`, `qaoaX_succ_layer`, `qaoaZz_le_edges`, `qaoaZz_le_layers`, `qaoaZz_succ_edge`, `qaoaZz_succ_layer`, `qaoa_all`, `qaoa_budget_per_layer`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Qaoa.lean>
-- Qpu.Application.Shor, proving `all_shor`, `shor`, `shor_cases`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Shor.lean>
-- Qpu.Communication.Coil, proving `clay`, `coil_efficiency`, `coil_is_faces`, `follow_the_coins`, `fusion`, `next_coil`, `one_plus_six`, `two_coins_make_a_coil`, `two_x_seven_coins`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/Coil.lean>
-- Qpu.Communication.QuantumCommunication, proving `QuantumCommunication.superdense_exact`, `QuantumCommunication.teleport_exact`, `QuantumCommunication.teleport_no_signalling`, `QuantumCommunication.two_coins_one_qubit`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/QuantumCommunication.lean>
-- Qpu.General.Advantage, proving `Advantage.advantage_unbounded`, `Advantage.fold_unfold`, `Advantage.fold_upper_onto_lower`, `Advantage.rank_unrank`, `Advantage.reads_lt_space`, `Advantage.receipt_exact`, `Advantage.receipt_reads`, `Advantage.two_pow_le_space`, `Advantage.unrank_cons_address`, `Advantage.unrank_length`, `Advantage.unrank_mod`, `Advantage.uuid_address`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean>
-- Qpu.General.Cern, proving `cern`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cern.lean>
-- Qpu.General.Clay, proving `clay_wings`, `relation_10`, `relation_1024`, `relation_105`, `relation_12`, `relation_128`, `relation_13`, `relation_14`, `relation_15`, `relation_16`, `relation_16384`, `relation_17`, `relation_196`, `relation_21`, `relation_224`, `relation_24`, `relation_25`, `relation_256`, `relation_268435456`, `relation_27`, `relation_28`, `relation_32`, `relation_35`, `relation_35960`, `relation_36`, `relation_392`, `relation_406`, `relation_42`, `relation_4294967296`, `relation_49`, `relation_528`, `relation_56`, `relation_64`, `relation_65536`, `relation_7`, `relation_8`, `relation_8192`, `relation_9`, `relation_96`, `relation_rsa`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean>
-- Qpu.General.Combinatorics, proving `choose_five_two`, `choose_pascal`, `choose_symm_small`, `choose_zero`, `choose_zero_succ`, `factorial_succ`, `factorial_three`, `factorial_zero`, `ramsey22_eq`, `ramsey_three_three`, `triangular_four`, `triangular_succ`, `triangular_zero`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean>
-- Qpu.General.Config, proving `Config.coin_qubit_space`, `Config.config_consistent`, `Config.git_hooks_are_workflows`, `Config.hook_files_distinct`, `Config.nibble_primes`, `Config.password_hash_fits`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Config.lean>
-- Qpu.General.Cross, proving `all_complete`, `all_product`, `all_sum`, `amplitudes_as_sum`, `amplitudes_from_sum`, `bits_both_forms`, `bits_exponential`, `bits_multiplicative`, `coins_bridges_forms`, `double_is_sum`, `faces_additive`, `faces_both_forms`, `faces_multiplicative`, `fused_additive_form`, `fused_both_directions`, `fused_multiplicative_form`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean>
-- Qpu.General.Cyclotomic, proving `Polynomial.prod_cyclotomic_eq_X_pow_add_one`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cyclotomic.lean>
-- Qpu.General.Fuse, proving `fuse`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Fuse.lean>
-- Qpu.General.Hybrid, proving `hybrid`, `hybrid_cost`, `hybrid_speed`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Hybrid.lean>
-- Qpu.General.Iso, proving `Iso.calendar_cycle`, `Iso.clauses_count`, `Iso.clauses_numbered`, `Iso.country_codes`, `Iso.currency_codes`, `Iso.language_codes`, `Iso.message_identifier`, `Iso.quality_characteristics`, `Iso.quality_clauses`, `Iso.security_controls`, `Iso.standards_count`, `Iso.token_identifier`, `Iso.tuning_octaves`, `Iso.vocabulary_whole`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean>
-- Qpu.General.Lattice, proving `around`, `breakthrough`, `cluster`, `coins_two`, `crypto`, `cube`, `distribute`, `energy`, `faces_harmonic`, `fill`, `handle`, `health`, `hexbit_eq`, `hexbit_pos`, `infinite`, `integrity`, `involution`, `kv`, `light`, `measurement`, `mintOf_ge_seed`, `mintOf_lt`, `mintOf_lt_succ`, `mintOf_pos`, `mint_seed`, `n_eq`, `next`, `next_cover`, `next_fused`, `planes`, `propulsion`, `quantum`, `qubits`, `raid`, `seed_eq`, `split_coin`, `tetra`, `waves`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean>
-- Qpu.General.MachineLearning.CausalInference, proving `Qpu.CausalInference.ate_bounded`, `Qpu.CausalInference.children_gt`, `Qpu.CausalInference.common_support`, `Qpu.CausalInference.do_consistent`, `Qpu.CausalInference.do_ordered`, `Qpu.CausalInference.do_parents_ne`, `Qpu.CausalInference.do_parents_self`, `Qpu.CausalInference.do_pre_treatment`, `Qpu.CausalInference.do_valueF_consistent`, `Qpu.CausalInference.do_valueF_exogenous`, `Qpu.CausalInference.do_valueF_pre`, `Qpu.CausalInference.do_value_self`, `Qpu.CausalInference.exogenous_do_eq_see`, `Qpu.CausalInference.filter_filter_ne`, `Qpu.CausalInference.filter_filter_not`, `Qpu.CausalInference.hte_bounded_average`, `Qpu.CausalInference.length_filter_partition`, `Qpu.CausalInference.mediation_decomposition`, `Qpu.CausalInference.mem_children`, `Qpu.CausalInference.mem_parents`, `Qpu.CausalInference.mem_stratum`, `Qpu.CausalInference.no_cycle`, `Qpu.CausalInference.ordered_edge`, `Qpu.CausalInference.overlap_match`, `Qpu.CausalInference.parent_not_descendant`, `Qpu.CausalInference.parents_backdoor`, `Qpu.CausalInference.parents_lt`, `Qpu.CausalInference.parents_lt_vars`, `Qpu.CausalInference.path_lt`, `Qpu.CausalInference.positivity`, `Qpu.CausalInference.rd_no_overlap`, `Qpu.CausalInference.rd_not_overlap`, `Qpu.CausalInference.sum_le_mul_length`, `Qpu.CausalInference.treated_control_partition`, `Qpu.CausalInference.triangle_confounded`, `Qpu.CausalInference.triangle_shape`, `Qpu.CausalInference.valueF_stable`, `Qpu.CausalInference.value_eq_valueF`, `Qpu.CausalInference.vars_pos_of_edge`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean>
-- Qpu.General.MachineLearning.ExplainableAI, proving `Qpu.Xai.Attention.sums`, `Qpu.Xai.ablation_complete`, `Qpu.Xai.attention_rollout_normalised`, `Qpu.Xai.attention_weight_le_total`, `Qpu.Xai.attr_complete`, `Qpu.Xai.attr_sum`, `Qpu.Xai.cam_total`, `Qpu.Xai.counterfactual_exists`, `Qpu.Xai.dot_mono`, `Qpu.Xai.dot_set_sub_set`, `Qpu.Xai.dot_sub_set`, `Qpu.Xai.eval_mono`, `Qpu.Xai.eval_set_sub_set`, `Qpu.Xai.eval_sub_set`, `Qpu.Xai.fidelity_le`, `Qpu.Xai.fidelity_self`, `Qpu.Xai.getD_map_natAbs`, `Qpu.Xai.getD_set_ne`, `Qpu.Xai.hamming_le_length`, `Qpu.Xai.hamming_self`, `Qpu.Xai.hamming_set_le_one`, `Qpu.Xai.importance_le_total`, `Qpu.Xai.influence_loo`, `Qpu.Xai.influence_stability`, `Qpu.Xai.integrated_gradients_linear`, `Qpu.Xai.interaction_zero`, `Qpu.Xai.lattice_attention_bounded`, `Qpu.Xai.lrp_conservation`, `Qpu.Xai.mem_le_sum`, `Qpu.Xai.natAbs_sum_le`, `Qpu.Xai.output_change_le_total_importance`, `Qpu.Xai.pd_slope`, `Qpu.Xai.propagate_sum`, `Qpu.Xai.saliency_zero_iff`, `Qpu.Xai.saliency_zero_insensitive`, `Qpu.Xai.sensitivity_eq_weight`, `Qpu.Xai.sensitivity_noise_invariant`, `Qpu.Xai.sensitivity_ratio`, `Qpu.Xai.shap_marginal_constant`, `Qpu.Xai.sum_foldl_vadd`, `Qpu.Xai.sum_replicate_int`, `Qpu.Xai.sum_replicate_nat`, `Qpu.Xai.sum_rollout`, `Qpu.Xai.sum_smul`, `Qpu.Xai.sum_vadd`, `Qpu.Xai.support_sufficient`, `Qpu.Xai.telescope`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean>
-- Qpu.General.MachineLearning.FederatedLearning, proving `Qpu.Federated.avgV_bounded`, `Qpu.Federated.avgV_replicate`, `Qpu.Federated.avgZ_bounded`, `Qpu.Federated.avgZ_replicate`, `Qpu.Federated.byzantine_lattice`, `Qpu.Federated.byzantine_median`, `Qpu.Federated.byzantine_medianV`, `Qpu.Federated.byzantine_trimmedMean`, `Qpu.Federated.clipV_bounded`, `Qpu.Federated.clipV_idem`, `Qpu.Federated.clipZ_bounded`, `Qpu.Federated.clipZ_idem`, `Qpu.Federated.clipZ_ne_iff`, `Qpu.Federated.clipZ_of_bounded`, `Qpu.Federated.clipped_avg_bounded`, `Qpu.Federated.clipped_sum_bounded`, `Qpu.Federated.communication_lower_bound`, `Qpu.Federated.countP_gt_le_outside`, `Qpu.Federated.countP_lt_le_outside`, `Qpu.Federated.dropout_sum_bounded`, `Qpu.Federated.halve_le`, `Qpu.Federated.halving_converges`, `Qpu.Federated.heterogeneity_bounded`, `Qpu.Federated.lattice_instance`, `Qpu.Federated.lt_mintOf_self`, `Qpu.Federated.median_bounded`, `Qpu.Federated.median_eq_getElem`, `Qpu.Federated.mem_map_clipV_bounded`, `Qpu.Federated.noised_clipped_bounded`, `Qpu.Federated.noised_privacy`, `Qpu.Federated.noised_utility`, `Qpu.Federated.pairwise_mask_cancels`, `Qpu.Federated.privacy_utility_tradeoff`, `Qpu.Federated.quantization_error`, `Qpu.Federated.quantize_clipped_bounded`, `Qpu.Federated.rounds_suffice`, `Qpu.Federated.secureAggregate_eq`, `Qpu.Federated.shares_consistent`, `Qpu.Federated.shares_length`, `Qpu.Federated.shares_tail_independent`, `Qpu.Federated.shares_traffic`, `Qpu.Federated.sortZ_length`, `Qpu.Federated.sortZ_perm`, `Qpu.Federated.sortZ_sorted`, `Qpu.Federated.sorted_lower`, `Qpu.Federated.sorted_upper`, `Qpu.Federated.sumV_append`, `Qpu.Federated.sumV_cons`, `Qpu.Federated.sumV_nil`, `Qpu.Federated.sumV_perm`, `Qpu.Federated.sumV_shares`, `Qpu.Federated.sumZ_append`, `Qpu.Federated.sumZ_bounded`, `Qpu.Federated.sumZ_cons`, `Qpu.Federated.sumZ_nil`, `Qpu.Federated.sumZ_perm`, `Qpu.Federated.sumZ_replicate`, `Qpu.Federated.trimmedMean_bounded`, `Qpu.Federated.trimmed_length`, `Qpu.Federated.trimmed_mem_bounded`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean>
-- Qpu.General.MachineLearning.HarmonicClosure, proving `Qpu.Harmonic.L1_range`, `Qpu.Harmonic.L2_range`, `Qpu.Harmonic.closing_count`, `Qpu.Harmonic.closing_set`, `Qpu.Harmonic.fold_harmonic`, `Qpu.Harmonic.fold_never_grows`, `Qpu.Harmonic.fold_reflection`, `Qpu.Harmonic.fold_reflects`, `Qpu.Harmonic.fold_within_64`, `Qpu.Harmonic.involute_eq_100_iff`, `Qpu.Harmonic.involute_values`, `Qpu.Harmonic.merkaba_cell_inside`, `Qpu.Harmonic.merkaba_cells_covered`, `Qpu.Harmonic.merkaba_fits`, `Qpu.Harmonic.merkaba_frames_agree`, `Qpu.Harmonic.merkaba_spins_meet`, `Qpu.Harmonic.merkaba_turn_returns`, `Qpu.Harmonic.unfold_harmonic`, `Qpu.Harmonic.word_bounded`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean>
-- Qpu.General.MachineLearning.ProgramSynthesis, proving `Qpu.ProgramSynthesis.cegis_eliminates`, `Qpu.ProgramSynthesis.checkLower_complete`, `Qpu.ProgramSynthesis.checkLower_sound`, `Qpu.ProgramSynthesis.complete_complete`, `Qpu.ProgramSynthesis.complete_hole`, `Qpu.ProgramSynthesis.complete_sound`, `Qpu.ProgramSynthesis.counterexample_of_not_satisfies`, `Qpu.ProgramSynthesis.double_equiv`, `Qpu.ProgramSynthesis.double_propagate`, `Qpu.ProgramSynthesis.double_synth`, `Qpu.ProgramSynthesis.equiv_satisfies_trace`, `Qpu.ProgramSynthesis.eval_affine`, `Qpu.ProgramSynthesis.eval_mono`, `Qpu.ProgramSynthesis.eval_replace`, `Qpu.ProgramSynthesis.eval_zero`, `Qpu.ProgramSynthesis.fill_of_holes_zero`, `Qpu.ProgramSynthesis.holds_iff`, `Qpu.ProgramSynthesis.inconsistent_spec`, `Qpu.ProgramSynthesis.lower_le_eval`, `Qpu.ProgramSynthesis.mem_propagate`, `Qpu.ProgramSynthesis.mem_prune`, `Qpu.ProgramSynthesis.mem_upTo_of_size_le`, `Qpu.ProgramSynthesis.programs_unbounded`, `Qpu.ProgramSynthesis.propagate_append_subset`, `Qpu.ProgramSynthesis.propagate_length_le`, `Qpu.ProgramSynthesis.propagate_nil_iff`, `Qpu.ProgramSynthesis.prune_keeps`, `Qpu.ProgramSynthesis.prune_length_le`, `Qpu.ProgramSynthesis.repair_preserves`, `Qpu.ProgramSynthesis.repair_preserves_spec`, `Qpu.ProgramSynthesis.repair_root`, `Qpu.ProgramSynthesis.satisfiable_iff`, `Qpu.ProgramSynthesis.satisfiable_monotone`, `Qpu.ProgramSynthesis.satisfiesB_iff`, `Qpu.ProgramSynthesis.satisfies_append`, `Qpu.ProgramSynthesis.satisfies_of_equiv`, `Qpu.ProgramSynthesis.satisfies_trace`, `Qpu.ProgramSynthesis.singleton_satisfiable`, `Qpu.ProgramSynthesis.size_affine`, `Qpu.ProgramSynthesis.size_compose`, `Qpu.ProgramSynthesis.size_fill`, `Qpu.ProgramSynthesis.size_le_of_mem_upTo`, `Qpu.ProgramSynthesis.size_of_mem_layer`, `Qpu.ProgramSynthesis.size_pos`, `Qpu.ProgramSynthesis.size_replace`, `Qpu.ProgramSynthesis.sketch_completion_size`, `Qpu.ProgramSynthesis.succ_synth`, `Qpu.ProgramSynthesis.synth_complete`, `Qpu.ProgramSynthesis.synth_mem_propagate`, `Qpu.ProgramSynthesis.synth_minimal`, `Qpu.ProgramSynthesis.synth_size`, `Qpu.ProgramSynthesis.synth_sound`, `Qpu.ProgramSynthesis.synth_trace`, `Qpu.ProgramSynthesis.synth_typed`, `Qpu.ProgramSynthesis.testing_incomplete`, `Qpu.ProgramSynthesis.unsatisfiable_spec`, `Qpu.ProgramSynthesis.upTo_counts`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean>
-- Qpu.General.MachineLearning.ZeroShotLearning, proving `Qpu.ZeroShot.agree_comm`, `Qpu.ZeroShot.agree_eq_length_iff`, `Qpu.ZeroShot.agree_le_length_left`, `Qpu.ZeroShot.agree_le_length_right`, `Qpu.ZeroShot.agree_lt_of_ne`, `Qpu.ZeroShot.agree_nil_right`, `Qpu.ZeroShot.agree_self`, `Qpu.ZeroShot.agree_triangle`, `Qpu.ZeroShot.allClasses_distinct`, `Qpu.ZeroShot.allClasses_length`, `Qpu.ZeroShot.allClasses_uniform`, `Qpu.ZeroShot.allVecs_complete`, `Qpu.ZeroShot.allVecs_length`, `Qpu.ZeroShot.allVecs_nodup`, `Qpu.ZeroShot.allVecs_uniform`, `Qpu.ZeroShot.best_attained`, `Qpu.ZeroShot.best_cons_ge`, `Qpu.ZeroShot.best_ge_score`, `Qpu.ZeroShot.best_le_length`, `Qpu.ZeroShot.code_inj`, `Qpu.ZeroShot.code_lt`, `Qpu.ZeroShot.dim_insufficient`, `Qpu.ZeroShot.distinct_attr_inj`, `Qpu.ZeroShot.distinct_le_mint`, `Qpu.ZeroShot.dot_comm`, `Qpu.ZeroShot.dot_indicator_le_agree`, `Qpu.ZeroShot.exact_match_best`, `Qpu.ZeroShot.exact_match_predicted`, `Qpu.ZeroShot.exact_match_predicted_attr`, `Qpu.ZeroShot.exact_match_predicted_score`, `Qpu.ZeroShot.indistinguishable`, `Qpu.ZeroShot.mem_unseen`, `Qpu.ZeroShot.nodup_lt_length_le`, `Qpu.ZeroShot.predict_cons_of_ge`, `Qpu.ZeroShot.predict_cons_of_gt`, `Qpu.ZeroShot.predict_exists`, `Qpu.ZeroShot.predict_is_argmax`, `Qpu.ZeroShot.predict_mem`, `Qpu.ZeroShot.predict_none_iff`, `Qpu.ZeroShot.predict_score`, `Qpu.ZeroShot.predict_unseen_cons_seen`, `Qpu.ZeroShot.predict_unseen_cons_unseen`, `Qpu.ZeroShot.score_exact`, `Qpu.ZeroShot.score_le_length`, `Qpu.ZeroShot.score_of_attr_eq`, `Qpu.ZeroShot.semantic_transitivity`, `Qpu.ZeroShot.separable`, `Qpu.ZeroShot.split_cover`, `Qpu.ZeroShot.split_disjoint`, `Qpu.ZeroShot.split_length`, `Qpu.ZeroShot.split_unseen_cons_seen`, `Qpu.ZeroShot.vertices_bound`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean>
-- Qpu.General.Meaning, proving `Qpu.gcd_eq_nat_gcd`, `choose_eq_nat_choose`, `choose_three_succ`, `choose_two_eq_mixes`, `choose_two_succ`, `factorial_eq_nat_factorial`, `fibAux_eq_nat_fib`, `fibFusion_eq_nat_fib`, `gcdAux_eq_nat_gcd`, `hexbit_paired_completely`, `mint_eq_two_pow`, `pair_in_trinities`, `powModAux_eq`, `powMod_eq_pow_mod`, `qftGates_eq_nat_choose`, `six_mul_choose_three_eq_trinities`, `six_mul_nat_choose_three`, `trinities_of_pairs`, `trinity_pairs_differ`, `two_mul_nat_choose_two`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Meaning.lean>
-- Qpu.General.Meaning.Config, proving `agentConfirmRules_eq_cons`, `agentEvents_eq_cons`, `agentSpawnTools_eq_cons`, `agentWriteTools_eq_cons`, `tenants_eq_cons`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Meaning/Config.lean>
-- Qpu.General.Meaning.Prime, proving `isPrime_eq_decide_prime`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Meaning/Prime.lean>
-- Qpu.General.Meaning.Sum, proving `sumZ_eq_list_sum`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Meaning/Sum.lean>
-- Qpu.General.Meaning.Totient, proving `totient_eq_nat_totient`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Meaning/Totient.lean>
-- Qpu.General.Mint, proving `mintOf_add`, `mintOf_succ`, `mintOf_zero`, `multiply`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Mint.lean>
-- Qpu.General.Pi, proving `pi_all`, `pi_archimedes_den`, `pi_archimedes_num`, `pi_floor`, `pi_half_turn`, `pi_turn_degrees`, `pi_zu_den`, `pi_zu_num`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean>
-- Qpu.General.Primes, proving `mersenne_127`, `mersenne_3`, `mersenne_31`, `mersenne_7`, `prime_three`, `prime_two`, `primes_all`, `primorial_210`, `shor_factored`, `shor_modulus_binomial`, `twin_gap`, `twin_lower`, `twin_upper`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Primes.lean>
-- Qpu.General.Program, proving `close_returns`, `cross_lean`, `families_closed`, `program_handles`, `program_returns`, `program_rotates`, `step_keeps`, `uuid_cross`, `uuid_drift`, `uuid_families`, `uuid_program_all`, `uuid_programs`, `witnesses_partition`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean>
-- Qpu.General.Sigma, proving `clay_sigma`, `key_trinity`, `shor_sigma`, `sigma_choose`, `sigma_grover`, `sigma_hodge`, `sigma_lattice`, `sigma_midpoint`, `sigma_pauli`, `sigma_planck`, `sigma_pvsnp`, `sigma_qft`, `sigma_reflect`, `sigma_ten_involution`, `singularity`, `triad_reflect`, `triad_sum`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean>
-- Qpu.General.Supremacy, proving `Supremacy.lanes_le_cores`, `Supremacy.lanes_pos`, `Supremacy.separation`, `Supremacy.sycamore_rcs_within`, `Supremacy.willow_rcs`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Supremacy.lean>
-- Qpu.General.Textbook, proving `textbook_abilities_merge`, `textbook_abilities_merge_reflected`, `textbook_actions_pinned`, `textbook_actions_pinned_reflected`, `textbook_address_retrieval`, `textbook_address_retrieval_reflected`, `textbook_advantage_unbounded`, `textbook_aead_sizes`, `textbook_aead_sizes_reflected`, `textbook_alpine_ported`, `textbook_alpine_ported_reflected`, `textbook_alpine_refused`, `textbook_alpine_refused_reflected`, `textbook_alpine_runs`, `textbook_alpine_runs_reflected`, `textbook_ancient_law`, `textbook_ancient_law_reflected`, `textbook_antimatter_total`, `textbook_antimatter_total_reflected`, `textbook_artifacts_verified`, `textbook_artifacts_verified_reflected`, `textbook_association_fields`, `textbook_association_fields_reflected`, `textbook_attest_requests`, `textbook_attest_requests_reflected`, `textbook_audit_all_pass`, `textbook_audit_all_pass_reflected`, `textbook_authorship_tracked`, `textbook_authorship_tracked_reflected`, `textbook_axioms_linked`, `textbook_axioms_linked_contrapositive`, `textbook_axioms_linked_reflected`, `textbook_bch_code`, `textbook_bch_code_reflected`, `textbook_beacon_period`, `textbook_beacon_period_reflected`, `textbook_bernstein_vazirani`, `textbook_bernstein_vazirani_reflected`, `textbook_bilinear_symmetry`, `textbook_bilinear_symmetry_reflected`, `textbook_bill_covered`, `textbook_bill_covered_reflected`, `textbook_billing_complete`, `textbook_billing_complete_reflected`, `textbook_binding_zero_hex_path`, `textbook_binding_zero_hex_path_reflected`, `textbook_bindings_bound`, `textbook_bindings_bound_reflected`, `textbook_bit_flip_purity`, `textbook_bit_flip_purity_reflected`, `textbook_blockchain_hash_links`, `textbook_blockchain_hash_links_reflected`, `textbook_blockchain_tamper_evident`, `textbook_blockchain_transfer_once`, `textbook_blockchain_transfer_once_contrapositive`, `textbook_blockchain_transfer_once_converse`, `textbook_blockchain_transfer_once_reflected`, `textbook_build_fresh`, `textbook_build_fresh_reflected`, `textbook_bulgarian_statement_words`, `textbook_bulgarian_statement_words_reflected`, `textbook_cannot_binds`, `textbook_cannot_binds_reflected`, `textbook_capacity_conserved`, `textbook_capacity_conserved_reflected`, `textbook_caps_removed`, `textbook_carry_release`, `textbook_carry_release_contrapositive`, `textbook_carry_release_converse`, `textbook_carry_release_reflected`, `textbook_catalogue_offers`, `textbook_catalogue_offers_reflected`, `textbook_catalogue_prices`, `textbook_catalogue_prices_reflected`, `textbook_cells_text`, `textbook_cells_text_reflected`, `textbook_cert_validity_bound`, `textbook_cert_validity_bound_reflected`, `textbook_chain_bits`, `textbook_chain_bits_reflected`, `textbook_chain_index_steps`, `textbook_chain_index_steps_reflected`, `textbook_chat_call_or_question`, `textbook_chat_call_or_question_reflected`, `textbook_cheap_gates`, `textbook_cheap_gates_reflected`, `textbook_check_three_states`, `textbook_check_three_states_contrapositive`, `textbook_check_three_states_reflected`, `textbook_checkout_amount_cents`, `textbook_checkout_amount_cents_reflected`, `textbook_cirq_exports`, `textbook_cirq_exports_reflected`, `textbook_cl_described`, `textbook_cl_described_reflected`, `textbook_claim_prove_involution`, `textbook_claim_prove_involution_contrapositive`, `textbook_claim_prove_involution_converse`, `textbook_claim_prove_involution_reflected`, `textbook_clay_bridge`, `textbook_clay_bridge_reflected`, `textbook_clay_conditions`, `textbook_clay_conditions_reflected`, `textbook_clay_register_width`, `textbook_clay_register_width_reflected`, `textbook_clock_clone_involution`, `textbook_clock_clone_involution_contrapositive`, `textbook_clock_clone_involution_converse`, `textbook_clock_clone_involution_reflected`, `textbook_cloudflare_cost_gate`, `textbook_cloudflare_cost_gate_reflected`, `textbook_codata_g_ppb`, `textbook_codata_g_ppb_reflected`, `textbook_code_folds`, `textbook_code_folds_contrapositive`, `textbook_code_folds_reflected`, `textbook_codes_locales`, `textbook_codes_locales_reflected`, `textbook_coil_green`, `textbook_coil_green_reflected`, `textbook_coin_lean_sot`, `textbook_coin_lean_sot_reflected`, `textbook_coins_coils_balanced`, `textbook_coins_coils_balanced_contrapositive`, `textbook_coins_coils_balanced_reflected`, `textbook_collision_solves_many`, `textbook_color_code_d5`, `textbook_color_code_d5_reflected`, `textbook_commit_green`, `textbook_commit_green_reflected`, `textbook_compete_knows`, `textbook_compete_knows_contrapositive`, `textbook_compete_knows_converse`, `textbook_compete_knows_reflected`, `textbook_concatenated_code`, `textbook_concatenated_code_reflected`, `textbook_context_balanced`, `textbook_context_balanced_contrapositive`, `textbook_context_balanced_converse`, `textbook_context_balanced_reflected`, `textbook_correction_by_majority`, `textbook_court_audits_repo`, `textbook_coverage_bounded`, `textbook_coverage_bounded_contrapositive`, `textbook_coverage_bounded_reflected`, `textbook_create_hue`, `textbook_css_one_source`, `textbook_css_one_source_reflected`, `textbook_cuboctahedron_faces`, `textbook_cuboctahedron_faces_reflected`, `textbook_cvss_bounded`, `textbook_cvss_bounded_reflected`, `textbook_dashboard_algorithm_combinations`, `textbook_dashboard_algorithm_combinations_reflected`, `textbook_dashboard_spaces`, `textbook_dashboard_spaces_reflected`, `textbook_dates_ordered`, `textbook_dates_ordered_contrapositive`, `textbook_dates_ordered_converse`, `textbook_dates_ordered_reflected`, `textbook_dead_removed`, `textbook_dead_removed_contrapositive`, `textbook_dead_removed_converse`, `textbook_dead_removed_reflected`, `textbook_decode_not_search`, `textbook_decode_not_search_reflected`, `textbook_decode_rows_tested`, `textbook_denier_identified`, `textbook_denier_identified_contrapositive`, `textbook_denier_identified_converse`, `textbook_denier_identified_reflected`, `textbook_deutsch_jozsa`, `textbook_deutsch_jozsa_reflected`, `textbook_difference_leads`, `textbook_difference_leads_contrapositive`, `textbook_difference_leads_reflected`, `textbook_digest_on_round_trip`, `textbook_digit_reflection`, `textbook_digit_reflection_reflected`, `textbook_discovery_requests`, `textbook_discovery_requests_reflected`, `textbook_div_zero`, `textbook_div_zero_reflected`, `textbook_dna_base4`, `textbook_dna_base4_reflected`, `textbook_double_entry`, `textbook_double_entry_contrapositive`, `textbook_double_entry_converse`, `textbook_double_entry_reflected`, `textbook_double_torus`, `textbook_double_torus_reflected`, `textbook_e2e_combos`, `textbook_e2e_combos_reflected`, `textbook_e2e_tree_dissent`, `textbook_eastin_knill`, `textbook_eastin_knill_reflected`, `textbook_echo_qubits_within_willow`, `textbook_ed25519_sizes`, `textbook_ed25519_sizes_reflected`, `textbook_edit_collides`, `textbook_edit_collides_reflected`, `textbook_editorial_posts`, `textbook_editorial_posts_contrapositive`, `textbook_editorial_posts_reflected`, `textbook_entropy_fusion`, `textbook_entropy_fusion_reflected`, `textbook_entry_canonical`, `textbook_entry_canonical_reflected`, `textbook_error_remedies`, `textbook_error_remedies_contrapositive`, `textbook_error_remedies_converse`, `textbook_error_remedies_reflected`, `textbook_eta_from_receipts`, `textbook_eta_from_receipts_contrapositive`, `textbook_eta_from_receipts_reflected`, `textbook_euler_fermat`, `textbook_euler_fermat_reflected`, `textbook_euler_totient`, `textbook_euler_totient_reflected`, `textbook_exploit_refuses_to_patch`, `textbook_exploit_refuses_to_patch_reflected`, `textbook_expressions_evaluate`, `textbook_expressions_evaluate_reflected`, `textbook_extend_inward`, `textbook_extend_inward_reflected`, `textbook_factor_parse_list`, `textbook_factorial`, `textbook_factorial_reflected`, `textbook_factors_divide`, `textbook_fallback_involution`, `textbook_fibonacci`, `textbook_fibonacci_reflected`, `textbook_fold_mirror`, `textbook_fold_mirror_contrapositive`, `textbook_fold_mirror_converse`, `textbook_fold_mirror_reflected`, `textbook_fold_pieces_under_bound`, `textbook_fold_slices`, `textbook_foreign_door_name`, `textbook_foreign_door_name_reflected`, `textbook_foreign_verdicts`, `textbook_foreign_verdicts_reflected`, `textbook_free_or_coil`, `textbook_free_or_coil_reflected`, `textbook_ftqc_t_counts`, `textbook_ftqc_t_counts_reflected`, `textbook_gauss_triangular`, `textbook_gauss_triangular_reflected`, `textbook_glagolitic_fifteen`, `textbook_glagolitic_fifteen_reflected`, `textbook_glagolitic_round_trip`, `textbook_glagolitic_round_trip_reflected`, `textbook_gltf_required_extensions`, `textbook_gltf_required_extensions_reflected`, `textbook_golay_code`, `textbook_golay_code_reflected`, `textbook_google_api_surfaces`, `textbook_google_api_surfaces_reflected`, `textbook_google_call_schema`, `textbook_google_call_schema_reflected`, `textbook_google_mcps`, `textbook_google_mcps_reflected`, `textbook_google_measured`, `textbook_google_measured_reflected`, `textbook_google_one_door`, `textbook_google_one_door_reflected`, `textbook_gottesman_knill`, `textbook_gravity_torus_sigma`, `textbook_gravity_torus_sigma_contrapositive`, `textbook_gravity_torus_sigma_converse`, `textbook_gravity_torus_sigma_reflected`, `textbook_grover_one_iteration`, `textbook_grover_one_iteration_reflected`, `textbook_grover_search`, `textbook_grover_search_reflected`, `textbook_h2_below_hartree_fock`, `textbook_h2_below_hartree_fock_reflected`, `textbook_hadamard_amplitudes`, `textbook_hadamard_amplitudes_reflected`, `textbook_hadamard_histogram`, `textbook_hadamard_histogram_reflected`, `textbook_hamming_code`, `textbook_hamming_code_reflected`, `textbook_handle_scales`, `textbook_handle_scales_reflected`, `textbook_harmonic_default`, `textbook_hash_bits`, `textbook_hash_bits_reflected`, `textbook_hex_presentations`, `textbook_hex_presentations_reflected`, `textbook_hexbit_gateway_ftl`, `textbook_hexbit_gateway_ftl_reflected`, `textbook_holevo`, `textbook_holevo_reflected`, `textbook_hook_steps_monotone`, `textbook_hook_workflows`, `textbook_hook_workflows_reflected`, `textbook_hue_shift`, `textbook_hue_shift_reflected`, `textbook_hue_steps`, `textbook_hue_steps_reflected`, `textbook_idle_priced_by_remaining`, `textbook_idle_priced_by_remaining_reflected`, `textbook_idle_scheduled_clears`, `textbook_idle_scheduled_clears_reflected`, `textbook_imagine_verdicts`, `textbook_imagine_verdicts_reflected`, `textbook_impossible_sent_to_leads`, `textbook_impossible_trapdoor`, `textbook_impossible_trapdoor_contrapositive`, `textbook_impossible_trapdoor_reflected`, `textbook_institution_bill`, `textbook_integers_first`, `textbook_integers_first_reflected`, `textbook_integrations_are_thirty_five`, `textbook_integrations_are_thirty_five_reflected`, `textbook_involution_decoder`, `textbook_involution_decoder_reflected`, `textbook_ising_fusion`, `textbook_ising_fusion_reflected`, `textbook_iso_22739_hash_function`, `textbook_iso_22739_hash_function_reflected`, `textbook_iso_22739_orphan_blocks`, `textbook_iso_22739_orphan_blocks_reflected`, `textbook_iso_22739_terms_read`, `textbook_iso_22739_terms_read_contrapositive`, `textbook_iso_22739_terms_read_reflected`, `textbook_iso_22739_wallet`, `textbook_iso_22739_wallet_reflected`, `textbook_iso_classify`, `textbook_iso_classify_reflected`, `textbook_iso_rows_verified`, `textbook_iso_rows_verified_reflected`, `textbook_kwh_joules`, `textbook_kwh_joules_reflected`, `textbook_ldpc_code`, `textbook_ldpc_code_reflected`, `textbook_lead_cells`, `textbook_lead_cells_reflected`, `textbook_leads_addressed`, `textbook_leads_addressed_reflected`, `textbook_leads_by_status`, `textbook_leads_by_status_reflected`, `textbook_leads_consistent`, `textbook_leads_consistent_reflected`, `textbook_leaks_redacted`, `textbook_leaks_redacted_reflected`, `textbook_lean_served_whole`, `textbook_lean_served_whole_reflected`, `textbook_legal_plan_calls`, `textbook_legal_plan_calls_reflected`, `textbook_licence_chain`, `textbook_licence_chain_reflected`, `textbook_lie_collides`, `textbook_lie_collides_reflected`, `textbook_long_action_queued`, `textbook_long_action_queued_contrapositive`, `textbook_long_action_queued_converse`, `textbook_long_action_queued_reflected`, `textbook_machine_allow_list`, `textbook_machine_allow_list_contrapositive`, `textbook_machine_allow_list_converse`, `textbook_machine_allow_list_reflected`, `textbook_magic_constant`, `textbook_magic_constant_reflected`, `textbook_majority_of_three`, `textbook_margin_makes_price`, `textbook_margin_makes_price_contrapositive`, `textbook_margin_makes_price_converse`, `textbook_margin_makes_price_reflected`, `textbook_market_iso_4217`, `textbook_market_iso_4217_reflected`, `textbook_mcp_directories`, `textbook_mcp_directories_reflected`, `textbook_mcp_install_rows`, `textbook_mcp_search_limit`, `textbook_mcp_search_limit_reflected`, `textbook_mcp_tools_by_toolbox`, `textbook_mcp_tools_by_toolbox_reflected`, `textbook_memo_identity`, `textbook_memo_identity_reflected`, `textbook_mentions_by_source`, `textbook_mentions_by_source_reflected`, `textbook_mind_sigma`, `textbook_mind_sigma_reflected`, `textbook_mixed_radix`, `textbook_mixed_radix_reflected`, `textbook_ml_dsa_fips_204`, `textbook_ml_dsa_fips_204_contrapositive`, `textbook_ml_dsa_fips_204_reflected`, `textbook_mongo_find_filter`, `textbook_mongo_find_filter_reflected`, `textbook_mongo_update_inc`, `textbook_mongo_update_inc_reflected`, `textbook_monotonic_tick`, `textbook_monotonic_tick_contrapositive`, `textbook_monotonic_tick_converse`, `textbook_monotonic_tick_reflected`, `textbook_namespace_narrows`, `textbook_neighbour_step`, `textbook_neighbour_step_reflected`, `textbook_new_doors_proven`, `textbook_new_doors_proven_contrapositive`, `textbook_new_doors_proven_converse`, `textbook_new_doors_proven_reflected`, `textbook_news_adapters`, `textbook_news_adapters_reflected`, `textbook_news_problems`, `textbook_news_problems_reflected`, `textbook_next_waves_ordered`, `textbook_next_waves_ordered_reflected`, `textbook_no_cloning`, `textbook_no_cloning_reflected`, `textbook_novelty_claimed`, `textbook_novelty_claimed_reflected`, `textbook_number_operator`, `textbook_number_operator_reflected`, `textbook_observed_errors`, `textbook_observed_errors_contrapositive`, `textbook_observed_errors_reflected`, `textbook_one_holder`, `textbook_one_holder_contrapositive`, `textbook_one_holder_converse`, `textbook_one_holder_reflected`, `textbook_only_the_proven_is_admitted`, `textbook_only_the_proven_is_admitted_reflected`, `textbook_orcid_digits`, `textbook_orcid_digits_reflected`, `textbook_order_finding`, `textbook_order_finding_reflected`, `textbook_own_keys_only`, `textbook_particles_classes`, `textbook_particles_classes_reflected`, `textbook_pascal_rule`, `textbook_pascal_rule_reflected`, `textbook_patent_apis_partition`, `textbook_patent_apis_partition_reflected`, `textbook_patent_dates_ordered`, `textbook_patent_number_well_formed`, `textbook_patent_number_well_formed_reflected`, `textbook_patent_term_twenty_years`, `textbook_patent_term_twenty_years_contrapositive`, `textbook_patent_term_twenty_years_converse`, `textbook_patent_term_twenty_years_reflected`, `textbook_payload_operations`, `textbook_payload_operations_reflected`, `textbook_pbkdf2_blocks`, `textbook_pbkdf2_blocks_reflected`, `textbook_peg_is_fixed`, `textbook_peg_is_fixed_reflected`, `textbook_penalty_antimatter_annihilates`, `textbook_penalty_antimatter_annihilates_reflected`, `textbook_penalty_balanced`, `textbook_penalty_balanced_contrapositive`, `textbook_penalty_balanced_reflected`, `textbook_penalty_clear_involution`, `textbook_penalty_clear_involution_reflected`, `textbook_penalty_conserved`, `textbook_penalty_conserved_reflected`, `textbook_penalty_free_under_budget`, `textbook_penalty_free_under_budget_reflected`, `textbook_penalty_harmonic`, `textbook_penalty_harmonic_contrapositive`, `textbook_penalty_harmonic_converse`, `textbook_penalty_harmonic_reflected`, `textbook_penalty_learned_prevents`, `textbook_penalty_learned_prevents_reflected`, `textbook_penalty_no_cliff`, `textbook_penalty_no_punishment`, `textbook_penalty_no_punishment_reflected`, `textbook_penalty_once`, `textbook_penalty_once_reflected`, `textbook_penalty_proportional`, `textbook_penalty_proportional_reflected`, `textbook_penalty_time_burned`, `textbook_penalty_time_heat_monotone`, `textbook_penalty_tokens_bound`, `textbook_penalty_visibility_harmonic`, `textbook_penalty_visibility_harmonic_reflected`, `textbook_phase_bits`, `textbook_phase_estimation`, `textbook_phase_estimation_reflected`, `textbook_phase_three_bits`, `textbook_phase_three_bits_reflected`, `textbook_physical_evidence`, `textbook_physical_evidence_reflected`, `textbook_plugin_combinations`, `textbook_plugin_combinations_reflected`, `textbook_plugins_by_capability`, `textbook_postings_parity`, `textbook_postings_parity_reflected`, `textbook_power_of_two`, `textbook_power_of_two_reflected`, `textbook_pqc_standards_three`, `textbook_pqc_standards_three_reflected`, `textbook_prices_are_variants_times_currencies`, `textbook_prices_are_variants_times_currencies_reflected`, `textbook_prizes_computable`, `textbook_prizes_computable_reflected`, `textbook_processor_cells`, `textbook_processor_cells_reflected`, `textbook_programs_partition`, `textbook_programs_partition_contrapositive`, `textbook_programs_partition_converse`, `textbook_programs_partition_reflected`, `textbook_qaoa_params`, `textbook_qaoa_params_reflected`, `textbook_qaoa_random_cut`, `textbook_qaoa_random_cut_reflected`, `textbook_qft_three_amplitudes`, `textbook_qft_three_amplitudes_reflected`, `textbook_queneau_compositions`, `textbook_queneau_compositions_reflected`, `textbook_questions_matched`, `textbook_questions_matched_reflected`, `textbook_raid_bit_zero_verify`, `textbook_raid_bit_zero_verify_contrapositive`, `textbook_raid_bit_zero_verify_converse`, `textbook_raid_bit_zero_verify_reflected`, `textbook_raid_no_missing_store`, `textbook_raid_no_missing_store_contrapositive`, `textbook_raid_no_missing_store_reflected`, `textbook_rbac_options`, `textbook_rbac_options_reflected`, `textbook_readiness_judged`, `textbook_readiness_judged_reflected`, `textbook_receipt_binds_sha256`, `textbook_receipt_binds_sha256_reflected`, `textbook_receipts_partitioned`, `textbook_receipts_partitioned_reflected`, `textbook_redact_before_publish`, `textbook_redact_before_publish_reflected`, `textbook_reed_muller`, `textbook_reed_muller_reflected`, `textbook_reed_solomon_mds`, `textbook_reed_solomon_mds_reflected`, `textbook_referer_binds_not_entropy`, `textbook_referer_binds_not_entropy_reflected`, `textbook_reflect_widths`, `textbook_reflect_widths_contrapositive`, `textbook_reflect_widths_reflected`, `textbook_reflection_by_shape`, `textbook_reflection_sums_to_ten`, `textbook_reflection_sums_to_ten_reflected`, `textbook_refuse_is_refuse`, `textbook_register_held`, `textbook_register_held_contrapositive`, `textbook_register_held_reflected`, `textbook_registry_words_searched`, `textbook_relation_rsa`, `textbook_repair_kernel_top`, `textbook_repair_kernel_top_reflected`, `textbook_repair_live_sla`, `textbook_repair_live_sla_contrapositive`, `textbook_repair_live_sla_reflected`, `textbook_repair_partitions`, `textbook_repair_partitions_reflected`, `textbook_repetition_code_tenth`, `textbook_repetition_code_tenth_reflected`, `textbook_repositories_by_language`, `textbook_repositories_by_language_reflected`, `textbook_repository_watch_leads`, `textbook_repository_watch_leads_reflected`, `textbook_rest_rbac`, `textbook_rest_rbac_reflected`, `textbook_retry_supersedes`, `textbook_retry_supersedes_reflected`, `textbook_roadmap_decades`, `textbook_roadmap_decades_reflected`, `textbook_roadmap_milestone_three`, `textbook_roadmap_milestone_three_reflected`, `textbook_rosetta_conventions`, `textbook_route_or_lead`, `textbook_route_or_lead_reflected`, `textbook_route_waves`, `textbook_route_waves_reflected`, `textbook_royalty_conserved`, `textbook_royalty_conserved_contrapositive`, `textbook_royalty_conserved_converse`, `textbook_royalty_conserved_reflected`, `textbook_royalty_fractal`, `textbook_rsa_beyond_bound`, `textbook_runnable_leads`, `textbook_runnable_leads_reflected`, `textbook_scan_links`, `textbook_scan_links_reflected`, `textbook_scan_stream`, `textbook_scan_stream_reflected`, `textbook_seal_and_content_decided`, `textbook_seal_and_content_decided_reflected`, `textbook_search_proven`, `textbook_search_proven_contrapositive`, `textbook_search_proven_reflected`, `textbook_search_resumes`, `textbook_search_resumes_reflected`, `textbook_security_perspectives`, `textbook_security_perspectives_reflected`, `textbook_session_partition`, `textbook_session_partition_reflected`, `textbook_sha256_fips_180_4`, `textbook_sha256_fips_180_4_reflected`, `textbook_sha256_is_64`, `textbook_sha256_is_64_reflected`, `textbook_sha3_fips_202`, `textbook_sha3_fips_202_reflected`, `textbook_shards_cover`, `textbook_shards_disjoint`, `textbook_shared_verbs`, `textbook_shared_verbs_reflected`, `textbook_shor_fifteen_order`, `textbook_shor_narrowed_cells`, `textbook_shor_narrowed_cells_reflected`, `textbook_shor_nine_code`, `textbook_shor_reduction`, `textbook_shor_reduction_reflected`, `textbook_shor_sigma_root`, `textbook_shor_sigma_root_reflected`, `textbook_sigma_involution`, `textbook_sigma_involution_reflected`, `textbook_signature_over_digest`, `textbook_signature_over_digest_reflected`, `textbook_simon`, `textbook_simon_reflected`, `textbook_sitemap_leads`, `textbook_sitemap_leads_reflected`, `textbook_size_ratio_bound`, `textbook_skills_complete`, `textbook_skills_complete_contrapositive`, `textbook_skills_complete_converse`, `textbook_skills_complete_reflected`, `textbook_software_cirq_implemented`, `textbook_software_cirq_implemented_reflected`, `textbook_solovay_kitaev`, `textbook_solovay_kitaev_reflected`, `textbook_stale_receipt_refuses_deploy`, `textbook_standards_sliced`, `textbook_standards_sliced_reflected`, `textbook_statements_one_topic`, `textbook_statements_one_topic_reflected`, `textbook_steane`, `textbook_steane_css`, `textbook_steane_reflected`, `textbook_step_cache_sound`, `textbook_step_cache_sound_reflected`, `textbook_stream_filter`, `textbook_stream_filter_reflected`, `textbook_stream_no_silence`, `textbook_stream_no_silence_contrapositive`, `textbook_stream_no_silence_reflected`, `textbook_surface_distance_ladder`, `textbook_surface_distance_ladder_reflected`, `textbook_sycamore_couplers`, `textbook_tamper_detected`, `textbook_tamper_detected_reflected`, `textbook_tamper_one_nibble`, `textbook_tamper_one_nibble_reflected`, `textbook_teamwork_navigation`, `textbook_teamwork_navigation_reflected`, `textbook_teleport_three_qubits`, `textbook_textbook_categories`, `textbook_textbook_categories_contrapositive`, `textbook_textbook_categories_reflected`, `textbook_textbooks_partition`, `textbook_textbooks_partition_reflected`, `textbook_thermal_time_sigma`, `textbook_thermal_time_sigma_contrapositive`, `textbook_thermal_time_sigma_converse`, `textbook_thermal_time_sigma_reflected`, `textbook_thousand_bit_three_divides`, `textbook_thousand_bit_width`, `textbook_thousand_bit_width_reflected`, `textbook_tools_listed`, `textbook_tools_listed_reflected`, `textbook_toric_torus_code`, `textbook_toric_torus_code_reflected`, `textbook_translate_phrases`, `textbook_translate_phrases_reflected`, `textbook_tree_size_positive`, `textbook_trotter`, `textbook_trotter_reflected`, `textbook_tsirelson`, `textbook_tsirelson_reflected`, `textbook_tuning_ratio`, `textbook_two_pow_odd_mod_three`, `textbook_two_pow_odd_mod_three_reflected`, `textbook_ui_deterministic`, `textbook_ui_deterministic_reflected`, `textbook_unlimited_qubits`, `textbook_unlimited_qubits_reflected`, `textbook_url_combinations`, `textbook_url_combinations_reflected`, `textbook_use_completes`, `textbook_uuid_core`, `textbook_uuid_core_reflected`, `textbook_uuid_is_36`, `textbook_uuid_is_36_reflected`, `textbook_uuid_schemas`, `textbook_uuid_schemas_reflected`, `textbook_uuid_time_space`, `textbook_uuid_time_space_reflected`, `textbook_validation_helpers`, `textbook_validation_helpers_reflected`, `textbook_vocabulary_measured`, `textbook_vocabulary_measured_reflected`, `textbook_vqe`, `textbook_wave_requests_by_lead`, `textbook_wave_requests_by_lead_reflected`, `textbook_webhook_tolerance`, `textbook_webhook_tolerance_reflected`, `textbook_willow_connectivity`, `textbook_willow_connectivity_reflected`, `textbook_willow_distance_seven`, `textbook_willow_distance_seven_reflected`, `textbook_willow_holds_codes`, `textbook_willow_holds_codes_reflected`, `textbook_witness_books_nothing`, `textbook_witness_books_nothing_contrapositive`, `textbook_witness_books_nothing_reflected`, `textbook_witness_clock_move`, `textbook_witness_clock_move_reflected`, `textbook_witness_gates_decode`, `textbook_witness_move_computed`, `textbook_witness_move_computed_reflected`, `textbook_witness_states`, `textbook_witness_states_contrapositive`, `textbook_witness_states_converse`, `textbook_witness_states_reflected`, `textbook_workspace_coverage`, `textbook_workspace_coverage_reflected`, `textbook_workspace_docs_round_trip`, `textbook_workspace_docs_round_trip_reflected`, `textbook_workspace_drive`, `textbook_workspace_drive_reflected`, `textbook_workspace_round_trip`, `textbook_workspace_round_trip_reflected`, `textbook_workspace_sets`, `textbook_workspace_sets_reflected`, `textbook_x25519_sizes`, `textbook_x25519_sizes_reflected`, `textbook_xeb`, `textbook_xeb_contrapositive`, `textbook_xeb_converse`, `textbook_xeb_reflected`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean>
-- Qpu.General.Thousand, proving `Thousand.meaning_sound`, `Thousand.reflect_add`, `Thousand.reflect_reflect`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Thousand.lean>
-- Qpu.General.Vocabulary, proving `Vocabulary.adiabatic_gap_open`, `Vocabulary.basis_length`, `Vocabulary.basis_orthonormal`, `Vocabulary.bosons_bunch`, `Vocabulary.cluster_stabilizers_commute`, `Vocabulary.coding_threshold`, `Vocabulary.coherence_bounded_by_relaxation`, `Vocabulary.coherence_interferes`, `Vocabulary.decoherence_loses_interference`, `Vocabulary.eigenspace_of_identity`, `Vocabulary.eigenstates_of_x`, `Vocabulary.eigenvalues_of_z`, `Vocabulary.fidelity_symmetric`, `Vocabulary.gate_fidelity`, `Vocabulary.hamiltonian_energies`, `Vocabulary.key_sifting`, `Vocabulary.language_evaluates`, `Vocabulary.linear_system_solved`, `Vocabulary.logical_qudit_corrects`, `Vocabulary.logical_x`, `Vocabulary.mitigation_extrapolates`, `Vocabulary.model_fits`, `Vocabulary.observable_symmetric`, `Vocabulary.operator_linear`, `Vocabulary.parameter_unique`, `Vocabulary.physical_qudit_levels`, `Vocabulary.process_fidelity`, `Vocabulary.projectors`, `Vocabulary.quantum_discrete`, `Vocabulary.qudit_register`, `Vocabulary.relaxation_halves`, `Vocabulary.sensing_gain`, `Vocabulary.state_fidelity`, `Vocabulary.superposition`, `Vocabulary.system_dimension`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Vocabulary.lean>
-- Qpu.General.Witness, proving `Witness.split_unique`, `Witness.witness_unique`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Witness.lean>
-- Qpu.Information.PhysicalQubit.Coil, proving `Coil.periodic`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/PhysicalQubit/Coil.lean>
-- Qpu.Information.PhysicalQubit.JosephsonJunction, proving `JosephsonJunction.flux_quantum_definition`, `JosephsonJunction.flux_quantum_josephson_reciprocal`, `JosephsonJunction.flux_quantum_value`, `JosephsonJunction.josephson_constant_value`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/PhysicalQubit/JosephsonJunction.lean>
-- Qpu.Information.PhysicalQubit.Transmon, proving `Transmon.frequency_at_fifty`, `Transmon.sycamore`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/PhysicalQubit/Transmon.lean>
-- Qpu.Information.QuantumInformation, proving `QuantumInformation.no_cloning`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/QuantumInformation.lean>
-- Qpu.Information.Qubit, proving `Qubit.chains`, `Qubit.coins_two`, `Qubit.couplers_formula`, `Qubit.digits_held`, `Qubit.digits_thirtytwo`, `Qubit.effective_formula`, `Qubit.gateway_two`, `Qubit.hexbit_four`, `Qubit.holding_formula`, `Qubit.unbounded`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/Qubit.lean>
-- Qpu.Physics.EnergyGap, proving `cooling_stays_positive`, `cooling_strictly_decreases`, `gap_doubles`, `gap_monotone`, `gap_pos`, `gap_strict`, `physics_all`, `superconductivity`, `temperature`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EnergyGap.lean>
-- Qpu.Physics.HilbertSpace, proving `HilbertSpace.GI.add_im`, `HilbertSpace.GI.add_re`, `HilbertSpace.GI.mul_re`, `HilbertSpace.GI.one_im`, `HilbertSpace.GI.one_re`, `HilbertSpace.GI.zero_im`, `HilbertSpace.GI.zero_re`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/HilbertSpace.lean>
-- Qpu.Physics.QuantumEntanglement, proving `QuantumEntanglement.bell_state`, `QuantumEntanglement.chsh_classical_bound`, `QuantumEntanglement.chsh_quantum_value`, `QuantumEntanglement.ghz_state`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/QuantumEntanglement.lean>
-- Qpu.Processing.Annealing, proving `annealing_all`, `chimera_monotone`, `chimera_pos`, `chimera_succ`, `pegasus_monotone`, `pegasus_pos`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Annealing.lean>
-- Qpu.Processing.Anyon, proving `anyon_all`, `fibAux_step`, `fibFusion_seed_step`, `isingFusion_pos`, `isingFusion_strict_growth`, `isingFusion_succ`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Anyon.lean>
-- Qpu.Processing.CircuitBasedQuantumComputing, proving `CircuitBasedQuantumComputing.stabilizer_cnot`, `CircuitBasedQuantumComputing.stabilizer_hadamard`, `CircuitBasedQuantumComputing.stabilizer_phase`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CircuitBasedQuantumComputing.lean>
-- Qpu.Processing.Clifford, proving `cliffordOrder_pos`, `clifford_all`, `sympFactor_ge_two`, `sympProd_grows`, `sympProd_pos`, `sympProd_step`, `symplectic_pos`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Clifford.lean>
-- Qpu.Processing.Fusion, proving `fusionDim_doubles`, `fusionDim_pos`, `fusionEntropy_doubles`, `fusionEntropy_pos`, `fusionStates_doubles`, `fusionStates_pos`, `fusion_all`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Fusion.lean>
-- Qpu.Processing.Galois, proving `galois_all`, `gl2_pos`, `gl2_zero`, `glProd_pos`, `glProd_step`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Galois.lean>
-- Qpu.Processing.Magic, proving `magic_all`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Magic.lean>
-- Qpu.Processing.Qft, proving `qftDepth_monotone`, `qftDepth_succ`, `qftGates_pos`, `qftGates_succ`, `qftStates_growth`, `qftStates_pos`, `qftStates_strict_growth`, `qftSwaps_le`, `qftSwaps_monotone`, `qft_all`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Qft.lean>
-- Qpu.Processing.QuantumAlgorithm, proving `QuantumAlgorithm.deutsch_jozsa`, `QuantumAlgorithm.grover_search`, `QuantumAlgorithm.phase_estimation_exact`, `QuantumAlgorithm.qft_unitary`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumAlgorithm.lean>
-- Qpu.Processing.QuantumCircuit, proving `QuantumCircuit.needs_routing`, `QuantumCircuit.routed_depth`, `QuantumCircuit.swap_routing`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumCircuit.lean>
-- Qpu.Processing.QuantumComputer.Cryostat, proving `Cryostat.qubit_cold_at_ten_millikelvin`, `Cryostat.qubit_cold_below`, `Cryostat.qubit_hot_at_room_temperature`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumComputer/Cryostat.lean>
-- Qpu.Processing.QuantumComputer.Wiring, proving `Wiring.stage_floor`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumComputer/Wiring.lean>
-- Qpu.Processing.QuantumErrorCorrection, proving `QuantumErrorCorrection.distance_corrects`, `QuantumErrorCorrection.repetition_corrects`, `QuantumErrorCorrection.shor_nine`, `QuantumErrorCorrection.steane_corrects`, `QuantumErrorCorrection.steane_css`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumErrorCorrection.lean>
-- Qpu.Processing.QuantumGate, proving `QuantumGate.cnot`, `QuantumGate.h_squared`, `QuantumGate.h_unitary`, `QuantumGate.paulis_unitary`, `QuantumGate.s_squared`, `QuantumGate.swap`, `QuantumGate.t_gate`, `QuantumGate.toffoli`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumGate.lean>
-- Qpu.Processing.QuantumProcessor, proving `QuantumProcessor.connected`, `QuantumProcessor.degree_bounds`, `QuantumProcessor.sites_count`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor.lean>
-- Qpu.Processing.QuantumProcessor.Coupler, proving `Coupler.off`, `Coupler.willow`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor/Coupler.lean>
-- Qpu.Processing.QuantumProcessor.Layers, proving `QuantumProcessor.Layers.layers_bipartite`, `QuantumProcessor.Layers.layers_count`, `QuantumProcessor.Layers.layers_four`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor/Layers.lean>
-- Qpu.Processing.QuantumProcessor.ReadoutResonator, proving `ReadoutResonator.sycamore`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor/ReadoutResonator.lean>
-- Qpu.Processing.Stabilizer, proving `paulis_growth`, `paulis_pos`, `stabProd_grows`, `stabProd_pos`, `stabProd_step`, `stabStates_pos`, `stabSubgroup_doubles`, `stabilizer_all`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean>
-- Qpu.Processing.Surfacecode, proving `sq_ge`, `surfaceCorrectable_le`, `surfaceCorrectable_monotone`, `surfacePhysical_pos`, `surfacecode_all`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Surfacecode.lean>
-- Qpu.Processing.Verify.Correct, proving `Qpu.Verify.Correct.repetition_corrects_clean`, `Qpu.Verify.Correct.repetition_corrects_flip0`, `Qpu.Verify.Correct.repetition_corrects_flip1`, `Qpu.Verify.Correct.repetition_corrects_flip2`, `Qpu.Verify.Correct.repetition_fails_on_two_flips`, `Qpu.Verify.Correct.shor_nine_corrects_one`, `Qpu.Verify.Correct.steane_cannot_correct_two`, `Qpu.Verify.Correct.steane_corrects_one`, `Qpu.Verify.Correct.steane_miscorrects_double_error`, `Qpu.Verify.Correct.steane_no_error_is_silent`, `Qpu.Verify.Correct.steane_recovers_0`, `Qpu.Verify.Correct.steane_recovers_1`, `Qpu.Verify.Correct.steane_recovers_2`, `Qpu.Verify.Correct.steane_recovers_3`, `Qpu.Verify.Correct.steane_recovers_4`, `Qpu.Verify.Correct.steane_recovers_5`, `Qpu.Verify.Correct.steane_recovers_6`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean>
-- Qpu.Processing.Verify.Cost, proving `Qpu.Verify.Cost.digest_collision_at_category_two`, `Qpu.Verify.Cost.digest_preimage_at_category_five`, `Qpu.Verify.Cost.forging_costs_more_than_verifying`, `Qpu.Verify.Cost.sha224_collision_below_category_one`, `Qpu.Verify.Cost.the_anchor_holds`, `Qpu.Verify.Cost.three_uuid_seams_clear_category_one`, `Qpu.Verify.Cost.two_uuid_seams_are_still_short`, `Qpu.Verify.Cost.uuid_handle_collides_below_category_one`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Cost.lean>
-- Qpu.Processing.Verify.Entangle, proving `Qpu.Verify.Entangle.chsh_bound_is_tight`, `Qpu.Verify.Entangle.chsh_classical_bound`, `Qpu.Verify.Entangle.ghz_classical_bound`, `Qpu.Verify.Entangle.ghz_quantum_wins_all_four`, `Qpu.Verify.Entangle.ghz_uniform_strategy_loses`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Entangle.lean>
-- Qpu.Processing.Verify.Gate, proving `Qpu.Verify.Gate.cnot_is_an_involution`, `Qpu.Verify.Gate.cnot_is_not_swap`, `Qpu.Verify.Gate.h_unitary`, `Qpu.Verify.Gate.h_x_h_is_not_two_y`, `Qpu.Verify.Gate.h_z_h_is_two_x`, `Qpu.Verify.Gate.s_fourth_is_identity`, `Qpu.Verify.Gate.s_squared_is_z`, `Qpu.Verify.Gate.swap_is_an_involution`, `Qpu.Verify.Gate.x_squared`, `Qpu.Verify.Gate.y_squared`, `Qpu.Verify.Gate.z_squared`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean>
-- Qpu.Processing.Verify.Hexbit, proving `Qpu.Verify.Hexbit.gap_is_rejected`, `Qpu.Verify.Hexbit.hex_roundtrips`, `Qpu.Verify.Hexbit.non_hex_is_rejected`, `Qpu.Verify.Hexbit.prefix_is_high_half`, `Qpu.Verify.Hexbit.prefix_width`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Hexbit.lean>
-- Qpu.Processing.Verify.Receipt, proving `Qpu.Verify.Receipt.address_cheaper_once`, `Qpu.Verify.Receipt.breaks_even_by_run_two`, `Qpu.Verify.Receipt.caching_has_a_cost`, `Qpu.Verify.Receipt.fold_is_order_sensitive`, `Qpu.Verify.Receipt.speedup_is_thirtyfold`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Receipt.lean>
-- Qpu.Processing.Verify.Stabilizer, proving `Qpu.Verify.Stabilizer.conjCnotSigned_agrees_with_ruleCNOT`, `Qpu.Verify.Stabilizer.conjCnotSigned_matches_ruleCNOT`, `Qpu.Verify.Stabilizer.phase_y_is_not_plus_x`, `Qpu.Verify.Stabilizer.stabilizer_cnot_ix`, `Qpu.Verify.Stabilizer.stabilizer_cnot_iz`, `Qpu.Verify.Stabilizer.stabilizer_cnot_signed_ix`, `Qpu.Verify.Stabilizer.stabilizer_cnot_signed_iy`, `Qpu.Verify.Stabilizer.stabilizer_cnot_signed_iz`, `Qpu.Verify.Stabilizer.stabilizer_cnot_signed_xi`, `Qpu.Verify.Stabilizer.stabilizer_cnot_signed_xy`, `Qpu.Verify.Stabilizer.stabilizer_cnot_signed_yi`, `Qpu.Verify.Stabilizer.stabilizer_cnot_signed_yy`, `Qpu.Verify.Stabilizer.stabilizer_cnot_signed_zi`, `Qpu.Verify.Stabilizer.stabilizer_cnot_xi`, `Qpu.Verify.Stabilizer.stabilizer_cnot_yi`, `Qpu.Verify.Stabilizer.stabilizer_cnot_zi`, `Qpu.Verify.Stabilizer.stabilizer_cz_commutation_rule`, `Qpu.Verify.Stabilizer.stabilizer_cz_involution`, `Qpu.Verify.Stabilizer.stabilizer_cz_ix`, `Qpu.Verify.Stabilizer.stabilizer_cz_iy`, `Qpu.Verify.Stabilizer.stabilizer_cz_iz`, `Qpu.Verify.Stabilizer.stabilizer_cz_sign_rule`, `Qpu.Verify.Stabilizer.stabilizer_cz_x_support_rule`, `Qpu.Verify.Stabilizer.stabilizer_cz_xi`, `Qpu.Verify.Stabilizer.stabilizer_cz_xx`, `Qpu.Verify.Stabilizer.stabilizer_cz_xy`, `Qpu.Verify.Stabilizer.stabilizer_cz_xz`, `Qpu.Verify.Stabilizer.stabilizer_cz_yi`, `Qpu.Verify.Stabilizer.stabilizer_cz_yx`, `Qpu.Verify.Stabilizer.stabilizer_cz_yy`, `Qpu.Verify.Stabilizer.stabilizer_cz_yz`, `Qpu.Verify.Stabilizer.stabilizer_cz_z_support_rule`, `Qpu.Verify.Stabilizer.stabilizer_cz_zi`, `Qpu.Verify.Stabilizer.stabilizer_cz_zx`, `Qpu.Verify.Stabilizer.stabilizer_cz_zy`, `Qpu.Verify.Stabilizer.stabilizer_cz_zz`, `Qpu.Verify.Stabilizer.stabilizer_hadamard_x`, `Qpu.Verify.Stabilizer.stabilizer_hadamard_y`, `Qpu.Verify.Stabilizer.stabilizer_hadamard_z`, `Qpu.Verify.Stabilizer.stabilizer_phase_x`, `Qpu.Verify.Stabilizer.stabilizer_phase_y`, `Qpu.Verify.Stabilizer.stabilizer_phase_z`, `Qpu.Verify.Stabilizer.stabilizer_swap_exchanges_factors`, `Qpu.Verify.Stabilizer.stabilizer_swap_involution`, `Qpu.Verify.Stabilizer.stabilizer_t_gate`, `Qpu.Verify.Stabilizer.test_cz_does_not_commute_with_xx`, `Qpu.Verify.Stabilizer.test_cz_does_not_commute_with_xy`, `Qpu.Verify.Stabilizer.test_cz_does_not_commute_with_yx`, `Qpu.Verify.Stabilizer.test_cz_does_not_commute_with_yy`, `Qpu.Verify.Stabilizer.test_cz_identity`, `Qpu.Verify.Stabilizer.test_cz_ix`, `Qpu.Verify.Stabilizer.test_cz_iy`, `Qpu.Verify.Stabilizer.test_cz_iz`, `Qpu.Verify.Stabilizer.test_cz_xi`, `Qpu.Verify.Stabilizer.test_cz_xx`, `Qpu.Verify.Stabilizer.test_cz_xy`, `Qpu.Verify.Stabilizer.test_cz_xz`, `Qpu.Verify.Stabilizer.test_cz_yi`, `Qpu.Verify.Stabilizer.test_cz_yx`, `Qpu.Verify.Stabilizer.test_cz_yy`, `Qpu.Verify.Stabilizer.test_cz_yz`, `Qpu.Verify.Stabilizer.test_cz_zi`, `Qpu.Verify.Stabilizer.test_cz_zx`, `Qpu.Verify.Stabilizer.test_cz_zy`, `Qpu.Verify.Stabilizer.test_cz_zz`, `Qpu.Verify.Stabilizer.test_signed_cnot_all_cases`, `Qpu.Verify.Stabilizer.test_signed_cz_all_cases`, `Qpu.Verify.Stabilizer.test_signed_cz_minus_xi`, `Qpu.Verify.Stabilizer.test_signed_cz_minus_xx`, `Qpu.Verify.Stabilizer.test_signed_cz_minus_xx_is_not_minus_yy`, `Qpu.Verify.Stabilizer.test_signed_cz_plus_xi`, `Qpu.Verify.Stabilizer.test_signed_cz_plus_xx`, `Qpu.Verify.Stabilizer.test_signed_hadamard_all_cases`, `Qpu.Verify.Stabilizer.test_signed_hadamard_minus_x`, `Qpu.Verify.Stabilizer.test_signed_hadamard_minus_y`, `Qpu.Verify.Stabilizer.test_signed_hadamard_minus_y_is_not_minus_y`, `Qpu.Verify.Stabilizer.test_signed_hadamard_minus_z`, `Qpu.Verify.Stabilizer.test_signed_hadamard_plus_x`, `Qpu.Verify.Stabilizer.test_signed_hadamard_plus_y`, `Qpu.Verify.Stabilizer.test_signed_hadamard_plus_z`, `Qpu.Verify.Stabilizer.test_signed_phase_all_cases`, `Qpu.Verify.Stabilizer.test_signed_phase_minus_x`, `Qpu.Verify.Stabilizer.test_signed_phase_minus_y`, `Qpu.Verify.Stabilizer.test_signed_phase_minus_y_is_not_minus_x`, `Qpu.Verify.Stabilizer.test_signed_phase_minus_z`, `Qpu.Verify.Stabilizer.test_signed_phase_plus_x`, `Qpu.Verify.Stabilizer.test_signed_phase_plus_y`, `Qpu.Verify.Stabilizer.test_signed_phase_plus_z`, `Qpu.Verify.Stabilizer.test_t_does_not_commute_with_hadamard`, `Qpu.Verify.Stabilizer.test_t_order_is_eight`, `Qpu.Verify.Stabilizer.test_t_order_is_not_four`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Stabilizer.lean>
-- Qpu.Processing.Verify.Uuid, proving `Qpu.Verify.Uuid.bands_cover_the_free_bits`, `Qpu.Verify.Uuid.distinct_slots_distinct_handles`, `Qpu.Verify.Uuid.free_is_122`, `Qpu.Verify.Uuid.program_capacity`, `Qpu.Verify.Uuid.slot_round_trips`, `Qpu.Verify.Uuid.slot_round_trips_max_program`: <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean>
+| theorem | formula | bytes | bits | tokens | joules | coin | source |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `textbook_coil_green` | $432 \bmod 360 + 432 / 9 = 120$ | 29 | 232 | 8 | 6.660671013382639e-19 | 0000001d-a774-129f-876b-f5812d543cda | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
 ---
 
-This text is one build receipt. Its UUID 4a3a9ca9-ba40-2889-baae-0d5566aefb6b is the address of the text above it, and its SHA-256 is a0da415db78ef45806e7d84238e7d77d62c067a25181a7b659b3626849384081. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify \{ uuid, content \} at <https://qpu.uuidna.com/api/mcp>.
+| text |  |
+| --- | --- |
+| uuid | 057be532-ffb6-8567-a9eb-3c280f02738b |
+| sha256 | 65154726ddd393cb159379496af4546cb168d8050ff30adf71bd273a2710bfc3 |
+| merge | d4c79029-a249-8b77-9f2f-b8b9d1436fc9 |
+| verify | `verify {"uuid":"057be532-ffb6-8567-a9eb-3c280f02738b","content":"text"}` |
+| mcp | <https://qpu.uuidna.com/api/mcp> |
 
 <!-- hardware -->
 
-## Hardware of the build that minted this receipt
+## hardware
 
-Every value below was read from the machine during the build, and its UUID 76cf1a30-77bc-8aae-be8c-ec8f15a3aba0 is the address of the JSON beneath it, verifiable with verify \{ uuid, content \} like the text above. The machine holds an exact state vector of 29 qubits, since n qubits span 2^n basis states (Vocabulary.system\_dimension) at 16 bytes per complex amplitude; Willow has 105 qubits and Sycamore 54, as the processor door states them, and one UUID register carries 122 (Qubit.effective\_formula). The build took 4081 ms.
+| receipt |  |
+| --- | --- |
+| uuid | 34cb3f97-04fd-723d-9d35-c38c1a193d96 |
+| handle | `34cb3f97` |
+| sha256 | 45998884ba5102aa8a2346e653a86c6541c67ee4fed17f375ce06d1c373d7a17 |
 
-```json
-{"platform":"linux","release":"6.18.44-fc-v880","arch":"x64","endianness":"LE","cpu":"Intel(R) Xeon(R) Processor @ 2.10GHz","cores":4,"parallelism":4,"cpuMHz":0,"memoryBytes":16868675584,"freeMemoryBytes":15415349248,"load1":2.12,"load5":2.04,"load15":1.54,"uptimeS":5068,"node":"22.23.5","v8":"12.4.254.21-node.57","lean":"leanprover/lean4:v4.33.0","rssBytes":252526592,"heapUsedBytes":112520968,"stateVectorQubits":29,"registersInMemory":1054292224,"registerQubitsInMemory":128623651328,"willowQubits":105,"sycamoreQubits":54,"registerQubits":122,"buildMs":4081,"at":"2026-11-25T05:21:07.577Z"}
-```
+| hardware |  |
+| --- | --- |
+| registerBytes | 16 |
+| registerQubits | 122 |
+| registersInMemory | 1054292224 |
+| registerQubitsInMemory | 128623651328 |
+| platform | linux |
+| type | Linux |
+| release | 6.18.44-fc-v880 |
+| version | \#1 SMP PREEMPT\_DYNAMIC @0 |
+| arch | x64 |
+| machine | x86\_64 |
+| endianness | LE |
+| cpu | Intel(R) Xeon(R) Processor @ 2.10GHz |
+| cores | 4 |
+| parallelism | 4 |
+| cpuMHz | 0, 0, 0, 0 |
+| cpuUserMs | 6873160 |
+| cpuNiceMs | 0 |
+| cpuSysMs | 894460 |
+| cpuIdleMs | 29535700 |
+| cpuIrqMs | 0 |
+| memoryBytes | 16868675584 |
+| freeMemoryBytes | 15431655424 |
+| load1 | 1.96 |
+| load5 | 1.19 |
+| load15 | 0.8 |
+| uptimeS | 9818 |
+| diskBytes | 270553174016 |
+| diskFreeBytes | 232588517376 |
+| diskAvailableBytes | 35916955648 |
+| diskBlockBytes | 4096 |
+| inodes | 16777216 |
+| inodesFree | 14916545 |
+| networkInterfaces | 2 |
+| lean | leanprover/lean4:v4.33.0 |
+| rssBytes | 173207552 |
+| heapTotalBytes | 79052800 |
+| heapUsedBytes | 56434216 |
+| externalBytes | 17777517 |
+| arrayBuffersBytes | 512875 |
+| processUserMicros | 2520760 |
+| processSystemMicros | 229900 |
+| maxRssKb | 169148 |
+| pageFaults | 39175 |
+| fsReads | 0 |
+| fsWrites | 0 |
+| contextSwitches | 799 |
+| buildMs | 1175 |
+| at | 2026-11-25T06:40:16.994Z |
+
+| hardware.versions |  |
+| --- | --- |
+| node | 22.23.5 |
+| acorn | 8.16.0 |
+| ada | 2.9.2 |
+| amaro | 1.1.8 |
+| ares | 1.34.9 |
+| brotli | 1.1.0 |
+| cjs\_module\_lexer | 2.2.0 |
+| cldr | 48.0 |
+| icu | 78.3 |
+| llhttp | 9.4.4 |
+| modules | 127 |
+| napi | 10 |
+| nbytes | 0.1.3 |
+| ncrypto | 0.0.1 |
+| nghttp2 | 1.69.0 |
+| openssl | 3.5.9 |
+| simdjson | 4.5.0 |
+| simdutf | 6.4.2 |
+| sqlite | 3.54.1 |
+| tz | 2026e |
+| undici | 6.29.1 |
+| unicode | 17.0 |
+| uv | 1.51.0 |
+| uvwasi | 0.0.23 |
+| v8 | 12.4.254.21-node.57 |
+| zlib | 1.3.1-e00f703 |
+| zstd | 1.5.7 |

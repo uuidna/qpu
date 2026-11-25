@@ -1,47 +1,13 @@
 /-! # Qpu.General.Prose.ScriptsDoiRecord
-The prose of `scripts/doiRecord.ts`, which writes the record Zenodo archives with every release and the release note
-from the same build. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
-`⟦n⟧` marks where the nth computed value goes. -/
+The prose of `scripts/doiRecord.ts`, which writes the one text everywhere it is read. The text itself is rendered from
+sealed receipts and holds no sentence: what is kept here is the note at the head of the file the script generates, the
+two comments beside its exports and the message when a copy differs. -/
 
 namespace Prose
 
-def scriptsDoiRecord_achieved : String := "What is achieved"
-def scriptsDoiRecord_kernel : String := "⟦0⟧ theorems are checked by the Lean kernel: ⟦1⟧ written by hand and ⟦2⟧ by the compiler. Of those written by hand, ⟦3⟧ rest on no axiom beyond Lean's own propext, Classical.choice and Quot.sound."
-def scriptsDoiRecord_families : String := "The theorems written by hand, by family: ⟦0⟧."
-def scriptsDoiRecord_catalogue : String := "⟦0⟧ textbook theorems, and a catalogue of ⟦1⟧ products in ⟦2⟧ variants, each product a theorem of the kernel."
-def scriptsDoiRecord_served : String := "⟦0⟧ tools are served over MCP: the kernel's ⟦1⟧, and ⟦2⟧ where the Worker binds its rooms and its Lean prover. The audit replays ⟦3⟧ worked examples against the kernel's tools; every answer is a block sealed under its UUID."
-def scriptsDoiRecord_novelties : String := "Novelties"
-def scriptsDoiRecord_noveltyLead : String := "Each novelty is a theorem the kernel checks and the tree declares new, proposed for Mathlib:"
-def scriptsDoiRecord_proposed : String := "⟦0⟧: ⟦1⟧"
-def scriptsDoiRecord_unprecedented : String := "Laws no earlier DOI-registered work was found to state"
-def scriptsDoiRecord_unprecedentedLead : String := "⟦0⟧ laws of the textbook, each proved by the kernel, for which the search found no earlier DOI-registered work."
-def scriptsDoiRecord_challenges : String := "Google Quantum AI challenges completed in full compliance with their conditions"
-def scriptsDoiRecord_challengesLead : String := "⟦0⟧ of ⟦1⟧ challenges meet every condition they state: the kernel accepts the theorem each names and every related theorem, the formula holds on the value its door computes, and the answer is sealed under its UUID. The sale of qubit capacity offered beside them is sealed as ⟦2⟧; the google door computes whether it holds: ⟦3⟧ (textbook_hexbit_gateway_ftl)."
-def scriptsDoiRecord_challenge : String := "⟦0⟧ (⟦1⟧): ⟦2⟧, proved by ⟦3⟧ and computed by the ⟦4⟧ door; sealed as ⟦5⟧."
-def scriptsDoiRecord_novelty : String := "⟦0⟧, proved in ⟦1⟧: ⟦2⟧"
-def scriptsDoiRecord_open : String := "The author's claims and their theorems"
-def scriptsDoiRecord_claimsLead : String := "⟦0⟧ claims in the author's words, each with the theorems the kernel holds for it and their formulas. Of the ⟦1⟧ theorems written by hand, ⟦2⟧ rest on sorry, so ⟦3⟧ are proven (textbook_search_proven)."
-def scriptsDoiRecord_openClaim : String := "⟦0⟧, as the author claims it: “⟦1⟧” The kernel proves: ⟦2⟧."
-def scriptsDoiRecord_claim : String := "⟦0⟧: ⟦1⟧ Its rules ask: ⟦2⟧"
-def scriptsDoiRecord_funding : String := "Funding"
-def scriptsDoiRecord_donation : String := "Every call to a host that names no x402 wallet is free and asks for a donation at ⟦0⟧."
-def scriptsDoiRecord_paid : String := "A host that names a wallet charges ⟦0⟧ USD per call through x402, the cheapest real quantum call on the market."
-def scriptsDoiRecord_licence : String := "The work is licensed ⟦0⟧; commercial use needs a licence from the author: ⟦1⟧."
-def scriptsDoiRecord_calls : String := "Prizes and funds open now or on a rolling basis, as the compete door last read their rules:"
-def scriptsDoiRecord_call : String := "⟦0⟧ (⟦1⟧, entry ⟦2⟧, read ⟦3⟧): ⟦4⟧. Rules: ⟦5⟧"
-def scriptsDoiRecord_title : String := "⟦0⟧ v⟦1⟧: ⟦2⟧"
-def scriptsDoiRecord_byline : String := "⟦0⟧ (ORCID ⟦1⟧) · concept DOI ⟦2⟧ · ⟦3⟧ · MCP at ⟦4⟧"
-def scriptsDoiRecord_receipt : String := "This text is one build receipt. Its UUID ⟦0⟧ is the address of the text above it, and its SHA-256 is ⟦1⟧. The home page, the README, the npm package and the Zenodo record are this one text; verify any copy over MCP with verify { uuid, content } at ⟦2⟧."
-def scriptsDoiRecord_precedence : String := "This text and its receipt are part of the author's record of precedence and of the protection of the author's rights. Archived with every release under the concept DOI ⟦0⟧ and dated by Zenodo, the receipt fixes what this build states and when; it is the author's evidence for the claims the draft patent applications at ⟦1⟧ set out and for the licence ⟦2⟧. ⟦3⟧"
-def scriptsDoiRecord_gateway : String := "Sources and proofs"
-def scriptsDoiRecord_gatewayLead : String := "Every source and proof this text rests on, each a link: the doors to call, the pages to read, the records to cite, and the Lean file the kernel checks for every theorem written by hand, none left out."
-def scriptsDoiRecord_link : String := "⟦0⟧: ⟦1⟧"
-def scriptsDoiRecord_leanModule : String := "⟦0⟧, proving ⟦1⟧: ⟦2⟧"
 def scriptsDoiRecord_generated : String := "GENERATED by scripts/doiRecord.ts from the one text (scripts/oneText.ts). Do not edit: the build is the author."
 def scriptsDoiRecord_receiptDoc : String := "The build receipt: the UUID and SHA-256 of the one text, the same in the home page, the README, the npm package and the Zenodo record."
 def scriptsDoiRecord_textDoc : String := "The text the receipt addresses, served as a resource so a client verifies it with verify { uuid, content }."
-def scriptsDoiRecord_hardware : String := "Hardware of the build that minted this receipt"
-def scriptsDoiRecord_hardwareLead : String := "Every value below was read from the machine during the build, and its UUID ⟦0⟧ is the address of the JSON beneath it, verifiable with verify { uuid, content } like the text above. The machine holds an exact state vector of ⟦1⟧ qubits, since n qubits span 2^n basis states (Vocabulary.system_dimension) at 16 bytes per complex amplitude; Willow has ⟦2⟧ qubits and Sycamore ⟦3⟧, as the processor door states them, and one UUID register carries ⟦4⟧ (Qubit.effective_formula). The build took ⟦5⟧ ms."
 def scriptsDoiRecord_s2 : String := "the home page, the README, the npm README and the Zenodo record differ from the one text the build writes: run lake run index and commit the result"
 
 end Prose
