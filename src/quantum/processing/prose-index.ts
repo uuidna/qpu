@@ -286,6 +286,7 @@ const SENTENCES = {
   quantumProcessingContract_limit: "limit: the most leads one answer carries, 1 to 500. The answer names next, the offset of the page that follows, or null on the last page.",
   quantumProcessingContract_offset: "offset: how many matching leads to pass over before the first one answered, 0 unless given. Use the next of the previous answer.",
   quantumProcessingContract_output: "The keys the ⟦0⟧ worked example(s) of this tool answer with, each with the JSON types seen there. An answer to other arguments may carry further keys. A refusal is { error, code, kind } with isError true, never this shape.",
+  quantumProcessingContract_outputBrief: "An object of ⟦0⟧ key(s); tools/list with tools naming ⟦1⟧ states them (textbook_context_balanced).",
   quantumProcessingContract_outputNone: "This tool has no worked example yet, so only the outer shape is stated: an object. A refusal is { error, code, kind } with isError true.",
   quantumProcessingContract_paged: "limit is an integer from 1 to 500 and offset an integer from 0.",
   quantumProcessingContract_showsPage: "The first five open leads and the offset of the page that follows.",

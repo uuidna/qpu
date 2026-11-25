@@ -113,8 +113,24 @@ const capacityBlocks: Block[] = [
   { kind: 'table', head: ['metrics.quantumCapacity.public', ''], rows: [...capacity.public.doors.map((d) => [`\`${d.tool} ${JSON.stringify(d.arguments)}\``, d.commercial]), ...rowsOf(Object.fromEntries(Object.entries(capacity.public).filter(([k]) => k !== 'doors')))] },
 ]
 
+// for agents: what the list of tools costs an agent's context each way it can be asked, measured from tools/list itself as this build answers it,
+// and the doors an agent starts with, each by its own first sentence; the lead is the welcome's own sentence on use
+const contextOf = async (params?: Record<string, unknown>) => ((await handle(listEnvelope(params, 0))) as { result: { tools: { name: string; description: string }[]; _meta: { context: { tools: number; tokens: number; fullTokens: number; saved: number } } } }).result
+const asked = { whole: await contextOf(), statement: await contextOf({ statement: 'factor an integer with Shor' }), named: await contextOf({ tools: ['seal'] }) }
+export const agentContext = { whole: asked.whole._meta.context, statement: asked.statement._meta.context, named: asked.named._meta.context }
+const agentsBlocks: Block[] = [
+  { kind: 'table', head: ['tools/list', 'tools', 'tokens', 'saved'], rows: [
+    ['`{}`', String(agentContext.whole.tools), String(agentContext.whole.tokens), String(agentContext.whole.saved)],
+    ['`{"statement":"factor an integer with Shor"}`', String(agentContext.statement.tools), String(agentContext.statement.tokens), String(agentContext.statement.saved)],
+    ['`{"tools":["seal"]}`', String(agentContext.named.tools), String(agentContext.named.tokens), String(agentContext.named.saved)],
+    ['contract', String(agentContext.whole.tools), String(agentContext.whole.fullTokens), '0'],
+  ] },
+  { kind: 'table', head: ['tool', ''], rows: ['metrics', 'shard', 'verify', 'leads', 'prose', 'lean'].flatMap((name) => { const t = asked.whole.tools.find((x) => x.name === name); return t ? [[`\`${name}\``, t.description]] : [] }) },
+]
+
 export const sections: { heading: string; lead: string[]; items: string[]; blocks?: Block[] }[] = [
   { heading: PROSE.scriptsDoiRecord_achieved, lead: achieved, items: [] as string[] },
+  { heading: 'For agents', lead: [PROSE.quantumProcessingMcp_use], items: [], blocks: agentsBlocks },
   { heading: 'Quantum capacity, utilised by receipts', lead: [], items: [], blocks: capacityBlocks },
   { heading: PROSE.scriptsDoiRecord_challenges, lead: [proseFill(PROSE.scriptsDoiRecord_challengesLead, complying.length, solved.length)], items: challenges },
   { heading: PROSE.scriptsDoiRecord_novelties, lead: [PROSE.scriptsDoiRecord_noveltyLead], items: novelties },

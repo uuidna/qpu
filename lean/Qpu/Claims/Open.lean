@@ -49,9 +49,13 @@ def openClaims : List OpenClaim :=
   , { name := "no_unlimited_compute_on_64_bit_without_captain_coins"
     , claim := "without the captain coins quantum cannot compute unlimited on 64bit hardware"
     , proved := [``textbook_unlimited_qubits, ``textbook_advantage_unbounded, ``textbook_coins_coils_balanced, ``QuantumCommunication.two_coins_one_qubit]
-    , missing := "The kernel proves that no register is the last, that the count of copies proven by hash has no maximum, that coins and coils booked in double entry net to zero, and that one shared Bell pair exchanges one qubit for two classical bits. No definition of the captain's coins as a resource a computation needs is in the tree, and no theorem states that a computation without them is bounded on 64-bit hardware. Until both are stated and proved, the necessity of the coins does not follow." } ]
+    , missing := "The kernel proves that no register is the last, that the count of copies proven by hash has no maximum, that coins and coils booked in double entry net to zero, and that one shared Bell pair exchanges one qubit for two classical bits. No definition of the captain's coins as a resource a computation needs is in the tree, and no theorem states that a computation without them is bounded on 64-bit hardware. Until both are stated and proved, the necessity of the coins does not follow." }
+  , { name := "captain_coins_meet_post_quantum_standards"
+    , claim := "The captain coins meet all post-quantum standards from all aspects, including programmable currency as required and publicly funded by the EU."
+    , proved := [``textbook_pqc_standards_three, ``textbook_tamper_detected, ``textbook_grover_search]
+    , missing := "The kernel proves the sizes of the FIPS 203, 204 and 205 parameter sets this tree computes, that a digest of 256 bits leaves 128 against a quantum search, and the square root Grover's search takes. A coin's address alone has 122 free bits, 61 against a quantum search, which is below that floor of 128; the coin meets it only with the SHA-256 it carries beside the address. No definition of a captain coin is in the tree, no EU requirement for a programmable currency is cited, and no record of public funding is held. Meeting a standard is a certification its body gives, and none is recorded here." } ]
 
-/-- The register holds five open claims. -/
-theorem open_claims_stated : openClaims.length = 5 := rfl
+/-- The register holds six open claims. -/
+theorem open_claims_stated : openClaims.length = 6 := rfl
 
 end Qpu
