@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1636 products, 2 under a declared claim context and 1634 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1640 products, 2 under a declared claim context and 1638 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -12994,6 +12994,18 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
   (List.filter p record).dedup.Nodup ∧ ∀ x ∈ (List.filter p record).dedup, x ∈ record ∧ p x = true
 ```
 
+### `CirqBridge.cirq_eigen_gate`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (G : A) (t s : ℝ),
+  Complex.exp (↑(Real.pi * t * (0 + s)) * Complex.I) • (1 / 2) • (1 + G) +
+      Complex.exp (↑(Real.pi * t * (1 + s)) * Complex.I) • (1 / 2) • (1 - G) =
+    Complex.exp (↑(Real.pi * t * s) * Complex.I) •
+      ((1 / 2) • (1 + G) + Complex.exp (↑(Real.pi * t) * Complex.I) • (1 / 2) • (1 - G))
+```
+
 ### `CirqBridge.cirq_order_eq_reversed`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -13021,6 +13033,32 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (l : List (ℂ × ℂ)),
   (List.map (fun p => Complex.exp (↑Real.pi * p.1 * p.2 * Complex.I)) l).prod =
     Complex.exp (↑Real.pi * (List.map (fun p => p.1 * p.2) l).sum * Complex.I)
+```
+
+### `CirqBridge.involution_pow_one`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (G : A),
+  (1 / 2) • (1 + G) + Complex.exp (↑(Real.pi * 1) * Complex.I) • (1 / 2) • (1 - G) = G
+```
+
+### `CirqBridge.involution_pow_zero`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (G : A),
+  (1 / 2) • (1 + G) + Complex.exp (↑(Real.pi * 0) * Complex.I) • (1 / 2) • (1 - G) = 1
+```
+
+### `CirqBridge.s_power`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (t : ℝ), Complex.I ^ ↑t = Complex.exp (↑(Real.pi * t / 2) * Complex.I)
 ```
 
 ### `CirqBridge.shift_phase`

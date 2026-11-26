@@ -109,6 +109,8 @@ type MeasureJson = { key: string; qubits: QubitJson[] }
 // shift s on a gate to the power t multiplies the state by e^{iπts}: the phases are summed and carried exactly, never dropped. The product of
 // the phases is the phase of their sum (CirqBridge.global_phases_add), and Rx(θ)'s shift carries e^{-iθ/2} (CirqBridge.shift_phase).
 type CirqJson = { cirq_type?: string; [k: string]: unknown }
+// each of these is Cirq's eigen gate with exponents 0 and 1 on the projectors of a gate that squares to the identity, which is the
+// simulator's power of that gate up to the global phase of its shift (CirqBridge.cirq_eigen_gate)
 const CIRQ_GATES: Readonly<Record<string, string>> = { _PauliX: 'X', _PauliY: 'Y', _PauliZ: 'Z', XPowGate: 'X', YPowGate: 'Y', ZPowGate: 'Z', HPowGate: 'H', CZPowGate: 'CZ', CXPowGate: 'CNOT', SwapPowGate: 'SWAP', CCXPowGate: 'TOFFOLI', PhasedXZGate: 'PhasedXZ' }
 const CIRQ_ROTATIONS: Readonly<Record<string, string>> = { Rx: 'X', Ry: 'Y', Rz: 'Z' }
 const fromCirq = (given: unknown): { operations: OperationJson[]; measure?: MeasureJson; phase: number } => {

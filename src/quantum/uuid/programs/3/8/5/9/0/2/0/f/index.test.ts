@@ -449,7 +449,7 @@ test('a circuit as cirq.to_json writes it runs on the circuit door, its amplitud
   }
   // the bridge rests on theorems the kernel holds, each on Lean's standard axioms alone
   const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
-  for (const key of ['Advantage.fold_unfold', 'CirqBridge.cirq_order_eq_reversed', 'CirqBridge.global_phases_add', 'CirqBridge.shift_phase', 'CirqBridge.brief_sound', 'CirqBridge.currency_beside_every_coin']) {
+  for (const key of ['Advantage.fold_unfold', 'CirqBridge.cirq_order_eq_reversed', 'CirqBridge.global_phases_add', 'CirqBridge.shift_phase', 'CirqBridge.brief_sound', 'CirqBridge.currency_beside_every_coin', 'CirqBridge.cirq_eigen_gate', 'CirqBridge.involution_pow_one', 'CirqBridge.involution_pow_zero', 'CirqBridge.s_power']) {
     const t = kernel.get(key)
     assert.ok(t, key)
     assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)

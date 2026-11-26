@@ -66,4 +66,46 @@ theorem currency_beside_every_coin (rows : List String) (h : "currency" ∉ rows
     · subst hc; simp
     · simp [hr, hc]
 
+section Gates
+
+variable {A : Type*} [Ring A] [Algebra ℂ A]
+
+/-- Cirq's eigen gate with eigenvalue exponents `0` on the projector `P₊ = (1 + G)/2` and `1` on `P₋ = (1 - G)/2` and global shift
+`s`, which is how Cirq defines `XPowGate`, `YPowGate`, `ZPowGate`, `HPowGate`, `CZPowGate`, `CXPowGate`, `SwapPowGate` and
+`CCXPowGate`, is the simulator's power of a gate that squares to the identity, `P₊ + e^{iπt} P₋`, times the global phase
+`e^{iπts}` the circuit door carries. From Mathlib's `smul_add`, `smul_smul`, `zero_add`, `mul_add`, `mul_one`,
+`Complex.ofReal_add`, `add_mul`, `Complex.exp_add` and `mul_comm`, with the instances `Nat.instAtLeastTwoHAddOfNat`,
+`Distrib.leftDistribClass` and `Distrib.rightDistribClass`. -/
+theorem cirq_eigen_gate (G : A) (t s : ℝ) :
+    exp (↑(Real.pi * t * (0 + s)) * I) • ((1 / 2 : ℂ) • (1 + G)) + exp (↑(Real.pi * t * (1 + s)) * I) • ((1 / 2 : ℂ) • (1 - G)) =
+      exp (↑(Real.pi * t * s) * I) • ((1 / 2 : ℂ) • (1 + G) + exp (↑(Real.pi * t) * I) • ((1 / 2 : ℂ) • (1 - G))) := by
+  rw [smul_add (exp (↑(Real.pi * t * s) * I)), smul_smul (exp (↑(Real.pi * t * s) * I)) (exp (↑(Real.pi * t) * I)), zero_add,
+    mul_add, mul_one, Complex.ofReal_add, add_mul, Complex.exp_add, mul_comm (exp (↑(Real.pi * t) * I))]
+
+/-- At `t = 1` the simulator's power of a gate is the gate itself: `P₊ - P₋ = G`, since `e^{iπ} = -1`. From Mathlib's `mul_one`,
+`Complex.exp_pi_mul_I`, `neg_one_smul`, `sub_eq_add_neg`, `smul_sub`, `add_sub_sub_cancel`, `two_smul`, `smul_smul`, `one_div`,
+`inv_mul_cancel₀`, `two_ne_zero` and `one_smul`, with the instances `Nat.instAtLeastTwoHAddOfNat`, `CharZero.NeZero.two` and
+`Complex.instCharZero`. -/
+theorem involution_pow_one (G : A) : (1 / 2 : ℂ) • (1 + G) + exp (↑(Real.pi * 1) * I) • ((1 / 2 : ℂ) • (1 - G)) = G := by
+  rw [mul_one, Complex.exp_pi_mul_I, neg_one_smul, ← sub_eq_add_neg, ← smul_sub, add_sub_sub_cancel, ← two_smul ℂ G, smul_smul,
+    one_div, inv_mul_cancel₀ two_ne_zero, one_smul]
+
+/-- At `t = 0` the simulator's power of a gate is the identity: `P₊ + P₋ = 1`, since `e^0 = 1`. From Mathlib's
+`MulZeroClass.mul_zero`, `Complex.ofReal_zero`, `MulZeroClass.zero_mul`, `Complex.exp_zero`, `one_smul`, `smul_add`,
+`add_add_sub_cancel`, `two_smul`, `smul_smul`, `one_div`, `inv_mul_cancel₀` and `two_ne_zero`, with the instances
+`Nat.instAtLeastTwoHAddOfNat`, `CharZero.NeZero.two` and `Complex.instCharZero`. -/
+theorem involution_pow_zero (G : A) : (1 / 2 : ℂ) • (1 + G) + exp (↑(Real.pi * 0) * I) • ((1 / 2 : ℂ) • (1 - G)) = 1 := by
+  rw [mul_zero, Complex.ofReal_zero, zero_mul, Complex.exp_zero, one_smul, ← smul_add, add_add_sub_cancel, ← two_smul ℂ (1 : A),
+    smul_smul, one_div, inv_mul_cancel₀ two_ne_zero, one_smul]
+
+end Gates
+
+/-- The simulator raises `S = diag(1, i)` entry by entry through the principal logarithm, `i^t = e^{t log i}`, and Cirq writes
+`S**t` as `ZPowGate(t/2)`, `diag(1, e^{iπt/2})`: the two agree, since `log i = iπ/2`. From Mathlib's `Complex.cpow_def_of_ne_zero`,
+`Complex.I_ne_zero`, `Complex.log_I`, `Complex.ofReal_div`, `Complex.ofReal_mul`, `Complex.ofReal_ofNat`, `mul_right_comm` and
+`div_mul_eq_mul_div`, with the instance `Nat.instAtLeastTwoHAddOfNat`. -/
+theorem s_power (t : ℝ) : I ^ (t : ℂ) = exp (↑(Real.pi * t / 2) * I) := by
+  rw [Complex.cpow_def_of_ne_zero Complex.I_ne_zero, Complex.log_I, Complex.ofReal_div, Complex.ofReal_mul, Complex.ofReal_ofNat,
+    mul_right_comm, div_mul_eq_mul_div]
+
 end CirqBridge

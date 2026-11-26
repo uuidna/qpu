@@ -140,7 +140,9 @@ const involutionPower = (matrix: readonly C[], dim: number, t: number): C[] => {
   return createMatrix(dim, (r, s) => {
     const [gr, gi] = entry(matrix, dim, r, s)
     const id = r === s ? 1 : 0
-    // P+ = (I+G)/2 and P- = (I-G)/2 are the projectors; the result is P+ + e^{iπt}·P-
+    // P+ = (I+G)/2 and P- = (I-G)/2 are the projectors; the result is P+ + e^{iπt}·P-, Cirq's eigen gate up to the global phase of its
+    // shift (CirqBridge.cirq_eigen_gate), the gate itself at t = 1 and the identity at t = 0 (CirqBridge.involution_pow_one,
+    // CirqBridge.involution_pow_zero)
     const pr = (id + gr) / 2, pi = gi / 2
     const mr = (id - gr) / 2, mi = -gi / 2
     return [pr + cr * mr - ci * mi, pi + cr * mi + ci * mr]
@@ -390,6 +392,7 @@ export const raiseGate = (gate: GateBody, t: number): Gate => {
   const matrix = squaresToIdentity(gate.matrix, dim)
     ? involutionPower(gate.matrix, dim, t)
     : diagonalMatrix(gate.matrix, dim)
+      // a diagonal gate entry by entry through the principal logarithm: S**t is i^t = e^{iπt/2}, Cirq's ZPowGate(t/2) (CirqBridge.s_power)
       ? finiteMatrix(label, createMatrix(dim, (r, s) => (r === s ? zPow(entry(gate.matrix, dim, r, r), t) : [0, 0])))
       : matrixFn(gate.matrix, dim, (z) => zPow(z, t), (z, k) => powDeriv(z, t, k), label)
   return defineGate({ name: label, arity: gate.arity, matrix })
