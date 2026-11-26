@@ -105,22 +105,26 @@ const GATE_NAMES = [...Object.keys(GATES), 'PhasedXZ']
 type MeasureJson = { key: string; qubits: QubitJson[] }
 // Cirq's own serialization read as this door's operations: the JSON cirq.to_json writes for a Circuit, each GateOperation's gate by its cirq_type
 // and exponent and each qubit by its kind, and a MeasurementGate as the measurement. A gate this door does not compute keeps its cirq_type as its
-// name, so the door refuses it by that name; a global shift, which changes the global phase, is refused the same way, never dropped.
+// name, so the door refuses it by that name. Rx, Ry and Rz are X, Y and Z to the power rads/π with a global shift of -1/2, and every global
+// shift s on a gate to the power t multiplies the state by e^{iπts}: the phases are summed and carried exactly, never dropped.
 type CirqJson = { cirq_type?: string; [k: string]: unknown }
 const CIRQ_GATES: Readonly<Record<string, string>> = { _PauliX: 'X', _PauliY: 'Y', _PauliZ: 'Z', XPowGate: 'X', YPowGate: 'Y', ZPowGate: 'Z', HPowGate: 'H', CZPowGate: 'CZ', CXPowGate: 'CNOT', SwapPowGate: 'SWAP', CCXPowGate: 'TOFFOLI', PhasedXZGate: 'PhasedXZ' }
-const fromCirq = (given: unknown): { operations: OperationJson[]; measure?: MeasureJson } => {
+const CIRQ_ROTATIONS: Readonly<Record<string, string>> = { Rx: 'X', Ry: 'Y', Rz: 'Z' }
+const fromCirq = (given: unknown): { operations: OperationJson[]; measure?: MeasureJson; phase: number } => {
   const c = (typeof given === 'string' ? JSON.parse(given) : given) as CirqJson
   const qubit = (q: CirqJson): QubitJson => q.cirq_type === 'GridQubit' ? { kind: 'grid', row: Number(q.row), col: Number(q.col) } : q.cirq_type === 'NamedQubit' ? { kind: 'named', name: String(q.name) } : { kind: 'line', x: Number(q.x) }
   const operations: OperationJson[] = []
-  let measure: MeasureJson | undefined
+  let measure: MeasureJson | undefined, phase = 0
   for (const moment of (c.moments ?? []) as CirqJson[]) for (const op of (moment.operations ?? []) as CirqJson[]) {
     // a lone Pauli on one qubit is written as a SingleQubitPauliStringGateOperation: its pauli is the gate and its qubit the one qubit
-    const g = (op.gate ?? op.pauli ?? {}) as CirqJson, type = String(g.cirq_type), qubits = ((op.qubits ?? (op.qubit ? [op.qubit] : [])) as CirqJson[]).map(qubit), shift = Number(g.global_shift ?? 0)
+    const g = (op.gate ?? op.pauli ?? {}) as CirqJson, type = String(g.cirq_type), qubits = ((op.qubits ?? (op.qubit ? [op.qubit] : [])) as CirqJson[]).map(qubit)
     if (type === 'MeasurementGate') { measure = { key: String(g.key), qubits }; continue }
-    const gate = shift !== 0 ? `${type}(global_shift=${shift})` : CIRQ_GATES[type] ?? type
-    operations.push(type === 'PhasedXZGate' ? { gate, qubits, x: Number(g.x_exponent), z: Number(g.z_exponent), axis: Number(g.axis_phase_exponent) } : { gate, qubits, ...(g.exponent !== undefined && Number(g.exponent) !== 1 ? { exponent: Number(g.exponent) } : {}) })
+    if (type === 'PhasedXZGate') { operations.push({ gate: 'PhasedXZ', qubits, x: Number(g.x_exponent), z: Number(g.z_exponent), axis: Number(g.axis_phase_exponent) }); continue }
+    const rotation = CIRQ_ROTATIONS[type], exponent = rotation ? Number(g.rads) / Math.PI : Number(g.exponent ?? 1), shift = rotation ? -0.5 : Number(g.global_shift ?? 0)
+    phase += Math.PI * exponent * shift
+    operations.push({ gate: rotation ?? CIRQ_GATES[type] ?? type, qubits, ...(exponent !== 1 ? { exponent } : {}) })
   }
-  return { operations, ...(measure ? { measure } : {}) }
+  return { operations, ...(measure ? { measure } : {}), phase }
 }
 
 const qubit = (q: QubitJson): Qubit => {
@@ -1204,7 +1208,13 @@ const OWN: Tool[] = [
       }
       if (!measurement || typeof args.repetitions !== 'number') {
         const { amplitudes, qubits } = new Simulator().simulate(prepared)
-        return { qubits: qubits.map(keyOfQubit), amplitudes: amplitudes.map(complex), ...(measurement && typeof args.repetitions !== 'number' ? { sampled: false as const } : {}) }
+        // the global phase Cirq's shifts multiply the state by, carried exactly: e^{iφ}(re + i im)
+        const turned = cirq?.phase ? amplitudes.map(complex).map((z) => ({ re: z.re * Math.cos(cirq.phase) - z.im * Math.sin(cirq.phase), im: z.re * Math.sin(cirq.phase) + z.im * Math.cos(cirq.phase) })) : amplitudes.map(complex)
+        // Cirq's order for a Cirq circuit: its first qubit is the most significant bit of an amplitude's index, where this simulator's is the least,
+        // so each index is read with its bits reversed over the circuit's qubits
+        const reversed = (k: number) => { let r = 0; for (let b = 0; b < qubits.length; b++) if (k & (1 << b)) r |= 1 << (qubits.length - 1 - b); return r }
+        const phased = cirq ? turned.map((_, k) => turned[reversed(k)]!) : turned
+        return { qubits: qubits.map(keyOfQubit), amplitudes: phased, ...(measurement && typeof args.repetitions !== 'number' ? { sampled: false as const } : {}) }
       }
       const repetitions = args.repetitions
       const result = seeded(args).run(prepared, repetitions)

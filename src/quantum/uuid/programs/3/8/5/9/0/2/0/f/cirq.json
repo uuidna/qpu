@@ -507,9 +507,13 @@
    "support": [
     0,
     7
+   ],
+   "possible": [
+    0,
+    7
    ]
   },
-  "rx-refused": {
+  "rotations": {
    "json": {
     "cirq_type": "Circuit",
     "moments": [
@@ -528,6 +532,164 @@
           "x": 0
          }
         ]
+       },
+       {
+        "cirq_type": "GateOperation",
+        "gate": {
+         "cirq_type": "Ry",
+         "rads": 1.1
+        },
+        "qubits": [
+         {
+          "cirq_type": "LineQubit",
+          "x": 1
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cirq_type": "Moment",
+      "operations": [
+       {
+        "cirq_type": "GateOperation",
+        "gate": {
+         "cirq_type": "Rz",
+         "rads": -0.7
+        },
+        "qubits": [
+         {
+          "cirq_type": "LineQubit",
+          "x": 0
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cirq_type": "Moment",
+      "operations": [
+       {
+        "cirq_type": "GateOperation",
+        "gate": {
+         "cirq_type": "CXPowGate",
+         "exponent": 1.0,
+         "global_shift": 0.0
+        },
+        "qubits": [
+         {
+          "cirq_type": "LineQubit",
+          "x": 0
+         },
+         {
+          "cirq_type": "LineQubit",
+          "x": 1
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cirq_type": "Moment",
+      "operations": [
+       {
+        "cirq_type": "GateOperation",
+        "gate": {
+         "cirq_type": "Rx",
+         "rads": 2.0
+        },
+        "qubits": [
+         {
+          "cirq_type": "LineQubit",
+          "x": 1
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "qubits": [
+    "q(0)",
+    "q(1)"
+   ],
+   "amplitudes": [
+    [
+     0.5769579933165058,
+     -0.25234896619147273
+    ],
+    [
+     0.5055325593152971,
+     -0.570565113939868
+    ],
+    [
+     -0.11517490316209207,
+     -0.0028843386014177352
+    ],
+    [
+     -0.08534510236448013,
+     -0.04212352326228759
+    ]
+   ]
+  },
+  "shifted-pow": {
+   "json": {
+    "cirq_type": "Circuit",
+    "moments": [
+     {
+      "cirq_type": "Moment",
+      "operations": [
+       {
+        "cirq_type": "GateOperation",
+        "gate": {
+         "cirq_type": "HPowGate",
+         "exponent": 1.0,
+         "global_shift": 0.0
+        },
+        "qubits": [
+         {
+          "cirq_type": "LineQubit",
+          "x": 0
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cirq_type": "Moment",
+      "operations": [
+       {
+        "cirq_type": "GateOperation",
+        "gate": {
+         "cirq_type": "XPowGate",
+         "exponent": 0.3,
+         "global_shift": 0.2
+        },
+        "qubits": [
+         {
+          "cirq_type": "LineQubit",
+          "x": 0
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cirq_type": "Moment",
+      "operations": [
+       {
+        "cirq_type": "GateOperation",
+        "gate": {
+         "cirq_type": "ZPowGate",
+         "exponent": 0.4,
+         "global_shift": -0.25
+        },
+        "qubits": [
+         {
+          "cirq_type": "LineQubit",
+          "x": 0
+         }
+        ]
        }
       ]
      }
@@ -538,12 +700,143 @@
    ],
    "amplitudes": [
     [
-     0.9887710779360422,
+     0.7015310330143334,
+     -0.08862397936135692
+    ],
+    [
+     0.3010714243544671,
+     0.6398093445997584
+    ]
+   ]
+  },
+  "asym-measured": {
+   "json": {
+    "cirq_type": "Circuit",
+    "moments": [
+     {
+      "cirq_type": "Moment",
+      "operations": [
+       {
+        "cirq_type": "SingleQubitPauliStringGateOperation",
+        "pauli": {
+         "cirq_type": "_PauliX",
+         "exponent": 1.0,
+         "global_shift": 0.0
+        },
+        "qubit": {
+         "cirq_type": "LineQubit",
+         "x": 0
+        }
+       },
+       {
+        "cirq_type": "GateOperation",
+        "gate": {
+         "cirq_type": "HPowGate",
+         "exponent": 1.0,
+         "global_shift": 0.0
+        },
+        "qubits": [
+         {
+          "cirq_type": "LineQubit",
+          "x": 2
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "cirq_type": "Moment",
+      "operations": [
+       {
+        "cirq_type": "GateOperation",
+        "gate": {
+         "cirq_type": "MeasurementGate",
+         "num_qubits": 3,
+         "key": "m",
+         "invert_mask": []
+        },
+        "qubits": [
+         {
+          "cirq_type": "LineQubit",
+          "x": 0
+         },
+         {
+          "cirq_type": "LineQubit",
+          "x": 1
+         },
+         {
+          "cirq_type": "LineQubit",
+          "x": 2
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "qubits": [
+    "q(0)",
+    "q(1)",
+    "q(2)"
+   ],
+   "support": [
+    4,
+    5
+   ],
+   "possible": [
+    4,
+    5
+   ]
+  },
+  "fsim-refused": {
+   "json": {
+    "cirq_type": "Circuit",
+    "moments": [
+     {
+      "cirq_type": "Moment",
+      "operations": [
+       {
+        "cirq_type": "GateOperation",
+        "gate": {
+         "cirq_type": "FSimGate",
+         "theta": 0.3,
+         "phi": 0.2
+        },
+        "qubits": [
+         {
+          "cirq_type": "LineQubit",
+          "x": 0
+         },
+         {
+          "cirq_type": "LineQubit",
+          "x": 1
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "qubits": [
+    "q(0)",
+    "q(1)"
+   ],
+   "amplitudes": [
+    [
+     1.0,
      0.0
     ],
     [
      0.0,
-     -0.14943813247359922
+     0.0
+    ],
+    [
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0
     ]
    ]
   }
