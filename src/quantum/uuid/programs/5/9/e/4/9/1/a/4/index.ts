@@ -1282,6 +1282,7 @@ const SENTENCES = {
   quantumProcessingMcp_beforeChange45: "a variant is documented only when its formula is recorded",
   quantumProcessingMcp_by404: "nested: a chat inside a chat is not entered again",
   quantumProcessingMcp_check430: "seal { tamper: { text, address, sha256 } }",
+  quantumProcessingMcp_cirqJson: "the circuit exactly as cirq.to_json writes it, its moments of gate operations and an optional measurement, read as the operations above; a gate this door does not compute, or one with a global shift, is refused by its cirq_type (textbook_cirq_exports)",
   quantumProcessingMcp_clifford250: "computed from each unitary: it conjugates every Pauli string to a Pauli string, checked up to ⟦0⟧ qubits",
   quantumProcessingMcp_compliance370: "GET only, free public sources, a named user agent, no credential, a timeout on every request, each request checked against the host's discovered contract; nothing is written anywhere by this wave",
   quantumProcessingMcp_cost184: "the client harness runs each call itself (over the local stdio server: no billable call)",

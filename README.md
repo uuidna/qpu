@@ -341,9 +341,9 @@
 
 | receipt |  |
 | --- | --- |
-| uuid | db48b175-d4b8-3d2f-a1dc-1094ba5e6613 |
-| handle | `db48b175` |
-| sha256 | bc9b70a8c29107a6b3227295834ecd65992f41ee602db4da19dbd5151cfc569f |
+| uuid | eef9f55d-80fb-31da-90cb-1b1af1bac903 |
+| handle | `eef9f55d` |
+| sha256 | 347439706bb9c83a6bb5f825cd9c97a0cfa12d0ae8b2249e38c5b662e784280b |
 
 | hardware |  |
 | --- | --- |
@@ -362,42 +362,42 @@
 | cores | 4 |
 | parallelism | 4 |
 | cpuMHz | 0, 0, 0, 0 |
-| cpuUserMs | 5776290 |
+| cpuUserMs | 6756120 |
 | cpuNiceMs | 0 |
-| cpuSysMs | 343840 |
-| cpuIdleMs | 7702170 |
+| cpuSysMs | 429770 |
+| cpuIdleMs | 10897690 |
 | cpuIrqMs | 0 |
 | memoryBytes | 16868675584 |
-| freeMemoryBytes | 15866556416 |
-| load1 | 0.37 |
-| load5 | 1.81 |
-| load15 | 2.41 |
-| uptimeS | 4110 |
+| freeMemoryBytes | 15621275648 |
+| load1 | 1.17 |
+| load5 | 0.87 |
+| load15 | 1.48 |
+| uptimeS | 5189 |
 | diskBytes | 270553174016 |
-| diskFreeBytes | 231976718336 |
-| diskAvailableBytes | 35305156608 |
+| diskFreeBytes | 231446822912 |
+| diskAvailableBytes | 34775261184 |
 | diskBlockBytes | 4096 |
 | inodes | 16777216 |
-| inodesFree | 14884296 |
+| inodesFree | 14870376 |
 | networkInterfaces | 2 |
 | lean | leanprover/lean4:v4.33.0 |
-| rssBytes | 223285248 |
-| heapTotalBytes | 114143232 |
-| heapUsedBytes | 90452672 |
-| externalBytes | 17799603 |
-| arrayBuffersBytes | 534961 |
-| processUserMicros | 5018977 |
-| processSystemMicros | 178889 |
-| maxRssKb | 219408 |
-| pageFaults | 58645 |
+| rssBytes | 215187456 |
+| heapTotalBytes | 112570368 |
+| heapUsedBytes | 84712304 |
+| externalBytes | 17788787 |
+| arrayBuffersBytes | 523060 |
+| processUserMicros | 5161766 |
+| processSystemMicros | 174551 |
+| maxRssKb | 211376 |
+| pageFaults | 59350 |
 | fsReads | 0 |
 | fsWrites | 0 |
-| contextSwitches | 5813 |
+| contextSwitches | 5220 |
 | challenges | 574a161f, fb1cd940, d6d7b748, ec54afc7, bbcc2c0f, dbbc4fe8, bc24f386, 52a07646, a7fa7c75, d8719ba7, 5d7c7a76, 4d938405, 02f60ed8, 3edf017a |
 | isoHardwareTerms | 3.3.5 physical qubit, 3.3.6 physical qudit, 3.4.8 quantum processor, 3.4.10 quantum computer, 3.4.26 circuit-based quantum computer, 3.4.27 one-way quantum computer, 3.4.28 adiabatic quantum computer |
 | quantumBehaviour | UNVERIFIED |
-| buildMs | 3305 |
-| at | 2026-11-26T19:32:04.262Z |
+| buildMs | 3532 |
+| at | 2026-11-26T19:50:03.014Z |
 
 | hardware.versions |  |
 | --- | --- |

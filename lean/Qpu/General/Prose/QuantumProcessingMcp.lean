@@ -476,4 +476,6 @@ def quantumProcessingMcp_use : String := "To use it: tools/list names every tool
 def quantumProcessingMcp_improve : String := "To improve it: every lead that leads { } lists as open, partial or blocked is a task; prove its statement in Lean (the lean tool checks a source) or answer it through its door, and send the result to the author at ⟦0⟧. The work is licensed ⟦1⟧, so an improvement lands through the author, never as a derivative, and the next build's receipt carries it."
 def quantumProcessingMcp_receiptResource : String := "the one text this build is, which its receipt addresses: verify { uuid, content } on it decides"
 
+def quantumProcessingMcp_cirqJson : String := "the circuit exactly as cirq.to_json writes it, its moments of gate operations and an optional measurement, read as the operations above; a gate this door does not compute, or one with a global shift, is refused by its cirq_type (textbook_cirq_exports)"
+
 end Prose

@@ -103,6 +103,25 @@ type QubitJson = { kind: 'grid'; row: number; col: number } | { kind: 'line'; x:
 type OperationJson = { gate: string; qubits: QubitJson[]; exponent?: number; x?: number; z?: number; axis?: number }
 const GATE_NAMES = [...Object.keys(GATES), 'PhasedXZ']
 type MeasureJson = { key: string; qubits: QubitJson[] }
+// Cirq's own serialization read as this door's operations: the JSON cirq.to_json writes for a Circuit, each GateOperation's gate by its cirq_type
+// and exponent and each qubit by its kind, and a MeasurementGate as the measurement. A gate this door does not compute keeps its cirq_type as its
+// name, so the door refuses it by that name; a global shift, which changes the global phase, is refused the same way, never dropped.
+type CirqJson = { cirq_type?: string; [k: string]: unknown }
+const CIRQ_GATES: Readonly<Record<string, string>> = { _PauliX: 'X', _PauliY: 'Y', _PauliZ: 'Z', XPowGate: 'X', YPowGate: 'Y', ZPowGate: 'Z', HPowGate: 'H', CZPowGate: 'CZ', CXPowGate: 'CNOT', SwapPowGate: 'SWAP', CCXPowGate: 'TOFFOLI', PhasedXZGate: 'PhasedXZ' }
+const fromCirq = (given: unknown): { operations: OperationJson[]; measure?: MeasureJson } => {
+  const c = (typeof given === 'string' ? JSON.parse(given) : given) as CirqJson
+  const qubit = (q: CirqJson): QubitJson => q.cirq_type === 'GridQubit' ? { kind: 'grid', row: Number(q.row), col: Number(q.col) } : q.cirq_type === 'NamedQubit' ? { kind: 'named', name: String(q.name) } : { kind: 'line', x: Number(q.x) }
+  const operations: OperationJson[] = []
+  let measure: MeasureJson | undefined
+  for (const moment of (c.moments ?? []) as CirqJson[]) for (const op of (moment.operations ?? []) as CirqJson[]) {
+    // a lone Pauli on one qubit is written as a SingleQubitPauliStringGateOperation: its pauli is the gate and its qubit the one qubit
+    const g = (op.gate ?? op.pauli ?? {}) as CirqJson, type = String(g.cirq_type), qubits = ((op.qubits ?? (op.qubit ? [op.qubit] : [])) as CirqJson[]).map(qubit), shift = Number(g.global_shift ?? 0)
+    if (type === 'MeasurementGate') { measure = { key: String(g.key), qubits }; continue }
+    const gate = shift !== 0 ? `${type}(global_shift=${shift})` : CIRQ_GATES[type] ?? type
+    operations.push(type === 'PhasedXZGate' ? { gate, qubits, x: Number(g.x_exponent), z: Number(g.z_exponent), axis: Number(g.axis_phase_exponent) } : { gate, qubits, ...(g.exponent !== undefined && Number(g.exponent) !== 1 ? { exponent: Number(g.exponent) } : {}) })
+  }
+  return { operations, ...(measure ? { measure } : {}) }
+}
 
 const qubit = (q: QubitJson): Qubit => {
   if (q.kind === 'grid') return GridQubit.of(q.row, q.col)
@@ -1146,6 +1165,7 @@ const OWN: Tool[] = [
       type: 'object',
       properties: {
         operations: { type: 'array', items: OPERATION_SCHEMA },
+        cirq: { type: ['object', 'string'], description: PROSE.quantumProcessingMcp_cirqJson },
         insert: INSERT_SCHEMA,
         device: { enum: Object.keys(DEVICES), description: PROSE.quantumProcessingMcp_description100 },
         measure: MEASURE_SCHEMA,
@@ -1158,9 +1178,10 @@ const OWN: Tool[] = [
     },
     run: (args) => {
       if (isObj(args.engine)) return engineCall(args.engine as Record<string, unknown>)
-      if (!Array.isArray(args.operations)) return unlimited() as never
-      const operations = args.operations as OperationJson[]
-      const measurement = args.measure as MeasureJson | undefined
+      const cirq = args.cirq !== undefined ? fromCirq(args.cirq) : null
+      if (!cirq && !Array.isArray(args.operations)) return unlimited() as never
+      const operations = cirq?.operations ?? (args.operations as OperationJson[])
+      const measurement = (args.measure ?? cirq?.measure) as MeasureJson | undefined
       const insert = (args.insert ?? 'EARLIEST') as InsertStrategy
       const prepared = circuit(operations, insert, measurement)
       if (typeof args.device === 'string') {
