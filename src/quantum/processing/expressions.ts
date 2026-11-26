@@ -4,6 +4,7 @@
 import { PROSE, proseFill } from './prose-index.ts'
 import { div, mod, mul, natSub, pow } from '../apps/index.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
+import { THEOREMS } from './theorems-index.ts'
 import { routeStatement } from './match.ts'
 import type { Example } from './examples.ts'
 import type { Lead } from './leads.ts'
@@ -139,7 +140,7 @@ export const closedOf = (key?: string) => (TEXTBOOK_THEOREMS.find((x) => x.key =
 /** Any textbook theorem evaluated as a tool: values for its variables in, each hypothesis and conjunct computed out, what is missing named. */
 export const evaluateTheorem = (key: string, values: Readonly<Record<string, number | string>> = {}) => {
   const t = TEXTBOOK_THEOREMS.find((x) => x.key === key)
-  if (!t) throw new Error(`no textbook theorem ${key}`)
+  if (!t) return evaluateKernel(key, values)
   // a general theorem asked without values is evaluated at the closed instance its example states
   const instance = Object.keys(values).length ? undefined : closedOf(key)
   const s = getStatement(instance ?? t.lean)
@@ -156,6 +157,68 @@ export const evaluateTheorem = (key: string, values: Readonly<Record<string, num
     const c = evaluate(s.conclusion, env, read)
     return { ...head, evaluable: true, needs: [], values: Object.fromEntries(Object.entries(env).map(([k, v]) => [k, v.toString()])), hypotheses: hyps.map((h) => ({ name: h.name, text: h.text, holds: h.value === true, parts: h.parts })), premises, conclusion: { text: s.conclusion, holds: c.value === true, parts: c.parts }, holds: !premises || c.value === true, says_now: premises ? (c.value === true ? PROSE.quantumProcessingExpressions_s3 : PROSE.quantumProcessingExpressions_s4) : PROSE.quantumProcessingExpressions_s5 }
   } catch (e) { return { ...head, evaluable: false, reason: (e as Error).message, needs: [] } }
+}
+
+// A kernel theorem the textbook does not carry, read back from the statement the kernel printed: its leading ∀ over naturals and booleans
+// are its variables and each top-level → before the last a premise. A name the statement does not bind is a Lean definition no evaluator
+// here computes, so such a statement is not evaluable and is never given values: an instance is claimed only where every side is computed.
+const KEYWORDS = new Set(['true', 'false', 'if', 'then', 'else', 'Nat.zero', 'Nat', 'Int', 'Bool'])
+const topLevel = (s: string, sep: string): string[] => {
+  const out: string[] = []; let depth = 0, from = 0
+  for (let i = 0; i < s.length; i++) { const c = s[i]!; if (c === '(' || c === '[' || c === '{') depth++; else if (c === ')' || c === ']' || c === '}') depth--; else if (depth === 0 && s.startsWith(sep, i)) { out.push(s.slice(from, i).trim()); from = i + sep.length } }
+  return [...out, s.slice(from).trim()]
+}
+/** A kernel theorem's statement as variables, premises and conclusion, or the reason it is not read. */
+export const kernelStatement = (key: string) => {
+  const t = THEOREMS.find((x) => x.key === key)
+  if (!t) throw new Error(`no kernel theorem ${key}`)
+  const variables: string[] = [], bools: string[] = []
+  let rest = t.statement.replace(/\s+/g, ' ').replace(/ℕ/g, 'Nat').trim()
+  const head = { theorem: key, module: t.module, statement: t.statement }
+  if (rest.startsWith('∀ ')) {
+    rest = rest.slice(2)
+    for (;;) { const m = /^\(([^():]+) : (Nat|Bool)\) ?/.exec(rest); if (!m) break; const names = m[1]!.trim().split(' '); variables.push(...names); if (m[2] === 'Bool') bools.push(...names); rest = rest.slice(m[0].length) }
+    if (!rest.startsWith(',')) return { ...head, variables, bools, read: false as const, reason: PROSE.quantumProcessingExpressions_kernelBinder }
+    rest = rest.slice(1).trim()
+  }
+  const pieces = topLevel(rest, ' → '), conclusion = pieces.pop()!, hypotheses = pieces.map((text, i) => ({ name: `h${i + 1}`, text }))
+  if ([conclusion, ...pieces].some((p) => /[∀∃]/.test(p))) return { ...head, variables, bools, read: false as const, reason: PROSE.quantumProcessingExpressions_reason2 }
+  let names: string[]
+  try { names = [conclusion, ...pieces].flatMap((p) => tokens(p.replace(/\s*:\s*(?:Int|Nat|Bool)\b/g, '')).filter((k) => k.t === 'id').map((k) => k.v)) } catch (e) { return { ...head, variables, bools, read: false as const, reason: (e as Error).message } }
+  const unbound = [...new Set(names.filter((n) => !variables.includes(n) && !KEYWORDS.has(n) && !FUNCS[n]))]
+  if (unbound.length) return { ...head, variables, bools, read: false as const, reason: proseFill(PROSE.quantumProcessingExpressions_kernelUnbound, unbound.join(', ')) }
+  return { ...head, variables, bools, read: true as const, hypotheses, conclusion }
+}
+/** A kernel theorem evaluated as a tool, as a textbook theorem is: values for its variables in, each premise and the conclusion computed out. */
+export const evaluateKernel = (key: string, values: Readonly<Record<string, number | string>> = {}) => {
+  const k = kernelStatement(key)
+  if (!k.read) return { ...k, evaluable: false, reason: k.reason, needs: [] as string[] }
+  const env: Env = {}
+  for (const [name, v] of Object.entries(values)) { if (!k.variables.includes(name)) continue; const raw = String(v); env[name] = k.bools.includes(name) && (raw === 'true' || raw === 'false') ? raw === 'true' : BigInt(raw) }
+  const needs = k.variables.filter((v) => !(v in env))
+  if (needs.length) return { ...k, evaluable: true, needs, computed: null }
+  try {
+    const read = { proposition: true }
+    const hyps = k.hypotheses.map((h) => ({ ...h, ...evaluate(h.text, env, read) }))
+    const premises = hyps.every((h) => h.value === true)
+    const c = evaluate(k.conclusion, env, read)
+    return { ...k, evaluable: true, needs: [] as string[], values: Object.fromEntries(Object.entries(env).map(([n, v]) => [n, v.toString()])), hypotheses: hyps.map((h) => ({ name: h.name, text: h.text, holds: h.value === true, parts: h.parts })), premises, holds: c.value === true, parts: c.parts }
+  } catch (e) { return { ...k, evaluable: false, reason: (e as Error).message, needs: [] as string[] } }
+}
+/** Values that make a kernel theorem's statement hold with every premise true: closed as it stands, else the first numerals it states. */
+export const kernelBinding = (key: string): Record<string, string> | null => {
+  const k = kernelStatement(key)
+  if (!k.read || k.variables.length > 4) return null
+  const fit = (values: Record<string, string>) => { const ev = evaluateKernel(key, values) as { evaluable: boolean; needs: string[]; premises?: boolean; holds?: boolean; values?: Record<string, string> }; return ev.evaluable && !ev.needs.length && ev.premises === true && ev.holds === true ? (ev.values ?? {}) : null }
+  if (!k.variables.length) return fit({})
+  const stated = numbers(`${k.conclusion} ${k.hypotheses.map((h) => h.text).join(' ')}`).filter((n) => /^\d+$/.test(n) && n.length <= 7)
+  const numerals = [...new Set(['1', '0', '2', ...stated])].slice(0, 8)
+  const rec = (i: number, acc: Record<string, string>): Record<string, string> | null => {
+    if (i === k.variables.length) return fit(acc)
+    for (const n of k.bools.includes(k.variables[i]!) ? ['true', 'false'] : numerals) { const hit = rec(i + 1, { ...acc, [k.variables[i]!]: n }); if (hit) return hit }
+    return null
+  }
+  return rec(0, {})
 }
 
 /** Values that make a theorem's own sentence hold: the closed ones as they stand, and a theorem with variables by the first

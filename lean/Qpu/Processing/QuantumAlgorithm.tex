@@ -1,0 +1,32 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.QuantumAlgorithm}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumAlgorithm.lean}
+
+\paragraph{\texttt{QuantumAlgorithm.deutsch\_jozsa}}
+one query decides: a constant function leaves all weight on 00, a balanced one leaves none
+\[ \forall f < 16, (\mathrm{QuantumAlgorithm.constant}\ f = \mathrm{true} \to (\mathrm{QuantumAlgorithm.dj}\ f\ 0)\mathrm{.normSq} = 16) \land (\mathrm{QuantumAlgorithm.balanced}\ f = \mathrm{true} \to \mathrm{QuantumAlgorithm.dj}\ f\ 0 = 0) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumAlgorithm.lean\#L28}
+
+\paragraph{\texttt{QuantumAlgorithm.grover\_search}}
+one Grover iteration over four items leaves all weight on the marked item
+\[ \forall m < 4, \forall r < 4, \mathrm{QuantumAlgorithm.grover}\ m\ r \ne 0 \leftrightarrow r = m \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumAlgorithm.lean\#L39}
+
+\paragraph{\texttt{QuantumAlgorithm.phase\_estimation\_exact}}
+phase estimation: the register holding ω\^{}(jk) on |j⟩ for the eigenphase k/8 returns exactly |k⟩ under the inverse QFT
+\[ \forall k < 8, \forall r < 8, (\mathrm{QuantumAlgorithm.sum8}\ \lambda \ j \mapsto \mathrm{QuantumAlgorithm.iqft}\ r\ j \cdot \mathrm{QuantumAlgorithm.wPow} (j \cdot k)) = \mathrm{if}\ r = k\ \mathrm{then}\ 8\ \mathrm{else}\ 0 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumAlgorithm.lean\#L53}
+
+\paragraph{\texttt{QuantumAlgorithm.qft\_unitary}}
+the QFT on three qubits is unitary: QFT · QFT† = 8 · I
+\[ \forall j < 8, \forall k < 8, (\mathrm{QuantumAlgorithm.sum8}\ \lambda \ i \mapsto \mathrm{QuantumAlgorithm.qft}\ j\ i \cdot \mathrm{QuantumAlgorithm.iqft}\ i\ k) = \mathrm{if}\ j = k\ \mathrm{then}\ 8\ \mathrm{else}\ 0 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumAlgorithm.lean\#L51}
+\end{document}

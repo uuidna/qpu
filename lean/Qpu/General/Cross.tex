@@ -1,0 +1,81 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Cross}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean}
+
+\paragraph{\texttt{all\_complete}}
+\[ \mathrm{faces} = \mathrm{coins} \cdot \mathrm{rays} \land \mathrm{faces} = \mathrm{rays} + \mathrm{rays} \land \mathrm{coil} = \mathrm{faces} \land \mathrm{amplitudes} = \mathrm{mint}\ \mathrm{bits} \land \mathrm{fused} = \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L29}
+
+\paragraph{\texttt{all\_product}}
+\[ \mathrm{faces} = \mathrm{coins} \cdot \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L27}
+
+\paragraph{\texttt{all\_sum}}
+\[ \mathrm{faces} = \mathrm{rays} + \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L28}
+
+\paragraph{\texttt{amplitudes\_as\_sum}}
+AMPLITUDE ASYMMETRY: asymmetric and symmetric forms of amplitude constraint.
+\[ \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) = \mathrm{amplitudes} + \mathrm{amplitudes} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L20}
+
+\paragraph{\texttt{amplitudes\_from\_sum}}
+\[ 2 \cdot \mathrm{amplitudes} = \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L21}
+
+\paragraph{\texttt{bits\_both\_forms}}
+\[ \mathrm{bits} = \mathrm{vertices} \cdot \mathrm{hexbit} \land \mathrm{bits} = \mathrm{mint} (n + \mathrm{coins}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L18}
+
+\paragraph{\texttt{bits\_exponential}}
+\[ \mathrm{bits} = \mathrm{mint} (n + \mathrm{coins}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L17}
+
+\paragraph{\texttt{bits\_multiplicative}}
+COMPLETE CUBIC PROOF: bits as product and as nested exponential (via mint).
+\[ \mathrm{bits} = \mathrm{vertices} \cdot \mathrm{hexbit} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L16}
+
+\paragraph{\texttt{coins\_bridges\_forms}}
+\[ \mathrm{coins} = 2 \land \forall (x : \mathbb{N}), \mathrm{coins} \cdot x = x + x \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L9}
+
+\paragraph{\texttt{double\_is\_sum}}
+ASYMMETRIC ↔ SYMMETRIC BRIDGES: coins=2 enables transformation between product and sum forms.
+\[ \forall (x : \mathbb{N}), x + x = 2 \cdot x \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L8}
+
+\paragraph{\texttt{faces\_additive}}
+\[ \mathrm{faces} = \mathrm{rays} + \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L13}
+
+\paragraph{\texttt{faces\_both\_forms}}
+\[ \mathrm{faces} = \mathrm{coins} \cdot \mathrm{rays} \land \mathrm{faces} = \mathrm{rays} + \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L14}
+
+\paragraph{\texttt{faces\_multiplicative}}
+COMPLETE ASYMMETRIC PROOF: faces via product, proved independent of sum form.
+\[ \mathrm{faces} = \mathrm{coins} \cdot \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L12}
+
+\paragraph{\texttt{fused\_additive\_form}}
+\[ \mathrm{fused} + \mathrm{fused} = \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{coins}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L24}
+
+\paragraph{\texttt{fused\_both\_directions}}
+\[ \mathrm{fused} = \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) \land \mathrm{fused} + \mathrm{fused} = \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{coins}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L25}
+
+\paragraph{\texttt{fused\_multiplicative\_form}}
+FUSED COMPLETENESS: quantum defines multiplicatively; can be distributed additively.
+\[ \mathrm{fused} = \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cross.lean\#L23}
+\end{document}

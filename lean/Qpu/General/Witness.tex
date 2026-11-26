@@ -1,0 +1,22 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Witness}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Witness.lean}
+
+\paragraph{\texttt{Witness.split\_unique}}
+Only one split of a semiprime: for primes `p ≤ q`, if `d * e = p * q` with `1 < d ≤ e`, then `d = p` and `e = q`. Composed from Mathlib's `Nat.dvd\_prime`, `Nat.Prime.pos` and `Nat.Prime.two\_le`, with Lean core's `Nat.dvd\_mul` and `Nat.eq\_of\_mul\_eq\_mul\_left`.
+\[ \forall \{p\ q\ d\ e : \mathbb{N}\}, \mathrm{Nat.Prime}\ p \to \mathrm{Nat.Prime}\ q \to p \le q \to d \le e \to d \cdot e = p \cdot q \to 1 < d \to d = p \land e = q \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Witness.lean\#L15}
+
+\paragraph{\texttt{Witness.witness\_unique}}
+Only the true witness decodes: for primes `p ≤ q`, a candidate centre `a` with gap `b` that splits `(a - b) * (a + b) = p * q` with `1 < a - b` has `a - b = p` and `a + b = q`. From `Witness.split\_unique`, itself composed from Mathlib's `Nat.dvd\_prime`, `Nat.Prime.pos` and `Nat.Prime.two\_le`.
+\[ \forall \{p\ q\ a\ b : \mathbb{N}\}, \mathrm{Nat.Prime}\ p \to \mathrm{Nat.Prime}\ q \to p \le q \to (a - b) \cdot (a + b) = p \cdot q \to 1 < a - b \to a - b = p \land a + b = q \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Witness.lean\#L36}
+\end{document}

@@ -1000,6 +1000,8 @@ const SENTENCES = {
   quantumProcessingExamples_title291: "next reads every session to decide what and how",
   quantumProcessingExamples_title374: "a brand new unheard-of problem about zxqw",
   quantumProcessingExamples_title416: "DoS via unbounded memory in the EventSource parser",
+  quantumProcessingExpressions_kernelBinder: "a binder over a type other than the naturals or the booleans: the kernel's statement is not arithmetic this evaluator reads (textbook_expressions_evaluate)",
+  quantumProcessingExpressions_kernelUnbound: "names no evaluator here computes, Lean definitions only the kernel unfolds (textbook_expressions_evaluate): ⟦0⟧",
   quantumProcessingExpressions_reason2: "a quantified statement: the kernel proves it for all values; evaluate it by its instances",
   quantumProcessingExpressions_reason7: "a number in prose rests on an expression the kernel accepts, or it is a convention to state as one",
   quantumProcessingExpressions_reason9: "the tree states only what the kernel accepts; match and compete decide, never prose",

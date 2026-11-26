@@ -1,0 +1,42 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Verify.Uuid}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.bands\_cover\_the\_free\_bits}}
+The program and message bands exactly cover the free bits — no overlap, no slack.
+\[ \mathrm{Qpu.Verify.Uuid.programBits} + \mathrm{Qpu.Verify.Uuid.messageBits} = \mathrm{Qpu.Verify.Uuid.totalBits} - \mathrm{Qpu.Verify.Uuid.fixedBits} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L21}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.distinct\_slots\_distinct\_handles}}
+Control: distinct programs never collide at the handle layer.
+\[ \mathrm{Qpu.Verify.Uuid.encode}\ 1\ 0 \ne \mathrm{Qpu.Verify.Uuid.encode}\ 2\ 0 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L38}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.free\_is\_122}}
+The handle carries 122 bits of free entropy.
+\[ \mathrm{Qpu.Verify.Uuid.totalBits} - \mathrm{Qpu.Verify.Uuid.fixedBits} = 122 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L17}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.program\_capacity}}
+Program band capacity: 16 bits address 65 536 program slots.
+\[ 2 ^{\mathrm{Qpu.Verify.Uuid.programBits}} = 65536 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L24}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.slot\_round\_trips}}
+A slot round-trips: decode ∘ encode is the identity on small inputs.
+\[ \mathrm{Qpu.Verify.Uuid.decode} (\mathrm{Qpu.Verify.Uuid.encode}\ 3\ 7) = (3, 7) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L33}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.slot\_round\_trips\_max\_program}}
+The round trip also holds at the program band's upper edge.
+\[ \mathrm{Qpu.Verify.Uuid.decode} (\mathrm{Qpu.Verify.Uuid.encode}\ 65535\ 42) = (65535, 42) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L35}
+\end{document}

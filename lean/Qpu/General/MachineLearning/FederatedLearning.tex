@@ -1,0 +1,288 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.MachineLearning.FederatedLearning}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean}
+
+\paragraph{\texttt{Qpu.Federated.avgV\_bounded}}
+Coordinate-wise bounded updates average to a coordinate-wise bounded vector.
+\[ \forall \{d : \mathbb{N}\} (\mathrm{lo}\ \mathrm{hi} : \mathbb{Z}) (\mathrm{us} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)), 0 < \mathrm{us.length} \to \forall (i : \mathrm{Fin}\ d), (\forall u \in \mathrm{us}, \mathrm{lo} \le u\ i \land u\ i \le \mathrm{hi}) \to \mathrm{lo} \le \mathrm{Qpu.Federated.avgV}\ \mathrm{us}\ i \land \mathrm{Qpu.Federated.avgV}\ \mathrm{us}\ i \le \mathrm{hi} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L151}
+
+\paragraph{\texttt{Qpu.Federated.avgV\_replicate}}
+Unbiasedness: averaging `k > 0` identical updates returns that update.
+\[ \forall \{d : \mathbb{N}\} (k : \mathbb{N}), 0 < k \to \forall (u : \mathrm{Qpu.Federated.Vec}\ d), \mathrm{Qpu.Federated.avgV} (\mathrm{List.replicate}\ k\ u) = u \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L145}
+
+\paragraph{\texttt{Qpu.Federated.avgZ\_bounded}}
+Every element in `[lo, hi]` → the average lies in `[lo, hi]`.
+\[ \forall (\mathrm{lo}\ \mathrm{hi} : \mathbb{Z}) (l : \mathrm{List} \mathbb{Z}), 0 < \mathrm{l.length} \to (\forall x \in l, \mathrm{lo} \le x \land x \le \mathrm{hi}) \to \mathrm{lo} \le \mathrm{Qpu.Federated.avgZ}\ l \land \mathrm{Qpu.Federated.avgZ}\ l \le \mathrm{hi} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L100}
+
+\paragraph{\texttt{Qpu.Federated.avgZ\_replicate}}
+Averaging `k > 0` copies of `x` returns `x` exactly.
+\[ \forall (k : \mathbb{N}), 0 < k \to \forall (x : \mathbb{Z}), \mathrm{Qpu.Federated.avgZ} (\mathrm{List.replicate}\ k\ x) = x \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L112}
+
+\paragraph{\texttt{Qpu.Federated.byzantine\_lattice}}
+\[ \forall (l : \mathrm{List} \mathbb{Z}) (\mathrm{lo}\ \mathrm{hi} : \mathbb{Z}), \mathrm{l.length} = \mathrm{faces} \to \mathrm{List.countP} (\mathrm{Qpu.Federated.outside}\ \mathrm{lo}\ \mathrm{hi}) l \le \mathrm{hexbit} \to \mathrm{lo} \le \mathrm{Qpu.Federated.median}\ l \land \mathrm{Qpu.Federated.median}\ l \le \mathrm{hi} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L478}
+
+\paragraph{\texttt{Qpu.Federated.byzantine\_median}}
+Byzantine resilience of the median: at most `malicious` values outside the honest range and `3 · malicious < clients` → the median is honest.
+\[ \forall (l : \mathrm{List} \mathbb{Z}) (\mathrm{lo}\ \mathrm{hi} : \mathbb{Z}) (\mathrm{malicious} : \mathbb{N}), 0 < \mathrm{l.length} \to \mathrm{List.countP} (\mathrm{Qpu.Federated.outside}\ \mathrm{lo}\ \mathrm{hi}) l \le \mathrm{malicious} \to 3 \cdot \mathrm{malicious} < \mathrm{l.length} \to \mathrm{lo} \le \mathrm{Qpu.Federated.median}\ l \land \mathrm{Qpu.Federated.median}\ l \le \mathrm{hi} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L433}
+
+\paragraph{\texttt{Qpu.Federated.byzantine\_medianV}}
+Federated Byzantine resilience: with at most `malicious` dishonest updates among the clients and `3 · malicious < clients`, the coordinate-wise median is honest in every coordinate.
+\[ \forall \{d : \mathbb{N}\} (\mathrm{us} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)) (\mathrm{lo}\ \mathrm{hi} : \mathrm{Qpu.Federated.Vec}\ d) (\mathrm{malicious} : \mathbb{N}), 0 < \mathrm{us.length} \to \mathrm{List.countP} (\lambda \ u \mapsto \neg \mathrm{Qpu.Federated.inBox}\ \mathrm{lo}\ \mathrm{hi}\ u) \mathrm{us} \le \mathrm{malicious} \to 3 \cdot \mathrm{malicious} < \mathrm{us.length} \to \forall (i : \mathrm{Fin}\ d), \mathrm{lo}\ i \le \mathrm{Qpu.Federated.medianV}\ \mathrm{us}\ i \land \mathrm{Qpu.Federated.medianV}\ \mathrm{us}\ i \le \mathrm{hi}\ i \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L456}
+
+\paragraph{\texttt{Qpu.Federated.byzantine\_trimmedMean}}
+Byzantine resilience of the trimmed mean under the same explicit bound.
+\[ \forall (l : \mathrm{List} \mathbb{Z}) (\mathrm{lo}\ \mathrm{hi} : \mathbb{Z}) (\mathrm{malicious} : \mathbb{N}), \mathrm{List.countP} (\mathrm{Qpu.Federated.outside}\ \mathrm{lo}\ \mathrm{hi}) l \le \mathrm{malicious} \to 3 \cdot \mathrm{malicious} < \mathrm{l.length} \to \mathrm{lo} \le \mathrm{Qpu.Federated.trimmedMean}\ \mathrm{malicious}\ l \land \mathrm{Qpu.Federated.trimmedMean}\ \mathrm{malicious}\ l \le \mathrm{hi} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L441}
+
+\paragraph{\texttt{Qpu.Federated.clipV\_bounded}}
+\[ \forall \{d : \mathbb{N}\} (c : \mathbb{N}) (u : \mathrm{Qpu.Federated.Vec}\ d) (i : \mathrm{Fin}\ d), -\uparrow c \le \mathrm{Qpu.Federated.clipV}\ c\ u\ i \land \mathrm{Qpu.Federated.clipV}\ c\ u\ i \le \uparrow c \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L181}
+
+\paragraph{\texttt{Qpu.Federated.clipV\_idem}}
+\[ \forall \{d : \mathbb{N}\} (c : \mathbb{N}) (u : \mathrm{Qpu.Federated.Vec}\ d), \mathrm{Qpu.Federated.clipV}\ c (\mathrm{Qpu.Federated.clipV}\ c\ u) = \mathrm{Qpu.Federated.clipV}\ c\ u \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L184}
+
+\paragraph{\texttt{Qpu.Federated.clipZ\_bounded}}
+\[ \forall (c : \mathbb{N}) (x : \mathbb{Z}), -\uparrow c \le \mathrm{Qpu.Federated.clipZ}\ c\ x \land \mathrm{Qpu.Federated.clipZ}\ c\ x \le \uparrow c \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L165}
+
+\paragraph{\texttt{Qpu.Federated.clipZ\_idem}}
+\[ \forall (c : \mathbb{N}) (x : \mathbb{Z}), \mathrm{Qpu.Federated.clipZ}\ c (\mathrm{Qpu.Federated.clipZ}\ c\ x) = \mathrm{Qpu.Federated.clipZ}\ c\ x \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L171}
+
+\paragraph{\texttt{Qpu.Federated.clipZ\_ne\_iff}}
+Deterministic detection: the clip changes a value exactly when it is out of range.
+\[ \forall (c : \mathbb{N}) (x : \mathbb{Z}), \mathrm{Qpu.Federated.clipZ}\ c\ x \ne x \leftrightarrow x < -\uparrow c \lor \uparrow c < x \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L175}
+
+\paragraph{\texttt{Qpu.Federated.clipZ\_of\_bounded}}
+\[ \forall (c : \mathbb{N}) (x : \mathbb{Z}), -\uparrow c \le x \land x \le \uparrow c \to \mathrm{Qpu.Federated.clipZ}\ c\ x = x \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L168}
+
+\paragraph{\texttt{Qpu.Federated.clipped\_avg\_bounded}}
+The clipped average is bounded by the clip.
+\[ \forall \{d : \mathbb{N}\} (c : \mathbb{N}) (\mathrm{us} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)), 0 < \mathrm{us.length} \to \forall (i : \mathrm{Fin}\ d), -\uparrow c \le \mathrm{Qpu.Federated.avgV} (\mathrm{List.map} (\mathrm{Qpu.Federated.clipV}\ c) \mathrm{us}) i \land \mathrm{Qpu.Federated.avgV} (\mathrm{List.map} (\mathrm{Qpu.Federated.clipV}\ c) \mathrm{us}) i \le \uparrow c \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L215}
+
+\paragraph{\texttt{Qpu.Federated.clipped\_sum\_bounded}}
+The aggregate of `n` clipped updates lies in `[-c·n, c·n]`, in every coordinate.
+\[ \forall \{d : \mathbb{N}\} (c : \mathbb{N}) (\mathrm{us} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)) (i : \mathrm{Fin}\ d), -(\uparrow c \cdot \uparrow \mathrm{us.length}) \le \mathrm{Qpu.Federated.sumV} (\mathrm{List.map} (\mathrm{Qpu.Federated.clipV}\ c) \mathrm{us}) i \land \mathrm{Qpu.Federated.sumV} (\mathrm{List.map} (\mathrm{Qpu.Federated.clipV}\ c) \mathrm{us}) i \le \uparrow c \cdot \uparrow \mathrm{us.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L196}
+
+\paragraph{\texttt{Qpu.Federated.communication\_lower\_bound}}
+Communication lower bound: `rounds · clients` messages at least, whatever the share count `k ≥ 1`.
+\[ \forall (\mathrm{rounds}\ \mathrm{clients}\ k : \mathbb{N}), 0 < k \to \mathrm{rounds} \cdot \mathrm{clients} \le \mathrm{Qpu.Federated.totalMessages}\ \mathrm{rounds}\ \mathrm{clients}\ k \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L294}
+
+\paragraph{\texttt{Qpu.Federated.countP\_gt\_le\_outside}}
+\[ \forall (l : \mathrm{List} \mathbb{Z}) (\mathrm{lo}\ \mathrm{hi} : \mathbb{Z}), \mathrm{List.countP} (\lambda \ x \mapsto \mathrm{decide} (\mathrm{hi} < x)) l \le \mathrm{List.countP} (\mathrm{Qpu.Federated.outside}\ \mathrm{lo}\ \mathrm{hi}) l \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L427}
+
+\paragraph{\texttt{Qpu.Federated.countP\_lt\_le\_outside}}
+\[ \forall (l : \mathrm{List} \mathbb{Z}) (\mathrm{lo}\ \mathrm{hi} : \mathbb{Z}), \mathrm{List.countP} (\lambda \ x \mapsto \mathrm{decide} (x < \mathrm{lo})) l \le \mathrm{List.countP} (\mathrm{Qpu.Federated.outside}\ \mathrm{lo}\ \mathrm{hi}) l \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L423}
+
+\paragraph{\texttt{Qpu.Federated.dropout\_sum\_bounded}}
+Dropout: aggregating any sub-list of active clients keeps the bound of the full cohort.
+\[ \forall \{d : \mathbb{N}\} (c : \mathbb{N}) (\mathrm{us}\ \mathrm{active} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)), \mathrm{active.Sublist}\ \mathrm{us} \to \forall (i : \mathrm{Fin}\ d), -(\uparrow c \cdot \uparrow \mathrm{us.length}) \le \mathrm{Qpu.Federated.sumV} (\mathrm{List.map} (\mathrm{Qpu.Federated.clipV}\ c) \mathrm{active}) i \land \mathrm{Qpu.Federated.sumV} (\mathrm{List.map} (\mathrm{Qpu.Federated.clipV}\ c) \mathrm{active}) i \le \uparrow c \cdot \uparrow \mathrm{us.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L205}
+
+\paragraph{\texttt{Qpu.Federated.halve\_le}}
+\[ \forall (r\ L : \mathbb{N}), \mathrm{Qpu.Federated.halve}\ r\ L \le L \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L536}
+
+\paragraph{\texttt{Qpu.Federated.halving\_converges}}
+A loss below `mint r = 2\^{}r` reaches `0` within `r` halving rounds.
+\[ \forall (r\ L : \mathbb{N}), L < \mathrm{mint}\ r \to \mathrm{Qpu.Federated.halve}\ r\ L = 0 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L542}
+
+\paragraph{\texttt{Qpu.Federated.heterogeneity\_bounded}}
+Heterogeneity bound (in place of a real-valued non-IID statement): every clipped update deviates from the clipped average by at most `2c` in every coordinate.
+\[ \forall \{d : \mathbb{N}\} (c : \mathbb{N}) (\mathrm{us} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)), 0 < \mathrm{us.length} \to \forall (u : \mathrm{Qpu.Federated.Vec}\ d) (i : \mathrm{Fin}\ d), -(2 \cdot \uparrow c) \le \mathrm{Qpu.Federated.clipV}\ c\ u\ i - \mathrm{Qpu.Federated.avgV} (\mathrm{List.map} (\mathrm{Qpu.Federated.clipV}\ c) \mathrm{us}) i \land \mathrm{Qpu.Federated.clipV}\ c\ u\ i - \mathrm{Qpu.Federated.avgV} (\mathrm{List.map} (\mathrm{Qpu.Federated.clipV}\ c) \mathrm{us}) i \le 2 \cdot \uparrow c \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L223}
+
+\paragraph{\texttt{Qpu.Federated.lattice\_instance}}
+Labelled lattice instance: `faces = 14` clients tolerate `hexbit = 4` malicious ones, `3·4 < 14`.
+\[ 3 \cdot \mathrm{hexbit} < \mathrm{faces} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L476}
+
+\paragraph{\texttt{Qpu.Federated.lt\_mintOf\_self}}
+\[ \forall (L : \mathbb{N}), L < \mathrm{mint}\ L \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L547}
+
+\paragraph{\texttt{Qpu.Federated.median\_bounded}}
+Honest majority: at most `f` values below `lo`, at most `f` above `hi`, `2f < n` → the median lies in `[lo, hi]`.
+\[ \forall (l : \mathrm{List} \mathbb{Z}) (\mathrm{lo}\ \mathrm{hi} : \mathbb{Z}) (f : \mathbb{N}), 0 < \mathrm{l.length} \to \mathrm{List.countP} (\lambda \ x \mapsto \mathrm{decide} (x < \mathrm{lo})) l \le f \to \mathrm{List.countP} (\lambda \ x \mapsto \mathrm{decide} (\mathrm{hi} < x)) l \le f \to 2 \cdot f < \mathrm{l.length} \to \mathrm{lo} \le \mathrm{Qpu.Federated.median}\ l \land \mathrm{Qpu.Federated.median}\ l \le \mathrm{hi} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L372}
+
+\paragraph{\texttt{Qpu.Federated.median\_eq\_getElem}}
+\[ \forall (l : \mathrm{List} \mathbb{Z}) (\mathrm{hpos} : 0 < \mathrm{l.length}), \mathrm{Qpu.Federated.median}\ l = (\mathrm{Qpu.Federated.sortZ}\ l)[\mathrm{l.length} / 2] \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L363}
+
+\paragraph{\texttt{Qpu.Federated.mem\_map\_clipV\_bounded}}
+\[ \forall \{d : \mathbb{N}\} (c : \mathbb{N}) (\mathrm{us} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)) (i : \mathrm{Fin}\ d), \forall x \in \mathrm{Qpu.Federated.coord}\ i (\mathrm{List.map} (\mathrm{Qpu.Federated.clipV}\ c) \mathrm{us}), -\uparrow c \le x \land x \le \uparrow c \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L187}
+
+\paragraph{\texttt{Qpu.Federated.noised\_clipped\_bounded}}
+The noised clipped aggregate lies in `[-(c·n + b), c·n + b]`.
+\[ \forall \{d : \mathbb{N}\} (c\ b : \mathbb{N}) (\mathrm{us} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)) (i : \mathrm{Fin}\ d) (e : \mathbb{Z}), -\uparrow b \le e \land e \le \uparrow b \to -(\uparrow c \cdot \uparrow \mathrm{us.length} + \uparrow b) \le \mathrm{Qpu.Federated.sumV} (\mathrm{List.map} (\mathrm{Qpu.Federated.clipV}\ c) \mathrm{us}) i + e \land \mathrm{Qpu.Federated.sumV} (\mathrm{List.map} (\mathrm{Qpu.Federated.clipV}\ c) \mathrm{us}) i + e \le \uparrow c \cdot \uparrow \mathrm{us.length} + \uparrow b \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L500}
+
+\paragraph{\texttt{Qpu.Federated.noised\_privacy}}
+Privacy: two aggregates at distance `≤ b` can release the same value.
+\[ \forall (a\ a' : \mathbb{Z}) (b : \mathbb{N}), -\uparrow b \le a - a' \land a - a' \le \uparrow b \to \exists e\ e', (-\uparrow b \le e \land e \le \uparrow b) \land (-\uparrow b \le e' \land e' \le \uparrow b) \land a + e = a' + e' \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L489}
+
+\paragraph{\texttt{Qpu.Federated.noised\_utility}}
+Utility: releasing `a + e` with `|e| ≤ b` errs by at most `b`.
+\[ \forall (a\ e : \mathbb{Z}) (b : \mathbb{N}), -\uparrow b \le e \land e \le \uparrow b \to -\uparrow b \le a + e - a \land a + e - a \le \uparrow b \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L485}
+
+\paragraph{\texttt{Qpu.Federated.pairwise\_mask\_cancels}}
+Two clients with one pairwise mask: `(u + m) + (v − m) = u + v`.
+\[ \forall \{d : \mathbb{N}\} (u\ v\ m : \mathrm{Qpu.Federated.Vec}\ d), \mathrm{Qpu.Federated.addV} (\mathrm{Qpu.Federated.addV}\ u\ m) (\mathrm{Qpu.Federated.subV}\ v\ m) = \mathrm{Qpu.Federated.addV}\ u\ v \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L262}
+
+\paragraph{\texttt{Qpu.Federated.privacy\_utility\_tradeoff}}
+Trade-off: a mechanism with noise bound `b` (hence utility error `≤ b`) can only make two aggregates indistinguishable when they are within `2b` of each other.
+\[ \forall (a\ a'\ e\ e' : \mathbb{Z}) (b : \mathbb{N}), -\uparrow b \le e \land e \le \uparrow b \to -\uparrow b \le e' \land e' \le \uparrow b \to a + e = a' + e' \to -(2 \cdot \uparrow b) \le a - a' \land a - a' \le 2 \cdot \uparrow b \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L495}
+
+\paragraph{\texttt{Qpu.Federated.quantization\_error}}
+Quantisation error lies in `[0, q)`.
+\[ \forall (q : \mathbb{N}), 0 < q \to \forall (x : \mathbb{Z}), 0 \le x - \mathrm{Qpu.Federated.dequantize}\ q (\mathrm{Qpu.Federated.quantize}\ q\ x) \land x - \mathrm{Qpu.Federated.dequantize}\ q (\mathrm{Qpu.Federated.quantize}\ q\ x) < \uparrow q \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L513}
+
+\paragraph{\texttt{Qpu.Federated.quantize\_clipped\_bounded}}
+A clipped value quantises into the finite range `[(−c)/q, c/q]` (the compression levels).
+\[ \forall (q\ c : \mathbb{N}), 0 < q \to \forall (x : \mathbb{Z}), -\uparrow c / \uparrow q \le \mathrm{Qpu.Federated.quantize}\ q (\mathrm{Qpu.Federated.clipZ}\ c\ x) \land \mathrm{Qpu.Federated.quantize}\ q (\mathrm{Qpu.Federated.clipZ}\ c\ x) \le \uparrow c / \uparrow q \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L523}
+
+\paragraph{\texttt{Qpu.Federated.rounds\_suffice}}
+Rounds needed: from loss `L`, `L` rounds suffice.
+\[ \forall (L : \mathbb{N}), \mathrm{Qpu.Federated.halve}\ L\ L = 0 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L553}
+
+\paragraph{\texttt{Qpu.Federated.secureAggregate\_eq}}
+Correctness of secure aggregation: the sum of all shares is the sum of the secrets.
+\[ \forall \{d : \mathbb{N}\} (\mathrm{cs} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d \times \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d))), \mathrm{Qpu.Federated.secureAggregate}\ \mathrm{cs} = \mathrm{Qpu.Federated.sumV} (\mathrm{List.map}\ \mathrm{Prod.fst}\ \mathrm{cs}) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L270}
+
+\paragraph{\texttt{Qpu.Federated.shares\_consistent}}
+Hiding one mask: whatever the observed head share and the other masks, every alternative secret `s'` admits a mask `m'` reproducing exactly those observed shares. Together with `shares\_tail\_independent` this is: any `k − 1` of `k` shares are consistent with every secret.
+\[ \forall \{d : \mathbb{N}\} (s\ s'\ m : \mathrm{Qpu.Federated.Vec}\ d) (\mathrm{ms} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)), \exists m', (\mathrm{Qpu.Federated.shares}\ s' (m' :: \mathrm{ms}))\mathrm{.head}? = (\mathrm{Qpu.Federated.shares}\ s (m :: \mathrm{ms}))\mathrm{.head}? \land (\mathrm{Qpu.Federated.shares}\ s' (m' :: \mathrm{ms}))\mathrm{.tail.tail} = (\mathrm{Qpu.Federated.shares}\ s (m :: \mathrm{ms}))\mathrm{.tail.tail} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L251}
+
+\paragraph{\texttt{Qpu.Federated.shares\_length}}
+\[ \forall \{d : \mathbb{N}\} (s : \mathrm{Qpu.Federated.Vec}\ d) (\mathrm{ms} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)), (\mathrm{Qpu.Federated.shares}\ s\ \mathrm{ms})\mathrm{.length} = \mathrm{ms.length} + 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L236}
+
+\paragraph{\texttt{Qpu.Federated.shares\_tail\_independent}}
+The masks are chosen independently of the secret: the tail of the sharing never depends on `s`.
+\[ \forall \{d : \mathbb{N}\} (s\ s' : \mathrm{Qpu.Federated.Vec}\ d) (\mathrm{ms} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)), (\mathrm{Qpu.Federated.shares}\ s\ \mathrm{ms})\mathrm{.tail} = (\mathrm{Qpu.Federated.shares}\ s'\ \mathrm{ms})\mathrm{.tail} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L245}
+
+\paragraph{\texttt{Qpu.Federated.shares\_traffic}}
+Traffic: with `k` shares per client, one round carries `clients · k` share messages.
+\[ \forall \{d : \mathbb{N}\} (k : \mathbb{N}) (\mathrm{cs} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d \times \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d))), (\forall c \in \mathrm{cs}, \mathrm{c.2.length} + 1 = k) \to (\mathrm{List.flatMap} (\lambda \ c \mapsto \mathrm{Qpu.Federated.shares}\ \mathrm{c.1}\ \mathrm{c.2}) \mathrm{cs})\mathrm{.length} = \mathrm{cs.length} \cdot k \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L279}
+
+\paragraph{\texttt{Qpu.Federated.sortZ\_length}}
+\[ \forall (l : \mathrm{List} \mathbb{Z}), (\mathrm{Qpu.Federated.sortZ}\ l)\mathrm{.length} = \mathrm{l.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L306}
+
+\paragraph{\texttt{Qpu.Federated.sortZ\_perm}}
+\[ \forall (l : \mathrm{List} \mathbb{Z}), (\mathrm{Qpu.Federated.sortZ}\ l)\mathrm{.Perm}\ l \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L305}
+
+\paragraph{\texttt{Qpu.Federated.sortZ\_sorted}}
+\[ \forall (l : \mathrm{List} \mathbb{Z}), \mathrm{List.Pairwise} (\lambda \ \mathrm{x1}\ \mathrm{x2} \mapsto \mathrm{x1} \le \mathrm{x2}) (\mathrm{Qpu.Federated.sortZ}\ l) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L308}
+
+\paragraph{\texttt{Qpu.Federated.sorted\_lower}}
+In a sorted list, if at most `k` values are below `lo`, the `k`-th value is at least `lo`.
+\[ \forall \{s : \mathrm{List} \mathbb{Z}\}, \mathrm{List.Pairwise} (\lambda \ \mathrm{x1}\ \mathrm{x2} \mapsto \mathrm{x1} \le \mathrm{x2}) s \to \forall (\mathrm{lo} : \mathbb{Z}) \{k : \mathbb{N}\} (\mathrm{hk} : k < \mathrm{s.length}), \mathrm{List.countP} (\lambda \ x \mapsto \mathrm{decide} (x < \mathrm{lo})) s \le k \to \mathrm{lo} \le s[k] \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L315}
+
+\paragraph{\texttt{Qpu.Federated.sorted\_upper}}
+In a sorted list of length `n`, if at most `n − 1 − k` values exceed `hi`, the `k`-th value is at most `hi`.
+\[ \forall \{s : \mathrm{List} \mathbb{Z}\}, \mathrm{List.Pairwise} (\lambda \ \mathrm{x1}\ \mathrm{x2} \mapsto \mathrm{x1} \le \mathrm{x2}) s \to \forall (\mathrm{hi} : \mathbb{Z}) \{k : \mathbb{N}\} (\mathrm{hk} : k < \mathrm{s.length}), \mathrm{List.countP} (\lambda \ x \mapsto \mathrm{decide} (\mathrm{hi} < x)) s \le \mathrm{s.length} - 1 - k \to s[k] \le \mathrm{hi} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L338}
+
+\paragraph{\texttt{Qpu.Federated.sumV\_append}}
+Aggregation is linear over concatenation: the server may aggregate in batches.
+\[ \forall \{d : \mathbb{N}\} (\mathrm{us}\ \mathrm{vs} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)), \mathrm{Qpu.Federated.sumV} (\mathrm{us} ++ \mathrm{vs}) = \mathrm{Qpu.Federated.addV} (\mathrm{Qpu.Federated.sumV}\ \mathrm{us}) (\mathrm{Qpu.Federated.sumV}\ \mathrm{vs}) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L134}
+
+\paragraph{\texttt{Qpu.Federated.sumV\_cons}}
+\[ \forall \{d : \mathbb{N}\} (u : \mathrm{Qpu.Federated.Vec}\ d) (\mathrm{us} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)), \mathrm{Qpu.Federated.sumV} (u :: \mathrm{us}) = \mathrm{Qpu.Federated.addV}\ u (\mathrm{Qpu.Federated.sumV}\ \mathrm{us}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L131}
+
+\paragraph{\texttt{Qpu.Federated.sumV\_nil}}
+\[ \forall \{d : \mathbb{N}\}, \mathrm{Qpu.Federated.sumV} [] = \mathrm{Qpu.Federated.zeroV} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L130}
+
+\paragraph{\texttt{Qpu.Federated.sumV\_perm}}
+Aggregation is order-independent: any arrival order of the clients gives the same sum.
+\[ \forall \{d : \mathbb{N}\} \{\mathrm{us}\ \mathrm{vs} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)\}, \mathrm{us.Perm}\ \mathrm{vs} \to \mathrm{Qpu.Federated.sumV}\ \mathrm{us} = \mathrm{Qpu.Federated.sumV}\ \mathrm{vs} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L140}
+
+\paragraph{\texttt{Qpu.Federated.sumV\_shares}}
+The shares sum back to the secret.
+\[ \forall \{d : \mathbb{N}\} (s : \mathrm{Qpu.Federated.Vec}\ d) (\mathrm{ms} : \mathrm{List} (\mathrm{Qpu.Federated.Vec}\ d)), \mathrm{Qpu.Federated.sumV} (\mathrm{Qpu.Federated.shares}\ s\ \mathrm{ms}) = s \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L239}
+
+\paragraph{\texttt{Qpu.Federated.sumZ\_append}}
+\[ \forall (a\ b : \mathrm{List} \mathbb{Z}), \mathrm{Qpu.Federated.sumZ} (a ++ b) = \mathrm{Qpu.Federated.sumZ}\ a + \mathrm{Qpu.Federated.sumZ}\ b \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L62}
+
+\paragraph{\texttt{Qpu.Federated.sumZ\_bounded}}
+Every element in `[lo, hi]` → the sum lies in `[lo·|l|, hi·|l|]`.
+\[ \forall (\mathrm{lo}\ \mathrm{hi} : \mathbb{Z}) (l : \mathrm{List} \mathbb{Z}), (\forall x \in l, \mathrm{lo} \le x \land x \le \mathrm{hi}) \to \mathrm{lo} \cdot \uparrow \mathrm{l.length} \le \mathrm{Qpu.Federated.sumZ}\ l \land \mathrm{Qpu.Federated.sumZ}\ l \le \mathrm{hi} \cdot \uparrow \mathrm{l.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L83}
+
+\paragraph{\texttt{Qpu.Federated.sumZ\_cons}}
+\[ \forall (x : \mathbb{Z}) (\mathrm{xs} : \mathrm{List} \mathbb{Z}), \mathrm{Qpu.Federated.sumZ} (x :: \mathrm{xs}) = x + \mathrm{Qpu.Federated.sumZ}\ \mathrm{xs} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L60}
+
+\paragraph{\texttt{Qpu.Federated.sumZ\_nil}}
+\[ \mathrm{Qpu.Federated.sumZ} [] = 0 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L59}
+
+\paragraph{\texttt{Qpu.Federated.sumZ\_perm}}
+The sum does not depend on the order of the summands.
+\[ \forall \{a\ b : \mathrm{List} \mathbb{Z}\}, \mathrm{a.Perm}\ b \to \mathrm{Qpu.Federated.sumZ}\ a = \mathrm{Qpu.Federated.sumZ}\ b \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L68}
+
+\paragraph{\texttt{Qpu.Federated.sumZ\_replicate}}
+\[ \forall (k : \mathbb{N}) (x : \mathbb{Z}), \mathrm{Qpu.Federated.sumZ} (\mathrm{List.replicate}\ k\ x) = x \cdot \uparrow k \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L75}
+
+\paragraph{\texttt{Qpu.Federated.trimmedMean\_bounded}}
+\[ \forall (l : \mathrm{List} \mathbb{Z}) (\mathrm{lo}\ \mathrm{hi} : \mathbb{Z}) (f : \mathbb{N}), \mathrm{List.countP} (\lambda \ x \mapsto \mathrm{decide} (x < \mathrm{lo})) l \le f \to \mathrm{List.countP} (\lambda \ x \mapsto \mathrm{decide} (\mathrm{hi} < x)) l \le f \to 2 \cdot f < \mathrm{l.length} \to \mathrm{lo} \le \mathrm{Qpu.Federated.trimmedMean}\ f\ l \land \mathrm{Qpu.Federated.trimmedMean}\ f\ l \le \mathrm{hi} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L414}
+
+\paragraph{\texttt{Qpu.Federated.trimmed\_length}}
+\[ \forall (f : \mathbb{N}) (l : \mathrm{List} \mathbb{Z}), 2 \cdot f \le \mathrm{l.length} \to (\mathrm{Qpu.Federated.trimmed}\ f\ l)\mathrm{.length} = \mathrm{l.length} - 2 \cdot f \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L389}
+
+\paragraph{\texttt{Qpu.Federated.trimmed\_mem\_bounded}}
+Every trimmed value lies in the honest range when at most `f` values lie on either side and `2f < n`.
+\[ \forall (l : \mathrm{List} \mathbb{Z}) (\mathrm{lo}\ \mathrm{hi} : \mathbb{Z}) (f : \mathbb{N}), \mathrm{List.countP} (\lambda \ x \mapsto \mathrm{decide} (x < \mathrm{lo})) l \le f \to \mathrm{List.countP} (\lambda \ x \mapsto \mathrm{decide} (\mathrm{hi} < x)) l \le f \to 2 \cdot f < \mathrm{l.length} \to \forall x \in \mathrm{Qpu.Federated.trimmed}\ f\ l, \mathrm{lo} \le x \land x \le \mathrm{hi} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/FederatedLearning.lean\#L394}
+\end{document}

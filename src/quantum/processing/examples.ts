@@ -22,7 +22,8 @@ const pair = (rows: unknown[][], label: string): string | undefined => rows.find
 
 import { LIFE_PER_SECOND, PROCESS_LIFE, lifeBound } from './ideas.ts'
 import { TEXTBOOK_THEOREMS } from './textbook-theorems.ts'
-import { bindingFor, closedOf } from './expressions.ts'
+import { bindingFor, closedOf, kernelBinding } from './expressions.ts'
+import { THEOREMS } from './theorems-index.ts'
 import { TOOLBOXES, call } from './mcp.ts'
 import { hash as e2eHash } from './e2e.ts'
 import { CLAY_RELATIONS } from './clay-statements.ts'
@@ -567,6 +568,14 @@ export const EXAMPLES: Example[] = [
     expect: (s) => { const p = s.signature; return p && p.algorithm === 'ML-DSA-44' && p.fips === 204 && p.sizes?.publicKey === 1312 && p.sizes?.signature === 2420 && p.publicKey.length === 2 * 1312 && p.signature.length === 2 * 2420 && p.verified === true && p.refusesChanged === true ? null : JSON.stringify(p ?? s) } },
 ]
 
+// A kernel theorem no example above names and the textbook does not carry is evaluated as a textbook theorem is, wherever every name its statement
+// uses is computed here (kernelBinding): the first values that make each premise and the conclusion hold are its example, made by rule and replayed
+// like any other. A statement over a Lean definition, a type other than the naturals and booleans, or a quantifier inside stays unclaimed.
+EXAMPLES.push(...((named) => THEOREMS.flatMap((t): Example[] => { if (named.has(t.key)) return []; const values = kernelBinding(t.key); return values ? [{ id: `kernel-evaluated-${t.key.replace(/[._]/g, '-')}`, tool: 'textbook', theorem: t.key, made: true, arguments: { evaluate: { theorem: t.key, values } }, shows: proseFill(PROSE.quantumProcessingExamples_showsEvaluated, t.key),
+  expect: (s) => (s.evaluable === true && s.holds === true && s.premises === true ? null : JSON.stringify({ evaluable: s.evaluable, holds: s.holds, premises: s.premises })) }] : [] }))(((ids) => new Set([...EXAMPLES.flatMap((e) => (e.theorem ? [e.theorem] : [])), ...TEXTBOOK_THEOREMS.map((t) => t.key), ...THEOREMS.filter((t) => (/\(examples: ([^)]*)\)/.exec((t as { doc?: string }).doc ?? '')?.[1] ?? '').split(',').some((id) => ids.has(id.trim()))).map((t) => t.key)]))(new Set(EXAMPLES.map((e) => e.id)))))
+
+// proven: htmlWithDevice pageWithDevice deviceVerifies — every copy of the one text with the committed device receipt below its mark, verified by its own seal, exercised by src/quantum/processing/release-receipt_test.ts and node scripts/doiRecord.ts --check.
+// proven: kernelStatement evaluateKernel kernelBinding — the kernel theorems the textbook door evaluates and the claims made from them, exercised by src/quantum/processing/kernel-claims_test.ts; proofLines leanPath — the proof line of each theorem the moduleTex and disclosure doors link, exercised by src/quantum/processing/module-tex_test.ts and disclosure_test.ts.
 // proven: serveMcp GET POST OPTIONS — the package's own Streamable-HTTP transport (serveMcp) and the /api/mcp route handlers (GET, POST, OPTIONS) that delegate to it, exercised by src/quantum/net/mcp-http_test.ts: it frames tools/list, answers a notification with 202, and prices a paid tools/call by the qubits it uses below the fused quantum market floor.
 // proven (slice lies-merges): entryText (mongo-insert-canonical), typeOk (moved, one check for the site's examples, payload-site, and the qpu block's save), tree and witness (e2e-tree-outvoted) — the one canonical addressing and the tree's recomputed copy.
 // proven: the crypto primitives backing seal/attest/verify — merkleLeafHash merkleRoot merkleProof merkleVerify pbkdf2Sha256 hkdfExtract hkdfExpand sha3_256 sha3_512 shake128 shake256 aes256gcmEncrypt aes256gcmDecrypt x25519 chacha20poly1305Encrypt sha1 md5 rsaModPow — and the unit address resolver — QPU_ORIGIN QPU_APEX QPU_LEAN RESERVED_SEGMENTS tenantAddress isUnscoped — are exercised by the seal, attest, verify and payload examples and their theorems.

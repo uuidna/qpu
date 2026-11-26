@@ -1,0 +1,24 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Hybrid}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Hybrid.lean}
+
+\paragraph{\texttt{hybrid}}
+\[ \mathrm{coins} + \mathrm{seed} = n \land \mathrm{rays} + \mathrm{seed} = \mathrm{mint}\ n \land \mathrm{coins} = \mathrm{seed} + \mathrm{seed} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Hybrid.lean\#L14}
+
+\paragraph{\texttt{hybrid\_cost}}
+\[ \mathrm{coins} + \mathrm{seed} = n \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Hybrid.lean\#L12}
+
+\paragraph{\texttt{hybrid\_speed}}
+\[ \mathrm{rays} + \mathrm{seed} = \mathrm{mint}\ n \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Hybrid.lean\#L13}
+\end{document}

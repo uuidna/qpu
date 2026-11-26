@@ -1,0 +1,64 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Program}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean}
+
+\paragraph{\texttt{close\_returns}}
+\[ ((\mathrm{List.range}\ 14)\mathrm{.all}\ \lambda \ i \mapsto \mathrm{have}\ p := \mathrm{ofFolder}\ i (\mathrm{folderHandle}\ i); \mathrm{rotN}\ 10\ \mathrm{p.program} = \mathrm{schema} \land (\mathrm{step}\ p)\mathrm{.handle} = \mathrm{folderHandle}\ i \land (\mathrm{step}\ p)\mathrm{.hz} = \mathrm{waveHz} \land (\mathrm{step}\ p)\mathrm{.family} = i \land (\mathrm{step}\ p)\mathrm{.next} = \mathrm{closedMark} \land \mathrm{p.program} = \mathrm{schema}) = \mathrm{true} \land \mathrm{rotN}\ 1\ \mathrm{schema} = [1, 1, 1, 1, 0, 2, 2, 3, 1, 0] \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean\#L126}
+
+\paragraph{\texttt{cross\_lean}}
+\[ \mathrm{witnessSquares} = 6 \land \mathrm{witnessTriangles} = 8 \land \mathrm{witnessFaces} = 14 \land ((\mathrm{List.range}\ 6)\mathrm{.all}\ \lambda \ k \mapsto \mathrm{rotN} (10 - (k + 1)) (\mathrm{rotN} (k + 1) \mathrm{schema}) = \mathrm{schema}) = \mathrm{true} \land ((\mathrm{List.range}\ 16)\mathrm{.all}\ \lambda \ d \mapsto 15 - (15 - d) = d) = \mathrm{true} \land ((\mathrm{List.range}\ 14)\mathrm{.all}\ \lambda \ i \mapsto \mathrm{have}\ p := \mathrm{ofFolder}\ i (\mathrm{folderHandle}\ i); \mathrm{p.next} = \mathrm{closedMark} \land \mathrm{p.hz} = \mathrm{waveHz} \land \mathrm{p.handle} = \mathrm{folderHandle}\ i) = \mathrm{true} \land ((\mathrm{List.range}\ 19)\mathrm{.all}\ \lambda \ i \mapsto \mathrm{have}\ p := \mathrm{ofFamily}\ i (\mathrm{programHandle}\ i); \mathrm{p.hz} = \mathrm{waveHz} \land (\mathrm{step}\ p)\mathrm{.handle} = \mathrm{programHandle}\ i \land \mathrm{rotN}\ 10\ \mathrm{p.program} = \mathrm{schema}) = \mathrm{true} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean\#L137}
+
+\paragraph{\texttt{families\_closed}}
+\[ \mathrm{closedMark} = 0 \land \mathrm{folderNames.length} = 14 \land \mathrm{folderNames}[0]? = \mathrm{some} "\mathrm{app}" \land \mathrm{folderNames}[13]? = \mathrm{some} "\mathrm{qpu}-\mathrm{migrations}" \land ((\mathrm{List.range}\ 19)\mathrm{.all}\ \lambda \ i \mapsto \mathrm{decide} ((\mathrm{familyNext}\ i = \mathrm{closedMark}) = \mathrm{false})) = \mathrm{true} \land \mathrm{List.map}\ \mathrm{folderHandle} (\mathrm{List.range}\ 14) = [850396814, 851445390, 852493966, 853542542, 854591118, 855639694, 856688270, 857736846, 858785422, 859833998, 860882574, 861931150, 862979726, 864028302] \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean\#L115}
+
+\paragraph{\texttt{program\_handles}}
+\[ \mathrm{List.map}\ \mathrm{programHandle} (\mathrm{List.range}\ 19) = [850400910, 851453582, 852506254, 853558926, 854611598, 855664270, 856716942, 857769614, 858822286, 859874958, 860927630, 861980302, 863032974, 864085646, 865138318, 866190990, 867243662, 868296334, 1137702542] \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean\#L95}
+
+\paragraph{\texttt{program\_returns}}
+\[ \mathrm{rotN}\ 10\ \mathrm{schema} = \mathrm{schema} \land \mathrm{schema.length} = 10 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean\#L48}
+
+\paragraph{\texttt{program\_rotates}}
+\[ \mathrm{rotN}\ 1\ \mathrm{schema} = [1, 1, 1, 1, 0, 2, 2, 3, 1, 0] \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean\#L46}
+
+\paragraph{\texttt{step\_keeps}}
+\[ \forall (p : \mathrm{UuidProgram}), (\mathrm{step}\ p)\mathrm{.handle} = \mathrm{p.handle} \land (\mathrm{step}\ p)\mathrm{.family} = \mathrm{p.family} \land (\mathrm{step}\ p)\mathrm{.hz} = \mathrm{p.hz} \land (\mathrm{step}\ p)\mathrm{.next} = \mathrm{p.next} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean\#L42}
+
+\paragraph{\texttt{uuid\_cross}}
+\[ 2 = 2 \land 6 = 6 \land 7 + 2 = 9 \land \mathrm{witnessFaces} = 14 \land 256 / 2 = 128 \land 10 ^{38} < 2 ^{128} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean\#L100}
+
+\paragraph{\texttt{uuid\_drift}}
+\[ \mathrm{waveHz.gcd}\ \mathrm{pitchHz} = 8 \land \mathrm{waveHz} / 8 = 54 \land \mathrm{pitchHz} / 8 = 55 \land \mathrm{waveHz} \cdot 55 = \mathrm{pitchHz} \cdot 54 \land \mathrm{pitchHz} - \mathrm{waveHz} = 8 \land 55 - 54 = 1 \land 34 \cdot 54 = 1836 \land 34 \cdot 55 = 1870 \land 34 \cdot \mathrm{waveHz} = 8 \cdot 1836 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean\#L67}
+
+\paragraph{\texttt{uuid\_families}}
+\[ \mathrm{familyNames.length} = 19 \land \mathrm{familyNames}[0]? = \mathrm{some} "\mathrm{Annealing}" \land \mathrm{familyNames}[18]? = \mathrm{some} "\mathrm{Surfacecode}" \land ((\mathrm{List.range}\ 18)\mathrm{.all}\ \lambda \ i \mapsto \mathrm{familyNext}\ i = i + 1) = \mathrm{true} \land \mathrm{familyNext}\ 18 = 65535 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean\#L50}
+
+\paragraph{\texttt{uuid\_program\_all}}
+\[ \mathrm{schema.length} = 10 \land \mathrm{rotN}\ 10\ \mathrm{schema} = \mathrm{schema} \land \mathrm{familyNames.length} = 19 \land \mathrm{familyNext}\ 0 = 1 \land \mathrm{familyNext}\ 18 = 65535 \land \mathrm{pitchHz} - \mathrm{waveHz} = 8 \land 7 + 2 = 9 \land 256 / 2 = 128 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean\#L148}
+
+\paragraph{\texttt{uuid\_programs}}
+\[ ((\mathrm{List.range}\ 19)\mathrm{.all}\ \lambda \ i \mapsto \mathrm{have}\ p := \mathrm{ofFamily}\ i\ 0; \mathrm{rotN}\ 10\ \mathrm{p.program} = \mathrm{p.program} \land (\mathrm{step}\ p)\mathrm{.handle} = \mathrm{p.handle} \land (\mathrm{step}\ p)\mathrm{.hz} = 432 \land (\mathrm{step}\ p)\mathrm{.family} = i \land (\mathrm{step}\ p)\mathrm{.next} = \mathrm{familyNext}\ i \land \mathrm{p.program} = \mathrm{schema}) = \mathrm{true} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean\#L57}
+
+\paragraph{\texttt{witnesses\_partition}}
+\[ \mathrm{witnessSquares} = 6 \land \mathrm{witnessTriangles} = 8 \land \mathrm{witnessFaces} = 14 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Program.lean\#L93}
+\end{document}

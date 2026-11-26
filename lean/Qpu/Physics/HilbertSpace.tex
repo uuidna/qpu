@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Physics.HilbertSpace}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/HilbertSpace.lean}
+
+\paragraph{\texttt{HilbertSpace.GI.add\_im}}
+\[ \forall (x\ y : \mathrm{HilbertSpace.GI}), (x + y)\mathrm{.im} = \mathrm{x.im} + \mathrm{y.im} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/HilbertSpace.lean\#L31}
+
+\paragraph{\texttt{HilbertSpace.GI.add\_re}}
+the real and imaginary parts of a sum, a product and the literals 0 and 1
+\[ \forall (x\ y : \mathrm{HilbertSpace.GI}), (x + y)\mathrm{.re} = \mathrm{x.re} + \mathrm{y.re} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/HilbertSpace.lean\#L30}
+
+\paragraph{\texttt{HilbertSpace.GI.mul\_re}}
+\[ \forall (x\ y : \mathrm{HilbertSpace.GI}), (x \cdot y)\mathrm{.re} = \mathrm{x.re} \cdot \mathrm{y.re} - \mathrm{x.im} \cdot \mathrm{y.im} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/HilbertSpace.lean\#L32}
+
+\paragraph{\texttt{HilbertSpace.GI.one\_im}}
+\[ \mathrm{HilbertSpace.GI.im}\ 1 = 0 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/HilbertSpace.lean\#L36}
+
+\paragraph{\texttt{HilbertSpace.GI.one\_re}}
+\[ \mathrm{HilbertSpace.GI.re}\ 1 = 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/HilbertSpace.lean\#L34}
+
+\paragraph{\texttt{HilbertSpace.GI.zero\_im}}
+\[ \mathrm{HilbertSpace.GI.im}\ 0 = 0 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/HilbertSpace.lean\#L35}
+
+\paragraph{\texttt{HilbertSpace.GI.zero\_re}}
+\[ \mathrm{HilbertSpace.GI.re}\ 0 = 0 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/HilbertSpace.lean\#L33}
+\end{document}

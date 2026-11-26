@@ -1,0 +1,28 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Mint}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Mint.lean}
+
+\paragraph{\texttt{mintOf\_add}}
+\[ \forall (a\ b : \mathbb{N}), \mathrm{mint} (a + b) = \mathrm{mint}\ a \cdot \mathrm{mint}\ b \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Mint.lean\#L14}
+
+\paragraph{\texttt{mintOf\_succ}}
+\[ \forall (k : \mathbb{N}), \mathrm{mint} (k + 1) = \mathrm{mint}\ k + \mathrm{mint}\ k \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Mint.lean\#L13}
+
+\paragraph{\texttt{mintOf\_zero}}
+\[ \mathrm{mint}\ 0 = 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Mint.lean\#L12}
+
+\paragraph{\texttt{multiply}}
+\[ \forall (a\ b : \mathbb{N}), \mathrm{mint} (a + b) = \mathrm{mint}\ a \cdot \mathrm{mint}\ b \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Mint.lean\#L15}
+\end{document}

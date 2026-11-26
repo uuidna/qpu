@@ -1,0 +1,52 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Verify.Cost}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Cost.lean}
+
+\paragraph{\texttt{Qpu.Verify.Cost.digest\_collision\_at\_category\_two}}
+Its collision strength sits at the category-2 floor (128-bit classical birthday).
+\[ \mathrm{Qpu.Verify.Cost.collision}\ 256 = \mathrm{Qpu.Verify.Cost.category2} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Cost.lean\#L38}
+
+\paragraph{\texttt{Qpu.Verify.Cost.digest\_preimage\_at\_category\_five}}
+SHA-256 preimage strength sits at the category-5 floor (256-bit classical).
+\[ \mathrm{Qpu.Verify.Cost.preimage}\ 256 = \mathrm{Qpu.Verify.Cost.category5} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Cost.lean\#L35}
+
+\paragraph{\texttt{Qpu.Verify.Cost.forging\_costs\_more\_than\_verifying}}
+Forging costs more than verifying, for any nonempty width and seam count: the asymmetry that makes receipts cheap to check and expensive to fake.
+\[ \forall (\mathrm{bits}\ \mathrm{seams} : \mathbb{N}), \mathrm{Qpu.Verify.Cost.verify} \le \mathrm{Qpu.Verify.Cost.chained} (\mathrm{Qpu.Verify.Cost.preimage} (\mathrm{bits} + 1)) (\mathrm{seams} + 1) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Cost.lean\#L60}
+
+\paragraph{\texttt{Qpu.Verify.Cost.sha224\_collision\_below\_category\_one}}
+SHA-224 is the near miss: 112-bit collision strength is below category 1, the level NIST deprecates after 2030.
+\[ \mathrm{Qpu.Verify.Cost.collision}\ 224 < \mathrm{Qpu.Verify.Cost.category1} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Cost.lean\#L52}
+
+\paragraph{\texttt{Qpu.Verify.Cost.the\_anchor\_holds}}
+Control: a full-width digest chained once does clear category 2 — the refusals above are not vacuous.
+\[ \mathrm{Qpu.Verify.Cost.category2} \le \mathrm{Qpu.Verify.Cost.chained} (\mathrm{Qpu.Verify.Cost.collision}\ 256) 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Cost.lean\#L56}
+
+\paragraph{\texttt{Qpu.Verify.Cost.three\_uuid\_seams\_clear\_category\_one}}
+Three clear the floor — that is what multi-seam must mean to be worth saying.
+\[ \mathrm{Qpu.Verify.Cost.category1} \le \mathrm{Qpu.Verify.Cost.chained} (\mathrm{Qpu.Verify.Cost.collision}\ 122) 3 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Cost.lean\#L48}
+
+\paragraph{\texttt{Qpu.Verify.Cost.two\_uuid\_seams\_are\_still\_short}}
+Even two UUID seams stay short: 61 + 61 = 122 < 128.
+\[ \mathrm{Qpu.Verify.Cost.chained} (\mathrm{Qpu.Verify.Cost.collision}\ 122) 2 < \mathrm{Qpu.Verify.Cost.category1} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Cost.lean\#L45}
+
+\paragraph{\texttt{Qpu.Verify.Cost.uuid\_handle\_collides\_below\_category\_one}}
+A 122-free-bit UUID handle collides at 2⁶¹ — below category 1. A bare address is not a security boundary.
+\[ \mathrm{Qpu.Verify.Cost.collision}\ 122 < \mathrm{Qpu.Verify.Cost.category1} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Cost.lean\#L42}
+\end{document}

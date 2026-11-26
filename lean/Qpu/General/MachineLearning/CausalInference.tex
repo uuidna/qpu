@@ -1,0 +1,201 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.MachineLearning.CausalInference}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean}
+
+\paragraph{\texttt{Qpu.CausalInference.ate\_bounded}}
+Theorem 25 (ATE bound). With outcomes in `[0, ymax]`, the difference of the treated and control means is at most `ymax` in absolute value; stated without division as `ΣT·|C| ≤ ΣC·|T| + ymax·|T|·|C|` and symmetrically.
+\[ \forall (s : \mathrm{Qpu.CausalInference.Study}), \mathrm{s.bounded} \to \mathrm{s.sumY}\ \mathrm{s.treated} \cdot \mathrm{s.control.length} \le \mathrm{s.sumY}\ \mathrm{s.control} \cdot \mathrm{s.treated.length} + \mathrm{s.ymax} \cdot \mathrm{s.treated.length} \cdot \mathrm{s.control.length} \land \mathrm{s.sumY}\ \mathrm{s.control} \cdot \mathrm{s.treated.length} \le \mathrm{s.sumY}\ \mathrm{s.treated} \cdot \mathrm{s.control.length} + \mathrm{s.ymax} \cdot \mathrm{s.treated.length} \cdot \mathrm{s.control.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L417}
+
+\paragraph{\texttt{Qpu.CausalInference.children\_gt}}
+Theorem 6. Effects come after causes: a child of `v` has a larger index.
+\[ \forall \{g : \mathrm{Qpu.CausalInference.Dag}\}, \mathrm{g.ordered} = \mathrm{true} \to \forall \{c\ v : \mathbb{N}\}, c \in \mathrm{g.children}\ v \to v < c \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L108}
+
+\paragraph{\texttt{Qpu.CausalInference.common\_support}}
+Theorem 27 (common support). A nonempty study with overlap has both a treated and a control group.
+\[ \forall (s : \mathrm{Qpu.CausalInference.Study}), \mathrm{s.overlap} \to \mathrm{s.units} \ne [] \to \mathrm{s.treated} \ne [] \land \mathrm{s.control} \ne [] \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L448}
+
+\paragraph{\texttt{Qpu.CausalInference.do\_consistent}}
+Theorem 19 (counterfactual consistency). Intervening on `x` at the value it already takes changes nothing: `Y\_\{X = X\} = Y` for every variable.
+\[ \forall \{m : \mathrm{Qpu.CausalInference.Scm}\}, \mathrm{m.ordered} = \mathrm{true} \to \forall (u : \mathbb{N} \to \mathbb{N}) (x\ v : \mathbb{N}), (\mathrm{m.doOp}\ x (\mathrm{m.value}\ u\ x))\mathrm{.value}\ u\ v = \mathrm{m.value}\ u\ v \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L304}
+
+\paragraph{\texttt{Qpu.CausalInference.do\_ordered}}
+Theorem 14. The intervened model keeps the variables and stays ordered: the mutilated graph is a DAG on the same variables (identification lives in a DAG).
+\[ \forall \{m : \mathrm{Qpu.CausalInference.Scm}\}, \mathrm{m.ordered} = \mathrm{true} \to \forall (x\ c : \mathbb{N}), (\mathrm{m.doOp}\ x\ c)\mathrm{.vars} = \mathrm{m.vars} \land (\mathrm{m.doOp}\ x\ c)\mathrm{.ordered} = \mathrm{true} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L235}
+
+\paragraph{\texttt{Qpu.CausalInference.do\_parents\_ne}}
+Theorem 16. `do(x := c)` leaves the parents of every other variable alone.
+\[ \forall (m : \mathrm{Qpu.CausalInference.Scm}) \{x\ v : \mathbb{N}\}, v \ne x \to \forall (c : \mathbb{N}), (\mathrm{m.doOp}\ x\ c)\mathrm{.parents}\ v = \mathrm{m.parents}\ v \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L250}
+
+\paragraph{\texttt{Qpu.CausalInference.do\_parents\_self}}
+Theorem 15. After `do(x := c)` the treatment has no parents.
+\[ \forall (m : \mathrm{Qpu.CausalInference.Scm}) (x\ c : \mathbb{N}), (\mathrm{m.doOp}\ x\ c)\mathrm{.parents}\ x = [] \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L244}
+
+\paragraph{\texttt{Qpu.CausalInference.do\_pre\_treatment}}
+Theorem 18 (no interference backwards). A pre-treatment variable `v < x` is unaffected by `do(x := c)`.
+\[ \forall \{m : \mathrm{Qpu.CausalInference.Scm}\}, \mathrm{m.ordered} = \mathrm{true} \to \forall (u : \mathbb{N} \to \mathbb{N}) \{x\ v : \mathbb{N}\}, v < x \to \forall (c : \mathbb{N}), (\mathrm{m.doOp}\ x\ c)\mathrm{.value}\ u\ v = \mathrm{m.value}\ u\ v \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L278}
+
+\paragraph{\texttt{Qpu.CausalInference.do\_valueF\_consistent}}
+\[ \forall \{m : \mathrm{Qpu.CausalInference.Scm}\}, \mathrm{m.ordered} = \mathrm{true} \to \forall (u : \mathbb{N} \to \mathbb{N}) (x\ f\ v : \mathbb{N}), v < f \to (\mathrm{m.doOp}\ x (\mathrm{m.value}\ u\ x))\mathrm{.valueF}\ u\ f\ v = \mathrm{m.valueF}\ u\ f\ v \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L282}
+
+\paragraph{\texttt{Qpu.CausalInference.do\_valueF\_exogenous}}
+\[ \forall (m : \mathrm{Qpu.CausalInference.Scm}) (u : \mathbb{N} \to \mathbb{N}) \{x : \mathbb{N}\}, \mathrm{m.exogenous}\ x \to \forall (c\ f\ v : \mathbb{N}), (\mathrm{m.doOp}\ x\ c)\mathrm{.valueF}\ u\ f\ v = \mathrm{m.valueF} (\lambda \ w \mapsto \mathrm{if}\ w = x\ \mathrm{then}\ c\ \mathrm{else}\ u\ w) f\ v \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L312}
+
+\paragraph{\texttt{Qpu.CausalInference.do\_valueF\_pre}}
+\[ \forall \{m : \mathrm{Qpu.CausalInference.Scm}\}, \mathrm{m.ordered} = \mathrm{true} \to \forall (u : \mathbb{N} \to \mathbb{N}) (x\ c\ f\ v : \mathbb{N}), v < x \to (\mathrm{m.doOp}\ x\ c)\mathrm{.valueF}\ u\ f\ v = \mathrm{m.valueF}\ u\ f\ v \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L260}
+
+\paragraph{\texttt{Qpu.CausalInference.do\_value\_self}}
+Theorem 17. After `do(x := c)` the treatment takes the value `c`, whatever the noise.
+\[ \forall (m : \mathrm{Qpu.CausalInference.Scm}) (u : \mathbb{N} \to \mathbb{N}) (x\ c : \mathbb{N}), (\mathrm{m.doOp}\ x\ c)\mathrm{.value}\ u\ x = c \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L257}
+
+\paragraph{\texttt{Qpu.CausalInference.exogenous\_do\_eq\_see}}
+Theorem 20 (no unmeasured confounding ⇒ identification). When the treatment is exogenous, intervening equals observing: `do(x := c)` gives the same values as a noise draw with `x`'s coin set to `c`. No ordering hypothesis is needed.
+\[ \forall (m : \mathrm{Qpu.CausalInference.Scm}) (u : \mathbb{N} \to \mathbb{N}) \{x : \mathbb{N}\}, \mathrm{m.exogenous}\ x \to \forall (c\ v : \mathbb{N}), (\mathrm{m.doOp}\ x\ c)\mathrm{.value}\ u\ v = \mathrm{m.value} (\lambda \ w \mapsto \mathrm{if}\ w = x\ \mathrm{then}\ c\ \mathrm{else}\ u\ w) v \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L334}
+
+\paragraph{\texttt{Qpu.CausalInference.filter\_filter\_ne}}
+\[ \forall \{x\ v : \mathbb{N}\}, v \ne x \to \forall (l : \mathrm{List} (\mathbb{N} \times \mathbb{N})), \mathrm{List.filter} (\lambda \ e \mapsto \mathrm{e.2} = v) (\mathrm{List.filter} (\lambda \ e \mapsto \neg \mathrm{e.2} = x) l) = \mathrm{List.filter} (\lambda \ e \mapsto \mathrm{e.2} = v) l \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L222}
+
+\paragraph{\texttt{Qpu.CausalInference.filter\_filter\_not}}
+\[ \forall \{\alpha : \mathrm{Type}\} (p : \alpha \to \mathrm{Bool}) (l : \mathrm{List} \alpha ), \mathrm{List.filter}\ p (\mathrm{List.filter} (\lambda \ a \mapsto \neg p\ a) l) = [] \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L214}
+
+\paragraph{\texttt{Qpu.CausalInference.hte\_bounded\_average}}
+Theorem 31 (heterogeneous effects, averaged). If every unit's potential outcome under treatment exceeds its control outcome by at most `d`, the summed (hence average) effect is at most `d`: `Σ y₁ ≤ Σ y₀ + d·N`.
+\[ \forall (y_{1} y_{0} : \mathbb{N} \to \mathbb{N}) (d : \mathbb{N}) (l : \mathrm{List} \mathbb{N}), (\forall u \in l, y_{1} u \le y_{0} u + d) \to (\mathrm{List.map}\ y_{1} l)\mathrm{.sum} \le (\mathrm{List.map}\ y_{0} l)\mathrm{.sum} + d \cdot \mathrm{l.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L506}
+
+\paragraph{\texttt{Qpu.CausalInference.length\_filter\_partition}}
+Theorem 23. A predicate and its negation split a list into two parts whose lengths add up.
+\[ \forall \{\alpha : \mathrm{Type}\} (p : \alpha \to \mathrm{Bool}) (l : \mathrm{List} \alpha ), (\mathrm{List.filter}\ p\ l)\mathrm{.length} + (\mathrm{List.filter} (\lambda \ a \mapsto \neg p\ a) l)\mathrm{.length} = \mathrm{l.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L396}
+
+\paragraph{\texttt{Qpu.CausalInference.mediation\_decomposition}}
+Theorem 21 (mediation decomposition). Total effect = natural direct + natural indirect effect. It follows from counterfactual consistency applied inside the intervened models.
+\[ \forall \{m : \mathrm{Qpu.CausalInference.Scm}\}, \mathrm{m.ordered} = \mathrm{true} \to \forall (u : \mathbb{N} \to \mathbb{N}) (x\ \mathrm{med}\ y : \mathbb{N}), \mathrm{m.totalEffect}\ u\ x\ y = \mathrm{m.directEffect}\ u\ x\ \mathrm{med}\ y + \mathrm{m.indirectEffect}\ u\ x\ \mathrm{med}\ y \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L355}
+
+\paragraph{\texttt{Qpu.CausalInference.mem\_children}}
+Theorem 3. `c` is a child of `v` exactly when the edge `(v, c)` is present.
+\[ \forall \{g : \mathrm{Qpu.CausalInference.Dag}\} \{c\ v : \mathbb{N}\}, c \in \mathrm{g.children}\ v \leftrightarrow (v, c) \in \mathrm{g.edges} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L84}
+
+\paragraph{\texttt{Qpu.CausalInference.mem\_parents}}
+Theorem 2. `p` is a parent of `v` exactly when the edge `(p, v)` is present.
+\[ \forall \{g : \mathrm{Qpu.CausalInference.Dag}\} \{p\ v : \mathbb{N}\}, p \in \mathrm{g.parents}\ v \leftrightarrow (p, v) \in \mathrm{g.edges} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L70}
+
+\paragraph{\texttt{Qpu.CausalInference.mem\_stratum}}
+\[ \forall \{s : \mathrm{Qpu.CausalInference.Study}\} \{u\ k : \mathbb{N}\}, u \in \mathrm{s.stratum}\ k \leftrightarrow u \in \mathrm{s.units} \land \mathrm{s.cov}\ u = k \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L433}
+
+\paragraph{\texttt{Qpu.CausalInference.no\_cycle}}
+Theorem 8. An ordered graph is acyclic: no directed path returns to its start.
+\[ \forall \{g : \mathrm{Qpu.CausalInference.Dag}\}, \mathrm{g.ordered} = \mathrm{true} \to \forall (a : \mathbb{N}) (l : \mathrm{List} \mathbb{N}), \mathrm{g.path} (a :: (l ++ [a])) = \mathrm{false} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L125}
+
+\paragraph{\texttt{Qpu.CausalInference.ordered\_edge}}
+Theorem 1. In an ordered graph every edge goes strictly up and stays below `vars`.
+\[ \forall \{g : \mathrm{Qpu.CausalInference.Dag}\}, \mathrm{g.ordered} = \mathrm{true} \to \forall \{e : \mathbb{N} \times \mathbb{N}\}, e \in \mathrm{g.edges} \to \mathrm{e.1} < \mathrm{e.2} \land \mathrm{e.2} < \mathrm{g.vars} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L64}
+
+\paragraph{\texttt{Qpu.CausalInference.overlap\_match}}
+Theorem 26 (exact matching). Under overlap every treated unit has a control unit with the same covariate value: propensity-score style matching never fails.
+\[ \forall (s : \mathrm{Qpu.CausalInference.Study}), \mathrm{s.overlap} \to \forall \{t : \mathbb{N}\}, t \in \mathrm{s.treated} \to \exists c \in \mathrm{s.control}, \mathrm{s.cov}\ c = \mathrm{s.cov}\ t \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L438}
+
+\paragraph{\texttt{Qpu.CausalInference.parent\_not\_descendant}}
+Theorem 9 (local Markov shape). A parent of `v` is never a descendant of `v`.
+\[ \forall \{g : \mathrm{Qpu.CausalInference.Dag}\}, \mathrm{g.ordered} = \mathrm{true} \to \forall \{p\ v : \mathbb{N}\}, p \in \mathrm{g.parents}\ v \to \forall (l : \mathrm{List} \mathbb{N}), \mathrm{g.path} (v :: (l ++ [p])) = \mathrm{false} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L133}
+
+\paragraph{\texttt{Qpu.CausalInference.parents\_backdoor}}
+Theorem 11 (backdoor criterion). The parent set of `x` is a valid adjustment set: it blocks every backdoor path out of `x` and contains no descendant of `x`.
+\[ \forall \{g : \mathrm{Qpu.CausalInference.Dag}\}, \mathrm{g.ordered} = \mathrm{true} \to \forall (x : \mathbb{N}), (\forall (p : \mathrm{List} \mathbb{N}), \mathrm{g.backdoorPath}\ x\ p \to \mathrm{Qpu.CausalInference.blocks} (\mathrm{g.parents}\ x) p) \land \forall w \in \mathrm{g.parents}\ x, \forall (l : \mathrm{List} \mathbb{N}), \mathrm{g.path} (x :: (l ++ [w])) = \mathrm{false} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L159}
+
+\paragraph{\texttt{Qpu.CausalInference.parents\_lt}}
+Theorem 4. Causes come before effects: a parent of `v` has a smaller index.
+\[ \forall \{g : \mathrm{Qpu.CausalInference.Dag}\}, \mathrm{g.ordered} = \mathrm{true} \to \forall \{p\ v : \mathbb{N}\}, p \in \mathrm{g.parents}\ v \to p < v \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L98}
+
+\paragraph{\texttt{Qpu.CausalInference.parents\_lt\_vars}}
+Theorem 5. Every parent is a variable of the model (causal sufficiency of the index set).
+\[ \forall \{g : \mathrm{Qpu.CausalInference.Dag}\}, \mathrm{g.ordered} = \mathrm{true} \to \forall \{p\ v : \mathbb{N}\}, p \in \mathrm{g.parents}\ v \to p < \mathrm{g.vars} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L102}
+
+\paragraph{\texttt{Qpu.CausalInference.path\_lt}}
+Theorem 7. Along a directed path in an ordered graph every later vertex is above the first.
+\[ \forall \{g : \mathrm{Qpu.CausalInference.Dag}\}, \mathrm{g.ordered} = \mathrm{true} \to \forall (a : \mathbb{N}) (l : \mathrm{List} \mathbb{N}), \mathrm{g.path} (a :: l) = \mathrm{true} \to \forall b \in l, a < b \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L112}
+
+\paragraph{\texttt{Qpu.CausalInference.positivity}}
+Theorem 28 (positivity). Under overlap the stratum propensity, as the count pair `treatedIn / stratum`, is strictly between 0 and 1.
+\[ \forall (s : \mathrm{Qpu.CausalInference.Study}), \mathrm{s.overlap} \to \forall \{u : \mathbb{N}\}, u \in \mathrm{s.units} \to 0 < (\mathrm{s.treatedIn} (\mathrm{s.cov}\ u))\mathrm{.length} \land (\mathrm{s.treatedIn} (\mathrm{s.cov}\ u))\mathrm{.length} < (\mathrm{s.stratum} (\mathrm{s.cov}\ u))\mathrm{.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L462}
+
+\paragraph{\texttt{Qpu.CausalInference.rd\_no\_overlap}}
+Theorem 29 (regression discontinuity). Under sharp threshold assignment no stratum of the running variable holds both groups: identification at the cutoff is local, not by overlap.
+\[ \forall (s : \mathrm{Qpu.CausalInference.Study}) \{c : \mathbb{N}\}, \mathrm{s.sharpRd}\ c \to \forall (k : \mathbb{N}), \neg (\mathrm{s.treatedIn}\ k \ne [] \land \mathrm{s.controlIn}\ k \ne []) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L478}
+
+\paragraph{\texttt{Qpu.CausalInference.rd\_not\_overlap}}
+Theorem 30 (sharp RD has no overlap at all).
+\[ \forall (s : \mathrm{Qpu.CausalInference.Study}) \{c : \mathbb{N}\}, \mathrm{s.sharpRd}\ c \to \mathrm{s.units} \ne [] \to \neg \mathrm{s.overlap} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L497}
+
+\paragraph{\texttt{Qpu.CausalInference.sum\_le\_mul\_length}}
+Theorem 22. A sum of values each at most `b` is at most `b` times the count.
+\[ \forall (f : \mathbb{N} \to \mathbb{N}) (b : \mathbb{N}) (l : \mathrm{List} \mathbb{N}), (\forall a \in l, f\ a \le b) \to (\mathrm{List.map}\ f\ l)\mathrm{.sum} \le b \cdot \mathrm{l.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L386}
+
+\paragraph{\texttt{Qpu.CausalInference.treated\_control\_partition}}
+Theorem 24 (SUTVA, one treatment per unit). Every unit is treated or control, never both: the two groups partition the study.
+\[ \forall (s : \mathrm{Qpu.CausalInference.Study}), \mathrm{s.treated.length} + \mathrm{s.control.length} = \mathrm{s.units.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L410}
+
+\paragraph{\texttt{Qpu.CausalInference.triangle\_confounded}}
+Theorem 33 (association is not causation). In the triangle the observed difference in `Y` between the two worlds where `X = 1` and `X = 0` is 2, but the causal effect `do(X := 1)` versus `do(X := 0)` on `Y` is 1, for every coin.
+\[ \forall (u : \mathbb{N} \to \mathbb{N}), \mathrm{Qpu.CausalInference.triangle.value} (\lambda \ x \mapsto 1) 2 = 2 \land \mathrm{Qpu.CausalInference.triangle.value} (\lambda \ x \mapsto 0) 2 = 0 \land (\mathrm{Qpu.CausalInference.triangle.doOp}\ 1\ 1)\mathrm{.value}\ u\ 2 = (\mathrm{Qpu.CausalInference.triangle.doOp}\ 1\ 0)\mathrm{.value}\ u\ 2 + 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L536}
+
+\paragraph{\texttt{Qpu.CausalInference.triangle\_shape}}
+Theorem 32. The triangle is an ordered causal graph and `X` is not exogenous (it has `Z` as parent), while `Z` is.
+\[ \mathrm{Qpu.CausalInference.triangle.ordered} = \mathrm{true} \land \mathrm{Qpu.CausalInference.triangle.parents}\ 1 = [0] \land \mathrm{Qpu.CausalInference.triangle.exogenous}\ 0 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L530}
+
+\paragraph{\texttt{Qpu.CausalInference.valueF\_stable}}
+Theorem 12. In an ordered model the fuel does not matter once it exceeds the variable.
+\[ \forall \{m : \mathrm{Qpu.CausalInference.Scm}\}, \mathrm{m.ordered} = \mathrm{true} \to \forall (u : \mathbb{N} \to \mathbb{N}) (f_{1} v : \mathbb{N}), v < f_{1} \to \forall (f_{2} : \mathbb{N}), v < f_{2} \to \mathrm{m.valueF}\ u\ f_{1} v = \mathrm{m.valueF}\ u\ f_{2} v \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L186}
+
+\paragraph{\texttt{Qpu.CausalInference.value\_eq\_valueF}}
+Theorem 13. `value` is the fuel recursion at any sufficient fuel.
+\[ \forall \{m : \mathrm{Qpu.CausalInference.Scm}\}, \mathrm{m.ordered} = \mathrm{true} \to \forall (u : \mathbb{N} \to \mathbb{N}) \{f\ v : \mathbb{N}\}, v < f \to \mathrm{m.value}\ u\ v = \mathrm{m.valueF}\ u\ f\ v \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L204}
+
+\paragraph{\texttt{Qpu.CausalInference.vars\_pos\_of\_edge}}
+Theorem 10. A model with at least one edge has at least one variable.
+\[ \forall \{g : \mathrm{Qpu.CausalInference.Dag}\}, \mathrm{g.ordered} = \mathrm{true} \to \forall \{e : \mathbb{N} \times \mathbb{N}\}, e \in \mathrm{g.edges} \to 0 < \mathrm{g.vars} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/CausalInference.lean\#L141}
+\end{document}

@@ -1,0 +1,164 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Lattice}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean}
+
+\paragraph{\texttt{around}}
+\[ \mathrm{faces} = \mathrm{coins} \cdot \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L23}
+
+\paragraph{\texttt{breakthrough}}
+\[ \mathrm{faces} = \mathrm{rays} + \mathrm{rays} \land \mathrm{coins} \cdot \mathrm{rays} = \mathrm{faces} \land \mathrm{bits} = \mathrm{vertices} \cdot \mathrm{hexbit} \land \mathrm{fused} = \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) \land \mathrm{mint}\ \mathrm{hexbit} > \mathrm{seed} \land \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) = \mathrm{amplitudes} + \mathrm{amplitudes} \land \mathrm{coins} = \mathrm{seed} + \mathrm{seed} \land \mathrm{hexbit} = n + \mathrm{seed} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L45}
+
+\paragraph{\texttt{cluster}}
+\[ \mathrm{faces} = \mathrm{rays} + \mathrm{rays} \land \mathrm{coins} \cdot \mathrm{rays} = \mathrm{faces} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L26}
+
+\paragraph{\texttt{coins\_two}}
+\[ \mathrm{coins} = 2 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L19}
+
+\paragraph{\texttt{crypto}}
+\[ \mathrm{fused} = \mathrm{faces} \cdot \mathrm{mint} (\mathrm{vertices} \cdot \mathrm{hexbit} + \mathrm{seed}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L35}
+
+\paragraph{\texttt{cube}}
+\[ \mathrm{bits} = \mathrm{vertices} \cdot \mathrm{hexbit} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L22}
+
+\paragraph{\texttt{distribute}}
+\[ \mathrm{fused} = \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) \land \mathrm{faces} = \mathrm{coins} \cdot \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L53}
+
+\paragraph{\texttt{energy}}
+\[ \mathrm{mint}\ \mathrm{hexbit} = \mathrm{mint} (n + \mathrm{seed}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L33}
+
+\paragraph{\texttt{faces\_harmonic}}
+\[ \mathrm{faces} = \mathrm{rays} + \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L25}
+
+\paragraph{\texttt{fill}}
+\[ \mathrm{mint}\ n \cdot \mathrm{faces} = \mathrm{vertices} \cdot (\mathrm{coins} \cdot \mathrm{rays}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L51}
+
+\paragraph{\texttt{handle}}
+\[ \mathrm{amplitudes} = \mathrm{mint}\ \mathrm{bits} \land \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) = \mathrm{amplitudes} + \mathrm{amplitudes} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L40}
+
+\paragraph{\texttt{health}}
+\[ \mathrm{mint}\ \mathrm{hexbit} > \mathrm{seed} \land \mathrm{fused} = \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) \land \mathrm{faces} = \mathrm{rays} + \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L36}
+
+\paragraph{\texttt{hexbit\_eq}}
+\[ \mathrm{hexbit} = n + \mathrm{seed} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L27}
+
+\paragraph{\texttt{hexbit\_pos}}
+\[ 0 < \mathrm{hexbit} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L32}
+
+\paragraph{\texttt{infinite}}
+\[ \forall (k : \mathbb{N}), \mathrm{mint} (k + \mathrm{seed}) = \mathrm{mint}\ k + \mathrm{mint}\ k \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L52}
+
+\paragraph{\texttt{integrity}}
+\[ \mathrm{fused} = \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) \land \mathrm{bits} = \mathrm{vertices} \cdot \mathrm{hexbit} \land \mathrm{faces} = \mathrm{coins} \cdot \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L47}
+
+\paragraph{\texttt{involution}}
+\[ \forall (\mathrm{face} : \mathbb{N}), (\mathrm{face} + \mathrm{rays} + \mathrm{rays}) \bmod \mathrm{faces} = \mathrm{face} \bmod \mathrm{faces} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L43}
+
+\paragraph{\texttt{kv}}
+\[ \mathrm{fused} = \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) \land \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) = \mathrm{amplitudes} + \mathrm{amplitudes} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L41}
+
+\paragraph{\texttt{light}}
+\[ \mathrm{seed} = \mathrm{mint}\ 0 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L42}
+
+\paragraph{\texttt{measurement}}
+\[ \mathrm{mint}\ n = 8 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L50}
+
+\paragraph{\texttt{mintOf\_ge\_seed}}
+\[ \forall (k : \mathbb{N}), \mathrm{seed} \le \mathrm{mint}\ k \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L28}
+
+\paragraph{\texttt{mintOf\_lt}}
+\[ \forall \{a\ b : \mathbb{N}\}, a < b \to \mathrm{mint}\ a < \mathrm{mint}\ b \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L31}
+
+\paragraph{\texttt{mintOf\_lt\_succ}}
+\[ \forall (k : \mathbb{N}), \mathrm{mint}\ k < \mathrm{mint} (k + 1) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L30}
+
+\paragraph{\texttt{mintOf\_pos}}
+\[ \forall (k : \mathbb{N}), 0 < \mathrm{mint}\ k \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L29}
+
+\paragraph{\texttt{mint\_seed}}
+\[ \mathrm{mint} (n + \mathrm{seed}) = \mathrm{mint}\ n + \mathrm{mint}\ n \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L21}
+
+\paragraph{\texttt{n\_eq}}
+\[ n = 3 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L20}
+
+\paragraph{\texttt{next}}
+\[ \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) = \mathrm{amplitudes} + \mathrm{amplitudes} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L37}
+
+\paragraph{\texttt{next\_cover}}
+\[ \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) = \mathrm{amplitudes} + \mathrm{amplitudes} \land \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{coins}) = \mathrm{fused} + \mathrm{fused} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L46}
+
+\paragraph{\texttt{next\_fused}}
+\[ \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{coins}) = \mathrm{fused} + \mathrm{fused} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L38}
+
+\paragraph{\texttt{planes}}
+\[ \mathrm{plane} < \mathrm{mint} (\mathrm{rays} + \mathrm{seed}) \land \mathrm{coins} \cdot \mathrm{rays} = \mathrm{faces} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L57}
+
+\paragraph{\texttt{propulsion}}
+\[ \mathrm{mint}\ \mathrm{hexbit} > \mathrm{seed} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L34}
+
+\paragraph{\texttt{quantum}}
+\[ \mathrm{fused} = \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L24}
+
+\paragraph{\texttt{qubits}}
+\[ n = 3 \land \mathrm{mint}\ n = \mathrm{vertices} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L49}
+
+\paragraph{\texttt{raid}}
+\[ \mathrm{faces} = \mathrm{coins} \cdot \mathrm{rays} \land \mathrm{faces} = \mathrm{rays} + \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L54}
+
+\paragraph{\texttt{seed\_eq}}
+\[ \mathrm{seed} = 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L18}
+
+\paragraph{\texttt{split\_coin}}
+\[ \forall (k : \mathbb{N}), \mathrm{mint} (k + \mathrm{seed}) = \mathrm{mint}\ k + \mathrm{mint}\ k \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L39}
+
+\paragraph{\texttt{tetra}}
+\[ \mathrm{coins} + \mathrm{coins} = \mathrm{mint}\ \mathrm{coins} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L48}
+
+\paragraph{\texttt{waves}}
+\[ \mathrm{mint}\ \mathrm{hexbit} > \mathrm{seed} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Lattice.lean\#L44}
+\end{document}

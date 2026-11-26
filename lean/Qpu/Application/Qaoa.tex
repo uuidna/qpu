@@ -1,0 +1,52 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Application.Qaoa}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Qaoa.lean}
+
+\paragraph{\texttt{qaoaParams\_succ}}
+Every layer adds exactly coins = 2 parameters, for every p.
+\[ \forall (p : \mathbb{N}), \mathrm{qaoaParams} (p + 1) = \mathrm{qaoaParams}\ p + \mathrm{coins} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Qaoa.lean\#L21}
+
+\paragraph{\texttt{qaoaX\_succ\_layer}}
+One more layer costs q more mixer gates, for every qubit count.
+\[ \forall (p\ q : \mathbb{N}), \mathrm{qaoaX} (p + 1) q = \mathrm{qaoaX}\ p\ q + q \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Qaoa.lean\#L33}
+
+\paragraph{\texttt{qaoaZz\_le\_edges}}
+Denser graphs never cost fewer ZZ gates, for all edge pairs at any depth.
+\[ \forall (p : \mathbb{N}) \{e\ e' : \mathbb{N}\}, e \le e' \to \mathrm{qaoaZz}\ p\ e \le \mathrm{qaoaZz}\ p\ e' \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Qaoa.lean\#L42}
+
+\paragraph{\texttt{qaoaZz\_le\_layers}}
+Deeper circuits never cost fewer ZZ gates, for all layer pairs and edge sets.
+\[ \forall \{p\ p' : \mathbb{N}\}, p \le p' \to \forall (e : \mathbb{N}), \mathrm{qaoaZz}\ p\ e \le \mathrm{qaoaZz}\ p'\ e \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Qaoa.lean\#L37}
+
+\paragraph{\texttt{qaoaZz\_succ\_edge}}
+One more edge costs p more ZZ gates, for every edge count and layer depth.
+\[ \forall (p\ e : \mathbb{N}), \mathrm{qaoaZz}\ p (e + 1) = \mathrm{qaoaZz}\ p\ e + p \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Qaoa.lean\#L29}
+
+\paragraph{\texttt{qaoaZz\_succ\_layer}}
+One more layer costs e more ZZ gates, for every layer count and edge set.
+\[ \forall (p\ e : \mathbb{N}), \mathrm{qaoaZz} (p + 1) e = \mathrm{qaoaZz}\ p\ e + e \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Qaoa.lean\#L25}
+
+\paragraph{\texttt{qaoa\_all}}
+The textbook spot values, decided by the kernel as controls on the general laws.
+\[ \mathrm{qaoaParams}\ 3 = 6 \land \mathrm{qaoaZz}\ 2\ 5 = 10 \land \mathrm{qaoaX}\ 3\ 4 = 12 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Qaoa.lean\#L52}
+
+\paragraph{\texttt{qaoa\_budget\_per\_layer}}
+The budget splits per layer: ZZ cost plus X mixers over p layers is p copies of the single-layer count, for every p, e and q.
+\[ \forall (p\ e\ q : \mathbb{N}), \mathrm{qaoaZz}\ p\ e + \mathrm{qaoaX}\ p\ q = p \cdot (e + q) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Qaoa.lean\#L48}
+\end{document}

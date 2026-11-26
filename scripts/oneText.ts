@@ -138,11 +138,17 @@ const facts = {
 const [deviceItem] = await sealAll([receiptText('hardware', facts)])
 /** The device as a schema.org Product, sealed like every receipt, and its readings. */
 export const hardware = { uuid: deviceItem!.address, sha256: deviceItem!.sha256, facts, jsonLd: deviceJsonLd({ kind: 'hardware', body: facts, address: deviceItem!.address, sha256: deviceItem!.sha256, site: SITE }) }
-const hardwareBlocks = blocksOf(hardware.jsonLd, 'additionalProperty')
-/** Where the hardware begins in every copy: the one text is compared up to this mark, never past it. */
+/** Where the hardware begins in every copy: what is above it is recomputed, what is below it is the device receipt, verified by its seal. */
 export { HARDWARE_MARK }
-export const htmlWithHardware = `${html}${HARDWARE_MARK}${hardwareBlocks.map(blockHtml).join('')}`
+/** The text as HTML with a device receipt below the mark: the Zenodo description and the release note. */
+export const htmlWithDevice = (device: Json) => `${html}${HARDWARE_MARK}${blocksOf(device, 'additionalProperty').map(blockHtml).join('')}`
+/** The page every Markdown copy is with a device receipt: the title, the text, the receipt under a rule, and the device below the mark. */
+export const pageWithDevice = (device: Json) => `${above}---\n\n${blockMarkdown(signed)}\n\n${HARDWARE_MARK}\n\n${blocksOf(device, 'additionalProperty').map(blockMarkdown).join('\n\n')}\n`
+/** A device receipt verified by its own content: its UUID is the address, and its SHA-256 the digest, of the body its properties carry. */
+export const deviceVerifies = (device: Json) => {
+  const id = Object.fromEntries((device.identifier as { name: string; value: string }[]).map((p) => [p.name, p.value])), text = receiptText(String(device.name), receiptBody(device.additionalProperty))
+  return { uuid: id.uuid as string, sha256: id.sha256 as string, holds: id.uuid === uuid(text) && id.sha256 === createHash('sha256').update(text).digest('hex') }
+}
+export const htmlWithHardware = htmlWithDevice(hardware.jsonLd)
 /** The page every Markdown copy is: the title, the text, the receipt under a rule, and the hardware receipt of the build. */
-export const page = `${above}---\n\n${blockMarkdown(signed)}\n\n${HARDWARE_MARK}\n\n${hardwareBlocks.map(blockMarkdown).join('\n\n')}\n`
-/** A copy as the check compares it: everything before the hardware mark. */
-export const beforeHardware = (text: string) => text.split(HARDWARE_MARK)[0]!
+export const page = pageWithDevice(hardware.jsonLd)

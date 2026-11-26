@@ -1,0 +1,47 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Clifford}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Clifford.lean}
+
+\paragraph{\texttt{cliffordOrder\_pos}}
+The n-qubit Clifford group is nonempty, for every n.
+\[ \forall (n : \mathbb{N}), 0 < \mathrm{cliffordOrder}\ n \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Clifford.lean\#L52}
+
+\paragraph{\texttt{clifford\_all}}
+The textbook spot values, decided by the kernel as controls on the general laws.
+\[ \mathrm{symplectic}\ 1 = 6 \land \mathrm{symplectic}\ 2 = 720 \land \mathrm{symplectic}\ 3 = 1451520 \land \mathrm{cliffordOrder}\ 2 = 11520 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Clifford.lean\#L61}
+
+\paragraph{\texttt{sympFactor\_ge\_two}}
+Each symplectic factor 4\^{}j − 1 is at least 2 − 1, for every j.
+\[ \forall (j : \mathbb{N}), 2 \le \mathrm{mint} (2 \cdot (j + 1)) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Clifford.lean\#L34}
+
+\paragraph{\texttt{sympProd\_grows}}
+The symplectic product never shrinks across a factor, for every j.
+\[ \forall (j : \mathbb{N}), \mathrm{sympProd}\ j \le \mathrm{sympProd} (j + 1) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Clifford.lean\#L56}
+
+\paragraph{\texttt{sympProd\_pos}}
+The symplectic product never vanishes, for every j.
+\[ \forall (j : \mathbb{N}), 0 < \mathrm{sympProd}\ j \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Clifford.lean\#L40}
+
+\paragraph{\texttt{sympProd\_step}}
+One symplectic factor, for every j.
+\[ \forall (j : \mathbb{N}), \mathrm{sympProd} (j + 1) = (\mathrm{mint} (2 \cdot (j + 1)) - 1) \cdot \mathrm{sympProd}\ j \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Clifford.lean\#L31}
+
+\paragraph{\texttt{symplectic\_pos}}
+Sp(2n, 2) is a nonempty group, for every n.
+\[ \forall (n : \mathbb{N}), 0 < \mathrm{symplectic}\ n \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Clifford.lean\#L48}
+\end{document}

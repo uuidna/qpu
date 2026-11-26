@@ -1,0 +1,17 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Information.PhysicalQubit.Coil}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/PhysicalQubit/Coil.lean}
+
+\paragraph{\texttt{Coil.periodic}}
+the qubit reads the flux modulo one flux quantum: a whole flux quantum added leaves it unchanged, for every M and every current
+\[ \forall (M\ I\ k : \mathbb{N}), (\mathrm{Coil.flux}\ M\ I + k \cdot (\mathrm{PhysicalConstant.hNum} \cdot 10 ^{10})) \bmod (\mathrm{PhysicalConstant.hNum} \cdot 10 ^{10}) = \mathrm{Coil.flux}\ M\ I \bmod (\mathrm{PhysicalConstant.hNum} \cdot 10 ^{10}) \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/PhysicalQubit/Coil.lean\#L19}
+\end{document}

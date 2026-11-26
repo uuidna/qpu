@@ -1,0 +1,22 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Information.PhysicalQubit.Transmon}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/PhysicalQubit/Transmon.lean}
+
+\paragraph{\texttt{Transmon.frequency\_at\_fifty}}
+at E\_J = 50 E\_C exactly, f₀₁ = 19 E\_C: √(8 · 50 · E\_C²) = 20 E\_C, for every E\_C
+\[ \forall (\mathrm{EC} : \mathbb{N}), (19 \cdot \mathrm{EC} + \mathrm{EC}) \cdot (19 \cdot \mathrm{EC} + \mathrm{EC}) = 8 \cdot (50 \cdot \mathrm{EC}) \cdot \mathrm{EC} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/PhysicalQubit/Transmon.lean\#L28}
+
+\paragraph{\texttt{Transmon.sycamore}}
+Sycamore's measured 6 924 MHz and −208 MHz: 93.1 fF gives E\_C/h = 208 MHz, E\_J/h = 30 569 MHz gives f₀₁, past 50 E\_C
+\[ \mathrm{Transmon.charging}\ 93100\ 208 \land \mathrm{Transmon.frequency}\ 30569\ 208\ 6924 \land 50 \cdot 208 < 30569 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/PhysicalQubit/Transmon.lean\#L25}
+\end{document}

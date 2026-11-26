@@ -1,0 +1,37 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Verify.Hexbit}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Hexbit.lean}
+
+\paragraph{\texttt{Qpu.Verify.Hexbit.gap\_is\_rejected}}
+Control: the ASCII code of ':' (58) sits in the gap between digits and letters and is likewise rejected.
+\[ \mathrm{Qpu.Verify.Hexbit.unhexCode}\ 58 = 256 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Hexbit.lean\#L50}
+
+\paragraph{\texttt{Qpu.Verify.Hexbit.hex\_roundtrips}}
+Every nibble survives the round trip: encode then decode is the identity on 0..15, enumerated case by case so the kernel decides each limb.
+\[ \forall n < 16, \mathrm{Qpu.Verify.Hexbit.unhexCode} (\mathrm{Qpu.Verify.Hexbit.hexCode}\ n) = n \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Hexbit.lean\#L25}
+
+\paragraph{\texttt{Qpu.Verify.Hexbit.non\_hex\_is\_rejected}}
+Control: the ASCII code of 'g' (103) does not decode to a nibble.
+\[ \mathrm{Qpu.Verify.Hexbit.unhexCode}\ 103 = 256 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Hexbit.lean\#L46}
+
+\paragraph{\texttt{Qpu.Verify.Hexbit.prefix\_is\_high\_half}}
+Routing: the 32-bit hexbit prefix of a 64-bit id is its high half.
+\[ 1311768467294899695 / 4294967296 = 305419896 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Hexbit.lean\#L53}
+
+\paragraph{\texttt{Qpu.Verify.Hexbit.prefix\_width}}
+Control: the prefix really is 8 hexits — 32 bits — wide.
+\[ 305419896 < 2 ^{(8 \cdot 4)} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Hexbit.lean\#L57}
+\end{document}

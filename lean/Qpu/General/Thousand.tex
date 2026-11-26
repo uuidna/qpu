@@ -1,0 +1,27 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Thousand}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Thousand.lean}
+
+\paragraph{\texttt{Thousand.meaning\_sound}}
+Whatever `meaning n` answers is true: that family's formula, at that size, is `n`.
+\[ \forall \{n : \mathbb{N}\} \{\mathrm{family}\ \mathrm{name} : \mathrm{String}\} \{k : \mathbb{N}\}, (\mathrm{family}, \mathrm{name}, k) \in \mathrm{Thousand.meaning}\ n \to \exists F \in \mathrm{Thousand.formulas}, \mathrm{F.family} = \mathrm{family} \land \mathrm{F.name} = \mathrm{name} \land \mathrm{F.f}\ k = n \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Thousand.lean\#L83}
+
+\paragraph{\texttt{Thousand.reflect\_add}}
+An example and its reflection fill the bound exactly.
+\[ \forall \{x : \mathbb{N}\}, x \le \mathrm{Thousand.bound} \to \mathrm{Thousand.reflect}\ x + x = \mathrm{Thousand.bound} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Thousand.lean\#L104}
+
+\paragraph{\texttt{Thousand.reflect\_reflect}}
+Reflecting an example twice gives it back: σ is an involution below the bound.
+\[ \forall \{x : \mathbb{N}\}, x \le \mathrm{Thousand.bound} \to \mathrm{Thousand.reflect} (\mathrm{Thousand.reflect}\ x) = x \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Thousand.lean\#L99}
+\end{document}

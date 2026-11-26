@@ -1,0 +1,52 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.QuantumGate}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumGate.lean}
+
+\paragraph{\texttt{QuantumGate.cnot}}
+CNOT is unitary and its own inverse: CNOT · CNOT† = I and CNOT · CNOT = I
+\[ \mathrm{Operator.Same}\ 4 (\mathrm{Operator.mm}\ 4\ \mathrm{QuantumGate.CNOT} (\mathrm{Operator.dag}\ \mathrm{QuantumGate.CNOT})) \mathrm{Operator.idm} \land \mathrm{Operator.Same}\ 4 (\mathrm{Operator.mm}\ 4\ \mathrm{QuantumGate.CNOT}\ \mathrm{QuantumGate.CNOT}) \mathrm{Operator.idm} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumGate.lean\#L41}
+
+\paragraph{\texttt{QuantumGate.h\_squared}}
+Hadamard squared is twice the identity: H · H = 2 · I
+\[ \mathrm{Operator.Same}\ 2 (\mathrm{Operator.mm}\ 2\ \mathrm{QuantumGate.H}\ \mathrm{QuantumGate.H}) (\mathrm{Operator.smul}\ 2\ \mathrm{Operator.idm}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumGate.lean\#L35}
+
+\paragraph{\texttt{QuantumGate.h\_unitary}}
+Hadamard is unitary up to its scale: H · H† = 2 · I
+\[ \mathrm{Operator.Same}\ 2 (\mathrm{Operator.mm}\ 2\ \mathrm{QuantumGate.H} (\mathrm{Operator.dag}\ \mathrm{QuantumGate.H})) (\mathrm{Operator.smul}\ 2\ \mathrm{Operator.idm}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumGate.lean\#L33}
+
+\paragraph{\texttt{QuantumGate.paulis\_unitary}}
+X, Z and S are unitary: U · U† = I
+\[ \mathrm{Operator.Same}\ 2 (\mathrm{Operator.mm}\ 2\ \mathrm{QuantumGate.X} (\mathrm{Operator.dag}\ \mathrm{QuantumGate.X})) \mathrm{Operator.idm} \land \mathrm{Operator.Same}\ 2 (\mathrm{Operator.mm}\ 2\ \mathrm{QuantumGate.Z} (\mathrm{Operator.dag}\ \mathrm{QuantumGate.Z})) \mathrm{Operator.idm} \land \mathrm{Operator.Same}\ 2 (\mathrm{Operator.mm}\ 2\ \mathrm{QuantumGate.S} (\mathrm{Operator.dag}\ \mathrm{QuantumGate.S})) \mathrm{Operator.idm} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumGate.lean\#L37}
+
+\paragraph{\texttt{QuantumGate.s\_squared}}
+S squared is Z
+\[ \mathrm{Operator.Same}\ 2 (\mathrm{Operator.mm}\ 2\ \mathrm{QuantumGate.S}\ \mathrm{QuantumGate.S}) \mathrm{QuantumGate.Z} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumGate.lean\#L39}
+
+\paragraph{\texttt{QuantumGate.swap}}
+SWAP is unitary and its own inverse
+\[ \mathrm{Operator.Same}\ 4 (\mathrm{Operator.mm}\ 4\ \mathrm{QuantumGate.SWAP} (\mathrm{Operator.dag}\ \mathrm{QuantumGate.SWAP})) \mathrm{Operator.idm} \land \mathrm{Operator.Same}\ 4 (\mathrm{Operator.mm}\ 4\ \mathrm{QuantumGate.SWAP}\ \mathrm{QuantumGate.SWAP}) \mathrm{Operator.idm} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumGate.lean\#L43}
+
+\paragraph{\texttt{QuantumGate.t\_gate}}
+T is unitary, has order 8 (T⁸ = I and T⁴ ≠ I) and does not commute with Hadamard
+\[ \mathrm{QuantumGate.SameW} (\mathrm{QuantumGate.mmW}\ \mathrm{QuantumGate.TW} (\mathrm{QuantumGate.dagW}\ \mathrm{QuantumGate.TW})) \mathrm{QuantumGate.idW} \land \mathrm{QuantumGate.SameW} (\mathrm{QuantumGate.powW}\ \mathrm{QuantumGate.TW}\ 8) \mathrm{QuantumGate.idW} \land \neg \mathrm{QuantumGate.SameW} (\mathrm{QuantumGate.powW}\ \mathrm{QuantumGate.TW}\ 4) \mathrm{QuantumGate.idW} \land \neg \mathrm{QuantumGate.SameW} (\mathrm{QuantumGate.mmW}\ \mathrm{QuantumGate.HW}\ \mathrm{QuantumGate.TW}) (\mathrm{QuantumGate.mmW}\ \mathrm{QuantumGate.TW}\ \mathrm{QuantumGate.HW}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumGate.lean\#L93}
+
+\paragraph{\texttt{QuantumGate.toffoli}}
+Toffoli is unitary and its own inverse
+\[ \mathrm{Operator.Same}\ 8 (\mathrm{Operator.mm}\ 8\ \mathrm{QuantumGate.TOFFOLI} (\mathrm{Operator.dag}\ \mathrm{QuantumGate.TOFFOLI})) \mathrm{Operator.idm} \land \mathrm{Operator.Same}\ 8 (\mathrm{Operator.mm}\ 8\ \mathrm{QuantumGate.TOFFOLI}\ \mathrm{QuantumGate.TOFFOLI}) \mathrm{Operator.idm} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumGate.lean\#L45}
+\end{document}

@@ -1,0 +1,17 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Meaning.Prime}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Meaning/Prime.lean}
+
+\paragraph{\texttt{isPrime\_eq\_decide\_prime}}
+`Nat.Prime p` means that `p` is a prime number, that is, a natural number at least 2 whose only divisors are `p` and `1`. The theorem `Nat.prime\_def` witnesses this description of a prime number.
+\[ \forall (n : \mathbb{N}), \mathrm{Config.isPrime}\ n = \mathrm{decide} (\mathrm{Nat.Prime}\ n) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Meaning/Prime.lean\#L7}
+\end{document}

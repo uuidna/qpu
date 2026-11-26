@@ -1,0 +1,17 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Meaning.Totient}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Meaning/Totient.lean}
+
+\paragraph{\texttt{totient\_eq\_nat\_totient}}
+Euler's totient function. This counts the number of naturals strictly less than `n` which are coprime with `n`.
+\[ \forall (n : \mathbb{N}), \mathrm{totient}\ n = \mathrm{n.totient} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Meaning/Totient.lean\#L8}
+\end{document}

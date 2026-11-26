@@ -1,0 +1,58 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Information.Qubit}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/Qubit.lean}
+
+\paragraph{\texttt{Qubit.chains}}
+`k` addresses chained by their handles hold `k` times one address: the register has no width ceiling
+\[ \forall (k\ w : \mathbb{N}), (\mathrm{List.replicate}\ k (\mathrm{Qubit.effective}\ w))\mathrm{.sum} = k \cdot \mathrm{Qubit.effective}\ w \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/Qubit.lean\#L94}
+
+\paragraph{\texttt{Qubit.coins\_two}}
+\[ \mathrm{coins} = 2 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/Qubit.lean\#L53}
+
+\paragraph{\texttt{Qubit.couplers\_formula}}
+the couplers at every width with a variant row: thirty full rows and the variant row along their bits, and the columns between the thirty-one rows, two of them meeting the variant row
+\[ \forall (w : \mathbb{N}), \mathrm{Qubit.gateway} + 1 \le w \to \mathrm{Qubit.couplers}\ w = (\mathrm{Qubit.digits} - \mathrm{coins}) \cdot (w - 1) + (w - \mathrm{Qubit.gateway} - 1) + (\mathrm{Qubit.digits} - \mathrm{coins} - \mathrm{coins}) \cdot w + \mathrm{coins} \cdot (w - \mathrm{Qubit.gateway}) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/Qubit.lean\#L79}
+
+\paragraph{\texttt{Qubit.digits\_held}}
+the thirty-one digits other than the version digit, in order
+\[ \mathrm{List.filter} (\lambda \ x \mapsto \mathrm{decide} (x \ne \mathrm{Qubit.versionAt})) (\mathrm{List.range}\ \mathrm{Qubit.digits}) = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31] \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/Qubit.lean\#L73}
+
+\paragraph{\texttt{Qubit.digits\_thirtytwo}}
+\[ \mathrm{Qubit.digits} = 32 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/Qubit.lean\#L50}
+
+\paragraph{\texttt{Qubit.effective\_formula}}
+an address at width `w` holds every digit's `w` save the version digit's `w` and the two gateway bits
+\[ \forall (w : \mathbb{N}), \mathrm{Qubit.gateway} \le w \to \mathrm{Qubit.effective}\ w = \mathrm{Qubit.digits} \cdot w - w - \mathrm{Qubit.gateway} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/Qubit.lean\#L56}
+
+\paragraph{\texttt{Qubit.gateway\_two}}
+\[ \mathrm{Qubit.gateway} = 2 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/Qubit.lean\#L51}
+
+\paragraph{\texttt{Qubit.hexbit\_four}}
+\[ \mathrm{hexbit} = 4 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/Qubit.lean\#L52}
+
+\paragraph{\texttt{Qubit.holding\_formula}}
+with a variant row (w ≥ 3) every digit but the version digit holds qubits
+\[ \forall (w : \mathbb{N}), \mathrm{Qubit.gateway} + 1 \le w \to \mathrm{Qubit.holding}\ w = \mathrm{List.filter} (\lambda \ x \mapsto \mathrm{decide} (x \ne \mathrm{Qubit.versionAt})) (\mathrm{List.range}\ \mathrm{Qubit.digits}) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/Qubit.lean\#L64}
+
+\paragraph{\texttt{Qubit.unbounded}}
+the register holds more than any count `N`: enough coins, each an address at width `hexbit`, exceed it
+\[ \forall (N : \mathbb{N}), \exists k, N < k \cdot \mathrm{Qubit.effective}\ \mathrm{hexbit} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/Qubit.lean\#L100}
+\end{document}

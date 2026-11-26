@@ -1,0 +1,52 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Stabilizer}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean}
+
+\paragraph{\texttt{paulis\_growth}}
+One more qubit quadruples the phased Pauli group, for every nn.
+\[ \forall (\mathrm{nn} : \mathbb{N}), \mathrm{paulis} (\mathrm{nn} + 1) = 4 \cdot \mathrm{paulis}\ \mathrm{nn} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L52}
+
+\paragraph{\texttt{paulis\_pos}}
+The phased Pauli group is nonempty, for every nn.
+\[ \forall (\mathrm{nn} : \mathbb{N}), 0 < \mathrm{paulis}\ \mathrm{nn} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L57}
+
+\paragraph{\texttt{stabProd\_grows}}
+The stabilizer product never shrinks across a factor, for every k.
+\[ \forall (k : \mathbb{N}), \mathrm{stabProd}\ k \le \mathrm{stabProd} (k + 1) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L43}
+
+\paragraph{\texttt{stabProd\_pos}}
+The stabilizer product never vanishes, for every k.
+\[ \forall (k : \mathbb{N}), 0 < \mathrm{stabProd}\ k \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L35}
+
+\paragraph{\texttt{stabProd\_step}}
+One stabilizer factor, for every k.
+\[ \forall (k : \mathbb{N}), \mathrm{stabProd} (k + 1) = (\mathrm{mint} (k + 1) + 1) \cdot \mathrm{stabProd}\ k \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L32}
+
+\paragraph{\texttt{stabStates\_pos}}
+n qubits always have stabilizer states, for every n.
+\[ \forall (\mathrm{nn} : \mathbb{N}), 0 < \mathrm{stabStates}\ \mathrm{nn} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L48}
+
+\paragraph{\texttt{stabSubgroup\_doubles}}
+One more qubit doubles the stabilizer subgroup, for every nn.
+\[ \forall (\mathrm{nn} : \mathbb{N}), \mathrm{stabSubgroup} (\mathrm{nn} + 1) = 2 \cdot \mathrm{stabSubgroup}\ \mathrm{nn} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L60}
+
+\paragraph{\texttt{stabilizer\_all}}
+The textbook spot values, decided by the kernel as controls on the general laws.
+\[ \mathrm{stabStates}\ 1 = 6 \land \mathrm{stabStates}\ 2 = 60 \land \mathrm{stabStates}\ 3 = 1080 \land \mathrm{paulis}\ 1 = 16 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L65}
+\end{document}

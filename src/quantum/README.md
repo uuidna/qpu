@@ -225,87 +225,91 @@
 
 | receipt |  |
 | --- | --- |
-| uuid | 650bfc8b-0afe-2bd0-a6ff-c6a9f45a36d4 |
-| handle | `650bfc8b` |
-| sha256 | d019db714a0353d14be5618cfc15f48e089e3b53632983ad8c4acb418a853a49 |
+| uuid | cc898f40-4576-2ec1-b5ce-1881af8829c5 |
+| handle | `cc898f40` |
+| sha256 | 8e34ad11eb029033a7a091d2051aea7529254ddd286372586cc78d5345e72cd2 |
 
 | hardware |  |
 | --- | --- |
 | registerBytes | 16 |
 | registerQubits | 122 |
-| registersInMemory | 1054292224 |
-| registerQubitsInMemory | 128623651328 |
-| platform | linux |
-| type | Linux |
-| release | 6.18.44-fc-v880 |
-| version | \#1 SMP PREEMPT\_DYNAMIC @0 |
-| arch | x64 |
-| machine | x86\_64 |
+| registersInMemory | 2147483648 |
+| registerQubitsInMemory | 261993005056 |
+| platform | darwin |
+| type | Darwin |
+| release | 27.2.0 |
+| version | Darwin Kernel Version 27.2.0: Thu Oct 15 00:02:46 PDT 2026; root:xnu-13432.41.4~25/RELEASE\_ARM64\_T6000 |
+| arch | arm64 |
+| machine | arm64 |
 | endianness | LE |
-| cpu | Intel(R) Xeon(R) Processor @ 2.10GHz |
-| cores | 4 |
-| parallelism | 4 |
-| cpuMHz | 0, 0, 0, 0 |
-| cpuUserMs | 20438740 |
-| cpuNiceMs | 2390 |
-| cpuSysMs | 2934990 |
-| cpuIdleMs | 65509190 |
+| cpu | Apple M1 Max |
+| cores | 10 |
+| parallelism | 10 |
+| cpuMHz | 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400 |
+| cpuUserMs | 419726200 |
+| cpuNiceMs | 0 |
+| cpuSysMs | 181151120 |
+| cpuIdleMs | 1426635600 |
 | cpuIrqMs | 0 |
-| memoryBytes | 16868675584 |
-| freeMemoryBytes | 15178031104 |
-| load1 | 2.19 |
-| load5 | 2.22 |
-| load15 | 2.48 |
-| uptimeS | 22853 |
-| diskBytes | 270553174016 |
-| diskFreeBytes | 232152297472 |
-| diskAvailableBytes | 35480735744 |
+| memoryBytes | 34359738368 |
+| freeMemoryBytes | 10362470400 |
+| load1 | 3.3759765625 |
+| load5 | 4.22314453125 |
+| load15 | 3.78662109375 |
+| uptimeS | 220282 |
+| diskBytes | 994662584320 |
+| diskFreeBytes | 821316042752 |
+| diskAvailableBytes | 821316042752 |
 | diskBlockBytes | 4096 |
-| inodes | 16777216 |
-| inodesFree | 14906068 |
-| networkInterfaces | 2 |
+| inodes | 8035344589 |
+| inodesFree | 8020664480 |
+| networkInterfaces | 10 |
 | lean | leanprover/lean4:v4.33.0 |
-| rssBytes | 164286464 |
-| heapTotalBytes | 78479360 |
-| heapUsedBytes | 57636512 |
-| externalBytes | 17911546 |
-| arrayBuffersBytes | 646904 |
-| processUserMicros | 2484683 |
-| processSystemMicros | 124281 |
-| maxRssKb | 160436 |
-| pageFaults | 39201 |
+| rssBytes | 233816064 |
+| heapTotalBytes | 115113984 |
+| heapUsedBytes | 53316672 |
+| externalBytes | 6754469 |
+| arrayBuffersBytes | 337757 |
+| processUserMicros | 1659475 |
+| processSystemMicros | 65943 |
+| maxRssKb | 228352 |
+| pageFaults | 15033 |
 | fsReads | 0 |
 | fsWrites | 0 |
-| contextSwitches | 835 |
-| buildMs | 1191 |
-| at | 2026-11-25T10:17:31.694Z |
+| contextSwitches | 2060 |
+| buildMs | 879 |
+| at | 2026-11-26T05:58:04.668Z |
 
 | hardware.versions |  |
 | --- | --- |
-| node | 22.23.5 |
-| acorn | 8.16.0 |
-| ada | 2.9.2 |
-| amaro | 1.1.8 |
+| node | 26.13.1 |
+| acorn | 8.19.0 |
+| ada | 4.0.0 |
+| amaro | 1.1.11 |
 | ares | 1.34.9 |
-| brotli | 1.1.0 |
-| cjs\_module\_lexer | 2.2.0 |
+| brotli | 1.2.1 |
 | cldr | 48.0 |
 | icu | 78.3 |
+| libffi | 3.8.0 |
+| lief | 1.0.0 |
 | llhttp | 9.4.4 |
-| modules | 127 |
+| merve | 1.2.2 |
+| modules | 147 |
 | napi | 10 |
-| nbytes | 0.1.3 |
+| nbytes | 0.1.4 |
 | ncrypto | 0.0.1 |
-| nghttp2 | 1.69.0 |
+| nghttp2 | 1.70.0 |
+| nghttp3 |  |
+| ngtcp2 |  |
 | openssl | 3.5.9 |
-| simdjson | 4.5.0 |
-| simdutf | 6.4.2 |
+| simdjson | 5.0.3 |
+| simdutf | 7.7.0 |
 | sqlite | 3.54.1 |
 | tz | 2026e |
-| undici | 6.29.1 |
+| undici | 8.12.4 |
 | unicode | 17.0 |
-| uv | 1.51.0 |
+| uv | 1.52.1 |
 | uvwasi | 0.0.23 |
-| v8 | 12.4.254.21-node.57 |
-| zlib | 1.3.1-e00f703 |
+| v8 | 14.6.202.34-node.40 |
+| zlib | 1.3.2.1-motley-456ae73 |
 | zstd | 1.5.7 |

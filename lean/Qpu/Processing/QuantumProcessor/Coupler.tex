@@ -1,0 +1,22 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.QuantumProcessor.Coupler}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor/Coupler.lean}
+
+\paragraph{\texttt{Coupler.off}}
+the coupling is off at detuning Δ when the direct and mediated terms cancel, for every design
+\[ \forall (g_{1} g_{2} g_{12} \Delta : \mathbb{N}), g_{12} \cdot \Delta = g_{1} \cdot g_{2} \to g_{1} \cdot g_{2} - g_{12} \cdot \Delta = 0 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor/Coupler.lean\#L13}
+
+\paragraph{\texttt{Coupler.willow}}
+Willow's measured CZ times, 42 ns and 37 ns, put the exchange coupling at 8.4 MHz and 9.5 MHz
+\[ \mathrm{Coupler.cz}\ 42\ 84 \land \mathrm{Coupler.cz}\ 37\ 95 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor/Coupler.lean\#L20}
+\end{document}

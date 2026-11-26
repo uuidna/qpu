@@ -1,0 +1,37 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Verify.Entangle}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Entangle.lean}
+
+\paragraph{\texttt{Qpu.Verify.Entangle.chsh\_bound\_is\_tight}}
+Control: the bound is tight — the all-false strategy wins exactly 3, so the ceiling is not an artifact of an over-strong statement.
+\[ \mathrm{Qpu.Verify.Entangle.chshWins}\ \mathrm{false}\ \mathrm{false}\ \mathrm{false}\ \mathrm{false} = 3 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Entangle.lean\#L28}
+
+\paragraph{\texttt{Qpu.Verify.Entangle.chsh\_classical\_bound}}
+Classical bound: no local deterministic strategy wins all four rounds. Every local hidden-variable strategy is a mixture of these sixteen, so 3/4 is the classical ceiling — Bell's theorem at finite scale, decided by the kernel.
+\[ \forall (\mathrm{a0}\ \mathrm{a1}\ \mathrm{b0}\ \mathrm{b1} : \mathrm{Bool}), \mathrm{Qpu.Verify.Entangle.chshWins}\ \mathrm{a0}\ \mathrm{a1}\ \mathrm{b0}\ \mathrm{b1} \le 3 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Entangle.lean\#L23}
+
+\paragraph{\texttt{Qpu.Verify.Entangle.ghz\_classical\_bound}}
+Mermin's bound: the four parity equations sum to 0 = 1 in Z₂, so no deterministic classical strategy — of the sixty-four — wins all four.
+\[ \forall (\mathrm{a0}\ \mathrm{a1}\ \mathrm{b0}\ \mathrm{b1}\ \mathrm{c0}\ \mathrm{c1} : \mathrm{Bool}), \mathrm{Qpu.Verify.Entangle.ghzWins}\ \mathrm{a0}\ \mathrm{a1}\ \mathrm{b0}\ \mathrm{b1}\ \mathrm{c0}\ \mathrm{c1} \le 3 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Entangle.lean\#L42}
+
+\paragraph{\texttt{Qpu.Verify.Entangle.ghz\_quantum\_wins\_all\_four}}
+The entangled strategy wins 4/4 — impossible classically (above), so the GHZ table is genuinely non-classical.
+\[ \mathrm{Qpu.Verify.Entangle.quantumCheck}\ 0\ \mathrm{false}\ \mathrm{false}\ \mathrm{false} + \mathrm{Qpu.Verify.Entangle.quantumCheck}\ 1\ \mathrm{false}\ \mathrm{true}\ \mathrm{true} + \mathrm{Qpu.Verify.Entangle.quantumCheck}\ 2\ \mathrm{true}\ \mathrm{false}\ \mathrm{true} + \mathrm{Qpu.Verify.Entangle.quantumCheck}\ 3\ \mathrm{true}\ \mathrm{true}\ \mathrm{false} = 4 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Entangle.lean\#L60}
+
+\paragraph{\texttt{Qpu.Verify.Entangle.ghz\_uniform\_strategy\_loses}}
+Negative control: a representative local strategy loses, guarding against a `ghzWins` definition that accidentally always returns 4.
+\[ \mathrm{Qpu.Verify.Entangle.ghzWins}\ \mathrm{false}\ \mathrm{false}\ \mathrm{false}\ \mathrm{false}\ \mathrm{false}\ \mathrm{false} < 4 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Entangle.lean\#L68}
+\end{document}

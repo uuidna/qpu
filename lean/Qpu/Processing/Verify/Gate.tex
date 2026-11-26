@@ -1,0 +1,67 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Verify.Gate}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean}
+
+\paragraph{\texttt{Qpu.Verify.Gate.cnot\_is\_an\_involution}}
+CNOT² = I₄: entangling twice un-entangles.
+\[ \mathrm{Qpu.Verify.Gate.cnot} \cdot \mathrm{Qpu.Verify.Gate.cnot} = \mathrm{Qpu.Verify.Gate.id4} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean\#L132}
+
+\paragraph{\texttt{Qpu.Verify.Gate.cnot\_is\_not\_swap}}
+Negative control: CNOT and SWAP are genuinely different gates.
+\[ \mathrm{Qpu.Verify.Gate.cnot} \ne \mathrm{Qpu.Verify.Gate.swap} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean\#L136}
+
+\paragraph{\texttt{Qpu.Verify.Gate.h\_unitary}}
+(√2·H)² = 2·I — Hadamard unitarity in scaled units.
+\[ \mathrm{Qpu.Verify.Gate.scaledH} \cdot \mathrm{Qpu.Verify.Gate.scaledH} = \mathrm{Qpu.Verify.Gate.M2.two} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean\#L62}
+
+\paragraph{\texttt{Qpu.Verify.Gate.h\_x\_h\_is\_not\_two\_y}}
+Negative control: H X H = 2Z, never 2Y — guards the checker, not the math.
+\[ \mathrm{Qpu.Verify.Gate.scaledH} \cdot \mathrm{Qpu.Verify.Gate.matX} \cdot \mathrm{Qpu.Verify.Gate.scaledH} \ne \{ \mathrm{a00} := \mathrm{Qpu.Verify.Gate.g}\ 0, \mathrm{a01} := \{ \mathrm{re} := 0, \mathrm{im} := -2 \}, \mathrm{a10} := \{ \mathrm{re} := 0, \mathrm{im} := 2 \}, \mathrm{a11} := \mathrm{Qpu.Verify.Gate.g}\ 0 \} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean\#L76}
+
+\paragraph{\texttt{Qpu.Verify.Gate.h\_z\_h\_is\_two\_x}}
+H Z H = X, in the scaled units: (√2 H)·Z·(√2 H) = 2X.
+\[ \mathrm{Qpu.Verify.Gate.scaledH} \cdot \mathrm{Qpu.Verify.Gate.matZ} \cdot \mathrm{Qpu.Verify.Gate.scaledH} = \{ \mathrm{a00} := \mathrm{Qpu.Verify.Gate.g}\ 0, \mathrm{a01} := \mathrm{Qpu.Verify.Gate.g}\ 2, \mathrm{a10} := \mathrm{Qpu.Verify.Gate.g}\ 2, \mathrm{a11} := \mathrm{Qpu.Verify.Gate.g}\ 0 \} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean\#L74}
+
+\paragraph{\texttt{Qpu.Verify.Gate.s\_fourth\_is\_identity}}
+S⁴ = I.
+\[ \mathrm{Qpu.Verify.Gate.matS} \cdot \mathrm{Qpu.Verify.Gate.matS} \cdot (\mathrm{Qpu.Verify.Gate.matS} \cdot \mathrm{Qpu.Verify.Gate.matS}) = \mathrm{Qpu.Verify.Gate.matI} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean\#L72}
+
+\paragraph{\texttt{Qpu.Verify.Gate.s\_squared\_is\_z}}
+S² = Z: two quarter-turn phase gates make a bit-flip of phase.
+\[ \mathrm{Qpu.Verify.Gate.matS} \cdot \mathrm{Qpu.Verify.Gate.matS} = \mathrm{Qpu.Verify.Gate.matZ} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean\#L70}
+
+\paragraph{\texttt{Qpu.Verify.Gate.swap\_is\_an\_involution}}
+SWAP² = I₄.
+\[ \mathrm{Qpu.Verify.Gate.swap} \cdot \mathrm{Qpu.Verify.Gate.swap} = \mathrm{Qpu.Verify.Gate.id4} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean\#L134}
+
+\paragraph{\texttt{Qpu.Verify.Gate.x\_squared}}
+X² = I.
+\[ \mathrm{Qpu.Verify.Gate.matX} \cdot \mathrm{Qpu.Verify.Gate.matX} = \mathrm{Qpu.Verify.Gate.matI} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean\#L64}
+
+\paragraph{\texttt{Qpu.Verify.Gate.y\_squared}}
+Y² = I.
+\[ \mathrm{Qpu.Verify.Gate.matY} \cdot \mathrm{Qpu.Verify.Gate.matY} = \mathrm{Qpu.Verify.Gate.matI} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean\#L66}
+
+\paragraph{\texttt{Qpu.Verify.Gate.z\_squared}}
+Z² = I.
+\[ \mathrm{Qpu.Verify.Gate.matZ} \cdot \mathrm{Qpu.Verify.Gate.matZ} = \mathrm{Qpu.Verify.Gate.matI} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Gate.lean\#L68}
+\end{document}

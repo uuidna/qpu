@@ -1,0 +1,17 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Information.QuantumInformation}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/QuantumInformation.lean}
+
+\paragraph{\texttt{QuantumInformation.no\_cloning}}
+no-cloning: every linear map sending |0⟩|0⟩ to |0⟩|0⟩ and |1⟩|0⟩ to |1⟩|1⟩ fails to copy |+⟩: |+⟩|0⟩ does not go to |+⟩|+⟩
+\[ \forall (u : \mathrm{Operator.Mat}), (\forall r < 4, \mathrm{Operator.ap}\ 4\ u (\mathrm{HilbertSpace.basis}\ 0) r = \mathrm{HilbertSpace.basis}\ 0\ r) \to (\forall r < 4, \mathrm{Operator.ap}\ 4\ u (\mathrm{HilbertSpace.basis}\ 2) r = \mathrm{HilbertSpace.basis}\ 3\ r) \to \mathrm{Operator.ap}\ 4\ u (\lambda \ r \mapsto \mathrm{HilbertSpace.basis}\ 0\ r + \mathrm{HilbertSpace.basis}\ 2\ r) 1 \ne 1 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/QuantumInformation.lean\#L14}
+\end{document}

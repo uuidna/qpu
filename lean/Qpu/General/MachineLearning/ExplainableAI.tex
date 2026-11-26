@@ -1,0 +1,233 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.MachineLearning.ExplainableAI}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean}
+
+\paragraph{\texttt{Qpu.Xai.Attention.sums}}
+\[ \forall \{\mathrm{total} : \mathbb{N}\} (\mathrm{self} : \mathrm{Qpu.Xai.Attention}\ \mathrm{total}), \mathrm{self.weights.sum} = \mathrm{total} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L439}
+
+\paragraph{\texttt{Qpu.Xai.ablation\_complete}}
+**Attribution completeness for any model**: the ablation attributions sum to `f(x) − f(baseline)`. Tactic: telescoping.
+\[ \forall (f : \mathrm{List} \mathbb{Z} \to \mathbb{Z}) (x\ b : \mathrm{List} \mathbb{Z}), \mathrm{x.length} = \mathrm{b.length} \to (\mathrm{Qpu.Xai.ablation}\ f\ x\ b)\mathrm{.sum} = f\ x - f\ b \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L373}
+
+\paragraph{\texttt{Qpu.Xai.attention\_rollout\_normalised}}
+**Attention rollout**: an attention row with total `T` rolled through attention rows with total `T` is normalised at scale `T · T`.
+\[ \forall \{T : \mathbb{N}\} (A : \mathrm{Qpu.Xai.Attention}\ T) (B : \mathrm{List} (\mathrm{Qpu.Xai.Attention}\ T)), \mathrm{A.weights.length} \le \mathrm{B.length} \to (\mathrm{Qpu.Xai.rollout}\ \mathrm{A.weights} (\mathrm{List.map}\ \mathrm{Qpu.Xai.Attention.weights}\ B))\mathrm{.sum} = T \cdot T \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L507}
+
+\paragraph{\texttt{Qpu.Xai.attention\_weight\_le\_total}}
+**Attention is bounded**: every weight is at most the total.
+\[ \forall \{T : \mathbb{N}\} (A : \mathrm{Qpu.Xai.Attention}\ T), \forall w \in \mathrm{A.weights}, w \le T \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L450}
+
+\paragraph{\texttt{Qpu.Xai.attr\_complete}}
+**Completeness** for the model: `Σ attr = f(x) − f(baseline)`.
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (x\ b : \mathrm{List} \mathbb{Z}), \mathrm{x.length} = \mathrm{b.length} \to (\mathrm{Qpu.Xai.attr}\ \mathrm{m.weights}\ x\ b)\mathrm{.sum} = \mathrm{m.eval}\ x - \mathrm{m.eval}\ b \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L115}
+
+\paragraph{\texttt{Qpu.Xai.attr\_sum}}
+**Attribution additivity / completeness** on the inner product: the attributions sum to the change of the inner product, for any weights, when input and baseline have the same length. Tactic: induction on the weights, `omega` on the arithmetic.
+\[ \forall (w\ x\ b : \mathrm{List} \mathbb{Z}), \mathrm{x.length} = \mathrm{b.length} \to (\mathrm{Qpu.Xai.attr}\ w\ x\ b)\mathrm{.sum} = \mathrm{Qpu.Xai.dot}\ w\ x - \mathrm{Qpu.Xai.dot}\ w\ b \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L95}
+
+\paragraph{\texttt{Qpu.Xai.cam\_total}}
+**CAM heatmap total**: class weights `w` over feature maps that each sum to `T` give a map with total `(Σ w) · T`.
+\[ \forall (w : \mathrm{List} \mathbb{N}) (\mathrm{maps} : \mathrm{List} (\mathrm{List} \mathbb{N})) (T : \mathbb{N}), (\forall f \in \mathrm{maps}, \mathrm{f.sum} = T) \to \mathrm{w.length} \le \mathrm{maps.length} \to (\mathrm{Qpu.Xai.rollout}\ w\ \mathrm{maps})\mathrm{.sum} = \mathrm{w.sum} \cdot T \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L517}
+
+\paragraph{\texttt{Qpu.Xai.counterfactual\_exists}}
+**Counterfactual explanation**: any feature with nonzero weight yields an input at Hamming distance at most one whose prediction differs.
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (x : \mathrm{List} \mathbb{Z}), \forall i < \mathrm{x.length}, \mathrm{m.weights.getD}\ i\ 0 \ne 0 \to \exists y, \mathrm{Qpu.Xai.hamming}\ x\ y \le 1 \land \mathrm{m.eval}\ y \ne \mathrm{m.eval}\ x \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L598}
+
+\paragraph{\texttt{Qpu.Xai.dot\_mono}}
+\[ \forall (w\ x\ y : \mathrm{List} \mathbb{Z}), (\forall a \in w, 0 \le a) \to \mathrm{Qpu.Xai.Le}\ x\ y \to \mathrm{Qpu.Xai.dot}\ w\ x \le \mathrm{Qpu.Xai.dot}\ w\ y \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L615}
+
+\paragraph{\texttt{Qpu.Xai.dot\_set\_sub\_set}}
+Replacing the `i`-th feature by `v` instead of `u` changes the inner product by `wᵢ (v − u)`. Tactic: induction on `i`.
+\[ \forall (w\ l : \mathrm{List} \mathbb{Z}) (i : \mathbb{N}) (u\ v : \mathbb{Z}), i < \mathrm{l.length} \to \mathrm{Qpu.Xai.dot}\ w (\mathrm{l.set}\ i\ v) - \mathrm{Qpu.Xai.dot}\ w (\mathrm{l.set}\ i\ u) = \mathrm{w.getD}\ i\ 0 \cdot (v - u) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L148}
+
+\paragraph{\texttt{Qpu.Xai.dot\_sub\_set}}
+**Occlusion / permutation**: replacing the `i`-th feature by `v` lowers the inner product by `wᵢ (xᵢ − v)`.
+\[ \forall (w\ l : \mathrm{List} \mathbb{Z}) (i : \mathbb{N}) (v : \mathbb{Z}), i < \mathrm{l.length} \to \mathrm{Qpu.Xai.dot}\ w\ l - \mathrm{Qpu.Xai.dot}\ w (\mathrm{l.set}\ i\ v) = \mathrm{w.getD}\ i\ 0 \cdot (\mathrm{l.getD}\ i\ 0 - v) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L175}
+
+\paragraph{\texttt{Qpu.Xai.eval\_mono}}
+**Monotonicity**: a linear model with nonnegative weights is monotone (the sketch's "monotone ⇒ ∃ grad ≥ 0" reversed into the usable direction).
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (x\ y : \mathrm{List} \mathbb{Z}), (\forall a \in \mathrm{m.weights}, 0 \le a) \to \mathrm{Qpu.Xai.Le}\ x\ y \to \mathrm{m.eval}\ x \le \mathrm{m.eval}\ y \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L635}
+
+\paragraph{\texttt{Qpu.Xai.eval\_set\_sub\_set}}
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (l : \mathrm{List} \mathbb{Z}) (i : \mathbb{N}) (u\ v : \mathbb{Z}), i < \mathrm{l.length} \to \mathrm{m.eval} (\mathrm{l.set}\ i\ v) - \mathrm{m.eval} (\mathrm{l.set}\ i\ u) = \mathrm{m.weights.getD}\ i\ 0 \cdot (v - u) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L200}
+
+\paragraph{\texttt{Qpu.Xai.eval\_sub\_set}}
+**Occlusion sensitivity** of feature `i` with occluding value `v`: exactly the attribution of that feature against the baseline value `v`. With `v = 0` this is the sketch's "importance decrease" of permutation importance.
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (l : \mathrm{List} \mathbb{Z}) (i : \mathbb{N}) (v : \mathbb{Z}), i < \mathrm{l.length} \to \mathrm{m.eval}\ l - \mathrm{m.eval} (\mathrm{l.set}\ i\ v) = \mathrm{m.weights.getD}\ i\ 0 \cdot (\mathrm{l.getD}\ i\ 0 - v) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L210}
+
+\paragraph{\texttt{Qpu.Xai.fidelity\_le}}
+**Fidelity is bounded** by the data size (the sketch's `fidelity ≤ 1`).
+\[ \forall (f\ g : \mathrm{List} \mathbb{Z} \to \mathbb{Z}) (\mathrm{data} : \mathrm{List} (\mathrm{List} \mathbb{Z})), \mathrm{Qpu.Xai.fidelity}\ f\ g\ \mathrm{data} \le \mathrm{data.length} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L647}
+
+\paragraph{\texttt{Qpu.Xai.fidelity\_self}}
+A perfect surrogate has full fidelity.
+\[ \forall (f : \mathrm{List} \mathbb{Z} \to \mathbb{Z}) (\mathrm{data} : \mathrm{List} (\mathrm{List} \mathbb{Z})), \mathrm{Qpu.Xai.fidelity}\ f\ f\ \mathrm{data} = \mathrm{data.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L651}
+
+\paragraph{\texttt{Qpu.Xai.getD\_map\_natAbs}}
+\[ \forall (l : \mathrm{List} \mathbb{Z}) (i : \mathbb{N}), (\mathrm{List.map}\ \mathrm{Int.natAbs}\ l)\mathrm{.getD}\ i\ 0 = (\mathrm{l.getD}\ i\ 0)\mathrm{.natAbs} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L274}
+
+\paragraph{\texttt{Qpu.Xai.getD\_set\_ne}}
+`getD` ignores a `set` at a different index.
+\[ \forall \{\alpha : \mathrm{Type}\} (l : \mathrm{List} \alpha ) (i\ j : \mathbb{N}) (v\ d : \alpha ), i \ne j \to (\mathrm{l.set}\ i\ v)\mathrm{.getD}\ j\ d = \mathrm{l.getD}\ j\ d \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L253}
+
+\paragraph{\texttt{Qpu.Xai.hamming\_le\_length}}
+\[ \forall (x\ y : \mathrm{List} \mathbb{Z}), \mathrm{Qpu.Xai.hamming}\ x\ y \le \mathrm{x.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L574}
+
+\paragraph{\texttt{Qpu.Xai.hamming\_self}}
+\[ \forall (x : \mathrm{List} \mathbb{Z}), \mathrm{Qpu.Xai.hamming}\ x\ x = 0 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L569}
+
+\paragraph{\texttt{Qpu.Xai.hamming\_set\_le\_one}}
+\[ \forall (x : \mathrm{List} \mathbb{Z}) (i : \mathbb{N}) (v : \mathbb{Z}), \mathrm{Qpu.Xai.hamming}\ x (\mathrm{x.set}\ i\ v) \le 1 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L585}
+
+\paragraph{\texttt{Qpu.Xai.importance\_le\_total}}
+**Feature importance is bounded**: every importance is at most the total importance (the sketch's `0 ≤ f i ≤ 1` with the total in the role of `1`).
+\[ \forall (a : \mathrm{List} \mathbb{Z}), \forall k \in \mathrm{Qpu.Xai.importance}\ a, k \le (\mathrm{Qpu.Xai.importance}\ a)\mathrm{.sum} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L404}
+
+\paragraph{\texttt{Qpu.Xai.influence\_loo}}
+**Influence = leave-one-out**: removing sample `j` (setting its label to `0`) changes the prediction by exactly its influence.
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (y : \mathrm{List} \mathbb{Z}), \forall j < \mathrm{y.length}, \mathrm{m.eval}\ y - \mathrm{m.eval} (\mathrm{y.set}\ j\ 0) = \mathrm{Qpu.Xai.influence}\ m\ y\ j \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L421}
+
+\paragraph{\texttt{Qpu.Xai.influence\_stability}}
+**Influence stability**: the influence of sample `j` is unchanged by altering any other sample `k ≠ j`.
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (y : \mathrm{List} \mathbb{Z}) (j\ k : \mathbb{N}) (v : \mathbb{Z}), k \ne j \to \mathrm{Qpu.Xai.influence}\ m (\mathrm{y.set}\ k\ v) j = \mathrm{Qpu.Xai.influence}\ m\ y\ j \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L428}
+
+\paragraph{\texttt{Qpu.Xai.integrated\_gradients\_linear}}
+**Integrated gradients** for a linear model: averaging the Riemann sum over `steps > 0` steps returns the attribution exactly, independent of `steps`. (The sketch's `path\_integral = 1/steps` is replaced by this exact statement.)
+\[ \forall (\mathrm{steps} : \mathbb{N}), 0 < \mathrm{steps} \to \forall (a : \mathbb{Z}), (\mathrm{Qpu.Xai.igRiemann}\ \mathrm{steps}\ a)\mathrm{.sum} / \uparrow \mathrm{steps} = a \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L138}
+
+\paragraph{\texttt{Qpu.Xai.interaction\_zero}}
+**Feature interaction**: the second difference of a linear model across two distinct features is zero (an additive model has no interactions). The sketch's `interaction\_strength < 1` is replaced by this exact statement.
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (x : \mathrm{List} \mathbb{Z}) (i\ j : \mathbb{N}) (a\ b : \mathbb{Z}), j < \mathrm{x.length} \to i \ne j \to \mathrm{m.eval} ((\mathrm{x.set}\ i\ a)\mathrm{.set}\ j\ b) - \mathrm{m.eval} (\mathrm{x.set}\ i\ a) - (\mathrm{m.eval} (\mathrm{x.set}\ j\ b) - \mathrm{m.eval}\ x) = 0 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L260}
+
+\paragraph{\texttt{Qpu.Xai.lattice\_attention\_bounded}}
+Concrete instance: uniform attention over the `n = 3` lattice words with weight `hexbit = 4` has total `n * hexbit`, and every weight is bounded by it.
+\[ \forall w \in (\mathrm{Qpu.Xai.uniform}\ n\ \mathrm{hexbit})\mathrm{.weights}, w \le n \cdot \mathrm{hexbit} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L686}
+
+\paragraph{\texttt{Qpu.Xai.lrp\_conservation}}
+**LRP conservation** across a whole network: the final relevance total equals the output relevance total exactly (the sketch's `≤ 1` becomes `=`).
+\[ \forall (R : \mathrm{List} \mathbb{N}) (\mathrm{Ss} : \mathrm{List} (\mathrm{List} (\mathrm{List} \mathbb{N}))), \mathrm{Qpu.Xai.Chain}\ R\ \mathrm{Ss} \to (\mathrm{Qpu.Xai.propagateAll}\ R\ \mathrm{Ss})\mathrm{.sum} = \mathrm{R.sum} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L553}
+
+\paragraph{\texttt{Qpu.Xai.mem\_le\_sum}}
+\[ \forall (l : \mathrm{List} \mathbb{N}), \forall a \in l, a \le \mathrm{l.sum} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L386}
+
+\paragraph{\texttt{Qpu.Xai.natAbs\_sum\_le}}
+\[ \forall (l : \mathrm{List} \mathbb{Z}), \mathrm{l.sum.natAbs} \le (\mathrm{List.map}\ \mathrm{Int.natAbs}\ l)\mathrm{.sum} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L395}
+
+\paragraph{\texttt{Qpu.Xai.output\_change\_le\_total\_importance}}
+The total importance bounds the absolute output change.
+\[ \forall (f : \mathrm{List} \mathbb{Z} \to \mathbb{Z}) (x\ b : \mathrm{List} \mathbb{Z}), \mathrm{x.length} = \mathrm{b.length} \to (f\ x - f\ b)\mathrm{.natAbs} \le (\mathrm{Qpu.Xai.importance} (\mathrm{Qpu.Xai.ablation}\ f\ x\ b))\mathrm{.sum} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L408}
+
+\paragraph{\texttt{Qpu.Xai.pd\_slope}}
+The partial-dependence function of a linear model has constant slope `wᵢ`.
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (x : \mathrm{List} \mathbb{Z}) (i : \mathbb{N}) (v : \mathbb{Z}), i < \mathrm{x.length} \to \mathrm{Qpu.Xai.pd}\ m\ x\ i (v + 1) - \mathrm{Qpu.Xai.pd}\ m\ x\ i\ v = \mathrm{m.weights.getD}\ i\ 0 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L245}
+
+\paragraph{\texttt{Qpu.Xai.propagate\_sum}}
+**Conservation through one layer**: the lower relevance total equals the sum of the split totals.
+\[ \forall (\mathrm{splits} : \mathrm{List} (\mathrm{List} \mathbb{N})), (\mathrm{Qpu.Xai.propagate}\ \mathrm{splits})\mathrm{.sum} = (\mathrm{List.map}\ \mathrm{List.sum}\ \mathrm{splits})\mathrm{.sum} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L535}
+
+\paragraph{\texttt{Qpu.Xai.saliency\_zero\_iff}}
+Saliency vanishes exactly when the weight does.
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (i : \mathbb{N}), (\mathrm{Qpu.Xai.saliency}\ m)\mathrm{.getD}\ i\ 0 = 0 \leftrightarrow \mathrm{m.weights.getD}\ i\ 0 = 0 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L284}
+
+\paragraph{\texttt{Qpu.Xai.saliency\_zero\_insensitive}}
+**Gradient saliency**: a feature with zero saliency cannot move the output.
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (x : \mathrm{List} \mathbb{Z}) (i : \mathbb{N}) (v : \mathbb{Z}), i < \mathrm{x.length} \to (\mathrm{Qpu.Xai.saliency}\ m)\mathrm{.getD}\ i\ 0 = 0 \to \mathrm{m.eval} (\mathrm{x.set}\ i\ v) = \mathrm{m.eval}\ x \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L291}
+
+\paragraph{\texttt{Qpu.Xai.sensitivity\_eq\_weight}}
+**Sensitivity**: perturbing feature `i` by `δ` changes the output by `wᵢ δ`.
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (x : \mathrm{List} \mathbb{Z}) (i : \mathbb{N}) (\delta : \mathbb{Z}), i < \mathrm{x.length} \to \mathrm{m.eval} (\mathrm{x.set}\ i (\mathrm{x.getD}\ i\ 0 + \delta )) - \mathrm{m.eval}\ x = \mathrm{m.weights.getD}\ i\ 0 \cdot \delta  \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L217}
+
+\paragraph{\texttt{Qpu.Xai.sensitivity\_noise\_invariant}}
+**SmoothGrad / noise robustness**: the finite-difference gradient at any (noisy) point `x'` is the same weight as at `x`.
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (x\ x' : \mathrm{List} \mathbb{Z}) (i : \mathbb{N}) (\delta : \mathbb{Z}), i < \mathrm{x.length} \to i < \mathrm{x.length}' \to \mathrm{m.eval} (\mathrm{x.set}'\ i (\mathrm{x.getD}'\ i\ 0 + \delta )) - \mathrm{m.eval}\ x' = \mathrm{m.eval} (\mathrm{x.set}\ i (\mathrm{x.getD}\ i\ 0 + \delta )) - \mathrm{m.eval}\ x \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L235}
+
+\paragraph{\texttt{Qpu.Xai.sensitivity\_ratio}}
+**Sensitivity ratio** `output change / perturbation` is the weight, for any nonzero perturbation (the sketch's `sensitivity = output\_change / perturbation`).
+\[ \forall (m : \mathrm{Qpu.Xai.Linear}) (x : \mathrm{List} \mathbb{Z}) (i : \mathbb{N}) (\delta : \mathbb{Z}), i < \mathrm{x.length} \to \delta \ne 0 \to (\mathrm{m.eval} (\mathrm{x.set}\ i (\mathrm{x.getD}\ i\ 0 + \delta )) - \mathrm{m.eval}\ x) / \delta = \mathrm{m.weights.getD}\ i\ 0 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L227}
+
+\paragraph{\texttt{Qpu.Xai.shap\_marginal\_constant}}
+**SHAP**: the marginal contribution of feature `i` to *any* coalition `S` is the linear attribution `wᵢ (xᵢ − bᵢ)`. Since the Shapley value is a weighted average of marginal contributions with weights summing to one, it equals this attribution.
+\[ \forall (w : \mathrm{List} \mathbb{Z}) (S : \mathrm{List}\ \mathrm{Bool}) (x\ b : \mathrm{List} \mathbb{Z}), \forall i < \mathrm{S.length}, \mathrm{S.length} = \mathrm{x.length} \to \mathrm{x.length} = \mathrm{b.length} \to \mathrm{Qpu.Xai.dot}\ w (\mathrm{Qpu.Xai.mask} (\mathrm{S.set}\ i\ \mathrm{true}) x\ b) - \mathrm{Qpu.Xai.dot}\ w (\mathrm{Qpu.Xai.mask} (\mathrm{S.set}\ i\ \mathrm{false}) x\ b) = \mathrm{w.getD}\ i\ 0 \cdot (\mathrm{x.getD}\ i\ 0 - \mathrm{b.getD}\ i\ 0) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L311}
+
+\paragraph{\texttt{Qpu.Xai.sum\_foldl\_vadd}}
+\[ \forall (L : \mathrm{List} (\mathrm{List} \mathbb{N})) (\mathrm{acc} : \mathrm{List} \mathbb{N}), (\mathrm{List.foldl}\ \mathrm{Qpu.Xai.vadd}\ \mathrm{acc}\ L)\mathrm{.sum} = \mathrm{acc.sum} + (\mathrm{List.map}\ \mathrm{List.sum}\ L)\mathrm{.sum} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L527}
+
+\paragraph{\texttt{Qpu.Xai.sum\_replicate\_int}}
+\[ \forall (n : \mathbb{N}) (a : \mathbb{Z}), (\mathrm{List.replicate}\ n\ a)\mathrm{.sum} = \uparrow n \cdot a \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L126}
+
+\paragraph{\texttt{Qpu.Xai.sum\_replicate\_nat}}
+\[ \forall (n\ k : \mathbb{N}), (\mathrm{List.replicate}\ n\ k)\mathrm{.sum} = n \cdot k \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L441}
+
+\paragraph{\texttt{Qpu.Xai.sum\_rollout}}
+**Rollout preserves normalisation**: if every row of `B` sums to `T`, the rolled row sums to `(Σ a) · T`.
+\[ \forall (a : \mathrm{List} \mathbb{N}) (B : \mathrm{List} (\mathrm{List} \mathbb{N})) (T : \mathbb{N}), (\forall r \in B, \mathrm{r.sum} = T) \to \mathrm{a.length} \le \mathrm{B.length} \to (\mathrm{Qpu.Xai.rollout}\ a\ B)\mathrm{.sum} = \mathrm{a.sum} \cdot T \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L492}
+
+\paragraph{\texttt{Qpu.Xai.sum\_smul}}
+\[ \forall (k : \mathbb{N}) (r : \mathrm{List} \mathbb{N}), (\mathrm{Qpu.Xai.smul}\ k\ r)\mathrm{.sum} = k \cdot \mathrm{r.sum} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L469}
+
+\paragraph{\texttt{Qpu.Xai.sum\_vadd}}
+\[ \forall (u\ v : \mathrm{List} \mathbb{N}), (\mathrm{Qpu.Xai.vadd}\ u\ v)\mathrm{.sum} = \mathrm{u.sum} + \mathrm{v.sum} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L475}
+
+\paragraph{\texttt{Qpu.Xai.support\_sufficient}}
+**Explanation sufficiency**: the support of the weights is a sufficient explanation, since baselining every zero-weight feature leaves the inner product unchanged.
+\[ \forall (w\ x\ b : \mathrm{List} \mathbb{Z}), \mathrm{x.length} = \mathrm{b.length} \to \mathrm{Qpu.Xai.dot}\ w (\mathrm{Qpu.Xai.maskSupport}\ w\ x\ b) = \mathrm{Qpu.Xai.dot}\ w\ x \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L664}
+
+\paragraph{\texttt{Qpu.Xai.telescope}}
+Telescoping sum.
+\[ \forall (g : \mathbb{N} \to \mathbb{Z}) (n : \mathbb{N}), (\mathrm{List.map} (\lambda \ k \mapsto g\ k - g (k + 1)) (\mathrm{List.range}\ n))\mathrm{.sum} = g\ 0 - g\ n \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ExplainableAI.lean\#L354}
+\end{document}

@@ -1,0 +1,37 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Surfacecode}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Surfacecode.lean}
+
+\paragraph{\texttt{sq\_ge}}
+Squaring never shrinks the distance, for every d.
+\[ \forall (d : \mathbb{N}), d \le d ^{2} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Surfacecode.lean\#L36}
+
+\paragraph{\texttt{surfaceCorrectable\_le}}
+The correctable count never exceeds the distance itself: an honest margin, for every d.
+\[ \forall (d : \mathbb{N}), \mathrm{surfaceCorrectable}\ d \le d \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Surfacecode.lean\#L60}
+
+\paragraph{\texttt{surfaceCorrectable\_monotone}}
+Higher distance corrects at least as much, for all distance pairs.
+\[ \forall \{d_{1} d_{2} : \mathbb{N}\}, d_{1} \le d_{2} \to \mathrm{surfaceCorrectable}\ d_{1} \le \mathrm{surfaceCorrectable}\ d_{2} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Surfacecode.lean\#L53}
+
+\paragraph{\texttt{surfacePhysical\_pos}}
+Every code distance yields at least one physical qubit: the patch never vanishes, uniformly in d.
+\[ \forall (d : \mathbb{N}), 0 < \mathrm{surfacePhysical}\ d \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Surfacecode.lean\#L47}
+
+\paragraph{\texttt{surfacecode\_all}}
+The textbook spot values, decided by the kernel as controls on the monotone and positivity theorems.
+\[ \mathrm{surfacePhysical}\ 3 = 13 \land \mathrm{surfaceCorrectable}\ 5 = 2 \land \mathrm{surfaceLogical} = 2 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Surfacecode.lean\#L65}
+\end{document}

@@ -1,0 +1,17 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Cyclotomic}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cyclotomic.lean}
+
+\paragraph{\texttt{Polynomial.prod\_cyclotomic\_eq\_X\_pow\_add\_one}}
+`X \^{} n + 1` is the product of the cyclotomic polynomials `Φ\_d` over the divisors `d` of `2 n` that do not divide `n`, for `0 < n` over any commutative ring. Proposed for Mathlib beside `prod\_cyclotomic\_eq\_X\_pow\_sub\_one`. Prior art: 8f1972b9-da78-721e-9d7e-cf6e117067ed (lean/dossiers/Polynomial.prod\_cyclotomic\_eq\_X\_pow\_add\_one.md)
+\[ \forall \{n : \mathbb{N}\}, 0 < n \to \forall (R : \mathrm{Type}\ \mathrm{u\_1}) [\mathrm{inst} : \mathrm{CommRing}\ R], \prod d \in (2 \cdot n)\mathrm{.divisors} \setminus \mathrm{n.divisors}, \mathrm{Polynomial.cyclotomic}\ d\ R = \mathrm{Polynomial.X} ^{n} + 1 \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Cyclotomic.lean\#L15}
+\end{document}

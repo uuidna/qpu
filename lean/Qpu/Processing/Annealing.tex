@@ -1,0 +1,42 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Annealing}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Annealing.lean}
+
+\paragraph{\texttt{annealing\_all}}
+The textbook spot values, decided by the kernel as controls on the general laws.
+\[ \mathrm{chimera}\ 16 = 2048 \land \mathrm{pegasus}\ 16 = 5760 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Annealing.lean\#L55}
+
+\paragraph{\texttt{chimera\_monotone}}
+Chimera counts never shrink with more cells, for all size pairs.
+\[ \forall \{m\ m' : \mathbb{N}\}, m \le m' \to \mathrm{chimera}\ m \le \mathrm{chimera}\ m' \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Annealing.lean\#L36}
+
+\paragraph{\texttt{chimera\_pos}}
+A nonempty topology has qubits, for every cell size m ≥ 1.
+\[ \forall (m : \mathbb{N}), 0 < m \to 0 < \mathrm{chimera}\ m \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Annealing.lean\#L32}
+
+\paragraph{\texttt{chimera\_succ}}
+One more cell row adds exactly vertices·(2m+1) qubits, for every m.
+\[ \forall (m : \mathbb{N}), \mathrm{chimera} (m + 1) = \mathrm{chimera}\ m + \mathrm{vertices} \cdot (2 \cdot m + 1) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Annealing.lean\#L25}
+
+\paragraph{\texttt{pegasus\_monotone}}
+Pegasus counts never shrink with more cells: the m·(m−1) factor is monotone cell by cell, for all size pairs.
+\[ \forall \{m\ m' : \mathbb{N}\}, m \le m' \to \mathrm{pegasus}\ m \le \mathrm{pegasus}\ m' \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Annealing.lean\#L42}
+
+\paragraph{\texttt{pegasus\_pos}}
+Two or more cells always hold Pegasus qubits, uniformly in m.
+\[ \forall (m : \mathbb{N}), 1 < m \to 0 < \mathrm{pegasus}\ m \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Annealing.lean\#L48}
+\end{document}
