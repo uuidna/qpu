@@ -136,3 +136,23 @@ test('every challenge and its solution stand in the README below the mark, with 
     assert.ok(handle && new RegExp(`^\\| challenges \\| .*${handle}`, 'm').test(hardware), `${c.id} on the hardware receipt`)
   }
 })
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the exact links the NIST and CERN doors probe stand in the one text, and one tools/list gives the tools with their proof read from the sealed receipts. */
+test('the exact links the NIST and CERN doors probe stand in the one text, and one tools/list gives the tools with their proof read from the sealed receipts', async () => {
+  const call = async (name: string, args: object) => (await rpc('tools/call', { name, arguments: args })).structuredContent
+  const nist = await call('seal', { nist: true }), cern = await call('seal', { nist: { reverse: true, via: 'cern' } })
+  const urls = (d: { requests: { url: string }[] }) => d.requests.map((r) => r.url)
+  // every link either door probes is in the one text, exactly as the door names it, above the hardware mark
+  const [above = ''] = readFileSync(join(root, 'README.md'), 'utf8').split(HARDWARE_MARK)
+  for (const u of [...urls(nist), ...urls(cern)]) assert.ok(above.includes(u), u)
+  // one call: the tools and the proof, the receipt the text carries, the theorems both doors verify and the same links
+  const listed = await rpc('tools/list')
+  assert.ok(listed.tools.length > 0)
+  const proof = listed._meta.proof as { receipt: { uuid: string; sha256: string }; theorems: string[]; verify: { tool: string; arguments: object; content: string }; probes: { nist: { url: string }[]; cern: { url: string }[] } }
+  assert.deepEqual([proof.receipt.uuid, proof.receipt.sha256], [RECEIPT.uuid, RECEIPT.sha256])
+  assert.deepEqual(proof.theorems, gateVerified().verified)
+  assert.deepEqual(proof.probes.nist.map((p) => p.url).sort(), [...new Set(urls(nist))].sort())
+  assert.deepEqual(proof.probes.cern.map((p) => p.url).sort(), [...new Set(urls(cern))].sort())
+  // the verify call it names, over the text of the resource it names, decides the text the server serves
+  const content = (await rpc('resources/read', { uri: proof.verify.content })).contents[0].text as string
+  assert.equal((await call(proof.verify.tool, { ...proof.verify.arguments, content })).valid, true)
+})

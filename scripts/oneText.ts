@@ -36,9 +36,11 @@ if (!verified.length) throw new Error(`${asked('seal', DOORS.nist)} holds ${nist
 // the receipts: one a theorem, its body what the kernel holds of it and what each door answers, every body sealed in one call of the seal door
 const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
 const technique = `lean/tools/Theorems.lean, ${asked('seal', DOORS.nist)}, ${asked('seal', DOORS.cern)}`
+// the exact links each door probes, as the door names them: what anyone can fetch to check the verification for themselves
+const probesOf = (door: Record<string, any>) => (door.requests as { id: string; url: string }[]).map((r) => ({ id: r.id, url: r.url }))
 const bodies: { kind: string; technique: string; body: Json }[] = verified.map((theorem) => {
   const t = kernel.get(theorem)!
-  return { kind: theorem, technique, body: { theorem, module: t.module, source: sourceOf(t.module), axioms: t.axioms, nist: { host: nist.host, holds: nist.holds }, cern: { host: cern.host, via: cern.via, holds: cern.holds } } }
+  return { kind: theorem, technique, body: { theorem, module: t.module, source: sourceOf(t.module), axioms: t.axioms, nist: { host: nist.host, holds: nist.holds, probes: probesOf(nist) }, cern: { host: cern.host, via: cern.via, holds: cern.holds, probes: probesOf(cern) } } }
 })
 type Item = { bytes: number; sha256: string; address: string }
 const sealAll = async (texts: string[]) => (await answered('seal', { texts })).items as Item[]

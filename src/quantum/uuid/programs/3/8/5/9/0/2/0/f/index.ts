@@ -29,7 +29,8 @@ import { capabilities } from '../../../../../../../../b/f/6/7/0/2/c/f/index.ts'
 import { listAlpine, portAlpine } from '../../../../../../../../b/f/9/0/a/a/1/b/index.ts'
 import { pageSeed } from '../../../../../../../9/4/0/5/6/c/e/index.ts'
 import { INSTRUCTIONS, LICENSE } from '../../../../../../../../a/f/3/d/e/a/5/f/index.ts'
-import { RECEIPT, RECEIPT_TEXT } from '../../../../../../../../2/b/c/0/d/1/3/d/index.ts'
+import { RECEIPT, RECEIPTS, RECEIPT_TEXT } from '../../../../../../../../2/b/c/0/d/1/3/d/index.ts'
+import { receiptBody } from '../../../../../../../../c/6/6/e/6/f/2/6/index.ts'
 import { QPU_ORIGIN, tenantAddress } from '../../../../../../../2/9/8/5/d/5/6/index.ts'
 import { VERSION } from '../../../../../../../../c/0/7/0/9/8/4/3/index.ts'
 import { AXIOMS, evaluate as clayEvaluate, recomputeClay, recomputeClayPravets, reflectionOfRegister, digitalRoot, trinityFor, mint, bits, amplitudes } from '../../../../../../../../9/d/1/0/1/4/3/9/index.ts'
@@ -2705,6 +2706,13 @@ export const handleBatch = (messages: readonly Rpc[]): (Reply | Promise<Reply>)[
 export const caller = (name: string) => (args: Record<string, unknown> = {}): any => { const r = call(name, args); if (r.error) throw new Error(r.error.message); return r.result!.structuredContent }
 /** The one text this build is, served as a resource: its receipt is the address of exactly this text. */
 const RECEIPT_RESOURCE = 'receipt://qpu'
+// the proof that rides with the tools: the build's receipt, the call that verifies it, the theorems it states and the exact links the NIST and
+// CERN doors probe, read from the sealed receipts alone, so one tools/list over npm or over the hosted door gives the tools and their proof
+const PROOF = (() => {
+  const bodies = (RECEIPTS.slice(1) as { variableMeasured: unknown }[]).map((p) => receiptBody(p.variableMeasured as never) as { nist?: { probes?: { id: string; url: string }[] }; cern?: { probes?: { id: string; url: string }[] } })
+  const union = (door: 'nist' | 'cern') => [...new Map(bodies.flatMap((b) => b[door]?.probes ?? []).map((p) => [p.url, p])).values()]
+  return { receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256, resource: RECEIPT_RESOURCE }, merge: RECEIPT.merge, theorems: RECEIPT.parts.map((p) => p.kind), verify: { tool: 'verify', arguments: { uuid: RECEIPT.uuid }, content: RECEIPT_RESOURCE }, probes: { nist: union('nist'), cern: union('cern') } }
+})()
 /** The welcome every client reads at initialize: the build's receipt, how to use the server and how to improve it. */
 const WELCOME = [proseFill(PROSE.quantumProcessingMcp_welcome, RECEIPT.uuid, RECEIPT.sha256, RECEIPT_RESOURCE), PROSE.quantumProcessingMcp_use, proseFill(PROSE.quantumProcessingMcp_improve, RECEIPT.mcp.replace(/\/api\/mcp$/, ''), LICENSE.spdx)].join(' ')
 /** The capacity the welcome states: the register's numbers as metrics carries them, with the gate every step is held to. */
@@ -2787,7 +2795,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       const listed = accountBytes([JSON.stringify(list)]), whole = accountBytes([JSON.stringify(CONTRACTS)])
       const efficiency = measureContext(listed, whole)
       const kept = efficiency.tokens, fullTokens = efficiency.full, saved = efficiency.saved
-      return ok({ tools: list, _meta: { contract: CONTRACT, context: { tools: list.length, of: TOOLS.length, chars: listed.bytes, tokens: kept, fullChars: whole.bytes, fullTokens, saved, balanced: Boolean(wanted || cluster || !full), full, bytes: listed, efficiency, formula: { theorem: 'textbook_context_balanced' as const, lean: 'full - kept + kept = full' as const, full: fullTokens, kept, saved, holds: efficiency.holds }, bill: getBill({ tokens: kept, bits: listed.bits, coins: efficiency.coins, saved: { tokens: saved, bits: whole.bits - listed.bits } }), says: PROSE.quantumProcessingMcp_says422 } } })
+      return ok({ tools: list, _meta: { contract: CONTRACT, proof: PROOF, context: { tools: list.length, of: TOOLS.length, chars: listed.bytes, tokens: kept, fullChars: whole.bytes, fullTokens, saved, balanced: Boolean(wanted || cluster || !full), full, bytes: listed, efficiency, formula: { theorem: 'textbook_context_balanced' as const, lean: 'full - kept + kept = full' as const, full: fullTokens, kept, saved, holds: efficiency.holds }, bill: getBill({ tokens: kept, bits: listed.bits, coins: efficiency.coins, saved: { tokens: saved, bits: whole.bits - listed.bits } }), says: PROSE.quantumProcessingMcp_says422 } } })
     }
     // the UI resources: one ui://qpu/<tool> per tool, the app shell served over the standard resource methods, nothing bypassed
     if (message.method === 'resources/list') return ok({ resources: [...VIEWS.map((v) => { const u = ui(v); return { uri: u.uri, name: u.name, description: v === 'chat' ? PROSE.quantumProcessingMcp_s423 : proseFill(PROSE.quantumProcessingMcp_s424, v), mimeType: u.mimeType, _meta: { ui: { csp: u.csp, prefersBorder: u.prefersBorder } } } }), { uri: RECEIPT_RESOURCE, name: 'qpu · receipt', description: PROSE.quantumProcessingMcp_receiptResource, mimeType: 'text/markdown', _meta: { receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256 } } }, { uri: OPENAPI_RESOURCE, name: 'qpu · openapi', description: PROSE.quantumProcessingMcp_description426, mimeType: 'application/json' }, { uri: LEAN_RESOURCE, name: 'qpu · lean', description: PROSE.quantumProcessingMcp_description427, mimeType: 'application/json' }] })

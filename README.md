@@ -4,10 +4,10 @@
 
 | receipt |  |
 | --- | --- |
-| uuid | d4c79029-a249-8b77-9f2f-b8b9d1436fc9 |
-| handle | `d4c79029` |
-| sha256 | f49e5d82d0be8f9cd542f27471d55561ce0e2e63d6e2c88512e82c1bd034bb24 |
-| coin | 00000100-a249-7b77-8f2f-b8b9d1436fc9 |
+| uuid | 8e27a41e-6ec9-5931-be39-f662b696691f |
+| handle | `8e27a41e` |
+| sha256 | 13d5e419df192c7d30d41908841c0ecbf2b3222cec30c2c9564fe495bc534971 |
+| coin | 00000100-6ec9-6931-8e39-f662b696691f |
 | bytes | 256 |
 | bits | 2048 |
 | tokens | 64 |
@@ -23,29 +23,29 @@
 
 | part | handle | uuid |
 | --- | --- | --- |
-| `textbook_sha256_fips_180_4` | `ba6cdad3` | ba6cdad3-2685-344b-b53f-20a8151801ac |
-| `textbook_sha3_fips_202` | `f4b15a9f` | f4b15a9f-ade1-853a-a56b-8e07cb0b2be0 |
-| `textbook_pqc_standards_three` | `6434ef1e` | 6434ef1e-d198-6248-9e25-fbf75a94b200 |
-| `textbook_coil_green` | `e9045825` | e9045825-9cd3-19c5-91ae-8c31ba8d1216 |
+| `textbook_sha256_fips_180_4` | `460f5805` | 460f5805-8ae0-14d0-b7fe-6d1fc9b6d8c8 |
+| `textbook_sha3_fips_202` | `e0028c71` | e0028c71-0058-43c4-b4a6-ec45d856dc94 |
+| `textbook_pqc_standards_three` | `ba853ce3` | ba853ce3-baac-583e-a382-a68856cb258a |
+| `textbook_coil_green` | `cdb22ab5` | cdb22ab5-7757-3466-bae4-81f905bf740a |
 
 | qpu |  |
 | --- | --- |
 | rfc | 6962 |
-| root | 305658b87baa9c65684a005de4ce064c585bc47433539783b51e43a16f037647 |
-| parts | ba6cdad3-2685-344b-b53f-20a8151801ac, f4b15a9f-ade1-853a-a56b-8e07cb0b2be0, 6434ef1e-d198-6248-9e25-fbf75a94b200, e9045825-9cd3-19c5-91ae-8c31ba8d1216 |
+| root | 55c57fc9f121c85e5afd4bdb43834f7c32ed581c4ed3873a78a27009dbed8f6b |
+| parts | 460f5805-8ae0-14d0-b7fe-6d1fc9b6d8c8, e0028c71-0058-43c4-b4a6-ec45d856dc94, ba853ce3-baac-583e-a382-a68856cb258a, cdb22ab5-7757-3466-bae4-81f905bf740a |
 
 ## textbook\_sha256\_fips\_180\_4
 
 | receipt |  |
 | --- | --- |
-| uuid | ba6cdad3-2685-344b-b53f-20a8151801ac |
-| handle | `ba6cdad3` |
-| sha256 | 3e56abec65b29f07871a4d5154999adb0babe31dc7ef667020abe725a951f6fc |
-| coin | 00000157-2685-544b-853f-20a8151801ac |
-| bytes | 343 |
-| bits | 2744 |
-| tokens | 86 |
-| joules | 7.877966060656018e-18 |
+| uuid | 460f5805-8ae0-14d0-b7fe-6d1fc9b6d8c8 |
+| handle | `460f5805` |
+| sha256 | 8d17358d56238ce1c5492f5c6e41a85aaace6a2948645030d1942804c10c5891 |
+| coin | 000007a8-8ae0-44d0-87fe-6d1fc9b6d8c8 |
+| bytes | 1960 |
+| bits | 15680 |
+| tokens | 490 |
+| joules | 4.501694891803439e-17 |
 | technique | `lean/tools/Theorems.lean, seal {"nist":true}, seal {"nist":{"reverse":true,"via":"cern"}}` |
 | author | Tsvetan Rouschev |
 | orcid | <https://orcid.org/0009-0000-7312-9778> |
@@ -66,11 +66,40 @@
 | host | qpu.uuidna.com |
 | holds | true |
 
+### textbook\_sha256\_fips\_180\_4.nist.probes
+
+| id | url |
+| --- | --- |
+| codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| nist-opendata | <https://data.nist.gov/rmm/records?page=0&size=5> |
+| nist-beacon | <https://beacon.nist.gov/beacon/2.0/pulse/last> |
+| ct-sth | <https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth> |
+| acme-directory | <https://acme-v02.api.letsencrypt.org/directory> |
+| nvd-cves | <https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5> |
+| cern-opendata | <https://opendata.cern.ch/api/records/?q=higgs&size=5> |
+| csrc-pqc | <https://csrc.nist.gov/projects/post-quantum-cryptography> |
+| nist-codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| crt-sh | <https://crt.sh/?q=qpu.uuidna.com&output=json> |
+
 | textbook\_sha256\_fips\_180\_4.cern |  |
 | --- | --- |
 | host | opendata.cern.ch |
 | via | cern |
 | holds | true |
+
+### textbook\_sha256\_fips\_180\_4.cern.probes
+
+| id | url |
+| --- | --- |
+| cern-opendata | <https://opendata.cern.ch/api/records/?q=higgs&size=5> |
+| codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| nist-codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| csrc-pqc | <https://csrc.nist.gov/projects/post-quantum-cryptography> |
+| nvd-cves | <https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5> |
+| acme-directory | <https://acme-v02.api.letsencrypt.org/directory> |
+| ct-sth | <https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth> |
+| nist-beacon | <https://beacon.nist.gov/beacon/2.0/pulse/last> |
+| crt-sh | <https://crt.sh/?q=opendata.cern.ch&output=json> |
 
 ### textbook\_sha256\_fips\_180\_4.formula
 
@@ -82,14 +111,14 @@
 
 | receipt |  |
 | --- | --- |
-| uuid | f4b15a9f-ade1-853a-a56b-8e07cb0b2be0 |
-| handle | `f4b15a9f` |
-| sha256 | 6acc70da1fed60c95daf7526bea90b3495789a4701d1aa78c4968aedea9b0c19 |
-| coin | 00000126-ade1-453a-856b-8e07cb0b2be0 |
-| bytes | 294 |
-| bits | 2352 |
-| tokens | 74 |
-| joules | 6.7525423377051586e-18 |
+| uuid | e0028c71-0058-43c4-b4a6-ec45d856dc94 |
+| handle | `e0028c71` |
+| sha256 | 81a592cf17b3805c5fd1d071d0e3fb485d9fa4f2a4d778c95cfeb98ecda555ee |
+| coin | 00000777-0058-63c4-84a6-ec45d856dc94 |
+| bytes | 1911 |
+| bits | 15288 |
+| tokens | 478 |
+| joules | 4.389152519508353e-17 |
 | technique | `lean/tools/Theorems.lean, seal {"nist":true}, seal {"nist":{"reverse":true,"via":"cern"}}` |
 | author | Tsvetan Rouschev |
 | orcid | <https://orcid.org/0009-0000-7312-9778> |
@@ -110,11 +139,40 @@
 | host | qpu.uuidna.com |
 | holds | true |
 
+### textbook\_sha3\_fips\_202.nist.probes
+
+| id | url |
+| --- | --- |
+| codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| nist-opendata | <https://data.nist.gov/rmm/records?page=0&size=5> |
+| nist-beacon | <https://beacon.nist.gov/beacon/2.0/pulse/last> |
+| ct-sth | <https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth> |
+| acme-directory | <https://acme-v02.api.letsencrypt.org/directory> |
+| nvd-cves | <https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5> |
+| cern-opendata | <https://opendata.cern.ch/api/records/?q=higgs&size=5> |
+| csrc-pqc | <https://csrc.nist.gov/projects/post-quantum-cryptography> |
+| nist-codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| crt-sh | <https://crt.sh/?q=qpu.uuidna.com&output=json> |
+
 | textbook\_sha3\_fips\_202.cern |  |
 | --- | --- |
 | host | opendata.cern.ch |
 | via | cern |
 | holds | true |
+
+### textbook\_sha3\_fips\_202.cern.probes
+
+| id | url |
+| --- | --- |
+| cern-opendata | <https://opendata.cern.ch/api/records/?q=higgs&size=5> |
+| codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| nist-codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| csrc-pqc | <https://csrc.nist.gov/projects/post-quantum-cryptography> |
+| nvd-cves | <https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5> |
+| acme-directory | <https://acme-v02.api.letsencrypt.org/directory> |
+| ct-sth | <https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth> |
+| nist-beacon | <https://beacon.nist.gov/beacon/2.0/pulse/last> |
+| crt-sh | <https://crt.sh/?q=opendata.cern.ch&output=json> |
 
 ### textbook\_sha3\_fips\_202.formula
 
@@ -126,14 +184,14 @@
 
 | receipt |  |
 | --- | --- |
-| uuid | 6434ef1e-d198-6248-9e25-fbf75a94b200 |
-| handle | `6434ef1e` |
-| sha256 | bb91b18b495e1c476efeab5b5f4eda09e3e0c30273c99012f6d9f6adf1d3d2ba |
-| coin | 00000132-d198-3248-8e25-fbf75a94b200 |
-| bytes | 306 |
-| bits | 2448 |
-| tokens | 77 |
-| joules | 7.028156310672717e-18 |
+| uuid | ba853ce3-baac-583e-a382-a68856cb258a |
+| handle | `ba853ce3` |
+| sha256 | a8801ecccfc22b5cbfce544926d5f99ba15554b5eb7924ea8bc133dc92131d99 |
+| coin | 00000783-baac-283e-8382-a68856cb258a |
+| bytes | 1923 |
+| bits | 15384 |
+| tokens | 481 |
+| joules | 4.416713916805109e-17 |
 | technique | `lean/tools/Theorems.lean, seal {"nist":true}, seal {"nist":{"reverse":true,"via":"cern"}}` |
 | author | Tsvetan Rouschev |
 | orcid | <https://orcid.org/0009-0000-7312-9778> |
@@ -154,11 +212,40 @@
 | host | qpu.uuidna.com |
 | holds | true |
 
+### textbook\_pqc\_standards\_three.nist.probes
+
+| id | url |
+| --- | --- |
+| codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| nist-opendata | <https://data.nist.gov/rmm/records?page=0&size=5> |
+| nist-beacon | <https://beacon.nist.gov/beacon/2.0/pulse/last> |
+| ct-sth | <https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth> |
+| acme-directory | <https://acme-v02.api.letsencrypt.org/directory> |
+| nvd-cves | <https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5> |
+| cern-opendata | <https://opendata.cern.ch/api/records/?q=higgs&size=5> |
+| csrc-pqc | <https://csrc.nist.gov/projects/post-quantum-cryptography> |
+| nist-codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| crt-sh | <https://crt.sh/?q=qpu.uuidna.com&output=json> |
+
 | textbook\_pqc\_standards\_three.cern |  |
 | --- | --- |
 | host | opendata.cern.ch |
 | via | cern |
 | holds | true |
+
+### textbook\_pqc\_standards\_three.cern.probes
+
+| id | url |
+| --- | --- |
+| cern-opendata | <https://opendata.cern.ch/api/records/?q=higgs&size=5> |
+| codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| nist-codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| csrc-pqc | <https://csrc.nist.gov/projects/post-quantum-cryptography> |
+| nvd-cves | <https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5> |
+| acme-directory | <https://acme-v02.api.letsencrypt.org/directory> |
+| ct-sth | <https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth> |
+| nist-beacon | <https://beacon.nist.gov/beacon/2.0/pulse/last> |
+| crt-sh | <https://crt.sh/?q=opendata.cern.ch&output=json> |
 
 ### textbook\_pqc\_standards\_three.formula
 
@@ -170,14 +257,14 @@
 
 | receipt |  |
 | --- | --- |
-| uuid | e9045825-9cd3-19c5-91ae-8c31ba8d1216 |
-| handle | `e9045825` |
-| sha256 | aab4fc6d08f4a6afefeed5fad368f4aed13661df3eac0b27459b310af9d6f42e |
-| coin | 00000120-9cd3-49c5-81ae-8c31ba8d1216 |
-| bytes | 288 |
-| bits | 2304 |
-| tokens | 72 |
-| joules | 6.61473535122138e-18 |
+| uuid | cdb22ab5-7757-3466-bae4-81f905bf740a |
+| handle | `cdb22ab5` |
+| sha256 | 64917fbf82f88e96f19f53da058d29de5d908598f4073636ff1d40dc17d54550 |
+| coin | 00000771-7757-6466-8ae4-81f905bf740a |
+| bytes | 1905 |
+| bits | 15240 |
+| tokens | 477 |
+| joules | 4.3753718208599755e-17 |
 | technique | `lean/tools/Theorems.lean, seal {"nist":true}, seal {"nist":{"reverse":true,"via":"cern"}}` |
 | author | Tsvetan Rouschev |
 | orcid | <https://orcid.org/0009-0000-7312-9778> |
@@ -198,11 +285,40 @@
 | host | qpu.uuidna.com |
 | holds | true |
 
+### textbook\_coil\_green.nist.probes
+
+| id | url |
+| --- | --- |
+| codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| nist-opendata | <https://data.nist.gov/rmm/records?page=0&size=5> |
+| nist-beacon | <https://beacon.nist.gov/beacon/2.0/pulse/last> |
+| ct-sth | <https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth> |
+| acme-directory | <https://acme-v02.api.letsencrypt.org/directory> |
+| nvd-cves | <https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5> |
+| cern-opendata | <https://opendata.cern.ch/api/records/?q=higgs&size=5> |
+| csrc-pqc | <https://csrc.nist.gov/projects/post-quantum-cryptography> |
+| nist-codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| crt-sh | <https://crt.sh/?q=qpu.uuidna.com&output=json> |
+
 | textbook\_coil\_green.cern |  |
 | --- | --- |
 | host | opendata.cern.ch |
 | via | cern |
 | holds | true |
+
+### textbook\_coil\_green.cern.probes
+
+| id | url |
+| --- | --- |
+| cern-opendata | <https://opendata.cern.ch/api/records/?q=higgs&size=5> |
+| codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| nist-codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
+| csrc-pqc | <https://csrc.nist.gov/projects/post-quantum-cryptography> |
+| nvd-cves | <https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5> |
+| acme-directory | <https://acme-v02.api.letsencrypt.org/directory> |
+| ct-sth | <https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth> |
+| nist-beacon | <https://beacon.nist.gov/beacon/2.0/pulse/last> |
+| crt-sh | <https://crt.sh/?q=opendata.cern.ch&output=json> |
 
 ### textbook\_coil\_green.formula
 
@@ -213,10 +329,10 @@
 
 | text |  |
 | --- | --- |
-| uuid | 057be532-ffb6-8567-a9eb-3c280f02738b |
-| sha256 | 65154726ddd393cb159379496af4546cb168d8050ff30adf71bd273a2710bfc3 |
-| merge | d4c79029-a249-8b77-9f2f-b8b9d1436fc9 |
-| verify | `verify {"uuid":"057be532-ffb6-8567-a9eb-3c280f02738b","content":"text"}` |
+| uuid | 246a97b1-95e2-739d-94ea-c2620fc7638c |
+| sha256 | 9601aa66caab6ee2821b676eeb710cef341c7f67aee9e1541404fe328b97e009 |
+| merge | 8e27a41e-6ec9-5931-be39-f662b696691f |
+| verify | `verify {"uuid":"246a97b1-95e2-739d-94ea-c2620fc7638c","content":"text"}` |
 | mcp | <https://qpu.uuidna.com/api/mcp> |
 
 <!-- hardware -->
@@ -225,9 +341,9 @@
 
 | receipt |  |
 | --- | --- |
-| uuid | ff88d4c0-8880-61d0-ac61-aadfeeee0680 |
-| handle | `ff88d4c0` |
-| sha256 | b2111c3b3af9021573ab9b7b7e191e4a37e77f642f2f13018fb171911f962bb2 |
+| uuid | db48b175-d4b8-3d2f-a1dc-1094ba5e6613 |
+| handle | `db48b175` |
+| sha256 | bc9b70a8c29107a6b3227295834ecd65992f41ee602db4da19dbd5151cfc569f |
 
 | hardware |  |
 | --- | --- |
@@ -246,42 +362,42 @@
 | cores | 4 |
 | parallelism | 4 |
 | cpuMHz | 0, 0, 0, 0 |
-| cpuUserMs | 4983890 |
+| cpuUserMs | 5776290 |
 | cpuNiceMs | 0 |
-| cpuSysMs | 299440 |
-| cpuIdleMs | 6484390 |
+| cpuSysMs | 343840 |
+| cpuIdleMs | 7702170 |
 | cpuIrqMs | 0 |
 | memoryBytes | 16868675584 |
-| freeMemoryBytes | 15581061120 |
-| load1 | 1.3 |
-| load5 | 2.29 |
-| load15 | 2.63 |
-| uptimeS | 3593 |
+| freeMemoryBytes | 15866556416 |
+| load1 | 0.37 |
+| load5 | 1.81 |
+| load15 | 2.41 |
+| uptimeS | 4110 |
 | diskBytes | 270553174016 |
-| diskFreeBytes | 231979704320 |
-| diskAvailableBytes | 35308142592 |
+| diskFreeBytes | 231976718336 |
+| diskAvailableBytes | 35305156608 |
 | diskBlockBytes | 4096 |
 | inodes | 16777216 |
-| inodesFree | 14884366 |
+| inodesFree | 14884296 |
 | networkInterfaces | 2 |
 | lean | leanprover/lean4:v4.33.0 |
-| rssBytes | 221372416 |
-| heapTotalBytes | 112181248 |
-| heapUsedBytes | 78457208 |
-| externalBytes | 17694789 |
-| arrayBuffersBytes | 429062 |
-| processUserMicros | 4692561 |
-| processSystemMicros | 212546 |
-| maxRssKb | 218120 |
-| pageFaults | 58925 |
+| rssBytes | 223285248 |
+| heapTotalBytes | 114143232 |
+| heapUsedBytes | 90452672 |
+| externalBytes | 17799603 |
+| arrayBuffersBytes | 534961 |
+| processUserMicros | 5018977 |
+| processSystemMicros | 178889 |
+| maxRssKb | 219408 |
+| pageFaults | 58645 |
 | fsReads | 0 |
 | fsWrites | 0 |
-| contextSwitches | 5484 |
+| contextSwitches | 5813 |
 | challenges | 574a161f, fb1cd940, d6d7b748, ec54afc7, bbcc2c0f, dbbc4fe8, bc24f386, 52a07646, a7fa7c75, d8719ba7, 5d7c7a76, 4d938405, 02f60ed8, 3edf017a |
 | isoHardwareTerms | 3.3.5 physical qubit, 3.3.6 physical qudit, 3.4.8 quantum processor, 3.4.10 quantum computer, 3.4.26 circuit-based quantum computer, 3.4.27 one-way quantum computer, 3.4.28 adiabatic quantum computer |
 | quantumBehaviour | UNVERIFIED |
-| buildMs | 3153 |
-| at | 2026-11-26T19:23:27.266Z |
+| buildMs | 3305 |
+| at | 2026-11-26T19:32:04.262Z |
 
 | hardware.versions |  |
 | --- | --- |
