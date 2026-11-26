@@ -16,7 +16,7 @@ def texSigns : List (Char × String) :=
    ('∨', "\\lor "), ('¬', "\\neg "), ('≤', "\\le "), ('≥', "\\ge "), ('≠', "\\ne "), ('∈', "\\in "),
    ('∉', "\\notin "), ('⊆', "\\subseteq "), ('∣', "\\mid "), ('≡', "\\equiv "), ('≃', "\\simeq "),
    ('↪', "\\hookrightarrow "), ('↑', "\\uparrow "), ('↥', "\\uparrow "), ('ℕ', "\\mathbb{N}"), ('ℤ', "\\mathbb{Z}"),
-   ('ℚ', "\\mathbb{Q}"), ('ℝ', "\\mathbb{R}"), ('α', "\\alpha "), ('β', "\\beta "), ('δ', "\\delta "),
+   ('ℚ', "\\mathbb{Q}"), ('ℝ', "\\mathbb{R}"), ('ℂ', "\\mathbb{C}"), ('α', "\\alpha "), ('β', "\\beta "), ('δ', "\\delta "),
    ('ζ', "\\zeta "), ('θ', "\\theta "), ('ι', "\\iota "), ('κ', "\\kappa "), ('σ', "\\sigma "), ('φ', "\\varphi "),
    ('Δ', "\\Delta "), ('∑', "\\sum "), ('∏', "\\prod "), ('×', "\\times "), ('⊕', "\\oplus "), ('⊗', "\\otimes "),
    ('⊤', "\\top "), ('⊥', "\\bot "), ('⊓', "\\sqcap "), ('∘', "\\circ "), ('⬝', "\\cdot "), ('∩', "\\cap "),

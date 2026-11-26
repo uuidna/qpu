@@ -76,7 +76,8 @@ const tablesOf = (path: string, properties: Property[]): Block[] => {
   ]
 }
 const named = (list: unknown) => Object.fromEntries((list as Property[]).map((p) => [p.name, p.value]))
-// a quantity with its unit symbol, as ISO/IEC 80000 writes a quantity over its unit in a table
+// a currency row right after every coin row: as many currency rows as coin rows, which the register's ISO 4217 row counts
+// (CirqBridge.currency_beside_every_coin); a quantity with its unit symbol, as ISO/IEC 80000 writes a quantity over its unit in a table
 const unit = (name: string) => (ISO_80000_UNITS[name] ? `${name} / ${ISO_80000_UNITS[name]}` : name)
 /** One receipt as blocks: what seals it, what it costs, how it is computed, its author, licence and donation link, its variables and its formulas. */
 const blocksOf = (r: Json, variables: 'variableMeasured' | 'additionalProperty' = 'variableMeasured'): Block[] => {

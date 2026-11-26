@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { handle, type Reply } from './index.ts'
+import { THEOREMS } from '../../../../../../../../3/f/0/e/7/a/6/f/index.ts'
 import { LEADS, listCleanupSubjects } from '../../../../../../../../7/b/0/4/c/3/6/8/index.ts'
 
 const call = (name: string, args: unknown): Reply => {
@@ -445,6 +446,13 @@ test('a circuit as cirq.to_json writes it runs on the circuit door, its amplitud
     const sampled = ran(name, { repetitions: 64 }).result!.structuredContent as { key: string; histogram: Record<string, number> }
     assert.equal(sampled.key, 'm', name)
     assert.deepEqual(Object.keys(sampled.histogram).map(Number).filter((k) => !c.support!.includes(k)), [], name)
+  }
+  // the bridge rests on theorems the kernel holds, each on Lean's standard axioms alone
+  const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
+  for (const key of ['Advantage.fold_unfold', 'CirqBridge.cirq_order_eq_reversed', 'CirqBridge.global_phases_add', 'CirqBridge.shift_phase', 'CirqBridge.brief_sound', 'CirqBridge.currency_beside_every_coin']) {
+    const t = kernel.get(key)
+    assert.ok(t, key)
+    assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
   }
   // a gate the door does not compute is refused by its cirq_type, never approximated
   const refused = ran('fsim-refused')
