@@ -19,6 +19,8 @@ import { HARDWARE_MARK, readJson } from '../src/quantum/uuid/programs/0/d/b/3/5/
 import { deviceJsonLd, isProperties, isRows, receiptBody, receiptJsonLd, receiptText, type Json } from '../src/quantum/uuid/programs/c/6/6/e/6/f/2/6/index.ts'
 import { verifiedByBoth } from '../src/quantum/uuid/programs/e/5/1/d/e/c/1/5/index.ts'
 import { isoTermsOf, physicalEvidence } from '../src/quantum/uuid/programs/d/f/0/d/9/1/3/b/index.ts'
+import { DOCUMENT_LANGUAGE, ISO_4217_COIN, ISO_80000_UNITS } from '../src/quantum/uuid/programs/0/b/7/1/f/2/4/6/index.ts'
+import { LICENSE } from '../src/quantum/uuid/programs/a/f/3/d/e/a/5/f/index.ts'
 
 export const pkg = readJson<{ name: string; version: string; description: string }>('src/quantum/package.json')!
 const SITE = 'https://qpu.uuidna.com', MCP = `${SITE}/api/mcp`, REPO = `https://github.com/${RELEASE_REPOSITORY}`, TAG = `v${pkg.version}`
@@ -74,20 +76,22 @@ const tablesOf = (path: string, properties: Property[]): Block[] => {
   ]
 }
 const named = (list: unknown) => Object.fromEntries((list as Property[]).map((p) => [p.name, p.value]))
+// a quantity with its unit symbol, as ISO/IEC 80000 writes a quantity over its unit in a table
+const unit = (name: string) => (ISO_80000_UNITS[name] ? `${name} / ${ISO_80000_UNITS[name]}` : name)
 /** One receipt as blocks: what seals it, what it costs, how it is computed, its author, licence and donation link, its variables and its formulas. */
 const blocksOf = (r: Json, variables: 'variableMeasured' | 'additionalProperty' = 'variableMeasured'): Block[] => {
   const kind = String(r.alternateName ?? r.name), id = named(r.identifier), size = r.size ? named(r.size) : {}, formulas = (r.isBasedOn ?? []) as (Json & { size: Property[] })[], creator = r.creator as Json | undefined
   return [
     { kind: 'h2', text: kind },
     { kind: 'table', head: ['receipt', ''], rows: [
-      ...Object.entries(id).map(([k, v]) => [k, k === 'handle' ? code(String(v)) : String(v)]), ...Object.entries(size).map(([k, v]) => [k, String(v)]),
+      ...Object.entries(id).flatMap(([k, v]) => [[k, k === 'handle' ? code(String(v)) : String(v)], ...(k === 'coin' ? [['currency', ISO_4217_COIN.unit]] : [])]), ...Object.entries(size).map(([k, v]) => [unit(k), String(v)]),
       ...(r.measurementTechnique ? [['technique', code(String(r.measurementTechnique))]] : []),
       ...(creator ? [['author', String(creator.name)], ['orcid', String(creator.identifier)], ['licence', String(r.license)], ['licensing', String(r.acquireLicensePage)], ['donation', String((r.potentialAction as Json).target)], ['contact', String((creator.contactPoint as Json).url)]] : []),
       ...(r.hasPart ? [['parts', String((r.hasPart as unknown[]).length)]] : []),
     ] },
     ...(r.hasPart ? [{ kind: 'table' as const, head: ['part', 'handle', 'uuid'], rows: (r.hasPart as Json[]).map((x) => [code(String(x.name)), code(String(x.identifier).slice(0, 8)), String(x.identifier)]) }] : []),
     ...tablesOf(kind, r[variables] as Property[]),
-    ...(formulas.length ? [{ kind: 'h3' as const, text: `${kind}.formula` }, { kind: 'table' as const, head: ['theorem', 'formula', 'bytes', 'bits', 'tokens', 'joules', 'coin', 'source'], rows: formulas.map((f) => { const c = named(f.size); return [code(String(f.name)), `$${f.text}$`, String(c.bytes), String(c.bits), String(c.tokens), String(c.joules), String(f.identifier), String(f.url)] }) }] : []),
+    ...(formulas.length ? [{ kind: 'h3' as const, text: `${kind}.formula` }, { kind: 'table' as const, head: ['theorem', 'formula', ...['bytes', 'bits', 'tokens', 'joules'].map(unit), 'coin', 'currency', 'source'], rows: formulas.map((f) => { const c = named(f.size); return [code(String(f.name)), `$${f.text}$`, String(c.bytes), String(c.bits), String(c.tokens), String(c.joules), String(f.identifier), ISO_4217_COIN.unit, String(f.url)] }) }] : []),
   ]
 }
 type Token = { kind: 'code' | 'math' | 'url' | 'text'; text: string }
@@ -102,7 +106,10 @@ const blockMarkdown = (b: Block) => b.kind === 'h2' ? `## ${inlineMarkdown(b.tex
 const blockHtml = (b: Block) => b.kind === 'h2' ? `<h2>${inlineHtml(b.text!)}</h2>` : b.kind === 'h3' ? `<h3>${inlineHtml(b.text!)}</h3>` : `<table><thead><tr>${b.head!.map((c) => `<th>${inlineHtml(c)}</th>`).join('')}</tr></thead><tbody>${b.rows!.map((r) => `<tr>${r.map((c) => `<td>${inlineHtml(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`
 
 export const title = `${pkg.name} v${pkg.version}: ${pkg.description}`
-const blocks = receipts.flatMap((r) => blocksOf(r))
+// the information item identified as ISO/IEC/IEEE 15289 asks: the merge it is, its version, author, licence and language; the date a copy is
+// issued is the date its build ran, so it stands below the mark with the hardware that built it
+const identification: Block = { kind: 'table', head: ['document', ''], rows: [['identifier', mergedItem!.address], ['version', pkg.version], ['author', LICENSE.author], ['licence', LICENSE.spdx], ['language', DOCUMENT_LANGUAGE]] }
+const blocks = [identification, ...receipts.flatMap((r) => blocksOf(r))]
 /** The text as Markdown, the content its receipt addresses. */
 export const markdown = blocks.map(blockMarkdown).join('\n\n') + '\n'
 /** The text a verifier reads: everything above the rule of any Markdown copy, the title included. */
@@ -154,8 +161,9 @@ export const hardware = { uuid: deviceItem!.address, sha256: deviceItem!.sha256,
 const hardwareBlocks = blocksOf(hardware.jsonLd, 'additionalProperty')
 /** Where the hardware begins in every copy: the one text is compared up to this mark, never past it. */
 export { HARDWARE_MARK }
-export const htmlWithHardware = `${html}${HARDWARE_MARK}${[...hardwareBlocks, ...challengeBlocks].map(blockHtml).join('')}`
+const issued: Block = { kind: 'table', head: ['copy', ''], rows: [['issued', String(facts.at)], ['hardware', hardware.uuid]] }
+export const htmlWithHardware = `${html}${HARDWARE_MARK}${[issued, ...hardwareBlocks, ...challengeBlocks].map(blockHtml).join('')}`
 /** The page every Markdown copy is: the title, the text, the receipt under a rule, and the hardware receipt of the build. */
-export const page = `${above}---\n\n${blockMarkdown(signed)}\n\n${HARDWARE_MARK}\n\n${[...hardwareBlocks, ...challengeBlocks].map(blockMarkdown).join('\n\n')}\n`
+export const page = `${above}---\n\n${blockMarkdown(signed)}\n\n${HARDWARE_MARK}\n\n${[issued, ...hardwareBlocks, ...challengeBlocks].map(blockMarkdown).join('\n\n')}\n`
 /** A copy as the check compares it: everything before the hardware mark. */
 export const beforeHardware = (text: string) => text.split(HARDWARE_MARK)[0]!
