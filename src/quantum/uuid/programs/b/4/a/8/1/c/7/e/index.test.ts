@@ -13,6 +13,8 @@ import { THEOREMS } from '../../../../../../../../3/f/0/e/7/a/6/f/index.ts'
 import { LICENSE } from '../../../../../../../../a/f/3/d/e/a/5/f/index.ts'
 import { handle } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
 import { uuid } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { HARDWARE_MARK } from '../../../../../../../../0/d/b/3/5/7/8/9/index.ts'
+import { QUANTUM_TERMS } from '../../../../../../../../d/f/0/d/9/1/3/b/index.ts'
 
 const root = join(import.meta.dirname, '..', '..', '..', '..', '..', '..', '..', '..', '..', '..', '..', '..')
 const rpc = async (method: string, params: unknown = {}) => ((await handle({ jsonrpc: '2.0', id: 1, method, params })) as { result: any }).result
@@ -111,4 +113,46 @@ test('the one text states only theorems Lean holds that both doors verify, each 
     assert.deepEqual([rules[0]!.rule, rules[0]!.first, rules[0]!.holds, rules[0]!.theorem], ['verified', true, true, 'textbook_physical_evidence'], workflow)
     assert.deepEqual(rules.filter((r) => r.first).map((r) => r.rule), ['verified'], workflow)
   }
+})
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every challenge and its solution stand in the README below the mark, with its theorems' formulas, its metrics compared only through ISO/IEC 4879 terms, and the hardware receipt it was computed on. */
+test('every challenge and its solution stand in the README below the mark, with its theorems\' formulas, its metrics compared only through ISO/IEC 4879 terms, and the hardware receipt it was computed on', async () => {
+  const readme = readFileSync(join(root, 'README.md'), 'utf8'), [above = '', below = ''] = readme.split(HARDWARE_MARK)
+  const solved = (await rpc('tools/call', { name: 'google', arguments: { challenges: true } })).structuredContent.challenges as { id: string; address: string; sha256: string; holds: boolean; theorem: string; relatedTheorems: string[] }[]
+  const iso = new Set(QUANTUM_TERMS.map((t) => t.clause)), section = (h: string) => below.split(`\n## ${h}\n`)[1]?.split(/\n## /)[0] ?? ''
+  const hardware = section('hardware')
+  assert.ok(solved.length > 0 && hardware, 'the hardware receipt and the challenges')
+  for (const c of solved) {
+    const s = section(c.id)
+    assert.ok(s, c.id)
+    assert.ok(!above.includes(`## ${c.id}\n`), `${c.id} stands outside the one text`)
+    // its solution, the content address and SHA-256 the solver sealed
+    assert.ok(s.includes(c.address) && s.includes(c.sha256), `${c.id} solution`)
+    // every theorem it rests on, with the formula Lean wrote
+    for (const t of [c.theorem, ...c.relatedTheorems]) assert.match(s, new RegExp('\\| `' + t + '` \\| \\$[^$]+\\$ \\|'), `${c.id}: ${t}`)
+    // its metrics compared only through the terms ISO/IEC 4879 defines
+    for (const m of s.matchAll(/^\| (\d+\.\d+\.\d+) \|/gm)) assert.ok(iso.has(m[1]!), `${c.id}: ${m[1]}`)
+    // the device it was computed on names it
+    const handle = /^\| handle \| `([0-9a-f]{8})` \|$/m.exec(s)?.[1]
+    assert.ok(handle && new RegExp(`^\\| challenges \\| .*${handle}`, 'm').test(hardware), `${c.id} on the hardware receipt`)
+  }
+})
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the exact links the NIST and CERN doors probe stand in the one text, and one tools/list gives the tools with their proof read from the sealed receipts. */
+test('the exact links the NIST and CERN doors probe stand in the one text, and one tools/list gives the tools with their proof read from the sealed receipts', async () => {
+  const call = async (name: string, args: object) => (await rpc('tools/call', { name, arguments: args })).structuredContent
+  const nist = await call('seal', { nist: true }), cern = await call('seal', { nist: { reverse: true, via: 'cern' } })
+  const urls = (d: { requests: { url: string }[] }) => d.requests.map((r) => r.url)
+  // every link either door probes is in the one text, exactly as the door names it, above the hardware mark
+  const [above = ''] = readFileSync(join(root, 'README.md'), 'utf8').split(HARDWARE_MARK)
+  for (const u of [...urls(nist), ...urls(cern)]) assert.ok(above.includes(u), u)
+  // one call: the tools and the proof, the receipt the text carries, the theorems both doors verify and the same links
+  const listed = await rpc('tools/list')
+  assert.ok(listed.tools.length > 0)
+  const proof = listed._meta.proof as { receipt: { uuid: string; sha256: string }; theorems: string[]; verify: { tool: string; arguments: object; content: string }; probes: { nist: { url: string }[]; cern: { url: string }[] } }
+  assert.deepEqual([proof.receipt.uuid, proof.receipt.sha256], [RECEIPT.uuid, RECEIPT.sha256])
+  assert.deepEqual(proof.theorems, gateVerified().verified)
+  assert.deepEqual(proof.probes.nist.map((p) => p.url).sort(), [...new Set(urls(nist))].sort())
+  assert.deepEqual(proof.probes.cern.map((p) => p.url).sort(), [...new Set(urls(cern))].sort())
+  // the verify call it names, over the text of the resource it names, decides the text the server serves
+  const content = (await rpc('resources/read', { uri: proof.verify.content })).contents[0].text as string
+  assert.equal((await call(proof.verify.tool, { ...proof.verify.arguments, content })).valid, true)
 })

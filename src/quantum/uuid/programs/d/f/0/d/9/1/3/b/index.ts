@@ -237,6 +237,14 @@ export const physicalEvidence = (device?: DeviceReadings) => {
 
 export const quantumVocabulary = (): QuantumTerm[] => vocabularyCache ?? (vocabularyCache = computeQuantumVocabulary())
 
+/** The ISO/IEC 4879:2024 terms a thing names by its metrics, title and category: a term is named when every word of its name is one of the
+ *  thing's words; each comes with the QPU's own computation of the term and nothing of the thing's figures. No other vocabulary is read. */
+const wordsOf = (s: unknown) => String(s).replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().split(/[^a-z]+/).filter(Boolean).map((w) => w.replace(/ies$/, 'y').replace(/([^s])s$/, '$1'))
+export const isoTermsOf = (thing: { title?: unknown; category?: unknown; value?: unknown }) => {
+  const own = new Set([...Object.keys((thing.value ?? {}) as Record<string, unknown>).flatMap(wordsOf), ...wordsOf(thing.title ?? ''), ...wordsOf(thing.category ?? '')])
+  return quantumVocabulary().filter((t) => wordsOf(t.name).every((w) => own.has(w))).map((t) => ({ clause: t.clause, term: t.name, standard: STANDARD, qpu: t.holds, uuid: t.uuid }))
+}
+
 /** The vocabulary as one dry receipt. Each term is a sealed UUID. The receipt address is the UUID of those addresses. */
 export const quantumStandards = () => {
   const terms = quantumVocabulary()

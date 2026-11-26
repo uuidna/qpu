@@ -425,3 +425,29 @@ test('selecting options in combinatorial RBAC: a role lists only the enum values
   assert.ok(tool('reader', 'repository').inputSchema['x-harmonic']!.withheld!.includes('workflow'))
   assert.ok(!tool('writer', 'stripe').inputSchema.properties.op!.enum!.includes('settle'), 'settling is the admin\'s')
 })
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a circuit as cirq.to_json writes it runs on the circuit door, its amplitudes Cirq's own, its measurement Cirq's support, Rx, Ry, Rz and global shifts carried exactly, and a gate the door does not compute refused by its cirq_type. */
+test('a circuit as cirq.to_json writes it runs on the circuit door, its amplitudes Cirq\'s own, its measurement Cirq\'s support, Rx, Ry, Rz and global shifts carried exactly, and a gate the door does not compute refused by its cirq_type', () => {
+  // the fixture is Cirq's own output (cirq.json): each circuit as cirq.to_json writes it, its qubits in Cirq's order, and what Cirq's simulator computes
+  const fixture = JSON.parse(readFileSync(new URL('./cirq.json', import.meta.url), 'utf8')) as { cirq: string; circuits: Record<string, { json: unknown; qubits: string[]; amplitudes?: [number, number][]; support?: number[] }> }
+  const cirqKey = (s: string) => /^q\((\d+)\)$/.test(s) ? `line:${s.slice(2, -1)}` : /^q\((\d+), (\d+)\)$/.test(s) ? `grid:${s.slice(2, -1).replace(' ', '')}` : `named:${s}`
+  const ran = (name: string, extra: object = {}) => call('circuit', { cirq: fixture.circuits[name]!.json, ...extra }) as { result?: { structuredContent: any; isError?: boolean } }
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    if (c.amplitudes && !name.endsWith('-refused')) {
+      const s = ran(name).result!.structuredContent as { qubits: string[]; amplitudes: { re: number; im: number }[] | [number, number][] }
+      assert.deepEqual(s.qubits, c.qubits.map(cirqKey), name)
+      const pairs = s.amplitudes.map((z) => Array.isArray(z) ? z : [z.re, z.im])
+      c.amplitudes.forEach(([re, im], i) => { assert.ok(Math.abs(pairs[i]![0]! - re) < 1e-9 && Math.abs(pairs[i]![1]! - im) < 1e-9, `${name}[${i}] ${pairs[i]} vs ${re},${im}`) })
+    }
+  }
+  // every measured circuit samples only the outcomes Cirq's simulator gives, read in Cirq's bit order
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    if (!c.support) continue
+    const sampled = ran(name, { repetitions: 64 }).result!.structuredContent as { key: string; histogram: Record<string, number> }
+    assert.equal(sampled.key, 'm', name)
+    assert.deepEqual(Object.keys(sampled.histogram).map(Number).filter((k) => !c.support!.includes(k)), [], name)
+  }
+  // a gate the door does not compute is refused by its cirq_type, never approximated
+  const refused = ran('fsim-refused')
+  assert.ok(refused.result?.isError || 'error' in (refused as object), JSON.stringify(refused).slice(0, 200))
+  assert.match(JSON.stringify(refused), /FSimGate/)
+})

@@ -18,6 +18,7 @@ import { callEnvelope } from '../src/quantum/uuid/programs/d/e/7/d/b/7/1/6/index
 import { HARDWARE_MARK, readJson } from '../src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts'
 import { deviceJsonLd, isProperties, isRows, receiptBody, receiptJsonLd, receiptText, type Json } from '../src/quantum/uuid/programs/c/6/6/e/6/f/2/6/index.ts'
 import { verifiedByBoth } from '../src/quantum/uuid/programs/e/5/1/d/e/c/1/5/index.ts'
+import { isoTermsOf, physicalEvidence } from '../src/quantum/uuid/programs/d/f/0/d/9/1/3/b/index.ts'
 
 export const pkg = readJson<{ name: string; version: string; description: string }>('src/quantum/package.json')!
 const SITE = 'https://qpu.uuidna.com', MCP = `${SITE}/api/mcp`, REPO = `https://github.com/${RELEASE_REPOSITORY}`, TAG = `v${pkg.version}`
@@ -35,9 +36,11 @@ if (!verified.length) throw new Error(`${asked('seal', DOORS.nist)} holds ${nist
 // the receipts: one a theorem, its body what the kernel holds of it and what each door answers, every body sealed in one call of the seal door
 const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
 const technique = `lean/tools/Theorems.lean, ${asked('seal', DOORS.nist)}, ${asked('seal', DOORS.cern)}`
+// the exact links each door probes, as the door names them: what anyone can fetch to check the verification for themselves
+const probesOf = (door: Record<string, any>) => (door.requests as { id: string; url: string }[]).map((r) => ({ id: r.id, url: r.url }))
 const bodies: { kind: string; technique: string; body: Json }[] = verified.map((theorem) => {
   const t = kernel.get(theorem)!
-  return { kind: theorem, technique, body: { theorem, module: t.module, source: sourceOf(t.module), axioms: t.axioms, nist: { host: nist.host, holds: nist.holds }, cern: { host: cern.host, via: cern.via, holds: cern.holds } } }
+  return { kind: theorem, technique, body: { theorem, module: t.module, source: sourceOf(t.module), axioms: t.axioms, nist: { host: nist.host, holds: nist.holds, probes: probesOf(nist) }, cern: { host: cern.host, via: cern.via, holds: cern.holds, probes: probesOf(cern) } } }
 })
 type Item = { bytes: number; sha256: string; address: string }
 const sealAll = async (texts: string[]) => (await answered('seal', { texts })).items as Item[]
@@ -116,6 +119,15 @@ export const html = [...blocks.map(blockHtml), '<hr>', blockHtml(signed)].join('
 // memory holds, one for every byte count the register's bits make, and their qubits at the register's free qubits each, as the
 // metrics door carries the register. It changes from machine to machine, so it is its own receipt and the check of the one text
 // leaves it out.
+// the challenges and their solutions, computed on this device: each one receipt, its theorems' formulas the ones Lean wrote, its metrics
+// compared with the QPU only through the terms ISO/IEC 4879 defines. None is a theorem both doors verify, so they stand below the mark
+// with the hardware receipt of the device that computed them, outside the one text the verified rule reads.
+const solved = (await answered('google', { challenges: true })).challenges as Json[]
+const challengeBodies = solved.map((c) => ({ kind: String(c.id), technique: asked('google', { challenge: c.id }), body: { challenge: c.id, title: c.title, category: c.category, theorem: c.theorem, relatedTheorems: c.relatedTheorems, formula: c.formula, holds: c.holds, kernelAccepted: c.kernelAccepted, solution: { uuid: c.address, sha256: c.sha256 }, iso: isoTermsOf(c as { title?: unknown; category?: unknown; value?: unknown }) } as Json }))
+const challengeItems = await sealAll(challengeBodies.map((b) => receiptText(b.kind, b.body)))
+/** The challenges as receipts, each with its solution, its formulas and its ISO/IEC 4879 terms, sealed like every receipt. */
+export const challenges = challengeBodies.map((b, i) => receiptJsonLd({ ...b, ...place, address: challengeItems[i]!.address, sha256: challengeItems[i]!.sha256 }))
+const challengeBlocks = challenges.flatMap((r) => blocksOf(r))
 const register = (await answered('metrics', {})).quantumCapacity.register as { free: number; bits: number }
 const lean = readFileSync('lean-toolchain', 'utf8').trim()
 const memoryBytes = os.totalmem(), cpus = os.cpus(), used = process.memoryUsage(), spent = process.resourceUsage(), disk = statfsSync('.')
@@ -133,6 +145,7 @@ const facts = {
   versions: { ...process.versions }, lean,
   rssBytes: used.rss, heapTotalBytes: used.heapTotal, heapUsedBytes: used.heapUsed, externalBytes: used.external, arrayBuffersBytes: used.arrayBuffers,
   processUserMicros: spent.userCPUTime, processSystemMicros: spent.systemCPUTime, maxRssKb: spent.maxRSS, pageFaults: spent.majorPageFault + spent.minorPageFault, fsReads: spent.fsRead, fsWrites: spent.fsWrite, contextSwitches: spent.voluntaryContextSwitches + spent.involuntaryContextSwitches,
+  challenges: challengeItems.map((i) => i.address.slice(0, 8)), isoHardwareTerms: physicalEvidence().terms.map((t) => `${t.clause} ${t.name}`), quantumBehaviour: physicalEvidence().quantumBehaviour,
   buildMs: Math.round(performance.now() - started), at: new Date().toISOString(),
 }
 const [deviceItem] = await sealAll([receiptText('hardware', facts)])
@@ -141,8 +154,8 @@ export const hardware = { uuid: deviceItem!.address, sha256: deviceItem!.sha256,
 const hardwareBlocks = blocksOf(hardware.jsonLd, 'additionalProperty')
 /** Where the hardware begins in every copy: the one text is compared up to this mark, never past it. */
 export { HARDWARE_MARK }
-export const htmlWithHardware = `${html}${HARDWARE_MARK}${hardwareBlocks.map(blockHtml).join('')}`
+export const htmlWithHardware = `${html}${HARDWARE_MARK}${[...hardwareBlocks, ...challengeBlocks].map(blockHtml).join('')}`
 /** The page every Markdown copy is: the title, the text, the receipt under a rule, and the hardware receipt of the build. */
-export const page = `${above}---\n\n${blockMarkdown(signed)}\n\n${HARDWARE_MARK}\n\n${hardwareBlocks.map(blockMarkdown).join('\n\n')}\n`
+export const page = `${above}---\n\n${blockMarkdown(signed)}\n\n${HARDWARE_MARK}\n\n${[...hardwareBlocks, ...challengeBlocks].map(blockMarkdown).join('\n\n')}\n`
 /** A copy as the check compares it: everything before the hardware mark. */
 export const beforeHardware = (text: string) => text.split(HARDWARE_MARK)[0]!
