@@ -5345,5 +5345,105 @@
         }
       }
     }
-  ]
+  ],
+  "proof": {
+    "receipt": {
+      "uuid": "246a97b1-95e2-739d-94ea-c2620fc7638c",
+      "sha256": "9601aa66caab6ee2821b676eeb710cef341c7f67aee9e1541404fe328b97e009",
+      "resource": "receipt://qpu"
+    },
+    "merge": {
+      "uuid": "8e27a41e-6ec9-5931-be39-f662b696691f",
+      "handle": "8e27a41e",
+      "root": "55c57fc9f121c85e5afd4bdb43834f7c32ed581c4ed3873a78a27009dbed8f6b",
+      "rfc": 6962
+    },
+    "theorems": [
+      "textbook_sha256_fips_180_4",
+      "textbook_sha3_fips_202",
+      "textbook_pqc_standards_three",
+      "textbook_coil_green"
+    ],
+    "verify": {
+      "tool": "verify",
+      "arguments": {
+        "uuid": "246a97b1-95e2-739d-94ea-c2620fc7638c"
+      },
+      "content": "receipt://qpu"
+    },
+    "probes": {
+      "nist": [
+        {
+          "id": "nist-codata",
+          "url": "https://physics.nist.gov/cuu/Constants/Table/allascii.txt"
+        },
+        {
+          "id": "nist-opendata",
+          "url": "https://data.nist.gov/rmm/records?page=0&size=5"
+        },
+        {
+          "id": "nist-beacon",
+          "url": "https://beacon.nist.gov/beacon/2.0/pulse/last"
+        },
+        {
+          "id": "ct-sth",
+          "url": "https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth"
+        },
+        {
+          "id": "acme-directory",
+          "url": "https://acme-v02.api.letsencrypt.org/directory"
+        },
+        {
+          "id": "nvd-cves",
+          "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5"
+        },
+        {
+          "id": "cern-opendata",
+          "url": "https://opendata.cern.ch/api/records/?q=higgs&size=5"
+        },
+        {
+          "id": "csrc-pqc",
+          "url": "https://csrc.nist.gov/projects/post-quantum-cryptography"
+        },
+        {
+          "id": "crt-sh",
+          "url": "https://crt.sh/?q=qpu.uuidna.com&output=json"
+        }
+      ],
+      "cern": [
+        {
+          "id": "cern-opendata",
+          "url": "https://opendata.cern.ch/api/records/?q=higgs&size=5"
+        },
+        {
+          "id": "nist-codata",
+          "url": "https://physics.nist.gov/cuu/Constants/Table/allascii.txt"
+        },
+        {
+          "id": "csrc-pqc",
+          "url": "https://csrc.nist.gov/projects/post-quantum-cryptography"
+        },
+        {
+          "id": "nvd-cves",
+          "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5"
+        },
+        {
+          "id": "acme-directory",
+          "url": "https://acme-v02.api.letsencrypt.org/directory"
+        },
+        {
+          "id": "ct-sth",
+          "url": "https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth"
+        },
+        {
+          "id": "nist-beacon",
+          "url": "https://beacon.nist.gov/beacon/2.0/pulse/last"
+        },
+        {
+          "id": "crt-sh",
+          "url": "https://crt.sh/?q=opendata.cern.ch&output=json"
+        }
+      ]
+    }
+  }
 }

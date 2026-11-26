@@ -19,11 +19,13 @@ test('the MCP surface audits itself through tools/call and every check passes', 
   assert.equal(EXAMPLES.find((e) => e.id === 'audit-self')!.expect(a), null)
 })
 
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: the published manifest equals tools/list byte for byte. */
-test('the published manifest equals tools/list byte for byte', () => {
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the published manifest equals tools/list byte for byte, its proof included. */
+test('the published manifest equals tools/list byte for byte, its proof included', () => {
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
   const manifest = JSON.parse(readFileSync(new URL('../../../../../../../../../../../../docs/public/mcp.json', import.meta.url), 'utf8'))
   assert.deepEqual(manifest.tools, (list as { result: { tools: unknown } }).result.tools)
+  // the page that fetches the manifest gets the proof in the same request: the one tools/list carries, read from the sealed receipts
+  assert.deepEqual(manifest.proof, (list as { result: { _meta: { proof: unknown } } }).result._meta.proof)
 })
 
 

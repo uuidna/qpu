@@ -83,8 +83,10 @@ for (const section of sections) {
 
 write(join(out, 'catalogue.md'), ['---', 'title: "Catalogue of claims"', '---', '', readFileSync('src/quantum/CATALOGUE.md', 'utf8')].join('\n'))
 const tools = TOOLBOXES.flatMap((box) => box.tools.map((tool) => ({ name: tool.name, toolbox: box.name, description: tool.description, inputSchema: tool.inputSchema })))
-write(join(out, 'public', 'mcp.json'), JSON.stringify({ live: 'POST /api/mcp', says: PROSE.scriptsSite_says1, tools }, null, 2))
-write(join('docs', 'public', 'mcp.json'), JSON.stringify({ tools: (handle(listEnvelope()) as { result: { tools: unknown } }).result.tools }, null, 2))
+// one tools/list gives the tools and their proof, read from the sealed receipts: the page that fetches either manifest gets both in one request
+const listed = (handle(listEnvelope()) as { result: { tools: unknown; _meta: { proof: unknown } } }).result
+write(join(out, 'public', 'mcp.json'), JSON.stringify({ live: 'POST /api/mcp', says: PROSE.scriptsSite_says1, tools, proof: listed._meta.proof }, null, 2))
+write(join('docs', 'public', 'mcp.json'), JSON.stringify({ tools: listed.tools, proof: listed._meta.proof }, null, 2))
 write(join(out, '.vitepress', 'sidebar.json'), JSON.stringify(sidebar))
 // the catalog's index: its count as the catalog states it, then every product by module, each a link to the page its route writes
 const counted = catalogSummary(EXAMPLES)
