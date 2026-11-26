@@ -238,7 +238,8 @@ test('Toffoli flips the third qubit only when both controls are 1', () => {
   const r = new Simulator().simulate(new Circuit([applied(X, a!), applied(X, b!), applied(TOFFOLI, a!, b!, c3!)]))
   assert.ok(Math.abs(r.amplitudes[7]![0] - 1) < 1e-12)
   const none = new Simulator().simulate(new Circuit([applied(X, a!), applied(TOFFOLI, a!, b!, c3!)]))
-  assert.ok(Math.abs(none.amplitudes[1]![0] - 1) < 1e-12)
+  // X on the first qubit alone is |100>: index 4 in Cirq's order, the first qubit the most significant bit
+  assert.ok(Math.abs(none.amplitudes[4]![0] - 1) < 1e-12)
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: INLINE puts an operation in the moment before the insert location when it does not conflict, else in a new moment. */

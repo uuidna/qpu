@@ -12,7 +12,7 @@ const N = 1 << n
 test('the QFT maps |x> to the discrete Fourier basis: amplitude e^(2πi·x·k/N)/√N at state k', () => {
   const x = 5
   const qs = LineQubit.range(n)
-  const c = new Circuit().append(qs.filter((_, i) => (x >> i) & 1).map((q) => applied(X, q))).append(qftOperations(qs))
+  const c = new Circuit().append(qs.filter((_, i) => (x >> (qs.length - 1 - i)) & 1).map((q) => applied(X, q))).append(qftOperations(qs))
   const { amplitudes } = new Simulator().simulate(c)
   for (let k = 0; k < N; k++) {
     const angle = (2 * Math.PI * x * k) / N
@@ -26,7 +26,7 @@ test('the inverse QFT undoes the QFT: |x> is returned exactly', () => {
   const x = 6
   const qs = LineQubit.range(n)
   const ops = qftOperations(qs)
-  const c = new Circuit().append(qs.filter((_, i) => (x >> i) & 1).map((q) => applied(X, q))).append(ops).append(inverseOperations(ops))
+  const c = new Circuit().append(qs.filter((_, i) => (x >> (qs.length - 1 - i)) & 1).map((q) => applied(X, q))).append(ops).append(inverseOperations(ops))
   const { amplitudes } = new Simulator().simulate(c)
   assert.ok(Math.abs(amplitudes[x]![0] - 1) < 1e-9)
 })
@@ -36,8 +36,8 @@ test('phase estimation of θ = 0.234 with three bits peaks at 0.25, the nearest 
   const run = new Simulator().run(phaseEstimationCircuit(0.234, 3), 2000)
   const counts = new Map<number, number>()
   for (const bits of run.measurements('m')) {
-    // bit k of the estimate is the k-th measured qubit, so the string is read least significant first
-    const value = [...bits].reduce((sum, b, k) => sum + Number(b) * 2 ** k, 0) / 8
+    // the first measured qubit is the most significant bit of the estimate, as Cirq reads it
+    const value = parseInt(bits, 2) / 8
     counts.set(value, (counts.get(value) ?? 0) + 1)
   }
   const [best] = [...counts.entries()].sort((a, b) => b[1] - a[1])
@@ -77,7 +77,7 @@ test('the QFT is the discrete Fourier transform for every input, not only a pali
   for (const [n, x] of [[3, 3], [3, 6], [4, 11]] as const) {
     const N = 1 << n
     const qs = LineQubit.range(n)
-    const c = new Circuit().append(qs.filter((_, i) => (x >> i) & 1).map((q) => applied(X, q))).append(qftOperations(qs))
+    const c = new Circuit().append(qs.filter((_, i) => (x >> (qs.length - 1 - i)) & 1).map((q) => applied(X, q))).append(qftOperations(qs))
     const { amplitudes } = new Simulator().simulate(c)
     for (let k = 0; k < N; k++) {
       const angle = (2 * Math.PI * x * k) / N
