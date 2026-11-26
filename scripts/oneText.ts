@@ -1,6 +1,6 @@
 // The one text the build writes, loaded from sealed receipts: the home page, the README, the npm package's README and the Zenodo record
 // are this text and no other. It states the theorems Lean holds that the NIST door and the CERN door both name while each holds, and
-// nothing else (src/quantum/processing/verified.ts): each is one receipt (src/quantum/processing/receipts.ts), sealed by the seal door
+// nothing else (src/quantum/uuid/programs/e/5/1/d/e/c/1/5/index.ts): each is one receipt (src/quantum/uuid/programs/c/6/6/e/6/f/2/6/index.ts), sealed by the seal door
 // under the UUID of its kind and canonical text, as schema.org JSON-LD with the formula Lean wrote, its cost, the licence, the donation
 // link and the device that minted it. The text is the merge of those receipts: the RFC 6962 root the seal door computes over their
 // UUIDs, so the merge is decided from the handles and UUIDs alone. Every table is rendered from a receipt's JSON-LD and nothing else:
@@ -10,14 +10,14 @@ import { readFileSync, statfsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import * as os from 'node:os'
 const started = performance.now()
-import { THEOREMS, THEOREM_KEYS } from '../src/quantum/processing/theorems-index.ts'
-import { handle } from '../src/quantum/processing/mcp.ts'
-import { uuid } from '../src/quantum/uuid/index.ts'
-import { RELEASE_REPOSITORY } from '../src/quantum/processing/release.ts'
-import { callEnvelope } from '../src/quantum/processing/toolbox.ts'
-import { HARDWARE_MARK, readJson } from '../src/quantum/processing/machine-run.ts'
-import { deviceJsonLd, isProperties, isRows, receiptBody, receiptJsonLd, receiptText, type Json } from '../src/quantum/processing/receipts.ts'
-import { verifiedByBoth } from '../src/quantum/processing/verified.ts'
+import { THEOREMS, THEOREM_KEYS } from '../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
+import { handle } from '../src/quantum/uuid/programs/3/8/5/9/0/2/0/f/index.ts'
+import { uuid } from '../src/quantum/uuid/programs/2/7/1/a/7/6/4/9/index.ts'
+import { RELEASE_REPOSITORY } from '../src/quantum/uuid/programs/6/6/5/9/1/f/5/8/index.ts'
+import { callEnvelope } from '../src/quantum/uuid/programs/d/e/7/d/b/7/1/6/index.ts'
+import { HARDWARE_MARK, readJson } from '../src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts'
+import { deviceJsonLd, isProperties, isRows, receiptBody, receiptJsonLd, receiptText, type Json } from '../src/quantum/uuid/programs/c/6/6/e/6/f/2/6/index.ts'
+import { verifiedByBoth } from '../src/quantum/uuid/programs/e/5/1/d/e/c/1/5/index.ts'
 
 export const pkg = readJson<{ name: string; version: string; description: string }>('src/quantum/package.json')!
 const SITE = 'https://qpu.uuidna.com', MCP = `${SITE}/api/mcp`, REPO = `https://github.com/${RELEASE_REPOSITORY}`, TAG = `v${pkg.version}`

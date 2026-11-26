@@ -1,0 +1,3 @@
+export const prefix = 'af3dea'
+export const depth = 6
+export default { prefix, depth }

@@ -64,14 +64,14 @@ def proseFile : String := "lean/tools/Prose.lean"
 /-- the index as Lean wrote it -/
 def proseBuilt : System.FilePath := ".lake" / "build" / "prose-index.ts"
 /-- the index the TypeScript reads -/
-def proseIndex : System.FilePath := "src" / "quantum" / "processing" / "prose-index.ts"
+def proseIndex : System.FilePath := "src" / "quantum" / "uuid" / "programs" / "5" / "9" / "e" / "4" / "9" / "1" / "a" / "4" / "index.ts"
 
 /-- The Lean file that writes the nested catalogue, where it writes it, and where the TypeScript reads it. -/
 def nestedFile : String := "lean/tools/Nested.lean"
 /-- the catalogue as Lean wrote it -/
 def nestedBuilt : System.FilePath := ".lake" / "build" / "nested-index.ts"
 /-- the catalogue the TypeScript reads -/
-def nestedIndex : System.FilePath := "src" / "quantum" / "processing" / "nested-index.ts"
+def nestedIndex : System.FilePath := "src" / "quantum" / "uuid" / "programs" / "1" / "8" / "a" / "3" / "8" / "3" / "8" / "c" / "index.ts"
 
 /-- The Lean file that writes the catalogue of claims. -/
 def catalogueFile : String := "lean/tools/Catalogue.lean"
@@ -125,17 +125,17 @@ def settle (built index : System.FilePath) (check : Bool) : IO UInt32 := do
 /-- Each Lean tool with the file it writes and the committed file that follows it. -/
 def rendered : List (String × System.FilePath × System.FilePath) :=
   [ (proseFile, proseBuilt, proseIndex)
-  , (theoremsFile, ".lake" / "build" / "theorems-index.ts", "src" / "quantum" / "processing" / "theorems-index.ts")
-  , (textbookFile, ".lake" / "build" / "textbook-index.ts", "src" / "quantum" / "processing" / "textbook-index.ts")
+  , (theoremsFile, ".lake" / "build" / "theorems-index.ts", "src" / "quantum" / "uuid" / "programs" / "3" / "f" / "0" / "e" / "7" / "a" / "6" / "f" / "index.ts")
+  , (textbookFile, ".lake" / "build" / "textbook-index.ts", "src" / "quantum" / "uuid" / "programs" / "2" / "8" / "8" / "8" / "a" / "c" / "c" / "4" / "index.ts")
   , (blueprintFile, ".lake" / "build" / "BLUEPRINT.md", "src" / "quantum" / "BLUEPRINT.md")
   , (nestedFile, nestedBuilt, nestedIndex)
   , (catalogueFile, ".lake" / "build" / "CATALOGUE.md", "src" / "quantum" / "CATALOGUE.md")
-  , (thousandFile, ".lake" / "build" / "thousand-index.ts", "src" / "quantum" / "processing" / "thousand-index.ts")
-  , (isoFile, ".lake" / "build" / "iso-index.ts", "src" / "quantum" / "processing" / "iso-index.ts")
-  , (configFile, ".lake" / "build" / "config-index.ts", "src" / "quantum" / "processing" / "config-index.ts")
+  , (thousandFile, ".lake" / "build" / "thousand-index.ts", "src" / "quantum" / "uuid" / "programs" / "6" / "6" / "3" / "7" / "3" / "f" / "6" / "6" / "index.ts")
+  , (isoFile, ".lake" / "build" / "iso-index.ts", "src" / "quantum" / "uuid" / "programs" / "b" / "4" / "2" / "5" / "4" / "0" / "d" / "7" / "index.ts")
+  , (configFile, ".lake" / "build" / "config-index.ts", "src" / "quantum" / "uuid" / "programs" / "d" / "e" / "a" / "3" / "e" / "d" / "e" / "1" / "index.ts")
   , (cssFile, ".lake" / "build" / "advantage.css", "site" / ".vitepress" / "theme" / "advantage.css")
   , (foldFile, ".lake" / "build" / "fold-index.ts", "site" / ".vitepress" / "theme" / "fold-index.ts")
-  , (addressFile, ".lake" / "build" / "address-core.ts", "src" / "quantum" / "password" / "address-core.ts") ]
+  , (addressFile, ".lake" / "build" / "address-core.ts", "src" / "quantum" / "uuid" / "programs" / "7" / "b" / "5" / "e" / "2" / "f" / "f" / "f" / "index.ts") ]
 
 /-- Lean writes the prose index, the theorem index, the textbook index, the blueprint, the nested catalogue, the
 catalogue of claims, the thousand-bit table, the register of standards and the configuration. The tools read the same
@@ -193,7 +193,7 @@ def renderGaps (check : Bool) : IO UInt32 := do
     | _ => return 1
   let merged ← run ("GAPS_MERGE", toString gapsShards)
   if merged != 0 then return merged
-  settle (".lake" / "build" / "gaps-index.ts") ("src" / "quantum" / "processing" / "gaps-index.ts") check
+  settle (".lake" / "build" / "gaps-index.ts") ("src" / "quantum" / "uuid" / "programs" / "9" / "b" / "d" / "6" / "c" / "f" / "0" / "2" / "index.ts") check
 
 /-- `lake run index`: build, then Lean writes every file that follows it (prose index, theorem index, textbook index,
 blueprint, nested catalogue, catalogue of claims, thousand-bit table, register of standards, gaps index). The Clay statements keep their own generator,

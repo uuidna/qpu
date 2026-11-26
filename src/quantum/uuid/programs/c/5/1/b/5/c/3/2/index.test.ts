@@ -1,0 +1,26 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { canonicalText, seal, uuid } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { ISO_CLAUSES } from '../../../../../../../../b/4/2/5/4/0/d/7/index.ts'
+import { quantumStandards } from '../../../../../../../../d/f/0/d/9/1/3/b/index.ts'
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: each quantum standard is one sealed UUID and the receipt is that list. */
+test('each quantum standard is one sealed UUID and the receipt is that list', () => {
+  const s = quantumStandards()
+  const again = quantumStandards()
+  assert.equal(s.standard, 'ISO/IEC 4879:2024')
+  assert.equal(s.via, 'uuid')
+  assert.equal(s.dry, true)
+  assert.equal(s.total, ISO_CLAUSES.length)
+  assert.equal(s.holding, ISO_CLAUSES.length)
+  assert.equal(s.unique, ISO_CLAUSES.length)
+  assert.equal(s.sealed, true)
+  assert.equal(seal(s.address).valid, true)
+  assert.equal(again.address, s.address)
+  for (const t of s.terms) {
+    assert.equal(t.holds, true)
+    assert.equal(t.sealed, true)
+    assert.equal(t.uuid, uuid(canonicalText({ clause: t.clause, name: t.name, standard: s.standard })))
+    assert.equal(seal(t.uuid).valid, true)
+  }
+})

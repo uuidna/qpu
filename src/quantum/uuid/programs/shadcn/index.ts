@@ -1,10 +1,10 @@
 // The shadcn registry, saved. Each component is one UUID program.
 // The handle is the hex colour. The program and the three params build the UI. The tail verifies it.
 // An I Ching rosetta (eight trigrams by eight) opens a component. Nothing is fetched and nothing is written.
-import { PROSE, proseFill } from '../../../processing/prose-index.ts'
-import { channel, composition, compositionIndex, hexbit, rosetta, seal, style, uuid, uuidQubits } from '../../index.ts'
+import { PROSE, proseFill } from '../5/9/e/4/9/1/a/4/index.ts'
+import { channel, composition, compositionIndex, hexbit, rosetta, seal, style, uuid, uuidQubits } from '../2/7/1/a/7/6/4/9/index.ts'
 import { program } from '../index.ts'
-import { hyphenated } from '../../laws.ts'
+import { hyphenated } from '../b/6/4/6/e/a/0/1/index.ts'
 
 export const SHADCN_MCP = {
   name: 'shadcn' as const,

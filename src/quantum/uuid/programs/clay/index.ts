@@ -1,7 +1,7 @@
-import { fold, next, uuid } from '../../index.ts'
-import { birth } from '../../../fs/index.ts'
+import { fold, next, uuid } from '../2/7/1/a/7/6/4/9/index.ts'
+import { birth } from '../1/0/e/5/8/3/1/8/index.ts'
 import { program } from '../index.ts'
-import { amplitudes, evaluate, recomputeClay } from '../../../processing/clay-register.ts'
+import { amplitudes, evaluate, recomputeClay } from '../9/d/1/0/1/4/3/9/index.ts'
 type L=number[]
 const M=0xffff
 export const toLimbs16=(n:number):L=>{if(!Number.isInteger(n)||n<0||n>Number.MAX_SAFE_INTEGER)throw new Error('limb');if(!n)return[0];const o:number[]=[];for(let x=n;x>0;x=Math.floor(x/0x10000))o.push(x&M);return o}

@@ -1,11 +1,11 @@
 // Each RSA case is one UUID program. The case builds its integer from the primes it was created with,
 // factors that integer, and the factors are those primes. The thousand-bit mint is the example. The
 // next step rotates the program one place. The handle and the tail stay. Nothing is written.
-import { PROSE, proseFill } from '../../../processing/prose-index.ts'
-import { birth } from '../../../fs/index.ts'
-import { next, uuid } from '../../index.ts'
-import { createImpossible, decodeImpossible, orderFinding, seededTrapdoor, shorReduction } from '../../../processing/algorithms.ts'
-import { createdThousandExit } from '../../../processing/iso-exit.ts'
+import { PROSE, proseFill } from '../5/9/e/4/9/1/a/4/index.ts'
+import { birth } from '../1/0/e/5/8/3/1/8/index.ts'
+import { next, uuid } from '../2/7/1/a/7/6/4/9/index.ts'
+import { createImpossible, decodeImpossible, orderFinding, seededTrapdoor, shorReduction } from '../b/1/c/2/3/6/2/1/index.ts'
+import { createdThousandExit } from '../c/3/c/b/1/a/f/c/index.ts'
 import { program } from '../index.ts'
 import { placedAndTurned } from '../lean/index.ts'
 

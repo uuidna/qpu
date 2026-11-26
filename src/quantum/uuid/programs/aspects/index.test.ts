@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
-import { read } from '../../../fs/index.ts'
+import { read } from '../1/0/e/5/8/3/1/8/index.ts'
 import test from 'node:test'
-import { DEPLOY_STAGES } from '../../../payload/deploy.ts'
-import { configKinds } from '../../../processing/payload-vocabulary.ts'
+import { DEPLOY_STAGES } from '../9/6/9/4/a/5/e/4/index.ts'
+import { configKinds } from '../d/3/4/e/6/b/9/a/index.ts'
 import { aspectPrograms } from './index.ts'
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: every Payload configuration and every deploy stage is one program, verified by its handle. */

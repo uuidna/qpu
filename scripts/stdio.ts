@@ -2,10 +2,10 @@
 // the same tools as one given the URL; and this machine by the machine allow-list, which the Worker never holds.
 import { serveStdio } from '@modelcontextprotocol/server/stdio'
 import { z } from 'zod'
-import { mcpServer } from '../src/quantum/net/mcp-http.ts'
-import { MACHINE_ACTIONS } from '../src/quantum/processing/machine.ts'
-import { runMachine } from '../src/quantum/processing/machine-run.ts'
-import { PROSE } from '../src/quantum/processing/prose-index.ts'
+import { mcpServer } from '../src/quantum/uuid/programs/7/6/a/e/5/0/3/9/index.ts'
+import { MACHINE_ACTIONS } from '../src/quantum/uuid/programs/3/3/0/8/2/1/e/a/index.ts'
+import { runMachine } from '../src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts'
+import { PROSE } from '../src/quantum/uuid/programs/5/9/e/4/9/1/a/4/index.ts'
 
 serveStdio(async () => {
   const server = await mcpServer(process.env)

@@ -1,5 +1,5 @@
 # Cut qpu's next release: the tag one patch above the highest version GitHub or Zenodo holds (nextTag in
-# src/quantum/processing/release.ts), created at main's head as a GitHub release, which Zenodo archives as a new version
+# src/quantum/uuid/programs/6/6/5/9/1/f/5/8/index.ts), created at main's head as a GitHub release, which Zenodo archives as a new version
 # under the unit's concept DOI. Only a stable tree is released: it refuses unless alpine, lean-verify, site and test
 # have each passed on main's head, or, for a merge commit, on the pull request's head with the same tree, and unless
 # deploy, whose last gate asks the live server, has passed on main's head. It refuses
@@ -60,12 +60,12 @@ jobs:
           version: 10.34.9
       - run: pnpm install --frozen-lockfile
       - name: stable, the capacity utilised in full without entropy
-        run: node src/quantum/processing/machine-run.ts step repository '{"stable":{"listing":{"$run":{"cmd":"git","args":["ls-files","src/quantum","scripts"]}}}}' --json
+        run: node src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts step repository '{"stable":{"listing":{"$run":{"cmd":"git","args":["ls-files","src/quantum","scripts"]}}}}' --json
       - name: the next tag, which the package states
         id: next
         run: |
           tag=$(node --input-type=module -e "
-            import { nextTag, RELEASE_REPOSITORY, UNIT_CONCEPT_DOI } from './src/quantum/processing/release.ts'
+            import { nextTag, RELEASE_REPOSITORY, UNIT_CONCEPT_DOI } from './src/quantum/uuid/programs/6/6/5/9/1/f/5/8/index.ts'
             const read = async (url, headers = {}) => { const r = await fetch(url, { headers: { accept: 'application/json', 'user-agent': 'qpu', ...headers } }); return r.ok ? r.json() : {} }
             const [github, zenodo] = await Promise.all([
               read('https://api.github.com/repos/' + RELEASE_REPOSITORY + '/releases/latest', { authorization: 'Bearer ' + process.env.GH_TOKEN }),

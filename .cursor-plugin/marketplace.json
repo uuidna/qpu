@@ -1,0 +1,12 @@
+{
+  "name": "uuidna",
+  "owner": {
+    "name": "Tsvetan Rouschev"
+  },
+  "plugins": [
+    {
+      "name": "qpu",
+      "source": "./"
+    }
+  ]
+}

@@ -36,7 +36,9 @@ export const proseAt = (node: ts.Node): string | undefined => {
 }
 
 /** The TypeScript sources that may hold prose: the quantum tree and the scripts, without tests and rendered indexes. */
-export const inScope = (file: string) => /^(src\/quantum|scripts)\/.*\.ts$/.test(file) && !/(-index\.ts|_test\.ts|\.test\.ts|clay-statements\.ts|\.d\.ts)$/.test(file)
+export const inScope = (file: string) => /^(src\/quantum|scripts)\/.*\.ts$/.test(file) && !/(_test\.ts|\.test\.ts|\.d\.ts)$/.test(file)
+/** A file a generator writes says so on its first line: it holds data, never a sentence typed by hand. */
+export const isGenerated = (text: string) => text.startsWith('// GENERATED')
 
 export const parse = (file: string, text: string) => ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
 

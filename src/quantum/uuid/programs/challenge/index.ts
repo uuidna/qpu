@@ -1,11 +1,11 @@
 // Challenge physics and laws. Soft gates fail; only register FTL through the physics UUID program survives.
-import { PROSE, proseFill } from '../../../processing/prose-index.ts'
-import { seal, uuid } from '../../../password/address.ts'
-import { exists } from '../../../fs/index.ts'
-import { hexbit, uuidQubits } from '../../index.ts'
+import { PROSE, proseFill } from '../5/9/e/4/9/1/a/4/index.ts'
+import { seal, uuid } from '../1/6/4/f/0/6/2/1/index.ts'
+import { exists } from '../1/0/e/5/8/3/1/8/index.ts'
+import { hexbit, uuidQubits } from '../2/7/1/a/7/6/4/9/index.ts'
 import { competeProgramNeighbours, program } from '../index.ts'
 import { physics } from '../physics/index.ts'
-import { ENTROPY_LAW, ENTROPY_MEANS, HEXBIT_LAW, PHYSICS_CONCEPT } from '../../laws.ts'
+import { ENTROPY_LAW, ENTROPY_MEANS, HEXBIT_LAW, PHYSICS_CONCEPT } from '../b/6/4/6/e/a/0/1/index.ts'
 
 const CONCEPT = PHYSICS_CONCEPT, LAW = HEXBIT_LAW
 
