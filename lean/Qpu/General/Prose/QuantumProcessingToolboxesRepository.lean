@@ -177,6 +177,6 @@ def quantumProcessingToolboxesRepository_chained : String := "a push the commit'
 def quantumProcessingToolboxesRepository_chainPush : String := "the commit starts its push, handing it the commit's context; the hook before the push gates it (textbook_hook_workflows). Nothing is started while QPU_HOLD is set"
 def quantumProcessingToolboxesRepository_chainShip : String := "the push starts the pull request of its branch, where none is open and the branch is ahead of main, handing it the push's context; the checks gate the landing, the landing deploys and a deploy that passed releases (textbook_hook_workflows). Nothing is started on main or while QPU_HOLD is set"
 
-def quantumProcessingToolboxesRepository_noCoAuthor : String := "a message naming a co-author or a generator in a trailer or a footer is refused, however well described: the author alone signs the work (textbook_cl_described)"
+def quantumProcessingToolboxesRepository_noCoAuthor : String := "a message naming a co-author or a generator in a trailer or a footer, a Co-Authored-By line or a Generated with Claude Code footer, is refused, however well described: the author alone signs the work (textbook_cl_described)"
 
 end Prose
