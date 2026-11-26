@@ -50,7 +50,7 @@ def quantumProcessingToolboxesRepository_evidence36 : String := "the generated f
 def quantumProcessingToolboxesRepository_s37 : String := "edited by hand or stale: ⟦0⟧: edit the generator, not its output"
 def quantumProcessingToolboxesRepository_s38 : String := "a new docs page no generator writes: ⟦0⟧: write its generator"
 def quantumProcessingToolboxesRepository_s39 : String := "every generated file is its generator's output, and no new docs page is written by hand"
-def quantumProcessingToolboxesRepository_says40 : String := "a Google CL description: an imperative first line of at most 72 characters, a blank line, then a body saying what and why"
+def quantumProcessingToolboxesRepository_says40 : String := "a Google CL description: an imperative first line of at most 72 characters, a blank line, then a body saying what and why, and no co-author or generator line the author never approved"
 def quantumProcessingToolboxesRepository_says41 : String := "every workflow action is pinned by a full commit SHA (Scorecard Pinned-Dependencies) and every workflow sets top-level least-privilege permissions (Token-Permissions)"
 def quantumProcessingToolboxesRepository_s42 : String := "⟦0⟧ workflow(s), every action pinned by SHA, every token scoped"
 def quantumProcessingToolboxesRepository_says43 : String := "hand-written code grows only where every tool call reads 0 seconds from its imprint; until then a commit adds no more bytes of code than it removes outside the proof tables, so joined lines never pass for a fold"
@@ -176,5 +176,7 @@ def quantumProcessingToolboxesRepository_linked : String := "prose is linked to 
 def quantumProcessingToolboxesRepository_chained : String := "a push the commit's hook started carries the commit's context, the hexbit address of its stage, commit and branch, and is pushed only when that address is the one the commit has; a push started by hand carries none and is gated as before (textbook_hook_workflows)"
 def quantumProcessingToolboxesRepository_chainPush : String := "the commit starts its push, handing it the commit's context; the hook before the push gates it (textbook_hook_workflows). Nothing is started while QPU_HOLD is set"
 def quantumProcessingToolboxesRepository_chainShip : String := "the push starts the pull request of its branch, where none is open and the branch is ahead of main, handing it the push's context; the checks gate the landing, the landing deploys and a deploy that passed releases (textbook_hook_workflows). Nothing is started on main or while QPU_HOLD is set"
+
+def quantumProcessingToolboxesRepository_noCoAuthor : String := "a message naming a co-author or a generator in a trailer or a footer is refused, however well described: the author alone signs the work (textbook_cl_described)"
 
 end Prose

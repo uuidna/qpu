@@ -225,9 +225,9 @@
 
 | receipt |  |
 | --- | --- |
-| uuid | f0b1615c-2c09-1d7f-af8c-09e2886e4c72 |
-| handle | `f0b1615c` |
-| sha256 | 642b44512a030c008273293c44589efcc8dba0a50611de07f9ad44e05c8481e0 |
+| uuid | 4abfd318-8021-5cf3-96fe-642b27dd77ff |
+| handle | `4abfd318` |
+| sha256 | 5d96e1fa508eaf6ed865c02601d0f551ce55ccb0ccc91ff10bb85e4bda193a40 |
 
 | hardware |  |
 | --- | --- |
@@ -242,43 +242,43 @@
 | arch | x64 |
 | machine | x86\_64 |
 | endianness | LE |
-| cpu | Intel(R) Xeon(R) Processor @ 2.10GHz |
+| cpu | Intel(R) Xeon(R) Processor @ 2.30GHz |
 | cores | 4 |
 | parallelism | 4 |
 | cpuMHz | 0, 0, 0, 0 |
-| cpuUserMs | 339180 |
+| cpuUserMs | 157480 |
 | cpuNiceMs | 0 |
-| cpuSysMs | 66320 |
-| cpuIdleMs | 1840300 |
+| cpuSysMs | 43570 |
+| cpuIdleMs | 1078600 |
 | cpuIrqMs | 0 |
 | memoryBytes | 16868675584 |
-| freeMemoryBytes | 14831370240 |
-| load1 | 6.09 |
-| load5 | 4.87 |
-| load15 | 2.67 |
-| uptimeS | 1141 |
+| freeMemoryBytes | 15772565504 |
+| load1 | 1.6 |
+| load5 | 2.68 |
+| load15 | 1.95 |
+| uptimeS | 943 |
 | diskBytes | 270553174016 |
-| diskFreeBytes | 232081608704 |
-| diskAvailableBytes | 35410046976 |
+| diskFreeBytes | 231987527680 |
+| diskAvailableBytes | 35315965952 |
 | diskBlockBytes | 4096 |
 | inodes | 16777216 |
-| inodesFree | 14889561 |
+| inodesFree | 14884668 |
 | networkInterfaces | 2 |
 | lean | leanprover/lean4:v4.33.0 |
-| rssBytes | 174338048 |
-| heapTotalBytes | 80855040 |
-| heapUsedBytes | 50855144 |
-| externalBytes | 17474509 |
-| arrayBuffersBytes | 209867 |
-| processUserMicros | 2845231 |
-| processSystemMicros | 164368 |
-| maxRssKb | 170252 |
-| pageFaults | 39782 |
+| rssBytes | 171704320 |
+| heapTotalBytes | 81121280 |
+| heapUsedBytes | 51521096 |
+| externalBytes | 17485531 |
+| arrayBuffersBytes | 219804 |
+| processUserMicros | 2256921 |
+| processSystemMicros | 102485 |
+| maxRssKb | 167680 |
+| pageFaults | 39272 |
 | fsReads | 0 |
 | fsWrites | 0 |
-| contextSwitches | 1037 |
-| buildMs | 1196 |
-| at | 2026-11-26T06:08:47.353Z |
+| contextSwitches | 957 |
+| buildMs | 949 |
+| at | 2026-11-26T18:39:16.778Z |
 
 | hardware.versions |  |
 | --- | --- |
