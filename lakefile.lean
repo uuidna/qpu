@@ -137,24 +137,57 @@ def rendered : List (String × System.FilePath × System.FilePath) :=
   , (foldFile, ".lake" / "build" / "fold-index.ts", "site" / ".vitepress" / "theme" / "fold-index.ts")
   , (addressFile, ".lake" / "build" / "address-core.ts", "src" / "quantum" / "uuid" / "programs" / "7" / "b" / "5" / "e" / "2" / "f" / "f" / "f" / "index.ts") ]
 
-/-- Lean writes the prose index, the theorem index, the textbook index, the blueprint, the nested catalogue, the
-catalogue of claims, the thousand-bit table, the register of standards and the configuration. The tools read the same
-built tree and each writes its own file, so they run at the same time; the files are then settled in order. -/
+/-- Sixteen hex digits of a 64-bit hash. -/
+def hex16 (h : UInt64) : String :=
+  let s := String.ofList (Nat.toDigits 16 h.toNat)
+  String.ofList (List.replicate (16 - s.length) '0') ++ s
+
+/-- The 122-qubit address of a tool's inputs: its source and the dependency hash Lake's trace keeps for every module it imports,
+which covers that module's imports in turn. Two 64-bit hashes make 128 bits; the version nibble is set to 8 and the variant to
+`10`, so 128 - 4 - 2 = 122 bits stay free (`textbook_coin_lean_sot`): an RFC 9562 version 8 UUID of what the tool reads. -/
+def inputAddress (file : String) : IO String := do
+  -- the characters of a text from position a, n of them, as a text
+  let sub (s : String) (a n : Nat) : String := String.ofList ((s.toList.drop a).take n)
+  let source ← IO.FS.readFile file
+  let imports := (source.splitOn "\n").filterMap fun line =>
+    if line.startsWith "import " then some (String.ofList ((line.toList.drop 7).filter (· != ' '))) else none
+  let mut read := source
+  for m in imports do
+    let rel := (System.mkFilePath (m.splitOn ".")).toString ++ ".trace"
+    let trace : System.FilePath := ".lake" / "build" / "lib" / "lean" / rel
+    -- a module of Lean's own toolchain has no trace here: its name is its version, carried by lean-toolchain
+    let dep ← if ← trace.pathExists then IO.FS.readFile trace else pure m
+    let after := (dep.splitOn "\"depHash\": \"").getD 1 dep
+    read := read ++ "\u0000" ++ String.ofList (after.toList.takeWhile (· != '"'))
+  read := read ++ "\u0000" ++ (← IO.FS.readFile "lean-toolchain")
+  let digits := hex16 (hash read) ++ hex16 (hash (read ++ "\u0000low"))
+  let variant := String.ofList (Nat.toDigits 16 ((hash (read ++ "\u0000variant")).toNat % 4 + 8))
+  pure s!"{sub digits 0 8}-{sub digits 8 4}-8{sub digits 13 3}-{variant}{sub digits 17 3}-{sub digits 20 12}"
+
+/-- Lean writes the prose index, the theorem index, the textbook index, the blueprint, the nested catalogue, the catalogue of
+claims, the thousand-bit table, the register of standards and the configuration, each tool its own file. The tools run one after
+another, each holding the whole environment once: the memory a run needs is the largest tool's,
+never the sum of all of them (`Schedule.sequential_peak_le_parallel`). A tool whose inputs keep their address, beside an output it
+already wrote, is not run again: the same inputs give the same output. -/
 def renderProse (check : Bool) : IO UInt32 := do
-  let tasks ← rendered.mapM fun (file, _, _) => IO.asTask (step "lake" #["env", "lean", file])
   let mut failed : UInt32 := 0
-  for ((file, built, index), task) in rendered.zip tasks do
-    match task.get with
-    | .error e =>
-      IO.eprintln s!"{file}: {e}"
-      failed := 1
-    | .ok code =>
+  for (file, built, index) in rendered do
+    let address ← inputAddress file
+    let mark : System.FilePath := built.toString ++ ".uuid"
+    -- the stored address is read only once both files are there: every `←` in one expression runs before the expression does
+    let present := (← built.pathExists) && (← mark.pathExists)
+    let kept ← if present then pure ((← IO.FS.readFile mark) == address) else pure false
+    if kept then
+      IO.println s!"= {file} {address}"
+    else
+      let code ← step "lake" #["env", "lean", file]
       if code != 0 then
         IO.eprintln s!"{file}: Lean stopped with code {code}"
         failed := code
-      else
-        let settled ← settle built index check
-        if settled != 0 then failed := settled
+        continue
+      IO.FS.writeFile mark address
+    let settled ← settle built index check
+    if settled != 0 then failed := settled
   return failed
 
 /-- Wrangler's configuration and the git hooks Lean writes (lean/tools/Config.lean), compared with or installed as

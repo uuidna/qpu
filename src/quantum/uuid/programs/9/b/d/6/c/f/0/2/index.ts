@@ -337,6 +337,7 @@ export const GAPS = [
   {"key":"Qubit.effective_formula","module":"Qpu.Information.Qubit","parts":[{"own":["Qubit.effective","Qubit.digits","Qubit.gateway"],"statement":"Qubit.effective w = Qubit.digits * w - w - Qubit.gateway"}]},
   {"key":"Qubit.holding_formula","module":"Qpu.Information.Qubit","parts":[{"own":["Qubit.holding","Qubit.versionAt","Qubit.digits"],"statement":"Qubit.holding w = List.filter (fun x => decide (x ≠ Qubit.versionAt)) (List.range Qubit.digits)"}]},
   {"key":"Qubit.unbounded","module":"Qpu.Information.Qubit","parts":[{"own":["Qubit.effective","hexbit"],"statement":"∃ k, N < k * Qubit.effective hexbit"}]},
+  {"key":"Schedule.sequential_peak_le_parallel","module":"Qpu.General.Schedule","parts":[{"library":["List.le_sum_of_mem","Nat.instCanonicallyOrderedAdd"],"statement":"m ≤ footprints.sum"}]},
   {"key":"Supremacy.lanes_le_cores","module":"Qpu.General.Supremacy","parts":[{"decided":"omega","statement":"max 1 (min cores share) ≤ cores"}]},
   {"key":"Supremacy.lanes_pos","module":"Qpu.General.Supremacy","parts":[{"library":["Nat.le_max_left"],"statement":"1 ≤ max 1 share"}]},
   {"key":"Supremacy.separation","module":"Qpu.General.Supremacy","parts":[{"library":["Nat.lt_of_le_of_lt"],"statement":"tq < tc"}]},

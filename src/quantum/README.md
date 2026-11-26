@@ -352,16 +352,16 @@
 
 | copy |  |
 | --- | --- |
-| issued | 2026-11-26T23:28:11.854Z |
-| hardware | c50473cc-c482-5a44-8127-3a09bbf47e40 |
+| issued | 2026-11-26T23:51:42.764Z |
+| hardware | 08043308-74ab-8a8a-87f5-7fd39e7e9e28 |
 
 ## hardware
 
 | receipt |  |
 | --- | --- |
-| uuid | c50473cc-c482-5a44-8127-3a09bbf47e40 |
-| handle | `c50473cc` |
-| sha256 | 7731c247b8eb825c7d63bf06629cb067adff005cf840b02548e4895179fc1c7d |
+| uuid | 08043308-74ab-8a8a-87f5-7fd39e7e9e28 |
+| handle | `08043308` |
+| sha256 | 8c1609486bca89d2d6756918167d5c9636be3753a11ae75982d5c5adec877ac6 |
 
 | hardware |  |
 | --- | --- |
@@ -380,42 +380,42 @@
 | cores | 4 |
 | parallelism | 4 |
 | cpuMHz | 0, 0, 0, 0 |
-| cpuUserMs | 2477130 |
+| cpuUserMs | 4566540 |
 | cpuNiceMs | 0 |
-| cpuSysMs | 222920 |
-| cpuIdleMs | 4982470 |
+| cpuSysMs | 368880 |
+| cpuIdleMs | 8354410 |
 | cpuIrqMs | 0 |
 | memoryBytes | 16868675584 |
-| freeMemoryBytes | 15835287552 |
-| load1 | 1.98 |
-| load5 | 1.25 |
-| load15 | 1.47 |
-| uptimeS | 1970 |
+| freeMemoryBytes | 15738204160 |
+| load1 | 1.61 |
+| load5 | 1.21 |
+| load15 | 1.76 |
+| uptimeS | 3381 |
 | diskBytes | 270553174016 |
-| diskFreeBytes | 230186315776 |
-| diskAvailableBytes | 33514754048 |
+| diskFreeBytes | 230176153600 |
+| diskAvailableBytes | 33504591872 |
 | diskBlockBytes | 4096 |
 | inodes | 16777216 |
-| inodesFree | 14844080 |
+| inodesFree | 14843925 |
 | networkInterfaces | 2 |
 | lean | leanprover/lean4:v4.33.0 |
-| rssBytes | 217149440 |
-| heapTotalBytes | 115277824 |
-| heapUsedBytes | 90763464 |
-| externalBytes | 18048805 |
-| arrayBuffersBytes | 717542 |
-| processUserMicros | 4886549 |
-| processSystemMicros | 180959 |
-| maxRssKb | 213652 |
-| pageFaults | 59501 |
-| fsReads | 16576 |
+| rssBytes | 219889664 |
+| heapTotalBytes | 112570368 |
+| heapUsedBytes | 86274088 |
+| externalBytes | 17555441 |
+| arrayBuffersBytes | 224178 |
+| processUserMicros | 5226909 |
+| processSystemMicros | 164161 |
+| maxRssKb | 216292 |
+| pageFaults | 58154 |
+| fsReads | 0 |
 | fsWrites | 0 |
-| contextSwitches | 6015 |
+| contextSwitches | 5325 |
 | challenges | 574a161f, fb1cd940, d6d7b748, ec54afc7, bbcc2c0f, dbbc4fe8, 9f253959, 52a07646, a7fa7c75, d8719ba7, 5d7c7a76, 4d938405, 02f60ed8, 3edf017a |
 | isoHardwareTerms | 3.3.5 physical qubit, 3.3.6 physical qudit, 3.4.8 quantum processor, 3.4.10 quantum computer, 3.4.26 circuit-based quantum computer, 3.4.27 one-way quantum computer, 3.4.28 adiabatic quantum computer |
 | quantumBehaviour | UNVERIFIED |
-| buildMs | 3248 |
-| at | 2026-11-26T23:28:11.854Z |
+| buildMs | 3485 |
+| at | 2026-11-26T23:51:42.764Z |
 
 | hardware.versions |  |
 | --- | --- |
