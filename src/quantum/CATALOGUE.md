@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1631 products, 2 under a declared claim context and 1629 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1636 products, 2 under a declared claim context and 1634 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -12981,6 +12981,54 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```lean
 CircuitBasedQuantumComputing.Exact (Operator.kron 2 QuantumGate.S Operator.idm) CircuitBasedQuantumComputing.ruleS0 1 ∧
   CircuitBasedQuantumComputing.Exact (Operator.kron 2 Operator.idm QuantumGate.S) CircuitBasedQuantumComputing.ruleS1 1
+```
+
+## Qpu.Processing.CirqBridge
+
+### `CirqBridge.brief_sound`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} [inst : DecidableEq α] (record : List α) (p : α → Bool),
+  (List.filter p record).dedup.Nodup ∧ ∀ x ∈ (List.filter p record).dedup, x ∈ record ∧ p x = true
+```
+
+### `CirqBridge.cirq_order_eq_reversed`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ) (b : Fin n → ℕ), ∑ i, b i * 2 ^ (n - 1 - ↑i) = ∑ i, b i.rev * 2 ^ ↑i
+```
+
+### `CirqBridge.currency_beside_every_coin`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (rows : List String),
+  "currency" ∉ rows →
+    List.count "currency" (List.flatMap (fun r => if r = "coin" then [r, "currency"] else [r]) rows) =
+      List.count "coin" (List.flatMap (fun r => if r = "coin" then [r, "currency"] else [r]) rows)
+```
+
+### `CirqBridge.global_phases_add`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (l : List (ℂ × ℂ)),
+  (List.map (fun p => Complex.exp (↑Real.pi * p.1 * p.2 * Complex.I)) l).prod =
+    Complex.exp (↑Real.pi * (List.map (fun p => p.1 * p.2) l).sum * Complex.I)
+```
+
+### `CirqBridge.shift_phase`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (θ s : ℝ), Complex.exp (↑(Real.pi * (θ / Real.pi) * s) * Complex.I) = Complex.exp (↑(θ * s) * Complex.I)
 ```
 
 ## Qpu.Processing.Clifford

@@ -810,7 +810,8 @@ export class Simulator {
     const { wave, order, indexOf } = this.initial(circuit)
     this.apply(wave, circuit.operations.filter((op) => op.kind !== 'measure'), indexOf)
     // Cirq's order: the first qubit is the most significant bit of an amplitude's index, where the wave keeps it as the least, so each index is read
-    // with its bits reversed over the qubits, dense and sparse alike
+    // with its bits reversed over the qubits, dense and sparse alike: the index in Cirq's order is the simulator's over the reversed qubits
+    // (CirqBridge.cirq_order_eq_reversed), and reversing twice gives every qubit back, so no amplitude is lost or invented (Advantage.fold_unfold)
     const n = order.length, reversed = (k: bigint) => { let r = 0n; for (let b = 0; b < n; b++) if (k & (1n << BigInt(b))) r |= 1n << BigInt(n - 1 - b); return r }
     if (wave.kind === 'dense') return { amplitudes: Array.from(wave.state.re, (_, k) => { const j = Number(reversed(BigInt(k))); return [wave.state.re[j]!, wave.state.im[j]!] as [number, number] }), qubits: order, width: order.length }
     const occupied = [...wave.state.entries()].map(([k, a]) => [reversed(k), a] as const).sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))

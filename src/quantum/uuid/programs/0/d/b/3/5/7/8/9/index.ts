@@ -238,7 +238,8 @@ export const runMachine = async (args: Record<string, unknown>, cwd: string, onP
   const record = repository({ machine: { record: { action: plan.action, command: plan.command, status: run.status, stdout: run.stdout, stderr: run.stderr, ms: run.ms, root: at, home: homedir() } } }) as { says: string; ok: boolean; redacted: number; entry: { id: string; kind: string; from: string; body: Record<string, unknown>; sha256: string } }
   if (receipt) record.entry.body = { ...record.entry.body, receipt }
   // the verdict alone, read from the redacted output: each gate's line, each hook's decision and each red step, once each and cut to a line,
-  // so a harness that repeats a commit or a push reads a few hundred bytes where the record holds tens of thousands
+  // so a harness that repeats a commit or a push reads a few hundred bytes where the record holds tens of thousands; each line is held once, by
+  // the record, and kept by the filter (CirqBridge.brief_sound)
   const brief = [...new Set(String(record.entry.body.output ?? '').split(/\n|\\n/).map((l) => l.trim()).filter((l) => /^([✓✗?] [a-z-]+:|hook [a-z-]+:|RED STEP)/.test(l)).map((l) => l.slice(0, 200)))]
   return { plan, record, answer: { plan: { action: plan.action, command: plan.command, decision: plan.decision?.says ?? null }, eta, brief, record: { says: record.says, ok: record.ok, redacted: record.redacted, entry: record.entry }, ...(receipt ? { receipt: { green: receipt.green, red: receipt.red, skipped: receipt.skipped, wallMs: receipt.wallMs, red_steps: receipt.steps.filter((s) => s.status === 'red').map((s) => s.name) } } : {}) } }
 }
