@@ -3,6 +3,11 @@
 // Fused on the payload tool as payload { scripts: … }; never a new tools/list door (connect bill stays the existing catalogue).
 
 import { PROSE, proseFill } from '../../../../../../../../5/9/e/4/9/1/a/4/index.ts'
+import { VERSION } from '../../../../../../../../c/0/7/0/9/8/4/3/index.ts'
+import { LICENSE } from '../../../../../../../../a/f/3/d/e/a/5/f/index.ts'
+import { RELEASE_REPOSITORY } from '../../../../../../../../6/6/5/9/1/f/5/8/index.ts'
+import { WEBSITE_CLIENT, WEBSITE_ORIGIN } from '../../../../../../../../4/a/1/6/6/9/b/c/index.ts'
+import QPU_PACKAGE from '../../../../../../../../../../package.json' with { type: 'json' }
 type ClayRelation = { name: string; statement: string; families: string[] }
 import { TEXTBOOK_THEOREMS } from '../../../../../../../../3/4/7/e/0/c/e/0/index.ts'
 import { QUANTUM_TERMS, quantumVocabulary } from '../../../../../../../../d/f/0/d/9/1/3/b/index.ts'
@@ -75,7 +80,9 @@ export const CLAY_RELATIONS: readonly { name: string; statement: string; familie
 // a changed toolbox is a different address. Formerly nothing: the tree had Payload's, Cloudflare's and shadcn's skills and none of its own.
 type SkillBox = { name: string; idea: string; tools: readonly { name: string; description: string; inputSchema?: { properties?: Record<string, { description?: string }> } }[]; examples: readonly { id: string; shows?: string; tool?: string }[]; skill: { instructions: string; directions: readonly string[] } }
 type CheckedTerm = { clause: string; name: string; holds: boolean; uuid: string; sealed: boolean }
-const SKILL_ROOT = '.agents/skills', SKILL_LINK_ROOT = '.claude/skills', SKILL_LICENSE = 'CC-BY-NC-ND-4.0'
+// the skills live in skills/, the one tree every agent harness reads as real folders; the harnesses that read .claude/skills or .agents/skills reach them by a link
+const SKILL_ROOT = 'skills', SKILL_LINK_ROOTS = ['.claude/skills', '.agents/skills'] as const, SKILL_LICENSE = 'CC-BY-NC-ND-4.0'
+const skillLinks = (slug: string) => SKILL_LINK_ROOTS.map((root) => ({ path: `${root}/${slug}`, target: `../../${SKILL_ROOT}/${slug}` }))
 const termRe = (name: string) => new RegExp(`\\b${name.replace(/, (adjective|noun)$/, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i')
 const sentence = (s: string) => { const m = /^(.+?[.!?])(\s|$)/.exec(s.trim()); const one = (m ? m[1]! : s.trim()).replace(/\s+/g, ' '); return /[.!?]$/.test(one) ? one : one + '.' }
 const cell = (s: string) => s.replace(/\|/g, '\\|').replace(/\n+/g, ' ')
@@ -104,11 +111,11 @@ export const qpuSkills = (boxesIn: readonly SkillBox[], terms: readonly { clause
       '## Vocabulary (ISO/IEC 4879:2024)', '', ...(checks.length ? [proseFill(PROSE.quantumProcessingScriptDoors_s12, checks.filter((c) => c.holds).length, checks.length), '', '| Clause | Term | Holds | UUID |', '| --- | --- | --- | --- |', ...checks.map((c) => `| ${c.clause} | ${c.name} | ${c.holds ? 'yes' : 'no'} | \`${c.uuid}\` |`)] : named.length ? ['| Clause | Term |', '| --- | --- |', ...named.map((t) => `| ${t.clause} | ${t.name} |`)] : [PROSE.quantumProcessingScriptDoors_s13]), '',
       '## Register', '', proseFill(PROSE.quantumProcessingScriptDoors_s14, address, qubits, qubitsFormula), '',
     ].join('\n')
-    return { name: slug, toolbox: b.name, path: `${SKILL_ROOT}/${slug}/SKILL.md`, link: { path: `${SKILL_LINK_ROOT}/${slug}`, target: `../../${SKILL_ROOT}/${slug}` }, uuid: address, sealed: seal(address).valid, qubits, terms: named.map((t) => t.clause), byText: byText.length, checked: checks.filter((c) => c.holds).length, tools: b.tools.length, examples: b.examples.length, directions: b.skill.directions.length, complete, text: md }
+    return { name: slug, toolbox: b.name, path: `${SKILL_ROOT}/${slug}/SKILL.md`, links: skillLinks(slug), uuid: address, sealed: seal(address).valid, qubits, terms: named.map((t) => t.clause), byText: byText.length, checked: checks.filter((c) => c.holds).length, tools: b.tools.length, examples: b.examples.length, directions: b.skill.directions.length, complete, text: md }
   })
   const namedClauses = new Set(rows.flatMap((r) => r.terms)), unnamed = terms.filter((t) => !namedClauses.has(t.clause)).map((t) => `${t.clause} ${t.name}`)
   const indexAddress = uuid(canonicalText({ skill: 'qpu', skills: rows.map((r) => r.uuid) }))
-  const index = { name: 'qpu', toolbox: null, path: `${SKILL_ROOT}/qpu/SKILL.md`, link: { path: `${SKILL_LINK_ROOT}/qpu`, target: `../../${SKILL_ROOT}/qpu` }, uuid: indexAddress, sealed: seal(indexAddress).valid, qubits, terms: [...namedClauses], tools: rows.reduce((n, r) => n + r.tools, 0), examples: rows.reduce((n, r) => n + r.examples, 0), directions: rows.reduce((n, r) => n + r.directions, 0), complete: rows.every((r) => r.complete), text: [
+  const index = { name: 'qpu', toolbox: null, path: `${SKILL_ROOT}/qpu/SKILL.md`, links: skillLinks('qpu'), uuid: indexAddress, sealed: seal(indexAddress).valid, qubits, terms: [...namedClauses], tools: rows.reduce((n, r) => n + r.tools, 0), examples: rows.reduce((n, r) => n + r.examples, 0), directions: rows.reduce((n, r) => n + r.directions, 0), complete: rows.every((r) => r.complete), text: [
     ...frontmatter('qpu', proseFill(PROSE.quantumProcessingScriptDoors_s15, boxes.length)),
     '# QPU', '', PROSE.quantumProcessingScriptDoors_s16, '',
     '## Toolboxes', '', PROSE.quantumProcessingScriptDoors_s17, '| --- | --- | --- | --- | --- | --- |', ...rows.map((r) => `| \`${r.name}\` | ${cell(sentence(boxes.find((b) => b.name === r.toolbox)!.idea))} | ${r.tools} | ${r.examples} | ${r.terms.length} | \`${r.uuid}\` |`), '',
@@ -116,7 +123,8 @@ export const qpuSkills = (boxesIn: readonly SkillBox[], terms: readonly { clause
     '## Register', '', proseFill(PROSE.quantumProcessingScriptDoors_s20, qubits, qubitsFormula, indexAddress, rows.length), '',
   ].join('\n') }
   const all = [index, ...rows]
-  const files = all.map((r) => ({ path: r.path, text: r.text })), links = all.map((r) => r.link)
+  const plugin = qpuPlugin(all)
+  const files = [...all.map((r) => ({ path: r.path, text: r.text })), ...plugin.files], links = all.flatMap((r) => r.links)
   const checkedHold = checked.filter((c) => c.holds).length
   return { phase: 'scripts-skills' as const, standard: 'ISO/IEC 4879:2024' as const, register: 'ISO/IEC 9834-8 UUID at hexbit width 4' as const, toolboxes: boxes.length, skills: all.length, files, links, catalogue: all.map(({ text: _t, ...r }) => r), complete: rows.length === boxes.length && rows.every((r) => r.complete) && checkedHold === terms.length, qubits, qubitsFormula, coverage: { terms: terms.length, named: namedClauses.size, unnamed, checked: checkedHold, checkedBy: processor ? `qpu-${processor}` : null, byText: rows.reduce((n, r) => n + r.byText, 0) }, theorems: ['textbook_skills_complete'], says: proseFill(PROSE.quantumProcessingScriptDoors_says21, all.length, boxes.length, rows.every((r) => r.complete) ? 'all complete' : `${rows.filter((r) => !r.complete).length} incomplete`, namedClauses.size, terms.length, checkedHold, qubits) }
 }
@@ -317,6 +325,35 @@ const scriptsCatalog = () => ({
   invoke: SCRIPT_INVOKE,
   says: proseFill(PROSE.quantumProcessingScriptDoors_says37, Object.keys(SCRIPT_INVOKE).length),
 })
+
+// The QPU as an agent plugin for every harness, from one source: one name, version, description, author, licence, repository, the skills the
+// generator writes and the hosted MCP server, each written in the form its vendor documents. Agent Plugins 1.0 (agent-plugins.org: root plugin.json,
+// root mcp.json, skills/), which OpenAI Codex, Cursor, VS Code and the Copilot CLI read; Claude Code (.claude-plugin/plugin.json and its marketplace);
+// Gemini CLI (gemini-extension.json, httpUrl for Streamable HTTP); Antigravity (.antigravity-plugin/plugin.json, mcp_config.json with serverUrl); the
+// marketplaces of Codex (.agents/plugins/marketplace.json) and Cursor (.cursor-plugin/marketplace.json); and the MCP Registry's server.json. Every harness
+// reads the skills from skills/. Nothing is typed here.
+export const PLUGIN_STANDARDS = {
+  agentPlugins: 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json', agentPluginsMcp: 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json',
+  registry: 'https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json',
+} as const
+export const qpuPlugin = (skills: readonly { name: string; path: string }[]) => {
+  const name = 'qpu', author = { name: LICENSE.author, url: LICENSE.orcid }, repository = `https://github.com/${RELEASE_REPOSITORY}`, owner = RELEASE_REPOSITORY.split('/')[0]!
+  const about = { version: VERSION, description: QPU_PACKAGE.description, author, homepage: WEBSITE_ORIGIN, repository, license: LICENSE.spdx, keywords: skills.map((s) => s.name) }
+  const json = (o: unknown) => `${JSON.stringify(o, null, 2)}\n`
+  const files = [
+    { path: 'plugin.json', text: json({ $schema: PLUGIN_STANDARDS.agentPlugins, name, ...about }) },
+    { path: 'mcp.json', text: json({ $schema: PLUGIN_STANDARDS.agentPluginsMcp, mcpServers: { [name]: { type: 'streamable-http', url: WEBSITE_CLIENT } } }) },
+    { path: '.claude-plugin/plugin.json', text: json({ name, ...about, mcpServers: { [name]: { type: 'http', url: WEBSITE_CLIENT } }, network: { hosts: [new URL(WEBSITE_CLIENT).host] } }) },
+    { path: '.claude-plugin/marketplace.json', text: json({ name: owner, owner: author, description: about.description, plugins: [{ name, source: './', description: about.description, version: VERSION }] }) },
+    { path: 'gemini-extension.json', text: json({ name, version: VERSION, description: about.description, mcpServers: { [name]: { httpUrl: WEBSITE_CLIENT } } }) },
+    { path: '.antigravity-plugin/plugin.json', text: json({ name, displayName: QPU_PACKAGE.description, ...about }) },
+    { path: 'mcp_config.json', text: json({ mcpServers: { [name]: { serverUrl: WEBSITE_CLIENT } } }) },
+    { path: '.agents/plugins/marketplace.json', text: json({ name: owner, interface: { displayName: owner }, plugins: [{ name, source: { source: 'local', path: './' }, policy: { installation: 'AVAILABLE' } }] }) },
+    { path: '.cursor-plugin/marketplace.json', text: json({ name: owner, owner: { name: author.name }, plugins: [{ name, source: './' }] }) },
+    { path: 'server.json', text: json({ $schema: PLUGIN_STANDARDS.registry, name: `com.${owner}/${name}`, title: name, description: about.description, version: VERSION, websiteUrl: WEBSITE_ORIGIN, repository: { url: repository, source: 'github' }, remotes: [{ type: 'streamable-http', url: WEBSITE_CLIENT }] }) },
+  ]
+  return { files }
+}
 
 export type ScriptsArgs = {
   catalog?: boolean
