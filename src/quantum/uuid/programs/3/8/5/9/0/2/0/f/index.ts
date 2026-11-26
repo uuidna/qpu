@@ -555,7 +555,8 @@ const quantumFold = (width: number) => {
     const run = sim.run(phaseEstimationCircuit(phase.angle / 360, bits), repetitions)
     const counts = new Map<string, number>()
     for (const shot of run.measurements('m')) {
-      const value = [...shot].reduce((sum, bit, k) => (bit === '1' ? sum + (1n << BigInt(k)) : sum), 0n)
+      // the first measured qubit is the most significant bit, as Cirq reads it
+      const value = BigInt(`0b${shot}`)
       const key = value.toString()
       counts.set(key, (counts.get(key) ?? 0) + 1)
     }
@@ -1210,10 +1211,7 @@ const OWN: Tool[] = [
         const { amplitudes, qubits } = new Simulator().simulate(prepared)
         // the global phase Cirq's shifts multiply the state by, carried exactly: e^{iφ}(re + i im)
         const turned = cirq?.phase ? amplitudes.map(complex).map((z) => ({ re: z.re * Math.cos(cirq.phase) - z.im * Math.sin(cirq.phase), im: z.re * Math.sin(cirq.phase) + z.im * Math.cos(cirq.phase) })) : amplitudes.map(complex)
-        // Cirq's order for a Cirq circuit: its first qubit is the most significant bit of an amplitude's index, where this simulator's is the least,
-        // so each index is read with its bits reversed over the circuit's qubits
-        const reversed = (k: number) => { let r = 0; for (let b = 0; b < qubits.length; b++) if (k & (1 << b)) r |= 1 << (qubits.length - 1 - b); return r }
-        const phased = cirq ? turned.map((_, k) => turned[reversed(k)]!) : turned
+        const phased = turned
         return { qubits: qubits.map(keyOfQubit), amplitudes: phased, ...(measurement && typeof args.repetitions !== 'number' ? { sampled: false as const } : {}) }
       }
       const repetitions = args.repetitions
@@ -1328,7 +1326,8 @@ const OWN: Tool[] = [
         const run = seeded(args).run(phaseEstimationCircuit(theta, bits), repetitions)
         const counts = new Map<number, number>()
         for (const b of run.measurements('m')) {
-          const estimate = [...b].reduce((sum, bit, k) => sum + Number(bit) * 2 ** k, 0) / 2 ** bits
+          // the first measured qubit is the most significant bit of the estimate, as Cirq reads it
+          const estimate = parseInt(b, 2) / 2 ** bits
           counts.set(estimate, (counts.get(estimate) ?? 0) + 1)
         }
         const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1])

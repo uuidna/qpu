@@ -12,11 +12,12 @@ import { HELD_FACTORS } from '../../../../../../../../4/a/2/2/a/f/5/e/index.ts'
 
 /** The quantum Fourier transform, as the Cirq page builds it: a Hadamard on each qubit, then a controlled phase CZ**(1/2^k)
  *  from each later qubit onto it. The page notes the output comes in reversed bit order unless swaps are added, so the swaps
- *  that restore the standard order (qubit i with qubit n−1−i) follow. The result is the discrete Fourier transform. */
-export const qftOperations = (qubits: readonly Qubit[]): Operation[] => {
+ *  that restore the standard order (qubit i with qubit n−1−i) follow. The result is the discrete Fourier transform, in Cirq's order: the first
+ *  qubit is the most significant bit of the index, as cirq.qft and the simulator's amplitudes read it. */
+export const qftOperations = (given: readonly Qubit[]): Operation[] => {
   const ops: Operation[] = []
-  const n = qubits.length
-  // the most significant qubit (the last index) first: a Hadamard, then controlled phases from each less significant qubit
+  const qubits = [...given].reverse(), n = qubits.length
+  // the most significant qubit (the first given, the last here) first: a Hadamard, then controlled phases from each less significant qubit
   for (let i = n - 1; i >= 0; i--) {
     ops.push(applied(H, qubits[i]!))
     for (let j = i - 1; j >= 0; j--) ops.push(applied(raiseGate(CZ, 1 / 2 ** (i - j)), qubits[j]!, qubits[i]!))
@@ -29,17 +30,18 @@ export const qftOperations = (qubits: readonly Qubit[]): Operation[] => {
 export const inverseOperations = (ops: readonly Operation[]): Operation[] =>
   [...ops].reverse().map((op): Operation => (op.kind === 'gate' ? applied(adjointGate(op.gate), ...op.qubits) : op))
 
-/** The circuit that prepares the basis state |x> on n qubits, bit i of x on qubit i. */
+/** The circuit that prepares the basis state |x> on n qubits, in Cirq's order: the first qubit is the most significant bit of x. */
 
-/** Phase estimation of U = Z**(2θ) on its eigenstate |1>, with n estimation qubits: Hadamards, controlled U^(2^k), the
- *  inverse QFT, then a measurement of the estimation qubits under the key 'm'. The eigenphase is e^(2πiθ). */
+/** Phase estimation of U = Z**(2θ) on its eigenstate |1>, with n estimation qubits: Hadamards, controlled U^(2^(n−1−k)) from
+ *  estimation qubit k, the inverse QFT, then a measurement of the estimation qubits under the key 'm', in Cirq's order: the first
+ *  estimation qubit is the most significant bit of the estimate. The eigenphase is e^(2πiθ). */
 export const phaseEstimationCircuit = (theta: number, bits: number): Circuit => {
   const est = LineQubit.range(bits)
   const target = LineQubit.of(bits)
   const ops: Operation[] = [applied(X, target), ...est.map((q) => applied(H, q))]
   for (let k = 0; k < bits; k++) {
-    // estimation qubit k controls U^(2^k); a controlled Z**t is CZ**t, so the power is CZ**(2θ · 2^k)
-    ops.push(applied(raiseGate(CZ, 2 * theta * 2 ** k), est[k]!, target))
+    // estimation qubit k controls U^(2^(n−1−k)); a controlled Z**t is CZ**t, so the power is CZ**(2θ · 2^(n−1−k))
+    ops.push(applied(raiseGate(CZ, 2 * theta * 2 ** (bits - 1 - k)), est[k]!, target))
   }
   ops.push(...inverseOperations(qftOperations(est)))
   return new Circuit().append(ops).append(measure(est, 'm'))

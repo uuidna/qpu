@@ -809,8 +809,11 @@ export class Simulator {
   simulate(circuit: Circuit): { amplitudes: [number, number][]; qubits: Qubit[]; basis?: string[]; width: number } {
     const { wave, order, indexOf } = this.initial(circuit)
     this.apply(wave, circuit.operations.filter((op) => op.kind !== 'measure'), indexOf)
-    if (wave.kind === 'dense') return { amplitudes: Array.from(wave.state.re, (r, k) => [r, wave.state.im[k]!] as [number, number]), qubits: order, width: order.length }
-    const occupied = [...wave.state.entries()].sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
+    // Cirq's order: the first qubit is the most significant bit of an amplitude's index, where the wave keeps it as the least, so each index is read
+    // with its bits reversed over the qubits, dense and sparse alike
+    const n = order.length, reversed = (k: bigint) => { let r = 0n; for (let b = 0; b < n; b++) if (k & (1n << BigInt(b))) r |= 1n << BigInt(n - 1 - b); return r }
+    if (wave.kind === 'dense') return { amplitudes: Array.from(wave.state.re, (_, k) => { const j = Number(reversed(BigInt(k))); return [wave.state.re[j]!, wave.state.im[j]!] as [number, number] }), qubits: order, width: order.length }
+    const occupied = [...wave.state.entries()].map(([k, a]) => [reversed(k), a] as const).sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
     return { amplitudes: occupied.map(([, a]) => a), basis: occupied.map(([k]) => k.toString()), qubits: order, width: order.length }
   }
 
