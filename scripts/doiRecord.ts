@@ -30,7 +30,8 @@ const copiesOf = (device: Json): readonly [string, string][] => {
       ...receipt.parts.map((p) => `part ${p.kind} ${p.uuid}`), `verify ${JSON.stringify({ uuid: receipt.uuid, content: 'text' })}`, `mcp ${receipt.mcp}`,
       HARDWARE_MARK, `hardware ${deviceUuid}`, `hardware.sha256 ${deviceSha256}`,
     ].join('\n'),
-    keywords: TOOLBOXES.map((b) => b.name),
+    // what a search for the work asks for, then the toolboxes it is served by
+    keywords: ['lean4', 'formal-verification', 'theorem-proving', 'mcp', 'model-context-protocol', 'sha-3', 'post-quantum-cryptography', 'uuid', ...TOOLBOXES.map((b) => b.name)],
     related_identifiers: [
       { identifier: `urn:uuid:${receipt.uuid}`, relation: 'isIdenticalTo', scheme: 'urn' },
       { identifier: UNIT_CONCEPT_DOI, relation: 'isVersionOf', scheme: 'doi' },
