@@ -5348,8 +5348,8 @@
   ],
   "proof": {
     "receipt": {
-      "uuid": "246a97b1-95e2-739d-94ea-c2620fc7638c",
-      "sha256": "9601aa66caab6ee2821b676eeb710cef341c7f67aee9e1541404fe328b97e009",
+      "uuid": "d7228648-4dc5-29ad-a5f5-65f2b22cf0d1",
+      "sha256": "94f5ad427c9292c3ba692626e6e2733c981773796e8c4c8614f521b76c58fc41",
       "resource": "receipt://qpu"
     },
     "merge": {
@@ -5367,7 +5367,7 @@
     "verify": {
       "tool": "verify",
       "arguments": {
-        "uuid": "246a97b1-95e2-739d-94ea-c2620fc7638c"
+        "uuid": "d7228648-4dc5-29ad-a5f5-65f2b22cf0d1"
       },
       "content": "receipt://qpu"
     },

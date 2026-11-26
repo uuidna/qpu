@@ -98,11 +98,39 @@ export const ISO_4217_COIN = {
   theorem: 'textbook_coin_lean_sot' as const,
   market: 'textbook_market_iso_4217' as const,
   forged: { code: 'QPU' as const, iso4217: false as const, refused: true as const },
+  // a coin names a receipt and its register, not an amount of money: the code ISO 4217 keeps for no currency
+  unit: 'XXX' as const,
   capacityRefused: { qubits: 29 as const, span: 232 as const, reason: 'Capacity 29/232 is not the Lean coin register' as const },
   surfaces: ['market', 'REGISTER', 'pack', 'cross', 'price', 'catalog'] as const,
 } as const
 
 export const ISO_OPEN_DEFINITIONS = TABLES.ISO_OPEN_DEFINITIONS
+
+/** The language every document of the repository is written in, as ISO 639-1 codes it: the README, the site and the pages read it from here. */
+export const DOCUMENT_LANGUAGE = 'en' as const
+/** The unit symbols ISO/IEC 80000 gives the quantities a receipt measures: the byte and the bit (IEC 80000-13), the joule (ISO 80000-5). */
+export const ISO_80000_UNITS: Readonly<Record<string, string>> = { bytes: 'B', bits: 'bit', joules: 'J' }
+
+// what the runtime's CLDR tables know: a code they name is one the standard defines, and one they cannot name is not
+const cldrNames = (type: 'language' | 'currency', code: string) => { try { return new Intl.DisplayNames(['en'], { type, fallback: 'none' }).of(code) !== undefined } catch { return false } }
+const ISO_8601_DATE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})?)?$/
+/** The repository against each ISO standard it names, one row a standard, each with the places that break it: the test cases ISO/IEC/IEEE
+ *  29119-3 identifies; and for every copy of the one text, the identification ISO/IEC/IEEE 15289 asks of an information item, its dates in
+ *  ISO 8601, its language in ISO 639-1, a currency in ISO 4217 beside every coin, and the unit symbols of ISO/IEC 80000 beside every quantity. */
+export const isoConformance = (files: Readonly<Record<string, string>>) => {
+  const all = Object.entries(files), copies = all.filter(([p]) => /^(src\/quantum\/)?README\.md$/.test(p)), tests = all.filter(([p]) => /(\.test|_test)\.ts$/.test(p))
+  const field = (text: string, name: string) => new RegExp(`^\\| ${name} \\| ([^|]+) \\|$`, 'm').exec(text)?.[1]?.trim()
+  const count = (text: string, re: RegExp) => [...text.matchAll(re)].length
+  const row = (standard: string, findings: string[]) => ({ standard, holds: findings.length === 0, findings })
+  return [
+    row('ISO/IEC/IEEE 29119-3', tests.flatMap(([p, t]) => t.split('\n').flatMap((l, i, lines) => /^test\(/.test(l) && !/ISO\/IEC\/IEEE 29119-3 test case\. Identifier:/.test(lines[i - 1] ?? '') ? [`${p}:${i + 1}`] : []))),
+    row('ISO/IEC/IEEE 15289', copies.flatMap(([p, t]) => ['identifier', 'version', 'author', 'licence', 'language', 'issued'].filter((f) => !field(t, f)).map((f) => `${p}: ${f}`))),
+    row('ISO 8601', copies.flatMap(([p, t]) => [field(t, 'issued') ?? '', ...[...t.matchAll(/(?<![0-9a-f-])\d{1,4}[-/]\d{1,2}[-/]\d{1,4}(?![0-9a-f-])/g)].map((m) => m[0])].filter((d) => !ISO_8601_DATE.test(d)).map((d) => `${p}: ${d || 'no issue date'}`))),
+    row('ISO 639-1', copies.flatMap(([p, t]) => { const l = field(t, 'language') ?? ''; return /^[a-z]{2}$/.test(l) && cldrNames('language', l) ? [] : [`${p}: ${l || 'no language'}`] })),
+    row('ISO 4217', copies.flatMap(([p, t]) => [...(count(t, /^\| coin \|/gm) === count(t, /^\| currency \|/gm) ? [] : [`${p}: a coin without its currency`]), ...[...t.matchAll(/^\| currency \| ([^|]+) \|$/gm)].map((m) => m[1]!.trim()).filter((c) => !/^[A-Z]{3}$/.test(c) || !cldrNames('currency', c)).map((c) => `${p}: ${c}`)])),
+    row('ISO/IEC 80000', copies.flatMap(([p, t]) => [...t.matchAll(new RegExp(`\\| (${Object.keys(ISO_80000_UNITS).join('|')}) \\|`, 'g'))].map((m) => `${p}: ${m[1]} without its unit`))),
+  ]
+}
 
 /** A withdrawn dimension's current successor in the same dataset. The dimension itself stays the row that names it. */
 export const ISO_OPEN_SUCCESSORS = TABLES.ISO_OPEN_SUCCESSORS
