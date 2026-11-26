@@ -331,20 +331,23 @@ const scriptsCatalog = () => ({
 // root mcp.json, skills/), which OpenAI Codex, Cursor, VS Code and the Copilot CLI read; Claude Code (.claude-plugin/plugin.json and its marketplace);
 // Gemini CLI (gemini-extension.json, httpUrl for Streamable HTTP); Antigravity (.antigravity-plugin/plugin.json, mcp_config.json with serverUrl); the
 // marketplaces of Codex (.agents/plugins/marketplace.json) and Cursor (.cursor-plugin/marketplace.json); and the MCP Registry's server.json. Every harness
-// reads the skills from skills/. Nothing is typed here.
+// reads the skills from skills/. Claude Code alone loads the .mcp.json at a plugin's root, merged with what its manifest declares and with no way to
+// leave it out, and the root of this repository holds the developers' own stdio server there; so the Claude plugin has a root of its own,
+// plugins/qpu, holding its manifest and the same skills, and the marketplace names that root. Nothing is typed here.
 export const PLUGIN_STANDARDS = {
   agentPlugins: 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json', agentPluginsMcp: 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json',
   registry: 'https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json',
 } as const
-export const qpuPlugin = (skills: readonly { name: string; path: string }[]) => {
-  const name = 'qpu', author = { name: LICENSE.author, url: LICENSE.orcid }, repository = `https://github.com/${RELEASE_REPOSITORY}`, owner = RELEASE_REPOSITORY.split('/')[0]!
+export const qpuPlugin = (skills: readonly { name: string; path: string; text: string }[]) => {
+  const name = 'qpu', claudeRoot = `plugins/${name}`, author = { name: LICENSE.author, url: LICENSE.orcid }, repository = `https://github.com/${RELEASE_REPOSITORY}`, owner = RELEASE_REPOSITORY.split('/')[0]!
   const about = { version: VERSION, description: QPU_PACKAGE.description, author, homepage: WEBSITE_ORIGIN, repository, license: LICENSE.spdx, keywords: skills.map((s) => s.name) }
   const json = (o: unknown) => `${JSON.stringify(o, null, 2)}\n`
   const files = [
     { path: 'plugin.json', text: json({ $schema: PLUGIN_STANDARDS.agentPlugins, name, ...about }) },
     { path: 'mcp.json', text: json({ $schema: PLUGIN_STANDARDS.agentPluginsMcp, mcpServers: { [name]: { type: 'streamable-http', url: WEBSITE_CLIENT } } }) },
-    { path: '.claude-plugin/plugin.json', text: json({ name, ...about, mcpServers: { [name]: { type: 'http', url: WEBSITE_CLIENT } }, network: { hosts: [new URL(WEBSITE_CLIENT).host] } }) },
-    { path: '.claude-plugin/marketplace.json', text: json({ name: owner, owner: author, description: about.description, plugins: [{ name, source: './', description: about.description, version: VERSION }] }) },
+    { path: `${claudeRoot}/.claude-plugin/plugin.json`, text: json({ name, ...about, mcpServers: { [name]: { type: 'http', url: WEBSITE_CLIENT } }, network: { hosts: [new URL(WEBSITE_CLIENT).host] } }) },
+    { path: '.claude-plugin/marketplace.json', text: json({ name: owner, owner: author, description: about.description, plugins: [{ name, source: `./${claudeRoot}`, description: about.description, version: VERSION }] }) },
+    ...skills.map((s) => ({ path: `${claudeRoot}/${s.path}`, text: s.text })),
     { path: 'gemini-extension.json', text: json({ name, version: VERSION, description: about.description, mcpServers: { [name]: { httpUrl: WEBSITE_CLIENT } } }) },
     { path: '.antigravity-plugin/plugin.json', text: json({ name, displayName: QPU_PACKAGE.description, ...about }) },
     { path: 'mcp_config.json', text: json({ mcpServers: { [name]: { serverUrl: WEBSITE_CLIENT } } }) },
