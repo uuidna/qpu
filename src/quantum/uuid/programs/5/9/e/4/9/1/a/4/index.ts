@@ -1713,6 +1713,7 @@ const SENTENCES = {
   quantumProcessingMcp_statement389: "the advantage is unbounded only when every copy is verified",
   quantumProcessingMcp_statement419: "an unanswered question (⟦0⟧) no door decides yet",
   quantumProcessingMcp_statement5: "continue the σ-reflection search of the ⟦0⟧-bit integer ⟦1⟧ from centre ⟦2⟧, ⟦3⟧ centres a run",
+  quantumProcessingMcp_stimText: "the circuit exactly as Stim writes it, one instruction a line over integer targets, each target a line qubit and M the measurement, read as the operations above; an instruction this door does not compute, a noise channel or an annotation, is refused by its name (CircuitBasedQuantumComputing.stabilizer_hadamard)",
   quantumProcessingMcp_subscription53: "each ability is sold on the catalogue subscription with the greatest monthly rate still left, dearest ability on the dearest plan",
   quantumProcessingMcp_text27: "source: invariant\ntitle: ⟦0⟧\n\n⟦1⟧ reflects to ⟦2⟧. The pair is invariant⟦3⟧. Challenging the fold opens this idea.\n",
   quantumProcessingMcp_text402: "read every session transcript now",

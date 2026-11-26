@@ -478,4 +478,6 @@ def quantumProcessingMcp_receiptResource : String := "the one text this build is
 
 def quantumProcessingMcp_cirqJson : String := "the circuit exactly as cirq.to_json writes it, its moments of gate operations and an optional measurement, read as the operations above, Rx, Ry and Rz and every global shift carried exactly as the global phase they multiply the state by; a gate this door does not compute is refused by its cirq_type (textbook_cirq_exports)"
 
+def quantumProcessingMcp_stimText : String := "the circuit exactly as Stim writes it, one instruction a line over integer targets, each target a line qubit and M the measurement, read as the operations above; an instruction this door does not compute, a noise channel or an annotation, is refused by its name (CircuitBasedQuantumComputing.stabilizer_hadamard)"
+
 end Prose

@@ -108,4 +108,10 @@ theorem s_power (t : ℝ) : I ^ (t : ℂ) = exp (↑(Real.pi * t / 2) * I) := by
   rw [Complex.cpow_def_of_ne_zero Complex.I_ne_zero, Complex.log_I, Complex.ofReal_div, Complex.ofReal_mul, Complex.ofReal_ofNat,
     mul_right_comm, div_mul_eq_mul_div]
 
+/-- A global phase changes no probability: `‖e^{iθ} a‖ = ‖a‖`, so two states that agree up to a global phase give every outcome the
+same probability `‖a‖²`, which is why a state Stim's tableau fixes up to its phase is compared up to that phase. From Mathlib's
+`norm_mul`, `Complex.norm_exp_ofReal_mul_I` and `one_mul`, with the instance `NormedDivisionRing.toNormMulClass`. -/
+theorem global_phase_invisible (θ : ℝ) (a : ℂ) : ‖exp (↑θ * I) * a‖ = ‖a‖ := by
+  rw [norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul]
+
 end CirqBridge

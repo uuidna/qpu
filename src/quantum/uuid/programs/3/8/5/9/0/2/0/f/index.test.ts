@@ -449,7 +449,7 @@ test('a circuit as cirq.to_json writes it runs on the circuit door, its amplitud
   }
   // the bridge rests on theorems the kernel holds, each on Lean's standard axioms alone
   const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
-  for (const key of ['Advantage.fold_unfold', 'CirqBridge.cirq_order_eq_reversed', 'CirqBridge.global_phases_add', 'CirqBridge.shift_phase', 'CirqBridge.brief_sound', 'CirqBridge.currency_beside_every_coin', 'CirqBridge.cirq_eigen_gate', 'CirqBridge.involution_pow_one', 'CirqBridge.involution_pow_zero', 'CirqBridge.s_power']) {
+  for (const key of ['Advantage.fold_unfold', 'CirqBridge.cirq_order_eq_reversed', 'CirqBridge.global_phases_add', 'CirqBridge.shift_phase', 'CirqBridge.brief_sound', 'CirqBridge.currency_beside_every_coin', 'CirqBridge.cirq_eigen_gate', 'CirqBridge.involution_pow_one', 'CirqBridge.involution_pow_zero', 'CirqBridge.s_power', 'CirqBridge.global_phase_invisible']) {
     const t = kernel.get(key)
     assert.ok(t, key)
     assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
@@ -458,4 +458,33 @@ test('a circuit as cirq.to_json writes it runs on the circuit door, its amplitud
   const refused = ran('fsim-refused')
   assert.ok(refused.result?.isError || 'error' in (refused as object), JSON.stringify(refused).slice(0, 200))
   assert.match(JSON.stringify(refused), /FSimGate/)
+})
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a circuit as Stim writes it runs on the circuit door, its state Stim's own up to the global phase a tableau leaves free, its measurement Stim's support, and an instruction the door does not compute refused by its name. */
+test('a circuit as Stim writes it runs on the circuit door, its state Stim\'s own up to the global phase a tableau leaves free, its measurement Stim\'s support, and an instruction the door does not compute refused by its name', () => {
+  // the fixture is Stim's own output (stim.json): each circuit as Stim's text, its state vector in Stim's big-endian order and its sampled support
+  const fixture = JSON.parse(readFileSync(new URL('./stim.json', import.meta.url), 'utf8')) as { stim: string; circuits: Record<string, { text: string; qubits: number; amplitudes?: [number, number][]; support?: number[] }> }
+  const ran = (name: string, extra: object = {}) => call('circuit', { stim: fixture.circuits[name]!.text, ...extra }) as { result?: { structuredContent: any; isError?: boolean }; error?: unknown }
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    if (!c.amplitudes) continue
+    const s = ran(name).result!.structuredContent as { amplitudes: { re: number; im: number }[] }
+    // Stim computes its state vector in single precision, so the two agree to the 1e-6 a 32-bit float resolves
+    const near = (a: number, b: number) => Math.abs(a - b) < 1e-6
+    // a tableau fixes a state up to a global phase, which changes no probability (CirqBridge.global_phase_invisible): the phase is read at
+    // Stim's first nonzero amplitude and every amplitude must agree under it
+    const k = c.amplitudes.findIndex(([re, im]) => Math.hypot(re, im) > 1e-9), [sr, si] = c.amplitudes[k]!, q = s.amplitudes[k]!
+    const norm = sr * sr + si * si, phase = { re: (q.re * sr + q.im * si) / norm, im: (q.im * sr - q.re * si) / norm }
+    assert.ok(near(Math.hypot(phase.re, phase.im), 1), `${name}: a phase of modulus one`)
+    c.amplitudes.forEach(([re, im], i) => {
+      const want = { re: re * phase.re - im * phase.im, im: re * phase.im + im * phase.re }
+      assert.ok(near(s.amplitudes[i]!.re, want.re) && near(s.amplitudes[i]!.im, want.im), `${name}[${i}]`)
+    })
+  }
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    if (!c.support) continue
+    const sampled = ran(name, { repetitions: 64 }).result!.structuredContent as { key: string; histogram: Record<string, number> }
+    assert.deepEqual(Object.keys(sampled.histogram).map(Number).filter((k) => !c.support!.includes(k)), [], name)
+  }
+  const refused = ran('noise-refused')
+  assert.ok(refused.result?.isError || 'error' in (refused as object))
+  assert.match(JSON.stringify(refused), /DEPOLARIZE1/)
 })
