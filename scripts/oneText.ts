@@ -15,8 +15,10 @@ import { PROSE, proseFill } from '../src/quantum/processing/prose-index.ts'
 import { leanPath, proofLines } from '../src/quantum/processing/proof-lines.ts'
 import { catalogSummary } from '../src/quantum/processing/catalog.ts'
 import { EXAMPLES } from '../src/quantum/processing/examples.ts'
-import { handle } from '../src/quantum/processing/mcp.ts'
-import { uuid } from '../src/quantum/uuid/index.ts'
+import { call, handle } from '../src/quantum/processing/mcp.ts'
+import { uuid, uuidQubits } from '../src/quantum/uuid/index.ts'
+import { teleportProof } from '../src/quantum/processing/algorithms.ts'
+import { TEXTBOOK_THEOREMS } from '../src/quantum/processing/textbook-theorems.ts'
 import { RELEASE_REPOSITORY } from '../src/quantum/processing/release.ts'
 import { callEnvelope } from '../src/quantum/processing/toolbox.ts'
 import { HARDWARE_MARK, readJson } from '../src/quantum/processing/machine-run.ts'
@@ -111,10 +113,25 @@ const kernelOf = new Map(THEOREMS.map((t) => [t.key, t]))
 const leanFiles = Object.fromEntries([...new Set(stated.map((s) => kernelOf.get(s.key)!.module))].map((m) => [leanPath(m), readFileSync(leanPath(m), 'utf8')]))
 const lines = proofLines(stated.map((s) => kernelOf.get(s.key)!), leanFiles)
 const recomputed = catalogSummary(EXAMPLES).claimed
+// the capacity the abstract states, read from the register the code builds and the kernel's own statements, never a number typed here
+const uuidRegister = uuidQubits(4), { digits, hexbit: width, version, variant, effective: qubits } = uuidRegister
+const programs = Number(/= (\d+)$/.exec(kernelOf.get('Qpu.Verify.Uuid.program_capacity')!.statement)![1]), programQubits = Math.log2(programs), uuidBytes = (digits * width) / 8
+const teleport = teleportProof()
+// the computer the abstract defines: every worked example of the quantum doors, replayed on this build, each named by the theorem that makes it true
+const COMPUTER = ['algorithm', 'circuit', 'processor', 'quantum-error-correction', 'echo']
+const computer = EXAMPLES.filter((e) => COMPUTER.includes(e.tool)).map((e) => ({ e, verdict: e.expect(call(e.tool, e.arguments).result?.structuredContent) }))
+const failing = computer.filter((c) => c.verdict !== null).map((c) => c.e.id)
+if (failing.length || computer.some((c) => !c.e.theorem)) throw new Error(`computer: ${failing.join(', ')}`)
+if (digits * width - version - variant !== qubits || !teleport.holds) throw new Error(`capacity ${qubits}; teleport holds ${teleport.holds}`)
 const lead: Block[] = [
-  { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_summary, THEOREMS.length, KERNEL_THEOREMS, SORRIED, recomputed, MCP) },
+  { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_summary, digits, width, version, variant, qubits, uuidBytes, programQubits, programs, qubits - programQubits, THEOREMS.length, KERNEL_THEOREMS, SORRIED, recomputed, MCP) },
+  { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_computer, computer.length, COMPUTER.length) },
+  { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_solved, EXAMPLES.filter((e) => e.made).length, THEOREMS.length - recomputed) },
+  { kind: 'h2', text: 'examples' },
+  { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_teleport, teleport.qubits, teleport.bits, teleport.corrections) },
+  { kind: 'table', head: ['example', 'door', 'shows'], rows: computer.map(({ e }) => [code(e.id), e.tool, e.shows]) },
   { kind: 'h2', text: 'statements' },
-  { kind: 'table', head: ['theorem', 'statement', 'axioms', 'proof'], rows: stated.map((s) => [code(s.key), `$${s.tex}$`, kernelOf.get(s.key)!.axioms.join(', ') || 'none', `${s.url}#L${lines.get(s.key)}`]) },
+  { kind: 'table', head: ['theorem', 'statement', 'lean', 'axioms', 'proof'], rows: stated.map((s) => [code(s.key), `$${s.tex}$`, code(TEXTBOOK_THEOREMS.find((t) => t.key === s.key)?.lean ?? kernelOf.get(s.key)!.statement), kernelOf.get(s.key)!.axioms.join(', ') || 'none', `${s.url}#L${lines.get(s.key)}`]) },
   { kind: 'h2', text: 'kernel' },
   { kind: 'table', head: ['kernel', 'value'], rows: [['declared theorems', String(THEOREMS.length)], ['kernel theorems', String(KERNEL_THEOREMS)], ['generated lemmas', String(GENERATED_LEMMAS)], ['sorry', String(SORRIED)], ['recomputed by an example', String(recomputed)], ['source', `${REPO}/tree/${TAG}/lean`]] },
   { kind: 'h2', text: 'use' },
