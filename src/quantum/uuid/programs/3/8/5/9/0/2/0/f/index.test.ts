@@ -612,3 +612,16 @@ test('a ReCirq QAOA problem, its graph as networkx writes it, is answered on the
     assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
   }
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a noisy circuit on the circuit door gives the probabilities and Pauli expectations Cirq's own DensityMatrixSimulator gives, in Cirq's order, line 0 the most significant qubit. */
+test('a noisy circuit on the circuit door gives the probabilities and Pauli expectations Cirq\'s own DensityMatrixSimulator gives, in Cirq\'s order, line 0 the most significant qubit', () => {
+  // the fixture is Cirq's own output (density.json): the door's noise, each channel after every gate on that gate's qubits, built
+  // explicitly in Cirq and simulated by its DensityMatrixSimulator
+  const fixture = JSON.parse(readFileSync(new URL('./density.json', import.meta.url), 'utf8')) as { cirq: string; cases: Record<string, { operations: unknown[]; noise: unknown[]; observables: Record<string, string>[]; probabilities: number[]; expectations: number[] }> }
+  for (const [name, c] of Object.entries(fixture.cases)) {
+    const r = (call('circuit', { operations: c.operations, noise: c.noise, observables: c.observables }) as { result: { structuredContent: { probabilities: number[]; expectations: number[] } } }).result.structuredContent
+    assert.equal(r.probabilities.length, c.probabilities.length, name)
+    c.probabilities.forEach((p, k) => assert.ok(Math.abs(r.probabilities[k]! - p) < 1e-12, `${name} probability ${k}: ${r.probabilities[k]} against ${p}`))
+    c.expectations.forEach((e, k) => assert.ok(Math.abs(r.expectations[k]! - e) < 1e-12, `${name} expectation ${k}: ${r.expectations[k]} against ${e}`))
+  }
+})

@@ -141,7 +141,8 @@ test('noise on a wide register is the channel, on the occupied amplitudes', () =
   const result = new DensityMatrixSimulator().simulate(new Circuit([...qs.map((q) => applied(X, q)), noisy({ name: 'depolarize', p }, qs[0]!)]))
   const at = (k: string) => result.probabilities[result.basis!.indexOf(k)] ?? 0
   const ones = ((1n << BigInt(n)) - 1n).toString()
-  const flipped = (((1n << BigInt(n)) - 1n) ^ 1n).toString()
+  // the basis is in Cirq's order, the first qubit the most significant bit, so qubit 0 flipped clears the top bit
+  const flipped = (((1n << BigInt(n)) - 1n) ^ (1n << BigInt(n - 1))).toString()
   assert.ok(Math.abs(result.trace - 1) < 1e-9)
   assert.ok(Math.abs(at(ones) - (1 - (2 * p) / 3)) < 1e-9, `P(all ones) ${at(ones)}`)
   assert.ok(Math.abs(at(flipped) - (2 * p) / 3) < 1e-9, `P(qubit 0 flipped) ${at(flipped)}`)
