@@ -17,7 +17,7 @@ import { availableParallelism, freemem, homedir, tmpdir, totalmem } from 'node:o
 import { fileURLToPath } from 'node:url'
 import { MACHINE_ACTIONS, MACHINE_RUNNER, NEXT_STEPS, forecastTimes, redact, type NextStep } from '../../../../../../../../3/3/0/8/2/1/e/a/index.ts'
 import { clock, stamp } from '../../../../../../../../clock/index.ts'
-import { canonicalText, uuid } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { canonicalText, uuid, handleOf } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 
 export type MachineProgress = { progress: number; total?: number; message: string }
 type Run = { status: number | null; stdout: string; stderr: string; ms: number; timedOut: boolean }
@@ -498,7 +498,7 @@ const runIntake = async (roots: readonly string[], cwd: string): Promise<number>
   const sizes = new Map(files.map((f) => [f.sha256, f.bytes])), distinct = [...sizes.keys()].sort(), total = files.reduce((n, f) => n + f.bytes, 0)
   const merged = call('seal', { merkle: { leaves: distinct, hex: true } }); if (merged.error) throw new Error(merged.error.message)
   const root = String(merged.result!.structuredContent.root), held = [...sizes.values()].reduce((n, b) => n + b, 0)
-  const address = uuid(`intake;${canonicalText({ rfc: 6962, root, distinct: distinct.length, bytes: held })}`), handle = address.slice(0, 8)
+  const address = uuid(`intake;${canonicalText({ rfc: 6962, root, distinct: distinct.length, bytes: held })}`), handle = handleOf(address)
   const ranked = (of: Record<string, number>) => Object.entries(of).sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
   const covering = (command: string) => { const [cmd, sub] = command.split(' '); return MACHINE_ACTIONS.find((a) => a.cmd === cmd && a.args[0] === sub)?.id ?? null }
   const ms = clock() - started

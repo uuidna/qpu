@@ -10,7 +10,7 @@ import { Worker, parentPort, workerData } from 'node:worker_threads'
 import { join } from 'node:path'
 import { exists, place, write } from './1/0/e/5/8/3/1/8/index.ts'
 import { seal, uuid, uuidFromParts } from './1/6/4/f/0/6/2/1/index.ts'
-import { bindPhysics, canonicalText, channel, hexbit, reflection } from './2/7/1/a/7/6/4/9/index.ts'
+import { bindPhysics, canonicalText, channel, hexbit, reflection, handleOf } from './2/7/1/a/7/6/4/9/index.ts'
 import { physics } from './physics/index.ts'
 import { challenge } from './challenge/index.ts'
 
@@ -439,7 +439,7 @@ export const competeProgramNeighbours = (handle: string) => {
 /** A certified result as a quantum receipt: its kind and canonical text addressed by uuid, the address's first eight hex digits
  *  a program placed in the tree, the receipt sealed when that program is indexed and the address is a valid UUID. */
 export const receiptOf = (kind: string, body: unknown) => {
-  const address = uuid(`${kind};${canonicalText(body)}`), handle = address.slice(0, 8), placed = program(handle)
+  const address = uuid(`${kind};${canonicalText(body)}`), handle = handleOf(address), placed = program(handle)
   return { kind, address, handle, path: placed.path, sealed: placed.indexed && seal(address).valid }
 }
 

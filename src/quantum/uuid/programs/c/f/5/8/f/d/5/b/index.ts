@@ -1,9 +1,9 @@
 /** Lean coin SoT: REGISTER=uuidQubits(4)=122 (textbook_coin_lean_sot). Capacity 29/232 and forged QPU refused. */
 import { PROSE } from '../../../../../../../../5/9/e/4/9/1/a/4/index.ts'
-import { channel, neighbours, reflection, uuid, uuidQubits } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { channel, neighbours, reflection, uuid, uuidQubits, LEAN_REGISTER } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 import { market } from '../../../../../../../../4/5/8/2/8/f/3/f/index.ts'
 
-export const REGISTER = (() => { const n = uuidQubits(4).effective; if (n !== 122) throw new Error(`register ${n}≠122`); return n })()
+export const REGISTER = (() => { const n = uuidQubits(4).effective; if (n !== LEAN_REGISTER) throw new Error(`register ${n}≠${LEAN_REGISTER}`); return n })()
 
 export const pack = (cases: readonly { key: string; module: string; uuid: string; qubits?: number }[]) => {
   const coins: { module: string; index: number; cases: (typeof cases)[number][]; used: number; uuid: string }[] = []
@@ -31,7 +31,7 @@ export const price = (qubits: number, m = market()) => {
 
 export const catalog = (cases: readonly { key: string; module: string; uuid: string; qubits?: number }[]) => {
   const coins = pack(cases), m = market()
-  if (!(REGISTER === 122 && m.forged.refused && m.standard === 'ISO 4217')) throw new Error(PROSE.quantumProcessingCatalogIndex_s1)
+  if (!(REGISTER === LEAN_REGISTER && m.forged.refused && m.standard === 'ISO 4217')) throw new Error(PROSE.quantumProcessingCatalogIndex_s1)
   return {
     register: REGISTER, market: m, holds: true as const,
     products: coins.map((c) => ({ coin: c.uuid, module: c.module, used: c.used, keys: c.cases.map((x) => x.key), handle: channel(c.uuid).handle, amounts: price(c.used, m) })),

@@ -4,7 +4,7 @@
 // other through it. Two UUIDs' sets merged share the witnesses with the same address: work that exists once, not twice, booked as a coin
 // credited to the author at zero price — a count of free work, never money. Pure.
 import { PROSE, proseFill } from '../../../../../../../../5/9/e/4/9/1/a/4/index.ts'
-import { channel, uuidFromParts, seal } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { channel, handleOf, uuidFromParts, seal } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 import { hex, sha256, utf8 } from '../../../../../../../../9/e/8/6/7/0/6/8/index.ts'
 
 type Witness = { face: 'square' | 'triangle'; index: number; uuid: string; how: string }
@@ -65,7 +65,7 @@ export const witnessMove = (k: number) => {
  *  lands on the two clocks it names, where the handle reads its hour (textbook_witness_clock_move). Pure. */
 export const hexagonHandle = (uuid: string) => {
   const p = uuidParts(uuid), rotations = [1, 2, 3, 4, 5, 6].map((k) => rotate(p.program, k).map((n) => n.toString(16)).join(''))
-  const handle = hex(sha256(utf8(`${rotations.join('')}${p.tail}`))).slice(0, 8)
+  const handle = handleOf(hex(sha256(utf8(`${rotations.join('')}${p.tail}`))))
   const divisions = [3, 6, 12].map((k) => witnessMove(k)), hours = parseInt(handle, 16)
   const clock = { spans: divisions.map((d) => d.span), clocks: [...new Set(divisions.flatMap((d) => d.clocks))], hour12: hours % 12, hour24: hours % 24 }
   return { uuid: uuidFromParts(handle, p.program, p.tail), handle, program: p.program, tail: p.tail, rotations, clock, holds: handle === p.handle }

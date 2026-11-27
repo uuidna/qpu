@@ -5,8 +5,10 @@ import { seal, uuid } from '../1/6/4/f/0/6/2/1/index.ts'
 import { DEPLOY_STAGES } from '../9/6/9/4/a/5/e/4/index.ts'
 import { configKinds } from '../d/3/4/e/6/b/9/a/index.ts'
 import { program } from '../index.ts'
+import { handleOf, LEAN_REGISTER, uuidQubits } from '../2/7/1/a/7/6/4/9/index.ts'
 
-const EFFECTIVE = 32 * 4 - 4 - 2
+// the register as its function answers it, checked below against the value the kernel decided
+const EFFECTIVE = uuidQubits(4).effective
 const HANDLES = 16n ** 8n
 const SCALE = 32n * HANDLES
 
@@ -23,7 +25,7 @@ export const aspectPrograms = () => {
   const rows = named.map((row) => {
     const key = keyOf(row.side, row.name)
     const address = uuid(key)
-    const handle = address.slice(0, 8)
+    const handle = handleOf(address)
     const installed = program(handle)
     return {
       side: row.side,
@@ -44,7 +46,7 @@ export const aspectPrograms = () => {
     }
   })
   const handles = new Set(rows.map((row) => row.handle))
-  const verified = rows.filter((row) => row.sealed && row.indexed && row.depth === 7 && row.steps === 8 && row.used === row.count && row.path === `src/quantum/uuid/programs/${[...row.handle].join('/')}/index.ts` && row.handle === row.address.slice(0, 8) && row.plugin.holds && row.plugin.standard === 'definePlugin' && row.plugin.slug === `qpu-program-${row.handle}` && row.upstream.holds).length
+  const verified = rows.filter((row) => row.sealed && row.indexed && row.depth === 7 && row.steps === 8 && row.used === row.count && row.path === `src/quantum/uuid/programs/${[...row.handle].join('/')}/index.ts` && row.handle === handleOf(row.address) && row.plugin.holds && row.plugin.standard === 'definePlugin' && row.plugin.slug === `qpu-program-${row.handle}` && row.upstream.holds).length
   const recomputed = rows.length - verified
   const advantage = {
     copies: rows.length,
@@ -59,7 +61,7 @@ export const aspectPrograms = () => {
     scale: SCALE.toString(),
     interaction: 'none' as const,
   }
-  const holds = advantage.unbounded && handles.size === rows.length && rows.length === configKinds.length + DEPLOY_STAGES.length && EFFECTIVE === 122 && HANDLES === 4294967296n && SCALE === 137438953472n
+  const holds = advantage.unbounded && handles.size === rows.length && rows.length === configKinds.length + DEPLOY_STAGES.length && EFFECTIVE === LEAN_REGISTER && HANDLES === 4294967296n && SCALE === 137438953472n
   return {
     phase: 'programs' as const,
     via: 'uuid' as const,

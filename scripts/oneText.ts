@@ -12,7 +12,7 @@ import * as os from 'node:os'
 const started = performance.now()
 import { THEOREMS, THEOREM_KEYS } from '../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
 import { handle } from '../src/quantum/uuid/programs/3/8/5/9/0/2/0/f/index.ts'
-import { uuid } from '../src/quantum/uuid/programs/2/7/1/a/7/6/4/9/index.ts'
+import { uuid, handleOf } from '../src/quantum/uuid/programs/2/7/1/a/7/6/4/9/index.ts'
 import { RELEASE_REPOSITORY } from '../src/quantum/uuid/programs/6/6/5/9/1/f/5/8/index.ts'
 import { callEnvelope } from '../src/quantum/uuid/programs/d/e/7/d/b/7/1/6/index.ts'
 import { HARDWARE_MARK, readJson } from '../src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts'
@@ -117,7 +117,7 @@ export const markdown = blocks.map(blockMarkdown).join('\n\n') + '\n'
 export const above = `# ${inlineMarkdown(title)}\n\n${markdown}`
 /** The receipt of the text: the address of the Markdown above the rule, which verify { uuid, content } decides over MCP, and its SHA-256,
  *  with the merge it is loaded from and the parts of that merge by kind, handle and UUID. */
-export const receipt = { uuid: uuid(above), sha256: createHash('sha256').update(above).digest('hex'), mcp: MCP, merge: { uuid: mergedItem!.address, handle: mergedItem!.address.slice(0, 8), root, rfc: 6962 }, parts: bodies.map((b, i) => ({ kind: b.kind, handle: addresses[i]!.slice(0, 8), uuid: addresses[i]! })) }
+export const receipt = { uuid: uuid(above), sha256: createHash('sha256').update(above).digest('hex'), mcp: MCP, merge: { uuid: mergedItem!.address, handle: handleOf(mergedItem!.address), root, rfc: 6962 }, parts: bodies.map((b, i) => ({ kind: b.kind, handle: addresses[i]!.slice(0, 8), uuid: addresses[i]! })) }
 const signed: Block = { kind: 'table', head: ['text', ''], rows: [['uuid', receipt.uuid], ['sha256', receipt.sha256], ['merge', receipt.merge.uuid], ['verify', code(asked('verify', { uuid: receipt.uuid, content: 'text' }))], ['mcp', MCP]] }
 /** The text as HTML, block for block, with the receipt: the Zenodo description and the release note. */
 export const html = [...blocks.map(blockHtml), '<hr>', blockHtml(signed)].join('')
@@ -153,7 +153,7 @@ const facts = {
   versions: { ...process.versions }, lean,
   rssBytes: used.rss, heapTotalBytes: used.heapTotal, heapUsedBytes: used.heapUsed, externalBytes: used.external, arrayBuffersBytes: used.arrayBuffers,
   processUserMicros: spent.userCPUTime, processSystemMicros: spent.systemCPUTime, maxRssKb: spent.maxRSS, pageFaults: spent.majorPageFault + spent.minorPageFault, fsReads: spent.fsRead, fsWrites: spent.fsWrite, contextSwitches: spent.voluntaryContextSwitches + spent.involuntaryContextSwitches,
-  challenges: challengeItems.map((i) => i.address.slice(0, 8)), isoHardwareTerms: physicalEvidence().terms.map((t) => `${t.clause} ${t.name}`), quantumBehaviour: physicalEvidence().quantumBehaviour,
+  challenges: challengeItems.map((i) => handleOf(i.address)), isoHardwareTerms: physicalEvidence().terms.map((t) => `${t.clause} ${t.name}`), quantumBehaviour: physicalEvidence().quantumBehaviour,
   buildMs: Math.round(performance.now() - started), at: new Date().toISOString(),
 }
 const [deviceItem] = await sealAll([receiptText('hardware', facts)])

@@ -3,7 +3,7 @@
 // next step rotates the program one place. The handle and the tail stay. Nothing is written.
 import { PROSE, proseFill } from '../5/9/e/4/9/1/a/4/index.ts'
 import { birth } from '../1/0/e/5/8/3/1/8/index.ts'
-import { next, uuid } from '../2/7/1/a/7/6/4/9/index.ts'
+import { next, uuid, handleOf } from '../2/7/1/a/7/6/4/9/index.ts'
 import { createImpossible, decodeImpossible, orderFinding, seededTrapdoor, shorReduction } from '../b/1/c/2/3/6/2/1/index.ts'
 import { createdThousandExit } from '../c/3/c/b/1/a/f/c/index.ts'
 import { program } from '../index.ts'
@@ -46,7 +46,7 @@ const cases = (): Factored[] => {
 
 const place = (row: Factored) => {
   const address = uuid(`rsa\n${row.id}`)
-  const handle = address.slice(0, 8)
+  const handle = handleOf(address)
   const installed = program(handle)
   const object = installed.object
   const born = birth(address)
@@ -97,7 +97,7 @@ const compute = () => {
   const rows = cases().map(place)
   const example = rows.find((row) => row.example)
   const ids = new Set(rows.map((row) => row.id))
-  const holds = example?.id === 'thousand' && example.bits === 1000 && example.via === 'witness' && example.holds === true && rows.length > 1 && ids.size === rows.length && rows.every((row) => row.holds && row.depth === 7 && row.handle === row.address.slice(0, 8))
+  const holds = example?.id === 'thousand' && example.bits === 1000 && example.via === 'witness' && example.holds === true && rows.length > 1 && ids.size === rows.length && rows.every((row) => row.holds && row.depth === 7 && row.handle === handleOf(row.address))
   return {
     phase: 'programs' as const,
     via: 'rsa' as const,

@@ -2,7 +2,7 @@
 // The next step rotates the program one place. The handle and the tail stay. Nothing is written.
 import { PROSE, proseFill } from '../5/9/e/4/9/1/a/4/index.ts'
 import { birth, exists, read } from '../1/0/e/5/8/3/1/8/index.ts'
-import { next, uuid } from '../2/7/1/a/7/6/4/9/index.ts'
+import { next, uuid, handleOf } from '../2/7/1/a/7/6/4/9/index.ts'
 import { program } from '../index.ts'
 
 const ROOT = 'lean/Qpu.lean'
@@ -29,7 +29,7 @@ export const leanPrograms = () => {
   const rows = [...graph.keys()].map((module) => {
     const source = sourceOf(module)
     const address = uuid(`lean\n${module}`)
-    const handle = address.slice(0, 8)
+    const handle = handleOf(address)
     const installed = program(handle)
     const object = installed.object
     const born = birth(address)
