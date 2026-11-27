@@ -484,4 +484,6 @@ def quantumProcessingMcp_fermionText : String := "the fermion operator exactly a
 
 def quantumProcessingMcp_qsimText : String := "the circuit exactly as qsim reads it, the register's size on the first line and then one gate a line as its time, its name, its qubits and its parameters, read as the operations above, each rotation a power of its Pauli times a global phase (QsimBridge.rotation_phase); a gate this door does not compute is refused"
 
+def quantumProcessingMcp_qualtranCirq : String := "any circuit exactly as cirq.to_json writes it, counted gate by gate as Qualtran counts it, its T, Toffoli, Clifford and rotation gates and its qubits, a power of Z at three or five quarter turns one T beside a Clifford because powers of Z add (QualtranBridge.z_powers_add)"
+
 end Prose

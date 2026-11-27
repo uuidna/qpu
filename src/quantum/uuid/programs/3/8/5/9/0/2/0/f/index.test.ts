@@ -537,3 +537,29 @@ test('a circuit in qsim\'s own text format runs on the circuit door to the ampli
     assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
   }
 })
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a circuit as cirq.to_json writes it is counted on the fault-tolerant door as Qualtran's own QECGatesCost counts it, and a power of Z at three or five quarter turns is one T where Qualtran keeps a rotation. */
+test('a circuit as cirq.to_json writes it is counted on the fault-tolerant door as Qualtran\'s own QECGatesCost counts it, and a power of Z at three or five quarter turns is one T where Qualtran keeps a rotation', () => {
+  // the fixture is Qualtran's own output (qualtran.json): each circuit through Qualtran's Cirq interop, costed by QECGatesCost and QubitCount
+  type Counts = { t: number; toffoli: number; clifford: number; rotation: number }
+  const fixture = JSON.parse(readFileSync(new URL('./qualtran.json', import.meta.url), 'utf8')) as { qualtran: string; circuits: Record<string, { cirq: unknown; qubits: number; counts: Counts }> }
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    const r = (call('fault-tolerant-design', { cirq: c.cirq }) as { result: { structuredContent: { circuits: { count: { qubits: number; clifford: number; tCountBy: { t: number; toffoli: number; controlled_s: number }; rotations: { count: number }[] } }[] } } }).result.structuredContent.circuits[0]!.count
+    const rotations = r.rotations.reduce((s, g) => s + g.count, 0)
+    assert.equal(r.qubits, c.qubits, `${name}: qubits`)
+    assert.equal(r.clifford, c.counts.clifford, `${name}: clifford`)
+    // the door spells a Toffoli as its seven T gates, Qualtran counts the Toffoli itself
+    assert.equal(r.tCountBy.toffoli, 7 * c.counts.toffoli, `${name}: toffoli`)
+    if (name === 'three-quarter-turns') {
+      // Z^¾ = S·T and Z^{5/4} = Z·T (QualtranBridge.z_powers_add): each of Qualtran's two rotations here is one T on the door
+      assert.equal(r.tCountBy.t, c.counts.t + c.counts.rotation, `${name}: t`)
+      assert.equal(rotations, 0, `${name}: rotations`)
+    } else {
+      assert.equal(r.tCountBy.t, c.counts.t, `${name}: t`)
+      assert.equal(rotations, c.counts.rotation, `${name}: rotations`)
+    }
+  }
+  const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
+  const t = kernel.get('QualtranBridge.z_powers_add')
+  assert.ok(t, 'QualtranBridge.z_powers_add')
+  assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], 'QualtranBridge.z_powers_add')
+})
