@@ -1972,9 +1972,16 @@ const OWN: Tool[] = [
         N: { type: 'integer', minimum: 3, description: PROSE.quantumProcessingMcp_description243 },
         a: { type: 'integer', minimum: 2, description: PROSE.quantumProcessingMcp_description244 },
         nodes: { type: 'integer', minimum: 2, description: PROSE.quantumProcessingMcp_description245 },
+        cirq: { description: PROSE.quantumProcessingMcp_qualtranCirq },
       },
     },
     run: (args) => {
+      // any circuit as cirq.to_json writes it, counted as Qualtran's QECGatesCost counts it: T, Toffoli, Clifford and rotation gates and
+      // the qubits, where Z^¾ and Z^{5/4} are one T beside a Clifford because powers of Z add (QualtranBridge.z_powers_add)
+      if (args.cirq !== undefined) {
+        const read = fromCirq(args.cirq)
+        return { circuits: [{ name: 'cirq', count: countResources(circuit(read.operations, 'EARLIEST', read.measure)) }] } as never
+      }
       const which = String(args.circuit ?? 'all')
       const n = args.qubits === undefined ? registerQubits() : Number(args.qubits)
       const askedN = args.N === undefined ? null : getInteger(args.N, 'N')
