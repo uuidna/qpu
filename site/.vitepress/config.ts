@@ -289,7 +289,7 @@ export default defineConfig({
     out('llms-full.txt', sorted.map(([path, p]) => `<!-- ${p.url} -->\n${(routed.get(path) ?? readFileSync(join(siteConfig.srcDir, path), 'utf8')).replace(/^---\n[\s\S]*?\n---\n/, '').trim()}\n`).join('\n'))
     // the build sealed as Clay cases: each file by its UUID and SHA-256, rays cast so no two collide, packed as coins of the register
     const receipt = fusionReceipt(written)
-    if (!receipt.holds) throw new Error(`build receipt: ${receipt.rays.collisions} collision(s)`)
+    if (!receipt.holds) throw new Error(`build receipt: written twice ${[...receipt.duplicates.paths, ...receipt.duplicates.uuids].join(', ')}`)
     out('receipts/build.json', `${JSON.stringify(receipt, null, 2)}\n`)
   },
   themeConfig: {

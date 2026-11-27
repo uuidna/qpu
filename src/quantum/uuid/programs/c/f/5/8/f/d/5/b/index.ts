@@ -27,8 +27,12 @@ export const pack = (cases: readonly { key: string; module: string; uuid: string
 export const fusionReceipt = (files: readonly { path: string; text: string | Uint8Array }[]) => {
   const sealed = files.map((f) => { const bytes = typeof f.text === 'string' ? new TextEncoder().encode(f.text) : f.text, digest = hex(sha256(bytes)), id = uuid(`${f.path}\n${digest}`); return { path: f.path, uuid: id, handle: channel(id).handle, sha256: digest, bytes: bytes.length, qubits: utilisationOf(bytes).used } })
   const rays = castRays(sealed.map((f) => f.uuid))
+  // a file sealed twice is a collision of the build: the same path written again, or two files under one address; a seam of zero between
+  // neighbouring hues is the rays' own lead to harmonise, expected by chance among hundreds of files, and is reported, not refused
+  const twice = (key: (f: (typeof sealed)[number]) => string) => [...Map.groupBy(sealed, key)].filter(([, g]) => g.length > 1).map(([k]) => k)
+  const duplicates = { paths: twice((f) => f.path), uuids: twice((f) => f.uuid) }
   const coins = pack(sealed.map((f) => ({ key: f.path, module: f.path.includes('/') ? f.path.split('/')[0]! : 'root', uuid: f.uuid, qubits: f.qubits })))
-  return { phase: 'fusion' as const, files: sealed, rays: { fits: rays.fits, collisions: rays.collisions, seams: rays.seams.length }, coins: coins.map((c) => ({ module: c.module, index: c.index, uuid: c.uuid, used: c.used, cases: c.cases.map((x) => x.key) })), root: uuid(sealed.map((f) => f.uuid).join(',')), holds: rays.fits && sealed.length > 0, theorems: ['textbook_coin_lean_sot', 'textbook_capacity_conserved'] as const }
+  return { phase: 'fusion' as const, files: sealed, rays: { fits: rays.fits, leads: rays.collisions, seams: rays.seams.length }, duplicates, coins: coins.map((c) => ({ module: c.module, index: c.index, uuid: c.uuid, used: c.used, cases: c.cases.map((x) => x.key) })), root: uuid(sealed.map((f) => f.uuid).join(',')), holds: sealed.length > 0 && duplicates.paths.length === 0 && duplicates.uuids.length === 0, theorems: ['textbook_coin_lean_sot', 'textbook_capacity_conserved'] as const }
 }
 
 export const cross = (coin: string) => {

@@ -17,11 +17,14 @@ test('a build\'s outputs are sealed as Clay cases, each file by its UUID and SHA
   const { fusionReceipt, REGISTER } = await import('./index.ts')
   const files = [{ path: 'robots.txt', text: 'User-agent: *\nAllow: /\n' }, { path: 'llms.txt', text: '# QPU\n' }, { path: '.well-known/ai-catalog.json', text: '{}' }]
   const r = fusionReceipt(files)
-  assert.ok(r.holds && r.rays.fits && r.rays.collisions === 0)
+  assert.ok(r.holds)
+  assert.deepEqual(r.duplicates, { paths: [], uuids: [] })
   assert.deepEqual(r.coins.flatMap((c) => c.cases).sort(), files.map((f) => f.path).sort())
   assert.ok(r.coins.every((c) => c.used <= REGISTER))
   assert.ok(r.files.every((f) => f.uuid.startsWith(f.handle) && /^[0-9a-f]{64}$/.test(f.sha256)))
   const twice = fusionReceipt([...files, files[0]!])
   assert.equal(twice.holds, false)
-  assert.ok(twice.rays.collisions > 0)
+  assert.deepEqual(twice.duplicates.paths, ['robots.txt'])
+  // a thousand files hold although their hues meet by chance: only a file written twice is refused
+  assert.ok(fusionReceipt(Array.from({ length: 1000 }, (_, i) => ({ path: `p/${i}.html`, text: `page ${i}` }))).holds)
 })
