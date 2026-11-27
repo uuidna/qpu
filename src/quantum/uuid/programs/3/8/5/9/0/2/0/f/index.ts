@@ -137,6 +137,44 @@ const fromStim = (text: string): { operations: OperationJson[]; measure?: Measur
   }
   return { operations, ...(measured.length ? { measure: { key: 'm', qubits: measured } } : {}) }
 }
+// qsim's own text format: the register's size on the first line, then one gate a line as its time, its name, its qubits and its
+// parameters. Its rx, ry and rz are Cirq's Rx, Ry and Rz, a power of the Pauli times the global phase e^{-iφ/2}
+// (CirqBridge.shift_phase, QsimBridge.rotation_phase); its x_1_2, y_1_2 and hz_1_2 are X^½, Y^½ and Z^¼X^½Z^-¼; cp φ is CZ^{-φ/π}
+// (CirqBridge.shift_phase); p φ is the global phase e^{iφ}, and the phases add (CirqBridge.global_phases_add); c puts the gate after
+// its controls under them. A gate this door does not compute keeps qsim's name and is refused, never approximated
+const QSIM_GATES: Readonly<Record<string, Omit<OperationJson, 'qubits'>>> = {
+  h: { gate: 'H' }, x: { gate: 'X' }, y: { gate: 'Y' }, z: { gate: 'Z' }, t: { gate: 'T' }, s: { gate: 'S' },
+  x_1_2: { gate: 'X', exponent: 0.5 }, y_1_2: { gate: 'Y', exponent: 0.5 }, hz_1_2: { gate: 'PhasedXZ', x: 0.5, z: 0, axis: 0.25 },
+  cz: { gate: 'CZ' }, cx: { gate: 'CNOT' }, cnot: { gate: 'CNOT' }, sw: { gate: 'SWAP' },
+}
+const QSIM_ROTATIONS: Readonly<Record<string, string>> = { rx: 'X', ry: 'Y', rz: 'Z' }
+const QSIM_CONTROLLED: Readonly<Record<string, string>> = { 'x:1': 'CNOT', 'z:1': 'CZ', 'x:2': 'TOFFOLI' }
+const fromQsim = (text: string): { operations: OperationJson[]; measure?: MeasureJson; phase: number } => {
+  const [head = '0', ...lines] = text.trim().split('\n')
+  const line = (x: number): QubitJson => ({ kind: 'line', x })
+  // every qubit of the register is declared, so a qubit no gate touches keeps its place in the state: Z⁰ is the identity
+  // (CirqBridge.involution_pow_zero), and so are qsim's id1 and id2
+  const operations: OperationJson[] = Array.from({ length: Number(head.trim()) }, (_, x) => ({ gate: 'Z', qubits: [line(x)], exponent: 0 }))
+  const measured: QubitJson[] = []
+  let phase = 0
+  for (const raw of lines) {
+    const [, name = '', ...rest] = raw.trim().split(/\s+/)
+    const n = rest.map(Number)
+    if (!name || name === 'id1' || name === 'id2') continue
+    if (name === 'p') { phase += n[0]!; continue }
+    if (name === 'm') { measured.push(...n.map(line)); continue }
+    const rotation = QSIM_ROTATIONS[name]
+    if (rotation) { operations.push({ gate: rotation, qubits: [line(n[0]!)], exponent: n[1]! / Math.PI }); phase -= n[1]! / 2; continue }
+    if (name === 'cp') { operations.push({ gate: 'CZ', qubits: [line(n[0]!), line(n[1]!)], exponent: -n[2]! / Math.PI }); continue }
+    if (name === 'c') {
+      const at = rest.findIndex((r) => !/^\d+$/.test(r))
+      operations.push({ gate: QSIM_CONTROLLED[`${rest[at]}:${at}`] ?? `c ${rest[at]}`, qubits: [...n.slice(0, at), ...n.slice(at + 1)].map(line) })
+      continue
+    }
+    operations.push({ ...(QSIM_GATES[name] ?? { gate: name }), qubits: n.map(line) })
+  }
+  return { operations, phase, ...(measured.length ? { measure: { key: 'm', qubits: measured } } : {}) }
+}
 const fromCirq = (given: unknown): { operations: OperationJson[]; measure?: MeasureJson; phase: number } => {
   const c = (typeof given === 'string' ? JSON.parse(given) : given) as CirqJson
   const qubit = (q: CirqJson): QubitJson => q.cirq_type === 'GridQubit' ? { kind: 'grid', row: Number(q.row), col: Number(q.col) } : q.cirq_type === 'NamedQubit' ? { kind: 'named', name: String(q.name) } : { kind: 'line', x: Number(q.x) }
@@ -1199,6 +1237,7 @@ const OWN: Tool[] = [
         operations: { type: 'array', items: OPERATION_SCHEMA },
         cirq: { type: ['object', 'string'], description: PROSE.quantumProcessingMcp_cirqJson },
         stim: { type: 'string', description: PROSE.quantumProcessingMcp_stimText },
+        qsim: { type: 'string', description: PROSE.quantumProcessingMcp_qsimText },
         insert: INSERT_SCHEMA,
         device: { enum: Object.keys(DEVICES), description: PROSE.quantumProcessingMcp_description100 },
         measure: MEASURE_SCHEMA,
@@ -1211,7 +1250,7 @@ const OWN: Tool[] = [
     },
     run: (args) => {
       if (isObj(args.engine)) return engineCall(args.engine as Record<string, unknown>)
-      const cirq = args.cirq !== undefined ? fromCirq(args.cirq) : null, stim = typeof args.stim === 'string' ? fromStim(args.stim) : null
+      const cirq = args.cirq !== undefined ? fromCirq(args.cirq) : typeof args.qsim === 'string' ? fromQsim(args.qsim) : null, stim = typeof args.stim === 'string' ? fromStim(args.stim) : null
       if (!cirq && !stim && !Array.isArray(args.operations)) return unlimited() as never
       const operations = cirq?.operations ?? stim?.operations ?? (args.operations as OperationJson[])
       const measurement = (args.measure ?? cirq?.measure ?? stim?.measure) as MeasureJson | undefined
@@ -1237,7 +1276,7 @@ const OWN: Tool[] = [
       }
       if (!measurement || typeof args.repetitions !== 'number') {
         const { amplitudes, qubits } = new Simulator().simulate(prepared)
-        // the global phase Cirq's shifts multiply the state by, carried exactly: e^{iφ}(re + i im)
+        // the global phase Cirq's shifts, or qsim's rotations and p, multiply the state by, carried exactly: e^{iφ}(re + i im)
         const turned = cirq?.phase ? amplitudes.map(complex).map((z) => ({ re: z.re * Math.cos(cirq.phase) - z.im * Math.sin(cirq.phase), im: z.re * Math.sin(cirq.phase) + z.im * Math.cos(cirq.phase) })) : amplitudes.map(complex)
         const phased = turned
         return { qubits: qubits.map(keyOfQubit), amplitudes: phased, ...(measurement && typeof args.repetitions !== 'number' ? { sampled: false as const } : {}) }

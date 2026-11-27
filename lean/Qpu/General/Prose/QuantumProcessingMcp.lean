@@ -482,4 +482,6 @@ def quantumProcessingMcp_stimText : String := "the circuit exactly as Stim write
 
 def quantumProcessingMcp_fermionText : String := "the fermion operator exactly as OpenFermion prints it, a coefficient and its ladders in brackets a term, the terms joined by +, mapped as jordan_wigner maps it, every term transformed and the Pauli strings summed (FermionBridge.ladder_anticommute)"
 
+def quantumProcessingMcp_qsimText : String := "the circuit exactly as qsim reads it, the register's size on the first line and then one gate a line as its time, its name, its qubits and its parameters, read as the operations above, each rotation a power of its Pauli times a global phase (QsimBridge.rotation_phase); a gate this door does not compute is refused"
+
 end Prose
