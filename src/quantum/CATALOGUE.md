@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1642 products, 2 under a declared claim context and 1640 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1646 products, 2 under a declared claim context and 1644 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -13143,6 +13143,46 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (n : ℕ), 0 < symplectic n
+```
+
+## Qpu.Processing.FermionBridge
+
+### `FermionBridge.anticommutator_expand`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] (u v : A), (u + v) * (u - v) + (u - v) * (u + v) = u * u + u * u - (v * v + v * v)
+```
+
+### `FermionBridge.ladder_anticommute`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (X Y : A),
+  X * X = 1 →
+    Y * Y = 1 →
+      (1 / 2) • (X + Complex.I • Y) * (1 / 2) • (X - Complex.I • Y) +
+          (1 / 2) • (X - Complex.I • Y) * (1 / 2) • (X + Complex.I • Y) =
+        1
+```
+
+### `FermionBridge.ladder_square_zero`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (X Y : A),
+  X * X = 1 → Y * Y = 1 → X * Y = -(Y * X) → (1 / 2) • (X + Complex.I • Y) * (1 / 2) • (X + Complex.I • Y) = 0
+```
+
+### `FermionBridge.square_expand`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] (u v : A), u * v = -(v * u) → (u + v) * (u + v) = u * u + v * v
 ```
 
 ## Qpu.Processing.Fusion

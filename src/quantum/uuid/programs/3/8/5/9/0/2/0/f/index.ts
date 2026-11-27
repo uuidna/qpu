@@ -1857,10 +1857,28 @@ const OWN: Tool[] = [
         bond_length: { type: 'number', exclusiveMinimum: 0, description: PROSE.quantumProcessingMcp_description227 },
         theta: { type: 'number', description: PROSE.quantumProcessingMcp_description228 },
         steps: { type: 'integer', minimum: 4, description: PROSE.quantumProcessingMcp_description229 },
+        fermion: { type: 'string', description: PROSE.quantumProcessingMcp_fermionText },
         jordan_wigner: { type: 'object', description: PROSE.quantumProcessingMcp_description230, properties: { coefficient: { type: 'number' }, operators: { type: 'array', items: { type: 'object', properties: { mode: { type: 'integer', minimum: 0 }, dagger: { type: 'boolean' } }, required: ['mode', 'dagger'] } } }, required: ['operators'] },
       },
     },
     run: (args) => {
+      // OpenFermion's own FermionOperator as it prints itself, a coefficient and its ladders in brackets a term, the terms joined by +:
+      // each term is transformed and the strings summed, so the operator maps as jordan_wigner maps it. The transform keeps the
+      // anticommutation of the ladders: a a† + a† a = 1 and a a = 0 on every mode (FermionBridge.ladder_anticommute,
+      // FermionBridge.ladder_square_zero)
+      if (typeof args.fermion === 'string') {
+        const sum = new Map<string, { coefficient: number; imaginary: number; paulis: Record<string, string>; label: string }>()
+        for (const raw of args.fermion.split(/\+\s*\n|\n/).map((s) => s.trim()).filter(Boolean)) {
+          const [, coefficient = '', ladders = ''] = /^(\S+)\s*\[([^\]]*)\]$/.exec(raw) ?? []
+          const operators: Ladder[] = ladders.split(/\s+/).filter(Boolean).map((l) => ({ mode: Number(l.replace('^', '')), dagger: l.endsWith('^') }))
+          for (const term of jordanWigner({ coefficient: Number(coefficient), operators })) {
+            const prior = sum.get(term.label)
+            if (prior) { prior.coefficient += term.coefficient; prior.imaginary += term.imaginary } else sum.set(term.label, { ...term })
+          }
+        }
+        const terms = [...sum.values()].filter((t) => Math.hypot(t.coefficient, t.imaginary) > 1e-12).sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0))
+        return { mapping: 'Jordan–Wigner' as const, fermion: args.fermion, terms, says: PROSE.quantumProcessingMcp_says236 } as never
+      }
       if (args.jordan_wigner !== undefined) {
         if (!isObj(args.jordan_wigner)) reject(PROSE.quantumProcessingMcp_s231)
         const raw = args.jordan_wigner as { coefficient?: unknown; operators?: unknown }

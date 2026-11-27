@@ -1476,6 +1476,7 @@ const SENTENCES = {
   quantumProcessingMcp_description96: "Payload RBAC role that may choose the processor under cryptoConfig.processors.roles",
   quantumProcessingMcp_description99: "Compile a circuit from its operations, placed by an insert strategy, and simulate it. Without noise or observables: the final amplitudes, or sampled bitstrings and their histogram when there is a measurement. With noise channels (as Cirq names them) or Pauli observables: the density matrix, its basis probabilities, trace, purity and the expectation values. A device validates the circuit first.",
   quantumProcessingMcp_evidence403: "⟦0⟧ (a referrer of 1 names cell 1; every cell round-trips its mixed radix)",
+  quantumProcessingMcp_fermionText: "the fermion operator exactly as OpenFermion prints it, a coefficient and its ladders in brackets a term, the terms joined by +, mapped as jordan_wigner maps it, every term transformed and the Pauli strings summed (FermionBridge.ladder_anticommute)",
   quantumProcessingMcp_find144: "order-finding not needed: reflection split it",
   quantumProcessingMcp_find145: "the leftover has no unit base",
   quantumProcessingMcp_formula222: "3p² − 2p³ for a matched code and channel on a logical |0⟩ or |1⟩",

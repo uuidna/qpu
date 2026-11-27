@@ -488,3 +488,24 @@ test('a circuit as Stim writes it runs on the circuit door, its state Stim\'s ow
   assert.ok(refused.result?.isError || 'error' in (refused as object))
   assert.match(JSON.stringify(refused), /DEPOLARIZE1/)
 })
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a fermion operator as OpenFermion prints it maps on the chemistry door to the Pauli strings OpenFermion's own jordan_wigner gives, the anticommutator to the identity and a squared ladder to nothing. */
+test('a fermion operator as OpenFermion prints it maps on the chemistry door to the Pauli strings OpenFermion\'s own jordan_wigner gives, the anticommutator to the identity and a squared ladder to nothing', () => {
+  // the fixture is OpenFermion's own output (openfermion.json): each operator as str() prints it and the terms jordan_wigner gives
+  const fixture = JSON.parse(readFileSync(new URL('./openfermion.json', import.meta.url), 'utf8')) as { openfermion: string; operators: Record<string, { text: string; terms: { paulis: [number, string][]; re: number; im: number }[] }> }
+  for (const [name, o] of Object.entries(fixture.operators)) {
+    const s = (call('chemistry-simulation', { fermion: o.text }) as { result: { structuredContent: { terms: { label: string; coefficient: number; imaginary: number }[] } } }).result.structuredContent
+    const want = o.terms.map((t) => ({ label: t.paulis.length ? t.paulis.map(([i, p]) => `${p}${i}`).join('') : 'I', re: t.re, im: t.im })).sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0))
+    assert.deepEqual(s.terms.map((t) => t.label), want.map((t) => t.label), name)
+    s.terms.forEach((t, i) => assert.ok(Math.abs(t.coefficient - want[i]!.re) < 1e-12 && Math.abs(t.imaginary - want[i]!.im) < 1e-12, `${name}: ${t.label}`))
+  }
+  // the canonical relations the transform keeps, as OpenFermion computes them: {a, a†} is the identity and a a is nothing
+  assert.deepEqual(fixture.operators.anticommutator!.terms.map((t) => [t.paulis.length, t.re]), [[0, 1]])
+  assert.deepEqual(fixture.operators.square!.terms, [])
+  // and the kernel holds them for every mode, each on Lean's standard axioms alone
+  const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
+  for (const key of ['FermionBridge.anticommutator_expand', 'FermionBridge.square_expand', 'FermionBridge.ladder_anticommute', 'FermionBridge.ladder_square_zero']) {
+    const t = kernel.get(key)
+    assert.ok(t, key)
+    assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
+  }
+})
