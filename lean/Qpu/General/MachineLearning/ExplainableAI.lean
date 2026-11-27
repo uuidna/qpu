@@ -37,7 +37,7 @@ What is formalised:
   (`attention_weight_le_total`), uniform attention exists for every total
   `len * k` (`uniform`), heads concatenate additively (`attention_concat`), and
   attention rollout / class-activation maps preserve normalisation at scale
-  `T · T` (`sum_rollout`, `attention_rollout_normalised`, `cam_total`).
+  `T · T` (`sum_rollout`, `attention_rollout_normalised`).
 * **Layer-wise relevance propagation.** A layer is a list of splits, one per
   upper neuron, each a list of relevances sent to the lower neurons; the lower
   relevance is the column sum (`propagate`). Relevance is conserved exactly

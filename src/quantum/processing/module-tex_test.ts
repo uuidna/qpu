@@ -2,7 +2,7 @@
 // paragraph for each of its theorems, each statement the TeX Lean wrote, and the committed copy is the one the door answers.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { call } from './mcp.ts'
 import { THEOREMS } from './theorems-index.ts'
 import { leanPath } from './proof-lines.ts'
@@ -22,4 +22,12 @@ test("every module's document is beside its source, as the door writes it, one p
     assert.equal(f.text.match(/^\\paragraph\{/gm)?.length, modules.get(module)!.length, f.path)
     for (const t of modules.get(module)!) assert.ok(f.text.includes(`\\[ ${t.tex} \\]`), t.key)
   }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: no document stands beside a module that is gone, every .tex under lean is one the door writes. */
+test('no document stands beside a module that is gone, every .tex under lean is one the door writes', () => {
+  const written = new Set(answer.files.map((f) => f.path))
+  const held = (readdirSync('lean', { recursive: true }) as string[]).filter((p) => p.endsWith('.tex') && !p.split('/').includes('.lake')).map((p) => `lean/${p}`)
+  const orphans = held.filter((p) => !written.has(p)).sort()
+  assert.deepEqual(orphans, [])
 })
