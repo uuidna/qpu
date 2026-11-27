@@ -589,3 +589,26 @@ test('a circuit in OpenQASM 2.0 runs on the circuit door to the state Cirq\'s ow
     assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
   }
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a ReCirq QAOA problem, its graph as networkx writes it, is answered on the algorithm door by the energy ReCirq's own exact simulation gives at each of its angles. */
+test('a ReCirq QAOA problem, its graph as networkx writes it, is answered on the algorithm door by the energy ReCirq\'s own exact simulation gives at each of its angles', () => {
+  // the fixture is ReCirq's own output (recirq.json): problems from its SK and 3-regular generators, each graph as node_link_data, and
+  // the p = 1 energies exact_qaoa_values_on_grid computes over a grid of gamma and beta
+  const fixture = JSON.parse(readFileSync(new URL('./recirq.json', import.meta.url), 'utf8')) as { recirq: string; problems: Record<string, { graph: unknown; energies: { gamma: number; beta: number; energy: number }[] }> }
+  let nonzero = 0
+  for (const [name, p] of Object.entries(fixture.problems)) {
+    for (const e of p.energies) {
+      const r = (call('algorithm', { name: 'qaoa', recirq: { graph: p.graph, gamma: e.gamma, beta: e.beta } }) as { result: { structuredContent: { energy: number } } }).result.structuredContent
+      assert.ok(Math.abs(r.energy - e.energy) < 1e-9, `${name} at γ=${e.gamma} β=${e.beta}: ${r.energy} against ${e.energy}`)
+      if (Math.abs(e.energy) > 0.1) nonzero++
+    }
+  }
+  // the grid reaches energies away from zero, so the agreement is not the trivial one at γ = 0 or β = 0
+  assert.ok(nonzero >= 8, `nonzero energies: ${nonzero}`)
+  const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
+  for (const key of ['RecirqBridge.ising_cut', 'CirqBridge.cirq_eigen_gate']) {
+    const t = kernel.get(key)
+    assert.ok(t, key)
+    assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
+  }
+})
