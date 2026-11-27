@@ -414,7 +414,8 @@ export const shorCircuit = (N: number, a: number): Circuit => {
   const work = LineQubit.range(n).map((_, j) => LineQubit.of(t + j))
   const ops: Operation[] = [applied(X, work[0]!), ...counts.map((q) => applied(H, q))]
   for (let k = 0; k < t; k++) {
-    ops.push(applied(modularGate(modPow(a, 2 ** k, N), N, n), counts[k]!, ...[...work].reverse()))
+    // counting qubit k controls U^(2^(t−1−k)), as in phase estimation: the QFT reads the first counting qubit as the most significant
+    ops.push(applied(modularGate(modPow(a, 2 ** (t - 1 - k), N), N, n), counts[k]!, ...[...work].reverse()))
   }
   ops.push(...inverseOperations(qftOperations(counts)))
   return new Circuit().append(ops).append(measure(counts, 'm'))
@@ -442,7 +443,8 @@ const gcd = (x: number, y: number): number => (y === 0 ? Math.abs(x) : gcd(y, x 
  *  read least significant bit first, as the inverse QFT leaves it. */
 export const shorFactors = (N: number, a: number, bitstrings: readonly string[]): { order: number | null; factors: [number, number] | null; estimates: number[] } => {
   const t = 2 * Math.ceil(Math.log2(N + 1))
-  const estimates = bitstrings.map((b) => [...b].reduce((sum, bit, k) => sum + Number(bit) * 2 ** k, 0) / 2 ** t)
+  // the first counting qubit is the most significant bit of the estimate, as the circuit's QFT reads it
+  const estimates = bitstrings.map((b) => [...b].reduce((sum, bit, k) => sum + Number(bit) * 2 ** (t - 1 - k), 0) / 2 ** t)
   for (const phi of estimates) {
     for (const r of continuedFractionDenominators(phi, N - 1)) {
       if (r < 2 || modPow(a, r, N) !== 1) continue

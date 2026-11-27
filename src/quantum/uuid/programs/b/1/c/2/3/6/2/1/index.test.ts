@@ -92,6 +92,8 @@ test('Shor\'s order finding factors 15 into 3 and 5, from bases 7 and 2 (both of
   for (const a of [7, 2]) {
     const run = new Simulator().run(shorCircuit(15, a), 20)
     const found = shorFactors(15, a, run.measurements('m'))
+    // an order of 4 leaves only the four phases s/4: any other estimate is a counting qubit paired with the wrong power of U
+    assert.deepEqual(found.estimates.filter((e) => ![0, 0.25, 0.5, 0.75].includes(e)), [], `estimates of ${a} mod 15`)
     assert.equal(found.order, 4, `order of ${a} mod 15`)
     assert.deepEqual(found.factors, [3, 5])
   }
