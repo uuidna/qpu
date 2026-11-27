@@ -1540,6 +1540,7 @@ const SENTENCES = {
   quantumProcessingMcp_receipt3: "the receipt does not hold: its digits do not lead back to its index in this space",
   quantumProcessingMcp_receipt4: "each variation is read by its address in ⟦0⟧ reads from a space of ⟦1⟧; a walk to the last one takes ⟦1⟧ steps. The kernel proves the address is recovered exactly, the reads are fewer than the space, and the gap has no bound",
   quantumProcessingMcp_receiptResource: "the one text this build is, which its receipt addresses: verify { uuid, content } on it decides",
+  quantumProcessingMcp_recirqProblem: "a ReCirq QAOA problem: its graph exactly as networkx's node_link_data writes it, nodes by id and edges by source, target and weight, with ReCirq's angles gamma and beta, answered by the energy ReCirq reports, the expected value of the sum of w Z_i Z_j, which is the total weight less twice the expected cut (RecirqBridge.ising_cut)",
   quantumProcessingMcp_s1: "a qubit is grid, line or named, not ⟦0⟧",
   quantumProcessingMcp_s10: ", ⟦0⟧ part(s) under the σ-reflection search — searched ⟦1⟧ centre(s), reached ⟦2⟧; resume with from=⟦3⟧. The order door finishes a leftover part when its order fits the budget",
   quantumProcessingMcp_s105: "noise and observables run on the density matrix, which does not sample; remove measure, or run the measurement without noise",

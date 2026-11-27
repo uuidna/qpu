@@ -352,16 +352,16 @@
 
 | copy |  |
 | --- | --- |
-| issued | 2026-11-27T02:29:48.689Z |
-| hardware | 1f5332f0-0a0a-71e9-a666-e1d4eb8b7d98 |
+| issued | 2026-11-27T06:38:17.477Z |
+| hardware | 67ca2789-aa7b-66af-b5a8-7c6990a96749 |
 
 ## hardware
 
 | receipt |  |
 | --- | --- |
-| uuid | 1f5332f0-0a0a-71e9-a666-e1d4eb8b7d98 |
-| handle | `1f5332f0` |
-| sha256 | ca5351e3fcbd4f6dddc354c80747634725a143bf7f22de92e8b495b7ed79caed |
+| uuid | 67ca2789-aa7b-66af-b5a8-7c6990a96749 |
+| handle | `67ca2789` |
+| sha256 | c301a4e8cef51587819027d994959ba92b9a3cc25ed4391322ab6c8648a36ed8 |
 
 | hardware |  |
 | --- | --- |
@@ -376,46 +376,46 @@
 | arch | x64 |
 | machine | x86\_64 |
 | endianness | LE |
-| cpu | Intel(R) Xeon(R) Processor @ 2.30GHz |
+| cpu | Intel(R) Xeon(R) Processor @ 2.10GHz |
 | cores | 4 |
 | parallelism | 4 |
 | cpuMHz | 0, 0, 0, 0 |
-| cpuUserMs | 307420 |
+| cpuUserMs | 257420 |
 | cpuNiceMs | 0 |
-| cpuSysMs | 73390 |
-| cpuIdleMs | 1716160 |
+| cpuSysMs | 68540 |
+| cpuIdleMs | 3672530 |
 | cpuIrqMs | 0 |
 | memoryBytes | 16868675584 |
-| freeMemoryBytes | 15826513920 |
-| load1 | 1.3 |
-| load5 | 0.82 |
-| load15 | 0.38 |
-| uptimeS | 535 |
+| freeMemoryBytes | 15880138752 |
+| load1 | 1.57 |
+| load5 | 1.24 |
+| load15 | 0.82 |
+| uptimeS | 1213 |
 | diskBytes | 270553174016 |
-| diskFreeBytes | 230165221376 |
-| diskAvailableBytes | 33493659648 |
+| diskFreeBytes | 229951983616 |
+| diskAvailableBytes | 33280421888 |
 | diskBlockBytes | 4096 |
 | inodes | 16777216 |
-| inodesFree | 14842554 |
+| inodesFree | 14834580 |
 | networkInterfaces | 2 |
 | lean | leanprover/lean4:v4.33.0 |
-| rssBytes | 220811264 |
-| heapTotalBytes | 112857088 |
-| heapUsedBytes | 91842704 |
-| externalBytes | 21857822 |
-| arrayBuffersBytes | 659935 |
-| processUserMicros | 5302703 |
-| processSystemMicros | 179371 |
-| maxRssKb | 216296 |
-| pageFaults | 58863 |
-| fsReads | 15952 |
+| rssBytes | 221478912 |
+| heapTotalBytes | 112664576 |
+| heapUsedBytes | 79876688 |
+| externalBytes | 21653475 |
+| arrayBuffersBytes | 455588 |
+| processUserMicros | 5724610 |
+| processSystemMicros | 298914 |
+| maxRssKb | 217468 |
+| pageFaults | 59198 |
+| fsReads | 16224 |
 | fsWrites | 0 |
-| contextSwitches | 5764 |
-| challenges | 574a161f, fb1cd940, d6d7b748, ec54afc7, bbcc2c0f, dbbc4fe8, 9f253959, 52a07646, a7fa7c75, d8719ba7, 5d7c7a76, 4d938405, 02f60ed8, 3edf017a |
+| contextSwitches | 5537 |
+| challenges | 574a161f, fb1cd940, d6d7b748, ec54afc7, bbcc2c0f, dbbc4fe8, 1feb6648, 52a07646, a7fa7c75, d8719ba7, 5d7c7a76, 4d938405, 02f60ed8, 3edf017a |
 | isoHardwareTerms | 3.3.5 physical qubit, 3.3.6 physical qudit, 3.4.8 quantum processor, 3.4.10 quantum computer, 3.4.26 circuit-based quantum computer, 3.4.27 one-way quantum computer, 3.4.28 adiabatic quantum computer |
 | quantumBehaviour | UNVERIFIED |
-| buildMs | 3585 |
-| at | 2026-11-27T02:29:48.689Z |
+| buildMs | 3986 |
+| at | 2026-11-27T06:38:17.477Z |
 
 | hardware.versions |  |
 | --- | --- |
@@ -764,10 +764,10 @@
 
 | receipt |  |
 | --- | --- |
-| uuid | 9f253959-6bce-5823-a254-a5353dea7f0e |
-| handle | `9f253959` |
-| sha256 | 1ff35138ad804cd2e93281710099fa5cca5e7249f38e8c6f9df4793dce61594f |
-| coin | 0000037c-6bce-3823-8254-a5353dea7f0e |
+| uuid | 1feb6648-9fa0-59c8-b9e4-d01ffa634e86 |
+| handle | `1feb6648` |
+| sha256 | d3fa018f8d4342251f7ff6575643af18603aaa950cf98d07ef795c2e8398a361 |
+| coin | 0000037c-9fa0-89c8-89e4-d01ffa634e86 |
 | currency | XXX |
 | bytes / B | 892 |
 | bits / bit | 7136 |
@@ -794,8 +794,8 @@
 
 | recirq-qaoa-shor-algorithms.solution |  |
 | --- | --- |
-| uuid | 9972b6e6-8208-48c0-9d71-3b774ab4536a |
-| sha256 | fdcd0e8874fecd7ffd3ece96c1588c65224d590f057288a1577aae6bc58831f1 |
+| uuid | 84f71978-d5fe-7480-99c4-ab6e40479980 |
+| sha256 | 4b0da54c37b85dfff2eac5bf03ebb64481da38596cd6f2527e3198398339a342 |
 
 ### recirq-qaoa-shor-algorithms.iso
 

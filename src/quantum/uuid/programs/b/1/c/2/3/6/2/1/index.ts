@@ -304,7 +304,8 @@ export const qaoaCircuit = (graph: Graph, alpha: number, beta: number): Circuit 
 export const qaoaExpectedCut = (graph: Graph, alpha: number, beta: number): number => {
   const circuit = qaoaCircuit(graph, alpha, beta)
   const { amplitudes, qubits } = new Simulator().simulate(circuit)
-  const position = (q: Qubit) => qubits.findIndex((r) => qubitKey(r) === qubitKey(q))
+  // the simulator orders amplitudes as Cirq does, the first qubit the most significant bit (CirqBridge.cirq_order_eq_reversed)
+  const position = (q: Qubit) => qubits.length - 1 - qubits.findIndex((r) => qubitKey(r) === qubitKey(q))
   let expected = 0
   amplitudes.forEach(([re, im], k) => {
     const probability = re * re + im * im
@@ -338,7 +339,8 @@ export const pageInstance = (device: { readonly sites: readonly Qubit[]; readonl
  *  −Σ w⟨Z_u Z_v⟩ = 2·cut − W, the value the page maximizes. */
 export const qaoaEstimate = (graph: Graph, alpha: number, beta: number, shots = 20000, seed = 11): number => {
   const { amplitudes, qubits } = new Simulator().simulate(qaoaCircuit(graph, alpha, beta))
-  const position = (q: Qubit) => qubits.findIndex((r) => qubitKey(r) === qubitKey(q))
+  // the first qubit is the most significant bit of an amplitude's index, as the simulator orders them (CirqBridge.cirq_order_eq_reversed)
+  const position = (q: Qubit) => qubits.length - 1 - qubits.findIndex((r) => qubitKey(r) === qubitKey(q))
   const cumulative: number[] = []
   let total = 0
   for (const [re, im] of amplitudes) {

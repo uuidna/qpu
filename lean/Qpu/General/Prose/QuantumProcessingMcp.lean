@@ -488,4 +488,6 @@ def quantumProcessingMcp_qualtranCirq : String := "any circuit exactly as cirq.t
 
 def quantumProcessingMcp_qasmText : String := "the circuit in OpenQASM 2.0 exactly as Cirq's own importer reads it, its registers laid out one after another as one line of qubits so that no two qubits meet (QasmBridge.registers_flatten), read as the operations above, each rotation a power of its Pauli times a global phase; a gate this door does not compute is refused"
 
+def quantumProcessingMcp_recirqProblem : String := "a ReCirq QAOA problem: its graph exactly as networkx's node_link_data writes it, nodes by id and edges by source, target and weight, with ReCirq's angles gamma and beta, answered by the energy ReCirq reports, the expected value of the sum of w Z_i Z_j, which is the total weight less twice the expected cut (RecirqBridge.ising_cut)"
+
 end Prose

@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1649 products, 2 under a declared claim context and 1647 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1650 products, 2 under a declared claim context and 1648 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -13729,6 +13729,16 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ReadoutResonator.shift 723 208 (5750 - 4618) 103
+```
+
+## Qpu.Processing.RecirqBridge
+
+### `RecirqBridge.ising_cut`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {E : Type u_1} (s : Finset E) (w c : E → ℝ), ∑ e ∈ s, w e * (1 - 2 * c e) = ∑ e ∈ s, w e - 2 * ∑ e ∈ s, w e * c e
 ```
 
 ## Qpu.Processing.Stabilizer

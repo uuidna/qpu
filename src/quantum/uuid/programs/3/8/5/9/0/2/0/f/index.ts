@@ -1414,6 +1414,7 @@ const OWN: Tool[] = [
         N: { anyOf: [{ type: 'integer', minimum: 3 }, { type: 'string', pattern: '^[0-9]+$' }], description: PROSE.quantumProcessingMcp_description126 },
         a: { anyOf: [{ type: 'integer', minimum: 2 }, { type: 'string', pattern: '^[0-9]+$' }], description: PROSE.quantumProcessingMcp_description127 },
         sweep: { type: 'boolean', description: PROSE.quantumProcessingMcp_description128 },
+        recirq: { type: 'object', description: PROSE.quantumProcessingMcp_recirqProblem, properties: { graph: { type: 'object' }, gamma: { type: 'number' }, beta: { type: 'number' } } },
         qubits: { type: 'integer', minimum: 1, description: PROSE.quantumProcessingMcp_description129 },
         input: { type: 'integer', minimum: 0, description: PROSE.quantumProcessingMcp_description130 },
         theta: { type: 'number', description: PROSE.quantumProcessingMcp_description131 },
@@ -1505,6 +1506,19 @@ const OWN: Tool[] = [
         }
       }
       if (name === 'qaoa') {
+        // a ReCirq QAOA problem: its graph as networkx's node_link_data writes it, nodes by id and edges by source, target and weight,
+        // with ReCirq's own angles. ReCirq evolves |+⟩ by e^{-iγC} and then e^{-iβΣX} and reports ⟨C⟩ for C = Σ w Z_i Z_j; the door's
+        // ZZ^{αw} and X^{β'} are those evolutions up to a global phase at α = 2γ/π and β' = 2β/π (CirqBridge.cirq_eigen_gate), and
+        // since Z_i Z_j is 1 − 2 on a cut edge, ⟨C⟩ is the total weight less twice the expected cut (RecirqBridge.ising_cut)
+        if (isObj(args.recirq)) {
+          const r = args.recirq as { graph?: { nodes?: { id: unknown }[]; edges?: { source: unknown; target: unknown; weight?: unknown }[]; links?: { source: unknown; target: unknown; weight?: unknown }[] }; gamma?: unknown; beta?: unknown }
+          const node = (id: unknown) => LineQubit.of(Number(id))
+          const graph = { nodes: (r.graph?.nodes ?? []).map((n) => node(n.id)), edges: (r.graph?.edges ?? r.graph?.links ?? []).map((e) => ({ a: node(e.source), b: node(e.target), weight: Number(e.weight ?? 1) })) }
+          if (graph.nodes.length < 2 || graph.edges.length < 1) reject(PROSE.quantumProcessingMcp_recirqProblem)
+          const gamma = Number(r.gamma ?? 0), beta = Number(r.beta ?? 0)
+          const total = totalWeight(graph), cut = qaoaExpectedCut(graph, (2 * gamma) / Math.PI, (2 * beta) / Math.PI), energy = total - 2 * cut
+          return { name, gamma, beta, energy, expectedCut: cut, totalWeight: total, summary: [['Nodes', String(graph.nodes.length)], ['Edges', String(graph.edges.length)], ['γ', gamma.toFixed(4)], ['β', beta.toFixed(4)], ['⟨C⟩', energy.toFixed(6)]], header: ['Edge', 'Weight'], rows: graph.edges.map((e) => [`${qubitKey(e.a)} – ${qubitKey(e.b)}`, e.weight.toFixed(2)]) }
+        }
         if (args.nodes === undefined) { const width = registerQubits(); return { ...uuidCapacity(name, width), name, qubits: width, nodes: width, sampled: false as const, summary: [['Nodes', String(width)], ['Graph', 'the UUID register'], ['Qubits', String(width)]], header: ['Fact', 'Value'], rows: [['register', String(width)]] } }
         const requested = Number(args.nodes)
         if (!Number.isInteger(requested) || requested < 2) reject('nodes is an integer of at least 2')
