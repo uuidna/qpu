@@ -1,6 +1,6 @@
 # Quantum processors
 
-The `processor` tool. The layouts are [`processor.ts`](processing/processor.ts). The detailed specification is [`README.md`](README.md). The algorithms are [`ALGORITHMS.md`](ALGORITHMS.md).
+The `processor` tool. The layouts are [`processor.ts`](uuid/programs/f/7/e/3/6/2/f/6/index.ts). The detailed specification is [`README.md`](README.md). The algorithms are [`ALGORITHMS.md`](ALGORITHMS.md).
 
 A site is a grid qubit at a row and a column. A coupler joins two sites that share a row and neighbouring columns, or a column and neighbouring rows. Average connectivity is 2E/N, twice the coupler count over the site count. `fitsProcessor` holds when the circuit's qubit count is at most the processor's.
 

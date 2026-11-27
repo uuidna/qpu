@@ -1,6 +1,6 @@
 # Clay register
 
-The `clay` tool. The arithmetic is [`clay-register.ts`](processing/clay-register.ts). The 55 statements are [`clay-statements.ts`](processing/clay-statements.ts), each the Lean theorem the kernel accepted by `rfl`. The detailed specification is [`README.md`](README.md). The echo is [`ECHO.md`](ECHO.md).
+The `clay` tool. The arithmetic is [`clay-register.ts`](uuid/programs/9/d/1/0/1/4/3/9/index.ts). The 55 statements are [`clay-statements.ts`](uuid/programs/1/f/2/7/c/5/1/c/index.ts), each the Lean theorem the kernel accepted by `rfl`. The detailed specification is [`README.md`](README.md). The echo is [`ECHO.md`](ECHO.md).
 
 The relations are identities between the unit's own constants. A call recomputes them. It is not a proof of an open problem.
 

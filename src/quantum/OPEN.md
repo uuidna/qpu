@@ -1,6 +1,6 @@
 # Open
 
-What this repository leaves open. A sitemap page is classified by `sitemapLeads` in [`leads.ts`](processing/leads.ts). The layouts are [`PROCESSORS.md`](PROCESSORS.md). The algorithm names are [`ALGORITHMS.md`](ALGORITHMS.md). The thousand-bit integer is [`CRYPTO.md`](CRYPTO.md). The routes are [`LAYOUT.md`](LAYOUT.md) and [`API.md`](API.md).
+What this repository leaves open. A sitemap page is classified by `sitemapLeads` in [`leads.ts`](uuid/programs/7/b/0/4/c/3/6/8/index.ts). The layouts are [`PROCESSORS.md`](PROCESSORS.md). The algorithm names are [`ALGORITHMS.md`](ALGORITHMS.md). The thousand-bit integer is [`CRYPTO.md`](CRYPTO.md). The routes are [`LAYOUT.md`](LAYOUT.md) and [`API.md`](API.md).
 
 ## Bristlecone and Foxtail
 

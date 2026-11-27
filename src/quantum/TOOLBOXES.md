@@ -1,6 +1,6 @@
 # Toolboxes
 
-Eleven toolboxes; `textbook_mcp_tools_by_toolbox` counts their tools. The list is `TOOLBOXES` in [`mcp.ts`](processing/mcp.ts). One module in [`toolboxes/`](processing/toolboxes) holds each toolbox after `google` and `tree`. The detailed specification is [`README.md`](README.md). The repositories are [`REPOSITORIES.md`](REPOSITORIES.md).
+Eleven toolboxes; `textbook_mcp_tools_by_toolbox` counts their tools. The list is `TOOLBOXES` in [`mcp.ts`](uuid/programs/3/8/5/9/0/2/0/f/index.ts). One program holds each of these toolboxes: [`billing`](uuid/programs/4/5/8/2/8/f/3/f/index.ts), [`crypto`](uuid/programs/d/7/4/9/a/6/e/6/index.ts), [`extension`](uuid/programs/8/f/4/e/9/3/3/b/index.ts), [`flow`](uuid/programs/f/e/c/2/1/d/9/b/index.ts), [`google`](uuid/programs/b/f/8/0/7/c/5/5/index.ts), [`language`](uuid/programs/d/1/4/f/5/d/a/c/index.ts), [`legal`](uuid/programs/1/4/e/7/5/1/4/a/index.ts), [`raid`](uuid/programs/9/a/1/5/3/0/4/2/index.ts), [`repository`](uuid/programs/f/1/d/1/3/a/e/6/index.ts), [`standards`](uuid/programs/0/d/3/d/2/8/0/1/index.ts). The detailed specification is [`README.md`](README.md). The repositories are [`REPOSITORIES.md`](REPOSITORIES.md).
 
 `clone` with no toolbox returns the eleven names, the tool count of each, and a clone address. `clone` with a toolbox name returns that toolbox's toolset, skillset, and selftest. The quantum state of a computation is not copied. The document is the classical description. The theorem is `all_noclone`.
 

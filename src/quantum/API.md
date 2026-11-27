@@ -1,6 +1,6 @@
 # API
 
-[`index.ts`](index.ts) is the import. Run it from the repository root with `node`. The detailed specification is [`README.md`](README.md). The unit is [`UNIT.md`](UNIT.md). The tools are [`TOOLBOXES.md`](TOOLBOXES.md).
+[`index.ts`](uuid/programs/8/9/e/d/b/0/f/3/index.ts) is the import. Run it from the repository root with `node`. The detailed specification is [`README.md`](README.md). The unit is [`UNIT.md`](UNIT.md). The tools are [`TOOLBOXES.md`](TOOLBOXES.md).
 
 ```ts
 import { call, caller, chat, handle, uuid, seal } from './src/quantum/uuid/programs/8/9/e/d/b/0/f/3/index.ts'
@@ -8,11 +8,11 @@ import { call, caller, chat, handle, uuid, seal } from './src/quantum/uuid/progr
 
 ## Exports
 
-The UUID core, from [`uuid/index.ts`](uuid/index.ts): `uuid`, `reflection`, `seal`, `style`, `neighbours`, `block`, `verify`, `coins`, `organiseQubits`.
+The UUID core, from [`uuid/index.ts`](uuid/programs/2/7/1/a/7/6/4/9/index.ts): `uuid`, `reflection`, `seal`, `style`, `neighbours`, `block`, `verify`, `coins`, `organiseQubits`.
 
-The unit, by `export *` from [`processing/unit`](processing/unit/index.ts): `QPU`, `tenantAddress`, the coil, the standards check, and `crypto1000Bit`.
+The unit, by `export *` from [`processing/unit`](uuid/programs/3/2/9/8/5/d/5/6/index.ts): `QPU`, `tenantAddress`, the coil, the standards check, and `crypto1000Bit`.
 
-The call, from [`processing/index.ts`](processing/index.ts): `handle`, `handleBatch`, `call`, `caller`, `chat`, `TOOLBOXES`.
+The call, from [`processing/index.ts`](uuid/programs/b/6/8/8/6/5/4/9/index.ts): `handle`, `handleBatch`, `call`, `caller`, `chat`, `TOOLBOXES`.
 
 Beside those: `os` is alpine, debian, and ubuntu. `calculator` is the integer calculator. `engine` is the default of the game seeds, and `seeds`, `play`, `impact`, and `capabilities` are its named exports.
 
