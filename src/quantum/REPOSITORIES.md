@@ -1,6 +1,6 @@
 # Repositories
 
-The `repositories` tool. The quantumlib list is `REPOSITORIES` in [`repositories.ts`](processing/repositories.ts). The detailed specification is [`README.md`](README.md). The thousand-bit integer is [`CRYPTO.md`](CRYPTO.md).
+The `repositories` tool. The quantumlib list is `REPOSITORIES` in [`repositories.ts`](uuid/programs/0/7/e/e/5/a/4/1/index.ts). The detailed specification is [`README.md`](README.md). The thousand-bit integer is [`CRYPTO.md`](CRYPTO.md).
 
 Omit every argument and the call returns the fifteen quantumlib repositories, each with its name, description, and primary language. A `language` keeps the repositories whose primary language is that string.
 

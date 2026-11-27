@@ -1,6 +1,6 @@
 # Quantum vocabulary
 
-The 86 terms of ISO/IEC 4879:2024, clauses 3.1.1 through 3.6.4, as [`quantum-vocabulary.ts`](processing/quantum-vocabulary.ts) names them. The name is the English term this tree checks. The check is the one result that clause reads. Several clauses share a check. `quantumTermNames()` returns the clause and the name. `quantumVocabulary()` runs the checks once and addresses each term with one sealed UUID. The detailed specification is [`README.md`](README.md).
+The 86 terms of ISO/IEC 4879:2024, clauses 3.1.1 through 3.6.4, as [`quantum-vocabulary.ts`](uuid/programs/d/f/0/d/9/1/3/b/index.ts) names them. The name is the English term this tree checks. The check is the one result that clause reads. Several clauses share a check. `quantumTermNames()` returns the clause and the name. `quantumVocabulary()` runs the checks once and addresses each term with one sealed UUID. The detailed specification is [`README.md`](README.md).
 
 This list is the index of the simulator. It does not restate the standard.
 
