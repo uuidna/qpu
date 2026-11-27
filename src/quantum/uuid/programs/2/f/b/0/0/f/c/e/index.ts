@@ -12,6 +12,11 @@ type ClayRelation = { name: string; statement: string; families: string[] }
 import { TEXTBOOK_THEOREMS } from '../../../../../../../../3/4/7/e/0/c/e/0/index.ts'
 import { QUANTUM_TERMS, quantumVocabulary } from '../../../../../../../../d/f/0/d/9/1/3/b/index.ts'
 import { canonicalText, seal, uuid, uuidQubits } from '../../../../../../../7/1/a/7/6/4/9/index.ts'
+import { catalogDoc } from '../../../../../../../../3/2/7/5/4/2/0/1/index.ts'
+import { merkleTree } from '../../../../../../../../e/1/9/1/6/4/9/c/index.ts'
+import { hexagonHandle } from '../../../../../../../../d/7/8/3/e/4/6/3/index.ts'
+import { crossWitnesses, leanAlgebraSeed } from '../../../../../../../../3/1/0/2/7/5/b/a/index.ts'
+import { utilisationOf } from '../../../../../../../../0/8/7/0/6/d/2/8/index.ts'
 import { TOOLBOXES } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
 import { AUTHOR_CLAIMS, GENERATED_LEMMAS, KERNEL_THEOREMS, NOVELTIES, THEOREMS } from '../../../../../../../../3/f/0/e/7/a/6/f/index.ts'
 import { receiptOf } from '../../../../../../../../index.ts'
@@ -87,6 +92,26 @@ const termRe = (name: string) => new RegExp(`\\b${name.replace(/, (adjective|nou
 const sentence = (s: string) => { const m = /^(.+?[.!?])(\s|$)/.exec(s.trim()); const one = (m ? m[1]! : s.trim()).replace(/\s+/g, ' '); return /[.!?]$/.test(one) ? one : one + '.' }
 const cell = (s: string) => s.replace(/\|/g, '\\|').replace(/\n+/g, ' ')
 const frontmatter = (name: string, description: string) => ['---', `name: ${name}`, `description: ${description.replace(/\n+/g, ' ')}`, `license: ${SKILL_LICENSE}`, '---', '']
+/** A part's coin sealed in the post-quantum witness ring: its fourteen witnesses each encrypted to the next (ML-KEM-768) and signed (ML-DSA-65), from
+ *  the seed of the Lean algebra, so the ring is remade by anyone from the algebra and tells a changed part by comparison (textbook_tamper_detected). A
+ *  ring costs about half a second, so the seeder seals each part once rather than every generation. */
+export const skillRing = (part: { uuid: string }, theorems: readonly { key: string; statement: string }[]) => {
+  const seed = leanAlgebraSeed(theorems), ring = crossWitnesses({ uuid: part.uuid, seed })
+  return { uuid: part.uuid, seed, holds: ring.holds, closes: ring.closes, refused: ring.refused, faces: ring.faces, links: ring.links.map((l) => ({ from: l.from, to: l.to, kem: l.kem, signature: (l as { signature?: unknown }).signature })), cost: ring.cost }
+}
+/** The skills as Payload's ecommerce plugin holds a catalog, in its own collections and the order a seeder creates them, Payload itself unchanged: one
+ *  variant type, the handle; an option for each part, its value the part's hexagon handle and its label what that handle names, read back through the
+ *  index of handles; a product for each skill, carrying its UUID and the root over its parts; and a variant for each part, carrying its UUID, its handle,
+ *  its hours on the two clocks and how much of its UUID's register its content fills. Each document sealed as catalogDoc seals the catalogue. */
+export const handleCatalog = (catalogue: readonly { name: string; toolbox: string | null; uuid: string; root?: string; parts?: readonly { kind: string; name: string; text: string; uuid: string; handle: string; hour12: number; hour24: number }[] }[]) => {
+  const skills = catalogue.filter((r) => r.toolbox !== null && r.parts)
+  const named = new Map(skills.flatMap((s) => s.parts!.map((p) => [p.handle, p] as const)))
+  const type = catalogDoc('variantTypes', { name: 'handle', label: 'Handle' })
+  const options = new Map([...named.keys()].map((handle) => [handle, catalogDoc('variantOptions', { variantType: type.id, label: `${named.get(handle)!.kind} ${named.get(handle)!.name}`, value: handle })]))
+  const products = skills.map((s) => catalogDoc('products', { title: s.name, slug: s.name, enableVariants: true, variantTypes: [type.id], _status: 'published', quantum: { receipt: s.uuid, program: { toolbox: s.toolbox, root: s.root, rfc: 6962 }, outcome: { parts: s.parts!.length } } }))
+  const variants = skills.flatMap((s, i) => s.parts!.map((p) => catalogDoc('variants', { title: `${s.name} / ${p.handle}`, product: products[i]!.id, options: [options.get(p.handle)!.id], _status: 'published', quantum: { receipt: p.uuid, program: { handle: p.handle, kind: p.kind, name: p.name }, outcome: { hour12: p.hour12, hour24: p.hour24, ...utilisationOf(p.text) } } })))
+  return { phase: 'seeds' as const, standard: '@payloadcms/plugin-ecommerce' as const, order: ['variantTypes', 'variantOptions', 'products', 'variants'] as const, collections: { variantTypes: [type], variantOptions: [...options.values()], products, variants }, handles: named.size, unique: named.size === skills.reduce((n, s) => n + s.parts!.length, 0) }
+}
 export const qpuSkills = (boxesIn: readonly SkillBox[], terms: readonly { clause: string; name: string }[] = QUANTUM_TERMS, allExamples: readonly { id: string; shows?: string; tool?: string }[] = [], checked: readonly CheckedTerm[] = quantumVocabulary()) => {
   const register = uuidQubits(4), qubits = register.effective, qubitsFormula = `32 × 4 − 4 − 2 = ${qubits}`
   // a toolbox that lists no examples of its own has the examples of the registry that call its tools; the toolbox holding the circuit gate is the one through which the QPU computed every term
@@ -101,17 +126,27 @@ export const qpuSkills = (boxesIn: readonly SkillBox[], terms: readonly { clause
     // the selftest a client runs first: the toolbox's tool whose schema names selftest, else the clone door, which runs the toolbox's selftest and answers selftestPassed
     const slug = `qpu-${b.name}`, tested = b.tools.find((t) => 'selftest' in (t.inputSchema?.properties ?? {}))
     const selftestCall = tested ? `${tested.name} { selftest: true }` : `clone { toolbox: '${b.name}' }`, selftestAnswer = tested ? '{ passed, checks }' : '{ selftestPassed, tools, examples }'
+    // each part of the skill sealed as the catalogue seals its documents, the address of its collection and canonical data, a register of 122 qubits,
+    // whose hexbit handle is its hexagon's: the six rotations of its program run over its tail, so the handle is its own and reads its hour on the
+    // 12- and 24-hour clocks; the skill is the RFC 6962 root over its parts, so a changed part changes it
+    const parts = [
+      { kind: 'idea', name: b.name, text: b.idea }, { kind: 'instructions', name: b.name, text: b.skill.instructions },
+      ...b.tools.map((t) => ({ kind: 'tool', name: t.name, text: t.description })), ...b.examples.map((e) => ({ kind: 'example', name: e.id, text: e.shows ?? '' })),
+      ...b.skill.directions.map((d, i) => ({ kind: 'direction', name: String(i + 1), text: d })),
+    ].map((p) => { const h = hexagonHandle(catalogDoc('skillParts', { skill: slug, ...p }).id); return { ...p, uuid: h.uuid, handle: h.handle, hour12: h.clock.hour12, hour24: h.clock.hour24 } })
+    const root = (merkleTree({ leaves: parts.map((p) => p.uuid.replace(/-/g, '')), hex: true }) as { root: string }).root
+    const handleOf = (kind: string, name: string) => parts.find((p) => p.kind === kind && p.name === name)!.handle
     const md = [
       ...frontmatter(slug, proseFill(PROSE.quantumProcessingScriptDoors_s9, b.name, sentence(b.idea), selftestCall)),
       `# QPU · ${b.name}`, '', b.idea, '', proseFill(PROSE.quantumProcessingScriptDoors_s10, b.tools.length, b.examples.length, b.skill.directions.length), '',
       '## How a client uses it', '', b.skill.instructions, '',
-      '## Tools', '', '| Tool | Does | Arguments |', '| --- | --- | --- |', ...b.tools.map((t) => `| \`${t.name}\` | ${cell(sentence(t.description))} | ${Object.keys(t.inputSchema?.properties ?? {}).map((k) => `\`${k}\``).join(', ') || '—'} |`), '',
-      '## Examples', '', ...b.examples.map((e) => `- \`${e.id}\`${e.shows ? `: ${cell(sentence(e.shows))}` : ''}`), '',
+      '## Tools', '', '| Handle | Tool | Does | Arguments |', '| --- | --- | --- | --- |', ...b.tools.map((t) => `| \`${handleOf('tool', t.name)}\` | \`${t.name}\` | ${cell(sentence(t.description))} | ${Object.keys(t.inputSchema?.properties ?? {}).map((k) => `\`${k}\``).join(', ') || '—'} |`), '',
+      '## Examples', '', ...b.examples.map((e) => `- \`${handleOf('example', e.id)}\` \`${e.id}\`${e.shows ? `: ${cell(sentence(e.shows))}` : ''}`), '',
       '## Directions it tests itself in', '', ...b.skill.directions.map((d) => `- ${d}`), '', proseFill(PROSE.quantumProcessingScriptDoors_s11, selftestCall, selftestAnswer), '',
       '## Vocabulary (ISO/IEC 4879:2024)', '', ...(checks.length ? [proseFill(PROSE.quantumProcessingScriptDoors_s12, checks.filter((c) => c.holds).length, checks.length), '', '| Clause | Term | Holds | UUID |', '| --- | --- | --- | --- |', ...checks.map((c) => `| ${c.clause} | ${c.name} | ${c.holds ? 'yes' : 'no'} | \`${c.uuid}\` |`)] : named.length ? ['| Clause | Term |', '| --- | --- |', ...named.map((t) => `| ${t.clause} | ${t.name} |`)] : [PROSE.quantumProcessingScriptDoors_s13]), '',
       '## Register', '', proseFill(PROSE.quantumProcessingScriptDoors_s14, address, qubits, qubitsFormula), '',
     ].join('\n')
-    return { name: slug, toolbox: b.name, path: `${SKILL_ROOT}/${slug}/SKILL.md`, links: skillLinks(slug), uuid: address, sealed: seal(address).valid, qubits, terms: named.map((t) => t.clause), byText: byText.length, checked: checks.filter((c) => c.holds).length, tools: b.tools.length, examples: b.examples.length, directions: b.skill.directions.length, complete, text: md }
+    return { name: slug, toolbox: b.name, path: `${SKILL_ROOT}/${slug}/SKILL.md`, links: skillLinks(slug), uuid: address, sealed: seal(address).valid, qubits, parts, root, terms: named.map((t) => t.clause), byText: byText.length, checked: checks.filter((c) => c.holds).length, tools: b.tools.length, examples: b.examples.length, directions: b.skill.directions.length, complete, text: md }
   })
   const namedClauses = new Set(rows.flatMap((r) => r.terms)), unnamed = terms.filter((t) => !namedClauses.has(t.clause)).map((t) => `${t.clause} ${t.name}`)
   const indexAddress = uuid(canonicalText({ skill: 'qpu', skills: rows.map((r) => r.uuid) }))

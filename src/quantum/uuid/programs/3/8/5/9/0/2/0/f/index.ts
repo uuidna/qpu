@@ -2920,6 +2920,23 @@ const PROOF = (() => {
   const union = (door: 'nist' | 'cern') => [...new Map(bodies.flatMap((b) => b[door]?.probes ?? []).map((p) => [p.url, p])).values()]
   return { receipt: { uuid: RECEIPT.uuid, sha256: RECEIPT.sha256, resource: RECEIPT_RESOURCE }, merge: RECEIPT.merge, theorems: RECEIPT.parts.map((p) => p.kind), verify: { tool: 'verify', arguments: { uuid: RECEIPT.uuid }, content: RECEIPT_RESOURCE }, probes: { nist: union('nist'), cern: union('cern') } }
 })()
+// the register every answer's address is written in, read from the register itself: the qubits of one UUID, the hexbit width, the qubits of its
+// handle, and the qubits of each part, so no figure of it is typed (textbook_capacity_conserved)
+const REGISTER_PROOF = (() => {
+  const c = quantumCapacity(), h = registerAtHexbit() as { handles: { perHandle: number } }
+  return { qubits: c.register.free, hexbit: c.register.hexbit, perHandle: h.handles.perHandle, parts: c.parts.map((p) => ({ part: p.part, qubits: p.qubits, free: p.free })), theorem: c.gate.theorem }
+})()
+// the proof every answer carries, whole enough for a client to rebuild it through the Quantum OS: the call that recomputes it exactly, the answer's
+// address and the SHA-256 of its canonical text the rebuilt answer must equal, the theorems it names, and the register its address is written in
+const callProof = (name: string, args: unknown, structured: unknown, address: string, sha256: string) => {
+  // the theorems the answer names, at its top and one level down, where a receipt or a gate names its own
+  const levels = structured && typeof structured === 'object' ? [structured, ...Object.values(structured).filter((v) => v && typeof v === 'object' && !Array.isArray(v))] as { theorems?: unknown; theorem?: unknown }[] : []
+  const theorems = levels.flatMap((o) => [...(Array.isArray(o.theorems) ? o.theorems.filter((t): t is string => typeof t === 'string') : []), ...(typeof o.theorem === 'string' ? [o.theorem] : [])])
+  // a tool declared not idempotent (NOT_IDEMPOTENT, with its reason) is rebuilt from the served state it observed, which travels with it; every other
+  // answer is rebuilt by its replay
+  const rebuild = name in NOT_IDEMPOTENT ? { by: 'observation' as const, because: NOT_IDEMPOTENT[name]!, observed: { calls: observed('calls'), misses: observed('misses'), ms: observed('ms'), bytes: observed('bytes'), servedMs: observed('servedMs') } } : { by: 'replay' as const }
+  return { rebuild, recompute: { method: 'tools/call' as const, name, arguments: args }, answer: { address, handle: uuidChannel(address).handle, sha256, canonical: 'canonicalText' as const, digest: 'sha256' as const }, theorems: [...new Set(theorems)], register: REGISTER_PROOF }
+}
 /** The welcome every client reads at initialize: the build's receipt, how to use the server and how to improve it. */
 const WELCOME = [proseFill(PROSE.quantumProcessingMcp_welcome, RECEIPT.uuid, RECEIPT.sha256, RECEIPT_RESOURCE), PROSE.quantumProcessingMcp_use, proseFill(PROSE.quantumProcessingMcp_improve, RECEIPT.mcp.replace(/\/api\/mcp$/, ''), LICENSE.spdx)].join(' ')
 /** The capacity the welcome states: the register's numbers as metrics carries them, with the gate every step is held to. */
@@ -3052,7 +3069,7 @@ export const handle = (message: Rpc, decided = false): Reply | Promise<Reply> =>
       const view = meta.view
       const full = JSON.stringify(structured), canon = canonicalText(structured), digest = hex(sha256(utf8(canon)))
       const cheapest = view === 'cheapest' ? JSON.stringify({ address: rendered.id, sha256: digest, recompute: { tool: found.name, arguments: args }, tamper: { collision: '2^128', secondPreimage: '2^256' }, coins: ALGEBRA_TOOLS.includes(found.name) ? 0 : (CATALOGUE.find((v) => v.product === 'qpu-metered')?.amounts.eur ?? 0) / 1000, unlock: 'If-None-Match: address -> 304', theorem: 'textbook_advantage_unbounded', licence: LICENSE.spdx, commercial: ALGEBRA_TOOLS.includes(found.name) ? 'free under attribution' : 'a licence of the catalogue', tokens: account.tokens }) : null
-      const reply = { content: [{ type: 'text', text: cheapest !== null && cheapest.length < full.length ? cheapest : full }], structuredContent: structured, isError: false, _meta: { jsonLd: blockJsonLd({ tool: found.name, id: rendered.id, description: found.description, toolbox: found.toolbox, url: `urn:uuid:${rendered.id}` }), ...(found.toolbox === 'google' ? { quantum: quantumTerm(rendered.id) } : {}), widget: rendered.html, openGraph: { ...rendered.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: rendered.shadcn, theme: rendered.theme, license: LICENSE, fusion: fuseCall(found.name), account, integrity: { address: uuid(canon), sha256: digest, of: 'the canonical text of structuredContent', check: PROSE.quantumProcessingMcp_check430, says: PROSE.quantumProcessingMcp_says431 }, ...(prev ? { prev } : {}) } }
+      const reply = { content: [{ type: 'text', text: cheapest !== null && cheapest.length < full.length ? cheapest : full }], structuredContent: structured, isError: false, _meta: { proof: callProof(found.name, args, structured, rendered.id, digest), jsonLd: blockJsonLd({ tool: found.name, id: rendered.id, description: found.description, toolbox: found.toolbox, url: `urn:uuid:${rendered.id}` }), ...(found.toolbox === 'google' ? { quantum: quantumTerm(rendered.id) } : {}), widget: rendered.html, openGraph: { ...rendered.openGraph, ...(prev ? { 'og:see_also': prev } : {}) }, block: rendered.shadcn, theme: rendered.theme, license: LICENSE, fusion: fuseCall(found.name), account, integrity: { address: uuid(canon), sha256: digest, of: 'the canonical text of structuredContent', check: PROSE.quantumProcessingMcp_check430, says: PROSE.quantumProcessingMcp_says431 }, ...(prev ? { prev } : {}) } }
       // arguments echoed into the envelope (the payload block, the cheapest view) are sealed with the same formula
       const envelope = sealTokenLeaks(JSON.stringify(reply))
       // the website gate, the leak proof and the bytes are added once the envelope is sealed

@@ -14,7 +14,7 @@ import { checkWitnesses } from '../../../../../../../../d/7/8/3/e/4/6/3/index.ts
 import { hexbitRegister } from '../../../../../../../../9/d/1/0/1/4/3/9/index.ts'
 import { merkleTree } from '../../../../../../../../e/1/9/1/6/4/9/c/index.ts'
 import { LICENSE } from '../../../../../../../../a/f/3/d/e/a/5/f/index.ts'
-import { canonicalText, uuid } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { canonicalText, uuid, handleOf } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 import type { Example } from '../../../../../../../../9/d/4/f/e/4/4/2/index.ts'
 
 export type CatalogDoc = { collection: string; id: string; data: Record<string, unknown> }
@@ -109,7 +109,7 @@ export const catalogOrder = (examples: readonly Example[], asked: { product?: un
   // what the receipt opens: every worked example of the theorem as a call, from every witness, on the register of the address ordered
   const calls = row.examples.map((id) => ({ example: id, tool: c.byId.get(id)!.tool, arguments: c.byId.get(id)!.arguments, witnesses: c.seen.get(id)!.witnesses.map((w) => w.uuid) }))
   return {
-    phase: 'order' as const, order, transaction, receipt: { uuid: order.id, handle: order.id.slice(0, 8) }, price: 0, funding: { by: 'public' as const, donation: LICENSE.donation },
+    phase: 'order' as const, order, transaction, receipt: { uuid: order.id, handle: handleOf(order.id) }, price: 0, funding: { by: 'public' as const, donation: LICENSE.donation },
     use: { theorem: row.theorem.key, statement: row.theorem.statement, product: product.id, variant: variant.id, address, examples: row.examples.length, witnesses: c.faces.length, variations: variants.length, calls, register: { qubits: register.effective, digits: register.digits, combination: register.organised.combination, fingerprint: register.organised.fingerprint } },
     licence: LICENSE.spdx, theorems: ['textbook_cuboctahedron_faces', 'textbook_sigma_involution', 'textbook_hexbit_gateway_ftl'] as const,
     says: proseFill(PROSE.quantumProcessingCatalog_order, row.theorem.key, String(asked.example), String(asked.witness), variants.length, row.examples.length, c.faces.length, register.effective),

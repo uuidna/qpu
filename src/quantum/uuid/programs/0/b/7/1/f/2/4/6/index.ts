@@ -5,6 +5,7 @@ import { PROSE, proseFill } from '../../../../../../../../5/9/e/4/9/1/a/4/index.
 import { TABLES } from '../../../../../../../../1/2/a/4/3/2/a/8/index.ts'
 import { ISO_DIMENSIONS } from '../../../../../../../../b/4/2/5/4/0/d/7/index.ts'
 import { ENTROPY_LAW } from '../../../../../../../../b/6/4/6/e/a/0/1/index.ts'
+import { LEAN_REGISTER } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 
 /** The ISO dimensions this tree names, as Lean lists them in Qpu.General.Iso. Quantum purity is gated on each of them. */
 export { ISO_DIMENSIONS }
@@ -94,7 +95,7 @@ export const ISO_22739 = {
 export const ISO_4217_COIN = {
   standard: 'ISO 4217' as const,
   currencies: ['EUR', 'USD', 'BGN'] as const,
-  register: 122 as const,
+  register: LEAN_REGISTER,
   theorem: 'textbook_coin_lean_sot' as const,
   market: 'textbook_market_iso_4217' as const,
   forged: { code: 'QPU' as const, iso4217: false as const, refused: true as const },

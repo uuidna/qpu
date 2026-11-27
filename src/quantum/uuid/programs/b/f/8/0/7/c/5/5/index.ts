@@ -7,7 +7,7 @@
 // via the pure QPU/Google toolbox doors and exposes content-addressed receipts through Payload API.
 import { TEXTBOOK_THEOREMS } from '../../../../../../../../3/4/7/e/0/c/e/0/index.ts'
 import { PROSE, proseFill } from '../../../../../../../../5/9/e/4/9/1/a/4/index.ts'
-import { canonicalText, channel, entryText, hexbit, seal, uuid, uuidQubits } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { canonicalText, channel, entryText, hexbit, seal, uuid, uuidQubits, LEAN_REGISTER } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 import { hex, sha256, utf8 } from '../../../../../../../../9/e/8/6/7/0/6/8/index.ts'
 import { LICENSE } from '../../../../../../../../a/f/3/d/e/a/5/f/index.ts'
 import { evaluate, recomputeClay } from '../../../../../../../../9/d/1/0/1/4/3/9/index.ts'
@@ -224,7 +224,8 @@ const crossCapacity = (handles: number, qubits: number, perHandle: number, regis
   const capacity = agrees(PROSE.quantumProcessingToolboxesGoogle_s16, qubits) && qubits === handles * perHandle
   const shares = agrees('137438953472 * 6 / 16 = 51539607552', 51539607552) && agrees('137438953472 * 5 / 16 = 42949672960', 42949672960) && agrees('51539607552 + 42949672960 + 42949672960 = 137438953472', qubits)
   const prices = agrees('(4294967296 + 999) / 1000 = 4294968', quantity) && agrees('4294968 * 540 = 2319282720', currencies.find((row) => row.currency === 'eur')?.amount ?? -1) && agrees('4294968 * 595 = 2555505960', currencies.find((row) => row.currency === 'usd')?.amount ?? -1) && agrees('4294968 * 1056 = 4535486208', currencies.find((row) => row.currency === 'bgn')?.amount ?? -1)
-  const oneRegister = agrees('32 * 4 - 4 - 2 = 122', register)
+  // the register's formula as the kernel states it, its first conjunct, not typed here
+  const oneRegister = agrees(THEOREMS.find((row) => row.key === 'textbook_coin_lean_sot')?.statement.split('∧')[0] ?? '', register)
   const digestBytes = readSide('256 / 8')
   const nistKernel = kernelHolds('textbook_sha256_fips_180_4')
   const quantum = ISO_OPEN_DEFINITIONS.find((row) => row.reference === 'ISO/IEC 4879:2024')
@@ -279,7 +280,7 @@ const sellQubitCapacity = (challenges: readonly { id: string; category: string; 
   const formula = proseFill(PROSE.quantumProcessingToolboxesGoogle_s17, counted.handles.possible, perHandle, counted.handles.capacity, demand, quantity, unitAmount, amount)
   const address = uuid(formula)
   const ftl = offered.ftl === true && offered.gateway === 2 && offered.law.holds === true && offered.speed.walked === false
-  const holds = offered.utilisation.holds && offered.utilisation.left === 0 && offered.zero.temperatureK === 0 && offered.zero.landauer === '0' && ftl && register === 122 && perHandle === 32 && counted.handles.capacity === '137438953472' && counted.handles.possible === '4294967296' && handles === 4294967296 && qubits === 137438953472 && covered && balanced && amount === quantity * unitAmount && quantum.every((row) => row.holds) && offers.every((row) => row.holds && row.covered) && currencies.every((row) => row.amount === row.quantity * row.unitAmount) && trinities.length === 3 && trinities.reduce((sum, row) => sum + row.qubits, 0) === register && trinities.reduce((sum, row) => sum + row.sold, 0) === qubits && seal(address).valid && seal(proof).valid && cross.holds
+  const holds = offered.utilisation.holds && offered.utilisation.left === 0 && offered.zero.temperatureK === 0 && offered.zero.landauer === '0' && ftl && register === LEAN_REGISTER && perHandle === 32 && counted.handles.capacity === '137438953472' && counted.handles.possible === '4294967296' && handles === 4294967296 && qubits === 137438953472 && covered && balanced && amount === quantity * unitAmount && quantum.every((row) => row.holds) && offers.every((row) => row.holds && row.covered) && currencies.every((row) => row.amount === row.quantity * row.unitAmount) && trinities.length === 3 && trinities.reduce((sum, row) => sum + row.qubits, 0) === register && trinities.reduce((sum, row) => sum + row.sold, 0) === qubits && seal(address).valid && seal(proof).valid && cross.holds
   return {
     product: 'qpu-delivered', variant: 'per-thousand-copies', sku: channel(uuid(`${delivered.product}\n${delivered.variant}`)).sku, currency,
     register, left: offered.utilisation.left, temperatureK: 0, landauer: '0', fractal: counted.handles.capacity,

@@ -9,7 +9,7 @@ import type { Lead } from '../../../../../../../../7/b/0/4/c/3/6/8/index.ts'
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
 import { THEOREMS, THEOREM_KEYS } from '../../../../../../../../3/f/0/e/7/a/6/f/index.ts'
 import { TEXTBOOK_THEOREMS } from '../../../../../../../../3/4/7/e/0/c/e/0/index.ts'
-import { uuid, seal } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { uuid, seal, handleOf } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 import { TABLES } from '../../../../../../../../1/2/a/4/3/2/a/8/index.ts'
 import { ISO_ENTROPY, isoEntropyOf } from '../../../../../../../../0/b/7/1/f/2/4/6/index.ts'
 import { clock } from '../../../../../../../../clock/index.ts'
@@ -122,7 +122,7 @@ export const getEntropy = (files: Readonly<Record<string, string>>) => {
   const byAddress = new Map<string, EntropyFinding[]>()
   for (const f of findings) byAddress.set(f.address, [...(byAddress.get(f.address) ?? []), f])
   const kind = Object.fromEntries(ENTROPY_KINDS.map((k) => [k.kind, k])) as Record<EntropyKind, (typeof ENTROPY_KINDS)[number]>
-  const leads: EntropyLead[] = [...byAddress.entries()].map(([address, fs]) => { const k = kind[fs[0]!.kind]; return { id: `entropy-${k.kind}-${address.slice(0, 8)}`, kind: k.kind, source: fs.map((f) => `${f.file}:${f.line}`).join(', '), statement: `${k.says} — ${fs[0]!.excerpt}`, status: 'open', tool: 'audit', occurrences: fs.length, address, explore: k.explore, config: k.config } })
+  const leads: EntropyLead[] = [...byAddress.entries()].map(([address, fs]) => { const k = kind[fs[0]!.kind]; return { id: `entropy-${k.kind}-${handleOf(address)}`, kind: k.kind, source: fs.map((f) => `${f.file}:${f.line}`).join(', '), statement: `${k.says} — ${fs[0]!.excerpt}`, status: 'open', tool: 'audit', occurrences: fs.length, address, explore: k.explore, config: k.config } })
   const addresses = [...byAddress.keys()].sort()
   const byKind = Object.fromEntries(ENTROPY_KINDS.map((k) => [k.kind, { findings: findings.filter((f) => f.kind === k.kind).length, leads: leads.filter((l) => l.kind === k.kind).length }]))
   const gravity = uuid(addresses.join('\n'))
@@ -177,7 +177,7 @@ export const diffMembers = (a: { name: string; members: readonly string[] }, b: 
  *  (textbook_error_remedies: the remedied and the unremedied make the errors). */
 export const ERROR_REMEDIES = TABLES.ERROR_REMEDIES as readonly { signature: string; learned: string; remedy: string; automated: boolean }[]
 export const listRemedies = (errors: readonly string[]) => {
-  const leads = errors.map((text) => { const row = ERROR_REMEDIES.find((r) => new RegExp(r.signature).test(text)); const address = uuid(`error\n${text.trim()}`); return { id: `error-${address.slice(0, 8)}`, address, signature: row?.signature ?? null, remedy: row?.remedy ?? null, automated: row?.automated ?? false, learned: row?.learned ?? null, statement: row ? `${text.trim().split('\n')[0]} — remedy: ${row.remedy}` : proseFill(PROSE.quantumProcessingAudit_s15, text.trim().split('\n')[0]), status: 'open' as const } })
+  const leads = errors.map((text) => { const row = ERROR_REMEDIES.find((r) => new RegExp(r.signature).test(text)); const address = uuid(`error\n${text.trim()}`); return { id: `error-${handleOf(address)}`, address, signature: row?.signature ?? null, remedy: row?.remedy ?? null, automated: row?.automated ?? false, learned: row?.learned ?? null, statement: row ? `${text.trim().split('\n')[0]} — remedy: ${row.remedy}` : proseFill(PROSE.quantumProcessingAudit_s15, text.trim().split('\n')[0]), status: 'open' as const } })
   const remedied = leads.filter((l) => l.remedy).length
   return { errors: errors.length, remedied, unremedied: errors.length - remedied, leads, table: ERROR_REMEDIES.length, gravity: uuid(leads.map((l) => l.address).sort().join('\n')), vacuum: errors.length === 0, says: PROSE.quantumProcessingAudit_says16 }
 }

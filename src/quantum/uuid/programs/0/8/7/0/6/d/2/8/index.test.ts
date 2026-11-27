@@ -87,3 +87,24 @@ test('stable is the capacity utilised in full without entropy: a clock in a sour
   const now = stabilityOf(files)
   assert.equal(now.stable, now.capacity.full && now.entropy.leads === 0)
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: no hand-written program types a figure of the register: its qubits, its formula and a UUID's handle are read from the kernel and the groups Lean states, never written as numbers. */
+test('no hand-written program types a figure of the register: its qubits, its formula and a UUID\'s handle are read from the kernel and the groups Lean states, never written as numbers', async () => {
+  const { execFileSync } = await import('node:child_process')
+  const { readFileSync } = await import('node:fs')
+  const { LEAN_REGISTER, handleOf } = await import('../../../../../../../../2/7/1/a/7/6/4/9/index.ts')
+  const { THEOREMS } = await import('../../../../../../../../3/f/0/e/7/a/6/f/index.ts')
+  // every figure looked for is computed: the register the kernel decided, its formula as Lean states it, and the handle's width from a UUID cut by handleOf
+  const formula = THEOREMS.find((t) => t.key === 'textbook_coin_lean_sot')!.statement.split('∧')[0]!.split('=')[0]!.trim()
+  const width = handleOf('0123456789abcdef0123456789abcdef').length
+  const figure = new RegExp(`(?<![\\w.])${LEAN_REGISTER}(?![\\w.])`), formulaRe = new RegExp(formula.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s*'))
+  const cut = new RegExp(`(?:[aA]ddress|[uU]uid|order\\.id)\\.slice\\(0, ?${width}\\)`)
+  assert.equal(Number.isInteger(LEAN_REGISTER), true)
+  const files = execFileSync('git', ['ls-files', 'src/quantum', 'scripts'], { encoding: 'utf8' }).split('\n').filter((f) => /\.ts$/.test(f) && !/(\.test\.ts|_test\.ts|\.d\.ts)$/.test(f))
+  const typed = files.flatMap((f) => {
+    const text = readFileSync(f, 'utf8')
+    if (text.startsWith('// GENERATED')) return []
+    return text.split('\n').flatMap((line, i) => { const code = line.trim(); return !/^(\/\/|\*|\/\*)/.test(code) && (figure.test(code) || formulaRe.test(code) || cut.test(code)) ? [`${f}:${i + 1}`] : [] })
+  })
+  assert.deepEqual(typed, [])
+})

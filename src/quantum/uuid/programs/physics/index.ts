@@ -4,6 +4,7 @@ import { seal, uuid } from '../1/6/4/f/0/6/2/1/index.ts'
 import leafModule from '../8/3/b/4/a/0/c/1/index.ts'
 import { program } from '../index.ts'
 import { ENTROPY_LAW, ENTROPY_MEANS, HEXBIT_LAW, PHYSICS_CONCEPT } from '../b/6/4/6/e/a/0/1/index.ts'
+import { handleOf } from '../2/7/1/a/7/6/4/9/index.ts'
 
 export type PhysicsArgs = { ftl: boolean; gateway: number; walked: boolean }
 
@@ -13,7 +14,7 @@ const CONCEPT = PHYSICS_CONCEPT, LAW = HEXBIT_LAW
 export const physics = (args: PhysicsArgs) => {
   const key = 'register-ftl;physics-true'
   const address = uuid(key)
-  const handle = address.slice(0, 8)
+  const handle = handleOf(address)
   const installed = program(handle)
   const register = args.ftl === true && args.gateway === 2 && args.walked === false
   // Proven: register FTL ⇒ physics true under textbook_hexbit_gateway_ftl (register arithmetic in Lean; this program decides physics).

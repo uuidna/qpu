@@ -1,9 +1,12 @@
 /** Lean coin SoT: REGISTER=uuidQubits(4)=122 (textbook_coin_lean_sot). Capacity 29/232 and forged QPU refused. */
 import { PROSE } from '../../../../../../../../5/9/e/4/9/1/a/4/index.ts'
-import { channel, neighbours, reflection, uuid, uuidQubits } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { channel, neighbours, reflection, uuid, uuidQubits, LEAN_REGISTER } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 import { market } from '../../../../../../../../4/5/8/2/8/f/3/f/index.ts'
+import { castRays } from '../../../../../../../../7/2/1/a/a/e/7/d/index.ts'
+import { utilisationOf } from '../../../../../../../../0/8/7/0/6/d/2/8/index.ts'
+import { hex, sha256 } from '../../../../../../../../9/e/8/6/7/0/6/8/index.ts'
 
-export const REGISTER = (() => { const n = uuidQubits(4).effective; if (n !== 122) throw new Error(`register ${n}≠122`); return n })()
+export const REGISTER = (() => { const n = uuidQubits(4).effective; if (n !== LEAN_REGISTER) throw new Error(`register ${n}≠${LEAN_REGISTER}`); return n })()
 
 export const pack = (cases: readonly { key: string; module: string; uuid: string; qubits?: number }[]) => {
   const coins: { module: string; index: number; cases: (typeof cases)[number][]; used: number; uuid: string }[] = []
@@ -19,6 +22,19 @@ export const pack = (cases: readonly { key: string; module: string; uuid: string
   return coins
 }
 
+/** A build's outputs as Clay cases: every file sealed by the UUID of its path and SHA-256, the rays cast over their UUIDs so no two collide (castRays),
+ *  and the files packed as coins of the register (pack), a module for each folder, each case taking the qubits its content fills (utilisationOf). */
+export const fusionReceipt = (files: readonly { path: string; text: string | Uint8Array }[]) => {
+  const sealed = files.map((f) => { const bytes = typeof f.text === 'string' ? new TextEncoder().encode(f.text) : f.text, digest = hex(sha256(bytes)), id = uuid(`${f.path}\n${digest}`); return { path: f.path, uuid: id, handle: channel(id).handle, sha256: digest, bytes: bytes.length, qubits: utilisationOf(bytes).used } })
+  const rays = castRays(sealed.map((f) => f.uuid))
+  // a file sealed twice is a collision of the build: the same path written again, or two files under one address; a seam of zero between
+  // neighbouring hues is the rays' own lead to harmonise, expected by chance among hundreds of files, and is reported, not refused
+  const twice = (key: (f: (typeof sealed)[number]) => string) => [...Map.groupBy(sealed, key)].filter(([, g]) => g.length > 1).map(([k]) => k)
+  const duplicates = { paths: twice((f) => f.path), uuids: twice((f) => f.uuid) }
+  const coins = pack(sealed.map((f) => ({ key: f.path, module: f.path.includes('/') ? f.path.split('/')[0]! : 'root', uuid: f.uuid, qubits: f.qubits })))
+  return { phase: 'fusion' as const, files: sealed, rays: { fits: rays.fits, leads: rays.collisions, seams: rays.seams.length }, duplicates, coins: coins.map((c) => ({ module: c.module, index: c.index, uuid: c.uuid, used: c.used, cases: c.cases.map((x) => x.key) })), root: uuid(sealed.map((f) => f.uuid).join(',')), holds: sealed.length > 0 && duplicates.paths.length === 0 && duplicates.uuids.length === 0, theorems: ['textbook_coin_lean_sot', 'textbook_capacity_conserved'] as const }
+}
+
 export const cross = (coin: string) => {
   const fwd = reflection(coin)
   return [{ direction: 'σ-encrypt' as const, uuid: fwd.mirror }, { direction: 'σ-decrypt' as const, uuid: reflection(fwd.mirror).mirror }, ...neighbours(coin).neighbours.map((s) => ({ direction: `${s.axis}${s.step > 0 ? '+' : '-'}` as const, uuid: s.uuid }))]
@@ -31,7 +47,7 @@ export const price = (qubits: number, m = market()) => {
 
 export const catalog = (cases: readonly { key: string; module: string; uuid: string; qubits?: number }[]) => {
   const coins = pack(cases), m = market()
-  if (!(REGISTER === 122 && m.forged.refused && m.standard === 'ISO 4217')) throw new Error(PROSE.quantumProcessingCatalogIndex_s1)
+  if (!(REGISTER === LEAN_REGISTER && m.forged.refused && m.standard === 'ISO 4217')) throw new Error(PROSE.quantumProcessingCatalogIndex_s1)
   return {
     register: REGISTER, market: m, holds: true as const,
     products: coins.map((c) => ({ coin: c.uuid, module: c.module, used: c.used, keys: c.cases.map((x) => x.key), handle: channel(c.uuid).handle, amounts: price(c.used, m) })),

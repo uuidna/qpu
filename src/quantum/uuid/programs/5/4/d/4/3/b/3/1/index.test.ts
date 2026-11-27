@@ -139,3 +139,22 @@ test('one count of tools everywhere, one version, and a client that accepts JSON
   const refused = JSON.parse((await stream.text()).replace(/^[\s\S]*?data: /, '')).result
   assert.deepEqual([stream.headers.get('content-type'), refused.isError, refused.structuredContent.code, refused.structuredContent.kind], ['text/event-stream', true, 'ambiguous_arguments', 'validation'])
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every answer carries its proof, whole enough to rebuild it through the Quantum OS: the call that replays it, the SHA-256 of its canonical text, the register read from the register, and how it is rebuilt, by replay or, for a tool declared not idempotent, by the state it observed. */
+test('every answer carries its proof, whole enough to rebuild it through the Quantum OS: the call that replays it, the SHA-256 of its canonical text, the register read from the register, and how it is rebuilt, by replay or, for a tool declared not idempotent, by the state it observed', async () => {
+  const { canonicalText } = await import('../../../../../../../../2/7/1/a/7/6/4/9/index.ts')
+  const { quantumCapacity } = await import('../../../../../../../../0/8/7/0/6/d/2/8/index.ts')
+  const register = quantumCapacity().register
+  type Proof = { rebuild: { by: string; because?: string; observed?: object }; recompute: { method: string; name: string; arguments: unknown }; answer: { address: string; handle: string; sha256: string }; theorems: string[]; register: { qubits: number; hexbit: number; parts: { qubits: number }[] } }
+  for (const e of EXAMPLES) {
+    const r = call(e.tool, e.arguments).result as { structuredContent?: unknown; _meta?: { proof?: Proof } } | undefined
+    const p = r?._meta?.proof
+    assert.ok(p, `${e.id}: no proof`)
+    assert.deepEqual([p!.recompute.method, p!.recompute.name, p!.recompute.arguments], ['tools/call', e.tool, e.arguments], `${e.id}: the replay is the call`)
+    assert.equal(p!.answer.sha256, createHash('sha256').update(canonicalText(r!.structuredContent)).digest('hex'), `${e.id}: the digest is the answer's`)
+    assert.equal(p!.answer.handle, p!.answer.address.slice(0, p!.answer.handle.length), e.id)
+    assert.deepEqual([p!.register.qubits, p!.register.hexbit, p!.register.parts.reduce((n, x) => n + x.qubits, 0)], [register.free, register.hexbit, register.qubits], `${e.id}: the register is the register's`)
+    assert.equal(p!.rebuild.by, e.tool in NOT_IDEMPOTENT ? 'observation' : 'replay', e.id)
+    if (p!.rebuild.by === 'observation') assert.ok(p!.rebuild.because && p!.rebuild.observed, e.id)
+  }
+})
