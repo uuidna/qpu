@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1631 products, 2 under a declared claim context and 1629 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1634 products, 2 under a declared claim context and 1632 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -14049,6 +14049,48 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 305419896 < 2 ^ (8 * 4)
+```
+
+## Qpu.Processing.Verify.MlKem
+
+### `Qpu.Verify.MlKem.game_hop`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (G₀ G₁ G₂ : PMF Bool),
+  |(G₀ true).toReal - (G₂ true).toReal| ≤ |(G₀ true).toReal - (G₁ true).toReal| + |(G₁ true).toReal - (G₂ true).toReal|
+```
+
+### `Qpu.Verify.MlKem.ind_cca2_of_mlwe`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {Adv : Type u_1} (cca hyb : Adv → PMF Bool) (eps : Adv → ℝ) (δ : ℝ)
+  (real rand : PMF ((Fin 3 → Fin 3 → Fin 256 → ZMod 3329) × (Fin 3 → Fin 256 → ZMod 3329)))
+  (B : Adv → (Fin 3 → Fin 3 → Fin 256 → ZMod 3329) × (Fin 3 → Fin 256 → ZMod 3329) → PMF Bool),
+  (∀ (A : Adv), |((cca A) true).toReal - ((hyb A) true).toReal| ≤ eps A) →
+    (∀ (A : Adv), hyb A = real.bind (B A)) →
+      (∀ (A : Adv), ((rand.bind (B A)) true).toReal = 1 / 2) →
+        (∀ (D : (Fin 3 → Fin 3 → Fin 256 → ZMod 3329) × (Fin 3 → Fin 256 → ZMod 3329) → PMF Bool),
+            |((real.bind D) true).toReal - ((rand.bind D) true).toReal| ≤ δ) →
+          ∀ (A : Adv), |((cca A) true).toReal - 1 / 2| ≤ eps A + δ
+```
+
+### `Qpu.Verify.MlKem.ind_cca2_reduces_to_mlwe`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {Adv : Type u_1} (cca hyb : Adv → PMF Bool) (eps : Adv → ℝ)
+  (real rand : PMF ((Fin 3 → Fin 3 → Fin 256 → ZMod 3329) × (Fin 3 → Fin 256 → ZMod 3329)))
+  (B : Adv → (Fin 3 → Fin 3 → Fin 256 → ZMod 3329) × (Fin 3 → Fin 256 → ZMod 3329) → PMF Bool),
+  (∀ (A : Adv), |((cca A) true).toReal - ((hyb A) true).toReal| ≤ eps A) →
+    (∀ (A : Adv), hyb A = real.bind (B A)) →
+      (∀ (A : Adv), ((rand.bind (B A)) true).toReal = 1 / 2) →
+        ∀ (A : Adv),
+          ∃ D, |((cca A) true).toReal - 1 / 2| ≤ eps A + |((real.bind D) true).toReal - ((rand.bind D) true).toReal|
 ```
 
 ## Qpu.Processing.Verify.Receipt

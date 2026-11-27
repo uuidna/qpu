@@ -51,6 +51,7 @@ import Qpu.Processing.Verify.Cost
 import Qpu.Processing.Verify.Receipt
 import Qpu.Processing.Verify.Hexbit
 import Qpu.Processing.Verify.Uuid
+import Qpu.Processing.Verify.MlKem
 import Qpu.Claims.Claim
 import Qpu.Communication.QuantumCommunication
 import Qpu.General.Thousand
