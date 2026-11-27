@@ -107,7 +107,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -216,7 +216,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -376,7 +376,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -443,7 +443,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -551,6 +551,25 @@
                 }
               }
             }
+          },
+          "cirq": {
+            "type": [
+              "object",
+              "string"
+            ],
+            "description": "the circuit exactly as cirq.to_json writes it, its moments of gate operations and an optional measurement, read as the operations above, Rx, Ry and Rz and every global shift carried exactly as the global phase they multiply the state by; a gate this door does not compute is …"
+          },
+          "stim": {
+            "type": "string",
+            "description": "the circuit exactly as Stim writes it, one instruction a line over integer targets, each target a line qubit and M the measurement, read as the operations above; an instruction this door does not compute, a noise channel or an annotation, is refused by its name …"
+          },
+          "qsim": {
+            "type": "string",
+            "description": "the circuit exactly as qsim reads it, the register's size on the first line and then one gate a line as its time, its name, its qubits and its parameters, read as the operations above, each rotation a power of its Pauli times a global phase (QsimBridge.rotation_phase); a gate …"
+          },
+          "qasm": {
+            "type": "string",
+            "description": "the circuit in OpenQASM 2.0 exactly as Cirq's own importer reads it, its registers laid out one after another as one line of qubits so that no two qubits meet (QasmBridge.registers_flatten), read as the operations above, each rotation a power of its Pauli times a global phase; a …"
           },
           "insert": {
             "enum": [
@@ -776,7 +795,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -1019,7 +1038,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -1066,7 +1085,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -1119,7 +1138,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -1284,6 +1303,21 @@
             "type": "boolean",
             "description": "qaoa: sweep alpha and beta on the grid of the page and return the best."
           },
+          "recirq": {
+            "type": "object",
+            "description": "a ReCirq QAOA problem: its graph exactly as networkx's node_link_data writes it, nodes by id and edges by source, target and weight, with ReCirq's angles gamma and beta, answered by the energy ReCirq reports, the expected value of the sum of w Z_i Z_j, which is the total weight …",
+            "properties": {
+              "graph": {
+                "type": "object"
+              },
+              "gamma": {
+                "type": "number"
+              },
+              "beta": {
+                "type": "number"
+              }
+            }
+          },
           "qubits": {
             "type": "integer",
             "minimum": 1,
@@ -1366,7 +1400,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -1413,7 +1447,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -1507,7 +1541,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -1559,7 +1593,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -1615,7 +1649,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -1702,7 +1736,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -1725,6 +1759,10 @@
             "type": "integer",
             "minimum": 4,
             "description": "grid points of the sweep over [−π/2, π/2)."
+          },
+          "fermion": {
+            "type": "string",
+            "description": "the fermion operator exactly as OpenFermion prints it, a coefficient and its ladders in brackets a term, the terms joined by +, mapped as jordan_wigner maps it, every term transformed and the Pauli strings summed (FermionBridge.ladder_anticommute)"
           },
           "jordan_wigner": {
             "type": "object",
@@ -1795,7 +1833,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -1836,6 +1874,9 @@
             "type": "integer",
             "minimum": 2,
             "description": "qaoa: the nodes."
+          },
+          "cirq": {
+            "description": "any circuit exactly as cirq.to_json writes it, counted gate by gate as Qualtran counts it, its T, Toffoli, Clifford and rotation gates and its qubits, a power of Z at three or five quarter turns one T beside a Clifford because powers of Z add (QualtranBridge.z_powers_add)"
           }
         },
         "x-harmonic": {
@@ -1875,7 +1916,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -1938,7 +1979,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -2076,7 +2117,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -2176,7 +2217,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -2223,7 +2264,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -2372,7 +2413,7 @@
       },
       "outputSchema": {
         "type": "object",
-        "description": "An object of 155 key(s); tools/list with tools naming textbook states them (textbook_context_balanced)."
+        "description": "An object of 153 key(s); tools/list with tools naming textbook states them (textbook_context_balanced)."
       },
       "annotations": {
         "title": "textbook",
@@ -2400,7 +2441,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -2470,7 +2511,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -2523,7 +2564,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -2579,7 +2620,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -2662,7 +2703,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -2738,7 +2779,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -2801,7 +2842,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -2884,7 +2925,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -2973,7 +3014,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -3044,7 +3085,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -3115,7 +3156,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -3202,7 +3243,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -3280,7 +3321,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -3387,7 +3428,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -3563,7 +3604,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -3653,7 +3694,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -3739,7 +3780,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -3821,7 +3862,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -3911,7 +3952,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -4059,7 +4100,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -4326,7 +4367,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -4395,7 +4436,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -4457,7 +4498,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -4571,7 +4612,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -4940,7 +4981,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -5241,7 +5282,7 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     },
@@ -5334,9 +5375,109 @@
         },
         "contract": {
           "version": "1.1.1",
-          "address": "26fb8c25-5912-61dd-b2e8-97710306b333"
+          "address": "791a999e-d4ae-6afc-87e5-132287943875"
         }
       }
     }
-  ]
+  ],
+  "proof": {
+    "receipt": {
+      "uuid": "4118997c-e7a3-3d3f-83d3-04cc786c37f7",
+      "sha256": "8dceaea191a49eb6f6b23ad31d64a96a61108ee755eb4c42598304f358fee521",
+      "resource": "receipt://qpu"
+    },
+    "merge": {
+      "uuid": "8e27a41e-6ec9-5931-be39-f662b696691f",
+      "handle": "8e27a41e",
+      "root": "55c57fc9f121c85e5afd4bdb43834f7c32ed581c4ed3873a78a27009dbed8f6b",
+      "rfc": 6962
+    },
+    "theorems": [
+      "textbook_sha256_fips_180_4",
+      "textbook_sha3_fips_202",
+      "textbook_pqc_standards_three",
+      "textbook_coil_green"
+    ],
+    "verify": {
+      "tool": "verify",
+      "arguments": {
+        "uuid": "4118997c-e7a3-3d3f-83d3-04cc786c37f7"
+      },
+      "content": "receipt://qpu"
+    },
+    "probes": {
+      "nist": [
+        {
+          "id": "nist-codata",
+          "url": "https://physics.nist.gov/cuu/Constants/Table/allascii.txt"
+        },
+        {
+          "id": "nist-opendata",
+          "url": "https://data.nist.gov/rmm/records?page=0&size=5"
+        },
+        {
+          "id": "nist-beacon",
+          "url": "https://beacon.nist.gov/beacon/2.0/pulse/last"
+        },
+        {
+          "id": "ct-sth",
+          "url": "https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth"
+        },
+        {
+          "id": "acme-directory",
+          "url": "https://acme-v02.api.letsencrypt.org/directory"
+        },
+        {
+          "id": "nvd-cves",
+          "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5"
+        },
+        {
+          "id": "cern-opendata",
+          "url": "https://opendata.cern.ch/api/records/?q=higgs&size=5"
+        },
+        {
+          "id": "csrc-pqc",
+          "url": "https://csrc.nist.gov/projects/post-quantum-cryptography"
+        },
+        {
+          "id": "crt-sh",
+          "url": "https://crt.sh/?q=qpu.uuidna.com&output=json"
+        }
+      ],
+      "cern": [
+        {
+          "id": "cern-opendata",
+          "url": "https://opendata.cern.ch/api/records/?q=higgs&size=5"
+        },
+        {
+          "id": "nist-codata",
+          "url": "https://physics.nist.gov/cuu/Constants/Table/allascii.txt"
+        },
+        {
+          "id": "csrc-pqc",
+          "url": "https://csrc.nist.gov/projects/post-quantum-cryptography"
+        },
+        {
+          "id": "nvd-cves",
+          "url": "https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=ML-KEM&resultsPerPage=5"
+        },
+        {
+          "id": "acme-directory",
+          "url": "https://acme-v02.api.letsencrypt.org/directory"
+        },
+        {
+          "id": "ct-sth",
+          "url": "https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth"
+        },
+        {
+          "id": "nist-beacon",
+          "url": "https://beacon.nist.gov/beacon/2.0/pulse/last"
+        },
+        {
+          "id": "crt-sh",
+          "url": "https://crt.sh/?q=opendata.cern.ch&output=json"
+        }
+      ]
+    }
+  }
 }

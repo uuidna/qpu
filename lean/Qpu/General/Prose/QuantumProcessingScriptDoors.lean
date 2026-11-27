@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingScriptDoors
-The prose of `src/quantum/processing/script-doors.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/2/f/b/0/0/f/c/e/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose
@@ -38,7 +38,7 @@ def quantumProcessingScriptDoors_via31 : String := "scripts/mcp.ts leads-run | s
 def quantumProcessingScriptDoors_via32 : String := "MCP clay; statements via payload { scripts: { clay } }"
 def quantumProcessingScriptDoors_npm33 : String := "repository { machine } / Payload MCP machine"
 def quantumProcessingScriptDoors_via34 : String := "payloadMcpNext — Authorization: Bearer <payload-mcp-api-keys>; refused without the key"
-def quantumProcessingScriptDoors_via35 : String := "src/quantum/processing/machine-run.ts hook <name>"
+def quantumProcessingScriptDoors_via35 : String := "src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts hook <name>"
 def quantumProcessingScriptDoors_via36 : String := "scripts/purify.ts (writes indexes Payload owns)"
 def quantumProcessingScriptDoors_says37 : String := "⟦0⟧ former script path(s) owned by Payload/MCP fused args; npm entries are thin wrappers"
 def quantumProcessingScriptDoors_says38 : String := "payload { scripts: { catalog | clay: { lean } | leadsIndex: { rows } | tablesIndex: { tables, prior?, dry? } | textbookLean | theoremsIndex: { output? } | skills } }: former scripts/* owned here; dry: true folds CODATA/CRYPTO_HOSTS/WEBCRYPTO into ATTEST_APIS/STANDARDS/POST_QUANTUM; thin clients write the returned path/text"

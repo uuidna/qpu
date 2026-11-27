@@ -1,0 +1,17 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.QsimBridge}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QsimBridge.lean}
+
+\paragraph{\texttt{QsimBridge.rotation\_phase}}
+A rotation is a phased power: `e\^{}\{ix\} = e\^{}\{-ix\} e\^{}\{2ix\}`, the lower entry of qsim's `rz` as the global phase `e\^{}\{-iφ/2\}` times the lower entry of `Z\^{}\{φ/π\}`, with `x = φ/2`. The two exponentials join (`Complex.exp\_add`), their exponents share the factor `i` (`add\_mul`, through `Distrib.rightDistribClass`), and `-x + (x + x) = x` (`neg\_add\_cancel\_left`).
+\[ \forall (x : \mathbb{C}), \mathrm{Complex.exp} (x \cdot \mathrm{Complex.I}) = \mathrm{Complex.exp} (-x \cdot \mathrm{Complex.I}) \cdot \mathrm{Complex.exp} ((x + x) \cdot \mathrm{Complex.I}) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QsimBridge.lean\#L18}
+\end{document}

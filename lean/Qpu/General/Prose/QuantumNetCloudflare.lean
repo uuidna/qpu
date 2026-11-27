@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumNetCloudflare
-The prose of `src/quantum/net/cloudflare.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/f/6/e/c/3/e/8/d/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose

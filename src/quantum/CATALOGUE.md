@@ -13,13 +13,13 @@
 | licence | CC-BY-NC-ND-4.0 |
 | conceptDoi | 10.5281/zenodo.22700098 |
 | language | en |
-| products | 1644 |
+| products | 1663 |
 | standards | 30 (22 witnessed) |
 | vocabulary | ISO/IEC 4879:2024 (86/86) |
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1644 products, 2 under a declared claim context and 1642 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 7 claims in the author's own words are listed at the end with their theorems.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1663 products, 2 under a declared claim context and 1661 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 7 claims in the author's own words are listed at the end with their theorems.
 
 The catalogue covers 30 standards, 22 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -5808,6 +5808,16 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 witnessSquares = 6 ∧ witnessTriangles = 8 ∧ witnessFaces = 14
+```
+
+## Qpu.General.Schedule
+
+### `Schedule.sequential_peak_le_parallel`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (footprints : List ℕ), ∀ m ∈ footprints, m ≤ footprints.sum
 ```
 
 ## Qpu.General.Sigma
@@ -13223,6 +13233,100 @@ CircuitBasedQuantumComputing.Exact (Operator.kron 2 QuantumGate.S Operator.idm) 
   CircuitBasedQuantumComputing.Exact (Operator.kron 2 Operator.idm QuantumGate.S) CircuitBasedQuantumComputing.ruleS1 1
 ```
 
+## Qpu.Processing.CirqBridge
+
+### `CirqBridge.brief_sound`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} [inst : DecidableEq α] (record : List α) (p : α → Bool),
+  (List.filter p record).dedup.Nodup ∧ ∀ x ∈ (List.filter p record).dedup, x ∈ record ∧ p x = true
+```
+
+### `CirqBridge.cirq_eigen_gate`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (G : A) (t s : ℝ),
+  Complex.exp (↑(Real.pi * t * (0 + s)) * Complex.I) • (1 / 2) • (1 + G) +
+      Complex.exp (↑(Real.pi * t * (1 + s)) * Complex.I) • (1 / 2) • (1 - G) =
+    Complex.exp (↑(Real.pi * t * s) * Complex.I) •
+      ((1 / 2) • (1 + G) + Complex.exp (↑(Real.pi * t) * Complex.I) • (1 / 2) • (1 - G))
+```
+
+### `CirqBridge.cirq_order_eq_reversed`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ) (b : Fin n → ℕ), ∑ i, b i * 2 ^ (n - 1 - ↑i) = ∑ i, b i.rev * 2 ^ ↑i
+```
+
+### `CirqBridge.currency_beside_every_coin`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (rows : List String),
+  "currency" ∉ rows →
+    List.count "currency" (List.flatMap (fun r => if r = "coin" then [r, "currency"] else [r]) rows) =
+      List.count "coin" (List.flatMap (fun r => if r = "coin" then [r, "currency"] else [r]) rows)
+```
+
+### `CirqBridge.global_phase_invisible`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (θ : ℝ) (a : ℂ), ‖Complex.exp (↑θ * Complex.I) * a‖ = ‖a‖
+```
+
+### `CirqBridge.global_phases_add`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (l : List (ℂ × ℂ)),
+  (List.map (fun p => Complex.exp (↑Real.pi * p.1 * p.2 * Complex.I)) l).prod =
+    Complex.exp (↑Real.pi * (List.map (fun p => p.1 * p.2) l).sum * Complex.I)
+```
+
+### `CirqBridge.involution_pow_one`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (G : A),
+  (1 / 2) • (1 + G) + Complex.exp (↑(Real.pi * 1) * Complex.I) • (1 / 2) • (1 - G) = G
+```
+
+### `CirqBridge.involution_pow_zero`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (G : A),
+  (1 / 2) • (1 + G) + Complex.exp (↑(Real.pi * 0) * Complex.I) • (1 / 2) • (1 - G) = 1
+```
+
+### `CirqBridge.s_power`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (t : ℝ), Complex.I ^ ↑t = Complex.exp (↑(Real.pi * t / 2) * Complex.I)
+```
+
+### `CirqBridge.shift_phase`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (θ s : ℝ), Complex.exp (↑(Real.pi * (θ / Real.pi) * s) * Complex.I) = Complex.exp (↑(θ * s) * Complex.I)
+```
+
 ## Qpu.Processing.Clifford
 
 ### `cliffordOrder_pos`
@@ -13279,6 +13383,46 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (n : ℕ), 0 < symplectic n
+```
+
+## Qpu.Processing.FermionBridge
+
+### `FermionBridge.anticommutator_expand`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] (u v : A), (u + v) * (u - v) + (u - v) * (u + v) = u * u + u * u - (v * v + v * v)
+```
+
+### `FermionBridge.ladder_anticommute`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (X Y : A),
+  X * X = 1 →
+    Y * Y = 1 →
+      (1 / 2) • (X + Complex.I • Y) * (1 / 2) • (X - Complex.I • Y) +
+          (1 / 2) • (X - Complex.I • Y) * (1 / 2) • (X + Complex.I • Y) =
+        1
+```
+
+### `FermionBridge.ladder_square_zero`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (X Y : A),
+  X * X = 1 → Y * Y = 1 → X * Y = -(Y * X) → (1 / 2) • (X + Complex.I • Y) * (1 / 2) • (X + Complex.I • Y) = 0
+```
+
+### `FermionBridge.square_expand`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] (u v : A), u * v = -(v * u) → (u + v) * (u + v) = u * u + v * v
 ```
 
 ## Qpu.Processing.Fusion
@@ -13402,6 +13546,16 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 magicBlock = 15 ∧ magicLogical = 1 ∧ magicDistance = 3 ∧ magicCubic = 35
 ```
 
+## Qpu.Processing.QasmBridge
+
+### `QasmBridge.registers_flatten`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {m : ℕ} {n : Fin m → ℕ} (a b : (i : Fin m) × Fin (n i)), ↑(finSigmaFinEquiv a) = ↑(finSigmaFinEquiv b) → a = b
+```
+
 ## Qpu.Processing.Qft
 
 ### `qftDepth_monotone`
@@ -13482,6 +13636,28 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 qftGates 3 = 6 ∧ qftGates 4 = 10 ∧ qftSwaps 4 = 2 ∧ qftDepth 4 = 7 ∧ qftStates 4 = 16
+```
+
+## Qpu.Processing.QsimBridge
+
+### `QsimBridge.rotation_phase`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (x : ℂ), Complex.exp (x * Complex.I) = Complex.exp (-x * Complex.I) * Complex.exp ((x + x) * Complex.I)
+```
+
+## Qpu.Processing.QualtranBridge
+
+### `QualtranBridge.z_powers_add`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (a b : ℝ),
+  Complex.exp (↑(Real.pi * (a + b)) * Complex.I) =
+    Complex.exp (↑(Real.pi * a) * Complex.I) * Complex.exp (↑(Real.pi * b) * Complex.I)
 ```
 
 ## Qpu.Processing.QuantumAlgorithm
@@ -13894,6 +14070,16 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ReadoutResonator.shift 723 208 (5750 - 4618) 103
+```
+
+## Qpu.Processing.RecirqBridge
+
+### `RecirqBridge.ising_cut`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {E : Type u_1} (s : Finset E) (w c : E → ℝ), ∑ e ∈ s, w e * (1 - 2 * c e) = ∑ e ∈ s, w e - 2 * ∑ e ∈ s, w e * c e
 ```
 
 ## Qpu.Processing.Stabilizer

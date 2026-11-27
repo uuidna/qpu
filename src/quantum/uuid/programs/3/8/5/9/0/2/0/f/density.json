@@ -1,0 +1,287 @@
+{
+ "cirq": "1.7.0",
+ "cases": {
+  "x-then-damp": {
+   "operations": [
+    {
+     "gate": "X",
+     "qubits": [
+      {
+       "kind": "line",
+       "x": 0
+      }
+     ]
+    },
+    {
+     "gate": "H",
+     "qubits": [
+      {
+       "kind": "line",
+       "x": 1
+      }
+     ]
+    },
+    {
+     "gate": "Z",
+     "qubits": [
+      {
+       "kind": "line",
+       "x": 2
+      }
+     ]
+    }
+   ],
+   "qubits": 3,
+   "noise": [
+    {
+     "name": "amplitude_damp",
+     "gamma": 0.3
+    }
+   ],
+   "observables": [
+    {
+     "line:0": "Z"
+    },
+    {
+     "line:1": "X"
+    },
+    {
+     "line:2": "Z"
+    }
+   ],
+   "probabilities": [
+    0.195,
+    0.0,
+    0.10500000000000001,
+    0.0,
+    0.4550000000000001,
+    0.0,
+    0.24500000000000008,
+    0.0
+   ],
+   "expectations": [
+    -0.4000000000000002,
+    0.8366600265340758,
+    1.0000000000000002
+   ]
+  },
+  "bell-depolarized": {
+   "operations": [
+    {
+     "gate": "H",
+     "qubits": [
+      {
+       "kind": "line",
+       "x": 0
+      }
+     ]
+    },
+    {
+     "gate": "CNOT",
+     "qubits": [
+      {
+       "kind": "line",
+       "x": 0
+      },
+      {
+       "kind": "line",
+       "x": 1
+      }
+     ]
+    }
+   ],
+   "qubits": 2,
+   "noise": [
+    {
+     "name": "depolarize",
+     "p": 0.2
+    }
+   ],
+   "observables": [
+    {
+     "line:0": "Z",
+     "line:1": "Z"
+    },
+    {
+     "line:0": "X",
+     "line:1": "X"
+    }
+   ],
+   "probabilities": [
+    0.3844444444444444,
+    0.11555555555555554,
+    0.11555555555555554,
+    0.3844444444444444
+   ],
+   "expectations": [
+    0.5377777777777778,
+    0.3943703703703705
+   ]
+  },
+  "asymmetric-flips": {
+   "operations": [
+    {
+     "gate": "X",
+     "qubits": [
+      {
+       "kind": "line",
+       "x": 0
+      }
+     ]
+    },
+    {
+     "gate": "H",
+     "qubits": [
+      {
+       "kind": "line",
+       "x": 1
+      }
+     ]
+    },
+    {
+     "gate": "S",
+     "qubits": [
+      {
+       "kind": "line",
+       "x": 1
+      }
+     ]
+    },
+    {
+     "gate": "CNOT",
+     "qubits": [
+      {
+       "kind": "line",
+       "x": 1
+      },
+      {
+       "kind": "line",
+       "x": 2
+      }
+     ]
+    }
+   ],
+   "qubits": 3,
+   "noise": [
+    {
+     "name": "bit_flip",
+     "p": 0.1
+    },
+    {
+     "name": "phase_damp",
+     "gamma": 0.25
+    }
+   ],
+   "observables": [
+    {
+     "line:0": "Z"
+    },
+    {
+     "line:1": "Y"
+    },
+    {
+     "line:2": "Z"
+    }
+   ],
+   "probabilities": [
+    0.04100000000000001,
+    0.009000000000000001,
+    0.009000000000000001,
+    0.04100000000000001,
+    0.36899999999999994,
+    0.08099999999999999,
+    0.08099999999999999,
+    0.36899999999999994
+   ],
+   "expectations": [
+    -0.7999999999999998,
+    0.0,
+    0.0
+   ]
+  },
+  "ghz-damped": {
+   "operations": [
+    {
+     "gate": "H",
+     "qubits": [
+      {
+       "kind": "line",
+       "x": 0
+      }
+     ]
+    },
+    {
+     "gate": "CNOT",
+     "qubits": [
+      {
+       "kind": "line",
+       "x": 0
+      },
+      {
+       "kind": "line",
+       "x": 1
+      }
+     ]
+    },
+    {
+     "gate": "CNOT",
+     "qubits": [
+      {
+       "kind": "line",
+       "x": 1
+      },
+      {
+       "kind": "line",
+       "x": 2
+      }
+     ]
+    },
+    {
+     "gate": "T",
+     "qubits": [
+      {
+       "kind": "line",
+       "x": 2
+      }
+     ]
+    }
+   ],
+   "qubits": 3,
+   "noise": [
+    {
+     "name": "amplitude_damp",
+     "gamma": 0.15
+    },
+    {
+     "name": "phase_flip",
+     "p": 0.05
+    }
+   ],
+   "observables": [
+    {
+     "line:0": "Z",
+     "line:2": "Z"
+    },
+    {
+     "line:0": "X",
+     "line:1": "X",
+     "line:2": "X"
+    }
+   ],
+   "probabilities": [
+    0.5868180546874998,
+    0.005872570312499998,
+    0.0127814765625,
+    0.033277898437499995,
+    0.0669689765625,
+    0.033277898437499995,
+    0.0724283671875,
+    0.18857475781250002
+   ],
+   "expectations": [
+    0.6429043749999999,
+    0.23077929162080632
+   ]
+  }
+ }
+}

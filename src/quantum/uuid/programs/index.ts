@@ -3,23 +3,23 @@
 // eight nibble levels, the leaf the dnode. uid 0 is the pool privilege. Depths run 0..7.
 // Every program installs, configures and uses all nine official Payload plugins. Disorder elsewhere raises entropy; the program path drives it to zero.
 // Neighbours are handled via quantum: six program-space steps (g1± g2± g3±), handle and tail kept — not listed by hand in each index.
-import { PROSE, proseFill } from '../../processing/prose-index.ts'
+import { PROSE, proseFill } from './5/9/e/4/9/1/a/4/index.ts'
 import { readdirSync } from 'node:fs'
 import { availableParallelism } from 'node:os'
 import { Worker, parentPort, workerData } from 'node:worker_threads'
 import { join } from 'node:path'
-import { exists, place, write } from '../../fs/index.ts'
-import { seal, uuid, uuidFromParts } from '../../password/address.ts'
-import { bindPhysics, canonicalText, channel, hexbit, reflection } from '../index.ts'
+import { exists, place, write } from './1/0/e/5/8/3/1/8/index.ts'
+import { seal, uuid, uuidFromParts } from './1/6/4/f/0/6/2/1/index.ts'
+import { bindPhysics, canonicalText, channel, hexbit, reflection } from './2/7/1/a/7/6/4/9/index.ts'
 import { physics } from './physics/index.ts'
 import { challenge } from './challenge/index.ts'
 
 bindPhysics(physics)
 export { challenge, physics }
-import { TENANTS } from '../../processing/unit/tenants.ts'
-import { TABLES } from '../../processing/tables-index.ts'
-import { assertHandle } from '../../fs/zfs/index.ts'
-import { ENTROPY_LAW, ENTROPY_MEANS, HEXBIT_LAW } from '../laws.ts'
+import { TENANTS } from './3/a/4/f/9/2/3/c/index.ts'
+import { TABLES } from './1/2/a/4/3/2/a/8/index.ts'
+import { assertHandle } from './e/3/3/2/3/2/9/c/index.ts'
+import { ENTROPY_LAW, ENTROPY_MEANS, HEXBIT_LAW } from './b/6/4/6/e/a/0/1/index.ts'
 
 // The Payload plugin shape every folder program takes: options in, the incoming config in, a copy of that config out.
 /** The nine plugins this stack mounts. The length is the combination count 2^9. */

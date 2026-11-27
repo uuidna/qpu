@@ -3,7 +3,7 @@
 [`index.ts`](index.ts) is the import. Run it from the repository root with `node`. The detailed specification is [`README.md`](README.md). The unit is [`UNIT.md`](UNIT.md). The tools are [`TOOLBOXES.md`](TOOLBOXES.md).
 
 ```ts
-import { call, caller, chat, handle, uuid, seal } from './src/quantum/index.ts'
+import { call, caller, chat, handle, uuid, seal } from './src/quantum/uuid/programs/8/9/e/d/b/0/f/3/index.ts'
 ```
 
 ## Exports

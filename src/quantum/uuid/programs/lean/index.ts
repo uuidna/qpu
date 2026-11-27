@@ -1,8 +1,8 @@
 // Every Lean module is one UUID program. The filesystem places the handle.
 // The next step rotates the program one place. The handle and the tail stay. Nothing is written.
-import { PROSE, proseFill } from '../../../processing/prose-index.ts'
-import { birth, exists, read } from '../../../fs/index.ts'
-import { next, uuid } from '../../index.ts'
+import { PROSE, proseFill } from '../5/9/e/4/9/1/a/4/index.ts'
+import { birth, exists, read } from '../1/0/e/5/8/3/1/8/index.ts'
+import { next, uuid } from '../2/7/1/a/7/6/4/9/index.ts'
 import { program } from '../index.ts'
 
 const ROOT = 'lean/Qpu.lean'

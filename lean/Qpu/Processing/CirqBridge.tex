@@ -1,0 +1,62 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.CirqBridge}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CirqBridge.lean}
+
+\paragraph{\texttt{CirqBridge.brief\_sound}}
+The verdict: the lines a run's record holds that pass the filter, deduplicated, are each held once, each held by the record, and each one the filter keeps. From Mathlib's `List.nodup\_dedup` and `List.mem\_dedup`.
+\[ \forall \{\alpha : \mathrm{Type}\ \mathrm{u\_1}\} [\mathrm{inst} : \mathrm{DecidableEq} \alpha ] (\mathrm{record} : \mathrm{List} \alpha ) (p : \alpha \to \mathrm{Bool}), (\mathrm{List.filter}\ p\ \mathrm{record})\mathrm{.dedup.Nodup} \land \forall x \in (\mathrm{List.filter}\ p\ \mathrm{record})\mathrm{.dedup}, x \in \mathrm{record} \land p\ x = \mathrm{true} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CirqBridge.lean\#L46}
+
+\paragraph{\texttt{CirqBridge.cirq\_eigen\_gate}}
+Cirq's eigen gate with eigenvalue exponents `0` on the projector `P₊ = (1 + G)/2` and `1` on `P₋ = (1 - G)/2` and global shift `s`, which is how Cirq defines `XPowGate`, `YPowGate`, `ZPowGate`, `HPowGate`, `CZPowGate`, `CXPowGate`, `SwapPowGate` and `CCXPowGate`, is the simulator's power of a gate that squares to the identity, `P₊ + e\^{}\{iπt\} P₋`, times the global phase `e\^{}\{iπts\}` the circuit door carries. From Mathlib's `smul\_add`, `smul\_smul`, `zero\_add`, `mul\_add`, `mul\_one`, `Complex.ofReal\_add`, `add\_mul`, `Complex.exp\_add` and `mul\_comm`, with the instances `Nat.instAtLeastTwoHAddOfNat`, `Distrib.leftDistribClass` and `Distrib.rightDistribClass`.
+\[ \forall \{A : \mathrm{Type}\ \mathrm{u\_1}\} [\mathrm{inst} : \mathrm{Ring}\ A] [\mathrm{inst\_1} : \mathrm{Algebra} \mathbb{C} A] (G : A) (t\ s : \mathbb{R}), \mathrm{Complex.exp} (\uparrow (\mathrm{Real.pi} \cdot t \cdot (0 + s)) \cdot \mathrm{Complex.I}) \bullet (1 / 2) \bullet (1 + G) + \mathrm{Complex.exp} (\uparrow (\mathrm{Real.pi} \cdot t \cdot (1 + s)) \cdot \mathrm{Complex.I}) \bullet (1 / 2) \bullet (1 - G) = \mathrm{Complex.exp} (\uparrow (\mathrm{Real.pi} \cdot t \cdot s) \cdot \mathrm{Complex.I}) \bullet ((1 / 2) \bullet (1 + G) + \mathrm{Complex.exp} (\uparrow (\mathrm{Real.pi} \cdot t) \cdot \mathrm{Complex.I}) \bullet (1 / 2) \bullet (1 - G)) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CirqBridge.lean\#L79}
+
+\paragraph{\texttt{CirqBridge.cirq\_order\_eq\_reversed}}
+An index in Cirq's order, the first qubit the most significant bit, equals the index in the simulator's order, the first qubit the least significant, over the qubits read in reverse. From Mathlib's `Fintype.sum\_equiv` and `Fin.revPerm\_apply`.
+\[ \forall (n : \mathbb{N}) (b : \mathrm{Fin}\ n \to \mathbb{N}), \sum i, b\ i \cdot 2 ^{(n - 1 - \uparrow i)} = \sum i, b\ \mathrm{i.rev} \cdot 2 ^{}\uparrow i \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CirqBridge.lean\#L22}
+
+\paragraph{\texttt{CirqBridge.currency\_beside\_every\_coin}}
+The README writer puts a currency row right after every coin row, in a table that held no currency row before: it writes as many currency rows as coin rows, which is what the register's ISO 4217 row counts. From Mathlib's `List.count\_eq\_one\_of\_mem` and `zero\_add`.
+\[ \forall (\mathrm{rows} : \mathrm{List}\ \mathrm{String}), "\mathrm{currency}" \notin \mathrm{rows} \to \mathrm{List.count} "\mathrm{currency}" (\mathrm{List.flatMap} (\lambda \ r \mapsto \mathrm{if}\ r = "\mathrm{coin}" \mathrm{then} [r, "\mathrm{currency}"] \mathrm{else} [r]) \mathrm{rows}) = \mathrm{List.count} "\mathrm{coin}" (\mathrm{List.flatMap} (\lambda \ r \mapsto \mathrm{if}\ r = "\mathrm{coin}" \mathrm{then} [r, "\mathrm{currency}"] \mathrm{else} [r]) \mathrm{rows}) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CirqBridge.lean\#L55}
+
+\paragraph{\texttt{CirqBridge.global\_phase\_invisible}}
+A global phase changes no probability: `‖e\^{}\{iθ\} a‖ = ‖a‖`, so two states that agree up to a global phase give every outcome the same probability `‖a‖²`, which is why a state Stim's tableau fixes up to its phase is compared up to that phase. From Mathlib's `norm\_mul`, `Complex.norm\_exp\_ofReal\_mul\_I` and `one\_mul`, with the instance `NormedDivisionRing.toNormMulClass`.
+\[ \forall (\theta : \mathbb{R}) (a : \mathbb{C}), \| \mathrm{Complex.exp} (\uparrow \theta \cdot \mathrm{Complex.I}) \cdot a\| = \| a\|  \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CirqBridge.lean\#L114}
+
+\paragraph{\texttt{CirqBridge.global\_phases\_add}}
+The global phases add: the product of `e\^{}\{iπ t s\}` over the gates is `e\^{}\{iπ Σ t s\}`, for any exponents and shifts, real ones among them. From Mathlib's `Complex.exp\_list\_sum`, `List.map\_map`, `List.sum\_map\_mul\_right`, `List.sum\_map\_mul\_left` and `mul\_assoc`.
+\[ \forall (l : \mathrm{List} (\mathbb{C} \times \mathbb{C})), (\mathrm{List.map} (\lambda \ p \mapsto \mathrm{Complex.exp} (\uparrow \mathrm{Real.pi} \cdot \mathrm{p.1} \cdot \mathrm{p.2} \cdot \mathrm{Complex.I})) l)\mathrm{.prod} = \mathrm{Complex.exp} (\uparrow \mathrm{Real.pi} \cdot (\mathrm{List.map} (\lambda \ p \mapsto \mathrm{p.1} \cdot \mathrm{p.2}) l)\mathrm{.sum} \cdot \mathrm{Complex.I}) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CirqBridge.lean\#L33}
+
+\paragraph{\texttt{CirqBridge.involution\_pow\_one}}
+At `t = 1` the simulator's power of a gate is the gate itself: `P₊ - P₋ = G`, since `e\^{}\{iπ\} = -1`. From Mathlib's `mul\_one`, `Complex.exp\_pi\_mul\_I`, `neg\_one\_smul`, `sub\_eq\_add\_neg`, `smul\_sub`, `add\_sub\_sub\_cancel`, `two\_smul`, `smul\_smul`, `one\_div`, `inv\_mul\_cancel₀`, `two\_ne\_zero` and `one\_smul`, with the instances `Nat.instAtLeastTwoHAddOfNat`, `CharZero.NeZero.two` and `Complex.instCharZero`.
+\[ \forall \{A : \mathrm{Type}\ \mathrm{u\_1}\} [\mathrm{inst} : \mathrm{Ring}\ A] [\mathrm{inst\_1} : \mathrm{Algebra} \mathbb{C} A] (G : A), (1 / 2) \bullet (1 + G) + \mathrm{Complex.exp} (\uparrow (\mathrm{Real.pi} \cdot 1) \cdot \mathrm{Complex.I}) \bullet (1 / 2) \bullet (1 - G) = G \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CirqBridge.lean\#L89}
+
+\paragraph{\texttt{CirqBridge.involution\_pow\_zero}}
+At `t = 0` the simulator's power of a gate is the identity: `P₊ + P₋ = 1`, since `e\^{}0 = 1`. From Mathlib's `MulZeroClass.mul\_zero`, `Complex.ofReal\_zero`, `MulZeroClass.zero\_mul`, `Complex.exp\_zero`, `one\_smul`, `smul\_add`, `add\_add\_sub\_cancel`, `two\_smul`, `smul\_smul`, `one\_div`, `inv\_mul\_cancel₀` and `two\_ne\_zero`, with the instances `Nat.instAtLeastTwoHAddOfNat`, `CharZero.NeZero.two` and `Complex.instCharZero`.
+\[ \forall \{A : \mathrm{Type}\ \mathrm{u\_1}\} [\mathrm{inst} : \mathrm{Ring}\ A] [\mathrm{inst\_1} : \mathrm{Algebra} \mathbb{C} A] (G : A), (1 / 2) \bullet (1 + G) + \mathrm{Complex.exp} (\uparrow (\mathrm{Real.pi} \cdot 0) \cdot \mathrm{Complex.I}) \bullet (1 / 2) \bullet (1 - G) = 1 \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CirqBridge.lean\#L97}
+
+\paragraph{\texttt{CirqBridge.s\_power}}
+The simulator raises `S = diag(1, i)` entry by entry through the principal logarithm, `i\^{}t = e\^{}\{t log i\}`, and Cirq writes `S**t` as `ZPowGate(t/2)`, `diag(1, e\^{}\{iπt/2\})`: the two agree, since `log i = iπ/2`. From Mathlib's `Complex.cpow\_def\_of\_ne\_zero`, `Complex.I\_ne\_zero`, `Complex.log\_I`, `Complex.ofReal\_div`, `Complex.ofReal\_mul`, `Complex.ofReal\_ofNat`, `mul\_right\_comm` and `div\_mul\_eq\_mul\_div`, with the instance `Nat.instAtLeastTwoHAddOfNat`.
+\[ \forall (t : \mathbb{R}), \mathrm{Complex.I} ^{}\uparrow t = \mathrm{Complex.exp} (\uparrow (\mathrm{Real.pi} \cdot t / 2) \cdot \mathrm{Complex.I}) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CirqBridge.lean\#L107}
+
+\paragraph{\texttt{CirqBridge.shift\_phase}}
+A gate to the power `θ/π` with a global shift `s` carries the phase `e\^{}\{iπ (θ/π) s\}`, which is `e\^{}\{iθ s\}`: `Rx(θ)`, `X` to the power `θ/π` with the shift `-1/2`, carries `e\^{}\{-iθ/2\}`. From Mathlib's `mul\_div\_cancel₀` and `Real.pi\_ne\_zero`.
+\[ \forall (\theta s : \mathbb{R}), \mathrm{Complex.exp} (\uparrow (\mathrm{Real.pi} \cdot (\theta / \mathrm{Real.pi}) \cdot s) \cdot \mathrm{Complex.I}) = \mathrm{Complex.exp} (\uparrow (\theta \cdot s) \cdot \mathrm{Complex.I}) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CirqBridge.lean\#L41}
+\end{document}

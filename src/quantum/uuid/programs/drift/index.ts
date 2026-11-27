@@ -2,14 +2,14 @@
 // The tail is the params. The ten program nibbles are the expected schema.
 // The reflection both ways, the six neighbour steps and the nine schemas are the cross-encryption.
 // The SHA-256 of the bound record is the receipt: a collision is 2^128 and a second preimage is 2^256.
-import { PROSE, proseFill } from '../../../processing/prose-index.ts'
-import { exists, read as readFile, write } from '../../../fs/index.ts'
-import { driftWaves } from '../../../processing/lead-wave.ts'
-import { checkWitnesses } from '../../../processing/witnesses.ts'
-import { hex, sha256, utf8 } from '../../../processing/unit/hmac.ts'
-import { canonicalText, channel, coins, next as rotate, seal, uuidFromParts } from '../../index.ts'
+import { PROSE, proseFill } from '../5/9/e/4/9/1/a/4/index.ts'
+import { exists, read as readFile, write } from '../1/0/e/5/8/3/1/8/index.ts'
+import { driftWaves } from '../9/0/e/0/c/2/f/4/index.ts'
+import { checkWitnesses } from '../d/7/8/3/e/4/6/3/index.ts'
+import { hex, sha256, utf8 } from '../9/e/8/6/7/0/6/8/index.ts'
+import { canonicalText, channel, coins, next as rotate, seal, uuidFromParts } from '../2/7/1/a/7/6/4/9/index.ts'
 import { program } from '../index.ts'
-import { hyphenated } from '../../laws.ts'
+import { hyphenated } from '../b/6/4/6/e/a/0/1/index.ts'
 
 const FIELDS = ['family', 'hz', 'stated', 'difference', 'relations', 'next', 'solved', 'open', 'covers', 'own'] as const
 const TYPES = ['string', 'number', 'boolean', 'array', 'null'] as const

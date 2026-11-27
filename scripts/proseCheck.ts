@@ -2,12 +2,12 @@
 // name from prose-index.ts, so each finding names the file, the line and the sentence to move.
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
-import { PROSE } from '../src/quantum/processing/prose-index.ts'
-import { THEOREMS } from '../src/quantum/processing/theorems-index.ts'
-import { findProse, inScope, parse } from './proseFind.ts'
+import { PROSE } from '../src/quantum/uuid/programs/5/9/e/4/9/1/a/4/index.ts'
+import { THEOREMS } from '../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
+import { findProse, inScope, isGenerated, parse } from './proseFind.ts'
 
 const files = execFileSync('git', ['ls-files', 'src/quantum', 'src/scripts'], { encoding: 'utf8' }).split('\n').filter(inScope)
-const findings = files.flatMap((file) => findProse(parse(file, readFileSync(file, 'utf8'))).map((found) => ({ file, line: found.line, text: found.text })))
+const findings = files.flatMap((file) => { const text = readFileSync(file, 'utf8'); return isGenerated(text) ? [] : findProse(parse(file, text)).map((found) => ({ file, line: found.line, text: found.text })) })
 for (const found of findings) console.error(`${found.file}:${found.line}: ${JSON.stringify(found.text)}`)
 // a sentence that names a theorem conflicts with Lean when the kernel has no theorem of that name
 const kernel = new Set(THEOREMS.map((theorem) => theorem.key))

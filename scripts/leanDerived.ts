@@ -1,10 +1,10 @@
 // clay-statements.ts, which the payload door renders from Qpu/General/Clay.lean (the Clay register's own generator).
 // Every other file that follows Lean is written by Lean itself: see the tools beside the Lean sources. Run after Lean has written the theorem index, which they read. With --check nothing is written and a
 // difference fails: Lean decides, the rendered files follow.
-import { PROSE } from '../src/quantum/processing/prose-index.ts'
+import { PROSE } from '../src/quantum/uuid/programs/5/9/e/4/9/1/a/4/index.ts'
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { scripts } from '../src/quantum/processing/script-doors.ts'
+import { scripts } from '../src/quantum/uuid/programs/2/f/b/0/0/f/c/e/index.ts'
 
 type Door = { path: string; text: string; says: string }
 const root = 'lean'

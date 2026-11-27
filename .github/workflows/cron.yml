@@ -57,4 +57,4 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: The doors decide what they can
-        run: node src/quantum/processing/machine-run.ts next --offline
+        run: node src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts next --offline

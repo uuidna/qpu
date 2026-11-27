@@ -1,0 +1,17 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.QualtranBridge}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QualtranBridge.lean}
+
+\paragraph{\texttt{QualtranBridge.z\_powers\_add}}
+Powers of `Z` add: `e\^{}\{iπ(a+b)\} = e\^{}\{iπa\} e\^{}\{iπb\}`, so `Z\^{}\{3/4\} = S·T` and `Z\^{}\{5/4\} = Z·T` each cost one T gate beside a Clifford. The exponent distributes over the sum (`mul\_add`, `Complex.ofReal\_add`, `add\_mul`, through `Distrib.leftDistribClass` and `Distrib.rightDistribClass`), and the exponential of a sum is the product (`Complex.exp\_add`).
+\[ \forall (a\ b : \mathbb{R}), \mathrm{Complex.exp} (\uparrow (\mathrm{Real.pi} \cdot (a + b)) \cdot \mathrm{Complex.I}) = \mathrm{Complex.exp} (\uparrow (\mathrm{Real.pi} \cdot a) \cdot \mathrm{Complex.I}) \cdot \mathrm{Complex.exp} (\uparrow (\mathrm{Real.pi} \cdot b) \cdot \mathrm{Complex.I}) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QualtranBridge.lean\#L18}
+\end{document}

@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumPasswordAddress
-The prose of `src/quantum/password/address.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/1/6/4/f/0/6/2/1/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose

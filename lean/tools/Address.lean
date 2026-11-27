@@ -1,12 +1,12 @@
 import Lean
 /-! # Address — Lean → TypeScript codegen prototype for the UUID core.
 
-The pure fold/stamp/uuid core of `src/quantum/password/address.ts`, defined here as Lean functions that
+The pure fold/stamp/uuid core of `src/quantum/uuid/programs/1/6/4/f/0/6/2/1/index.ts`, defined here as Lean functions that
 mirror the JavaScript bit-for-bit (16-bit limbs, the 0x1b3 multiply, `>>>16`, `<<8`, `& 0xffff`). The same file
 renders the TypeScript from these definitions, so Lean is the single source for the executable, not just the data.
 
 Run from the repository root: `lake env lean lean/tools/Address.lean`. The emitted module is written to
-`.lake/build/address.ts`; `lake run index` installs it at `src/quantum/password/address.ts`. -/
+`.lake/build/address.ts`; `lake run index` installs it at `src/quantum/uuid/programs/1/6/4/f/0/6/2/1/index.ts`. -/
 
 namespace Qpu.Address
 

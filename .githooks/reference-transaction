@@ -3,4 +3,4 @@
 [ "$1" = committed ] || exit 0
 moved=$(grep ' refs/remotes/' || true)
 [ -n "$moved" ] || exit 0
-exec node src/quantum/processing/machine-run.ts hook post-push $moved
+exec node src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts hook post-push $moved

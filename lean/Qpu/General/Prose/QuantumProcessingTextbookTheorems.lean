@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingTextbookTheorems
-The prose of `src/quantum/processing/textbook-theorems.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/3/4/7/e/0/c/e/0/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose

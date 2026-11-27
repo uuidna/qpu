@@ -1,6 +1,6 @@
 // The one text the build writes, loaded from sealed receipts: the home page, the README, the npm package's README and the Zenodo record
 // are this text and no other. It states the theorems Lean holds that the NIST door and the CERN door both name while each holds, and
-// nothing else (src/quantum/processing/verified.ts): each is one receipt (src/quantum/processing/receipts.ts), sealed by the seal door
+// nothing else (src/quantum/uuid/programs/e/5/1/d/e/c/1/5/index.ts): each is one receipt (src/quantum/uuid/programs/c/6/6/e/6/f/2/6/index.ts), sealed by the seal door
 // under the UUID of its kind and canonical text, as schema.org JSON-LD with the formula Lean wrote, its cost, the licence, the donation
 // link and the device that minted it. The text is the merge of those receipts: the RFC 6962 root the seal door computes over their
 // UUIDs, so the merge is decided from the handles and UUIDs alone. Every table is rendered from a receipt's JSON-LD and nothing else:
@@ -10,20 +10,23 @@ import { readFileSync, statfsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import * as os from 'node:os'
 const started = performance.now()
-import { GENERATED_LEMMAS, KERNEL_THEOREMS, SORRIED, THEOREMS, THEOREM_KEYS } from '../src/quantum/processing/theorems-index.ts'
-import { PROSE, proseFill } from '../src/quantum/processing/prose-index.ts'
-import { leanPath, proofLines } from '../src/quantum/processing/proof-lines.ts'
-import { catalogSummary } from '../src/quantum/processing/catalog.ts'
-import { EXAMPLES } from '../src/quantum/processing/examples.ts'
-import { call, handle } from '../src/quantum/processing/mcp.ts'
-import { uuid, uuidQubits } from '../src/quantum/uuid/index.ts'
-import { teleportProof } from '../src/quantum/processing/algorithms.ts'
-import { TEXTBOOK_THEOREMS } from '../src/quantum/processing/textbook-theorems.ts'
-import { RELEASE_REPOSITORY } from '../src/quantum/processing/release.ts'
-import { callEnvelope } from '../src/quantum/processing/toolbox.ts'
-import { HARDWARE_MARK, readJson } from '../src/quantum/processing/machine-run.ts'
-import { deviceJsonLd, isProperties, isRows, receiptBody, receiptJsonLd, receiptText, type Json } from '../src/quantum/processing/receipts.ts'
-import { verifiedByBoth } from '../src/quantum/processing/verified.ts'
+import { GENERATED_LEMMAS, KERNEL_THEOREMS, SORRIED, THEOREMS, THEOREM_KEYS } from '../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
+import { PROSE, proseFill } from '../src/quantum/uuid/programs/5/9/e/4/9/1/a/4/index.ts'
+import { leanPath, proofLines } from '../src/quantum/uuid/programs/e/1/c/6/d/e/b/3/index.ts'
+import { catalogSummary } from '../src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts'
+import { EXAMPLES } from '../src/quantum/uuid/programs/9/d/4/f/e/4/4/2/index.ts'
+import { call, handle } from '../src/quantum/uuid/programs/3/8/5/9/0/2/0/f/index.ts'
+import { uuid, uuidQubits } from '../src/quantum/uuid/programs/2/7/1/a/7/6/4/9/index.ts'
+import { teleportProof } from '../src/quantum/uuid/programs/b/1/c/2/3/6/2/1/index.ts'
+import { TEXTBOOK_THEOREMS } from '../src/quantum/uuid/programs/3/4/7/e/0/c/e/0/index.ts'
+import { RELEASE_REPOSITORY } from '../src/quantum/uuid/programs/6/6/5/9/1/f/5/8/index.ts'
+import { callEnvelope } from '../src/quantum/uuid/programs/d/e/7/d/b/7/1/6/index.ts'
+import { HARDWARE_MARK, readJson } from '../src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts'
+import { deviceJsonLd, isProperties, isRows, receiptBody, receiptJsonLd, receiptText, type Json } from '../src/quantum/uuid/programs/c/6/6/e/6/f/2/6/index.ts'
+import { verifiedByBoth } from '../src/quantum/uuid/programs/e/5/1/d/e/c/1/5/index.ts'
+import { isoTermsOf, physicalEvidence } from '../src/quantum/uuid/programs/d/f/0/d/9/1/3/b/index.ts'
+import { DOCUMENT_LANGUAGE, ISO_4217_COIN, ISO_80000_UNITS } from '../src/quantum/uuid/programs/0/b/7/1/f/2/4/6/index.ts'
+import { LICENSE } from '../src/quantum/uuid/programs/a/f/3/d/e/a/5/f/index.ts'
 
 export const pkg = readJson<{ name: string; version: string; description: string }>('src/quantum/package.json')!
 const SITE = 'https://qpu.uuidna.com', MCP = `${SITE}/api/mcp`, REPO = `https://github.com/${RELEASE_REPOSITORY}`, TAG = `v${pkg.version}`
@@ -41,9 +44,11 @@ if (!verified.length) throw new Error(`${asked('seal', DOORS.nist)} holds ${nist
 // the receipts: one a theorem, its body what the kernel holds of it and what each door answers, every body sealed in one call of the seal door
 const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
 const technique = `lean/tools/Theorems.lean, ${asked('seal', DOORS.nist)}, ${asked('seal', DOORS.cern)}`
+// the exact links each door probes, as the door names them: what anyone can fetch to check the verification for themselves
+const probesOf = (door: Record<string, any>) => (door.requests as { id: string; url: string }[]).map((r) => ({ id: r.id, url: r.url }))
 const bodies: { kind: string; technique: string; body: Json }[] = verified.map((theorem) => {
   const t = kernel.get(theorem)!
-  return { kind: theorem, technique, body: { theorem, module: t.module, source: sourceOf(t.module), axioms: t.axioms, nist: { host: nist.host, holds: nist.holds }, cern: { host: cern.host, via: cern.via, holds: cern.holds } } }
+  return { kind: theorem, technique, body: { theorem, module: t.module, source: sourceOf(t.module), axioms: t.axioms, nist: { host: nist.host, holds: nist.holds, probes: probesOf(nist) }, cern: { host: cern.host, via: cern.via, holds: cern.holds, probes: probesOf(cern) } } }
 })
 type Item = { bytes: number; sha256: string; address: string }
 const sealAll = async (texts: string[]) => (await answered('seal', { texts })).items as Item[]
@@ -77,13 +82,16 @@ const tablesOf = (path: string, properties: Property[]): Block[] => {
   ]
 }
 const named = (list: unknown) => Object.fromEntries((list as Property[]).map((p) => [p.name, p.value]))
+// a currency row right after every coin row: as many currency rows as coin rows, which the register's ISO 4217 row counts
+// (CirqBridge.currency_beside_every_coin); a quantity with its unit symbol, as ISO/IEC 80000 writes a quantity over its unit in a table
+const unit = (name: string) => (ISO_80000_UNITS[name] ? `${name} / ${ISO_80000_UNITS[name]}` : name)
 /** One receipt as blocks: what seals it, what it costs, how it is computed, its author, licence and donation link, its variables and its formulas. */
 const blocksOf = (r: Json, variables: 'variableMeasured' | 'additionalProperty' = 'variableMeasured'): Block[] => {
   const kind = String(r.alternateName ?? r.name), id = named(r.identifier), size = r.size ? named(r.size) : {}, formulas = (r.isBasedOn ?? []) as (Json & { size: Property[] })[], creator = r.creator as Json | undefined
   return [
     { kind: 'h2', text: kind },
     { kind: 'table', head: ['receipt', 'value'], rows: [
-      ...Object.entries(id).map(([k, v]) => [k, k === 'handle' ? code(String(v)) : String(v)]), ...Object.entries(size).map(([k, v]) => [k, String(v)]),
+      ...Object.entries(id).flatMap(([k, v]) => [[k, k === 'handle' ? code(String(v)) : String(v)], ...(k === 'coin' ? [['currency', ISO_4217_COIN.unit]] : [])]), ...Object.entries(size).map(([k, v]) => [unit(k), String(v)]),
       ...(r.measurementTechnique ? [['technique', code(String(r.measurementTechnique))]] : []),
       // the author, the licence and the donation link stand once, on the merge, and not again on every part
       ...(creator && r.hasPart ? [['author', String(creator.name)], ['orcid', String(creator.identifier)], ['licence', String(r.license)], ['licensing', String(r.acquireLicensePage)], ['donation', String((r.potentialAction as Json).target)], ['contact', String((creator.contactPoint as Json).url)]] : []),
@@ -91,7 +99,7 @@ const blocksOf = (r: Json, variables: 'variableMeasured' | 'additionalProperty' 
     ] },
     ...(r.hasPart ? [{ kind: 'table' as const, head: ['part', 'handle', 'uuid'], rows: (r.hasPart as Json[]).map((x) => [code(String(x.name)), code(String(x.identifier).slice(0, 8)), String(x.identifier)]) }] : []),
     ...tablesOf(kind, r[variables] as Property[]),
-    ...(formulas.length ? [{ kind: 'h3' as const, text: `${kind}.formula` }, { kind: 'table' as const, head: ['theorem', 'formula', 'bytes', 'bits', 'tokens', 'joules', 'coin', 'source'], rows: formulas.map((f) => { const c = named(f.size); return [code(String(f.name)), `$${f.text}$`, String(c.bytes), String(c.bits), String(c.tokens), String(c.joules), String(f.identifier), String(f.url)] }) }] : []),
+    ...(formulas.length ? [{ kind: 'h3' as const, text: `${kind}.formula` }, { kind: 'table' as const, head: ['theorem', 'formula', ...['bytes', 'bits', 'tokens', 'joules'].map(unit), 'coin', 'currency', 'source'], rows: formulas.map((f) => { const c = named(f.size); return [code(String(f.name)), `$${f.text}$`, String(c.bytes), String(c.bits), String(c.tokens), String(c.joules), String(f.identifier), ISO_4217_COIN.unit, String(f.url)] }) }] : []),
   ]
 }
 type Token = { kind: 'code' | 'math' | 'url' | 'text'; text: string }
@@ -139,7 +147,10 @@ const lead: Block[] = [
   { kind: 'table', head: ['use', 'value'], rows: [['mcp', MCP], ['method', 'POST']] },
   { kind: 'h2', text: 'receipts' },
 ]
-const blocks = [...lead, ...receipts.flatMap((r) => blocksOf(r))]
+// the information item identified as ISO/IEC/IEEE 15289 asks: the merge it is, its version, author, licence and language; the date a copy is
+// issued is the date its build ran, so it stands below the mark with the hardware that built it
+const identification: Block = { kind: 'table', head: ['document', 'value'], rows: [['identifier', mergedItem!.address], ['version', pkg.version], ['author', LICENSE.author], ['licence', LICENSE.spdx], ['language', DOCUMENT_LANGUAGE]] }
+const blocks = [identification, ...lead, ...receipts.flatMap((r) => blocksOf(r))]
 /** The text as Markdown, the content its receipt addresses. */
 export const markdown = blocks.map(blockMarkdown).join('\n\n') + '\n'
 /** The text a verifier reads: everything above the rule of any Markdown copy, the title included. */
@@ -156,6 +167,15 @@ export const html = [...blocks.map(blockHtml), '<hr>', blockHtml(signed)].join('
 // memory holds, one for every byte count the register's bits make, and their qubits at the register's free qubits each, as the
 // metrics door carries the register. It changes from machine to machine, so it is its own receipt and the check of the one text
 // leaves it out.
+// the challenges and their solutions, computed on this device: each one receipt, its theorems' formulas the ones Lean wrote, its metrics
+// compared with the QPU only through the terms ISO/IEC 4879 defines. None is a theorem both doors verify, so they stand below the mark
+// with the hardware receipt of the device that computed them, outside the one text the verified rule reads.
+const solved = (await answered('google', { challenges: true })).challenges as Json[]
+const challengeBodies = solved.map((c) => ({ kind: String(c.id), technique: asked('google', { challenge: c.id }), body: { challenge: c.id, title: c.title, category: c.category, theorem: c.theorem, relatedTheorems: c.relatedTheorems, formula: c.formula, holds: c.holds, kernelAccepted: c.kernelAccepted, solution: { uuid: c.address, sha256: c.sha256 }, iso: isoTermsOf(c as { title?: unknown; category?: unknown; value?: unknown }) } as Json }))
+const challengeItems = await sealAll(challengeBodies.map((b) => receiptText(b.kind, b.body)))
+/** The challenges as receipts, each with its solution, its formulas and its ISO/IEC 4879 terms, sealed like every receipt. */
+export const challenges = challengeBodies.map((b, i) => receiptJsonLd({ ...b, ...place, address: challengeItems[i]!.address, sha256: challengeItems[i]!.sha256 }))
+const challengeBlocks = challenges.flatMap((r) => blocksOf(r))
 const register = (await answered('metrics', {})).quantumCapacity.register as { free: number; bits: number }
 const lean = readFileSync('lean-toolchain', 'utf8').trim()
 const memoryBytes = os.totalmem(), cpus = os.cpus(), used = process.memoryUsage(), spent = process.resourceUsage(), disk = statfsSync('.')
@@ -173,6 +193,7 @@ const facts = {
   versions: { ...process.versions }, lean,
   rssBytes: used.rss, heapTotalBytes: used.heapTotal, heapUsedBytes: used.heapUsed, externalBytes: used.external, arrayBuffersBytes: used.arrayBuffers,
   processUserMicros: spent.userCPUTime, processSystemMicros: spent.systemCPUTime, maxRssKb: spent.maxRSS, pageFaults: spent.majorPageFault + spent.minorPageFault, fsReads: spent.fsRead, fsWrites: spent.fsWrite, contextSwitches: spent.voluntaryContextSwitches + spent.involuntaryContextSwitches,
+  challenges: challengeItems.map((i) => i.address.slice(0, 8)), isoHardwareTerms: physicalEvidence().terms.map((t) => `${t.clause} ${t.name}`), quantumBehaviour: physicalEvidence().quantumBehaviour,
   buildMs: Math.round(performance.now() - started), at: new Date().toISOString(),
 }
 const [deviceItem] = await sealAll([receiptText('hardware', facts)])
@@ -180,10 +201,15 @@ const [deviceItem] = await sealAll([receiptText('hardware', facts)])
 export const hardware = { uuid: deviceItem!.address, sha256: deviceItem!.sha256, facts, jsonLd: deviceJsonLd({ kind: 'hardware', body: facts, address: deviceItem!.address, sha256: deviceItem!.sha256, site: SITE }) }
 /** Where the hardware begins in every copy: what is above it is recomputed, what is below it is the device receipt, verified by its seal. */
 export { HARDWARE_MARK }
+// what stands below the mark of every copy: when the copy was issued and by which hardware, the device receipt, and the challenges it computed
+const issuedOf = (device: Json): Block => {
+  const id = Object.fromEntries((device.identifier as { name: string; value: string }[]).map((p) => [p.name, p.value])), read = receiptBody(device.additionalProperty) as Json
+  return { kind: 'table', head: ['copy', 'value'], rows: [['issued', String(read.at)], ['hardware', String(id.uuid)]] }
+}
 /** The text as HTML with a device receipt below the mark: the Zenodo description and the release note. */
-export const htmlWithDevice = (device: Json) => `${html}${HARDWARE_MARK}<details><summary>hardware</summary>${blocksOf(device, 'additionalProperty').map(blockHtml).join('')}</details>`
+export const htmlWithDevice = (device: Json) => `${html}${HARDWARE_MARK}${blockHtml(issuedOf(device))}<details><summary>hardware</summary>${blocksOf(device, 'additionalProperty').map(blockHtml).join('')}</details>${challengeBlocks.map(blockHtml).join('')}`
 /** The page every Markdown copy is with a device receipt: the title, the text, the receipt under a rule, and the device below the mark. */
-export const pageWithDevice = (device: Json) => `${above}---\n\n${blockMarkdown(signed)}\n\n${HARDWARE_MARK}\n\n<details>\n<summary>hardware</summary>\n\n${blocksOf(device, 'additionalProperty').map(blockMarkdown).join('\n\n')}\n\n</details>\n`
+export const pageWithDevice = (device: Json) => `${above}---\n\n${blockMarkdown(signed)}\n\n${HARDWARE_MARK}\n\n${blockMarkdown(issuedOf(device))}\n\n<details>\n<summary>hardware</summary>\n\n${blocksOf(device, 'additionalProperty').map(blockMarkdown).join('\n\n')}\n\n</details>\n\n${challengeBlocks.map(blockMarkdown).join('\n\n')}\n`
 /** A device receipt verified by its own content: its UUID is the address, and its SHA-256 the digest, of the body its properties carry. */
 export const deviceVerifies = (device: Json) => {
   const id = Object.fromEntries((device.identifier as { name: string; value: string }[]).map((p) => [p.name, p.value])), text = receiptText(String(device.name), receiptBody(device.additionalProperty))
@@ -192,3 +218,5 @@ export const deviceVerifies = (device: Json) => {
 export const htmlWithHardware = htmlWithDevice(hardware.jsonLd)
 /** The page every Markdown copy is: the title, the text, the receipt under a rule, and the hardware receipt of the build. */
 export const page = pageWithDevice(hardware.jsonLd)
+/** A copy above its mark: what is recomputed, the device receipt below it being verified by its seal. */
+export const beforeHardware = (text: string) => text.split(HARDWARE_MARK)[0]!

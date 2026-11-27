@@ -5,13 +5,13 @@
 // written and nothing is ignored: every copy is rendered again with the committed device receipt and must equal the committed copy byte for
 // byte, and the device receipt must verify by its own seal, so the public reads a build every part of which is recomputed or verified.
 import { readFileSync, writeFileSync } from 'node:fs'
-import { PROSE } from '../src/quantum/processing/prose-index.ts'
-import { TOOLBOXES } from '../src/quantum/processing/mcp.ts'
-import { LICENSE, PRECEDENCE } from '../src/quantum/processing/unit/license.ts'
-import { RELEASE_REPOSITORY, UNIT_CONCEPT_DOI } from '../src/quantum/processing/release.ts'
+import { PROSE } from '../src/quantum/uuid/programs/5/9/e/4/9/1/a/4/index.ts'
+import { TOOLBOXES } from '../src/quantum/uuid/programs/3/8/5/9/0/2/0/f/index.ts'
+import { LICENSE, PRECEDENCE } from '../src/quantum/uuid/programs/a/f/3/d/e/a/5/f/index.ts'
+import { RELEASE_REPOSITORY, UNIT_CONCEPT_DOI } from '../src/quantum/uuid/programs/6/6/5/9/1/f/5/8/index.ts'
 import { HARDWARE_MARK, above, deviceVerifies, hardware, htmlWithDevice, pageWithDevice, pkg, receipt, receipts, title, verified } from './oneText.ts'
-import { RECEIPT_DEVICE } from '../src/quantum/processing/receipt-index.ts'
-import type { Json } from '../src/quantum/processing/receipts.ts'
+import { RECEIPT_DEVICE } from '../src/quantum/uuid/programs/2/b/c/0/d/1/3/d/index.ts'
+import type { Json } from '../src/quantum/uuid/programs/c/6/6/e/6/f/2/6/index.ts'
 
 // every copy with a device receipt below its mark: this build's when writing, the committed one when checking
 const copiesOf = (device: Json): readonly [string, string][] => {
@@ -52,7 +52,7 @@ const copiesOf = (device: Json): readonly [string, string][] => {
     '',
   ].join('\n')
   return [
-    ['src/quantum/processing/receipt-index.ts', runtime],
+    ['src/quantum/uuid/programs/2/b/c/0/d/1/3/d/index.ts', runtime],
     ['.zenodo.json', JSON.stringify(record, null, 2) + '\n'],
     ['README.md', pageWithDevice(device)],
     ['src/quantum/README.md', pageWithDevice(device)],
