@@ -1,6 +1,6 @@
 # Circuits
 
-The Cirq layer. Qubits, gates, moments, and the two simulators are [`cirq.ts`](processing/cirq.ts). The detailed specification is [`README.md`](README.md). The import is [`API.md`](API.md). The `circuit` tool is one of the thirteen `google` tools in [`TOOLBOXES.md`](TOOLBOXES.md).
+The Cirq layer. Qubits, gates, moments, and the two simulators are [`cirq.ts`](uuid/programs/9/3/0/a/3/9/2/7/index.ts). The detailed specification is [`README.md`](README.md). The import is [`API.md`](API.md). The `circuit` tool is one of the thirteen `google` tools in [`TOOLBOXES.md`](TOOLBOXES.md).
 
 A qubit is a line (`line:x`), a grid site (`grid:row,col`), or a named qubit (`named:name`). `qubitKey` is that text. `LineQubit.range(n)` is line 0 through n − 1. `GridQubit.square(n)` is an n by n grid.
 

@@ -1,6 +1,6 @@
 # Thousand-bit integer
 
-The integer \(2^{999}+1\) and the 1000-bit trapdoor. The check is `crypto1000Bit` in [`crypto/index.ts`](processing/crypto/index.ts). The factoring is `listFactors` in [`algorithms.ts`](processing/algorithms.ts). The detailed specification is [`README.md`](README.md). The standards are [`STANDARDS.md`](STANDARDS.md). The Clay relation that names the degree is [`CLAY.md`](CLAY.md).
+The integer \(2^{999}+1\) and the 1000-bit trapdoor. The check is `crypto1000Bit` in [`crypto/index.ts`](uuid/programs/e/1/9/1/6/4/9/c/index.ts). The factoring is `listFactors` in [`algorithms.ts`](uuid/programs/b/1/c/2/3/6/2/1/index.ts). The detailed specification is [`README.md`](README.md). The standards are [`STANDARDS.md`](STANDARDS.md). The Clay relation that names the degree is [`CLAY.md`](CLAY.md).
 
 \(2^{999}+1\) has 1000 bits: \(2^{999} \le 2^{999}+1 \le 2^{1000}\). Three divides it: \((2^{999}+1) \bmod 3 = 0\). The integer itself is not written by `speakThousand`. That call speaks the width 1000 in Glagolitic and reads it back as 1000.
 

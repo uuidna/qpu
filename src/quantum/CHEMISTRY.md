@@ -1,6 +1,6 @@
 # Chemistry
 
-The `chemistry-simulation` tool. The molecule is [`chemistry.ts`](processing/chemistry.ts). The detailed specification is [`README.md`](README.md). The `vqe` name on the `algorithm` tool sweeps ⟨Z⟩ on one qubit. That sweep is [`ALGORITHMS.md`](ALGORITHMS.md). This tool is H₂.
+The `chemistry-simulation` tool. The molecule is [`chemistry.ts`](uuid/programs/f/1/5/e/c/2/5/4/index.ts). The detailed specification is [`README.md`](README.md). The `vqe` name on the `algorithm` tool sweeps ⟨Z⟩ on one qubit. That sweep is [`ALGORITHMS.md`](ALGORITHMS.md). This tool is H₂.
 
 The basis is STO-3G hydrogen. Three primitive Gaussians, exponents 3.42525091, 0.62391373, and 0.1688554, coefficients 0.15432897, 0.53532814, and 0.44463454. The Bohr radius is 0.52917720859 Å. Integrals are closed forms for s-type Gaussians. Energies are hartree. The bond length is ångström. A bond length that is not positive is refused.
 
