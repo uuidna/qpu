@@ -16,38 +16,38 @@ Use the flow toolbox in phases. discover: call once for the request list, fetch 
 
 ## Tools
 
-| Tool | Does | Arguments |
-| --- | --- | --- |
-| `discover` | Discovery before use. | `search`, `lead`, `statement`, `mcpHosts`, `auth`, `answers`, `selftest` |
-| `wave` | The verification wave. | `results`, `contracts`, `leads`, `selftest` |
-| `readiness` | The unit judges the tree. | `verification`, `discovery`, `present`, `ledger`, `probeKey`, `border`, `unit`, `selftest` |
-| `imagine` | Imagination leads all leads: every lead (or the subset named) matched with the reflection on — hidden factors, angles, mirror queries, cluster, verification requests — every reflection that finds something a new open lead, every untried enum value of every schema a lead, every application family an adaptor to build. | `leads`, `all`, `next`, `game`, `open`, `statements`, `clay`, `catalog`, `llm`, `selftest` |
-| `e2e` | The end-to-end gate as a repetition code. | `standards`, `hosts`, `tools`, `answers`, `selftest` |
-| `shard` | A long single task split into short multitasks: the share of a list among n shards (index, count) is every item whose position mod n is the shard's index — the shares cover the list exactly once, proven by the kernel (textbook_shards_cover, textbook_shards_disjoint). | `list`, `index`, `count`, `agents`, `secret`, `usage`, `selftest` |
+| Handle | Tool | Does | Arguments |
+| --- | --- | --- | --- |
+| `c0df81c9` | `discover` | Discovery before use. | `search`, `lead`, `statement`, `mcpHosts`, `auth`, `answers`, `selftest` |
+| `8a35ede0` | `wave` | The verification wave. | `results`, `contracts`, `leads`, `selftest` |
+| `0b29264e` | `readiness` | The unit judges the tree. | `verification`, `discovery`, `present`, `ledger`, `probeKey`, `border`, `unit`, `selftest` |
+| `0f7e0767` | `imagine` | Imagination leads all leads: every lead (or the subset named) matched with the reflection on — hidden factors, angles, mirror queries, cluster, verification requests — every reflection that finds something a new open lead, every untried enum value of every schema a lead, every application family an adaptor to build. | `leads`, `all`, `next`, `game`, `open`, `statements`, `clay`, `catalog`, `llm`, `selftest` |
+| `17648564` | `e2e` | The end-to-end gate as a repetition code. | `standards`, `hosts`, `tools`, `answers`, `selftest` |
+| `923eebf1` | `shard` | A long single task split into short multitasks: the share of a list among n shards (index, count) is every item whose position mod n is the shard's index — the shares cover the list exactly once, proven by the kernel (textbook_shards_cover, textbook_shards_disjoint). | `list`, `index`, `count`, `agents`, `secret`, `usage`, `selftest` |
 
 ## Examples
 
-- `wave-requests`: Phase one of the wave: the requests two leads need, once per URL, each naming the leads it serves.
-- `readiness-plan`: Phase one of readiness without measurements: every lead judged (served by its tool, refuted by declaration, or in trial), the sources for the unit, an empty border plan because nothing was discovered, and the unit plan.
-- `shard-agents`: Seven items shared among three agents at once: agent 1 holds b and e, every item has exactly one agent, and no room is named since no secret was given (textbook_shards_disjoint).
-- `shard-agents-room`: The same three agents with a secret: their room is named by the SHA-256 of the secret and the group's address, for the send and receive tools.
-- `shard-usage`: An agent's own two calls, the second the first asked again: one is computed and debited, the other credited, since its address already answered it; nothing is kept (textbook_coins_coils_balanced).
-- `shard-share`: The share of seven items for shard 1 of 4: the items at positions 1 and 5; the shares of all four shards cover the seven exactly once, proven by the kernel.
-- `discover-lead-registry`: Leads first: a lead's distinctive words asked of the public MCP registry (registry.modelcontextprotocol.io) and the directories beside it (Smithery's open search, mcpservers.org's open sitemaps) before any guess about which MCP serves it; keyed directories named, never asked without their key; the client fetches, and the answers name the related servers and the request that extends each through qpu.
-- `discover-requests`: Phase one of discovery: the requests a client makes for every contract — the unit's tools/list, its catalogue door, its well-known file, and the verifiers' contract documents.
-- `discover-thousand-bit`: The seeded 1000-bit trapdoor leads discovery.
-- `e2e-requests`: Phase one of the end-to-end gate for three tools: every combination and every example of theirs as a tools/call request to one host, each carrying the hash of the tree's own answer; without tools, every tool's.
-- `imagine-catalog`: The kernel as a catalog: every theorem a product and every worked example from each of fourteen witnesses a variant (textbook_cuboctahedron_faces).
-- `imagine-catalog-product`: One product in full: the theorem that the value 2 ^ k needs k + 1 bits (textbook_clay_register_width), with its worked examples and each of them from fourteen witnesses, every variant a document whose id is the address of its own content.
-- `imagine-catalog-orders`: A variant ordered: its entry in the orders collection and its transaction as the ecommerce plugin holds them, at no price to the client since the public funds the work, and the receipt opens every variation of the product: each worked example as a call, from each witness (textbook_cuboctahedron_faces).
-- `imagine-two`: Two leads imagined: one served by the processor tool, one blocked (a 404), plus the leads every schema and application family open.
-- `imagine-statement`: A statement imagined as a string: it is addressed by the UUID of its text (the same sentence is always the same lead), matched with the reflection on, and every reflection that finds something opens a lead.
-- `imagine-open`: open: 1 imagines the first open lead of the tree, the slice the Payload job qpu-imagine and the admin cell take in one run, so the imagination of 1237 leads runs as 1237 short runs, each an entry.
-- `imagine-clay-session`: Clay searched online through a client session, token free: the session has already fetched and passes the microdata it collected; every lead is verified against that collection, and only the item that names clay-relation_15 verifies it.
-- `imagine-integer-llm`: An integer-only LLM: the whole integers already written, 72 and 432, are spoken, and the prose is dropped.
-- `imagine-nil-game`: The quantum computer is one game.
-- `imagine-clay-next`: Every next address of the Clay register.
-- `imagine-all`: Every lead imagined as a quantum UUID: thirty-two nibbles, the handle, the program, the tail and the two stamp nibbles, the seal holding on each.
+- `2ac7661d` `wave-requests`: Phase one of the wave: the requests two leads need, once per URL, each naming the leads it serves.
+- `e13f019c` `readiness-plan`: Phase one of readiness without measurements: every lead judged (served by its tool, refuted by declaration, or in trial), the sources for the unit, an empty border plan because nothing was discovered, and the unit plan.
+- `cbefba5b` `shard-agents`: Seven items shared among three agents at once: agent 1 holds b and e, every item has exactly one agent, and no room is named since no secret was given (textbook_shards_disjoint).
+- `79a84475` `shard-agents-room`: The same three agents with a secret: their room is named by the SHA-256 of the secret and the group's address, for the send and receive tools.
+- `75458d33` `shard-usage`: An agent's own two calls, the second the first asked again: one is computed and debited, the other credited, since its address already answered it; nothing is kept (textbook_coins_coils_balanced).
+- `eaddec3d` `shard-share`: The share of seven items for shard 1 of 4: the items at positions 1 and 5; the shares of all four shards cover the seven exactly once, proven by the kernel.
+- `8c917b54` `discover-lead-registry`: Leads first: a lead's distinctive words asked of the public MCP registry (registry.modelcontextprotocol.io) and the directories beside it (Smithery's open search, mcpservers.org's open sitemaps) before any guess about which MCP serves it; keyed directories named, never asked without their key; the client fetches, and the answers name the related servers and the request that extends each through qpu.
+- `a69d843a` `discover-requests`: Phase one of discovery: the requests a client makes for every contract — the unit's tools/list, its catalogue door, its well-known file, and the verifiers' contract documents.
+- `59336b5d` `discover-thousand-bit`: The seeded 1000-bit trapdoor leads discovery.
+- `5f001e71` `e2e-requests`: Phase one of the end-to-end gate for three tools: every combination and every example of theirs as a tools/call request to one host, each carrying the hash of the tree's own answer; without tools, every tool's.
+- `72f3f3ed` `imagine-catalog`: The kernel as a catalog: every theorem a product and every worked example from each of fourteen witnesses a variant (textbook_cuboctahedron_faces).
+- `d5c91ef9` `imagine-catalog-product`: One product in full: the theorem that the value 2 ^ k needs k + 1 bits (textbook_clay_register_width), with its worked examples and each of them from fourteen witnesses, every variant a document whose id is the address of its own content.
+- `73313ad1` `imagine-catalog-orders`: A variant ordered: its entry in the orders collection and its transaction as the ecommerce plugin holds them, at no price to the client since the public funds the work, and the receipt opens every variation of the product: each worked example as a call, from each witness (textbook_cuboctahedron_faces).
+- `e1eccc71` `imagine-two`: Two leads imagined: one served by the processor tool, one blocked (a 404), plus the leads every schema and application family open.
+- `8b1b090e` `imagine-statement`: A statement imagined as a string: it is addressed by the UUID of its text (the same sentence is always the same lead), matched with the reflection on, and every reflection that finds something opens a lead.
+- `1c9bb567` `imagine-open`: open: 1 imagines the first open lead of the tree, the slice the Payload job qpu-imagine and the admin cell take in one run, so the imagination of 1237 leads runs as 1237 short runs, each an entry.
+- `ad51e5c1` `imagine-clay-session`: Clay searched online through a client session, token free: the session has already fetched and passes the microdata it collected; every lead is verified against that collection, and only the item that names clay-relation_15 verifies it.
+- `ee883d38` `imagine-integer-llm`: An integer-only LLM: the whole integers already written, 72 and 432, are spoken, and the prose is dropped.
+- `c22c7407` `imagine-nil-game`: The quantum computer is one game.
+- `0c9a1d50` `imagine-clay-next`: Every next address of the Clay register.
+- `63f40535` `imagine-all`: Every lead imagined as a quantum UUID: thirty-two nibbles, the handle, the program, the tail and the two stamp nibbles, the seal holding on each.
 
 ## Directions it tests itself in
 

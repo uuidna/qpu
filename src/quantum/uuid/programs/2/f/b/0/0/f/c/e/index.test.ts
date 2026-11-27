@@ -49,3 +49,43 @@ test('one source writes the plugin of every harness, each naming the hosted MCP 
   for (const s of skills.catalogue) { assert.match(s.path, /^skills\/qpu[^/]*\/SKILL\.md$/); assert.equal(lstatSync(join(root, s.path.replace(/\/SKILL\.md$/, ''))).isDirectory(), true, s.path); for (const l of s.links) assert.equal(readlinkSync(join(root, l.path)), l.target, l.path) }
   for (const f of files.filter((f) => !f.path.endsWith('/SKILL.md'))) assert.equal(readFileSync(join(root, f.path), 'utf8'), f.text, f.path)
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: each part of a skill is sealed as the catalogue seals its documents, by its hexbit handle and a register of 122 qubits, and the skill is the RFC 6962 root over its parts, which a changed part changes. */
+test('each part of a skill is sealed as the catalogue seals its documents, by its hexbit handle and a register of 122 qubits, and the skill is the RFC 6962 root over its parts, which a changed part changes', async () => {
+  const { seal } = await import('../../../../../../../7/1/a/7/6/4/9/index.ts')
+  const { merkleTree } = await import('../../../../../../../../e/1/9/1/6/4/9/c/index.ts')
+  const { hexagonHandle } = await import('../../../../../../../../d/7/8/3/e/4/6/3/index.ts')
+  const skills = qpuSkills(TOOLBOXES).catalogue.filter((r) => r.toolbox !== null) as unknown as { name: string; qubits: number; root: string; parts: { kind: string; name: string; uuid: string; handle: string }[] }[]
+  assert.ok(skills.length > 0)
+  for (const s of skills) {
+    assert.equal(s.qubits, 122, s.name)
+    assert.ok(s.parts.length >= 5 && s.parts.every((p) => seal(p.uuid).valid && p.handle === p.uuid.slice(0, 8)), s.name)
+    // every handle is its hexagon's: the six rotations of its program over its tail give it back, and a changed tail gives another
+    assert.ok(s.parts.every((p) => hexagonHandle(p.uuid).holds), `${s.name}: handles are their hexagons'`)
+    const [first] = s.parts, tail = first!.uuid.slice(-12), changed = `${first!.uuid.slice(0, -12)}${tail.slice(0, 11)}${((parseInt(tail.at(-1)!, 16) + 1) % 16).toString(16)}`
+    assert.equal(hexagonHandle(changed).holds, false, `${s.name}: a changed tail breaks its handle`)
+    assert.equal(new Set(s.parts.map((p) => p.handle)).size, s.parts.length, `${s.name}: one handle per part`)
+    assert.equal(s.root, (merkleTree({ leaves: s.parts.map((p) => p.uuid.replace(/-/g, '')), hex: true }) as { root: string }).root, s.name)
+  }
+  // a toolbox whose one tool is described otherwise is another skill root
+  const [box] = TOOLBOXES, changed = { ...box!, tools: box!.tools.map((t, i) => (i === 0 ? { ...t, description: `${t.description} (changed)` } : t)) }
+  const before = (qpuSkills([box!]).catalogue.find((r) => r.toolbox === box!.name) as unknown as { root: string }).root
+  const after = (qpuSkills([changed]).catalogue.find((r) => r.toolbox === box!.name) as unknown as { root: string }).root
+  assert.notEqual(before, after)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the seed of the Lean algebra is the 64 hex digits of every theorem the kernel holds, a changed statement another, and a part's coin sealed in the post-quantum witness ring from it closes and refuses every change. */
+test('the seed of the Lean algebra is the 64 hex digits of every theorem the kernel holds, a changed statement another, and a part\'s coin sealed in the post-quantum witness ring from it closes and refuses every change', async () => {
+  const { THEOREMS } = await import('../../../../../../../../3/f/0/e/7/a/6/f/index.ts')
+  const { leanAlgebraSeed } = await import('../../../../../../../../3/1/0/2/7/5/b/a/index.ts')
+  const { skillRing } = await import('./index.ts')
+  const algebra = THEOREMS.map((t) => ({ key: t.key, statement: t.statement })), seed = leanAlgebraSeed(algebra)
+  assert.match(seed, /^[0-9a-f]{64}$/)
+  assert.equal(leanAlgebraSeed([...algebra].reverse()), seed, 'the order the theorems come in does not change the seed')
+  assert.notEqual(leanAlgebraSeed(algebra.map((t, i) => (i === 0 ? { ...t, statement: `${t.statement} ` } : t))), seed, 'a changed statement changes the seed')
+  const part = (qpuSkills(TOOLBOXES).catalogue.find((r) => r.toolbox !== null) as unknown as { parts: { uuid: string }[] }).parts[0]!
+  const ring = skillRing(part, algebra)
+  assert.equal(ring.seed, seed)
+  assert.equal(ring.faces, 14)
+  assert.ok(ring.holds && ring.closes && ring.refused)
+})

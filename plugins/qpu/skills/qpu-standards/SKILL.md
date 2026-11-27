@@ -16,18 +16,18 @@ jsonld needs no fetch. codes: the client fetches the three CLDR documents the pl
 
 ## Tools
 
-| Tool | Does | Arguments |
-| --- | --- | --- |
-| `jsonld` | schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, title, description, uuid?) or an offer of the catalogue (product, variant, currency). | `kind`, `tool`, `id`, `description`, `url`, `title`, `uuid`, `locale`, `author`, `publisher`, `isPartOf`, `license`, `product`, `variant`, `currency`, `item`, `items`, `seller`, `name`, `selftest` |
-| `codes` | The tree's ISO codes validated against the CLDR lists a client fetched (languages ISO 639, currencies ISO 4217, territories ISO 3166-1): every locale of the language toolbox, every currency of the catalogue, the tenants' countries. | `cldr`, `locales`, `currencies`, `territories`, `selftest` |
-| `validate` | Validate against all standards via Payload's standard implementation, in the cheapest possible slices: every standard (the vocabularies, the ISO code lists, the references) with the Payload mechanism that validates it, split into content-addressed slices so validation, reindexing and cleanup run per slice (a page, a job) — the cheapest unit, an unchanged slice skipped by its address (the 304 involution), never the whole at once. | `bound`, `online`, `selftest`, `classify`, `files`, `physical` |
+| Handle | Tool | Does | Arguments |
+| --- | --- | --- | --- |
+| `b9e13cdb` | `jsonld` | schema.org JSON-LD, pure: for a block (tool, id, description), a page (url, title, description, uuid?) or an offer of the catalogue (product, variant, currency). | `kind`, `tool`, `id`, `description`, `url`, `title`, `uuid`, `locale`, `author`, `publisher`, `isPartOf`, `license`, `product`, `variant`, `currency`, `item`, `items`, `seller`, `name`, `selftest` |
+| `daba13f2` | `codes` | The tree's ISO codes validated against the CLDR lists a client fetched (languages ISO 639, currencies ISO 4217, territories ISO 3166-1): every locale of the language toolbox, every currency of the catalogue, the tenants' countries. | `cldr`, `locales`, `currencies`, `territories`, `selftest` |
+| `809c5b2a` | `validate` | Validate against all standards via Payload's standard implementation, in the cheapest possible slices: every standard (the vocabularies, the ISO code lists, the references) with the Payload mechanism that validates it, split into content-addressed slices so validation, reindexing and cleanup run per slice (a page, a job) — the cheapest unit, an unchanged slice skipped by its address (the 304 involution), never the whole at once. | `bound`, `online`, `selftest`, `classify`, `files`, `physical` |
 
 ## Examples
 
-- `standards-validate`: validateStandards validates against all standards via Payload's standard implementation, in the cheapest possible slices: every standard (a codes list by a select/validate against CLDR, a vocabulary by schema.org JSON-LD, a reference by the generated config and its field validations) covered, split into content-addressed slices of six so validation, reindexing (referenceIndex) and cleanup (purify, the RAID GC) run per slice as a job — the cheapest unit, an unchanged slice skipped by its address; the covered and the uncovered make the standards.
-- `standards-iso-online`: Every ISO dimension is asked of the ISO Open Data page.
-- `standards-iso-page`: The ISO Open Data page is the way in.
-- `standards-iso-joined`: One row of the open dataset verifies the dimension its reference names.
+- `18d0dc9e` `standards-validate`: validateStandards validates against all standards via Payload's standard implementation, in the cheapest possible slices: every standard (a codes list by a select/validate against CLDR, a vocabulary by schema.org JSON-LD, a reference by the generated config and its field validations) covered, split into content-addressed slices of six so validation, reindexing (referenceIndex) and cleanup (purify, the RAID GC) run per slice as a job — the cheapest unit, an unchanged slice skipped by its address; the covered and the uncovered make the standards.
+- `beb523d4` `standards-iso-online`: Every ISO dimension is asked of the ISO Open Data page.
+- `aec4706c` `standards-iso-page`: The ISO Open Data page is the way in.
+- `7cdfdb3a` `standards-iso-joined`: One row of the open dataset verifies the dimension its reference names.
 
 ## Directions it tests itself in
 

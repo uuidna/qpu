@@ -5,6 +5,7 @@
 // credited to the author at zero price — a count of free work, never money. Pure.
 import { PROSE, proseFill } from '../../../../../../../../5/9/e/4/9/1/a/4/index.ts'
 import { channel, uuidFromParts, seal } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { hex, sha256, utf8 } from '../../../../../../../../9/e/8/6/7/0/6/8/index.ts'
 
 type Witness = { face: 'square' | 'triangle'; index: number; uuid: string; how: string }
 const rotate = (p: readonly number[], k: number) => p.map((_, i) => p[(i + k) % p.length]!)
@@ -57,6 +58,17 @@ export const witnessMove = (k: number) => {
   // a move pays a coin per step down and collects one per step up, computed from the move, net their difference (textbook_double_entry)
   const pay = (span - down) / 2, collect = (up - span) / 2
   return { k, span, down, up, reaches, steps, reflectionPair, centreFixed, pay, collect, net: collect - pay, clocks, calendars, witnesses: span, theorems: ['textbook_witness_clock_move', 'textbook_reflection_sums_to_ten'], theorem: 'textbook_witness_clock_move', says: proseFill(PROSE.quantumProcessingWitnesses_says5, k, span, k - 1, down, k + 1, up, pay, collect, collect - pay, clocks.join(', ') || 'none', calendars.join(', ') || 'none', down, span, up, steps.map((s) => s.seed).join(', '), centreFixed && reflectionPair ? proseFill(PROSE.quantumProcessingWitnesses_s6, steps[0]!.seed, steps[2]!.seed, steps[1]!.seed) : '') }
+}
+/** The hexagon of a UUID: its six square witnesses, the program rotated by one to six places, run over its tail. The handle is the first eight hex
+ *  digits of their SHA-256, so it is the program and tail's own: a UUID whose handle is not its hexagon's has been changed, and two parts share a handle
+ *  only where their programs and tails do. The hexagon divides as a cell, 6 into 12 into 24, the spans witnessMove reaches at k = 3, 6 and 12, and so
+ *  lands on the two clocks it names, where the handle reads its hour (textbook_witness_clock_move). Pure. */
+export const hexagonHandle = (uuid: string) => {
+  const p = uuidParts(uuid), rotations = [1, 2, 3, 4, 5, 6].map((k) => rotate(p.program, k).map((n) => n.toString(16)).join(''))
+  const handle = hex(sha256(utf8(`${rotations.join('')}${p.tail}`))).slice(0, 8)
+  const divisions = [3, 6, 12].map((k) => witnessMove(k)), hours = parseInt(handle, 16)
+  const clock = { spans: divisions.map((d) => d.span), clocks: [...new Set(divisions.flatMap((d) => d.clocks))], hour12: hours % 12, hour24: hours % 24 }
+  return { uuid: uuidFromParts(handle, p.program, p.tail), handle, program: p.program, tail: p.tail, rotations, clock, holds: handle === p.handle }
 }
 /** Two sets merged: the witnesses both share (same address) are work that exists once; each is a coin credited to the author at zero price. Both UUIDs
  *  are validated first — a coin is a UUID, so the witnesses (and the coins they mint) are only computed from sealed addresses; a side that is not a

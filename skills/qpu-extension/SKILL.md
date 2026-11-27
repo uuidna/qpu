@@ -16,31 +16,31 @@ Inward: call extend with a host (direction in); fetch the one request it emits, 
 
 ## Tools
 
-| Tool | Does | Arguments |
-| --- | --- | --- |
-| `extend` | QPU as the natural extension of every MCP and every MCP of QPU. | `install`, `coverage`, `connector`, `gemini`, `claude`, `adapter`, `cursor`, `compare`, `statement`, `direction`, `host`, `tools`, `call`, `answer`, `selftest` |
+| Handle | Tool | Does | Arguments |
+| --- | --- | --- | --- |
+| `bf6071f7` | `extend` | QPU as the natural extension of every MCP and every MCP of QPU. | `install`, `coverage`, `connector`, `gemini`, `claude`, `adapter`, `cursor`, `compare`, `statement`, `direction`, `host`, `tools`, `call`, `answer`, `selftest` |
 
 ## Examples
 
-- `extend-out-balanced`: The connector balanced to a request in real time, over MCP alone: tools/list asked with the statement answers the cluster the match tool decides (attest among them) with brief descriptions; the registration URL carries the same scope, the Claude toolset enables those tools alone, and the context is counted — a fraction of the whole list, so compacting is never needed; the saved and the kept make the whole.
-- `extend-connector`: Every connector collides into the one Payload MCP plugin.
-- `extend-out`: This catalogue as the registration any MCP client mounts: every tool as tools/list serves it, grouped by toolbox, at this tree's own endpoint; and as the Claude API mounts it, through the Messages API's MCP connector (mcp_servers with the mcp_toolset, beta mcp-client-2025-11-20), the tenant's key in the request.
-- `extend-in-request`: Without the host's tools: the one tools/list request the client makes of Cloudflare's documentation server (no token needed there), and the integration matrix: every MCP this tree knows, its token name and what the tree does with it once open (GitHub → the repository watch through its doors; Cloudflare's eight → the verifier, the mirrors, the metrics, the wave, the audit, the prose, the tenants, the textbook; the Claude API → the operator agent, and outward the Messages API registration that mounts this catalogue).
-- `extend-in-docs`: Cloudflare's documentation server read into this catalogue: one door, docs.mcp.cloudflare.com:search_cloudflare_documentation, taking a query.
-- `extend-call-served`: A foreign door served and its event-stream answer read back into the text the host returned.
-- `extend-adapter-next`: Next rotates every open quantum lead one place, and the idea that lead names.
-- `extend-quantum-adapter`: Quantum demand from Gemini, Claude, Cursor and cirq-google is an adapter on this register: the call does not leave, so the work does not wait on the model, the register has no ceiling, and the UUID of the formula is the ISO receipt of every standard.
-- `extend-quantum-native`: A Gemini function call that asks for a Hadamard is computed on this register, including when the caller marks it for another model: the reply is Gemini's functionResponse, the extra schema keyword is dropped into the description, both amplitudes stay in range, and the receipt UUID stores every standard.
-- `extend-gemini-compat`: Every quantum tool schema is narrowed to the Gemini Schema on this register: additionalProperties and the other keywords Gemini does not publish are dropped, their meaning stays in the description, circuit and processor remain callable, and the UUID receipt certifies the list.
-- `extend-claude-compat`: Every quantum tool is a strict Claude tool on this register: the JSON Schema subset strict tool use publishes is kept, a constraint it refuses is dropped into the description, every object sets additionalProperties false, and the UUID receipt certifies the list.
-- `extend-claude-native`: A Claude tool call that asks for a Hadamard is computed on this register.
-- `extend-cursor-compat`: Every quantum tool is an MCP tool Cursor accepts, certified on this register: the root schema is type object, every property schema is an object, required is a list of names, and each name matches ^[a-zA-Z0-9_-]{1,128}$.
-- `extend-cursor-native`: A Cursor tool call that asks for a Hadamard is computed on this register.
-- `extend-envelope-gemini`: A Gemini functionCall envelope is computed on this register.
-- `extend-envelope-claude`: A Claude message with two tool_use blocks is computed on this register.
-- `extend-envelope-cursor`: A Cursor tools/call JSON-RPC envelope is computed on this register.
-- `extend-response-gemini`: A Gemini generateContent response is computed on this register.
-- `extend-response-tools`: A tool_calls list from any other model is computed on this register.
+- `d8832730` `extend-out-balanced`: The connector balanced to a request in real time, over MCP alone: tools/list asked with the statement answers the cluster the match tool decides (attest among them) with brief descriptions; the registration URL carries the same scope, the Claude toolset enables those tools alone, and the context is counted — a fraction of the whole list, so compacting is never needed; the saved and the kept make the whole.
+- `597f0c20` `extend-connector`: Every connector collides into the one Payload MCP plugin.
+- `fbc36e41` `extend-out`: This catalogue as the registration any MCP client mounts: every tool as tools/list serves it, grouped by toolbox, at this tree's own endpoint; and as the Claude API mounts it, through the Messages API's MCP connector (mcp_servers with the mcp_toolset, beta mcp-client-2025-11-20), the tenant's key in the request.
+- `82b58b00` `extend-in-request`: Without the host's tools: the one tools/list request the client makes of Cloudflare's documentation server (no token needed there), and the integration matrix: every MCP this tree knows, its token name and what the tree does with it once open (GitHub → the repository watch through its doors; Cloudflare's eight → the verifier, the mirrors, the metrics, the wave, the audit, the prose, the tenants, the textbook; the Claude API → the operator agent, and outward the Messages API registration that mounts this catalogue).
+- `7ee5b773` `extend-in-docs`: Cloudflare's documentation server read into this catalogue: one door, docs.mcp.cloudflare.com:search_cloudflare_documentation, taking a query.
+- `d95faaef` `extend-call-served`: A foreign door served and its event-stream answer read back into the text the host returned.
+- `439f1e02` `extend-adapter-next`: Next rotates every open quantum lead one place, and the idea that lead names.
+- `ebf374c1` `extend-quantum-adapter`: Quantum demand from Gemini, Claude, Cursor and cirq-google is an adapter on this register: the call does not leave, so the work does not wait on the model, the register has no ceiling, and the UUID of the formula is the ISO receipt of every standard.
+- `282c8e0d` `extend-quantum-native`: A Gemini function call that asks for a Hadamard is computed on this register, including when the caller marks it for another model: the reply is Gemini's functionResponse, the extra schema keyword is dropped into the description, both amplitudes stay in range, and the receipt UUID stores every standard.
+- `a743f6bf` `extend-gemini-compat`: Every quantum tool schema is narrowed to the Gemini Schema on this register: additionalProperties and the other keywords Gemini does not publish are dropped, their meaning stays in the description, circuit and processor remain callable, and the UUID receipt certifies the list.
+- `d1ec41bf` `extend-claude-compat`: Every quantum tool is a strict Claude tool on this register: the JSON Schema subset strict tool use publishes is kept, a constraint it refuses is dropped into the description, every object sets additionalProperties false, and the UUID receipt certifies the list.
+- `074e8c25` `extend-claude-native`: A Claude tool call that asks for a Hadamard is computed on this register.
+- `cac3176d` `extend-cursor-compat`: Every quantum tool is an MCP tool Cursor accepts, certified on this register: the root schema is type object, every property schema is an object, required is a list of names, and each name matches ^[a-zA-Z0-9_-]{1,128}$.
+- `708a2f02` `extend-cursor-native`: A Cursor tool call that asks for a Hadamard is computed on this register.
+- `954bbe51` `extend-envelope-gemini`: A Gemini functionCall envelope is computed on this register.
+- `7e91c563` `extend-envelope-claude`: A Claude message with two tool_use blocks is computed on this register.
+- `8b1d7d21` `extend-envelope-cursor`: A Cursor tools/call JSON-RPC envelope is computed on this register.
+- `6635b7cb` `extend-response-gemini`: A Gemini generateContent response is computed on this register.
+- `2c6ddc9c` `extend-response-tools`: A tool_calls list from any other model is computed on this register.
 
 ## Directions it tests itself in
 

@@ -16,15 +16,15 @@ The client gathers with git: the remote url, HEAD, the branch, package.json's ve
 
 ## Tools
 
-| Tool | Does | Arguments |
-| --- | --- | --- |
-| `repository` | Workspaces, branches, tags, releases, the registry and the workflows watched and verified online, pure. | `release`, `deployed`, `stable`, `status`, `plasma`, `penalties`, `steps`, `docs`, `capacity`, `e2e`, `penalty`, `via`, `local`, `contracts`, `answers`, `machine`, `workflow`, `offline`, `facts`, `selftest` |
+| Handle | Tool | Does | Arguments |
+| --- | --- | --- | --- |
+| `4f02247d` | `repository` | Workspaces, branches, tags, releases, the registry and the workflows watched and verified online, pure. | `release`, `deployed`, `stable`, `status`, `plasma`, `penalties`, `steps`, `docs`, `capacity`, `e2e`, `penalty`, `via`, `local`, `contracts`, `answers`, `machine`, `workflow`, `offline`, `facts`, `selftest` |
 
 ## Examples
 
-- `repository-stable`: A tree of one source that reads the clock: the capacity is utilised in full, the clock is one entropy lead, so the tree is not stable and its release is refused (textbook_capacity_conserved).
-- `repository-deployed-plan`: The gate after a deploy, planned: the twelve requests to make of the deployed server, Lean both ways, both selftest doors and the audit in eight shares that cover it once (textbook_shards_cover).
-- `repository-watch`: Fixture facts against fixture answers: two local branches unpushed, one remote branch not here, a local tag not pushed, a remote tag not fetched, a moved tag, a release whose tag is gone, a version with a tag and no release, a Zenodo version without a release, a second workspace, the registry behind the tree, a red workflow at the remote, two workflows only at the remote: fourteen leads.
+- `24ad553c` `repository-stable`: A tree of one source that reads the clock: the capacity is utilised in full, the clock is one entropy lead, so the tree is not stable and its release is refused (textbook_capacity_conserved).
+- `ff47b402` `repository-deployed-plan`: The gate after a deploy, planned: the twelve requests to make of the deployed server, Lean both ways, both selftest doors and the audit in eight shares that cover it once (textbook_shards_cover).
+- `0c2cf86c` `repository-watch`: Fixture facts against fixture answers: two local branches unpushed, one remote branch not here, a local tag not pushed, a remote tag not fetched, a moved tag, a release whose tag is gone, a version with a tag and no release, a Zenodo version without a release, a second workspace, the registry behind the tree, a red workflow at the remote, two workflows only at the remote: fourteen leads.
 
 ## Directions it tests itself in
 
