@@ -509,3 +509,31 @@ test('a fermion operator as OpenFermion prints it maps on the chemistry door to 
     assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
   }
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a circuit in qsim's own text format runs on the circuit door to the amplitudes qsim's own qsim_amplitudes computes, every rotation's global phase carried, and a gate the door does not compute is refused. */
+test('a circuit in qsim\'s own text format runs on the circuit door to the amplitudes qsim\'s own qsim_amplitudes computes, every rotation\'s global phase carried, and a gate the door does not compute is refused', () => {
+  // the fixture is qsim's own output (qsim.json): each circuit as qsim reads it and the amplitude of every bitstring, character j qubit j
+  const fixture = JSON.parse(readFileSync(new URL('./qsim.json', import.meta.url), 'utf8')) as { qsim: string; circuits: Record<string, { text: string; amplitudes: { bits: string; re: number; im: number }[] }> }
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    if (name.endsWith('-refused')) continue
+    const s = (call('circuit', { qsim: c.text }) as { result: { structuredContent: { amplitudes: { re: number; im: number }[] } } }).result.structuredContent
+    assert.equal(s.amplitudes.length, c.amplitudes.length, name)
+    // the door orders amplitudes as Cirq does, qubit 0 the most significant bit, so a bitstring read left to right is its index; qsim
+    // computes in single precision
+    for (const a of c.amplitudes) {
+      const z = s.amplitudes[parseInt(a.bits, 2)]!
+      assert.ok(Math.abs(z.re - a.re) < 1e-6 && Math.abs(z.im - a.im) < 1e-6, `${name} ${a.bits}: ${z.re} ${z.im} against ${a.re} ${a.im}`)
+    }
+  }
+  // iSWAP is not one of the door's gates: the call is refused by qsim's own name, never approximated
+  const refused = call('circuit', { qsim: fixture.circuits['iswap-refused']!.text })
+  assert.ok((refused as { result?: { isError?: boolean } }).result?.isError || 'error' in (refused as object), JSON.stringify(refused).slice(0, 200))
+  assert.match(JSON.stringify(refused), /gate is is not/)
+  // the reading rests on theorems the kernel holds, each on Lean's standard axioms alone
+  const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
+  for (const key of ['QsimBridge.rotation_phase', 'CirqBridge.shift_phase', 'CirqBridge.involution_pow_zero', 'CirqBridge.global_phases_add']) {
+    const t = kernel.get(key)
+    assert.ok(t, key)
+    assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
+  }
+})
