@@ -480,4 +480,6 @@ def quantumProcessingMcp_cirqJson : String := "the circuit exactly as cirq.to_js
 
 def quantumProcessingMcp_stimText : String := "the circuit exactly as Stim writes it, one instruction a line over integer targets, each target a line qubit and M the measurement, read as the operations above; an instruction this door does not compute, a noise channel or an annotation, is refused by its name (CircuitBasedQuantumComputing.stabilizer_hadamard)"
 
+def quantumProcessingMcp_fermionText : String := "the fermion operator exactly as OpenFermion prints it, a coefficient and its ladders in brackets a term, the terms joined by +, mapped as jordan_wigner maps it, every term transformed and the Pauli strings summed (FermionBridge.ladder_anticommute)"
+
 end Prose
