@@ -2,6 +2,9 @@
 import { PROSE } from '../../../../../../../../5/9/e/4/9/1/a/4/index.ts'
 import { channel, neighbours, reflection, uuid, uuidQubits, LEAN_REGISTER } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 import { market } from '../../../../../../../../4/5/8/2/8/f/3/f/index.ts'
+import { castRays } from '../../../../../../../../7/2/1/a/a/e/7/d/index.ts'
+import { utilisationOf } from '../../../../../../../../0/8/7/0/6/d/2/8/index.ts'
+import { hex, sha256 } from '../../../../../../../../9/e/8/6/7/0/6/8/index.ts'
 
 export const REGISTER = (() => { const n = uuidQubits(4).effective; if (n !== LEAN_REGISTER) throw new Error(`register ${n}≠${LEAN_REGISTER}`); return n })()
 
@@ -17,6 +20,15 @@ export const pack = (cases: readonly { key: string; module: string; uuid: string
   }
   for (const c of coins) c.uuid = uuid(`${c.module}\n${c.index}\n${c.cases.map((l) => l.uuid).join(',')}`)
   return coins
+}
+
+/** A build's outputs as Clay cases: every file sealed by the UUID of its path and SHA-256, the rays cast over their UUIDs so no two collide (castRays),
+ *  and the files packed as coins of the register (pack), a module for each folder, each case taking the qubits its content fills (utilisationOf). */
+export const fusionReceipt = (files: readonly { path: string; text: string | Uint8Array }[]) => {
+  const sealed = files.map((f) => { const bytes = typeof f.text === 'string' ? new TextEncoder().encode(f.text) : f.text, digest = hex(sha256(bytes)), id = uuid(`${f.path}\n${digest}`); return { path: f.path, uuid: id, handle: channel(id).handle, sha256: digest, bytes: bytes.length, qubits: utilisationOf(bytes).used } })
+  const rays = castRays(sealed.map((f) => f.uuid))
+  const coins = pack(sealed.map((f) => ({ key: f.path, module: f.path.includes('/') ? f.path.split('/')[0]! : 'root', uuid: f.uuid, qubits: f.qubits })))
+  return { phase: 'fusion' as const, files: sealed, rays: { fits: rays.fits, collisions: rays.collisions, seams: rays.seams.length }, coins: coins.map((c) => ({ module: c.module, index: c.index, uuid: c.uuid, used: c.used, cases: c.cases.map((x) => x.key) })), root: uuid(sealed.map((f) => f.uuid).join(',')), holds: rays.fits && sealed.length > 0, theorems: ['textbook_coin_lean_sot', 'textbook_capacity_conserved'] as const }
 }
 
 export const cross = (coin: string) => {
