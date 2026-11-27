@@ -113,6 +113,30 @@ type CirqJson = { cirq_type?: string; [k: string]: unknown }
 // simulator's power of that gate up to the global phase of its shift (CirqBridge.cirq_eigen_gate)
 const CIRQ_GATES: Readonly<Record<string, string>> = { _PauliX: 'X', _PauliY: 'Y', _PauliZ: 'Z', XPowGate: 'X', YPowGate: 'Y', ZPowGate: 'Z', HPowGate: 'H', CZPowGate: 'CZ', CXPowGate: 'CNOT', SwapPowGate: 'SWAP', CCXPowGate: 'TOFFOLI', PhasedXZGate: 'PhasedXZ' }
 const CIRQ_ROTATIONS: Readonly<Record<string, string>> = { Rx: 'X', Ry: 'Y', Rz: 'Z' }
+// Stim's own circuit text read as this door's operations: each instruction by its name over integer targets, each target a line qubit, and M
+// as the measurement under the key 'm'. Stim's gates act on Pauli strings by the tableau rules the kernel holds
+// (CircuitBasedQuantumComputing.stabilizer_hadamard, CircuitBasedQuantumComputing.stabilizer_phase, CircuitBasedQuantumComputing.stabilizer_cnot);
+// S_DAG and the square roots are S, X, Y and Z to the powers -1 and ±1/2 (CirqBridge.s_power, CirqBridge.cirq_eigen_gate). An instruction this
+// door does not compute, a noise channel or an annotation among them, keeps its name and is refused by it.
+const STIM_GATES: Readonly<Record<string, { gate: string; exponent?: number }>> = {
+  H: { gate: 'H' }, X: { gate: 'X' }, Y: { gate: 'Y' }, Z: { gate: 'Z' }, S: { gate: 'S' }, S_DAG: { gate: 'S', exponent: -1 },
+  SQRT_X: { gate: 'X', exponent: 0.5 }, SQRT_X_DAG: { gate: 'X', exponent: -0.5 }, SQRT_Y: { gate: 'Y', exponent: 0.5 }, SQRT_Y_DAG: { gate: 'Y', exponent: -0.5 },
+  SQRT_Z: { gate: 'S' }, SQRT_Z_DAG: { gate: 'S', exponent: -1 }, CX: { gate: 'CNOT' }, CNOT: { gate: 'CNOT' }, ZCX: { gate: 'CNOT' }, CZ: { gate: 'CZ' }, ZCZ: { gate: 'CZ' },
+  SWAP: { gate: 'SWAP' }, CCX: { gate: 'TOFFOLI' },
+}
+const fromStim = (text: string): { operations: OperationJson[]; measure?: MeasureJson } => {
+  const operations: OperationJson[] = [], measured: QubitJson[] = []
+  for (const raw of text.split('\n')) {
+    const [name = '', ...targets] = raw.replace(/#.*/, '').trim().split(/\s+/)
+    if (!name) continue
+    const qubits = targets.map((t): QubitJson => ({ kind: 'line', x: Number(t) }))
+    if (name === 'M') { measured.push(...qubits); continue }
+    const known = STIM_GATES[name], arity = known?.gate === 'TOFFOLI' ? 3 : ['CNOT', 'CZ', 'SWAP'].includes(known?.gate ?? '') ? 2 : 1
+    // a gate over many targets is that gate applied to each target, or to each pair of targets, in order
+    for (let i = 0; i < Math.max(qubits.length, 1); i += arity) operations.push({ gate: known?.gate ?? name, qubits: qubits.slice(i, i + arity), ...(known?.exponent !== undefined ? { exponent: known.exponent } : {}) })
+  }
+  return { operations, ...(measured.length ? { measure: { key: 'm', qubits: measured } } : {}) }
+}
 const fromCirq = (given: unknown): { operations: OperationJson[]; measure?: MeasureJson; phase: number } => {
   const c = (typeof given === 'string' ? JSON.parse(given) : given) as CirqJson
   const qubit = (q: CirqJson): QubitJson => q.cirq_type === 'GridQubit' ? { kind: 'grid', row: Number(q.row), col: Number(q.col) } : q.cirq_type === 'NamedQubit' ? { kind: 'named', name: String(q.name) } : { kind: 'line', x: Number(q.x) }
@@ -1174,6 +1198,7 @@ const OWN: Tool[] = [
       properties: {
         operations: { type: 'array', items: OPERATION_SCHEMA },
         cirq: { type: ['object', 'string'], description: PROSE.quantumProcessingMcp_cirqJson },
+        stim: { type: 'string', description: PROSE.quantumProcessingMcp_stimText },
         insert: INSERT_SCHEMA,
         device: { enum: Object.keys(DEVICES), description: PROSE.quantumProcessingMcp_description100 },
         measure: MEASURE_SCHEMA,
@@ -1186,10 +1211,10 @@ const OWN: Tool[] = [
     },
     run: (args) => {
       if (isObj(args.engine)) return engineCall(args.engine as Record<string, unknown>)
-      const cirq = args.cirq !== undefined ? fromCirq(args.cirq) : null
-      if (!cirq && !Array.isArray(args.operations)) return unlimited() as never
-      const operations = cirq?.operations ?? (args.operations as OperationJson[])
-      const measurement = (args.measure ?? cirq?.measure) as MeasureJson | undefined
+      const cirq = args.cirq !== undefined ? fromCirq(args.cirq) : null, stim = typeof args.stim === 'string' ? fromStim(args.stim) : null
+      if (!cirq && !stim && !Array.isArray(args.operations)) return unlimited() as never
+      const operations = cirq?.operations ?? stim?.operations ?? (args.operations as OperationJson[])
+      const measurement = (args.measure ?? cirq?.measure ?? stim?.measure) as MeasureJson | undefined
       const insert = (args.insert ?? 'EARLIEST') as InsertStrategy
       const prepared = circuit(operations, insert, measurement)
       if (typeof args.device === 'string') {
