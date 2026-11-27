@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1634 products, 2 under a declared claim context and 1632 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1636 products, 2 under a declared claim context and 1634 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -14053,44 +14053,125 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ## Qpu.Processing.Verify.MlKem
 
-### `Qpu.Verify.MlKem.game_hop`
+### `Qpu.Verify.MlKem.ind_cpa_of_mlwe`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-∀ (G₀ G₁ G₂ : PMF Bool),
-  |(G₀ true).toReal - (G₂ true).toReal| ≤ |(G₀ true).toReal - (G₁ true).toReal| + |(G₁ true).toReal - (G₂ true).toReal|
+∀ {M S V U W Msg σ : Type} [inst : AddCommGroup V] [inst_1 : Fintype V] [inst_2 : Nonempty V] [inst_3 : AddCommGroup U]
+  [inst_4 : Fintype U] [inst_5 : Nonempty U] [inst_6 : AddCommGroup W] [inst_7 : Fintype W] [inst_8 : Nonempty W]
+  (mul : M → S → V) (mat : PMF M) (secret : PMF S) (noise : PMF V) (dotT : M → V → S → U × W) (coins : PMF S)
+  (noise₁₂ : PMF (U × W)) (encode : Msg → W) (choose : M × V → PMF (Msg × Msg × σ)) (guess : σ → U × W → PMF Bool)
+  (δ₁ δ₂ : ℝ),
+  have keyReal := mat.bind fun A => secret.bind fun s => noise.bind fun e => PMF.pure (A, mul A s + e);
+  have keyRand := mat.bind fun A => (PMF.uniformOfFintype V).bind fun t => PMF.pure (A, t);
+  have cpa := fun pk =>
+    coins.bind fun r =>
+      noise₁₂.bind fun e =>
+        (PMF.uniformOfFintype Bool).bind fun b =>
+          (choose pk).bind fun x =>
+            (guess x.2.2
+                  ((dotT pk.1 pk.2 r + e).1, (dotT pk.1 pk.2 r + e).2 + encode (if b = true then x.2.1 else x.1))).bind
+              fun b' => PMF.pure (b' == b);
+  have encReal := keyRand.bind fun pk => coins.bind fun r => noise₁₂.bind fun e => PMF.pure (pk, dotT pk.1 pk.2 r + e);
+  have encRand := keyRand.bind fun pk => (PMF.uniformOfFintype (U × W)).bind fun c => PMF.pure (pk, c);
+  (∀ (D : M × V → PMF Bool), |((keyReal.bind D) true).toReal - ((keyRand.bind D) true).toReal| ≤ δ₁) →
+    (∀ (D : (M × V) × U × W → PMF Bool), |((encReal.bind D) true).toReal - ((encRand.bind D) true).toReal| ≤ δ₂) →
+      |((keyReal.bind cpa) true).toReal - 1 / 2| ≤ δ₁ + δ₂
 ```
 
-### `Qpu.Verify.MlKem.ind_cca2_of_mlwe`
+### `Qpu.Verify.MlKem.ind_cpa_reduces_to_mlwe`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-∀ {Adv : Type u_1} (cca hyb : Adv → PMF Bool) (eps : Adv → ℝ) (δ : ℝ)
-  (real rand : PMF ((Fin 3 → Fin 3 → Fin 256 → ZMod 3329) × (Fin 3 → Fin 256 → ZMod 3329)))
-  (B : Adv → (Fin 3 → Fin 3 → Fin 256 → ZMod 3329) × (Fin 3 → Fin 256 → ZMod 3329) → PMF Bool),
-  (∀ (A : Adv), |((cca A) true).toReal - ((hyb A) true).toReal| ≤ eps A) →
-    (∀ (A : Adv), hyb A = real.bind (B A)) →
-      (∀ (A : Adv), ((rand.bind (B A)) true).toReal = 1 / 2) →
-        (∀ (D : (Fin 3 → Fin 3 → Fin 256 → ZMod 3329) × (Fin 3 → Fin 256 → ZMod 3329) → PMF Bool),
-            |((real.bind D) true).toReal - ((rand.bind D) true).toReal| ≤ δ) →
-          ∀ (A : Adv), |((cca A) true).toReal - 1 / 2| ≤ eps A + δ
+∀ {M S V U W Msg σ : Type} [inst : AddCommGroup V] [inst_1 : Fintype V] [inst_2 : Nonempty V] [inst_3 : AddCommGroup U]
+  [inst_4 : Fintype U] [inst_5 : Nonempty U] [inst_6 : AddCommGroup W] [inst_7 : Fintype W] [inst_8 : Nonempty W]
+  (mul : M → S → V) (mat : PMF M) (secret : PMF S) (noise : PMF V) (dotT : M → V → S → U × W) (coins : PMF S)
+  (noise₁₂ : PMF (U × W)) (encode : Msg → W) (choose : M × V → PMF (Msg × Msg × σ)) (guess : σ → U × W → PMF Bool),
+  have keyReal := mat.bind fun A => secret.bind fun s => noise.bind fun e => PMF.pure (A, mul A s + e);
+  have keyRand := mat.bind fun A => (PMF.uniformOfFintype V).bind fun t => PMF.pure (A, t);
+  have cpa := fun pk =>
+    coins.bind fun r =>
+      noise₁₂.bind fun e =>
+        (PMF.uniformOfFintype Bool).bind fun b =>
+          (choose pk).bind fun x =>
+            (guess x.2.2
+                  ((dotT pk.1 pk.2 r + e).1, (dotT pk.1 pk.2 r + e).2 + encode (if b = true then x.2.1 else x.1))).bind
+              fun b' => PMF.pure (b' == b);
+  have encReal := keyRand.bind fun pk => coins.bind fun r => noise₁₂.bind fun e => PMF.pure (pk, dotT pk.1 pk.2 r + e);
+  have encRand := keyRand.bind fun pk => (PMF.uniformOfFintype (U × W)).bind fun c => PMF.pure (pk, c);
+  have encD := fun y =>
+    (PMF.uniformOfFintype Bool).bind fun b =>
+      (choose y.1).bind fun x =>
+        (guess x.2.2 (y.2.1, y.2.2 + encode (if b = true then x.2.1 else x.1))).bind fun b' => PMF.pure (b' == b);
+  |((keyReal.bind cpa) true).toReal - 1 / 2| ≤
+    |((keyReal.bind cpa) true).toReal - ((keyRand.bind cpa) true).toReal| +
+      |((encReal.bind encD) true).toReal - ((encRand.bind encD) true).toReal|
 ```
 
-### `Qpu.Verify.MlKem.ind_cca2_reduces_to_mlwe`
+### `Qpu.Verify.MlKem.ml_kem_768_ind_cpa_reduces_to_mlwe`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-∀ {Adv : Type u_1} (cca hyb : Adv → PMF Bool) (eps : Adv → ℝ)
-  (real rand : PMF ((Fin 3 → Fin 3 → Fin 256 → ZMod 3329) × (Fin 3 → Fin 256 → ZMod 3329)))
-  (B : Adv → (Fin 3 → Fin 3 → Fin 256 → ZMod 3329) × (Fin 3 → Fin 256 → ZMod 3329) → PMF Bool),
-  (∀ (A : Adv), |((cca A) true).toReal - ((hyb A) true).toReal| ≤ eps A) →
-    (∀ (A : Adv), hyb A = real.bind (B A)) →
-      (∀ (A : Adv), ((rand.bind (B A)) true).toReal = 1 / 2) →
-        ∀ (A : Adv),
-          ∃ D, |((cca A) true).toReal - 1 / 2| ≤ eps A + |((real.bind D) true).toReal - ((rand.bind D) true).toReal|
+∀ {σ : Type}
+  (choose :
+    (Fin 3 → Fin 3 → Fin 256 → ZMod 3329) × (Fin 3 → Fin 256 → ZMod 3329) →
+      PMF ((Fin 256 → Bool) × (Fin 256 → Bool) × σ))
+  (guess : σ → (Fin 3 → Fin 256 → ZMod 3329) × (Fin 256 → ZMod 3329) → PMF Bool),
+  have mulRq := fun a b k =>
+    ∑ i, ∑ j, if ↑i + ↑j = ↑k then a i * b j else if ↑i + ↑j = ↑k + 256 then -(a i * b j) else 0;
+  have cbd := fun x => ∑ j, (↑(x j).1.toNat - ↑(x j).2.toNat);
+  have eta := PMF.map (fun x i c => cbd (x i c)) (PMF.uniformOfFintype (Fin 3 → Fin 256 → Fin 2 → Bool × Bool));
+  have mul := fun A s i => ∑ j, mulRq (A i j) (s j);
+  have mat := PMF.uniformOfFintype (Fin 3 → Fin 3 → Fin 256 → ZMod 3329);
+  have secret := eta;
+  have noise := eta;
+  have dotT := fun A t r => (fun j => ∑ i, mulRq (A i j) (r i), ∑ i, mulRq (t i) (r i));
+  have coins := eta;
+  have noise₁₂ :=
+    PMF.map (fun x => (fun i c => cbd (x.1 i c), fun c => cbd (x.2 c)))
+      (PMF.uniformOfFintype ((Fin 3 → Fin 256 → Fin 2 → Bool × Bool) × (Fin 256 → Fin 2 → Bool × Bool)));
+  have encode := fun m c => if m c = true then 1665 else 0;
+  have keyReal := mat.bind fun A => secret.bind fun s => noise.bind fun e => PMF.pure (A, mul A s + e);
+  have keyRand := mat.bind fun A => (PMF.uniformOfFintype (Fin 3 → Fin 256 → ZMod 3329)).bind fun t => PMF.pure (A, t);
+  have cpa := fun pk =>
+    coins.bind fun r =>
+      noise₁₂.bind fun e =>
+        (PMF.uniformOfFintype Bool).bind fun b =>
+          (choose pk).bind fun x =>
+            (guess x.2.2
+                  ((dotT pk.1 pk.2 r + e).1, (dotT pk.1 pk.2 r + e).2 + encode (if b = true then x.2.1 else x.1))).bind
+              fun b' => PMF.pure (b' == b);
+  have encReal := keyRand.bind fun pk => coins.bind fun r => noise₁₂.bind fun e => PMF.pure (pk, dotT pk.1 pk.2 r + e);
+  have encRand :=
+    keyRand.bind fun pk =>
+      (PMF.uniformOfFintype ((Fin 3 → Fin 256 → ZMod 3329) × (Fin 256 → ZMod 3329))).bind fun c => PMF.pure (pk, c);
+  have encD := fun y =>
+    (PMF.uniformOfFintype Bool).bind fun b =>
+      (choose y.1).bind fun x =>
+        (guess x.2.2 (y.2.1, y.2.2 + encode (if b = true then x.2.1 else x.1))).bind fun b' => PMF.pure (b' == b);
+  |((keyReal.bind cpa) true).toReal - 1 / 2| ≤
+    |((keyReal.bind cpa) true).toReal - ((keyRand.bind cpa) true).toReal| +
+      |((encReal.bind encD) true).toReal - ((encRand.bind encD) true).toReal|
+```
+
+### `Qpu.Verify.MlKem.uniform_eq_bit`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (b' : Bool), ((PMF.uniformOfFintype Bool).bind fun b => PMF.pure (b' == b)) = PMF.uniformOfFintype Bool
+```
+
+### `Qpu.Verify.MlKem.uniform_shift`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {G : Type} [inst : Fintype G] [inst_1 : Nonempty G] (f g : G → G),
+  (∀ (x : G), f (g x) = x) → (∀ (x : G), g (f x) = x) → PMF.map f (PMF.uniformOfFintype G) = PMF.uniformOfFintype G
 ```
 
 ## Qpu.Processing.Verify.Receipt
