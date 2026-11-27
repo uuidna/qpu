@@ -486,4 +486,6 @@ def quantumProcessingMcp_qsimText : String := "the circuit exactly as qsim reads
 
 def quantumProcessingMcp_qualtranCirq : String := "any circuit exactly as cirq.to_json writes it, counted gate by gate as Qualtran counts it, its T, Toffoli, Clifford and rotation gates and its qubits, a power of Z at three or five quarter turns one T beside a Clifford because powers of Z add (QualtranBridge.z_powers_add)"
 
+def quantumProcessingMcp_qasmText : String := "the circuit in OpenQASM 2.0 exactly as Cirq's own importer reads it, its registers laid out one after another as one line of qubits so that no two qubits meet (QasmBridge.registers_flatten), read as the operations above, each rotation a power of its Pauli times a global phase; a gate this door does not compute is refused"
+
 end Prose

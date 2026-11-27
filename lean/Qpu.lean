@@ -23,6 +23,7 @@ import Qpu.General.Schedule
 import Qpu.Processing.FermionBridge
 import Qpu.Processing.QsimBridge
 import Qpu.Processing.QualtranBridge
+import Qpu.Processing.QasmBridge
 import Qpu.Application.Shor
 import Qpu.Processing.Stabilizer
 import Qpu.General.Clay
