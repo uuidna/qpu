@@ -1443,7 +1443,8 @@ const OWN: Tool[] = [
         }
         const x = Number(input % (1n << BigInt(n)))
         const qs = LineQubit.range(n)
-        const prep = qs.filter((_, i) => (x >> i) & 1).map((q) => applied(X, q))
+        // |x> in Cirq's order, the first qubit the most significant bit, as the amplitudes are read back (CirqBridge.cirq_order_eq_reversed)
+        const prep = qs.filter((_, i) => (x >> (n - 1 - i)) & 1).map((q) => applied(X, q))
         const transform = name === 'qft' ? qftOperations(qs) : inverseOperations(qftOperations(qs))
         const { amplitudes } = new Simulator().simulate(new Circuit().append([...prep, ...transform]))
         return {

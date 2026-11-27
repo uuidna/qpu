@@ -625,3 +625,19 @@ test('a noisy circuit on the circuit door gives the probabilities and Pauli expe
     c.expectations.forEach((e, k) => assert.ok(Math.abs(r.expectations[k]! - e) < 1e-12, `${name} expectation ${k}: ${r.expectations[k]} against ${e}`))
   }
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the algorithm door's QFT and inverse QFT of |x> are the states Cirq's own cirq.qft gives, for inputs whose bits do not read the same both ways. */
+test('the algorithm door\'s QFT and inverse QFT of |x> are the states Cirq\'s own cirq.qft gives, for inputs whose bits do not read the same both ways', () => {
+  // the fixture is Cirq's own output (qft.json): |x> in Cirq's order, the first qubit the most significant bit, then cirq.qft or its inverse
+  const fixture = JSON.parse(readFileSync(new URL('./qft.json', import.meta.url), 'utf8')) as { cirq: string; cases: { qubits: number; input: number; transform: string; amplitudes: { re: number; im: number }[] }[] }
+  for (const c of fixture.cases) {
+    const rows = (call('algorithm', { name: c.transform, qubits: c.qubits, input: c.input }) as { result: { structuredContent: { rows: string[][] } } }).result.structuredContent.rows
+    // a row writes its amplitude to four places as re ± im i
+    rows.forEach(([, amplitude], k) => {
+      const [, re = '', sign = '', im = ''] = /^(-?[\d.]+) ([+−]) ([\d.]+)i$/.exec(amplitude!) ?? []
+      const z = { re: Number(re), im: (sign === '−' ? -1 : 1) * Number(im) }
+      const want = c.amplitudes[k]!
+      assert.ok(Math.abs(z.re - want.re) < 5e-5 && Math.abs(z.im - want.im) < 5e-5, `${c.transform} n=${c.qubits} x=${c.input} at ${k}: ${amplitude} against ${want.re} ${want.im}`)
+    })
+  }
+})
