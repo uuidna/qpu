@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingAudit
-The prose of `src/quantum/processing/audit.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/5/b/3/0/7/9/e/2/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose
@@ -98,5 +98,8 @@ def quantumProcessingAudit_why91 : String := "the line cites the bound as a stan
 def quantumProcessingAudit_why92 : String := "a fixture that shows a cap keeps it"
 def quantumProcessingAudit_why93 : String := "an API's own bound in its query; name it from the API's documentation, never as a number of ours"
 def quantumProcessingAudit_says94 : String := "⟦0⟧ cap(s) removed in ⟦1⟧ file(s); ⟦2⟧ bound(s) kept as cited or as fixtures"
+
+def quantumProcessingAudit_s91 : String := "npm audit fix or a pinned fixed version; a finding is a lead (textbook_security_perspectives)"
+def quantumProcessingAudit_s92 : String := "a value in the environment example (textbook_security_perspectives)"
 
 end Prose

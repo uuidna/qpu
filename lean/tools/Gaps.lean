@@ -43,7 +43,7 @@ def procedureSyntax : String → MetaM (TSyntax `tactic)
   | _ => `(tactic| nlinarith)
 
 /-- The committed index, the run before this one. -/
-def committed : System.FilePath := "src" / "quantum" / "processing" / "gaps-index.ts"
+def committed : System.FilePath := "src" / "quantum" / "uuid" / "programs" / "9" / "b" / "d" / "6" / "c" / "f" / "0" / "2" / "index.ts"
 
 /-- The index's second line: the Mathlib revision the manifest pins, the budget and the procedures. -/
 def searchedUnder : IO String := do

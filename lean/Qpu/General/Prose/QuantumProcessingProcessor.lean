@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingProcessor
-The prose of `src/quantum/processing/processor.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/f/7/e/3/6/2/f/6/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose
@@ -13,5 +13,6 @@ def quantumProcessingProcessor_layout6 : String := "one UUID: a row per hex digi
 def quantumProcessingProcessor_modality7 : String := "superconducting transmon qubits with frequency-tunable couplers"
 def quantumProcessingProcessor_crosstalkMitigation8 : String := "tunable coupler zero-coupling parking + dynamic decoupling"
 def quantumProcessingProcessor_s9 : String := "Out-of-Time-Order Correlator (OTOC Quantum Echoes)"
+
 
 end Prose

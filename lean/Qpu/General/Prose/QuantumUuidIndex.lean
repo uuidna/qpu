@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumUuidIndex
-The prose of `src/quantum/uuid/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/2/7/1/a/7/6/4/9/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose
@@ -28,5 +28,6 @@ def quantumUuidIndex_says21 : String := "⟦0⟧ base(s) as ⟦1⟧ UUID(s) — 
 def quantumUuidIndex_s22 : String := "DNA, Glagolitic, CMYK/a432 accent, shadcn, Open Graph and thousandBit clay theatre are formulated calls of the UUID core; the sealed address holds alone at password/address without pulling style/stream/widget"
 def quantumUuidIndex_s23 : String := "the presentation overlays did not hold as formulated calls of the UUID core"
 def quantumUuidIndex_s24 : String := " beforeDelete afterDelete afterOperation afterError beforeLogin afterLogin afterLogout me afterMe refresh afterRefresh afterForgotPassword"
+
 
 end Prose

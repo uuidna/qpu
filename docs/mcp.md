@@ -16,6 +16,10 @@ Any client mounts:
 
 ## tools/list (47)
 
+The kernel serves these 47 everywhere. The deployed Worker serves 3 more where it binds its rooms and its Lean prover:
+`send`, `receive` and `lean`, so `tools/list` there answers 50. `metrics` states all three numbers (`tools`,
+`toolsBound`, `toolsServed`).
+
 | Tool | Toolbox |
 |---|---|
 | `clay` | tree |

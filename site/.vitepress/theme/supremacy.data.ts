@@ -2,9 +2,9 @@
 // statements the Lean kernel recorded in the theorem index, and the published figures it measures them against, read from the processor
 // spec sheet. Nothing here restates a figure: the index and the sheet are the sources.
 import { defineLoader } from 'vitepress'
-import { THEOREMS } from '../../../src/quantum/processing/theorems-index.ts'
-import { WILLOW } from '../../../src/quantum/processing/processor.ts'
-import { KEY, SCAN } from '../../../src/quantum/processing/unit/theme.ts'
+import { THEOREMS } from '../../../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
+import { WILLOW } from '../../../src/quantum/uuid/programs/f/7/e/3/6/2/f/6/index.ts'
+import { KEY, SCAN } from '../../../src/quantum/uuid/programs/7/2/1/a/a/e/7/d/index.ts'
 import { FOLD } from './fold-index.ts'
 
 // The movie plays formulas, not names. Each entry is a formula as the kernel index prints it, and the movie plays every

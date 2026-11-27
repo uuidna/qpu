@@ -1,0 +1,27 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "qpu",
+  "version": "1.1.1",
+  "description": "An exact quantum processing unit served over MCP",
+  "author": {
+    "name": "Tsvetan Rouschev",
+    "url": "https://orcid.org/0009-0000-7312-9778"
+  },
+  "homepage": "https://qpu.uuidna.com",
+  "repository": "https://github.com/uuidna/qpu",
+  "license": "CC-BY-NC-ND-4.0",
+  "keywords": [
+    "qpu",
+    "qpu-google",
+    "qpu-tree",
+    "qpu-flow",
+    "qpu-language",
+    "qpu-raid",
+    "qpu-billing",
+    "qpu-legal",
+    "qpu-repository",
+    "qpu-standards",
+    "qpu-extension",
+    "qpu-crypto"
+  ]
+}

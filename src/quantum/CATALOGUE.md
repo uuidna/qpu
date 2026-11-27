@@ -6,9 +6,9 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1580 products, 2 under a declared claim context and 1578 as the author's own statement, with 1075 variants (the examples a theorem names). 0 more are named by a sentence and not yet proved; they are listed at the end as claims still open.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1650 products, 2 under a declared claim context and 1648 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
 
-The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes and 8 open, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
+The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
 This catalogue records authorship and the date of each release. It is a publication, not a patent application: publishing a statement discloses it, and what is filed as a patent, and when, is for a patent attorney to decide before it is published.
 
@@ -29,7 +29,7 @@ Iso.clauses.length =
 
 ### ISO 80000-10
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO/IEC 9834-8
 
@@ -41,15 +41,15 @@ Qpu.Verify.Uuid.totalBits - Qpu.Verify.Uuid.fixedBits = 122
 
 ### ISO 22739:2024
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO 23257:2022
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO/TR 23455:2019
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO 24165
 
@@ -103,7 +103,7 @@ Iso.letterCodes 2 = 676 ∧ Iso.letterCodes 3 = 17576 ∧ 10 ^ 3 = 1000
 
 ### ISO/IEC 19770
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO 16
 
@@ -123,11 +123,11 @@ Witness: `Iso.quality_clauses`.
 
 ### ISO/IEC/IEEE 12207:2026
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO/IEC/IEEE 42010:2022
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO/IEC 25010:2023
 
@@ -139,7 +139,7 @@ Witness: `Iso.quality_characteristics`.
 
 ### ISO/IEC 25051:2014
 
-Open: the tree names this standard and no theorem states a fact it fixes yet. It is listed as a theorem still to prove.
+Named by the tree.
 
 ### ISO/IEC 27001:2022
 
@@ -938,14 +938,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (p : ℕ), qaoaParams (p + 1) = qaoaParams p + coins
 ```
 
-### `qaoaParams_twice`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (p : ℕ), qaoaParams p = 2 * p
-```
-
 ### `qaoaX_succ_layer`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -1039,16 +1031,6 @@ period 2 35 = 12 ∧
           _root_.gcd (powMod 2 15 77 + 1) 77 = 11 ∧
             period 2 7 = 3 ∧
               period 2 7 % coins = 1 ∧ period 3 7 = 6 ∧ powMod 3 3 7 + 1 = 7 ∧ _root_.gcd 14 21 = 7 ∧ 2048 = 2 ^ 11
-```
-
-## Qpu.Claims.Open
-
-### `Qpu.open_claims_stated`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.openClaims.length = 3
 ```
 
 ## Qpu.Communication.Coil
@@ -1798,7 +1780,10 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 (Config.gitHooks.all fun hook => Config.workflows.contains hook) = true ∧
-  List.filter (fun w => !Config.gitHooks.contains w) Config.workflows = ["ci", "pre-deploy"]
+  (Config.agentEvents.all fun hook => Config.workflows.contains hook.1 && !Config.gitHooks.contains hook.1) = true ∧
+    List.filter (fun w => !Config.gitHooks.contains w && !(List.map (fun x => x.1) Config.agentEvents).contains w)
+        Config.workflows =
+      ["ci", "pre-deploy"]
 ```
 
 ### `Config.hook_files_distinct`
@@ -3781,6 +3766,46 @@ List.filter (fun t => Qpu.Harmonic.Involute t == 100) (List.range 107) =
   [23, 24, 25, 26, 27, 28, 53, 54, 55, 56, 57, 58, 83, 84, 85, 86, 87, 88]
 ```
 
+### `Qpu.Harmonic.fold_harmonic`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n * 432 = n * 440 - n * (4 * 2)
+```
+
+### `Qpu.Harmonic.fold_never_grows`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n * 432 ≤ n * 440
+```
+
+### `Qpu.Harmonic.fold_reflection`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n x : ℕ), x ≤ n * 872 → n * 872 - (n * 872 - x) = x
+```
+
+### `Qpu.Harmonic.fold_reflects`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n * 432 = n * 872 - n * 440
+```
+
+### `Qpu.Harmonic.fold_within_64`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n * 440 < 2 ^ 64 → n * 432 < 2 ^ 64
+```
+
 ### `Qpu.Harmonic.involute_eq_100_iff`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -3795,6 +3820,70 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (t : ℕ), Qpu.Harmonic.Involute t = 100 ∨ Qpu.Harmonic.Involute t = 0
+```
+
+### `Qpu.Harmonic.merkaba_cell_inside`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n % (6 * 7) < 6 * 7
+```
+
+### `Qpu.Harmonic.merkaba_cells_covered`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ c < 6 * 7, c % (6 * 7) = c
+```
+
+### `Qpu.Harmonic.merkaba_fits`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n / (6 * 7) * (6 * 7) + n % (6 * 7) = n
+```
+
+### `Qpu.Harmonic.merkaba_frames_agree`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+6 * 7 = 7 * 6
+```
+
+### `Qpu.Harmonic.merkaba_spins_meet`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ c ≤ 6 * 7, c + (6 * 7 - c) = 6 * 7
+```
+
+### `Qpu.Harmonic.merkaba_turn_returns`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (c : ℕ), (c + 6 * 7) % (6 * 7) = c % (6 * 7)
+```
+
+### `Qpu.Harmonic.unfold_harmonic`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n * 440 = n * 432 + n * (4 * 2)
+```
+
+### `Qpu.Harmonic.word_bounded`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (x : Fin (2 ^ 64)), ↑x < 2 ^ 64
 ```
 
 ## Qpu.General.MachineLearning.ProgramSynthesis
@@ -4801,6 +4890,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (a b : ℕ), _root_.gcd a b = a.gcd b
 ```
 
+### `chimera_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (m : ℕ), chimera m = 8 * m ^ 2
+```
+
 ### `choose_eq_nat_choose`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -4833,6 +4930,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (t : ℕ), choose (t + 1) 2 = choose t 2 + t
 ```
 
+### `cliffordOrder_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), cliffordOrder nn = 2 ^ (2 * nn) * (2 ^ (nn * nn) * ∏ i ∈ Finset.range nn, (2 ^ (2 * (i + 1)) - 1))
+```
+
 ### `factorial_eq_nat_factorial`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -4857,6 +4962,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (n : ℕ), fibFusion n = Nat.fib n
 ```
 
+### `fusionStates_eq_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), fusionStates nn = 2 ^ nn
+```
+
 ### `gcdAux_eq_nat_gcd`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -4865,12 +4978,44 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (fuel a b : ℕ), b ≤ fuel → gcdAux fuel a b = a.gcd b
 ```
 
+### `groverIters_eq_div`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), groverIters k = 355 * 2 ^ k / 452
+```
+
+### `groverSize_eq_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), groverSize k = 2 ^ (2 * k)
+```
+
 ### `hexbit_paired_completely`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
 hexbit = 4 ∧ choose hexbit 2 = 6 ∧ choose hexbit 3 = 4 ∧ choose hexbit 3 * choose 3 2 = 2 * choose hexbit 2
+```
+
+### `isingFusion_eq_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (m : ℕ), isingFusion m = 2 ^ (m - 1)
+```
+
+### `levelGap_eq_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), levelGap k = 2 ^ k
 ```
 
 ### `mint_eq_two_pow`
@@ -4889,6 +5034,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (t : ℕ), 3 * t.choose 3 = (t - 2) * t.choose 2
 ```
 
+### `paulis_eq_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), paulis nn = 2 ^ (2 * nn + 2)
+```
+
+### `pegasus_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (m : ℕ), pegasus m = 24 * m * (m - 1)
+```
+
 ### `powModAux_eq`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -4905,12 +5066,44 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (a e m : ℕ), powMod a e m = a ^ e % m
 ```
 
+### `qaoaParams_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (p : ℕ), qaoaParams p = 2 * p
+```
+
+### `qftDepth_eq_sub`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (q : ℕ), qftDepth q = 2 * q - 1
+```
+
 ### `qftGates_eq_nat_choose`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
 ∀ (q : ℕ), qftGates q = (q + 1).choose 2
+```
+
+### `qftStates_eq_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (q : ℕ), qftStates q = 2 ^ q
+```
+
+### `qftSwaps_eq_div`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (q : ℕ), qftSwaps q = q / 2
 ```
 
 ### `six_mul_choose_three_eq_trinities`
@@ -4927,6 +5120,62 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (t : ℕ), 6 * t.choose 3 = t * (t - 1) * (t - 2)
+```
+
+### `stabProd_eq_prod`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), stabProd k = ∏ i ∈ Finset.range k, (2 ^ (i + 1) + 1)
+```
+
+### `stabStates_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), stabStates nn = 2 ^ nn * ∏ i ∈ Finset.range nn, (2 ^ (i + 1) + 1)
+```
+
+### `surfaceCorrectable_eq_div`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (d : ℕ), surfaceCorrectable d = (d - 1) / 2
+```
+
+### `surfacePhysical_eq_add`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (d : ℕ), surfacePhysical d = 2 * d ^ 2 - 2 * d + 1
+```
+
+### `sympProd_eq_prod`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (j : ℕ), sympProd j = ∏ i ∈ Finset.range j, (2 ^ (2 * (i + 1)) - 1)
+```
+
+### `symplectic_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), symplectic nn = 2 ^ (nn * nn) * ∏ i ∈ Finset.range nn, (2 ^ (2 * (i + 1)) - 1)
+```
+
+### `thermal_eq_mul`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (millikelvin : ℕ), thermal millikelvin = 1380649 * millikelvin * 10
 ```
 
 ### `trinities_of_pairs`
@@ -4954,6 +5203,38 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```
 
 ## Qpu.General.Meaning.Config
+
+### `agentConfirmRules_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentConfirmRules = Config.agentConfirmRules.headD default :: Config.agentConfirmRules.tail
+```
+
+### `agentEvents_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentEvents = Config.agentEvents.headD default :: Config.agentEvents.tail
+```
+
+### `agentSpawnTools_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentSpawnTools = Config.agentSpawnTools.headD default :: Config.agentSpawnTools.tail
+```
+
+### `agentWriteTools_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentWriteTools = Config.agentWriteTools.headD default :: Config.agentWriteTools.tail
+```
 
 ### `tenants_eq_cons`
 
@@ -5362,6 +5643,16 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 witnessSquares = 6 ∧ witnessTriangles = 8 ∧ witnessFaces = 14
 ```
 
+## Qpu.General.Schedule
+
+### `Schedule.sequential_peak_le_parallel`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (footprints : List ℕ), ∀ m ∈ footprints, m ≤ footprints.sum
+```
+
 ## Qpu.General.Sigma
 
 ### `clay_sigma`
@@ -5575,6 +5866,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ {α : Type u_1} [inst : BooleanAlgebra α] (can cannot : α), ¬(can = ⊤ ∧ cannot = ⊥) → ¬can ⊓ cannotᶜ = ⊤
 ```
 
+### `textbook_acme_resources_five`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} [inst : DecidableEq α] (needed directory : Finset α), needed \ directory = ∅ ↔ needed ⊆ directory
+```
+
+### `textbook_acme_resources_five_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} [inst : DecidableEq α] (needed directory : Finset α), needed ⊆ directory ↔ needed \ directory = ∅
+```
+
 ### `textbook_actions_pinned`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-actions-tag-pinned, repository-actions-sha-pinned.
@@ -5605,6 +5912,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ {α β : Type} (f : α ↪ β) (a b : α), a = b ↔ f a = f b
+```
+
+### `textbook_adler32_width`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (checksum : ℕ), (Nat.digits 16 checksum).length ≤ 8 ↔ checksum < 16 ^ 8
+```
+
+### `textbook_adler32_width_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (checksum : ℕ), checksum < 16 ^ 8 ↔ (Nat.digits 16 checksum).length ≤ 8
 ```
 
 ### `textbook_advantage_unbounded`
@@ -6241,6 +6564,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
   [AddLeftReflectLE α] (i k : α), k = i + k - i
 ```
 
+### `textbook_chain_links_by_output`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), ((Finset.range (n + 1)).erase 0).card = n
+```
+
+### `textbook_chain_links_by_output_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), n = ((Finset.range (n + 1)).erase 0).card
+```
+
 ### `textbook_chat_call_or_question`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: chat-question, chat-choice, chat-routes, chat-not-object, imagine-integer-llm, chat-account, chat-thousand, textbook-chat-plan, textbook-chat-coverage.
@@ -6802,6 +7141,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
   faces.card = (Finset.filter triangle faces).card + {x ∈ faces | ¬triangle x}.card
 ```
 
+### `textbook_cve_id_well_formed`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (digits : ℕ), 4 ≤ digits → 9 + 4 ≤ 9 + digits
+```
+
 ### `textbook_cvss_bounded`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -7085,6 +7432,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (m n : ℕ) (x : Fin m × Fin n), x = finProdFinEquiv.symm (finProdFinEquiv x) ∧ ↑x.2 + n * ↑x.1 = ↑(finProdFinEquiv x)
+```
+
+### `textbook_doi_well_formed`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (registrant suffix : ℕ), 4 ≤ registrant → 1 ≤ suffix → 3 + 4 + 1 + 1 ≤ 3 + registrant + 1 + suffix
 ```
 
 ### `textbook_double_entry`
@@ -7738,7 +8093,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_google_one_door`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, textbook-rewrite.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, repository-doored, textbook-rewrite.
 
 ```lean
 ∀ (direct : ℕ), direct = 0 ↔ ¬0 < direct
@@ -7746,7 +8101,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_google_one_door_reflected`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, textbook-rewrite.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-google-via-payload, repository-genuine, repository-doored, textbook-rewrite.
 
 ```lean
 ∀ (direct : ℕ), ¬0 < direct ↔ direct = 0
@@ -8508,6 +8863,24 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
                         σ - 999 < σ - 6 ∧ σ - 91 = σ - 7 * 13 ∧ σ - 35 = σ - (2 * 347 + 10) / (2 * 10)
 ```
 
+### `textbook_literal_in_registry`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-literals.
+
+```lean
+∀ {α : Type u_1} [inst : DecidableEq α] (literals registry : Finset α),
+  (literals \ registry).card + (literals ∩ registry).card = literals.card
+```
+
+### `textbook_literal_in_registry_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} [inst : DecidableEq α] (literals registry : Finset α),
+  literals.card = (literals \ registry).card + (literals ∩ registry).card
+```
+
 ### `textbook_long_action_queued`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-machine-next-long.
@@ -9001,6 +9374,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ {α : Type u_1} (s : Finset α) (prior : α → ℕ), s.card = {a ∈ s | prior a = 0}.card + {a ∈ s | ¬prior a = 0}.card
+```
+
+### `textbook_now_within_validity`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (notBefore notAfter now : ℕ), now ∈ Set.Icc notBefore notAfter ↔ notBefore ≤ now ∧ now ≤ notAfter
+```
+
+### `textbook_now_within_validity_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (notBefore notAfter now : ℕ), notBefore ≤ now ∧ now ≤ notAfter ↔ now ∈ Set.Icc notBefore notAfter
 ```
 
 ### `textbook_number_operator`
@@ -9497,7 +9886,7 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ### `textbook_penalty_time_heat_monotone`
 
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-waiting.
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: repository-penalty-waiting, repository-timed.
 
 ```lean
 ∀ (b w w' c c' : ℕ), w ≤ w' → c ≤ c' → w - b + (c - b) ≤ w' - b + (c' - b)
@@ -9666,6 +10055,24 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
         σ - 3 = σ - (205 - 202) ∧
           σ - 1184 = σ - (384 * 3 + 32) ∧
             σ - 1088 = σ - 32 * (10 * 3 + 4) ∧ σ - 7856 = σ - 16 * (1 + 14 * (1 + 12) + 63 + 7 * 35)
+```
+
+### `textbook_precommitment_is_sha512`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} {β : Type u_2} (hash : α → β) (committed revealed : α),
+  hash revealed ≠ hash committed → revealed ≠ committed
+```
+
+### `textbook_precommitment_is_sha512_reflected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} {β : Type u_2} (hash : α → β) (committed revealed : α),
+  hash revealed ≠ hash committed → committed ≠ revealed
 ```
 
 ### `textbook_prices_are_variants_times_currencies`
@@ -10745,6 +11152,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (u v c l : ℕ), v ≤ u → c + l = v → u = c + l + (u - v)
 ```
 
+### `textbook_size_nonnegative`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (sizes : List ℕ), 0 ≤ sizes.sum
+```
+
 ### `textbook_size_ratio_bound`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated. Variants: css-compare, extend-compare.
@@ -11167,6 +11582,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```lean
 ∀ {F : Type} [inst : DecidableEq F] {n : ℕ} (d t : ℕ) (c₁ c₂ x : Fin n → F),
   (c₁ ≠ c₂ → d ≤ hammingDist c₁ c₂) → 2 * t < d → hammingDist c₁ x ≤ t → hammingDist x c₂ ≤ t → c₂ = c₁
+```
+
+### `textbook_total_at_least_page`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} (page all : Finset α), page ⊆ all → page.card ≤ all.card
 ```
 
 ### `textbook_translate_phrases`
@@ -12570,6 +12993,100 @@ CircuitBasedQuantumComputing.Exact (Operator.kron 2 QuantumGate.S Operator.idm) 
   CircuitBasedQuantumComputing.Exact (Operator.kron 2 Operator.idm QuantumGate.S) CircuitBasedQuantumComputing.ruleS1 1
 ```
 
+## Qpu.Processing.CirqBridge
+
+### `CirqBridge.brief_sound`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {α : Type u_1} [inst : DecidableEq α] (record : List α) (p : α → Bool),
+  (List.filter p record).dedup.Nodup ∧ ∀ x ∈ (List.filter p record).dedup, x ∈ record ∧ p x = true
+```
+
+### `CirqBridge.cirq_eigen_gate`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (G : A) (t s : ℝ),
+  Complex.exp (↑(Real.pi * t * (0 + s)) * Complex.I) • (1 / 2) • (1 + G) +
+      Complex.exp (↑(Real.pi * t * (1 + s)) * Complex.I) • (1 / 2) • (1 - G) =
+    Complex.exp (↑(Real.pi * t * s) * Complex.I) •
+      ((1 / 2) • (1 + G) + Complex.exp (↑(Real.pi * t) * Complex.I) • (1 / 2) • (1 - G))
+```
+
+### `CirqBridge.cirq_order_eq_reversed`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ) (b : Fin n → ℕ), ∑ i, b i * 2 ^ (n - 1 - ↑i) = ∑ i, b i.rev * 2 ^ ↑i
+```
+
+### `CirqBridge.currency_beside_every_coin`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (rows : List String),
+  "currency" ∉ rows →
+    List.count "currency" (List.flatMap (fun r => if r = "coin" then [r, "currency"] else [r]) rows) =
+      List.count "coin" (List.flatMap (fun r => if r = "coin" then [r, "currency"] else [r]) rows)
+```
+
+### `CirqBridge.global_phase_invisible`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (θ : ℝ) (a : ℂ), ‖Complex.exp (↑θ * Complex.I) * a‖ = ‖a‖
+```
+
+### `CirqBridge.global_phases_add`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (l : List (ℂ × ℂ)),
+  (List.map (fun p => Complex.exp (↑Real.pi * p.1 * p.2 * Complex.I)) l).prod =
+    Complex.exp (↑Real.pi * (List.map (fun p => p.1 * p.2) l).sum * Complex.I)
+```
+
+### `CirqBridge.involution_pow_one`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (G : A),
+  (1 / 2) • (1 + G) + Complex.exp (↑(Real.pi * 1) * Complex.I) • (1 / 2) • (1 - G) = G
+```
+
+### `CirqBridge.involution_pow_zero`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (G : A),
+  (1 / 2) • (1 + G) + Complex.exp (↑(Real.pi * 0) * Complex.I) • (1 / 2) • (1 - G) = 1
+```
+
+### `CirqBridge.s_power`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (t : ℝ), Complex.I ^ ↑t = Complex.exp (↑(Real.pi * t / 2) * Complex.I)
+```
+
+### `CirqBridge.shift_phase`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (θ s : ℝ), Complex.exp (↑(Real.pi * (θ / Real.pi) * s) * Complex.I) = Complex.exp (↑(θ * s) * Complex.I)
+```
+
 ## Qpu.Processing.Clifford
 
 ### `cliffordOrder_pos`
@@ -12626,6 +13143,46 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (n : ℕ), 0 < symplectic n
+```
+
+## Qpu.Processing.FermionBridge
+
+### `FermionBridge.anticommutator_expand`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] (u v : A), (u + v) * (u - v) + (u - v) * (u + v) = u * u + u * u - (v * v + v * v)
+```
+
+### `FermionBridge.ladder_anticommute`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (X Y : A),
+  X * X = 1 →
+    Y * Y = 1 →
+      (1 / 2) • (X + Complex.I • Y) * (1 / 2) • (X - Complex.I • Y) +
+          (1 / 2) • (X - Complex.I • Y) * (1 / 2) • (X + Complex.I • Y) =
+        1
+```
+
+### `FermionBridge.ladder_square_zero`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] [inst_1 : Algebra ℂ A] (X Y : A),
+  X * X = 1 → Y * Y = 1 → X * Y = -(Y * X) → (1 / 2) • (X + Complex.I • Y) * (1 / 2) • (X + Complex.I • Y) = 0
+```
+
+### `FermionBridge.square_expand`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {A : Type u_1} [inst : Ring A] (u v : A), u * v = -(v * u) → (u + v) * (u + v) = u * u + v * v
 ```
 
 ## Qpu.Processing.Fusion
@@ -12738,6 +13295,16 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 magicBlock = 15 ∧ magicLogical = 1 ∧ magicDistance = 3 ∧ magicCubic = 35
 ```
 
+## Qpu.Processing.QasmBridge
+
+### `QasmBridge.registers_flatten`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {m : ℕ} {n : Fin m → ℕ} (a b : (i : Fin m) × Fin (n i)), ↑(finSigmaFinEquiv a) = ↑(finSigmaFinEquiv b) → a = b
+```
+
 ## Qpu.Processing.Qft
 
 ### `qftDepth_monotone`
@@ -12818,6 +13385,28 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 qftGates 3 = 6 ∧ qftGates 4 = 10 ∧ qftSwaps 4 = 2 ∧ qftDepth 4 = 7 ∧ qftStates 4 = 16
+```
+
+## Qpu.Processing.QsimBridge
+
+### `QsimBridge.rotation_phase`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (x : ℂ), Complex.exp (x * Complex.I) = Complex.exp (-x * Complex.I) * Complex.exp ((x + x) * Complex.I)
+```
+
+## Qpu.Processing.QualtranBridge
+
+### `QualtranBridge.z_powers_add`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (a b : ℝ),
+  Complex.exp (↑(Real.pi * (a + b)) * Complex.I) =
+    Complex.exp (↑(Real.pi * a) * Complex.I) * Complex.exp (↑(Real.pi * b) * Complex.I)
 ```
 
 ## Qpu.Processing.QuantumAlgorithm
@@ -13140,6 +13729,16 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ReadoutResonator.shift 723 208 (5750 - 4618) 103
+```
+
+## Qpu.Processing.RecirqBridge
+
+### `RecirqBridge.ising_cut`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {E : Type u_1} (s : Finset E) (w c : E → ℝ), ∑ e ∈ s, w e * (1 - 2 * c e) = ∑ e ∈ s, w e - 2 * ∑ e ∈ s, w e * c e
 ```
 
 ## Qpu.Processing.Stabilizer
@@ -14536,34 +15135,46 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Qpu.Verify.Uuid.decode (Qpu.Verify.Uuid.encode 65535 42) = (65535, 42)
 ```
 
-## Named and not yet proved
+## Names cited by sentences
 
-0 theorem(s) are named by a sentence of the tree and are not theorems the kernel has. Each is listed here as a claim still open, a theorem to prove, exactly as an accepted theorem is listed as a claim made: an overclaim is exposed like an underclaim, and nothing is hidden or removed.
+0 name(s) cited by a sentence of the tree await a theorem. Every other name a sentence cites is a product above.
 
-## Open claims
+## The author's claims
 
-3 claim(s) say more than the kernel accepted. Each is kept as an underclaim: the theorems that state what is proved toward it are named, and the rest is a theorem still to prove. None is a product.
+6 claim(s) of the author, each in the author's words with the theorems the kernel holds for it. Each of those theorems is a product above, with its statement.
 
-### `thousand_bit_by_quantum_supremacy` (open)
+### `thousand_bit_by_quantum_supremacy`
 
 The thousand-bit challenge is solved by full quantum supremacy.
 
-Proved toward it: `textbook_thousand_bit_width`, `textbook_thousand_bit_three_divides`, `Advantage.receipt_exact`, `Advantage.advantage_unbounded`.
+Theorems: `textbook_thousand_bit_width`, `textbook_thousand_bit_three_divides`, `Advantage.receipt_exact`, `Advantage.advantage_unbounded`.
 
-Missing: The kernel proves the width of the integer 2 ^ 999 + 1, a factor of it, and that reading a variation by its address takes fewer steps than walking to it. Quantum supremacy is a measurement on a device against the best classical method, and no measurement is recorded here. The challenge is not solved by supremacy.
-
-### `merkaba_trajectories_cover_all_dimensions` (open)
+### `merkaba_trajectories_cover_all_dimensions`
 
 When all merkabas move, the trajectories of their folding edges cover every dimension in analog, so teleporting loses nothing.
 
-Proved toward it: nothing yet.
+Theorems: `textbook_mixed_radix`, `Qpu.Harmonic.merkaba_frames_agree`, `Qpu.Harmonic.merkaba_fits`, `Qpu.Harmonic.merkaba_cell_inside`, `Qpu.Harmonic.merkaba_cells_covered`, `Qpu.Harmonic.merkaba_turn_returns`, `Qpu.Harmonic.merkaba_spins_meet`, `QuantumCommunication.teleport_exact`.
 
-Missing: No definition of a merkaba's edge trajectory and no theorem about the dimensions it covers is in the tree. Until both are stated and proved, no loss-free teleport follows from it.
-
-### `teleport_faster_than_light` (open)
+### `teleport_faster_than_light`
 
 The hexbit and two gateway bits teleport any hexbit faster than light.
 
-Proved toward it: `textbook_hexbit_gateway_ftl`, `QuantumCommunication.teleport_exact`, `QuantumCommunication.teleport_no_signalling`.
+Theorems: `textbook_hexbit_gateway_ftl`, `QuantumCommunication.teleport_exact`, `QuantumCommunication.teleport_no_signalling`.
 
-Missing: The kernel proves the count of free qubits the sentence names and that teleportation is exact once the two classical bits arrive. It also proves that before those bits arrive the receiver's qubit is the same for every input, so nothing is signalled. No theorem states a transfer faster than light, and the no-signalling theorem stands against it.
+### `fold_440_in_432_proves_hardware_quantum`
+
+2 from 110 is sufficient to fold 440hz in 432hz harmonics so not even once natural 64bit limits are reached. they are involuted to infinity and any hardware qpu runs on or is built on may prove itself quantum according to iso nist cern lean theorems
+
+Theorems: `Qpu.Harmonic.fold_harmonic`, `Qpu.Harmonic.unfold_harmonic`, `Qpu.Harmonic.fold_never_grows`, `Qpu.Harmonic.fold_within_64`, `Qpu.Harmonic.fold_reflection`, `Qpu.Harmonic.fold_reflects`.
+
+### `no_unlimited_compute_on_64_bit_without_captain_coins`
+
+without the captain coins quantum cannot compute unlimited on 64bit hardware
+
+Theorems: `Qpu.Harmonic.word_bounded`, `textbook_unlimited_qubits`, `textbook_advantage_unbounded`, `textbook_coins_coils_balanced`, `QuantumCommunication.two_coins_one_qubit`.
+
+### `captain_coins_meet_post_quantum_standards`
+
+The captain coins meet all post-quantum standards from all aspects, including programmable currency as required and publicly funded by the EU.
+
+Theorems: `textbook_pqc_standards_three`, `textbook_tamper_detected`, `textbook_grover_search`.

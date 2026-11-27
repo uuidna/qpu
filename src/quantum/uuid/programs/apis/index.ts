@@ -3,9 +3,9 @@
 // one row addressed by its UUID (uuid(provider\nmethod server/path)), sealed, so the admin, the endpoint and the stream read one index.
 // The Cloudflare meters are priced from Cloudflare's published tables; the cost is the fold Σ max(0, used − included) × rate, zero inside the
 // allowances (textbook_bill_covered). Nothing is fetched here: the readings come in, the contracts come in, the rows come out.
-import { PROSE, proseFill } from '../../../processing/prose-index.ts'
-import { seal, uuid } from '../../index.ts'
-import { TABLES } from '../../../processing/tables-index.ts'
+import { PROSE, proseFill } from '../5/9/e/4/9/1/a/4/index.ts'
+import { seal, uuid } from '../2/7/1/a/7/6/4/9/index.ts'
+import { TABLES } from '../1/2/a/4/3/2/a/8/index.ts'
 import { SHADCN_COMPONENTS, SHADCN_MCP } from '../shadcn/index.ts'
 
 /** Cloudflare's GraphQL Analytics API answers at most 10000 rows per query node (developers.cloudflare.com/analytics/graphql-api/limits/): the API's own bound, named here and cited, never a cap of ours. */
@@ -179,7 +179,7 @@ export const zoneReadingsOf = (answer: ZoneAnswer) => {
   return { phase: 'zone' as const, requests, byDimension, totals, top, values: OBSERVE_ZONE_DIMENSIONS.reduce((n, d) => n + byDimension[d].length, 0), agree: OBSERVE_ZONE_DIMENSIONS.every((d) => totals[d] === requests || totals[d] === 0), errors, holds: errors.length === 0, theorem: 'textbook_cloudflare_cost_gate' as const }
 }
 
-import { hexbit, next as turnNext, uuidQubits } from '../../index.ts'
+import { hexbit, next as turnNext, uuidQubits } from '../2/7/1/a/7/6/4/9/index.ts'
 import { OFFICIAL_PLUGINS } from '../index.ts'
 /** Payload's monorepo beside its packages (https://github.com/payloadcms/payload, read 2026-11-08): the templates a site starts from and the examples a capability is shown by. */
 export const PAYLOAD_TEMPLATES = ['_data', '_template', 'blank-tanstack', 'blank', 'ecommerce', 'plugin', 'website', 'with-cloudflare-d1', 'with-postgres', 'with-vercel-mongodb', 'with-vercel-postgres', 'with-vercel-website'] as const

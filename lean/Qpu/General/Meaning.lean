@@ -1,3 +1,4 @@
+import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Nat.Factorial.Basic
 import Mathlib.Data.Nat.Fib.Basic
@@ -6,8 +7,16 @@ import Qpu.General.Mint
 import Qpu.General.Combinatorics
 import Qpu.General.Lattice
 import Qpu.Application.Shor
+import Qpu.Application.Grover
+import Qpu.Application.Qaoa
+import Qpu.Physics.EnergyGap
+import Qpu.Processing.Annealing
 import Qpu.Processing.Anyon
+import Qpu.Processing.Clifford
+import Qpu.Processing.Fusion
 import Qpu.Processing.Qft
+import Qpu.Processing.Stabilizer
+import Qpu.Processing.Surfacecode
 
 /-! # Qpu.General.Meaning
 
@@ -211,3 +220,207 @@ lies in exactly 2 trinities. The trinities use every pair of the hexbit, each on
 theorem hexbit_paired_completely :
     hexbit = 4 ∧ choose hexbit 2 = 6 ∧ choose hexbit 3 = 4 ∧ choose hexbit 3 * choose 3 2 = 2 * choose hexbit 2 := by
   decide
+
+/-! ## The family formulas
+
+Every family formula of `Qpu.General.Thousand` is a library notion at every size. The kernel reads the cluster of a
+qubit from these: the families that meet at `2 ^ k` do so by the laws below, whatever `k` is. -/
+
+/-- `a ^ b` computes `a` to the power of `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `^` in identifiers is `pow`.-/
+theorem fusionStates_eq_two_pow (nn : Nat) : fusionStates nn = 2 ^ nn := mint_eq_two_pow nn
+
+/-- `a ^ b` computes `a` to the power of `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `^` in identifiers is `pow`.-/
+theorem levelGap_eq_two_pow (k : Nat) : levelGap k = 2 ^ k := mint_eq_two_pow k
+
+/-- `a ^ b` computes `a` to the power of `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `^` in identifiers is `pow`.-/
+theorem qftStates_eq_two_pow (q : Nat) : qftStates q = 2 ^ q := rfl
+
+/-- `a ^ b` computes `a` to the power of `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `^` in identifiers is `pow`.-/
+theorem groverSize_eq_two_pow (k : Nat) : groverSize k = 2 ^ (2 * k) := mint_eq_two_pow (2 * k)
+
+/-- `a ^ b` computes `a` to the power of `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `^` in identifiers is `pow`.-/
+theorem paulis_eq_two_pow (nn : Nat) : paulis nn = 2 ^ (2 * nn + 2) := mint_eq_two_pow (2 * nn + 2)
+
+/-- `a ^ b` computes `a` to the power of `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `^` in identifiers is `pow`.-/
+theorem isingFusion_eq_two_pow (m : Nat) : isingFusion m = 2 ^ (m - 1) := mint_eq_two_pow (m - seed)
+
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
+theorem chimera_eq_mul (m : Nat) : chimera m = 8 * m ^ 2 := rfl
+
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
+theorem pegasus_eq_mul (m : Nat) : pegasus m = 24 * m * (m - 1) := rfl
+
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
+theorem qaoaParams_eq_mul (p : Nat) : qaoaParams p = 2 * p := rfl
+
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
+theorem thermal_eq_mul (millikelvin : Nat) : thermal millikelvin = 1380649 * millikelvin * 10 := rfl
+
+/-- `a / b` computes the result of dividing `a` by `b`.
+The meaning of this notation is type-dependent.
+* For most types like `Nat`, `Int`, `Rat`, `Real`, `a / 0` is defined to be `0`.
+* For `Nat`, `a / b` rounds downwards.
+* For `Int`, `a / b` rounds downwards if `b` is positive or upwards if `b` is negative.
+  It is implemented as `Int.ediv`, the unique function satisfying
+  `a % b + b * (a / b) = a` and `0 ≤ a % b < natAbs b` for `b ≠ 0`.
+  Other rounding conventions are available using the functions
+  `Int.fdiv` (floor rounding) and `Int.tdiv` (truncation rounding).
+* For `Float`, `a / 0` follows the IEEE 754 semantics for division,
+  usually resulting in `inf` or `nan`. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `/` in identifiers is `div`.-/
+theorem qftSwaps_eq_div (q : Nat) : qftSwaps q = q / 2 := rfl
+
+/-- `a - b` computes the difference of `a` and `b`.
+The meaning of this notation is type-dependent.
+* For natural numbers, this operator saturates at 0: `a - b = 0` when `a ≤ b`. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `-` in identifiers is `sub` (when used as a binary operator).-/
+theorem qftDepth_eq_sub (q : Nat) : qftDepth q = 2 * q - 1 := rfl
+
+/-- `a + b` computes the sum of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `+` in identifiers is `add`.-/
+theorem surfacePhysical_eq_add (d : Nat) : surfacePhysical d = 2 * d ^ 2 - 2 * d + 1 := rfl
+
+/-- `a / b` computes the result of dividing `a` by `b`.
+The meaning of this notation is type-dependent.
+* For most types like `Nat`, `Int`, `Rat`, `Real`, `a / 0` is defined to be `0`.
+* For `Nat`, `a / b` rounds downwards.
+* For `Int`, `a / b` rounds downwards if `b` is positive or upwards if `b` is negative.
+  It is implemented as `Int.ediv`, the unique function satisfying
+  `a % b + b * (a / b) = a` and `0 ≤ a % b < natAbs b` for `b ≠ 0`.
+  Other rounding conventions are available using the functions
+  `Int.fdiv` (floor rounding) and `Int.tdiv` (truncation rounding).
+* For `Float`, `a / 0` follows the IEEE 754 semantics for division,
+  usually resulting in `inf` or `nan`. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `/` in identifiers is `div`.-/
+theorem surfaceCorrectable_eq_div (d : Nat) : surfaceCorrectable d = (d - 1) / 2 := rfl
+
+/-- `a / b` computes the result of dividing `a` by `b`.
+The meaning of this notation is type-dependent.
+* For most types like `Nat`, `Int`, `Rat`, `Real`, `a / 0` is defined to be `0`.
+* For `Nat`, `a / b` rounds downwards.
+* For `Int`, `a / b` rounds downwards if `b` is positive or upwards if `b` is negative.
+  It is implemented as `Int.ediv`, the unique function satisfying
+  `a % b + b * (a / b) = a` and `0 ≤ a % b < natAbs b` for `b ≠ 0`.
+  Other rounding conventions are available using the functions
+  `Int.fdiv` (floor rounding) and `Int.tdiv` (truncation rounding).
+* For `Float`, `a / 0` follows the IEEE 754 semantics for division,
+  usually resulting in `inf` or `nan`. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `/` in identifiers is `div`.-/
+theorem groverIters_eq_div (k : Nat) : groverIters k = 355 * 2 ^ k / 452 := by
+  unfold groverIters
+  rw [mint_eq_two_pow]
+  rfl
+
+/-- `∏ x ∈ s, f x` is the product of `f x` as `x` ranges over the elements of the finite set `s`.
+
+When the index type is a `Fintype`, the notation `∏ x, f x`, is a shorthand for
+`∏ x ∈ Finset.univ, f x`. -/
+theorem stabProd_eq_prod (k : Nat) : stabProd k = ∏ i ∈ Finset.range k, (2 ^ (i + 1) + 1) := by
+  induction k with
+  | zero => rfl
+  | succ k ih => rw [stabProd_step, ih, mint_eq_two_pow, Finset.prod_range_succ, Nat.mul_comm]
+
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
+theorem stabStates_eq_mul (nn : Nat) : stabStates nn = 2 ^ nn * ∏ i ∈ Finset.range nn, (2 ^ (i + 1) + 1) := by
+  unfold stabStates
+  rw [mint_eq_two_pow, stabProd_eq_prod]
+
+/-- `∏ x ∈ s, f x` is the product of `f x` as `x` ranges over the elements of the finite set `s`.
+
+When the index type is a `Fintype`, the notation `∏ x, f x`, is a shorthand for
+`∏ x ∈ Finset.univ, f x`. -/
+theorem sympProd_eq_prod (j : Nat) : sympProd j = ∏ i ∈ Finset.range j, (2 ^ (2 * (i + 1)) - 1) := by
+  induction j with
+  | zero => rfl
+  | succ j ih => rw [sympProd_step, ih, mint_eq_two_pow, Finset.prod_range_succ, Nat.mul_comm]
+
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
+theorem symplectic_eq_mul (nn : Nat) : symplectic nn = 2 ^ (nn * nn) * ∏ i ∈ Finset.range nn, (2 ^ (2 * (i + 1)) - 1) := by
+  unfold symplectic
+  rw [mint_eq_two_pow, sympProd_eq_prod]
+
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
+theorem cliffordOrder_eq_mul (nn : Nat) : cliffordOrder nn = 2 ^ (2 * nn) * (2 ^ (nn * nn) * ∏ i ∈ Finset.range nn, (2 ^ (2 * (i + 1)) - 1)) := by
+  unfold cliffordOrder
+  rw [mint_eq_two_pow, symplectic_eq_mul]

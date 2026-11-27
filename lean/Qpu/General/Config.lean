@@ -103,7 +103,7 @@ theorem password_hash_fits :
     passwordHashIterations ≤ workerHashLimit ∧ workerHashLimit < passwordHashChoices.foldl max 0 := by decide
 
 /-- The workflows the repository tool serves: the points at which the tree checks itself. -/
-def workflows : List String := ["pre-commit", "commit-msg", "pre-push", "post-commit", "post-push", "prepare-commit-msg", "ci", "pre-deploy"]
+def workflows : List String := ["pre-commit", "commit-msg", "pre-push", "post-commit", "post-push", "prepare-commit-msg", "ci", "pre-deploy", "pre-tool"]
 
 /-- The workflows git itself starts. The others are started by CI and by the deploy. -/
 def gitHooks : List String := ["pre-commit", "commit-msg", "pre-push", "post-commit", "post-push", "prepare-commit-msg"]
@@ -111,13 +111,65 @@ def gitHooks : List String := ["pre-commit", "commit-msg", "pre-push", "post-com
 /-- The workflows that run after the act: they report it and cannot refuse it. -/
 def afterHooks : List String := ["post-commit", "post-push"]
 
+-- The workflows the harness of an agent starts, each with the harness event that starts it: the tree's court for a
+-- session, before a tool runs.
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+def agentEvents : List (String × String) := [("pre-tool", "PreToolUse")]
+
+-- The harness tools that write a file. In the tree a file changes only through the machine door's patch, and
+-- nothing is written outside a repository.
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+def agentWriteTools : List String := ["Edit", "Write", "MultiEdit", "NotebookEdit"]
+
+-- The harness tools that spawn agents. Their energy is measured by time against what landed, and each runs only on
+-- the owner's word.
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+def agentSpawnTools : List String := ["Agent", "Task", "Workflow"]
+
+-- The rules of an agent hook that ask the owner instead of refusing.
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+def agentConfirmRules : List String := ["timed"]
+
 /-- The hook file git reads for a workflow. Git has no hook after a push, so post-push rides `reference-transaction`,
     which git runs once the remote-tracking ref has moved; every other workflow has the hook of its own name. -/
 def hookFile (workflow : String) : String := if workflow == "post-push" then "reference-transaction" else workflow
 
-/-- Every git hook is a workflow, and every workflow that is not a git hook is one CI or the deploy starts. -/
+/-- Every git hook is a workflow, every agent hook is a workflow git does not start, and every other workflow is one
+    CI or the deploy starts. -/
 theorem git_hooks_are_workflows :
-    (gitHooks.all fun hook => workflows.contains hook) = true ∧ (workflows.filter fun w => !gitHooks.contains w) = ["ci", "pre-deploy"] := by
+    (gitHooks.all fun hook => workflows.contains hook) = true ∧ (agentEvents.all fun hook => workflows.contains hook.1 && !gitHooks.contains hook.1) = true ∧ (workflows.filter fun w => !gitHooks.contains w && !(agentEvents.map (·.1)).contains w) = ["ci", "pre-deploy"] := by
   decide
 
 /-- Every workflow git starts has its own hook file, and the workflows after the act are among those git starts. -/

@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingIsoDevelop
-The prose of `src/quantum/processing/iso-develop.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/a/d/e/f/a/3/2/5/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose
@@ -15,5 +15,6 @@ def quantumProcessingIsoDevelop_s8 : String := "the carried out process is relea
 def quantumProcessingIsoDevelop_s9 : String := "a process that was not carried out is not released"
 def quantumProcessingIsoDevelop_s10 : String := "the released output is monitored: each dimension is measured by the open data, and ISO 639-1 names ISO 639:2023"
 def quantumProcessingIsoDevelop_s11 : String := "a release that did not hold is not monitored"
+
 
 end Prose

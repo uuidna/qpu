@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingIdeas
-The prose of `src/quantum/processing/ideas.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/e/4/1/5/d/7/9/d/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose
@@ -110,5 +110,6 @@ def quantumProcessingIdeas_reason103 : String := "developed in .idea and handled
 def quantumProcessingIdeas_says104 : String := "⟦0⟧ lead(s) developed in ⟦1⟧ and handled from there"
 def quantumProcessingIdeas_s105 : String := "⟦0⟧ is empty. ⟦1⟧ lead(s) developed and removed. ⟦2⟧ exit codes, starting at 0, each an ISO 9001 strategy. ⟦3⟧ entries cover ⟦4⟧ exits⟦5⟧"
 def quantumProcessingIdeas_s106 : String := "⟦0⟧ file(s) remain in ⟦1⟧. ⟦2⟧ entries cover ⟦3⟧ exits"
+
 
 end Prose

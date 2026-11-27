@@ -9,7 +9,8 @@
   {"tag": "v2", "deleted_classes": ["DocketObject"]},
   {"tag": "v3", "new_sqlite_classes": ["Mailbox"]},
   {"tag": "v4", "new_sqlite_classes": ["Prover"]}],
- "main": "src/quantum/net/worker.ts",
+ "main": "src/quantum/uuid/programs/8/7/b/1/e/7/e/9/index.ts",
+ "limits": {"cpu_ms": 300000},
  "durable_objects":
  {"bindings":
   [{"name": "MAILBOX", "class_name": "Mailbox"},

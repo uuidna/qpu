@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingLeads
-The prose of `src/quantum/processing/leads.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/7/b/0/4/c/3/6/8/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose
@@ -28,5 +28,7 @@ def quantumProcessingLeads_s21 : String := "hooks and validations generated, nev
 def quantumProcessingLeads_s22 : String := "this that with from have what when then them they there their will would should could also just into only each every more most some such than very your about after before which while where being been were make made does done need needs want like please sure okay thing things using used here know think even much many well same other another again still because these those over under were what whats dont doesnt isnt cant wont didnt"
 def quantumProcessingLeads_closes23 : String := "when its probe answers without the blocker; never a wait"
 def quantumProcessingLeads_says24 : String := "⟦0⟧ directive(s) from ⟦1⟧ session(s): ⟦2⟧ folded, ⟦3⟧ proposed in ⟦4⟧ item(s), ⟦5⟧ acted on where said, ⟦6⟧ assent(s); next: ⟦7⟧ item(s) in ⟦8⟧ parallel wave(s), quality first (⟦9⟧ wave(s)); ⟦10⟧ lead(s) unpaid until a quality wave frees their bytes"
+
+def quantumProcessingLeads_s23 : String := "no caps on reads or walks (textbook_caps_removed)"
 
 end Prose

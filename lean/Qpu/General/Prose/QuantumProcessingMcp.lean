@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingMcp
-The prose of `src/quantum/processing/mcp.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/3/8/5/9/0/2/0/f/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose
@@ -447,6 +447,10 @@ def quantumProcessingMcp_nested5 : String := "⟦0⟧ textbooks mix two at a tim
 def quantumProcessingMcp_thousand1 : String := "true: every family formula below the thousand-bit bound, with how many examples it has, its first and its last with the reflection at 2 ^ 1000, and the numbers more than one family reaches. A family name: that family alone."
 def quantumProcessingMcp_thousand2 : String := "⟦0⟧ family formulas in ⟦1⟧ families, each with its examples below 2 ^ 1000 counted by Lean; ⟦2⟧ numbers are reached by more than one formula. The meaning of any other number is computed by lake exe meaning."
 def quantumProcessingMcp_thousand3 : String := "no family of that name has a formula in the thousand-bit table Lean writes"
+def quantumProcessingMcp_walk : String := "true: the register's qubits walked below the thousand-bit bound. k qubits hold a superposition of 2 ^ k states, and its cluster is every family formula that reaches it, each with the theorem that binds the formula to its library notion at every size (Thousand.meaning_sound: whatever the meaning finds is true). The answer says whether every qubit count is walked, what share of the cluster members a kernel theorem holds, which no theorem claims yet, and the qubits each relation, the NIST board and the CERN checksum need. { qubits: k }: that qubit count alone, with its cluster in full. { formula }: that family formula alone, with the theorem that holds every example of it"
+def quantumProcessingMcp_walkSays : String := "⟦0⟧ qubit counts walked below ⟦1⟧: ⟦2⟧ cluster members, ⟦3⟧ held by a kernel theorem, ⟦4⟧ discovered and ⟦5⟧ unclaimed. The register's ⟦6⟧ relations need ⟦7⟧ qubits, the NIST board ⟦8⟧ and the CERN checksum ⟦9⟧; the value 2 ^ k needs k + 1 bits (textbook_clay_register_width)"
+def quantumProcessingMcp_walkLevel : String := "⟦0⟧ qubits hold a superposition of 2 ^ ⟦0⟧ states, a number of ⟦1⟧ bits (textbook_clay_register_width). ⟦2⟧ family formulas of ⟦3⟧ families reach it, ⟦4⟧ held by a kernel theorem"
+def quantumProcessingMcp_walkFormula : String := "⟦0⟧ of ⟦1⟧ is bound to its library notion at every size by ⟦2⟧, so every one of its examples below the bound, a count of ⟦3⟧ digits, is held by that theorem (Thousand.meaning_sound); it reaches the superposition 2 ^ k at ⟦4⟧ of the ⟦5⟧ qubit counts walked"
 def quantumProcessingMcp_mix4 : String := "Three module names make a trinity: every product of each varies with every product of the other two, each in its own ISO and scientific context."
 def quantumProcessingMcp_mix5 : String := "the trinity of ⟦0⟧, ⟦1⟧ and ⟦2⟧ has ⟦3⟧ product variations; ⟦4⟧ are listed from ⟦5⟧; Lean counts ⟦6⟧ trinities of ⟦7⟧ textbooks and ⟦8⟧ trinity variations in all"
 def quantumProcessingMcp_mix6 : String := "⟦0⟧ textbooks mix three at a time into ⟦1⟧ trinities with ⟦2⟧ variations, counted by Lean"
@@ -464,9 +468,26 @@ def quantumProcessingMcp_gaps434 : String := "true: the gaps of the library, as 
 
 def quantumProcessingMcp_says435 : String := "⟦0⟧ theorem(s) searched by Lean's library search: ⟦1⟧ conjunct(s) in the library or decided by it, ⟦2⟧ open, ⟦3⟧ undecided, ⟦4⟧ of this tree's own notions; ⟦5⟧ shown"
 
+def quantumProcessingMcp_s432 : String := "matched by no tool, example or lead (textbook_questions_matched)"
+
+def quantumProcessingMcp_scale : String := "To scale a long task, split its list with shard { list, index, count: ⟦0⟧ }, one call for each index below ⟦0⟧: the shares cover the list exactly once (textbook_shards_cover, textbook_shards_disjoint). Every answer is sealed under its address, so an answer already held is checked with verify { uuid, content } in one step and is not asked again (textbook_court_audits_repo)."
 def quantumProcessingMcp_welcome : String := "Welcome. This server is the build whose receipt is ⟦0⟧ (SHA-256 ⟦1⟧), and the same text is its home page, its README, its npm package and its Zenodo record. Read that text from the resource ⟦2⟧ and verify it yourself with verify { uuid: \"⟦0⟧\", content } on what you read: a copy that does not verify is not this build."
 def quantumProcessingMcp_use : String := "To use it: tools/list names every tool with its schema; call any tool with the arguments its schema names; every answer is a block sealed under its UUID, which verify { uuid, content } decides. Start with metrics { } for the tree in numbers, google { challenges: true } for the Quantum AI challenges, and leads { } for what is owed."
 def quantumProcessingMcp_improve : String := "To improve it: every lead that leads { } lists as open, partial or blocked is a task; prove its statement in Lean (the lean tool checks a source) or answer it through its door, and send the result to the author at ⟦0⟧. The work is licensed ⟦1⟧, so an improvement lands through the author, never as a derivative, and the next build's receipt carries it."
 def quantumProcessingMcp_receiptResource : String := "the one text this build is, which its receipt addresses: verify { uuid, content } on it decides"
+
+def quantumProcessingMcp_cirqJson : String := "the circuit exactly as cirq.to_json writes it, its moments of gate operations and an optional measurement, read as the operations above, Rx, Ry and Rz and every global shift carried exactly as the global phase they multiply the state by; a gate this door does not compute is refused by its cirq_type (textbook_cirq_exports)"
+
+def quantumProcessingMcp_stimText : String := "the circuit exactly as Stim writes it, one instruction a line over integer targets, each target a line qubit and M the measurement, read as the operations above; an instruction this door does not compute, a noise channel or an annotation, is refused by its name (CircuitBasedQuantumComputing.stabilizer_hadamard)"
+
+def quantumProcessingMcp_fermionText : String := "the fermion operator exactly as OpenFermion prints it, a coefficient and its ladders in brackets a term, the terms joined by +, mapped as jordan_wigner maps it, every term transformed and the Pauli strings summed (FermionBridge.ladder_anticommute)"
+
+def quantumProcessingMcp_qsimText : String := "the circuit exactly as qsim reads it, the register's size on the first line and then one gate a line as its time, its name, its qubits and its parameters, read as the operations above, each rotation a power of its Pauli times a global phase (QsimBridge.rotation_phase); a gate this door does not compute is refused"
+
+def quantumProcessingMcp_qualtranCirq : String := "any circuit exactly as cirq.to_json writes it, counted gate by gate as Qualtran counts it, its T, Toffoli, Clifford and rotation gates and its qubits, a power of Z at three or five quarter turns one T beside a Clifford because powers of Z add (QualtranBridge.z_powers_add)"
+
+def quantumProcessingMcp_qasmText : String := "the circuit in OpenQASM 2.0 exactly as Cirq's own importer reads it, its registers laid out one after another as one line of qubits so that no two qubits meet (QasmBridge.registers_flatten), read as the operations above, each rotation a power of its Pauli times a global phase; a gate this door does not compute is refused"
+
+def quantumProcessingMcp_recirqProblem : String := "a ReCirq QAOA problem: its graph exactly as networkx's node_link_data writes it, nodes by id and edges by source, target and weight, with ReCirq's angles gamma and beta, answered by the energy ReCirq reports, the expected value of the sum of w Z_i Z_j, which is the total weight less twice the expected cut (RecirqBridge.ising_cut)"
 
 end Prose

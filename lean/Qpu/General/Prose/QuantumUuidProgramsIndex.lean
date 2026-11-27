@@ -19,4 +19,9 @@ def quantumUuidProgramsIndex_s12 : String := "⟦0⟧/⟦1⟧ leaves: neighbours
 def quantumUuidProgramsIndex_s13 : String := "⟦0⟧/⟦1⟧ leaves seal and compete online; ⟦2⟧ refused"
 def quantumUuidProgramsIndex_s14 : String := "⟦0⟧/⟦1⟧ folders: neighbours reflect and test each other across ⟦2⟧ online competitions"
 
+def quantumUuidProgramsIndex_s15 : String := "every folder has index sealing all neighbours that reflect and test each other in games and competitions online (textbook_compete_knows)"
+def quantumUuidProgramsIndex_s16 : String := "neighbours reflect and test each other in games and competitions online (textbook_compete_knows)"
+def quantumUuidProgramsIndex_s18 : String := "index seals all neighbours via payload uuid product combinations (textbook_plugin_combinations)"
+def quantumUuidProgramsIndex_s20 : String := "neighbours reflect and test each other (textbook_neighbour_step)"
+
 end Prose

@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingSelftest
-The prose of `src/quantum/processing/selftest.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/b/4/c/5/f/2/d/e/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose

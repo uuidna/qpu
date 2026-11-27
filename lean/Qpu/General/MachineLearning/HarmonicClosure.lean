@@ -47,4 +47,58 @@ theorem closing_count : ((List.range 107).filter (fun t => Involute t == 100)).l
 theorem closing_set : (List.range 107).filter (fun t => Involute t == 100) =
     [23, 24, 25, 26, 27, 28, 53, 54, 55, 56, 57, 58, 83, 84, 85, 86, 87, 88] := by decide
 
+/-! ## The fold of 440 in 432
+
+The author's claim, as far as the kernel decides it: two taken from each 110 of a harmonic of 440 leaves the same
+harmonic of 432. Each theorem below is one named theorem of Lean's library applied to these numbers, for every natural
+number, so no bound is needed. -/
+
+/-- Every harmonic of 440 less two from each of its four 110s is the same harmonic of 432, by `Nat.mul_sub`. -/
+theorem fold_harmonic (n : Nat) : n * 432 = n * 440 - n * (4 * 2) := Nat.mul_sub n 440 (4 * 2)
+
+/-- The unfold gives the two back to each 110, by `Nat.mul_add`. -/
+theorem unfold_harmonic (n : Nat) : n * 440 = n * 432 + n * (4 * 2) := Nat.mul_add n 432 (4 * 2)
+
+/-- The folded harmonic never exceeds the harmonic it starts from, by `Nat.mul_le_mul_left` and `Nat.sub_le`. -/
+theorem fold_never_grows (n : Nat) : n * 432 ≤ n * 440 := Nat.mul_le_mul_left n (Nat.sub_le 440 (4 * 2))
+
+/-- A harmonic of 440 that fits in 64 bits folds to one that fits in them, by `Qpu.Harmonic.fold_never_grows` and
+`Nat.lt_of_le_of_lt`. -/
+theorem fold_within_64 (n : Nat) (h : n * 440 < 2 ^ 64) : n * 432 < 2 ^ 64 := Nat.lt_of_le_of_lt (fold_never_grows n) h
+
+/-- A value a 64-bit word holds is below 2 ^ 64, by `Fin.is_lt`. -/
+theorem word_bounded (x : Fin (2 ^ 64)) : x.val < 2 ^ 64 := Fin.is_lt x
+
+/-- The reflection about the sum of the two ladders is its own inverse at every harmonic, by `Nat.sub_sub_self`. -/
+theorem fold_reflection (n x : Nat) (h : x ≤ n * 872) : n * 872 - (n * 872 - x) = x := Nat.sub_sub_self h
+
+/-- That reflection sends each harmonic of 440 to the same harmonic of 432, by `Nat.mul_sub`. -/
+theorem fold_reflects (n : Nat) : n * 432 = n * 872 - n * 440 := Nat.mul_sub n 872 440
+
+/-! ## The merkaba: the 6 × 7 frame and the 7 × 6 frame
+
+The uuid tree computes a merkaba as two frames over the same cells, spun in opposite directions, and every natural
+number as its quotient times the frame plus its cell. These are the facts of that frame. The passage between the two
+frames and its return is `textbook_mixed_radix`. -/
+
+/-- The 6 × 7 frame and the 7 × 6 frame hold the same count of cells, by `Nat.mul_comm`. -/
+theorem merkaba_frames_agree : 6 * 7 = 7 * 6 := Nat.mul_comm 6 7
+
+/-- Every natural number is its quotient times the frame plus its cell, so the frame loses nothing of it, by
+`Nat.div_add_mod'`. -/
+theorem merkaba_fits (n : Nat) : n / (6 * 7) * (6 * 7) + n % (6 * 7) = n := Nat.div_add_mod' n (6 * 7)
+
+/-- The cell of every natural number is inside the frame, by `Nat.mod_lt`, `Nat.mul_pos` and `Nat.succ_pos`. -/
+theorem merkaba_cell_inside (n : Nat) : n % (6 * 7) < 6 * 7 := Nat.mod_lt n (Nat.mul_pos (Nat.succ_pos 5) (Nat.succ_pos 6))
+
+/-- Every cell of the frame is the cell of a natural number, itself, so the frame leaves no cell uncovered, by
+`Nat.mod_eq_of_lt`. -/
+theorem merkaba_cells_covered (c : Nat) (h : c < 6 * 7) : c % (6 * 7) = c := Nat.mod_eq_of_lt h
+
+/-- A full turn of the frame returns every number to its cell, by `Nat.add_mod_right`. -/
+theorem merkaba_turn_returns (c : Nat) : (c + 6 * 7) % (6 * 7) = c % (6 * 7) := Nat.add_mod_right c (6 * 7)
+
+/-- A cell and the cell the counter spin sends it to complete the frame, by `Nat.add_sub_of_le`. -/
+theorem merkaba_spins_meet (c : Nat) (h : c ≤ 6 * 7) : c + (6 * 7 - c) = 6 * 7 := Nat.add_sub_of_le h
+
 end Qpu.Harmonic

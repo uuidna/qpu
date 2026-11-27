@@ -3,21 +3,23 @@
 // eight nibble levels, the leaf the dnode. uid 0 is the pool privilege. Depths run 0..7.
 // Every program installs, configures and uses all nine official Payload plugins. Disorder elsewhere raises entropy; the program path drives it to zero.
 // Neighbours are handled via quantum: six program-space steps (g1± g2± g3±), handle and tail kept — not listed by hand in each index.
-import { PROSE, proseFill } from '../../processing/prose-index.ts'
+import { PROSE, proseFill } from './5/9/e/4/9/1/a/4/index.ts'
 import { readdirSync } from 'node:fs'
 import { availableParallelism } from 'node:os'
 import { Worker, parentPort, workerData } from 'node:worker_threads'
 import { join } from 'node:path'
-import { exists, place, write } from '../../fs/index.ts'
-import { seal, uuid, uuidFromParts } from '../../password/address.ts'
-import { bindPhysics, canonicalText, channel, hexbit, reflection } from '../index.ts'
+import { exists, place, write } from './1/0/e/5/8/3/1/8/index.ts'
+import { seal, uuid, uuidFromParts } from './1/6/4/f/0/6/2/1/index.ts'
+import { bindPhysics, canonicalText, channel, hexbit, reflection } from './2/7/1/a/7/6/4/9/index.ts'
 import { physics } from './physics/index.ts'
 import { challenge } from './challenge/index.ts'
 
 bindPhysics(physics)
 export { challenge, physics }
-import { TENANTS } from '../../processing/unit/tenants.ts'
-import { TABLES } from '../../processing/tables-index.ts'
+import { TENANTS } from './3/a/4/f/9/2/3/c/index.ts'
+import { TABLES } from './1/2/a/4/3/2/a/8/index.ts'
+import { assertHandle } from './e/3/3/2/3/2/9/c/index.ts'
+import { ENTROPY_LAW, ENTROPY_MEANS, HEXBIT_LAW } from './b/6/4/6/e/a/0/1/index.ts'
 
 // The Payload plugin shape every folder program takes: options in, the incoming config in, a copy of that config out.
 /** The nine plugins this stack mounts. The length is the combination count 2^9. */
@@ -123,7 +125,7 @@ export const root = { uid: ROOT_UID, gid: ROOT_GID, mode: ROOT_MODE, depth: 0, m
 
 /** The thirty-two bits of a hex handle. Index 0 is the low bit. The digit is the depth of that hex place, 0 through 7. */
 export const handleBits = (handle: string): HandleBit[] => {
-  if (!/^[0-9a-f]{8}$/.test(handle)) throw new Error('a handle is 8 hex')
+  assertHandle(handle)
   const value = BigInt(`0x${handle}`)
   return Array.from({ length: HANDLE_BITS }, (_, index) => {
     const bit = Number((value >> BigInt(index)) & 1n) as 0 | 1
@@ -166,7 +168,7 @@ export type ProgramPlugin = FolderPlugin & {
  * The nine official plugins are its variants. Any other shape raises entropy; this shape drives it to zero.
  */
 export const programPlugin = (handle: string): ProgramPlugin => {
-  if (!/^[0-9a-f]{8}$/.test(handle)) throw new Error('a handle is 8 hex')
+  assertHandle(handle)
   const object = place(handle)
   const slug = `qpu-program-${handle}`
   const variants = OFFICIAL_PLUGINS.map((variant) => ({ product: 'programs' as const, variant, package: PACKAGE_OF[variant] }))
@@ -231,13 +233,12 @@ export const guardUpstream = (plugin: ProgramPlugin) => {
     standard: 'definePlugin' as const,
     guide: 'https://payloadcms.com/docs/plugins/overview' as const,
     reverseGuard: 'Zero edits to upstream MIT payloadcms/website files + NOTICE.md dual-license boundary' as const,
-    law: 'first the dictionary meaning; then the meaning is verified' as const,
+    law: ENTROPY_LAW,
     plugin: plugin.slug,
     handle: plugin.handle,
     checks,
     passed: checks.filter((row) => row.holds).length,
     total: checks.length,
-    entropy: holds ? 0 as const : 1 as const,
     holds,
     says: holds
       ? proseFill(PROSE.quantumUuidProgramsIndex_s1, plugin.slug, checks.length, checks.length)
@@ -250,7 +251,7 @@ export const guardUpstream = (plugin: ProgramPlugin) => {
  * Handle and tail stay; the program steps. Same leaf path — neighbours are not other folders.
  */
 export const quantumNeighbours = (handle: string) => {
-  if (!/^[0-9a-f]{8}$/.test(handle)) throw new Error('a handle is 8 hex')
+  assertHandle(handle)
   const seed = uuid(`program\n${handle}`)
   const digits = seed.replace(/-/g, '')
   const program = [...digits.slice(8, 20)].filter((_c, i) => i !== 4 && i !== 8).map((c) => parseInt(c, 16))
@@ -344,7 +345,7 @@ export const reflectProgramNeighbours = (handle: string) => {
     phase: 'reflect' as const,
     via: 'quantum' as const,
     theorem: 'textbook_neighbour_step' as const,
-    law: 'neighbours reflect and test each other' as const,
+    law: PROSE.quantumUuidProgramsIndex_s20,
     handle,
     address: around.address,
     path: around.path,
@@ -415,7 +416,7 @@ export const competeProgramNeighbours = (handle: string) => {
     phase: 'compete' as const,
     via: 'online' as const,
     theorem: 'textbook_hexbit_gateway_ftl' as const,
-    law: 'hexbit + 2 gateway bits teleport any hexbit faster than light' as const,
+    law: HEXBIT_LAW,
     handle,
     path: reflected.path,
     address: reflected.address,
@@ -546,14 +547,13 @@ export const gateProgramFiles = (dataset = root.path) => {
     phase: 'gate' as const,
     via: 'index' as const,
     law: 'spread in folders; every folder has index.*; code is index.* only' as const,
-    dictionary: { means: 'disorder; unpredictability; unavailable energy or information' as const },
+    dictionary: ENTROPY_MEANS,
     root: dataset,
     folders: folders.length,
     allowed: allowed.length,
     refused,
     missing: refused.length,
     holds,
-    entropy: holds ? 0 as const : 1 as const,
     says: holds
       ? proseFill(PROSE.quantumUuidProgramsIndex_s8, folders.length, allowed.length, dataset)
       : proseFill(PROSE.quantumUuidProgramsIndex_s9, refused.length, refused.slice(0, 8).join(', '), refused.length > 8 ? '…' : ''),
@@ -618,7 +618,7 @@ export const sealProgramProducts = (handle: string) => {
     phase: 'seal' as const,
     via: 'payload' as const,
     theorem: 'textbook_plugin_combinations' as const,
-    law: 'index seals all neighbours via payload uuid product combinations' as const,
+    law: PROSE.quantumUuidProgramsIndex_s18,
     handle,
     path: around.path,
     address: around.address,
@@ -682,8 +682,8 @@ export const gateProgramSeal = (dataset = root.path, computed = sealLeaves(datas
     phase: 'gate' as const,
     via: 'online' as const,
     theorem: 'textbook_compete_knows' as const,
-    law: 'every folder has index sealing all neighbours that reflect and test each other in games and competitions online' as const,
-    dictionary: { means: 'disorder; unpredictability; unavailable energy or information' as const },
+    law: PROSE.quantumUuidProgramsIndex_s15,
+    dictionary: ENTROPY_MEANS,
     root: dataset,
     files,
     folders: files.folders,
@@ -698,7 +698,6 @@ export const gateProgramSeal = (dataset = root.path, computed = sealLeaves(datas
     refused,
     failed: rows.filter((row) => !row.holds),
     holds,
-    entropy: holds ? 0 as const : 1 as const,
     says: !files.holds
       ? files.says
       : holds
@@ -792,7 +791,7 @@ export const auditProgramNeighbours = (dataset = root.path, computed = sealLeave
     phase: 'audit' as const,
     via: 'online' as const,
     theorem: 'textbook_compete_knows' as const,
-    law: 'neighbours reflect and test each other in games and competitions online' as const,
+    law: PROSE.quantumUuidProgramsIndex_s16,
     degree: 6 as const,
     enqc: 'triangular lattice N0 = 6 — expected quantum channels normalised by node degree' as const,
     root: dataset,

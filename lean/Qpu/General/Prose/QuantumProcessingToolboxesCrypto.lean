@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingToolboxesCrypto
-The prose of `src/quantum/processing/toolboxes/crypto.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/d/7/4/9/a/6/e/6/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose
@@ -158,5 +158,7 @@ def quantumProcessingToolboxesCrypto_brief : String := "only { bytes, sha256, ad
 def quantumProcessingToolboxesCrypto_showsParts : String := "a sealed text answers its address already split as a caller indexes it: the handle of 8 hex digits for a SKU, the program of 10 for an index, the tail of 12 for parameters, and the 122 free qubits of the register; with the 2 stamp nibbles they are the 32 of the address"
 def quantumProcessingToolboxesCrypto_showsBatch : String := "three texts sealed in one call, briefly: one { bytes, sha256, address } each, in order, and the Merkle root over all three with its own address"
 def quantumProcessingToolboxesCrypto_batchSays : String := "⟦0⟧ text(s) sealed, each under its own address; the Merkle root ⟦1⟧ seals them all, and any one changed changes the root"
+
+def quantumProcessingToolboxesCrypto_s148 : String := "decode takes an address or a uuid (textbook_decode_not_search)"
 
 end Prose

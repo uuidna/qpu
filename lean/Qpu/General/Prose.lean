@@ -12,10 +12,15 @@ import Qpu.General.Prose.QuantumOsAlpinePackages
 import Qpu.General.Prose.QuantumPasswordAddress
 import Qpu.General.Prose.QuantumPayloadDeploy
 import Qpu.General.Prose.QuantumPayloadWaves
+import Qpu.General.Prose.QuantumProcessingAgents
+import Qpu.General.Prose.QuantumProcessingContract
+import Qpu.General.Prose.QuantumProcessingCryptoCross
+import Qpu.General.Prose.QuantumProcessingDeployed
 import Qpu.General.Prose.QuantumProcessingAccess
 import Qpu.General.Prose.QuantumProcessingAlgorithms
 import Qpu.General.Prose.QuantumProcessingAlpine
 import Qpu.General.Prose.QuantumProcessingAudit
+import Qpu.General.Prose.QuantumProcessingCatalog
 import Qpu.General.Prose.QuantumProcessingCatalogIndex
 import Qpu.General.Prose.QuantumProcessingChemistry
 import Qpu.General.Prose.QuantumProcessingCirq

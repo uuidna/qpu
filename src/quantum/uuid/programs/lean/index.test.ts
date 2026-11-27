@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { leanPrograms } from './index.ts'
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every quantum lean module is one uuid program and the next step rotates it. */
 test('every quantum lean module is one uuid program and the next step rotates it', () => {
   const programs = leanPrograms()
   assert.equal(programs.holds, true)

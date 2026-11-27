@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingExpressions
-The prose of `src/quantum/processing/expressions.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/2/4/6/5/f/6/3/f/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose
@@ -14,5 +14,8 @@ def quantumProcessingExpressions_reason7 : String := "a number in prose rests on
 def quantumProcessingExpressions_statement8 : String := "⟦0⟧ carries a verdict word beside the Clay problems: \"⟦1⟧\""
 def quantumProcessingExpressions_reason9 : String := "the tree states only what the kernel accepts; match and compete decide, never prose"
 def quantumProcessingExpressions_says10 : String := "⟦0⟧ number(s) in ⟦1⟧ sentence(s) of ⟦2⟧ text(s): ⟦3⟧ rest on a textbook expression a client can evaluate, ⟦4⟧ are leads; ⟦5⟧ verdict word(s) beside the Clay problems"
+
+def quantumProcessingExpressions_s6 : String := "a term where a proposition is due (textbook_expressions_evaluate)"
+def quantumProcessingExpressions_s7 : String := "a truth where a number is due (textbook_expressions_evaluate)"
 
 end Prose

@@ -6,7 +6,19 @@ Quantum-annealer topology qubit counts over the unit-cell size m, exact Nat grou
 Chimera count (vertices qubits per cell) and the Pegasus count. Every law is quantified over m — unlimited cell
 sizes — with the textbook values kept as kernel-decided controls. -/
 
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
 def chimera (m : Nat) : Nat := vertices * m ^ 2
+/-- `a * b` computes the product of `a` and `b`.
+The meaning of this notation is type-dependent. 
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `*` in identifiers is `mul`.-/
 def pegasus (m : Nat) : Nat := vertices * n * m * (m - 1)
 
 /-- One more cell row adds exactly vertices·(2m+1) qubits, for every m. -/

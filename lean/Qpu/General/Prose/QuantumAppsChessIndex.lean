@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumAppsChessIndex
-The prose of `src/quantum/apps/chess/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/8/3/2/b/d/2/2/7/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose

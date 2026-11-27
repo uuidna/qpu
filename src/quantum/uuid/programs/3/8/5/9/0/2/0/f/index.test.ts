@@ -1,0 +1,643 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { handle, type Reply } from './index.ts'
+import { THEOREMS } from '../../../../../../../../3/f/0/e/7/a/6/f/index.ts'
+import { LEADS, listCleanupSubjects } from '../../../../../../../../7/b/0/4/c/3/6/8/index.ts'
+
+const call = (name: string, args: unknown): Reply => {
+  const reply = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
+  assert.ok(!(reply instanceof Promise), `${name} answers at once`)
+  return reply
+}
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: tools/list serves the forty-eight tools in twelve toolboxes with input schemas, and initialize names the server. */
+test('tools/list serves the forty-eight tools in twelve toolboxes with input schemas, and initialize names the server', () => {
+  const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })
+  assert.ok('result' in init && (init.result as { serverInfo: { name: string } }).serverInfo.name === 'qpu')
+  const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
+  assert.ok('result' in list)
+  const tools = (list.result as { tools: { name: string; inputSchema: object }[] }).tools
+  const byToolbox: Record<string, string[]> = {}
+  for (const t of tools as { name: string; _meta?: { toolbox?: string } }[]) (byToolbox[t._meta?.toolbox ?? 'none'] ??= []).push(t.name)
+  assert.deepEqual(byToolbox, {
+    google: ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap', 'algorithm', 'software', 'statements', 'repositories', 'quantumlib', 'quantum-error-correction', 'chemistry-simulation', 'fault-tolerant-design', 'google'],
+    tree: ['clay', 'match', 'verify', 'leads', 'audit', 'metrics', 'textbook', 'css', 'dashboard', 'clone', 'apis'], // the Clay set first
+    flow: ['discover', 'wave', 'readiness', 'imagine', 'e2e', 'shard'],
+    language: ['translate', 'prose'],
+    raid: ['mongo'],
+    billing: ['stripe', 'currency'],
+    legal: ['legal', 'compete', 'patents'],
+    repository: ['repository'],
+    standards: ['jsonld', 'codes', 'validate'],
+    extension: ['extend'],
+    crypto: ['fold', 'seal', 'attest'],
+  }, 'every tool names its toolbox in _meta, and the eleven toolboxes hold the forty-seven tools')
+  for (const t of tools) assert.equal(typeof t.inputSchema, 'object')
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the processor tool returns the Willow figures typed by name. */
+test('the processor tool returns the Willow figures typed by name', () => {
+  const r = call('processor', { name: 'Willow' })
+  assert.ok('result' in r)
+  const data = (r.result as { structuredContent: { qubits: number; statedAverageConnectivity: number } }).structuredContent
+  assert.equal(data.qubits, 105)
+  assert.equal(data.statedAverageConnectivity, 3.47)
+  const unknown = call('processor', { name: 'Mars' })
+  assert.ok('error' in unknown && unknown.error.code === -32602)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a circuit compiles from POST parameters: a Hadamard on a grid qubit gives equal weight, sampled by key. */
+test('a circuit compiles from POST parameters: a Hadamard on a grid qubit gives equal weight, sampled by key', () => {
+  const r = call('circuit', { operations: [{ gate: 'H', qubits: [{ kind: 'grid', row: 0, col: 0 }] }], measure: { key: 'm', qubits: [{ kind: 'grid', row: 0, col: 0 }] }, repetitions: 400 })
+  assert.ok('result' in r)
+  const data = (r.result as { structuredContent: { bitstrings: string[]; histogram: Record<string, number> } }).structuredContent
+  assert.equal(data.bitstrings.length, 400)
+  assert.ok(data.bitstrings.every((b) => b === '0' || b === '1'))
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: an exponent compiles the gate power: X with exponent 0.5 squared is X, so two of them flip the qubit. */
+test('an exponent compiles the gate power: X with exponent 0.5 squared is X, so two of them flip the qubit', () => {
+  const r = call('circuit', { operations: [{ gate: 'X', qubits: [{ kind: 'line', x: 0 }], exponent: 0.5 }, { gate: 'X', qubits: [{ kind: 'line', x: 0 }], exponent: 0.5 }] })
+  assert.ok('result' in r)
+  const amps = (r.result as { structuredContent: { amplitudes: { re: number; im: number }[] } }).structuredContent.amplitudes
+  assert.ok(Math.abs(amps[0]!.re) < 1e-12 && Math.abs(amps[1]!.re - 1) < 1e-12)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: echo returns probability 1 without a perturbation, and less than 1 when a perturbation reaches the measured qubits. */
+test('echo returns probability 1 without a perturbation, and less than 1 when a perturbation reaches the measured qubits', () => {
+  const forward = [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }, { gate: 'CNOT', qubits: [{ kind: 'line', x: 0 }, { kind: 'line', x: 1 }] }]
+  const clean = call('echo', { forward })
+  assert.ok('result' in clean && Math.abs((clean.result as { structuredContent: { probability: number } }).structuredContent.probability - 1) < 1e-12)
+  const perturbed = call('echo', { forward, perturbation: { gate: 'X', qubits: [{ kind: 'line', x: 1 }] } })
+  assert.ok('result' in perturbed && (perturbed.result as { structuredContent: { probability: number } }).structuredContent.probability < 1 - 1e-6)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the echo benchmark is the figures Google states. */
+test('the echo benchmark is the figures Google states', () => {
+  const r = call('echo_benchmark', {})
+  assert.ok('result' in r)
+  const benchmark = (r.result as { structuredContent: { processor: string; qubits: number; speedup: number; molecules: number[]; experiment: { qubitsStatedInText: number } } }).structuredContent
+  assert.deepEqual([benchmark.processor, benchmark.qubits, benchmark.speedup, benchmark.molecules], ['Willow', 105, 13000, [15, 28]])
+  assert.equal(benchmark.experiment.qubitsStatedInText, 103)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: invalid parameters are refused with a JSON-RPC invalid-params error, and an unknown tool or method is not served. */
+test('invalid parameters are refused with a JSON-RPC invalid-params error, and an unknown tool or method is not served', () => {
+  const badGate = call('circuit', { operations: [{ gate: 'NOT', qubits: [{ kind: 'line', x: 0 }] }] })
+  assert.ok('error' in badGate && badGate.error.code === -32602)
+  const badArity = call('circuit', { operations: [{ gate: 'CZ', qubits: [{ kind: 'line', x: 0 }] }] })
+  assert.ok('error' in badArity && badArity.error.code === -32602)
+  assert.ok('error' in call('nope', {}))
+  assert.ok('error' in handle({ jsonrpc: '2.0', id: 2, method: 'prompts/list' })) // resources are served now (MCP Apps); prompts are not
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the handler runs in a browser: it imports nothing from Node. */
+test('the handler runs in a browser: it imports nothing from Node', () => {
+  for (const file of ['./index.ts', '../../../../../../../../9/3/0/a/3/9/2/7/index.ts', '../../../../../../../../a/7/e/6/0/d/5/7/index.ts', '../../../../../../../../f/7/e/3/6/2/f/6/index.ts']) {
+    assert.doesNotMatch(readFileSync(new URL(file, import.meta.url), 'utf8'), /from ['"]node:/, `${file} imports a Node built-in`)
+  }
+})
+
+const readWidget = (reply: ReturnType<typeof handle>): string => {
+  assert.ok('result' in reply)
+  const widget = (reply.result as { _meta?: { widget?: unknown } })._meta?.widget
+  assert.equal(typeof widget, 'string')
+  return widget as string
+}
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every tool returns a widget that uses the host tokens and no literal colours. */
+test('every tool returns a widget that uses the host tokens and no literal colours', () => {
+  const widgets = [
+    readWidget(call('processor', { name: 'Willow' })),
+    readWidget(call('circuit', { operations: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }] })),
+    readWidget(call('circuit', { operations: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }], measure: { key: 'm', qubits: [{ kind: 'line', x: 0 }] }, repetitions: 50 })),
+    readWidget(call('echo', { forward: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }] })),
+    readWidget(call('echo_benchmark', {})),
+    readWidget(call('roadmap', {})),
+  ]
+  for (const widget of widgets) {
+    assert.ok(widget.length > 0 && widget.includes('var(--'))
+    assert.doesNotMatch(widget, /#[0-9a-f]{3,6}\b/i, 'a widget writes no literal hex colour')
+    assert.doesNotMatch(widget, /<(script|style)\b/i, 'a widget carries no script or style block')
+  }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the widget shows the result it was built from: the processor qubit count and the benchmark speedup. */
+test('the widget shows the result it was built from: the processor qubit count and the benchmark speedup', () => {
+  assert.match(readWidget(call('processor', { name: 'Willow' })), />105</)
+  assert.match(readWidget(call('echo_benchmark', {})), />13,000×</)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a widget escapes text from the caller, so a name cannot inject markup. */
+test('a widget escapes text from the caller, so a name cannot inject markup', () => {
+  const widget = readWidget(call('circuit', { operations: [], measure: { key: '<img src=x onerror=1>', qubits: [{ kind: 'line', x: 0 }] }, repetitions: 1 }))
+  assert.doesNotMatch(widget, /<img/)
+  assert.match(widget, /&lt;img/)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the roadmap tool serves the six milestones of the Google figure, and one milestone on request. */
+test('the roadmap tool serves the six milestones of the Google figure, and one milestone on request', () => {
+  const all = call('roadmap', {})
+  assert.ok('result' in all)
+  const milestones = (all.result as { structuredContent: { milestones: { number: number; physicalQubits: number; status: string }[] } }).structuredContent.milestones
+  assert.deepEqual(milestones.map((m) => m.number), [1, 2, 3, 4, 5, 6])
+  assert.deepEqual(milestones.map((m) => m.physicalQubits), [54, 100, 1000, 10000, 100000, 1000000])
+  assert.deepEqual(milestones.filter((m) => m.status === 'achieved').map((m) => m.number), [1, 2])
+  const one = call('roadmap', { milestone: 3 })
+  assert.ok('result' in one && (one.result as { structuredContent: { milestones: { number: number }[] } }).structuredContent.milestones[0]!.number === 3)
+  assert.ok('error' in call('roadmap', { milestone: 7 }) && (call('roadmap', { milestone: 7 }) as { error: { code: number } }).error.code === -32602)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the roadmap tool also serves the four application bands of the figure, each with its qubit range. */
+test('the roadmap tool also serves the four application bands of the figure, each with its qubit range', () => {
+  const r = call('roadmap', {})
+  assert.ok('result' in r)
+  const apps = (r.result as { structuredContent: { applications: { band: string; low: number; high: number }[] } }).structuredContent.applications
+  assert.deepEqual(apps.map((a) => a.band), ['50k–100k', '100k–500k', '500k–5M', '5M–50M'])
+  assert.equal(apps[0]!.low, 50000)
+  assert.equal(apps[3]!.high, 50000000)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the circuit tool runs noise channels on the density matrix and returns expectations for Pauli observables. */
+test('the circuit tool runs noise channels on the density matrix and returns expectations for Pauli observables', () => {
+  const r = call('circuit', { operations: [{ gate: 'X', qubits: [{ kind: 'line', x: 0 }] }], noise: [{ name: 'amplitude_damp', gamma: 0.2 }] })
+  assert.ok('result' in r)
+  const data = (r.result as { structuredContent: { probabilities: number[]; trace: number } }).structuredContent
+  assert.ok(Math.abs(data.probabilities[1]! - 0.8) < 1e-12 && Math.abs(data.trace - 1) < 1e-12)
+  const bell = call('circuit', { operations: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }, { gate: 'CNOT', qubits: [{ kind: 'line', x: 0 }, { kind: 'line', x: 1 }] }], observables: [{ 'line:0': 'Z', 'line:1': 'Z' }, { 'line:0': 'X', 'line:1': 'X' }] })
+  assert.ok('result' in bell)
+  assert.deepEqual((bell.result as { structuredContent: { expectations: number[] } }).structuredContent.expectations.map((e) => Math.round(e)), [1, 1])
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the circuit tool refuses a noisy run that also measures, an unknown channel, and a circuit that does not fit its device. */
+test('the circuit tool refuses a noisy run that also measures, an unknown channel, and a circuit that does not fit its device', () => {
+  const both = call('circuit', { operations: [], noise: [{ name: 'reset' }], measure: { key: 'm', qubits: [{ kind: 'line', x: 0 }] } })
+  assert.ok('error' in both && both.error.code === -32602)
+  const unknown = call('circuit', { operations: [{ gate: 'X', qubits: [{ kind: 'line', x: 0 }] }], noise: [{ name: 'thermal' }] })
+  assert.ok('error' in unknown && unknown.error.code === -32602)
+  const off = call('circuit', { operations: [{ gate: 'X', qubits: [{ kind: 'line', x: 0 }] }], device: 'Willow' })
+  assert.ok('error' in off && off.error.code === -32602)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: PhasedXZ is served by the circuit tool, and a call that omits its exponents does not run. */
+test('PhasedXZ is served by the circuit tool, and a call that omits its exponents does not run', () => {
+  const y = call('circuit', { operations: [{ gate: 'PhasedXZ', x: 1, z: 0, axis: 0.5, qubits: [{ kind: 'line', x: 0 }] }] })
+  assert.ok('result' in y)
+  const amplitudes = (y.result as { structuredContent: { amplitudes: { re: number; im: number }[] } }).structuredContent.amplitudes
+  assert.ok(Math.abs(amplitudes[1]!.im - 1) < 1e-12)
+  const missing = call('circuit', { operations: [{ gate: 'PhasedXZ', qubits: [{ kind: 'line', x: 0 }] }] })
+  assert.ok('error' in missing && missing.error.code === -32602)
+  const number = call('chemistry-simulation', { jordan_wigner: { operators: [{ mode: 0, dagger: true }, { mode: 0, dagger: false }] } })
+  assert.ok('result' in number)
+  const terms = (number.result as { structuredContent: { mapping: string; terms: { label: string; coefficient: number }[] } }).structuredContent
+  assert.equal(terms.mapping, 'Jordan–Wigner')
+  assert.equal(terms.terms.length, 2)
+  const leads = call('leads', { sitemap: { urls: [
+    { loc: 'https://quantumai.google/reference/python/cirq/PhasedXZGate', lastmod: '2024-01-01' },
+    { loc: 'https://quantumai.google/reference/python/openfermion/transforms/jordan_wigner', lastmod: '2024-01-01' },
+  ] } })
+  assert.ok('result' in leads)
+  const rows = (leads.result as { structuredContent: { leads: { status: string; tool: string }[] } }).structuredContent.leads
+  assert.equal(rows.length, 2)
+  assert.ok(rows.every((row) => row.status === 'served' && row.tool === (row === rows[0] ? 'circuit' : 'chemistry-simulation')))
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the circuit tool places operations by the insert strategy and the Toffoli gate is served. */
+test('the circuit tool places operations by the insert strategy and the Toffoli gate is served', () => {
+  const r = call('circuit', { operations: [{ gate: 'X', qubits: [{ kind: 'line', x: 0 }] }, { gate: 'X', qubits: [{ kind: 'line', x: 1 }] }, { gate: 'TOFFOLI', qubits: [{ kind: 'line', x: 0 }, { kind: 'line', x: 1 }, { kind: 'line', x: 2 }] }], insert: 'NEW' })
+  assert.ok('result' in r)
+  const amps = (r.result as { structuredContent: { amplitudes: { re: number }[] } }).structuredContent.amplitudes
+  assert.ok(Math.abs(amps[7]!.re - 1) < 1e-12)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every lead that is served or partial names a tool the server serves, and every other lead says why. */
+test('every lead that is served or partial names a tool the server serves, and every other lead says why', async () => {
+
+  const served = new Set(((handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }).result).tools.map((t) => t.name))
+  for (const lead of LEADS) {
+    if (lead.status === 'served' || lead.status === 'partial') assert.ok(lead.tool && served.has(lead.tool), `${lead.id} names no served tool`)
+    else assert.ok(lead.reason && lead.reason.length > 0, `${lead.id} has no reason`)
+  }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the algorithm tool answers each textbook algorithm: the QFT rows, the phase estimate, Grover and teleportation. */
+test('the algorithm tool answers each textbook algorithm: the QFT rows, the phase estimate, Grover and teleportation', () => {
+  const qft = call('algorithm', { name: 'qft', qubits: 3, input: 5 })
+  assert.ok('result' in qft && (qft.result as { structuredContent: { rows: string[][] } }).structuredContent.rows.length === 8)
+  const pe = call('algorithm', { name: 'phase_estimation', theta: 0.234, bits: 3, repetitions: 2000 })
+  assert.ok('result' in pe)
+  const peRows = (pe.result as { structuredContent: { rows: string[][] } }).structuredContent.rows
+  assert.equal(Number(peRows[0]![0]), 0.25)
+  const grover = call('algorithm', { name: 'grover', qubits: 2, repetitions: 10 })
+  assert.ok('result' in grover && (grover.result as { structuredContent: { rows: string[][] } }).structuredContent.rows.every((r) => r[0] === '|00>'))
+  const tele = call('algorithm', { name: 'teleportation' })
+  assert.ok('result' in tele && (tele.result as { structuredContent: { rows: string[][] } }).structuredContent.rows.every((r) => r[1] === r[2]))
+  const qaoa = call('algorithm', { name: 'qaoa', nodes: 6 })
+  assert.ok('result' in qaoa)
+  const summary = (qaoa.result as { structuredContent: { summary: string[][] } }).structuredContent.summary
+  assert.equal(summary.find((r) => r[0] === 'Nodes')![1], '6')
+  assert.ok('error' in call('algorithm', { name: 'grover_shor' }))
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the software and statements and leads tools serve the stated lists, and an unknown topic is refused. */
+test('the software and statements and leads tools serve the stated lists, and an unknown topic is refused', () => {
+  const sw = call('software', {})
+  assert.ok('result' in sw && (sw.result as { structuredContent: { tools: { name: string; implemented: boolean }[] } }).structuredContent.tools.length === 5)
+  const impl = (sw.result as { structuredContent: { tools: { name: string; implemented: boolean }[] } }).structuredContent.tools.filter((t) => t.implemented).map((t) => t.name)
+  assert.deepEqual(impl, ['Cirq'])
+  const st = call('statements', { topic: 'hardware' })
+  assert.ok('result' in st && (st.result as { structuredContent: { statements: unknown[] } }).structuredContent.statements.length === 1)
+  assert.ok('error' in call('statements', { topic: 'rumour' }))
+  const lead = call('leads', { status: 'blocked' })
+  assert.ok('result' in lead)
+  const counts = (lead.result as { structuredContent: { counts: Record<string, number>; total: number } }).structuredContent
+  assert.equal(Object.values(counts.counts).reduce((a, b) => a + b, 0), counts.total)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every new tool returns a widget that uses only the host tokens. */
+test('every new tool returns a widget that uses only the host tokens', () => {
+  const widgets = [
+    readWidget(call('algorithm', { name: 'qft' })),
+    readWidget(call('algorithm', { name: 'phase_estimation' })),
+    readWidget(call('algorithm', { name: 'grover', qubits: 2, repetitions: 5 })),
+    readWidget(call('algorithm', { name: 'teleportation' })),
+    readWidget(call('algorithm', { name: 'qaoa', nodes: 4 })),
+    readWidget(call('software', {})),
+    readWidget(call('statements', {})),
+    readWidget(call('leads', {})),
+    readWidget(call('circuit', { operations: [{ gate: 'X', qubits: [{ kind: 'line', x: 0 }] }], noise: [{ name: 'depolarize', p: 0.1 }] })),
+  ]
+  for (const widget of widgets) {
+    assert.ok(widget.includes('var(--'))
+    assert.doesNotMatch(widget, /style="[^"]*#[0-9a-f]{3,6}\b/i)
+    assert.doesNotMatch(widget, /<(script|style)\b/i)
+  }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the processor tool serves the Willow preprint figures and the Sycamore counts the Devices page states. */
+test('the processor tool serves the Willow preprint figures and the Sycamore counts the Devices page states', () => {
+  const willow = call('processor', { name: 'Willow' })
+  assert.ok('result' in willow)
+  const preprint = (willow.result as { structuredContent: { errorCorrectionPreprint: { lambda: { mean: number }; qubitsInDistance7Code: number; decoderLatencyMicroseconds: number } } }).structuredContent.errorCorrectionPreprint
+  assert.equal(preprint.lambda.mean, 2.14)
+  assert.equal(preprint.qubitsInDistance7Code, 101)
+  assert.equal(preprint.decoderLatencyMicroseconds, 63)
+  const sycamore = call('processor', { name: 'Sycamore' })
+  assert.ok('result' in sycamore)
+  const counts = (sycamore.result as { structuredContent: { qubits: number; couplers: number; statedQubits: number; statedCouplers: number } }).structuredContent
+  assert.deepEqual([counts.qubits, counts.couplers], [counts.statedQubits, counts.statedCouplers])
+  assert.deepEqual([counts.qubits, counts.couplers], [54, 88])
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the algorithm tool factors N = 15 by Shor's order finding, and runs the QAOA sweep on request. */
+test('the algorithm tool factors N = 15 by Shor\'s order finding, and runs the QAOA sweep on request', () => {
+  const shor = call('algorithm', { name: 'shor', N: 15, a: 7, repetitions: 20 })
+  assert.ok('result' in shor)
+  const summary = (shor.result as { structuredContent: { summary: string[][] } }).structuredContent.summary
+  assert.equal(summary.find((r) => r[0] === 'Order of a mod N')?.[1], '4')
+  assert.equal(summary.find((r) => r[0] === 'Factors')?.[1], '3 × 5')
+  // re-fused, not refused: a that shares a factor with N is that factor already (Euclid, Shor's own classical step)
+  const shared = (call('algorithm', { name: 'shor', N: 15, a: 5 }) as { result?: { structuredContent?: { sharedFactor?: number; factors?: string[] } } }).result?.structuredContent
+  assert.deepEqual([shared?.sharedFactor, shared?.factors], [5, [3, 5]], 'a = 5 shares the factor 5 with N = 15: Euclid finds it, the factors sorted')
+  const sweep = call('algorithm', { name: 'qaoa', nodes: 6, sweep: true })
+  assert.ok('result' in sweep)
+  const sw = (sweep.result as { structuredContent: { summary: string[][] } }).structuredContent.summary
+  const label = (l: string) => Number(sw.find((r) => r[0] === l)![1])
+  assert.ok(label('Expected cut at best') > label('Random baseline'), 'the expected cut at the best angles beats the random baseline')
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: every device the processor tool names is served, and Sycamore23 has 23 qubits. */
+test('every device the processor tool names is served, and Sycamore23 has 23 qubits', () => {
+  const s23 = call('processor', { name: 'Sycamore23' })
+  assert.ok('result' in s23 && (s23.result as { structuredContent: { qubits: number } }).structuredContent.qubits === 23)
+  for (const topic of ['qsim', 'qualtran', 'openfermion', 'cirq_known_devices']) {
+    const r = call('statements', { topic })
+    assert.ok('result' in r && (r.result as { structuredContent: { statements: { text: string }[] } }).structuredContent.statements[0]!.text.length > 20, topic)
+  }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the repositories tool serves the quantumlib repositories and filters by language. */
+test('the repositories tool serves the quantumlib repositories and filters by language', () => {
+  const all = call('repositories', {})
+  assert.match((all as { result: { _meta: { quantum: { formula: string } } } }).result._meta.quantum.formula, /^\d+(\.\d+)* \S/, 'a google call carries the ISO/IEC 4879:2024 term its address picks')
+  assert.ok('result' in all && (all.result as { structuredContent: { repositories: unknown[]; total: number } }).structuredContent.total === 15)
+  const py = call('repositories', { language: 'Python' })
+  assert.ok('result' in py && (py.result as { structuredContent: { repositories: { language: string }[] } }).structuredContent.repositories.every((r) => r.language === 'Python'))
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a cleanup lead parses to the subjects whose absence settles it: paths or git branches, and nothing else parses. */
+test('a cleanup lead parses to the subjects whose absence settles it: paths or git branches, and nothing else parses', () => {
+  const cleanups = LEADS.filter((l) => listCleanupSubjects(l))
+  assert.equal(cleanups.length, 4)
+  assert.deepEqual(listCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-census-consolidated')!), { kind: 'paths', names: ['scripts/census.lean'] })
+  assert.deepEqual(listCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-auto-release-script')!), { kind: 'paths', names: ['scripts/auto-release.ts'] })
+  assert.deepEqual(listCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-next-build-dir')!), { kind: 'paths', names: ['.next'] })
+  assert.deepEqual(listCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-stale-branches')!), { kind: 'branches', names: ['snapshot/pre-purge', 'purge/google-only'] })
+  assert.equal(listCleanupSubjects(LEADS.find((l) => l.id === 'cleanup-fnv1a-consolidated')!), null, 'a cleanup served by a tool is settled by that tool, not by absence')
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a tools/call publishes a token only as its kind, and the Lean formula found - redacted = 0 holds. */
+test('a tools/call publishes a token only as its kind, and the Lean formula found - redacted = 0 holds', () => {
+  const token = 'gh' + 'p_' + 'b'.repeat(20)
+  const r = call('translate', { text: `note ${token}` })
+  assert.ok('result' in r)
+  assert.equal(JSON.stringify(r).includes(token), false)
+  const body = r.result as { _meta: { leaks: { theorem: string; publish: string; lean: string; found: number; redacted: number; holds: boolean } } }
+  const proof = body._meta.leaks
+  assert.equal(proof.theorem, 'textbook_leaks_redacted')
+  assert.equal(proof.publish, 'textbook_redact_before_publish')
+  assert.equal(proof.lean, 'found - redacted = 0')
+  assert.ok(proof.found >= 1)
+  assert.equal(proof.redacted, proof.found)
+  assert.equal(proof.found - proof.redacted, 0)
+  assert.equal(proof.holds, true)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the cheapest view: an LLM reads only the cheapest way to have the answer and what tampering with it would cost, the full answer kept in structuredContent. */
+test('the cheapest view: an LLM reads only the cheapest way to have the answer and what tampering with it would cost, the full answer kept in structuredContent', () => {
+  const call = (meta?: Record<string, unknown>) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'processor', arguments: {}, ...(meta ? { _meta: meta } : {}) } }) as { result: { content: { text: string }[]; structuredContent: unknown; _meta: { block: { meta: { id: string } } } } }
+  const full = call(), cheap = call({ view: 'cheapest' })
+  const v = JSON.parse(cheap.result.content[0]!.text) as { address: string; sha256: string; recompute: { tool: string }; tamper: { collision: string }; coins: number; unlock: string; theorem: string; tokens: number }
+  assert.equal(v.address, full.result._meta.block.meta.id, 'the same address: the answer is the same block')
+  assert.equal(v.recompute.tool, 'processor')
+  assert.equal(v.sha256.length, 64)
+  assert.equal(v.tamper.collision, '2^128')
+  assert.ok(v.coins > 0 && v.unlock.startsWith('If-None-Match') && v.theorem === 'textbook_advantage_unbounded', 'a coil names its price in coins a call and how the address unlocks the unbounded advantage')
+  const l = JSON.parse(cheap.result.content[0]!.text) as { licence: string; commercial: string }
+  assert.ok(l.licence === 'CC-BY-NC-ND-4.0' && l.commercial === 'a licence of the catalogue', 'the view carries the licence: a coil\'s commercial use needs a licence of the catalogue')
+  const small = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'fold', arguments: { radices: [10, 10], index: '42' }, _meta: { view: 'cheapest' } } }) as { result: { content: { text: string }[]; structuredContent: unknown } }
+  assert.equal(small.result.content[0]!.text, JSON.stringify(small.result.structuredContent), 'a small answer is its own cheapest form')
+  assert.ok(cheap.result.content[0]!.text.length * 4 < full.result.content[0]!.text.length, 'the cheapest view is a fraction of the full answer')
+  assert.deepEqual(cheap.result.structuredContent, full.result.structuredContent, 'the full answer stays for the interfaces that render it')
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: harmonic options by default: every enum of a schema a superposition of its combinations, the referrer or the a432 key choosing the default. */
+test('harmonic options by default: every enum of a schema a superposition of its combinations, the referrer or the a432 key choosing the default', () => {
+  const list = (params?: Record<string, unknown>) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', ...(params ? { params } : {}) }) as { result: { tools: { name: string; inputSchema: { properties: Record<string, { enum?: unknown[]; default?: unknown }>; 'x-harmonic'?: { combinations: string; index: string; from: string } } }[] } }).result.tools
+  const plain = list(), referred = list({ prev: '941ef62e-d97b-2438-bfc8-22ae9e5da781' })
+  const withEnums = plain.filter((t) => t.inputSchema['x-harmonic'] !== undefined) // the tools whose enums carry no default of their own
+  assert.ok(withEnums.length > 5)
+  for (const t of withEnums) {
+    const h = t.inputSchema['x-harmonic']!
+    assert.equal(h.from, 'a432')
+    assert.ok(BigInt(h.index) < BigInt(h.combinations), 'the remainder names a combination')
+    for (const p of Object.values(t.inputSchema.properties)) if (Array.isArray(p.enum) && p.default !== undefined) assert.ok(p.enum.includes(p.default), 'the default is one of the values: the superposition is kept')
+  }
+  const r = referred.find((t) => t.name === withEnums[0]!.name)!
+  assert.equal(r.inputSchema['x-harmonic']!.from, 'referrer')
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a quantum tool stays unlimited. A superposition does not set its default, and an omitted size is the register. An example passes the size it proves. */
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a quantum tool stays unlimited: a superposition does not set its default, and an omitted size is the register. */
+test('a quantum tool stays unlimited: a superposition does not set its default, and an omitted size is the register', () => {
+  const tools = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { toolbox: 'google', full: true } }) as { result: { tools: { name: string; inputSchema: { properties: Record<string, { enum?: unknown[]; default?: unknown }>; 'x-harmonic'?: { unlimited?: boolean; from: string } } }[] } }).result.tools
+  const algorithm = tools.find((t) => t.name === 'algorithm')!
+  assert.equal(algorithm.inputSchema.properties.name!.default, undefined, 'the superposition does not choose an algorithm')
+  assert.equal(algorithm.inputSchema['x-harmonic']!.unlimited, true)
+  assert.equal(algorithm.inputSchema.properties.depth!.default, undefined)
+  assert.equal(algorithm.inputSchema.properties.steps!.default, undefined)
+  const bare = (name: string, args: Record<string, unknown> = {}) => (call(name, args) as { result?: { structuredContent: Record<string, unknown> } }).result!.structuredContent
+  const vqe = bare('algorithm', { name: 'vqe' })
+  assert.equal(vqe.phase, 'unlimited')
+  assert.equal(vqe.unlimited, true)
+  assert.equal(vqe.bounded, false)
+  const proved = bare('algorithm', { name: 'vqe', steps: 20 })
+  assert.ok(Math.abs(Number(proved.groundEnergy) + 1) < 1e-6, 'steps 20 is the example that proves the ground energy')
+  const qaoa = bare('algorithm', { name: 'qaoa' })
+  assert.equal(qaoa.unlimited, true)
+  assert.equal(qaoa.nodes, 122)
+  assert.equal(qaoa.sampled, false)
+  const page = bare('algorithm', { name: 'qaoa', nodes: 12 })
+  assert.ok(Array.isArray(page.rows) && (page.rows as unknown[]).length > 0, 'twelve nodes is the page the example proves')
+  assert.equal(bare('chemistry-simulation').phase, 'unlimited')
+  assert.equal(bare('quantum-error-correction').phase, 'unlimited')
+  const coded = bare('quantum-error-correction', { p: 0.1 })
+  assert.ok(Math.abs(Number((coded.at as { logicalError: number }).logicalError) - 0.028) < 1e-9)
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: selecting options in combinatorial RBAC: a role lists only the enum values it may choose, an enum with none withheld, the default within its options. */
+test('selecting options in combinatorial RBAC: a role lists only the enum values it may choose, an enum with none withheld, the default within its options', () => {
+  const tool = (role: string, name: string) => ((handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: { role } }) as { result: { tools: { name: string; inputSchema: { properties: Record<string, { enum?: string[]; default?: string }>; 'x-harmonic'?: { withheld?: string[] } } }[] } }).result.tools.find((t) => t.name === name)!)
+  assert.deepEqual(tool('reader', 'mongo').inputSchema.properties.op!.enum, ['find', 'restore', 'verify', 'health', 'associate', 'validate'])
+  assert.deepEqual(tool('writer', 'mongo').inputSchema.properties.op!.enum, ['find', 'insert', 'update', 'mirror', 'restore', 'verify', 'health', 'associate', 'validate'])
+  assert.deepEqual(tool('admin', 'mongo').inputSchema.properties.op!.enum, ['find', 'insert', 'update', 'delete', 'mirror', 'restore', 'verify', 'health', 'associate', 'validate'])
+  assert.ok(!('workflow' in tool('reader', 'repository').inputSchema.properties), 'a reader chooses no workflow: the enum is withheld')
+  assert.ok(tool('reader', 'repository').inputSchema['x-harmonic']!.withheld!.includes('workflow'))
+  assert.ok(!tool('writer', 'stripe').inputSchema.properties.op!.enum!.includes('settle'), 'settling is the admin\'s')
+})
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a circuit as cirq.to_json writes it runs on the circuit door, its amplitudes Cirq's own, its measurement Cirq's support, Rx, Ry, Rz and global shifts carried exactly, and a gate the door does not compute refused by its cirq_type. */
+test('a circuit as cirq.to_json writes it runs on the circuit door, its amplitudes Cirq\'s own, its measurement Cirq\'s support, Rx, Ry, Rz and global shifts carried exactly, and a gate the door does not compute refused by its cirq_type', () => {
+  // the fixture is Cirq's own output (cirq.json): each circuit as cirq.to_json writes it, its qubits in Cirq's order, and what Cirq's simulator computes
+  const fixture = JSON.parse(readFileSync(new URL('./cirq.json', import.meta.url), 'utf8')) as { cirq: string; circuits: Record<string, { json: unknown; qubits: string[]; amplitudes?: [number, number][]; support?: number[] }> }
+  const cirqKey = (s: string) => /^q\((\d+)\)$/.test(s) ? `line:${s.slice(2, -1)}` : /^q\((\d+), (\d+)\)$/.test(s) ? `grid:${s.slice(2, -1).replace(' ', '')}` : `named:${s}`
+  const ran = (name: string, extra: object = {}) => call('circuit', { cirq: fixture.circuits[name]!.json, ...extra }) as { result?: { structuredContent: any; isError?: boolean } }
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    if (c.amplitudes && !name.endsWith('-refused')) {
+      const s = ran(name).result!.structuredContent as { qubits: string[]; amplitudes: { re: number; im: number }[] | [number, number][] }
+      assert.deepEqual(s.qubits, c.qubits.map(cirqKey), name)
+      const pairs = s.amplitudes.map((z) => Array.isArray(z) ? z : [z.re, z.im])
+      c.amplitudes.forEach(([re, im], i) => { assert.ok(Math.abs(pairs[i]![0]! - re) < 1e-9 && Math.abs(pairs[i]![1]! - im) < 1e-9, `${name}[${i}] ${pairs[i]} vs ${re},${im}`) })
+    }
+  }
+  // every measured circuit samples only the outcomes Cirq's simulator gives, read in Cirq's bit order
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    if (!c.support) continue
+    const sampled = ran(name, { repetitions: 64 }).result!.structuredContent as { key: string; histogram: Record<string, number> }
+    assert.equal(sampled.key, 'm', name)
+    assert.deepEqual(Object.keys(sampled.histogram).map(Number).filter((k) => !c.support!.includes(k)), [], name)
+  }
+  // the bridge rests on theorems the kernel holds, each on Lean's standard axioms alone
+  const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
+  for (const key of ['Advantage.fold_unfold', 'CirqBridge.cirq_order_eq_reversed', 'CirqBridge.global_phases_add', 'CirqBridge.shift_phase', 'CirqBridge.brief_sound', 'CirqBridge.currency_beside_every_coin', 'CirqBridge.cirq_eigen_gate', 'CirqBridge.involution_pow_one', 'CirqBridge.involution_pow_zero', 'CirqBridge.s_power', 'CirqBridge.global_phase_invisible']) {
+    const t = kernel.get(key)
+    assert.ok(t, key)
+    assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
+  }
+  // a gate the door does not compute is refused by its cirq_type, never approximated
+  const refused = ran('fsim-refused')
+  assert.ok(refused.result?.isError || 'error' in (refused as object), JSON.stringify(refused).slice(0, 200))
+  assert.match(JSON.stringify(refused), /FSimGate/)
+})
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a circuit as Stim writes it runs on the circuit door, its state Stim's own up to the global phase a tableau leaves free, its measurement Stim's support, and an instruction the door does not compute refused by its name. */
+test('a circuit as Stim writes it runs on the circuit door, its state Stim\'s own up to the global phase a tableau leaves free, its measurement Stim\'s support, and an instruction the door does not compute refused by its name', () => {
+  // the fixture is Stim's own output (stim.json): each circuit as Stim's text, its state vector in Stim's big-endian order and its sampled support
+  const fixture = JSON.parse(readFileSync(new URL('./stim.json', import.meta.url), 'utf8')) as { stim: string; circuits: Record<string, { text: string; qubits: number; amplitudes?: [number, number][]; support?: number[] }> }
+  const ran = (name: string, extra: object = {}) => call('circuit', { stim: fixture.circuits[name]!.text, ...extra }) as { result?: { structuredContent: any; isError?: boolean }; error?: unknown }
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    if (!c.amplitudes) continue
+    const s = ran(name).result!.structuredContent as { amplitudes: { re: number; im: number }[] }
+    // Stim computes its state vector in single precision, so the two agree to the 1e-6 a 32-bit float resolves
+    const near = (a: number, b: number) => Math.abs(a - b) < 1e-6
+    // a tableau fixes a state up to a global phase, which changes no probability (CirqBridge.global_phase_invisible): the phase is read at
+    // Stim's first nonzero amplitude and every amplitude must agree under it
+    const k = c.amplitudes.findIndex(([re, im]) => Math.hypot(re, im) > 1e-9), [sr, si] = c.amplitudes[k]!, q = s.amplitudes[k]!
+    const norm = sr * sr + si * si, phase = { re: (q.re * sr + q.im * si) / norm, im: (q.im * sr - q.re * si) / norm }
+    assert.ok(near(Math.hypot(phase.re, phase.im), 1), `${name}: a phase of modulus one`)
+    c.amplitudes.forEach(([re, im], i) => {
+      const want = { re: re * phase.re - im * phase.im, im: re * phase.im + im * phase.re }
+      assert.ok(near(s.amplitudes[i]!.re, want.re) && near(s.amplitudes[i]!.im, want.im), `${name}[${i}]`)
+    })
+  }
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    if (!c.support) continue
+    const sampled = ran(name, { repetitions: 64 }).result!.structuredContent as { key: string; histogram: Record<string, number> }
+    assert.deepEqual(Object.keys(sampled.histogram).map(Number).filter((k) => !c.support!.includes(k)), [], name)
+  }
+  const refused = ran('noise-refused')
+  assert.ok(refused.result?.isError || 'error' in (refused as object))
+  assert.match(JSON.stringify(refused), /DEPOLARIZE1/)
+})
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a fermion operator as OpenFermion prints it maps on the chemistry door to the Pauli strings OpenFermion's own jordan_wigner gives, the anticommutator to the identity and a squared ladder to nothing. */
+test('a fermion operator as OpenFermion prints it maps on the chemistry door to the Pauli strings OpenFermion\'s own jordan_wigner gives, the anticommutator to the identity and a squared ladder to nothing', () => {
+  // the fixture is OpenFermion's own output (openfermion.json): each operator as str() prints it and the terms jordan_wigner gives
+  const fixture = JSON.parse(readFileSync(new URL('./openfermion.json', import.meta.url), 'utf8')) as { openfermion: string; operators: Record<string, { text: string; terms: { paulis: [number, string][]; re: number; im: number }[] }> }
+  for (const [name, o] of Object.entries(fixture.operators)) {
+    const s = (call('chemistry-simulation', { fermion: o.text }) as { result: { structuredContent: { terms: { label: string; coefficient: number; imaginary: number }[] } } }).result.structuredContent
+    const want = o.terms.map((t) => ({ label: t.paulis.length ? t.paulis.map(([i, p]) => `${p}${i}`).join('') : 'I', re: t.re, im: t.im })).sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0))
+    assert.deepEqual(s.terms.map((t) => t.label), want.map((t) => t.label), name)
+    s.terms.forEach((t, i) => assert.ok(Math.abs(t.coefficient - want[i]!.re) < 1e-12 && Math.abs(t.imaginary - want[i]!.im) < 1e-12, `${name}: ${t.label}`))
+  }
+  // the canonical relations the transform keeps, as OpenFermion computes them: {a, a†} is the identity and a a is nothing
+  assert.deepEqual(fixture.operators.anticommutator!.terms.map((t) => [t.paulis.length, t.re]), [[0, 1]])
+  assert.deepEqual(fixture.operators.square!.terms, [])
+  // and the kernel holds them for every mode, each on Lean's standard axioms alone
+  const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
+  for (const key of ['FermionBridge.anticommutator_expand', 'FermionBridge.square_expand', 'FermionBridge.ladder_anticommute', 'FermionBridge.ladder_square_zero']) {
+    const t = kernel.get(key)
+    assert.ok(t, key)
+    assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
+  }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a circuit in qsim's own text format runs on the circuit door to the amplitudes qsim's own qsim_amplitudes computes, every rotation's global phase carried, and a gate the door does not compute is refused. */
+test('a circuit in qsim\'s own text format runs on the circuit door to the amplitudes qsim\'s own qsim_amplitudes computes, every rotation\'s global phase carried, and a gate the door does not compute is refused', () => {
+  // the fixture is qsim's own output (qsim.json): each circuit as qsim reads it and the amplitude of every bitstring, character j qubit j
+  const fixture = JSON.parse(readFileSync(new URL('./qsim.json', import.meta.url), 'utf8')) as { qsim: string; circuits: Record<string, { text: string; amplitudes: { bits: string; re: number; im: number }[] }> }
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    if (name.endsWith('-refused')) continue
+    const s = (call('circuit', { qsim: c.text }) as { result: { structuredContent: { amplitudes: { re: number; im: number }[] } } }).result.structuredContent
+    assert.equal(s.amplitudes.length, c.amplitudes.length, name)
+    // the door orders amplitudes as Cirq does, qubit 0 the most significant bit, so a bitstring read left to right is its index; qsim
+    // computes in single precision
+    for (const a of c.amplitudes) {
+      const z = s.amplitudes[parseInt(a.bits, 2)]!
+      assert.ok(Math.abs(z.re - a.re) < 1e-6 && Math.abs(z.im - a.im) < 1e-6, `${name} ${a.bits}: ${z.re} ${z.im} against ${a.re} ${a.im}`)
+    }
+  }
+  // iSWAP is not one of the door's gates: the call is refused by qsim's own name, never approximated
+  const refused = call('circuit', { qsim: fixture.circuits['iswap-refused']!.text })
+  assert.ok((refused as { result?: { isError?: boolean } }).result?.isError || 'error' in (refused as object), JSON.stringify(refused).slice(0, 200))
+  assert.match(JSON.stringify(refused), /gate is is not/)
+  // the reading rests on theorems the kernel holds, each on Lean's standard axioms alone
+  const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
+  for (const key of ['QsimBridge.rotation_phase', 'CirqBridge.shift_phase', 'CirqBridge.involution_pow_zero', 'CirqBridge.global_phases_add']) {
+    const t = kernel.get(key)
+    assert.ok(t, key)
+    assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
+  }
+})
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a circuit as cirq.to_json writes it is counted on the fault-tolerant door as Qualtran's own QECGatesCost counts it, and a power of Z at three or five quarter turns is one T where Qualtran keeps a rotation. */
+test('a circuit as cirq.to_json writes it is counted on the fault-tolerant door as Qualtran\'s own QECGatesCost counts it, and a power of Z at three or five quarter turns is one T where Qualtran keeps a rotation', () => {
+  // the fixture is Qualtran's own output (qualtran.json): each circuit through Qualtran's Cirq interop, costed by QECGatesCost and QubitCount
+  type Counts = { t: number; toffoli: number; clifford: number; rotation: number }
+  const fixture = JSON.parse(readFileSync(new URL('./qualtran.json', import.meta.url), 'utf8')) as { qualtran: string; circuits: Record<string, { cirq: unknown; qubits: number; counts: Counts }> }
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    const r = (call('fault-tolerant-design', { cirq: c.cirq }) as { result: { structuredContent: { circuits: { count: { qubits: number; clifford: number; tCountBy: { t: number; toffoli: number; controlled_s: number }; rotations: { count: number }[] } }[] } } }).result.structuredContent.circuits[0]!.count
+    const rotations = r.rotations.reduce((s, g) => s + g.count, 0)
+    assert.equal(r.qubits, c.qubits, `${name}: qubits`)
+    assert.equal(r.clifford, c.counts.clifford, `${name}: clifford`)
+    // the door spells a Toffoli as its seven T gates, Qualtran counts the Toffoli itself
+    assert.equal(r.tCountBy.toffoli, 7 * c.counts.toffoli, `${name}: toffoli`)
+    if (name === 'three-quarter-turns') {
+      // Z^¾ = S·T and Z^{5/4} = Z·T (QualtranBridge.z_powers_add): each of Qualtran's two rotations here is one T on the door
+      assert.equal(r.tCountBy.t, c.counts.t + c.counts.rotation, `${name}: t`)
+      assert.equal(rotations, 0, `${name}: rotations`)
+    } else {
+      assert.equal(r.tCountBy.t, c.counts.t, `${name}: t`)
+      assert.equal(rotations, c.counts.rotation, `${name}: rotations`)
+    }
+  }
+  const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
+  const t = kernel.get('QualtranBridge.z_powers_add')
+  assert.ok(t, 'QualtranBridge.z_powers_add')
+  assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], 'QualtranBridge.z_powers_add')
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a circuit in OpenQASM 2.0 runs on the circuit door to the state Cirq's own qasm importer and simulator give, its registers laid out in order, and a gate the door does not compute is refused. */
+test('a circuit in OpenQASM 2.0 runs on the circuit door to the state Cirq\'s own qasm importer and simulator give, its registers laid out in order, and a gate the door does not compute is refused', () => {
+  // the fixture is Cirq's own output (qasm.json): each circuit through cirq.contrib.qasm_import and cirq.final_state_vector, in Cirq's order
+  const fixture = JSON.parse(readFileSync(new URL('./qasm.json', import.meta.url), 'utf8')) as { cirq: string; circuits: Record<string, { text: string; qubits: string[]; amplitudes: { re: number; im: number }[] }> }
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    if (name.endsWith('-refused')) continue
+    const s = (call('circuit', { qasm: c.text }) as { result: { structuredContent: { amplitudes: { re: number; im: number }[] } } }).result.structuredContent
+    assert.equal(s.amplitudes.length, c.amplitudes.length, name)
+    c.amplitudes.forEach((a, k) => assert.ok(Math.abs(s.amplitudes[k]!.re - a.re) < 1e-12 && Math.abs(s.amplitudes[k]!.im - a.im) < 1e-12, `${name} ${k}: ${JSON.stringify(s.amplitudes[k])} against ${JSON.stringify(a)}`))
+  }
+  // an angle is read as OpenQASM writes it, pi and arithmetic included: rz(pi/2) is rz(1.5707963…)
+  const written = (call('circuit', { qasm: 'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[1];\nh q[0];\nrz(-(pi/4)*2) q;\n' }) as { result: { structuredContent: { amplitudes: { re: number; im: number }[] } } }).result.structuredContent.amplitudes
+  const decimal = (call('circuit', { qasm: 'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[1];\nh q[0];\nrz(-1.5707963267948966) q[0];\n' }) as { result: { structuredContent: { amplitudes: { re: number; im: number }[] } } }).result.structuredContent.amplitudes
+  written.forEach((z, k) => assert.ok(Math.abs(z.re - decimal[k]!.re) < 1e-12 && Math.abs(z.im - decimal[k]!.im) < 1e-12, `angle ${k}`))
+  // u3 is not one of the door's gates: the call is refused by its OpenQASM name, never approximated
+  const refused = call('circuit', { qasm: fixture.circuits['u3-refused']!.text })
+  assert.ok((refused as { result?: { isError?: boolean } }).result?.isError || 'error' in (refused as object), JSON.stringify(refused).slice(0, 200))
+  assert.match(JSON.stringify(refused), /gate u3 is not/)
+  const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
+  for (const key of ['QasmBridge.registers_flatten', 'CirqBridge.shift_phase', 'CirqBridge.involution_pow_zero']) {
+    const t = kernel.get(key)
+    assert.ok(t, key)
+    assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
+  }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a ReCirq QAOA problem, its graph as networkx writes it, is answered on the algorithm door by the energy ReCirq's own exact simulation gives at each of its angles. */
+test('a ReCirq QAOA problem, its graph as networkx writes it, is answered on the algorithm door by the energy ReCirq\'s own exact simulation gives at each of its angles', () => {
+  // the fixture is ReCirq's own output (recirq.json): problems from its SK and 3-regular generators, each graph as node_link_data, and
+  // the p = 1 energies exact_qaoa_values_on_grid computes over a grid of gamma and beta
+  const fixture = JSON.parse(readFileSync(new URL('./recirq.json', import.meta.url), 'utf8')) as { recirq: string; problems: Record<string, { graph: unknown; energies: { gamma: number; beta: number; energy: number }[] }> }
+  let nonzero = 0
+  for (const [name, p] of Object.entries(fixture.problems)) {
+    for (const e of p.energies) {
+      const r = (call('algorithm', { name: 'qaoa', recirq: { graph: p.graph, gamma: e.gamma, beta: e.beta } }) as { result: { structuredContent: { energy: number } } }).result.structuredContent
+      assert.ok(Math.abs(r.energy - e.energy) < 1e-9, `${name} at γ=${e.gamma} β=${e.beta}: ${r.energy} against ${e.energy}`)
+      if (Math.abs(e.energy) > 0.1) nonzero++
+    }
+  }
+  // the grid reaches energies away from zero, so the agreement is not the trivial one at γ = 0 or β = 0
+  assert.ok(nonzero >= 8, `nonzero energies: ${nonzero}`)
+  const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
+  for (const key of ['RecirqBridge.ising_cut', 'CirqBridge.cirq_eigen_gate']) {
+    const t = kernel.get(key)
+    assert.ok(t, key)
+    assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
+  }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a noisy circuit on the circuit door gives the probabilities and Pauli expectations Cirq's own DensityMatrixSimulator gives, in Cirq's order, line 0 the most significant qubit. */
+test('a noisy circuit on the circuit door gives the probabilities and Pauli expectations Cirq\'s own DensityMatrixSimulator gives, in Cirq\'s order, line 0 the most significant qubit', () => {
+  // the fixture is Cirq's own output (density.json): the door's noise, each channel after every gate on that gate's qubits, built
+  // explicitly in Cirq and simulated by its DensityMatrixSimulator
+  const fixture = JSON.parse(readFileSync(new URL('./density.json', import.meta.url), 'utf8')) as { cirq: string; cases: Record<string, { operations: unknown[]; noise: unknown[]; observables: Record<string, string>[]; probabilities: number[]; expectations: number[] }> }
+  for (const [name, c] of Object.entries(fixture.cases)) {
+    const r = (call('circuit', { operations: c.operations, noise: c.noise, observables: c.observables }) as { result: { structuredContent: { probabilities: number[]; expectations: number[] } } }).result.structuredContent
+    assert.equal(r.probabilities.length, c.probabilities.length, name)
+    c.probabilities.forEach((p, k) => assert.ok(Math.abs(r.probabilities[k]! - p) < 1e-12, `${name} probability ${k}: ${r.probabilities[k]} against ${p}`))
+    c.expectations.forEach((e, k) => assert.ok(Math.abs(r.expectations[k]! - e) < 1e-12, `${name} expectation ${k}: ${r.expectations[k]} against ${e}`))
+  }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the algorithm door's QFT and inverse QFT of |x> are the states Cirq's own cirq.qft gives, for inputs whose bits do not read the same both ways. */
+test('the algorithm door\'s QFT and inverse QFT of |x> are the states Cirq\'s own cirq.qft gives, for inputs whose bits do not read the same both ways', () => {
+  // the fixture is Cirq's own output (qft.json): |x> in Cirq's order, the first qubit the most significant bit, then cirq.qft or its inverse
+  const fixture = JSON.parse(readFileSync(new URL('./qft.json', import.meta.url), 'utf8')) as { cirq: string; cases: { qubits: number; input: number; transform: string; amplitudes: { re: number; im: number }[] }[] }
+  for (const c of fixture.cases) {
+    const rows = (call('algorithm', { name: c.transform, qubits: c.qubits, input: c.input }) as { result: { structuredContent: { rows: string[][] } } }).result.structuredContent.rows
+    // a row writes its amplitude to four places as re ± im i
+    rows.forEach(([, amplitude], k) => {
+      const [, re = '', sign = '', im = ''] = /^(-?[\d.]+) ([+−]) ([\d.]+)i$/.exec(amplitude!) ?? []
+      const z = { re: Number(re), im: (sign === '−' ? -1 : 1) * Number(im) }
+      const want = c.amplitudes[k]!
+      assert.ok(Math.abs(z.re - want.re) < 5e-5 && Math.abs(z.im - want.im) < 5e-5, `${c.transform} n=${c.qubits} x=${c.input} at ${k}: ${amplitude} against ${want.re} ${want.im}`)
+    })
+  }
+})

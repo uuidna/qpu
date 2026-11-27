@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingAlpine
-The prose of `src/quantum/processing/alpine.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/b/f/9/0/a/a/1/b/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose
@@ -27,5 +27,13 @@ def quantumProcessingAlpine_s20 : String := "Alpine.reactive takes a JSON object
 def quantumProcessingAlpine_s21 : String := "a model value was handed with no x-model path"
 def quantumProcessingAlpine_s22 : String := "⟦0⟧ Alpine directive(s) ran on the qpu browser quantum os. ESLint ⟦1⟧ checked ⟦2⟧."
 def quantumProcessingAlpine_s23 : String := "⟦0⟧ Alpine directive(s) ran on the qpu browser quantum os. ⟦1⟧ entries cover ⟦2⟧ exits. ESLint ⟦3⟧ checked ⟦4⟧."
+
+def quantumProcessingAlpine_s24 : String := "an expression needs a name or a value (textbook_alpine_ported)"
+def quantumProcessingAlpine_s25 : String := "attaches a scope to a document node (textbook_alpine_ported)"
+def quantumProcessingAlpine_s26 : String := "animates an element in the document (textbook_alpine_ported)"
+def quantumProcessingAlpine_s27 : String := "moves an element in the document (textbook_alpine_ported)"
+def quantumProcessingAlpine_s28 : String := "names an element in the document (textbook_alpine_ported)"
+def quantumProcessingAlpine_s29 : String := "an index is digits in brackets (textbook_alpine_ported)"
+def quantumProcessingAlpine_s30 : String := "fires an event on the document (textbook_alpine_ported)"
 
 end Prose

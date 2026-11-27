@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingToolboxesStandards
-The prose of `src/quantum/processing/toolboxes/standards.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/0/d/3/d/2/8/0/1/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose
@@ -46,5 +46,6 @@ def quantumProcessingToolboxesStandards_locales : String := "the caller's own la
 def quantumProcessingToolboxesStandards_currencies : String := "the caller's own currencies to validate (ISO 4217 codes); by default the tree's catalogue currencies"
 def quantumProcessingToolboxesStandards_cldrShape : String := "cldr is an object: { languages, currencies, territories? }, each the CLDR JSON document the plan's requestList fetches"
 def quantumProcessingToolboxesStandards_cldrDocument : String := "the CLDR document(s) ⟦0⟧ have the wrong shape: each is the JSON the plan's requestList answers, { main: { <locale>: { localeDisplayNames | numbers: … } } }, passed whole"
+def quantumProcessingToolboxesStandards_iso80000Part10 : String := "Quantities and units — Part 10: Atomic and nuclear physics"
 
 end Prose

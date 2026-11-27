@@ -1,11 +1,14 @@
 // The site from the quantum tree, each page with its kernel-checked proofs as schema.org microdata.
-import { PROSE } from '../src/quantum/processing/prose-index.ts'
+import { PROSE } from '../src/quantum/uuid/programs/5/9/e/4/9/1/a/4/index.ts'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { TOOLBOXES, handle } from '../src/quantum/processing/mcp.ts'
-import { ISO_CLAUSES, ISO_GROUPS, ISO_STANDARDS, ISO_VOCABULARY } from '../src/quantum/processing/iso-index.ts'
-import { THEOREMS } from '../src/quantum/processing/theorems-index.ts'
+import { TOOLBOXES, handle } from '../src/quantum/uuid/programs/3/8/5/9/0/2/0/f/index.ts'
+import { ISO_CLAUSES, ISO_GROUPS, ISO_STANDARDS, ISO_VOCABULARY } from '../src/quantum/uuid/programs/b/4/2/5/4/0/d/7/index.ts'
+import { THEOREMS } from '../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
 import { page } from './oneText.ts'
+import { listEnvelope } from '../src/quantum/uuid/programs/d/e/7/d/b/7/1/6/index.ts'
+import { catalogProduct, catalogSummary } from '../src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts'
+import { EXAMPLES } from '../src/quantum/uuid/programs/9/d/4/f/e/4/4/2/index.ts'
 
 type Proof = { key: string; module: string; statement: string; axioms: readonly string[] }
 type Subject = { type: 'DefinedTerm' | 'SoftwareApplication'; name: string; set?: string; code?: string }
@@ -80,9 +83,18 @@ for (const section of sections) {
 
 write(join(out, 'catalogue.md'), ['---', 'title: "Catalogue of claims"', '---', '', readFileSync('src/quantum/CATALOGUE.md', 'utf8')].join('\n'))
 const tools = TOOLBOXES.flatMap((box) => box.tools.map((tool) => ({ name: tool.name, toolbox: box.name, description: tool.description, inputSchema: tool.inputSchema })))
-write(join(out, 'public', 'mcp.json'), JSON.stringify({ live: 'POST /api/mcp', says: PROSE.scriptsSite_says1, tools }, null, 2))
-write(join('docs', 'public', 'mcp.json'), JSON.stringify({ tools: (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: unknown } }).result.tools }, null, 2))
+// one tools/list gives the tools and their proof, read from the sealed receipts: the page that fetches either manifest gets both in one request
+const listed = (handle(listEnvelope()) as { result: { tools: unknown; _meta: { proof: unknown } } }).result
+write(join(out, 'public', 'mcp.json'), JSON.stringify({ live: 'POST /api/mcp', says: PROSE.scriptsSite_says1, tools, proof: listed._meta.proof }, null, 2))
+write(join('docs', 'public', 'mcp.json'), JSON.stringify({ tools: listed.tools, proof: listed._meta.proof }, null, 2))
 write(join(out, '.vitepress', 'sidebar.json'), JSON.stringify(sidebar))
+// the catalog's index: its count as the catalog states it, then every product by module, each a link to the page its route writes
+const counted = catalogSummary(EXAMPLES)
+const facts: [string, string][] = [['products', String(counted.products)], ['examples', String(counted.examples)], ['witnesses', String(counted.witnesses)], ['variants', String(counted.variants)], ['walked', String(counted.walked)], ['discovered', counted.discovered], ['unclaimed', String(counted.unclaimed.products)], ['price', String(counted.funding.price)], ['funding', counted.funding.donation], ['root', `\`${counted.receipt.root}\``], ['receipt', `\`${counted.receipt.address}\``], ['documents', ['/api/catalog', ...counted.order.filter((c) => c !== 'variants').map((c) => `/api/${c}`)].join(' ')]]
+write(join(out, 'catalog', 'index.md'), ['---', 'title: "Products"', `description: ${yaml(counted.says)}`, '---', '', '# Products', '', '| | |', '|---|---|', ...facts.map(([k, v]) => `| ${k} | ${v} |`), '', ...[...Map.groupBy(THEOREMS, (t) => t.module)].flatMap(([module, rows]) => [`## ${plain(module)}`, '', ...rows.map((t) => `- [${plain(t.key)}](/catalog/${catalogProduct(EXAMPLES, t.key).product.id})`), ''])].join('\n'))
+// the page every product is routed through (site/catalog/[product].paths.ts): its heading is the theorem and its body the route's content
+write(join(out, 'catalog', '[product].md'), ['---', 'layout: doc', '---', '', '# {{ $params.theorem }}', '', '<!-- @content -->', ''].join('\n'))
+write(join(out, 'catalog', '[product].paths.ts'), "export { default } from '../.vitepress/catalog-routes.ts'\n")
 // the home page is the one text the build writes (scripts/oneText.ts): the same as the README, the npm README and the Zenodo record
 write(join(out, 'index.md'), ['---', 'title: "Quantum Processing Unit"', PROSE.scriptsSite_s2, '---', '', '::: v-pre', '', page, '', ':::', ''].join('\n'))
 console.log(JSON.stringify({ pages, proofs, sections: sections.length, tools: tools.length, out }))

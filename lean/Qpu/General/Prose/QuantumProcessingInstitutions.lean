@@ -1,5 +1,5 @@
 /-! # Qpu.General.Prose.QuantumProcessingInstitutions
-The prose of `src/quantum/processing/institutions.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
+The prose of `src/quantum/uuid/programs/1/8/5/3/8/b/4/f/index.ts`. Each definition is one sentence, read in TypeScript by its name from prose-index.ts;
 `⟦n⟧` marks where the nth computed value goes. -/
 
 namespace Prose
@@ -16,5 +16,7 @@ def quantumProcessingInstitutions_title9 : String := "Summative assessment desig
 def quantumProcessingInstitutions_title10 : String := "Control of the educational nonconforming outputs"
 def quantumProcessingInstitutions_says11 : String := "⟦0⟧ theorems proved under ISO 21001:2025; ⟦1⟧ removed from the Lean theorem category"
 def quantumProcessingInstitutions_says12 : String := "every family by every door off, read or write: ⟦0⟧ sets, each addressable by its index; ⟦1⟧ named singles"
+
+def quantumProcessingInstitutions_s7 : String := "Lean cross formula: the sides evaluate to one value, the axioms it names develop to that value, and the kernel has accepted the theorem (cross_lean)"
 
 end Prose

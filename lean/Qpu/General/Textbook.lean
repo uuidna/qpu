@@ -167,7 +167,7 @@ theorem textbook_penalty_once {α : Type} [DecidableEq α] (s : Finset α) (a : 
 example := @textbook_penalty_once
 /-- textbook_penalty_once reflected by its shape (examples: repository-penalty-once) -/
 @[reflection] theorem textbook_penalty_once_reflected {α : Type} [DecidableEq α] (s : Finset α) (a : α) (h : a ∈ s) : (s) = (insert a s) := Eq.symm (textbook_penalty_once s a h)
-/-- a waiting price never falls as a task gets slower or hotter: truncated subtraction of the budget is monotone and sums of monotone terms are monotone. From Mathlib's `add_le_add`, `tsub_le_tsub_right`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `covariant_swap_add_of_covariant_add` and `Nat.instOrderedSub` (examples: repository-penalty-waiting) -/
+/-- a waiting price never falls as a task gets slower or hotter: truncated subtraction of the budget is monotone and sums of monotone terms are monotone. From Mathlib's `add_le_add`, `tsub_le_tsub_right`, `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid`, `covariant_swap_add_of_covariant_add` and `Nat.instOrderedSub` (examples: repository-penalty-waiting, repository-timed) -/
 theorem textbook_penalty_time_heat_monotone (b w w' c c' : ℕ) (hw : w ≤ w') (hc : c ≤ c') : (w - b) + (c - b) ≤ (w' - b) + (c' - b) :=
   add_le_add (tsub_le_tsub_right hw b) (tsub_le_tsub_right hc b)
 example := @textbook_penalty_time_heat_monotone
@@ -847,11 +847,11 @@ theorem textbook_commit_green (green skipped : Nat) : green + skipped + 0 = gree
 example := @textbook_commit_green
 /-- textbook_commit_green reflected by its shape (examples: repository-refuse-commit) -/
 @[reflection] theorem textbook_commit_green_reflected (green skipped : Nat) (σ : Nat) : σ - (green + skipped) = σ - (green + skipped + 0) := congrArg (σ - ·) (Eq.symm (textbook_commit_green green skipped))
-/-- a commit holds the rule google-via-payload exactly when its direct Google calls are zero, that is when they are not positive. From Mathlib's `not_lt` (examples: repository-google-via-payload, repository-genuine, textbook-rewrite) -/
+/-- a commit holds the rule google-via-payload exactly when its direct Google calls are zero, that is when they are not positive. From Mathlib's `not_lt` (examples: repository-google-via-payload, repository-genuine, repository-doored, textbook-rewrite) -/
 theorem textbook_google_one_door (direct : Nat) : direct = 0 ↔ ¬ 0 < direct := by
   rw [not_lt, Nat.le_zero]
 example := @textbook_google_one_door
-/-- textbook_google_one_door reflected by its shape (examples: repository-google-via-payload, repository-genuine, textbook-rewrite) -/
+/-- textbook_google_one_door reflected by its shape (examples: repository-google-via-payload, repository-genuine, repository-doored, textbook-rewrite) -/
 @[reflection] theorem textbook_google_one_door_reflected (direct : Nat) : (¬ 0 < direct) ↔ (direct = 0) := Iff.symm (textbook_google_one_door direct)
 /-- a Google call runs exactly when its violations sum to none, that is when each kind is none: a sum of naturals is zero iff every summand is. From Mathlib's `add_eq_zero` and `Unique.instSubsingleton` (examples: google-call-validated, google-call-endpoint, google-call-refused) -/
 theorem textbook_google_call_schema (unknown missing broken : ℕ) : unknown + missing + broken = 0 ↔ unknown = 0 ∧ missing = 0 ∧ broken = 0 := by
@@ -2268,6 +2268,52 @@ theorem textbook_lie_collides : 3 * 7 ≠ 15 ∧ 3 * 5 = 15 ∧ 432 % 360 = 72 �
 theorem textbook_pqc_standards_three : 202 + 1 = 203 ∧ 203 + 1 = 204 ∧ 204 + 1 = 205 ∧ 205 - 202 = 3 ∧ 384 * 3 + 32 = 1184 ∧ 32 * (10 * 3 + 4) = 1088 ∧ 16 * (1 + 14 * (1 + 12) + 63 + 7 * 35) = 7856 := by decide
 /-- textbook_pqc_standards_three reflected by its shape, conjunction (examples: seal-kem, seal-slh, seal-nist, seal-nist-reverse-cern) -/
 @[reflection] theorem textbook_pqc_standards_three_reflected (σ : Nat) : (σ - (203) = σ - (202 + 1)) ∧ (σ - (204) = σ - (203 + 1)) ∧ (σ - (205) = σ - (204 + 1)) ∧ (σ - (3) = σ - (205 - 202)) ∧ (σ - (1184) = σ - (384 * 3 + 32)) ∧ (σ - (1088) = σ - (32 * (10 * 3 + 4))) ∧ (σ - (7856) = σ - (16 * (1 + 14 * (1 + 12) + 63 + 7 * 35))) := ⟨congrArg (σ - ·) (Eq.symm (textbook_pqc_standards_three).1), congrArg (σ - ·) (Eq.symm (textbook_pqc_standards_three).2.1), congrArg (σ - ·) (Eq.symm (textbook_pqc_standards_three).2.2.1), congrArg (σ - ·) (Eq.symm (textbook_pqc_standards_three).2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_pqc_standards_three).2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_pqc_standards_three).2.2.2.2.2.1), congrArg (σ - ·) (Eq.symm (textbook_pqc_standards_three).2.2.2.2.2.2)⟩
+/-- each pulse of a chain but the first names the output of the pulse before it, so a chain of n + 1 pulses has n links: the pulses without the first. From Mathlib's `Finset.card_erase_of_mem`, `Finset.mem_range` and `Finset.card_range` (examples: none yet) -/
+theorem textbook_chain_links_by_output (n : ℕ) : ((Finset.range (n + 1)).erase 0).card = n := by
+  rw [Finset.card_erase_of_mem (Finset.mem_range.mpr (Nat.succ_pos n)), Finset.card_range]
+  rfl
+example := @textbook_chain_links_by_output
+/-- textbook_chain_links_by_output reflected by its shape (examples: none yet) -/
+@[reflection] theorem textbook_chain_links_by_output_reflected (n : ℕ) : (n) = (((Finset.range (n + 1)).erase 0).card) := Eq.symm (textbook_chain_links_by_output n)
+/-- a pulse commits to its successor's local random value by a hash: a value whose hash differs from the precommitment is not the value that was committed, whatever the hash (SHA-512 in the beacon, 512 bits). From Lean's `ne_of_apply_ne` (examples: none yet) -/
+theorem textbook_precommitment_is_sha512 {α β : Type*} (hash : α → β) (committed revealed : α) (h : hash revealed ≠ hash committed) : revealed ≠ committed := ne_of_apply_ne hash h
+example := @textbook_precommitment_is_sha512
+/-- textbook_precommitment_is_sha512 reflected by its shape (examples: none yet) -/
+@[reflection] theorem textbook_precommitment_is_sha512_reflected {α β : Type*} (hash : α → β) (committed revealed : α) (h : hash revealed ≠ hash committed) : (committed) ≠ (revealed) := Ne.symm (textbook_precommitment_is_sha512 hash committed revealed h)
+/-- now is within the validity of a certificate exactly when it is not before notBefore and not after notAfter: membership of the closed interval between them. From Mathlib's `Set.mem_Icc` (examples: none yet) -/
+theorem textbook_now_within_validity (notBefore notAfter now : ℕ) : now ∈ Set.Icc notBefore notAfter ↔ notBefore ≤ now ∧ now ≤ notAfter := Set.mem_Icc
+example := @textbook_now_within_validity
+/-- textbook_now_within_validity reflected by its shape (examples: none yet) -/
+@[reflection] theorem textbook_now_within_validity_reflected (notBefore notAfter now : ℕ) : (notBefore ≤ now ∧ now ≤ notAfter) ↔ (now ∈ Set.Icc notBefore notAfter) := Iff.symm (textbook_now_within_validity notBefore notAfter now)
+/-- every resource a client needs of an ACME directory is in it exactly when none of the needed is missing (RFC 8555 names five: newNonce, newAccount, newOrder, revokeCert, keyChange). From Mathlib's `Finset.sdiff_eq_empty_iff_subset` (examples: none yet) -/
+theorem textbook_acme_resources_five {α : Type*} [DecidableEq α] (needed directory : Finset α) : needed \ directory = ∅ ↔ needed ⊆ directory := Finset.sdiff_eq_empty_iff_subset
+example := @textbook_acme_resources_five
+/-- textbook_acme_resources_five reflected by its shape (examples: none yet) -/
+@[reflection] theorem textbook_acme_resources_five_reflected {α : Type*} [DecidableEq α] (needed directory : Finset α) : (needed ⊆ directory) ↔ (needed \ directory = ∅) := Iff.symm (textbook_acme_resources_five needed directory)
+/-- a CVE id is nine fixed characters (CVE-, a year of four digits, a dash) and a sequence of four digits or more, so it has thirteen characters at least. From Mathlib's `add_le_add_right`, through the instances `IsOrderedAddMonoid.toAddLeftMono` and `Nat.instIsOrderedAddMonoid` (examples: none yet) -/
+theorem textbook_cve_id_well_formed (digits : ℕ) (h : 4 ≤ digits) : 9 + 4 ≤ 9 + digits := add_le_add_right h 9
+example := @textbook_cve_id_well_formed
+/-- a DOI is the prefix 10. and a registrant of four digits or more, a slash and a suffix that is not empty (ISO 26324), so it has nine characters at least. From Mathlib's `add_le_add`, `add_le_add_right` and `le_rfl`, through the instances `IsOrderedAddMonoid.toAddLeftMono`, `Nat.instIsOrderedAddMonoid` and `covariant_swap_add_of_covariant_add` (examples: none yet) -/
+theorem textbook_doi_well_formed (registrant suffix : ℕ) (hr : 4 ≤ registrant) (hs : 1 ≤ suffix) : 3 + 4 + 1 + 1 ≤ 3 + registrant + 1 + suffix := add_le_add (add_le_add (add_le_add_right hr 3) le_rfl) hs
+example := @textbook_doi_well_formed
+/-- a checksum is written in at most eight hex digits exactly when it is below 16⁸, the 32 bits of Adler-32 (RFC 1950). From Mathlib's `Nat.digits_length_le_iff` (examples: none yet) -/
+theorem textbook_adler32_width (checksum : ℕ) : (Nat.digits 16 checksum).length ≤ 8 ↔ checksum < 16 ^ 8 := Nat.digits_length_le_iff (by decide) checksum
+example := @textbook_adler32_width
+/-- textbook_adler32_width reflected by its shape (examples: none yet) -/
+@[reflection] theorem textbook_adler32_width_reflected (checksum : ℕ) : (checksum < 16 ^ 8) ↔ ((Nat.digits 16 checksum).length ≤ 8) := Iff.symm (textbook_adler32_width checksum)
+/-- a size counted in bytes is never below zero, and neither is the sum of the sizes of a record's files. From Mathlib's `zero_le`, through the instance `LinearOrderedCommMonoidWithZero.toIsBotZeroClass` (examples: none yet) -/
+theorem textbook_size_nonnegative (sizes : List ℕ) : 0 ≤ sizes.sum := zero_le
+example := @textbook_size_nonnegative
+/-- the records read on a page are among all the records, so the page holds at most the total. From Mathlib's `Finset.card_le_card` (examples: none yet) -/
+theorem textbook_total_at_least_page {α : Type*} (page all : Finset α) (h : page ⊆ all) : page.card ≤ all.card := Finset.card_le_card h
+example := @textbook_total_at_least_page
+/-- the literals of the code outside the registry and those in it make all the literals: none is counted twice and none is left out. From Mathlib's `Finset.card_sdiff_add_card_inter` (examples: repository-literals) -/
+theorem textbook_literal_in_registry {α : Type*} [DecidableEq α] (literals registry : Finset α) :
+    (literals \ registry).card + (literals ∩ registry).card = literals.card :=
+  Finset.card_sdiff_add_card_inter literals registry
+example := @textbook_literal_in_registry
+/-- textbook_literal_in_registry reflected by its shape (examples: none yet) -/
+@[reflection] theorem textbook_literal_in_registry_reflected {α : Type*} [DecidableEq α] (literals registry : Finset α) : (literals.card) = ((literals \ registry).card + (literals ∩ registry).card) := Eq.symm (textbook_literal_in_registry literals registry)
 /-- RFC 6962 §2.1: a Merkle tree over n > 1 leaves has depth ⌈log₂ n⌉, the least d with n ≤ 2^d: 2^(d − 1) < n ≤ 2^d (three leaves: depth 2, one hash per level). From Mathlib's `Nat.pow_pred_clog_lt_self` and `Nat.le_pow_clog` (examples: seal-merkle) -/
 theorem textbook_tree_size_positive (n : Nat) (h : 1 < n) : 2 ^ (Nat.clog 2 n).pred < n ∧ n ≤ 2 ^ Nat.clog 2 n :=
   ⟨Nat.pow_pred_clog_lt_self (by decide) h, Nat.le_pow_clog (by decide) n⟩

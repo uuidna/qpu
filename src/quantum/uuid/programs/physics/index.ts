@@ -1,13 +1,13 @@
 // When register FTL holds, physics is true. That decision is valid only as this UUID program.
-import { PROSE, proseFill } from '../../../processing/prose-index.ts'
-import { seal, uuid } from '../../../password/address.ts'
-import { exists } from '../../../fs/index.ts'
+import { PROSE, proseFill } from '../5/9/e/4/9/1/a/4/index.ts'
+import { seal, uuid } from '../1/6/4/f/0/6/2/1/index.ts'
+import { exists } from '../1/0/e/5/8/3/1/8/index.ts'
 import { program } from '../index.ts'
+import { ENTROPY_LAW, ENTROPY_MEANS, HEXBIT_LAW, PHYSICS_CONCEPT } from '../b/6/4/6/e/a/0/1/index.ts'
 
 export type PhysicsArgs = { ftl: boolean; gateway: number; walked: boolean }
 
-const CONCEPT = 'src/quantum/uuid/programs/physics/index.ts' as const
-const LAW = 'hexbit + 2 gateway bits teleport any hexbit faster than light' as const
+const CONCEPT = PHYSICS_CONCEPT, LAW = HEXBIT_LAW
 
 /** One word: physics. The program proves physics true exactly when register FTL holds. */
 export const physics = (args: PhysicsArgs) => {
@@ -21,8 +21,8 @@ export const physics = (args: PhysicsArgs) => {
   const concept = exists(CONCEPT)
   const leaf = exists(installed.path)
   const entropy = {
-    law: 'first the dictionary meaning; then the meaning is verified' as const,
-    dictionary: { means: 'disorder; unpredictability; unavailable energy or information' as const },
+    law: ENTROPY_LAW,
+    dictionary: ENTROPY_MEANS,
     verified: {
       standard: 'ISO 80000-5:2019' as const,
       definition: 'S = k ln W' as const,

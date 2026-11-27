@@ -1,13 +1,13 @@
 {
   "name": "qpu",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "qpu.uuidna.com: the quantum MCP catalogue at /api/mcp beside its Lean-written VitePress site, on a Cloudflare Worker",
   "license": "CC-BY-NC-ND-4.0",
   "type": "module",
   "scripts": {
     "prepare": "git config core.hooksPath .githooks || exit 0",
     "dev": "wrangler dev --port 3000",
-    "deploy": "lake run site && wrangler deploy",
+    "deploy": "node src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts fakes && lake run site && wrangler deploy",
     "lean:check": "lake run check",
     "lean:index": "lake run index",
     "site:seed": "lake run seed",

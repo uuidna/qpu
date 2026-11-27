@@ -3,13 +3,16 @@ import { dirname, join } from 'node:path'
 import { crc32, deflateSync } from 'node:zlib'
 import { SUPPORTED_PROTOCOL_VERSIONS } from '@modelcontextprotocol/server'
 import { defineConfig, type HeadConfig } from 'vitepress'
-import { VERSION } from '../../src/quantum/processing/unit/version.ts'
-import { LICENSE, PRECEDENCE } from '../../src/quantum/processing/unit/license.ts'
-import { PROSE, proseFill } from '../../src/quantum/processing/prose-index.ts'
-import { UNIT_CONCEPT_DOI } from '../../src/quantum/processing/release.ts'
-import { TENANTS } from '../../src/quantum/processing/unit/tenants.ts'
-import { coilColour, rgbOfHsl, toFrames } from '../../src/quantum/processing/unit/theme.ts'
-import { style } from '../../src/quantum/uuid/index.ts'
+import { VERSION } from '../../src/quantum/uuid/programs/c/0/7/0/9/8/4/3/index.ts'
+import { LICENSE, PRECEDENCE } from '../../src/quantum/uuid/programs/a/f/3/d/e/a/5/f/index.ts'
+import { PROSE, proseFill } from '../../src/quantum/uuid/programs/5/9/e/4/9/1/a/4/index.ts'
+import { UNIT_CONCEPT_DOI } from '../../src/quantum/uuid/programs/6/6/5/9/1/f/5/8/index.ts'
+import { TENANTS } from '../../src/quantum/uuid/programs/3/a/4/f/9/2/3/c/index.ts'
+import { coilColour, rgbOfHsl, toFrames } from '../../src/quantum/uuid/programs/7/2/1/a/a/e/7/d/index.ts'
+import { style } from '../../src/quantum/uuid/programs/2/7/1/a/7/6/4/9/index.ts'
+import { CATALOG_COLLECTIONS, catalogProduct, catalogSeeds, catalogSummary } from '../../src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts'
+import { EXAMPLES } from '../../src/quantum/uuid/programs/9/d/4/f/e/4/4/2/index.ts'
+import { THEOREMS } from '../../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
 import { FOLD } from './theme/fold-index.ts'
 
 // The sidebar is written beside this file by scripts/site.ts from the seed waves; the theme beside it
@@ -172,6 +175,9 @@ export default defineConfig({
     image: { lazyLoad: true },
   },
   transformPageData: (pageData, { siteConfig }) => {
+    // a page of the catalog is titled by its theorem and described by the statement the kernel holds
+    const sold = pageData.params as { theorem?: string; statement?: string } | undefined
+    if (sold?.theorem) return { title: sold.theorem, description: clip(sold.statement ?? DESCRIPTION) }
     const fm = pageData.frontmatter, dir = pageData.relativePath.split('/').slice(0, -1).join('/')
     const title = (TITLES.get(fm.title) ?? 0) > 1 ? `${fm.title} · ${fm.wave ? `${fm.wave} wave` : fm.section ?? dir}` : pageData.title
     const stated = fm.description ?? firstParagraph(readFileSync(join(siteConfig.srcDir, pageData.filePath), 'utf8')) ?? DESCRIPTION
@@ -187,6 +193,9 @@ export default defineConfig({
     const home = pageData.relativePath === 'index.md'
     pages.set(pageData.relativePath, { url, title, description })
     const about = subjectOf(content)
+    // a page of the catalog is its product: free to the client, the public funding the work
+    const sold = pageData.params as { product?: string; theorem?: string; statement?: string } | undefined
+    const product = sold?.product && sold.theorem ? [{ '@type': 'Product', '@id': `${url}#product`, name: sold.theorem, description: clip(sold.statement ?? description), sku: sold.product, productID: sold.product, url, isAccessibleForFree: true, license: LICENSE.deed, creator: AUTHOR, potentialAction: { '@type': 'DonateAction', name: 'donation', target: LICENSE.donation, recipient: AUTHOR } }] : []
     const crumbs = [{ name: NAME, item: `${HOST}/` }, ...pageData.relativePath.split('/').slice(0, -1).flatMap((_, i, dirs) => {
       const index = `${dirs.slice(0, i + 1).join('/')}/index.md`
       return siteConfig.pages.includes(index) && index !== pageData.relativePath ? [{ name: dirs[i]!, item: urlOf(index) }] : []
@@ -213,7 +222,7 @@ export default defineConfig({
       ['meta', { name: 'twitter:title', content: title }],
       ['meta', { name: 'twitter:description', content: description }],
       ['link', { rel: 'canonical', href: url }],
-      ['script', { type: 'application/ld+json' }, JSON.stringify({ '@context': 'https://schema.org', '@graph': [...site, webpage] })],
+      ['script', { type: 'application/ld+json' }, JSON.stringify({ '@context': 'https://schema.org', '@graph': [...site, webpage, ...product] })],
     ]
   },
   // The crawler files, derived at build from the pages just rendered and the MCP server the site is deployed with:
@@ -246,8 +255,16 @@ export default defineConfig({
       '/api/mcp/server-card', '  Content-Type: application/mcp-server-card+json', ...cors, '',
       '/.well-known/ai-catalog.json', '  Content-Type: application/ai-catalog+json', ...cors, '',
       ...['/llms.txt', '/llms-full.txt'].flatMap((path) => [path, '  Content-Type: text/plain; charset=utf-8', '  Access-Control-Allow-Origin: *', '']),
+      ...['/api/catalog', ...CATALOG_COLLECTIONS.filter((c) => c !== 'variants').map((c) => `/api/${c}`), '/api/products/', '/api/products/*'].flatMap((path) => [path, '  Content-Type: application/json; charset=utf-8', ...cors, '']),
     ].join('\n'))
     out('robots.txt', ['User-agent: *', 'Allow: /', '', `Sitemap: ${HOST}/sitemap.xml`, ''].join('\n'))
+    // The catalog as Payload's REST API answers it, so a client of the Payload SDK reads this site with no Payload behind it: a find of each
+    // collection whose documents stand alone, and each product by its id with its variants joined, as a join field answers. The products are a
+    // directory of documents, so their find is that directory's index.
+    const counted = catalogSummary(EXAMPLES)
+    for (const collection of CATALOG_COLLECTIONS.filter((c) => c !== 'variants')) { const { phase: _, collection: __, ...found } = catalogSeeds(EXAMPLES, collection, 1, counted.collections[collection]); out(collection === 'products' ? 'api/products/index.html' : `api/${collection}`, JSON.stringify(found)) }
+    for (const t of THEOREMS) { const p = catalogProduct(EXAMPLES, t.key); out(`api/products/${p.product.id}`, JSON.stringify({ id: p.product.id, ...p.product.data, variants: { docs: p.variants.map((v) => ({ id: v.id, ...v.data })), hasNextPage: false, totalDocs: p.variants.length } })) }
+    out('api/catalog', JSON.stringify(counted))
     const sorted = [...pages.entries()].sort(([a], [b]) => (a === 'index.md' ? -1 : b === 'index.md' ? 1 : a.localeCompare(b, 'en', { numeric: true })))
     const sections = Map.groupBy(sorted, ([path]) => (path.includes('/') ? path.split('/')[0]! : 'pages'))
     const home = pages.get('index.md')
@@ -264,11 +281,14 @@ export default defineConfig({
       ...SOFTWARE.citation.map((c) => `- [${c.name}](${c.sameAs}): ${proseFill(PROSE.siteVitepressConfig_citeRecord, c.identifier.value)}`), '',
       '## Optional', '', `- [llms-full.txt](${HOST}/llms-full.txt): the Markdown source of every page`, `- [Source](${REPOSITORY}): the repository`, '',
     ].join('\n'))
-    out('llms-full.txt', sorted.map(([path, p]) => `<!-- ${p.url} -->\n${readFileSync(join(siteConfig.srcDir, path), 'utf8').replace(/^---\n[\s\S]*?\n---\n/, '').trim()}\n`).join('\n'))
+    // a page a route wrote has no file of its own: its Markdown is the route's content
+    const routed = new Map(siteConfig.dynamicRoutes.map((r) => [r.path, r.content ?? '']))
+    out('llms-full.txt', sorted.map(([path, p]) => `<!-- ${p.url} -->\n${(routed.get(path) ?? readFileSync(join(siteConfig.srcDir, path), 'utf8')).replace(/^---\n[\s\S]*?\n---\n/, '').trim()}\n`).join('\n'))
   },
   themeConfig: {
     logo: { src: '/favicon.svg', alt: NAME },
     nav: [
+      { text: 'Products', link: '/catalog/' },
       { text: 'Catalogue', link: '/catalogue' },
       { text: 'Draft applications', link: '/patents/' },
       { text: 'Prose', link: '/prose/' },

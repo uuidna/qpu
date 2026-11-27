@@ -1,9 +1,13 @@
 import Lean
+import Qpu
 import Qpu.General.Prose
+import Tex
 
 /-! # Prose
 
-Lean writes prose-index.ts: every sentence defined under the `Prose` namespace, by its name. The TypeScript side
+Lean writes prose-index.ts: every sentence defined under the `Prose` namespace, by its name. The index holds each
+sentence as it was written. The pages and prose.json written for the site show, with every sentence that names a
+theorem, that theorem's formula (`Tex`), so no name is published without what it states. The TypeScript side
 reads a sentence from that index and types none of its own. `⟦n⟧` in a sentence is where the nth computed value goes;
 `proseFill` puts the values in.
 
@@ -11,13 +15,18 @@ Run from the repository root: `lake env lean lean/tools/Prose.lean`.
 The index is written to `.lake/build/prose-index.ts`; `lake run index` installs it and `lake run check` compares it.
 The same sentences are written for the site: `site/prose/` and `site/public/prose.json`. -/
 
-open Lean
+open Lean Meta
 
 /-- Where the rendered index is written. -/
 def proseOut : System.FilePath := ".lake" / "build" / "prose-index.ts"
 
-#eval show CoreM Unit from do
+#eval show MetaM Unit from do
   let env ← getEnv
+  -- the formula of each declared theorem, by its name: a sentence that names one is published with what it states
+  let mut formulas : Std.HashMap String String := {}
+  for (name, _) in ← Qpu.declaredTheorems do
+    let key := name.toString
+    if key.any (fun c => c == '_' || c == '.') then formulas := formulas.insert key (texOf (← statementOf name))
   let mut rows : Array (String × String) := #[]
   for (name, info) in env.constants.map₁.toList do
     if let .str (.str .anonymous "Prose") key := name then
@@ -46,7 +55,8 @@ def proseOut : System.FilePath := ".lake" / "build" / "prose-index.ts"
   IO.FS.createDirAll (site / "prose")
   IO.FS.createDirAll (site / "public")
   let entries := sorted.toList.map fun (key, text) =>
-    Json.mkObj [("name", .str key), ("module", .str s!"Qpu.General.Prose.{unitOf key}"), ("text", .str text)]
+    Json.mkObj [("name", .str key), ("module", .str s!"Qpu.General.Prose.{unitOf key}"), ("text", .str text),
+      ("theorems", .arr ((texNamed formulas.get? text).toArray.map fun (named, tex) => Json.mkObj [("name", .str named), ("tex", .str tex)]))]
   IO.FS.writeFile (site / "public" / "prose.json") (Json.arr entries.toArray).compress
   let units := (sorted.toList.map (unitOf ·.1)).eraseDups
   for unit in units do
@@ -55,7 +65,8 @@ def proseOut : System.FilePath := ".lake" / "build" / "prose-index.ts"
       [ "---", s!"title: \"Qpu.General.Prose.{unit}\"", s!"description: \"{mine.length} sentence(s) written in Lean\"", "---", ""
       , s!"# Qpu.General.Prose.{unit}", ""
       , s!"Written in `lean/Qpu/General/Prose/{unit}.lean`. Each sentence is one Lean definition; `⟦n⟧` is where the nth computed value goes.", "" ]
-      ++ mine.flatMap (fun (key, text) => [ s!"## {key}", "", "````text", text, "````", "" ])
+      ++ mine.flatMap (fun (key, text) => [ s!"## {key}", "", "````text", text, "````", "" ]
+        ++ (texNamed formulas.get? text).flatMap fun (named, tex) => [ s!"`{named}`: ${tex}$", "" ])
     IO.FS.writeFile (site / "prose" / s!"{unit}.md") ("\n".intercalate page)
   let index :=
     [ "---", "title: \"Prose\"", "description: \"Every sentence the tree says, by the Lean definition that states it\"", "---", ""

@@ -1,0 +1,450 @@
+// The ISO deliverables the website MCP can import. No UUID graph: the addresses stay in the caller.
+// Each dimension is one row of iso_deliverables_metadata. The catalogue number is a field of that row. The English scope is that row's full scope.
+
+import { PROSE, proseFill } from '../../../../../../../../5/9/e/4/9/1/a/4/index.ts'
+import { TABLES } from '../../../../../../../../1/2/a/4/3/2/a/8/index.ts'
+import { ISO_DIMENSIONS } from '../../../../../../../../b/4/2/5/4/0/d/7/index.ts'
+import { ENTROPY_LAW } from '../../../../../../../../b/6/4/6/e/a/0/1/index.ts'
+
+/** The ISO dimensions this tree names, as Lean lists them in Qpu.General.Iso. Quantum purity is gated on each of them. */
+export { ISO_DIMENSIONS }
+
+/**
+ * Entropy: dictionary first, then the meaning is verified (ISO 80000-5).
+ * Not a purpose dimension of its own; audit measures S = k ln W beside ISO 80000-10.
+ */
+export const ISO_ENTROPY = {
+  law: ENTROPY_LAW,
+  /** Step 1 — ordinary dictionary sense (disorder / unavailable energy or information). */
+  dictionary: {
+    word: 'entropy' as const,
+    means: 'disorder; unpredictability; unavailable energy or information' as const,
+    thermo: 'unavailability of a system\'s energy for conversion into work; degree of disorder' as const,
+    information: PROSE.quantumProcessingIsoDeliverables_s19,
+  },
+  /** Step 2 — verification of that meaning under ISO 80000-5. */
+  standard: 'ISO 80000-5:2019' as const,
+  dimension: 'ISO 80000-5' as const,
+  catalogue: 64976 as const,
+  quantity: 'entropy' as const,
+  symbol: 'S' as const,
+  definition: 'S = k ln W' as const,
+  kSymbol: 'k' as const,
+  unitSi: 'J/K' as const,
+  unitNatural: 'nat' as const,
+  theorem: 'textbook_entropy_fusion' as const,
+} as const
+
+
+
+/** ISO 80000-5 Boltzmann entropy in natural units (k = 1): verifies dictionary disorder as S = ln W; vacuum W = 1 → S = 0. */
+export const isoEntropyOf = (W: number) => {
+  const microstates = W > 0 ? W : 1
+  const S = microstates === 1 ? 0 : Math.log(microstates)
+  const verified = microstates >= 1 && (microstates === 1 ? S === 0 : S === Math.log(microstates))
+  return {
+    ...ISO_ENTROPY,
+    k: 1 as const,
+    unit: ISO_ENTROPY.unitNatural,
+    W: microstates,
+    S,
+    vacuum: microstates === 1 && S === 0,
+    verified,
+    holds: verified,
+    says: verified
+      ? `dictionary ${ISO_ENTROPY.dictionary.means}; verified ${ISO_ENTROPY.definition} with W = ${microstates}, S = ${S}`
+      : PROSE.quantumProcessingIsoDeliverables_s1,
+  }
+}
+
+/**
+ * ISO 22739:2024 blockchain and DLT vocabulary census (Lean SoT: textbook_iso_22739_terms_read).
+ * Dig.watch publishes the full public text (3.1–3.99 and 3.100 wallet); the iteh sample once cut at 3.46.
+ */
+export const ISO_22739 = {
+  standard: 'ISO 22739:2024' as const,
+  source: 'https://dig.watch/resource/iso-227392020-blockchain-and-distributed-ledger-technologies-vocabulary' as const,
+  sampleWas: 'https://cdn.standards.iteh.ai/samples/82208/bf874d948e6e4ce9a07a73f4ddfee75e/ISO-22739-2024.pdf' as const,
+  terms: 99 as const,
+  read: 99 as const,
+  cut: 0 as const,
+  unread: 0 as const,
+  wallet: 100 as const,
+  theorem: 'textbook_iso_22739_terms_read' as const,
+  lead: 'iso-22739-terms-unread' as const,
+  clauses: {
+    hashFunction: '3.46' as const,
+    hashLink: '3.47' as const,
+    hashValue: '3.48' as const,
+    immutability: '3.51' as const,
+    ledger: '3.54' as const,
+    merkleTree: '3.58' as const,
+    nonce: '3.62' as const,
+    orphanBlock: '3.69' as const,
+    timestamp: '3.91' as const,
+    transactionRecord: '3.95' as const,
+    wallet: '3.100' as const,
+  },
+} as const
+
+/**
+ * ISO 4217 coin pricing via Lean SoT (textbook_coin_lean_sot / textbook_market_iso_4217).
+ * Catalogue coins are sealed UUID registers of 122 qubits — never Capacity 29/232 or a forged QPU code.
+ */
+export const ISO_4217_COIN = {
+  standard: 'ISO 4217' as const,
+  currencies: ['EUR', 'USD', 'BGN'] as const,
+  register: 122 as const,
+  theorem: 'textbook_coin_lean_sot' as const,
+  market: 'textbook_market_iso_4217' as const,
+  forged: { code: 'QPU' as const, iso4217: false as const, refused: true as const },
+  // a coin names a receipt and its register, not an amount of money: the code ISO 4217 keeps for no currency
+  unit: 'XXX' as const,
+  capacityRefused: { qubits: 29 as const, span: 232 as const, reason: 'Capacity 29/232 is not the Lean coin register' as const },
+  surfaces: ['market', 'REGISTER', 'pack', 'cross', 'price', 'catalog'] as const,
+} as const
+
+export const ISO_OPEN_DEFINITIONS = TABLES.ISO_OPEN_DEFINITIONS
+
+/** The language every document of the repository is written in, as ISO 639-1 codes it: the README, the site and the pages read it from here. */
+export const DOCUMENT_LANGUAGE = 'en' as const
+/** The unit symbols ISO/IEC 80000 gives the quantities a receipt measures: the byte and the bit (IEC 80000-13), the joule (ISO 80000-5). */
+export const ISO_80000_UNITS: Readonly<Record<string, string>> = { bytes: 'B', bits: 'bit', joules: 'J' }
+
+// what the runtime's CLDR tables know: a code they name is one the standard defines, and one they cannot name is not
+const cldrNames = (type: 'language' | 'currency', code: string) => { try { return new Intl.DisplayNames(['en'], { type, fallback: 'none' }).of(code) !== undefined } catch { return false } }
+const ISO_8601_DATE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})?)?$/
+/** The repository against each ISO standard it names, one row a standard, each with the places that break it: the test cases ISO/IEC/IEEE
+ *  29119-3 identifies; and for every copy of the one text, the identification ISO/IEC/IEEE 15289 asks of an information item, its dates in
+ *  ISO 8601, its language in ISO 639-1, a currency in ISO 4217 beside every coin, and the unit symbols of ISO/IEC 80000 beside every quantity. */
+export const isoConformance = (files: Readonly<Record<string, string>>) => {
+  const all = Object.entries(files), copies = all.filter(([p]) => /^(src\/quantum\/)?README\.md$/.test(p)), tests = all.filter(([p]) => /(\.test|_test)\.ts$/.test(p))
+  const field = (text: string, name: string) => new RegExp(`^\\| ${name} \\| ([^|]+) \\|$`, 'm').exec(text)?.[1]?.trim()
+  const count = (text: string, re: RegExp) => [...text.matchAll(re)].length
+  const row = (standard: string, findings: string[]) => ({ standard, holds: findings.length === 0, findings })
+  return [
+    row('ISO/IEC/IEEE 29119-3', tests.flatMap(([p, t]) => t.split('\n').flatMap((l, i, lines) => /^test\(/.test(l) && !/ISO\/IEC\/IEEE 29119-3 test case\. Identifier:/.test(lines[i - 1] ?? '') ? [`${p}:${i + 1}`] : []))),
+    row('ISO/IEC/IEEE 15289', copies.flatMap(([p, t]) => ['identifier', 'version', 'author', 'licence', 'language', 'issued'].filter((f) => !field(t, f)).map((f) => `${p}: ${f}`))),
+    row('ISO 8601', copies.flatMap(([p, t]) => [field(t, 'issued') ?? '', ...[...t.matchAll(/(?<![0-9a-f-])\d{1,4}[-/]\d{1,2}[-/]\d{1,4}(?![0-9a-f-])/g)].map((m) => m[0])].filter((d) => !ISO_8601_DATE.test(d)).map((d) => `${p}: ${d || 'no issue date'}`))),
+    row('ISO 639-1', copies.flatMap(([p, t]) => { const l = field(t, 'language') ?? ''; return /^[a-z]{2}$/.test(l) && cldrNames('language', l) ? [] : [`${p}: ${l || 'no language'}`] })),
+    row('ISO 4217', copies.flatMap(([p, t]) => [...(count(t, /^\| coin \|/gm) === count(t, /^\| currency \|/gm) ? [] : [`${p}: a coin without its currency`]), ...[...t.matchAll(/^\| currency \| ([^|]+) \|$/gm)].map((m) => m[1]!.trim()).filter((c) => !/^[A-Z]{3}$/.test(c) || !cldrNames('currency', c)).map((c) => `${p}: ${c}`)])),
+    row('ISO/IEC 80000', copies.flatMap(([p, t]) => [...t.matchAll(new RegExp(`\\| (${Object.keys(ISO_80000_UNITS).join('|')}) \\|`, 'g'))].map((m) => `${p}: ${m[1]} without its unit`))),
+  ]
+}
+
+/** A withdrawn dimension's current successor in the same dataset. The dimension itself stays the row that names it. */
+export const ISO_OPEN_SUCCESSORS = TABLES.ISO_OPEN_SUCCESSORS
+
+export const ISO_OPEN_DATA = 'https://www.iso.org/open-data.html'
+
+/** NIST and CERN as producers (ISO/IEC 19770-6 tag-producer role): each open source yields the ISO standards it produces. */
+export const ISO_PRODUCERS = TABLES.ISO_PRODUCERS
+
+
+const isoKey = (dimension: string) => dimension.replace(/\s*\(.*$/, '').trim()
+const isoYear = (reference: string) => { const at = reference.lastIndexOf(':'); const digits = reference.slice(at + 1, at + 5); return /^\d{4}$/.test(digits) ? Number(digits) : 0 }
+const isoCurrent = (stage: number) => stage >= 6060 && stage < 9500
+const fileOnPage = (text: string): string | null => {
+  const href = text.match(/href=["']([^"']*iso_deliverables_metadata[^"']*\.jsonl)["']/)
+  if (!href?.[1]) return null
+  try { return new URL(href[1], ISO_OPEN_DATA).href } catch { return null }
+}
+
+
+/** Research and citations. ISO 690 names the elements of a citation. ISO 26324 names the identifier. Both are asked of the DOI ecosystem. */
+export const isoResearch = () => ({
+  standards: ['ISO 690', 'ISO 26324'] as const,
+  source: 'doi' as const,
+  requirements: [
+    { standard: 'ISO 690' as const, requires: PROSE.quantumProcessingIsoDeliverables_requires2 },
+    { standard: 'ISO 26324' as const, requires: PROSE.quantumProcessingIsoDeliverables_requires3 },
+  ],
+  ecosystem: [
+    { id: 'doi-org', url: 'https://doi.org', standard: 'ISO 26324' as const, does: 'the identifier resolves' },
+    { id: 'crossref', url: 'https://api.crossref.org', standard: 'ISO 690' as const, does: PROSE.quantumProcessingIsoDeliverables_does4 },
+    { id: 'datacite', url: 'https://api.datacite.org', standard: 'ISO 690' as const, does: PROSE.quantumProcessingIsoDeliverables_does5 },
+    { id: 'zenodo', url: 'https://zenodo.org/api', standard: 'ISO 26324' as const, does: PROSE.quantumProcessingIsoDeliverables_does6 },
+    { id: 'openalex', url: 'https://api.openalex.org', standard: 'ISO 690' as const, does: PROSE.quantumProcessingIsoDeliverables_does7 },
+  ],
+  says: PROSE.quantumProcessingIsoDeliverables_says8,
+})
+
+const isoPlain = (value: unknown): string => {
+  if (typeof value === 'string') return value.replace(/<[^>]*>/g, ' ').replace(/&nbsp;|&#160;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/\s+/g, ' ').trim()
+  if (value && typeof value === 'object') { const row = value as { en?: unknown; text?: unknown }; if ('en' in row) return isoPlain(row.en); if (typeof row.text === 'string') return isoPlain(row.text) }
+  return ''
+}
+/** Every ISO dimension, verified and defined by the open dataset. The first request is the ISO Open Data page. A page answer names the JSONLines file. A dimension is verified when a row names it, and defined when that row gives an English title and a scope. Nothing is fetched here. Research and citations are asked of the DOI ecosystem. */
+export const verifyIsoOnline = (answer?: { status?: number; text?: string }) => {
+  const asked = [...ISO_DIMENSIONS]
+  const source = ISO_OPEN_DATA
+  const page = { id: 'iso-open-data' as const, method: 'GET' as const, url: source, accept: 'text/html' as const }
+  const research = isoResearch()
+  const successorFor = (dimension: string, current: boolean) => {
+    if (current) return null
+    const row = ISO_OPEN_SUCCESSORS.find((item) => item.of === dimension)
+    if (!row || !isoCurrent(row.currentStage) || row.title.en.length === 0 || row.scope.en.length === 0) return null
+    return { reference: row.reference, catalogue: row.id, stage: row.currentStage, date: row.publicationDate, title: row.title.en, definition: row.scope.en, current: true as const, url: `https://www.iso.org/standard/${row.id}.html` }
+  }
+  const blank = (dimension: string) => ({ dimension, key: isoKey(dimension), verified: false, defined: false, current: false, successor: null as ReturnType<typeof successorFor>, reference: null as string | null, catalogue: null as number | null, stage: null as number | null, url: null as string | null, title: null as string | null, definition: null as string | null, date: null as string | null })
+  const waiting = (request: { id: 'iso-open-data'; method: 'GET'; url: string; accept: 'text/html' | 'application/x-ndjson' }) => ({ phase: 'requests' as const, source, dataset: 'iso_deliverables_metadata' as const, licence: 'ODC-By-1.0' as const, request, research, asked: asked.length, verified: 0, defined: 0, current: 0, holds: false, rows: asked.map(blank) })
+  if (!answer || answer.status !== 200 || typeof answer.text !== 'string' || answer.text.length === 0) return waiting(page)
+  const file = fileOnPage(answer.text)
+  if (file) return waiting({ id: 'iso-open-data', method: 'GET', url: file, accept: 'application/x-ndjson' })
+  const request = page
+  type Hit = { reference: string; catalogue: number | null; stage: number; year: number; title: string; definition: string; date: string | null; supplement: boolean; defines: boolean }
+  const rank = (row: Hit) => [isoCurrent(row.stage) ? 1 : 0, row.defines ? 1 : 0, row.supplement ? 0 : 1, row.year, row.stage] as const
+  const found = new Map<string, Hit>()
+  for (const line of answer.text.split('\n')) {
+    if (!line) continue
+    let row: { reference?: unknown; id?: unknown; currentStage?: unknown; title?: unknown; scope?: unknown; publicationDate?: unknown; supplementType?: unknown }
+    try { row = JSON.parse(line) } catch { continue }
+    if (typeof row.reference !== 'string') continue
+    const stage = typeof row.currentStage === 'number' ? row.currentStage : 0
+    const year = isoYear(row.reference)
+    const catalogue = typeof row.id === 'number' ? row.id : null
+    const title = isoPlain(row.title)
+    const definition = isoPlain(row.scope)
+    const date = typeof row.publicationDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(row.publicationDate) ? row.publicationDate : null
+    const supplement = typeof row.supplementType === 'string' || /\/(Amd|Cor|Add|Suppl|Ext)\b/.test(row.reference)
+    const next: Hit = { reference: row.reference, catalogue, stage, year, title, definition, date, supplement, defines: title.length > 0 && definition.length > 0 }
+    for (const dimension of asked) {
+      const key = isoKey(dimension)
+      if (row.reference !== key && !row.reference.startsWith(`${key}:`) && !row.reference.startsWith(`${key}-`)) continue
+      const prev = found.get(dimension)
+      if (!prev) { found.set(dimension, next); continue }
+      const a = rank(next); const b = rank(prev)
+      const higher = a.some((value, index) => value > b[index]! && a.slice(0, index).every((item, at) => item === b[at]))
+      if (higher) found.set(dimension, next)
+    }
+  }
+  const rows = asked.map((dimension) => {
+    const hit = found.get(dimension)
+    if (!hit) return blank(dimension)
+    const current = isoCurrent(hit.stage)
+    return { dimension, key: isoKey(dimension), verified: true, defined: hit.defines, current, successor: successorFor(dimension, current), reference: hit.reference, catalogue: hit.catalogue, stage: hit.stage, url: hit.catalogue === null ? null : `https://www.iso.org/standard/${hit.catalogue}.html`, title: hit.title || null, definition: hit.definition || null, date: hit.date }
+  })
+  const verified = rows.filter((row) => row.verified).length
+  const defined = rows.filter((row) => row.defined).length
+  const current = rows.filter((row) => row.current).length
+  return { phase: 'verified' as const, source, dataset: 'iso_deliverables_metadata' as const, licence: 'ODC-By-1.0' as const, request, research, asked: asked.length, verified, defined, current, holds: verified === asked.length && defined === asked.length, rows }
+}
+
+const ISO_REF_RE = /ISO(?:\/(?:IEC|IEEE|TR|TS))*\s+\d+(?:-\d+)*(?::\d{4})?/g
+
+/** Pull ISO references out of producer text (NIST / CERN open answers). Deduped, order kept. */
+export const extractIsoRefs = (text: string) => {
+  const found: string[] = []
+  const seen = new Set<string>()
+  for (const match of text.match(ISO_REF_RE) ?? []) {
+    const ref = match.replace(/\s+/g, ' ').trim()
+    if (seen.has(ref)) continue
+    seen.add(ref)
+    found.push(ref)
+  }
+  return found
+}
+
+/** The dimensions a text cites, each by its number in any edition or part (ISO 16 is not ISO 16000): what classifies a file */
+export const isoClassify = (text: string) => {
+  const refs = extractIsoRefs(text)
+  return ISO_DIMENSIONS.filter((dimension) => { const key = dimension.replace(/:\d{4}$/, ''); return refs.some((ref) => ref === key || ref.startsWith(`${key}:`) || ref.startsWith(`${key}-`)) })
+}
+
+const dimensionHit = (ref: string, dimension: string) => {
+  const key = isoKey(dimension)
+  return ref === key || ref.startsWith(`${key}:`) || ref.startsWith(`${key}-`) || key.startsWith(ref)
+}
+
+/**
+ * NIST, CERN and Clay as three trinities (one bit each). Plugins that share a trinity collide the same way:
+ * 2^3 = eight combinations remain. The most effective carries every producer and unlocks every hidden perspective.
+ */
+export const HIDDEN_PERSPECTIVES = ['public', 'tenant', 'operator', 'client', 'developer', 'legal'] as const
+
+export const PRODUCER_TRINITIES = TABLES.PRODUCER_TRINITIES
+
+const PRODUCER_TRINITY_NAMES = Object.keys(PRODUCER_TRINITIES) as (keyof typeof PRODUCER_TRINITIES)[]
+
+/** Eight combinations of NIST·CERN·Clay. Each on trinity unlocks its perspectives; the most effective unlocks every hidden one. */
+export const unlockHiddenPerspectives = (raw: unknown = true) => {
+  if (raw !== true && !(raw && typeof raw === 'object' && !Array.isArray(raw))) {
+    throw new Error(PROSE.quantumProcessingIsoDeliverables_s9)
+  }
+  const asked = raw === true ? null : raw as { bits?: unknown; nist?: unknown; cern?: unknown; clay?: unknown }
+  const bitOf = (name: keyof typeof PRODUCER_TRINITIES, index: number) => {
+    if (asked && typeof asked.bits === 'number' && Number.isInteger(asked.bits)) return ((asked.bits >> index) & 1) === 1
+    if (asked && asked[name] !== undefined) return asked[name] === true
+    return true
+  }
+  const combinations = Array.from({ length: 1 << PRODUCER_TRINITY_NAMES.length }, (_, index) => {
+    const on = PRODUCER_TRINITY_NAMES.filter((_, k) => ((index >> k) & 1) === 1)
+    const unlocked = [...new Set(on.flatMap((name) => [...PRODUCER_TRINITIES[name].unlocks]))] as typeof HIDDEN_PERSPECTIVES[number][]
+    const hidden = HIDDEN_PERSPECTIVES.filter((perspective) => !unlocked.includes(perspective))
+    const trinities = on.map((name) => ({
+      id: name,
+      seed: PRODUCER_TRINITIES[name].seed,
+      trinity: [...PRODUCER_TRINITIES[name].trinity],
+      unlocks: [...PRODUCER_TRINITIES[name].unlocks],
+      via: PRODUCER_TRINITIES[name].via,
+    }))
+    return {
+      index,
+      bits: index.toString(2).padStart(3, '0'),
+      on: [...on],
+      trinities,
+      unlocked,
+      hidden,
+      perspectives: unlocked.length,
+      of: HIDDEN_PERSPECTIVES.length,
+      most: on.length === PRODUCER_TRINITY_NAMES.length,
+      holds: hidden.length === 0 || on.length < PRODUCER_TRINITY_NAMES.length,
+    }
+  })
+  const activeBits = PRODUCER_TRINITY_NAMES.reduce((n, name, index) => n | (bitOf(name, index) ? (1 << index) : 0), 0)
+  const active = combinations[activeBits]!
+  const { bits: activeBitString, ...activeRest } = active
+  const most = combinations.find((row) => row.most)!
+  const space = 1 << PRODUCER_TRINITY_NAMES.length
+  const holds = combinations.length === space
+    && space === 8
+    && most.hidden.length === 0
+    && most.unlocked.length === HIDDEN_PERSPECTIVES.length
+    && most.on.join() === PRODUCER_TRINITY_NAMES.join()
+    && combinations.every((row) => row.unlocked.length === row.on.reduce((n, name) => n + PRODUCER_TRINITIES[name].unlocks.length, 0) || new Set(row.on.flatMap((name) => [...PRODUCER_TRINITIES[name].unlocks])).size === row.unlocked.length)
+    && HIDDEN_PERSPECTIVES.every((perspective) => PRODUCER_TRINITY_NAMES.some((name) => (PRODUCER_TRINITIES[name].unlocks as readonly string[]).includes(perspective)))
+  return {
+    phase: 'trinity' as const,
+    via: 'nist+cern+clay' as const,
+    law: 'NIST, CERN and Clay trinities unlock each hidden perspective' as const,
+    guide: 'one bit per trinity — eight combinations remain' as const,
+    fetched: false as const,
+    written: false as const,
+    space,
+    variants: combinations.length,
+    trinities: PRODUCER_TRINITY_NAMES.map((name) => ({
+      id: name,
+      seed: PRODUCER_TRINITIES[name].seed,
+      trinity: [...PRODUCER_TRINITIES[name].trinity],
+      unlocks: [...PRODUCER_TRINITIES[name].unlocks],
+      via: PRODUCER_TRINITIES[name].via,
+      role: PRODUCER_TRINITIES[name].role,
+    })),
+    perspectives: [...HIDDEN_PERSPECTIVES],
+    combinations,
+    active: { bits: activeBitString, ...activeRest },
+    most,
+    unlocked: active.unlocked,
+    hidden: active.hidden,
+    holds,
+    says: holds
+      ? (active.most
+        ? proseFill(PROSE.quantumProcessingIsoDeliverables_s10, HIDDEN_PERSPECTIVES.length, space)
+        : `combination ${active.bits}: unlocked ${active.unlocked.join(', ') || 'none'}; still hidden: ${active.hidden.join(', ') || 'none'}`)
+      : PROSE.quantumProcessingIsoDeliverables_s11,
+  }
+}
+
+/**
+ * Extract the ISO standards NIST and CERN produce.
+ * true / { producers: true }: the plan — requestList for each producer source, nothing fetched.
+ * { answers }: url or id → body the client fetched; refs extracted and matched to each producer's standards.
+ * Clay joins as the third trinity — together they unlock each hidden perspective.
+ */
+export const extractIsoFromProducers = (raw: unknown = true) => {
+  if (raw !== true && !(raw && typeof raw === 'object' && !Array.isArray(raw))) {
+    throw new Error(PROSE.quantumProcessingIsoDeliverables_s12)
+  }
+  const answers = raw !== true && raw && typeof raw === 'object' && (raw as { answers?: unknown }).answers && typeof (raw as { answers: unknown }).answers === 'object'
+    ? (raw as { answers: Record<string, unknown> }).answers
+    : null
+  const bodyAt = (id: string, url: string) => {
+    if (!answers) return ''
+    const byId = answers[id]
+    const byUrl = answers[url]
+    return typeof byId === 'string' ? byId : typeof byUrl === 'string' ? byUrl : ''
+  }
+  const research = isoResearch()
+  const requestList = ISO_PRODUCERS.flatMap((producer) => producer.sources.map((source) => ({
+    id: source.id,
+    producer: producer.id,
+    method: source.method,
+    url: source.url,
+    accept: source.accept,
+    produces: source.produces,
+    via: "the client's own MCP fetches it; this handler does no I/O" as const,
+  })))
+  const rows = ISO_PRODUCERS.map((producer) => {
+    const texts = producer.sources.map((source) => bodyAt(source.id, source.url))
+    const answered = answers !== null && texts.every((text) => text.length > 0)
+    const extracted = extractIsoRefs(texts.join('\n'))
+    const dimensions = producer.standards.map((row) => {
+      const hit = extracted.find((ref) => dimensionHit(ref, row.dimension))
+      const inCatalogue = ISO_DIMENSIONS.some((dimension) => isoKey(dimension) === isoKey(row.dimension) || dimension === row.dimension || dimension.startsWith(`${isoKey(row.dimension)}:`))
+      return {
+        dimension: row.dimension,
+        via: row.via,
+        catalogue: inCatalogue,
+        extracted: hit ?? null,
+        holds: inCatalogue,
+      }
+    })
+    // plan: declared produces hold when they sit in ISO_DIMENSIONS; verified: answers in hand and catalogue map holds (open data may not restate the ISO string — the producer map is authoritative)
+    const planned = dimensions.every((row) => row.catalogue)
+      && producer.research.every((std) => (research.standards as readonly string[]).includes(std))
+    const verified = answered && planned
+    const phase = answers === null ? 'plan' as const : verified ? 'verified' as const : 'unanswered' as const
+    return {
+      id: producer.id,
+      name: producer.name,
+      role: producer.role,
+      guide: producer.guide,
+      host: producer.host,
+      sources: producer.sources.length,
+      research: producer.research,
+      extracted,
+      dimensions,
+      standards: dimensions.length,
+      answered,
+      phase,
+      planned,
+      verified,
+      holds: answers === null ? planned : verified,
+      says: answers === null
+        ? proseFill(PROSE.quantumProcessingIsoDeliverables_s13, producer.name, dimensions.length, producer.sources.length)
+        : verified
+          ? proseFill(PROSE.quantumProcessingIsoDeliverables_s14, producer.name, dimensions.length, extracted.length)
+          : proseFill(PROSE.quantumProcessingIsoDeliverables_s15, producer.id),
+    }
+  })
+  const planned = rows.every((row) => row.planned)
+  const verified = rows.every((row) => row.verified)
+  const phase = answers === null ? 'plan' as const : verified ? 'verified' as const : 'unanswered' as const
+  const dimensions = [...new Set(rows.flatMap((row) => row.dimensions.map((d) => d.dimension)))]
+  const trinity = unlockHiddenPerspectives(true)
+  const holds = (answers === null ? planned && rows.length === ISO_PRODUCERS.length : verified) && trinity.holds && trinity.most.hidden.length === 0
+  return {
+    phase: 'producers' as const,
+    via: 'nist+cern+clay' as const,
+    role: 'producer' as const,
+    guide: 'ISO/IEC 19770-6:2024 tag producers; NIST·CERN·Clay trinities unlock each hidden perspective' as const,
+    fetched: false as const,
+    written: false as const,
+    producers: rows.length,
+    of: ISO_PRODUCERS.length,
+    dimensions: dimensions.length,
+    research: research.standards,
+    requestList,
+    rows,
+    trinity,
+    unlocked: trinity.unlocked,
+    hidden: trinity.hidden,
+    ladder: { phase, better: 'open challenge via producer open data' as const, trinity: 'nist+cern+clay' as const },
+    holds,
+    says: holds
+      ? (answers === null
+        ? proseFill(PROSE.quantumProcessingIsoDeliverables_s16, dimensions.length, trinity.most.unlocked.length, trinity.space, requestList.length)
+        : proseFill(PROSE.quantumProcessingIsoDeliverables_s17, trinity.most.unlocked.length))
+      : PROSE.quantumProcessingIsoDeliverables_s18,
+  }
+}
