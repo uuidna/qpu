@@ -41,3 +41,11 @@ export const UUID_GROUPS = [8,4,4,4,12] as const
 export const UUID_SHAPE = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
 /** The domains bound to the Worker, each with its tenant, from Config.tenants: Wrangler's routes and the hosts served free. */
 export const TENANTS: Readonly<Record<string, string>> = { "qpu.uuidna.com": "uuidna", "qpu.psg.bg": "psg" }
+/** The Payload ecommerce collections seeded in order, from Config.catalogCollections. */
+export const CATALOG_COLLECTIONS = ["variantTypes","variantOptions","products","variants"] as const
+/** The variant types every theorem product carries, from Config.catalogVariantTypes. */
+export const CATALOG_VARIANT_TYPES = ["example","witness","entanglement","duality"] as const
+/** Every collection the harmonized Payload and VitePress SDK serves through Cloudflare, from Config.sdkCollections. */
+export const SDK_COLLECTIONS = ["variantTypes","variantOptions","products","variants","computations","standards","clauses"] as const
+/** The routes the Cloudflare Worker handles first, from Config.workerRoutes. */
+export const WORKER_ROUTES = ["/","/mcp","/api/*"] as const

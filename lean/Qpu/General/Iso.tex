@@ -15,6 +15,11 @@ ISO 8601: four hundred years hold ninety-seven leap years and a whole number of 
 \[ \mathrm{Iso.leap}\ 2024 = \mathrm{true} \land \mathrm{Iso.leap}\ 1900 = \mathrm{false} \land \mathrm{Iso.leap}\ 2000 = \mathrm{true} \land (\mathrm{List.filter}\ \mathrm{Iso.leap} (\mathrm{List.range}\ 400))\mathrm{.length} = 97 \land (400 \cdot 365 + 97) \bmod 7 = 0 \]
 \noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L178}
 
+\paragraph{\texttt{Iso.citation\_elements\_states}}
+ISO 690:2021: the four core bibliographic citation elements (identifier, creator, title, date) span `2 \^{} 4` presence states. Proved with Mathlib's `Fintype.card\_fun`, `Fintype.card\_bool` and `Fintype.card\_fin`.
+\[ \mathrm{Fintype.card} (\mathrm{Fin}\ 4 \to \mathrm{Bool}) = 2 ^{4} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L232}
+
 \paragraph{\texttt{Iso.clauses\_count}}
 The register holds eighty-six terms: the sum of its groups.
 \[ \mathrm{Iso.clauses.length} = 86 \land (\mathrm{List.map} (\lambda \ x \mapsto \mathrm{match}\ x\ \mathrm{with} | (\mathrm{fst}, \mathrm{fst\_1}, n) \mapsto n) \mathrm{Iso.groups})\mathrm{.sum} = 86 \]
@@ -35,6 +40,31 @@ ISO 4217: a currency has a code of three letters and a number of three digits.
 \[ \mathrm{Iso.letterCodes}\ 3 = 17576 \land 10 ^{3} = 1000 \]
 \noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L186}
 
+\paragraph{\texttt{Iso.document\_identification\_states}}
+ISO/IEC/IEEE 15289:2019: the six mandatory identification attributes of a software life-cycle information item (identifier, version, author, licence, language, issued) span `2 \^{} 6` presence states. Proved with Mathlib's `Fintype.card\_fun`, `Fintype.card\_bool` and `Fintype.card\_fin`.
+\[ \mathrm{Fintype.card} (\mathrm{Fin}\ 6 \to \mathrm{Bool}) = 2 ^{6} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L220}
+
+\paragraph{\texttt{Iso.doi\_registrant\_length}}
+ISO 26324:2025: every Zenodo DOI under registrant prefix `10.5281/` has length `8 + s.length`. Proved via `String.length\_append`.
+\[ \forall (s : \mathrm{String}), ("\mathrm{10.5281}/" ++ s)\mathrm{.length} = 8 + \mathrm{s.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L238}
+
+\paragraph{\texttt{Iso.entropy\_vacuum\_log\_zero}}
+ISO 80000-5:2019: the vacuum state `W = 1` carries zero logarithmic entropy (`Nat.log 2 1 = 0`). Proved via `Nat.log\_one\_right`.
+\[ \mathrm{Nat.log}\ 2\ 1 = 0 \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L274}
+
+\paragraph{\texttt{Iso.ip\_disclosure\_complete}}
+ISO 56005:2020 (Intellectual property management \& invention disclosure): partitioning `claimed + open\_` disclosed items factors their binary verification space into the product of the claimed and open spaces. Proved with Mathlib's `Fintype.card\_fun`, `Fintype.card\_bool`, `Fintype.card\_fin` and `Nat.pow\_add`.
+\[ \forall (\mathrm{claimed}\ \mathrm{open\_} : \mathbb{N}), \mathrm{Fintype.card} (\mathrm{Fin} (\mathrm{claimed} + \mathrm{open\_}) \to \mathrm{Bool}) = \mathrm{Fintype.card} (\mathrm{Fin}\ \mathrm{claimed} \to \mathrm{Bool}) \cdot \mathrm{Fintype.card} (\mathrm{Fin}\ \mathrm{open\_} \to \mathrm{Bool}) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L254}
+
+\paragraph{\texttt{Iso.isni\_orcid\_space\_and\_check}}
+ISO 27729:2012 (ISNI / ORCID): the 16-digit identifier space holds `10 \^{} 16` base strings, and the author's ORCID `0009-0000-7312-9778` satisfies the ISO/IEC 7064 Mod 11-2 check digit `(12 - total \% 11) \% 11 = 8`. Proved with Mathlib's `Fintype.card\_fun` and `Fintype.card\_fin`.
+\[ \mathrm{Fintype.card} (\mathrm{Fin}\ 16 \to \mathrm{Fin}\ 10) = 10 ^{16} \land (12 - \mathrm{List.foldl} (\lambda \ \mathrm{acc}\ d \mapsto (\mathrm{acc} + d) \cdot 2) 0 [0, 0, 0, 9, 0, 0, 0, 0, 7, 3, 1, 2, 9, 7, 7] \bmod 11) \bmod 11 = 8 \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L245}
+
 \paragraph{\texttt{Iso.language\_codes}}
 ISO 639-1: a language has a code of two letters.
 \[ \mathrm{Iso.letterCodes}\ 2 = 676 \]
@@ -44,6 +74,16 @@ ISO 639-1: a language has a code of two letters.
 ISO 20022: a message is named by four letters for its business area, three digits for the message, three for the variant and two for the version, as in `pacs.008.001.08`: twelve characters between the dots.
 \[ 4 + 3 + 3 + 2 = 12 \land "\mathrm{pacs.008.001.08}"\mathrm{.length} = 12 + 3 \]
 \noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L205}
+
+\paragraph{\texttt{Iso.octet\_bits\_card}}
+IEC 80000-13:2008: `b` octets (bytes) of 8 bits carry `2 \^{} (b * 8)` binary states. Proved with Mathlib's `Fintype.card\_fun`, `Fintype.card\_bool`, `Fintype.card\_fin` and `pow\_mul'`.
+\[ \forall (b : \mathbb{N}), \mathrm{Fintype.card} (\mathrm{Fin}\ b \to \mathrm{Fin}\ 8 \to \mathrm{Bool}) = 2 ^{(b \cdot 8)} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L279}
+
+\paragraph{\texttt{Iso.openchain\_audit\_conserved}}
+ISO/IEC 5230:2020 (OpenChain): the six specification requirements evaluated over three compliance verdicts (conforming, non-conforming, not-applicable) span `3 \^{} 6` audit states. Proved with Mathlib's `Fintype.card\_fun` and `Fintype.card\_fin`.
+\[ \mathrm{Fintype.card} (\mathrm{Fin}\ 6 \to \mathrm{Fin}\ 3) = 3 ^{6} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L268}
 
 \paragraph{\texttt{Iso.quality\_characteristics}}
 ISO/IEC 25010:2023: the product quality model has 9 characteristics, one more than the 8 of the edition before.
@@ -60,10 +100,20 @@ ISO/IEC 27001:2022: Annex A lists 93 controls in four themes, 37 organizational,
 \[ 37 + 8 + 14 + 34 = 93 \]
 \noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L198}
 
+\paragraph{\texttt{Iso.spdx\_expression\_valid}}
+ISO/IEC 5962:2021 (SPDX): the SPDX licence expression `"CC-BY-NC-ND-4.0"` has positive length (`15` characters). Proved via `Nat.zero\_lt\_succ`.
+\[ 0 < "\mathrm{CC}-\mathrm{BY}-\mathrm{NC}-\mathrm{ND}-\mathrm{4.0}"\mathrm{.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L262}
+
 \paragraph{\texttt{Iso.standards\_count}}
-The register names twenty standards, and twelve of them have a witness.
-\[ \mathrm{Iso.standards.length} = 20 \land (\mathrm{List.filter} (\lambda \ x \mapsto \mathrm{x.witness.isSome}) \mathrm{Iso.standards})\mathrm{.length} = 12 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L248}
+The register names thirty standards, and twenty-two of them have a witness.
+\[ \mathrm{Iso.standards.length} = 30 \land (\mathrm{List.filter} (\lambda \ x \mapsto \mathrm{x.witness.isSome}) \mathrm{Iso.standards})\mathrm{.length} = 22 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L324}
+
+\paragraph{\texttt{Iso.test\_suite\_nonempty}}
+ISO/IEC/IEEE 29119-3:2021: every non-empty test suite of `n + 1` identified test cases has positive cardinality. Proved with Mathlib's `Fintype.card\_fin` and `Nat.zero\_lt\_succ`.
+\[ \forall (n : \mathbb{N}), 0 < \mathrm{Fintype.card} (\mathrm{Fin} (n + 1)) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L226}
 
 \paragraph{\texttt{Iso.token\_identifier}}
 ISO 24165: a digital token identifier is nine characters, eight of the base number and one check character, as in `4H95J0R2X`.

@@ -7,10 +7,6 @@ The primes the register geometry already exhibits, written as exact identities o
 ingredients the Riemann/zeta wing of the clay family reads. These are checked facts about particular primes, not a proof
 of the Riemann hypothesis; that remains a lead the clay family carries, fed by exactly these exhibited values. -/
 
-/-- the smallest prime (2) equals coins. -/
-theorem prime_two : coins = 2 := coins_two
-/-- the first odd prime (3) equals n. -/
-theorem prime_three : n = 3 := n_eq
 /-- the Mersenne prime 2^2 − 1 (3) equals mint coins − seed. -/
 theorem mersenne_3 : mint coins - seed = 3 := rfl
 /-- the Mersenne prime 2^3 − 1 (7) equals mint n − seed, and equals rays. -/
@@ -34,4 +30,4 @@ theorem primorial_210 : coins * n * (n + coins) * rays = 210 := rfl
 
 /-- Every exhibited prime at once: the primes the lattice carries into the clay family's number-theory wing. -/
 theorem primes_all : coins = 2 ∧ n = 3 ∧ mint coins - seed = 3 ∧ mint n - seed = 7 ∧ bits - seed = 31 ∧ mint rays - seed = 127 ∧ rays * (faces - seed) = 91 ∧ rays * (faces - seed) = choose faces coins ∧ faces - n = 11 ∧ faces - seed = 13 ∧ (faces - seed) - (faces - n) = coins ∧ coins * n * (n + coins) * rays = 210 :=
-  ⟨prime_two, prime_three, mersenne_3, mersenne_7, mersenne_31, mersenne_127, shor_factored, shor_modulus_binomial, twin_lower, twin_upper, twin_gap, primorial_210⟩
+  ⟨coins_two, n_eq, mersenne_3, mersenne_7, mersenne_31, mersenne_127, shor_factored, shor_modulus_binomial, twin_lower, twin_upper, twin_gap, primorial_210⟩

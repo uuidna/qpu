@@ -4,6 +4,23 @@
 
 # Blueprint of the qpu quantum computer design
 
+## flux-bias coil (IEC 60050-151 coil; Krantz et al. 2019, doi:10.1063/1.5089550)
+
+`Qpu.Communication.Coil`. Unified coil module (merging communication coil geometry and physical-qubit flux-bias coil): 1. Communication coil: over one shared Bell pair, one qubit carries two classical bits and two classical bits carry one qubit (`QuantumCommunication.two_coins_one_qubit`), with lattice faces `2 × 7 = 14`. 2. Flux-bias coil: a current `I` through the flux-bias line threads `Φ = M·I` through the qubit SQUID, read modulo one flux quantum `Φ₀ = h/2e` (`Coil.periodic`).
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `Coil.periodic` | Qpu.Communication.Coil | `∀ (M I k : ℕ), (Coil.flux M I + k * (PhysicalConstant.hNum * 10 ^ 10)) % (PhysicalConstant.hNum * 10 ^ 10) = Coil.flux M I % (PhysicalConstant.hNum * 10 ^ 10)` |
+| `QuantumCommunication.two_coins_one_qubit` | Qpu.Communication.QuantumCommunication | `QuantumCommunication.TwoCoins` |
+| `clay` | Qpu.Communication.Coil | `coins * rays = (seed + (mint n - coins)) * coins ∧ (seed + (mint n - coins)) * coins = coil` |
+| `coil_efficiency` | Qpu.Communication.Coil | `coil = faces ∧ faces = rays + rays ∧ coins * rays = faces` |
+| `coil_is_faces` | Qpu.Communication.Coil | `coil = faces` |
+| `follow_the_coins` | Qpu.Communication.Coil | `∀ (app : ℕ), app + coins = app + theory + practice` |
+| `fusion` | Qpu.Communication.Coil | `fused = faces * mint (bits + seed) ∧ faces = rays + rays` |
+| `next_coil` | Qpu.Communication.Coil | `coil * mint (bits + coins) = fused + fused` |
+| `one_plus_six` | Qpu.Communication.Coil | `seed + (mint n - coins) = rays` |
+| `two_x_seven_coins` | Qpu.Communication.Coil | `coins * rays = (seed + (mint n - coins)) * coins` |
+
 ## quantum communication, superdense coding and teleportation (ISO/IEC 4879:2024 3.6.1)
 
 `Qpu.Communication.QuantumCommunication`. Teleportation on three qubits, exact over the Gaussian integers with the measurements deferred (the corrections applied as the controlled gates they condition): qubits 1 and 2 are made a Bell pair, qubit 0 is entangled with qubit 1 by CNOT and turned by Hadamard, then qubit 1 corrects qubit 2 by X and qubit 0 corrects it by Z. For each basis input `b` on qubit 0, every outcome of qubits 0 and 1 leaves qubit 2 holding `b` with the same weight; the circuit is linear, so every input state is carried across. No signalling: before the corrections arrive, qubit 2 alone is in the same state for every input, its reduced density diagonal with equal weights, so nothing of the input crosses until the two classical bits do; this holds on the six Pauli eigenstates, a set whose states determine any input. Superdense coding runs the exchange the other way: Alice writes two classical bits on her half of a Bell pair with I, X, Z or ZX, and Bob's CNOT then Hadamard returns exactly those two bits. Together they are two coins making a coil, named precisely: over one shared Bell pair, one qubit carries two classical bits and two carry one qubit.
@@ -14,14 +31,6 @@
 | `QuantumCommunication.teleport_exact` | Qpu.Communication.QuantumCommunication | `∀ b < 2, ∀ r < 8, QuantumCommunication.teleport b r = if r % 2 = b then 1 else 0` |
 | `QuantumCommunication.teleport_no_signalling` | Qpu.Communication.QuantumCommunication | `∀ s < 6, QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 1 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 0 = 0 ∧ QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 0 0 = QuantumCommunication.reduced2 (QuantumCommunication.sentFrom (QuantumCommunication.pauliEigen s)) 1 1` |
 | `QuantumCommunication.two_coins_one_qubit` | Qpu.Communication.QuantumCommunication | `QuantumCommunication.TwoCoins` |
-
-## flux-bias coil (IEC 60050-151 coil; Krantz et al. 2019, doi:10.1063/1.5089550)
-
-`Qpu.Information.PhysicalQubit.Coil`. The winding that tunes a qubit: a current I through the flux-bias line threads Φ = M·I through the qubit SQUID by the mutual inductance M, and the SQUID reads that flux modulo the flux quantum Φ₀ = h/2e. Sycamore drives its 54 qubit and 88 coupler bias lines from 14-bit, 1 GS/s DACs (arXiv:1910.11333, SI III.1); it states no M, so none is assumed here. Currents are in nanoamperes and inductances in femtohenries, so Φ/Φ₀ = M·I·2·eNum / (hNum·10¹⁰).
-
-| Theorem | Module | Statement |
-|---|---|---|
-| `Coil.periodic` | Qpu.Information.PhysicalQubit.Coil | `∀ (M I k : ℕ), (Coil.flux M I + k * (PhysicalConstant.hNum * 10 ^ 10)) % (PhysicalConstant.hNum * 10 ^ 10) = Coil.flux M I % (PhysicalConstant.hNum * 10 ^ 10)` |
 
 ## physical qubit: Josephson junction (ISO/IEC 4879:2024 3.3.5; IEC 60050-815)
 
@@ -58,7 +67,6 @@
 | Theorem | Module | Statement |
 |---|---|---|
 | `Qubit.chains` | Qpu.Information.Qubit | `∀ (k w : ℕ), (List.replicate k (Qubit.effective w)).sum = k * Qubit.effective w` |
-| `Qubit.coins_two` | Qpu.Information.Qubit | `coins = 2` |
 | `Qubit.couplers_formula` | Qpu.Information.Qubit | `∀ (w : ℕ), Qubit.gateway + 1 ≤ w → Qubit.couplers w = (Qubit.digits - coins) * (w - 1) + (w - Qubit.gateway - 1) + (Qubit.digits - coins - coins) * w + coins * (w - Qubit.gateway)` |
 | `Qubit.digits_held` | Qpu.Information.Qubit | `List.filter (fun x => decide (x ≠ Qubit.versionAt)) (List.range Qubit.digits) = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]` |
 | `Qubit.digits_thirtytwo` | Qpu.Information.Qubit | `Qubit.digits = 32` |
@@ -67,6 +75,19 @@
 | `Qubit.hexbit_four` | Qpu.Information.Qubit | `hexbit = 4` |
 | `Qubit.holding_formula` | Qpu.Information.Qubit | `∀ (w : ℕ), Qubit.gateway + 1 ≤ w → Qubit.holding w = List.filter (fun x => decide (x ≠ Qubit.versionAt)) (List.range Qubit.digits)` |
 | `Qubit.unbounded` | Qpu.Information.Qubit | `∀ (N : ℕ), ∃ k, N < k * Qubit.effective hexbit` |
+
+## gravitational equivalence and empirical antigravity bounds (CERN ALPHA-g 2023, NIST CODATA 2022)
+
+`Qpu.Physics.EquivalencePrinciple`. Formal mathematical bounds on gravity and antimatter free fall verified by Lean 4 and Mathlib: 1. Weak Equivalence Principle: when inertial mass equals gravitational mass (`m_i = m_g ≠ 0`), test mass cancels identically from Newtonian acceleration `a = G * M / (r * r)`. 2. Positivity of Newtonian attraction for positive masses and NIST CODATA 2022 `G = 6.67430(15) × 10⁻¹¹ m³ kg⁻¹ s⁻²`. 3. General Relativity Strong Energy Condition (`ρ + 3p ≥ 0` for non-negative matter vs. de Sitter vacuum `p = -ρ` giving `ρ + 3p = -(2 * ρ)`, the cosmological-constant repulsion mechanism distinct from negative-mass antigravity). 4. CERN ALPHA-g (*Nature* 621, 716–722, 2023) empirical antihydrogen free-fall bound `ḡ/g = 0.75 ± 0.13 ± 0.16`: conservative linear lower bound `0.46 > 0` (downward fall) and separation `1.75 > 5 × 0.29 = 1.45` (> 5σ exclusion of repulsive antigravity `ḡ/g = -1`).
+
+| Theorem | Module | Statement |
+|---|---|---|
+| `Qpu.Physics.EquivalencePrinciple.cern_alpha_g_rules_out_antigravity` | Qpu.Physics.EquivalencePrinciple | `0 < 75 - (13 + 16) ∧ 5 * (13 + 16) < 75 + 100` |
+| `Qpu.Physics.EquivalencePrinciple.de_sitter_vacuum_violates_sec` | Qpu.Physics.EquivalencePrinciple | `∀ (rho : ℚ), 0 < rho → rho + (-rho + (-rho + -rho)) < 0` |
+| `Qpu.Physics.EquivalencePrinciple.newton_attractive_sign` | Qpu.Physics.EquivalencePrinciple | `∀ (G M m r : ℚ), 0 < G → 0 < M → 0 < m → r ≠ 0 → 0 < G * M * m / (r * r)` |
+| `Qpu.Physics.EquivalencePrinciple.nist_codata_G_positive_interval` | Qpu.Physics.EquivalencePrinciple | `0 < 667430 - 15 ∧ 667430 - 15 < 667430 ∧ 667430 < 667430 + 15` |
+| `Qpu.Physics.EquivalencePrinciple.strong_energy_condition_nonneg` | Qpu.Physics.EquivalencePrinciple | `∀ (rho p : ℚ), 0 ≤ rho → 0 ≤ p → 0 ≤ rho + (p + p + p)` |
+| `Qpu.Physics.EquivalencePrinciple.weak_equivalence_mass_cancels` | Qpu.Physics.EquivalencePrinciple | `∀ (G M r m_i m_g a : ℚ), m_i ≠ 0 → m_i = m_g → m_i * a = G * M * m_g / (r * r) → a = G * M / (r * r)` |
 
 ## Hilbert space (ISO/IEC 4879:2024 3.2.1)
 
@@ -94,10 +115,15 @@
 
 ## quantum entanglement (ISO/IEC 4879:2024 3.2.10)
 
-`Qpu.Physics.QuantumEntanglement`. Entangled states in exact amplitudes, and the test that separates them from definite values. The Bell state is supported on exactly 00 and 11 and the GHZ state on exactly 000 and 111, each with equal weight. Every assignment of definite ±1 values to a CHSH test gives |S| = 2, while the Bell state gives S² = 8, beyond the bound. A register shows quantum-mechanical behaviour (ISO/IEC 4879:2024, introduction) when its measured outcomes violate this bound; registers whose contents are definite bits compute these numbers without showing them.
+`Qpu.Physics.QuantumEntanglement`. Unified entanglement module (merging exact Bell/GHZ amplitude proofs and finite CHSH/GHZ-Mermin games from `Qpu.Verify.Entangle`). ## Qpu.Verify.Entangle (merged into QuantumEntanglement) CHSH and GHZ/Mermin game bounds as finite combinatorics.
 
 | Theorem | Module | Statement |
 |---|---|---|
+| `Qpu.Verify.Entangle.chsh_bound_is_tight` | Qpu.Physics.QuantumEntanglement | `Qpu.Verify.Entangle.chshWins false false false false = 3` |
+| `Qpu.Verify.Entangle.chsh_classical_bound` | Qpu.Physics.QuantumEntanglement | `∀ (a0 a1 b0 b1 : Bool), Qpu.Verify.Entangle.chshWins a0 a1 b0 b1 ≤ 3` |
+| `Qpu.Verify.Entangle.ghz_classical_bound` | Qpu.Physics.QuantumEntanglement | `∀ (a0 a1 b0 b1 c0 c1 : Bool), Qpu.Verify.Entangle.ghzWins a0 a1 b0 b1 c0 c1 ≤ 3` |
+| `Qpu.Verify.Entangle.ghz_quantum_wins_all_four` | Qpu.Physics.QuantumEntanglement | `Qpu.Verify.Entangle.quantumCheck 0 false false false + Qpu.Verify.Entangle.quantumCheck 1 false true true + Qpu.Verify.Entangle.quantumCheck 2 true false true + Qpu.Verify.Entangle.quantumCheck 3 true true false = 4` |
+| `Qpu.Verify.Entangle.ghz_uniform_strategy_loses` | Qpu.Physics.QuantumEntanglement | `Qpu.Verify.Entangle.ghzWins false false false false false false < 4` |
 | `QuantumEntanglement.bell_state` | Qpu.Physics.QuantumEntanglement | `(∀ r < 4, QuantumEntanglement.bell r ≠ 0 ↔ r = 0 ∨ r = 3) ∧ (QuantumEntanglement.bell 0).normSq = (QuantumEntanglement.bell 3).normSq` |
 | `QuantumEntanglement.chsh_classical_bound` | Qpu.Physics.QuantumEntanglement | `∀ (a0 a1 b0 b1 : Bool), QuantumEntanglement.chshClassical a0 a1 b0 b1 = 2 ∨ QuantumEntanglement.chshClassical a0 a1 b0 b1 = -2` |
 | `QuantumEntanglement.chsh_quantum_value` | Qpu.Physics.QuantumEntanglement | `QuantumEntanglement.chshBell = 8 ∧ 8 ^ 2 = 8 * (2 ^ 2 * 2) ∧ 2 ^ 2 < 8` |
@@ -172,11 +198,22 @@
 
 ## quantum gate (ISO/IEC 4879:2024 3.4.2, 3.4.3 unitary gate)
 
-`Qpu.Processing.QuantumGate`. The processor's gates as exact unitary matrices, never floats. Hadamard is kept unscaled, so its unitarity reads `H · H† = 2 · I`; X, Z, S, CNOT, SWAP and Toffoli are exact unitaries, `U · U† = I`. The T gate lives over ℤ[ω], ω the eighth root of unity: it is unitary, has order 8 and does not commute with Hadamard, so H, S, CNOT and T are a universal set. Clifford closure on every Pauli string is `CircuitBasedQuantumComputing.stabilizer_hadamard`, `stabilizer_phase` and `stabilizer_cnot`.
+`Qpu.Processing.QuantumGate`. The processor's gates as exact unitary matrices, never floats. Hadamard is kept unscaled, so its unitarity reads `H · H† = 2 · I`; X, Z, S, CNOT, SWAP and Toffoli are exact unitaries, `U · U† = I`. The T gate lives over ℤ[ω], ω the eighth root of unity: it is unitary, has order 8 and does not commute with Hadamard, so H, S, CNOT and T are a universal set. Clifford closure on every Pauli string is `CircuitBasedQuantumComputing.stabilizer_hadamard`, `stabilizer_phase` and `stabilizer_cnot`. ## Qpu.Verify.Gate (merged into QuantumGate) Scaled Gaussian-integer gate matrices, kernel-checked by `decide`.
 
 | Theorem | Module | Statement |
 |---|---|---|
 | `CircuitBasedQuantumComputing.stabilizer_hadamard` | Qpu.Processing.CircuitBasedQuantumComputing | `CircuitBasedQuantumComputing.Exact (Operator.kron 2 QuantumGate.H Operator.idm) CircuitBasedQuantumComputing.ruleH0 2 ∧ CircuitBasedQuantumComputing.Exact (Operator.kron 2 Operator.idm QuantumGate.H) CircuitBasedQuantumComputing.ruleH1 2` |
+| `Qpu.Verify.Gate.cnot_is_an_involution` | Qpu.Processing.QuantumGate | `Qpu.Verify.Gate.cnot * Qpu.Verify.Gate.cnot = Qpu.Verify.Gate.id4` |
+| `Qpu.Verify.Gate.cnot_is_not_swap` | Qpu.Processing.QuantumGate | `Qpu.Verify.Gate.cnot ≠ Qpu.Verify.Gate.swap` |
+| `Qpu.Verify.Gate.h_unitary` | Qpu.Processing.QuantumGate | `Qpu.Verify.Gate.scaledH * Qpu.Verify.Gate.scaledH = Qpu.Verify.Gate.M2.two` |
+| `Qpu.Verify.Gate.h_x_h_is_not_two_y` | Qpu.Processing.QuantumGate | `Qpu.Verify.Gate.scaledH * Qpu.Verify.Gate.matX * Qpu.Verify.Gate.scaledH ≠ { a00 := Qpu.Verify.Gate.g 0, a01 := { re := 0, im := -2 }, a10 := { re := 0, im := 2 }, a11 := Qpu.Verify.Gate.g 0 }` |
+| `Qpu.Verify.Gate.h_z_h_is_two_x` | Qpu.Processing.QuantumGate | `Qpu.Verify.Gate.scaledH * Qpu.Verify.Gate.matZ * Qpu.Verify.Gate.scaledH = { a00 := Qpu.Verify.Gate.g 0, a01 := Qpu.Verify.Gate.g 2, a10 := Qpu.Verify.Gate.g 2, a11 := Qpu.Verify.Gate.g 0 }` |
+| `Qpu.Verify.Gate.s_fourth_is_identity` | Qpu.Processing.QuantumGate | `Qpu.Verify.Gate.matS * Qpu.Verify.Gate.matS * (Qpu.Verify.Gate.matS * Qpu.Verify.Gate.matS) = Qpu.Verify.Gate.matI` |
+| `Qpu.Verify.Gate.s_squared_is_z` | Qpu.Processing.QuantumGate | `Qpu.Verify.Gate.matS * Qpu.Verify.Gate.matS = Qpu.Verify.Gate.matZ` |
+| `Qpu.Verify.Gate.swap_is_an_involution` | Qpu.Processing.QuantumGate | `Qpu.Verify.Gate.swap * Qpu.Verify.Gate.swap = Qpu.Verify.Gate.id4` |
+| `Qpu.Verify.Gate.x_squared` | Qpu.Processing.QuantumGate | `Qpu.Verify.Gate.matX * Qpu.Verify.Gate.matX = Qpu.Verify.Gate.matI` |
+| `Qpu.Verify.Gate.y_squared` | Qpu.Processing.QuantumGate | `Qpu.Verify.Gate.matY * Qpu.Verify.Gate.matY = Qpu.Verify.Gate.matI` |
+| `Qpu.Verify.Gate.z_squared` | Qpu.Processing.QuantumGate | `Qpu.Verify.Gate.matZ * Qpu.Verify.Gate.matZ = Qpu.Verify.Gate.matI` |
 | `QuantumGate.cnot` | Qpu.Processing.QuantumGate | `Operator.Same 4 (Operator.mm 4 QuantumGate.CNOT (Operator.dag QuantumGate.CNOT)) Operator.idm ∧ Operator.Same 4 (Operator.mm 4 QuantumGate.CNOT QuantumGate.CNOT) Operator.idm` |
 | `QuantumGate.h_squared` | Qpu.Processing.QuantumGate | `Operator.Same 2 (Operator.mm 2 QuantumGate.H QuantumGate.H) (Operator.smul 2 Operator.idm)` |
 | `QuantumGate.h_unitary` | Qpu.Processing.QuantumGate | `Operator.Same 2 (Operator.mm 2 QuantumGate.H (Operator.dag QuantumGate.H)) (Operator.smul 2 Operator.idm)` |

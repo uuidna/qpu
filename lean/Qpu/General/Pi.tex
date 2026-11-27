@@ -13,40 +13,35 @@
 \paragraph{\texttt{pi\_all}}
 Every convergent at once: π's floor and its classical rational approximations, the analytic-wing ingredients.
 \[ \mathrm{mint}\ \mathrm{coins} - \mathrm{seed} = 3 \land \mathrm{faces} + \mathrm{vertices} = 22 \land \mathrm{rays} = 7 \land \mathrm{plane} \cdot (\mathrm{faces} - \mathrm{seed}) - n \cdot n = 355 \land \mathrm{plane} \cdot \mathrm{hexbit} + \mathrm{seed} = 113 \land (\mathrm{faces} - \mathrm{coins}) \cdot (\mathrm{plane} + \mathrm{coins}) = 360 \land (\mathrm{faces} - \mathrm{coins}) \cdot (\mathrm{faces} + \mathrm{seed}) = 180 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L25}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L23}
 
 \paragraph{\texttt{pi\_archimedes\_den}}
 Archimedes' upper bound 22/7: the denominator (7) equals rays.
 \[ \mathrm{rays} = 7 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L14}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L12}
 
 \paragraph{\texttt{pi\_archimedes\_num}}
 Archimedes' upper bound 22/7: the numerator (22) equals faces + vertices.
 \[ \mathrm{faces} + \mathrm{vertices} = 22 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L12}
-
-\paragraph{\texttt{pi\_floor}}
-the integer floor of π (3) equals mint coins − seed.
-\[ \mathrm{mint}\ \mathrm{coins} - \mathrm{seed} = 3 \]
 \noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L10}
 
 \paragraph{\texttt{pi\_half\_turn}}
 a half turn in degrees (180), π radians, equals (faces − coins) · (faces + seed).
 \[ (\mathrm{faces} - \mathrm{coins}) \cdot (\mathrm{faces} + \mathrm{seed}) = 180 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L22}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L20}
 
 \paragraph{\texttt{pi\_turn\_degrees}}
 a full turn in degrees (360) equals (faces − coins) · (plane + coins).
 \[ (\mathrm{faces} - \mathrm{coins}) \cdot (\mathrm{plane} + \mathrm{coins}) = 360 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L20}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L18}
 
 \paragraph{\texttt{pi\_zu\_den}}
 Zu Chongzhi's milü 355/113: the denominator (113, prime) equals plane · hexbit + seed.
 \[ \mathrm{plane} \cdot \mathrm{hexbit} + \mathrm{seed} = 113 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L18}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L16}
 
 \paragraph{\texttt{pi\_zu\_num}}
 Zu Chongzhi's milü 355/113: the numerator (355) equals plane · (faces − seed) − n · n.
 \[ \mathrm{plane} \cdot (\mathrm{faces} - \mathrm{seed}) - n \cdot n = 355 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L16}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Pi.lean\#L14}
 \end{document}

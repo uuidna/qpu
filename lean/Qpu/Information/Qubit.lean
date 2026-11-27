@@ -50,7 +50,6 @@ def couplers (w : Nat) : Nat := rowCouplers w + columnCouplers w
 theorem digits_thirtytwo : digits = 32 := by decide
 theorem gateway_two : gateway = 2 := by decide
 theorem hexbit_four : hexbit = 4 := by decide
-theorem coins_two : coins = 2 := by decide
 
 /-- an address at width `w` holds every digit's `w` save the version digit's `w` and the two gateway bits -/
 theorem effective_formula (w : Nat) (h : gateway ≤ w) : effective w = digits * w - w - gateway := by

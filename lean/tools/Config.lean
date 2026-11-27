@@ -37,7 +37,7 @@ def wranglerText : String :=
   (obj [ ("$schema", "node_modules/wrangler/config-schema.json"), ("main", "src/quantum/net/worker.ts"), ("name", "qpu")
        , ("compatibility_date", "2025-08-15"), ("compatibility_flags", strs ["nodejs_compat", "global_fetch_strictly_public"])
        , ("routes", Json.arr (tenants.map fun (host, _) => obj [("pattern", host), ("custom_domain", true)]).toArray)
-       , ("assets", obj [("directory", "site/.vitepress/dist"), ("binding", "ASSETS"), ("run_worker_first", strs ["/", "/mcp"])])
+       , ("assets", obj [("directory", "site/.vitepress/dist"), ("binding", "ASSETS"), ("run_worker_first", strs workerRoutes)])
        , ("migrations", Json.arr #[ obj [("tag", "v1"), ("new_sqlite_classes", strs ["DocketObject"])], obj [("tag", "v2"), ("deleted_classes", strs ["DocketObject"])]
                                  , obj [("tag", "v3"), ("new_sqlite_classes", strs ["Mailbox"])], obj [("tag", "v4"), ("new_sqlite_classes", strs ["Prover"])] ])
        , ("limits", obj [("cpu_ms", (300000 : Nat))])
@@ -109,6 +109,14 @@ def configOut : System.FilePath := ".lake" / "build" / "config-index.ts"
     , s!"export const UUID_SHAPE = {(Json.str ("-".intercalate (Advantage.uuidGroups.map fun n => "[0-9a-f]" ++ "{" ++ toString n ++ "}"))).compress}"
     , "/** The domains bound to the Worker, each with its tenant, from Config.tenants: Wrangler's routes and the hosts served free. */"
     , s!"export const TENANTS: Readonly<Record<string, string>> = \{ {", ".intercalate (tenants.map fun (host, tenant) => s!"{(Json.str host).compress}: {(Json.str tenant).compress}")} }"
+    , "/** The Payload ecommerce collections seeded in order, from Config.catalogCollections. */"
+    , s!"export const CATALOG_COLLECTIONS = {strings catalogCollections} as const"
+    , "/** The variant types every theorem product carries, from Config.catalogVariantTypes. */"
+    , s!"export const CATALOG_VARIANT_TYPES = {strings catalogVariantTypes} as const"
+    , "/** Every collection the harmonized Payload and VitePress SDK serves through Cloudflare, from Config.sdkCollections. */"
+    , s!"export const SDK_COLLECTIONS = {strings sdkCollections} as const"
+    , "/** The routes the Cloudflare Worker handles first, from Config.workerRoutes. */"
+    , s!"export const WORKER_ROUTES = {strings workerRoutes} as const"
     , "" ]
   IO.FS.createDirAll (".lake" / "build")
   IO.FS.writeFile (".lake" / "build" / "wrangler.jsonc") wranglerText

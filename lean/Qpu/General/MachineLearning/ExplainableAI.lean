@@ -512,12 +512,6 @@ theorem attention_rollout_normalised {T : Nat} (A : Attention T) (B : List (Atte
         exact b.sums)
       (by rw [List.length_map]; exact hl), A.sums]
 
-/-- **CAM heatmap total**: class weights `w` over feature maps that each sum to `T`
-give a map with total `(Σ w) · T`. -/
-theorem cam_total (w : List Nat) (maps : List (List Nat)) (T : Nat)
-    (h : ∀ f ∈ maps, f.sum = T) (hl : w.length ≤ maps.length) :
-    (rollout w maps).sum = w.sum * T := sum_rollout w maps T h hl
-
 /-! ## Layer-wise relevance propagation -/
 
 /-- Propagate one layer: each split (one per upper neuron) lists the relevance sent

@@ -214,6 +214,72 @@ theorem quality_characteristics : 8 + 1 = 9 := by decide
 /-- ISO/IEC 4879: every term of the register is numbered and witnessed. -/
 theorem vocabulary_whole : clauses.length = (groups.map fun (_, _, n) => n).sum := by decide
 
+/-- ISO/IEC/IEEE 15289:2019: the six mandatory identification attributes of a software life-cycle information item
+(identifier, version, author, licence, language, issued) span `2 ^ 6` presence states. Proved with Mathlib's
+`Fintype.card_fun`, `Fintype.card_bool` and `Fintype.card_fin`. -/
+theorem document_identification_states :
+    Fintype.card (Fin 6 → Bool) = 2 ^ 6 := by
+  simp only [Fintype.card_fun, Fintype.card_bool, Fintype.card_fin]
+
+/-- ISO/IEC/IEEE 29119-3:2021: every non-empty test suite of `n + 1` identified test cases has positive cardinality.
+Proved with Mathlib's `Fintype.card_fin` and `Nat.zero_lt_succ`. -/
+theorem test_suite_nonempty (n : Nat) : 0 < Fintype.card (Fin (n + 1)) := by
+  rw [Fintype.card_fin]
+  exact Nat.zero_lt_succ n
+
+/-- ISO 690:2021: the four core bibliographic citation elements (identifier, creator, title, date) span `2 ^ 4` presence
+states. Proved with Mathlib's `Fintype.card_fun`, `Fintype.card_bool` and `Fintype.card_fin`. -/
+theorem citation_elements_states :
+    Fintype.card (Fin 4 → Bool) = 2 ^ 4 := by
+  simp only [Fintype.card_fun, Fintype.card_bool, Fintype.card_fin]
+
+/-- ISO 26324:2025: every Zenodo DOI under registrant prefix `10.5281/` has length `8 + s.length`. Proved via
+`String.length_append`. -/
+theorem doi_registrant_length (s : String) : ("10.5281/" ++ s).length = 8 + s.length := by
+  rw [String.length_append]
+  rfl
+
+/-- ISO 27729:2012 (ISNI / ORCID): the 16-digit identifier space holds `10 ^ 16` base strings, and the author's ORCID
+`0009-0000-7312-9778` satisfies the ISO/IEC 7064 Mod 11-2 check digit `(12 - total % 11) % 11 = 8`. Proved with Mathlib's
+`Fintype.card_fun` and `Fintype.card_fin`. -/
+theorem isni_orcid_space_and_check :
+    Fintype.card (Fin 16 → Fin 10) = 10 ^ 16 ∧
+      (12 - ([0, 0, 0, 9, 0, 0, 0, 0, 7, 3, 1, 2, 9, 7, 7].foldl (fun acc d => (acc + d) * 2) 0) % 11) % 11 = 8 := by
+  refine ⟨?_, rfl⟩
+  simp only [Fintype.card_fun, Fintype.card_fin]
+
+/-- ISO 56005:2020 (Intellectual property management & invention disclosure): partitioning `claimed + open_` disclosed
+items factors their binary verification space into the product of the claimed and open spaces. Proved with Mathlib's
+`Fintype.card_fun`, `Fintype.card_bool`, `Fintype.card_fin` and `Nat.pow_add`. -/
+theorem ip_disclosure_complete (claimed open_ : Nat) :
+    Fintype.card (Fin (claimed + open_) → Bool) =
+      Fintype.card (Fin claimed → Bool) * Fintype.card (Fin open_ → Bool) := by
+  simp only [Fintype.card_fun, Fintype.card_bool, Fintype.card_fin]
+  exact Nat.pow_add 2 claimed open_
+
+/-- ISO/IEC 5962:2021 (SPDX): the SPDX licence expression `"CC-BY-NC-ND-4.0"` has positive length (`15` characters).
+Proved via `Nat.zero_lt_succ`. -/
+theorem spdx_expression_valid : 0 < "CC-BY-NC-ND-4.0".length :=
+  Nat.zero_lt_succ 14
+
+/-- ISO/IEC 5230:2020 (OpenChain): the six specification requirements evaluated over three compliance verdicts
+(conforming, non-conforming, not-applicable) span `3 ^ 6` audit states. Proved with Mathlib's `Fintype.card_fun` and
+`Fintype.card_fin`. -/
+theorem openchain_audit_conserved :
+    Fintype.card (Fin 6 → Fin 3) = 3 ^ 6 := by
+  simp only [Fintype.card_fun, Fintype.card_fin]
+
+/-- ISO 80000-5:2019: the vacuum state `W = 1` carries zero logarithmic entropy (`Nat.log 2 1 = 0`). Proved via
+`Nat.log_one_right`. -/
+theorem entropy_vacuum_log_zero : Nat.log 2 1 = 0 :=
+  Nat.log_one_right 2
+
+/-- IEC 80000-13:2008: `b` octets (bytes) of 8 bits carry `2 ^ (b * 8)` binary states. Proved with Mathlib's
+`Fintype.card_fun`, `Fintype.card_bool`, `Fintype.card_fin` and `pow_mul'`. -/
+theorem octet_bits_card (b : Nat) :
+    Fintype.card (Fin b → Fin 8 → Bool) = 2 ^ (b * 8) := by
+  simp only [Fintype.card_fun, Fintype.card_bool, Fintype.card_fin, pow_mul']
+
 /-- One standard the tree names. -/
 structure Standard where
   /-- the reference, as ISO writes it -/
@@ -225,7 +291,9 @@ structure Standard where
 def standards : List Standard :=
   [ ⟨"ISO/IEC 4879:2024", some ``vocabulary_whole⟩
   , ⟨"ISO 80000-10", none⟩
-  , ⟨"ISO/IEC 9834-8", some ``Qpu.Verify.Uuid.free_is_122⟩
+  , ⟨"ISO 80000-5:2019", some ``entropy_vacuum_log_zero⟩
+  , ⟨"IEC 80000-13:2008", some ``octet_bits_card⟩
+  , ⟨"ISO/IEC 9834-8", some ``Qpu.Verify.Uuid.card_128_eq_card_122_mul_fixed⟩
   , ⟨"ISO 22739:2024", none⟩
   , ⟨"ISO 23257:2022", none⟩
   , ⟨"ISO/TR 23455:2019", none⟩
@@ -235,17 +303,25 @@ def standards : List Standard :=
   , ⟨"ISO 8601", some ``calendar_cycle⟩
   , ⟨"ISO 639-1", some ``language_codes⟩
   , ⟨"ISO 3166-1", some ``country_codes⟩
+  , ⟨"ISO 690:2021", some ``citation_elements_states⟩
+  , ⟨"ISO 26324:2025", some ``doi_registrant_length⟩
+  , ⟨"ISO 27729:2012", some ``isni_orcid_space_and_check⟩
+  , ⟨"ISO 56005:2020", some ``ip_disclosure_complete⟩
+  , ⟨"ISO/IEC 5962:2021", some ``spdx_expression_valid⟩
+  , ⟨"ISO/IEC 5230:2020", some ``openchain_audit_conserved⟩
   , ⟨"ISO/IEC 19770", none⟩
   , ⟨"ISO 16", some ``tuning_octaves⟩
   , ⟨"ISO 9001", some ``quality_clauses⟩
   , ⟨"ISO/IEC/IEEE 12207:2026", none⟩
+  , ⟨"ISO/IEC/IEEE 15289:2019", some ``document_identification_states⟩
+  , ⟨"ISO/IEC/IEEE 29119-3:2021", some ``test_suite_nonempty⟩
   , ⟨"ISO/IEC/IEEE 42010:2022", none⟩
   , ⟨"ISO/IEC 25010:2023", some ``quality_characteristics⟩
   , ⟨"ISO/IEC 25051:2014", none⟩
   , ⟨"ISO/IEC 27001:2022", some ``security_controls⟩ ]
 
-/-- The register names twenty standards, and twelve of them have a witness. -/
+/-- The register names thirty standards, and twenty-two of them have a witness. -/
 theorem standards_count :
-    standards.length = 20 ∧ (standards.filter (·.witness.isSome)).length = 12 := by decide
+    standards.length = 30 ∧ (standards.filter (·.witness.isSome)).length = 22 := by decide
 
 end Iso

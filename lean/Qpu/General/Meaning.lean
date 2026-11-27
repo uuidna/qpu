@@ -3,9 +3,14 @@ import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Data.Nat.Factorial.Basic
 import Mathlib.Data.Nat.Fib.Basic
 import Mathlib.Data.Nat.GCD.Basic
+import Mathlib.Data.Nat.Prime.Defs
+import Mathlib.Data.Nat.Totient
 import Qpu.General.Mint
 import Qpu.General.Combinatorics
 import Qpu.General.Lattice
+import Qpu.General.Advantage
+import Qpu.General.Config
+import Qpu.General.MachineLearning.FederatedLearning
 import Qpu.Application.Shor
 import Qpu.Application.Grover
 import Qpu.Application.Qaoa
@@ -95,7 +100,7 @@ Examples:
 * `Nat.gcd 0 5 = 5`
 * `Nat.gcd 7 0 = 7`
 -/
-theorem Qpu.gcd_eq_nat_gcd (a b : Nat) : gcd a b = Nat.gcd a b :=
+theorem Qpu.gcd_eq_nat_gcd (a b : Nat) : _root_.gcd a b = Nat.gcd a b :=
   gcdAux_eq_nat_gcd (a + b) a b (Nat.le_add_left b a)
 
 /-- The modular-power loop multiplies its accumulator by `a ^ k`, reduced mod `m`. -/
@@ -220,6 +225,73 @@ lies in exactly 2 trinities. The trinities use every pair of the hexbit, each on
 theorem hexbit_paired_completely :
     hexbit = 4 ∧ choose hexbit 2 = 6 ∧ choose hexbit 3 = 4 ∧ choose hexbit 3 * choose 3 2 = 2 * choose hexbit 2 := by
   decide
+
+/-- Exact `O(k)` multiplicative binomial step, avoiding `O(2^n)` Pascal branching:
+`(k + 1) * choose n (k + 1) = (n - k) * choose n k`
+(`choose_eq_nat_choose`, `Nat.choose_succ_right_eq`, `Nat.mul_comm`). -/
+theorem choose_fast_step (n k : Nat) : (k + 1) * choose n (k + 1) = (n - k) * choose n k := by
+  rw [choose_eq_nat_choose, choose_eq_nat_choose, Nat.mul_comm (k + 1), Nat.mul_comm (n - k)]
+  exact Nat.choose_succ_right_eq n k
+
+/-- Every Bell pair inside a `t`-qubit register sits in `t - 2` GHZ trinities, proved directly in `O(1)` from
+`choose_fast_step` (`choose_fast_step`). -/
+theorem qubit_pair_trinity_incidence (t : Nat) :
+    3 * choose t 3 = (t - 2) * choose t 2 :=
+  choose_fast_step t 2
+
+/-- Every qubit register of `t` qubits forms `choose t 3` GHZ trinities and `choose t 2` Bell pairs related by
+`6 * choose t 3 = (t - 2) * (t * (t - 1))` (`choose_eq_nat_choose`, `choose_fast_step`, `Nat.choose_two_right`,
+`Nat.mul_assoc`, `Nat.mul_comm`, `Nat.add_one_mul_choose_eq`, `Nat.choose_one_right`, `Nat.add_sub_cancel`,
+`Nat.mul_left_comm`). -/
+theorem trinity_entanglement_scaling (t : Nat) :
+    3 * choose t 3 = (t - 2) * choose t 2 ∧ 2 * choose t 2 = t * (t - 1) := by
+  refine ⟨choose_fast_step t 2, ?_⟩
+  rw [choose_eq_nat_choose]
+  cases t with
+  | zero => rfl
+  | succ m =>
+    have h := Nat.add_one_mul_choose_eq m 1
+    rw [Nat.choose_one_right] at h
+    rw [Nat.add_sub_cancel, Nat.mul_comm 2, ← h]
+
+/-- A full 4-qubit hexbit partitions its 6 Bell pairs across 4 GHZ trinities with uniform 2-fold coverage
+(`trinity_entanglement_scaling`, `choose_fast_step`). -/
+theorem hexbit_trinity_entanglement_complete :
+    3 * choose 4 3 = (4 - 2) * choose 4 2 ∧ 2 * choose 4 2 = 4 * (4 - 1) :=
+  trinity_entanglement_scaling 4
+
+/-- Full 122-qubit UUID register trinity entanglement balance: every Bell pair of the 122-qubit register
+participates in 120 GHZ trinities (`trinity_entanglement_scaling`, `choose_fast_step`). -/
+theorem register_122_trinity_entanglement :
+    3 * choose 122 3 = (122 - 2) * choose 122 2 ∧ 2 * choose 122 2 = 122 * (122 - 1) :=
+  trinity_entanglement_scaling 122
+
+/-- Every 3-qubit GHZ trinity spans `mint 3 = 2 ^ 3` Hilbert-space amplitudes and every 4-qubit hexbit spans
+`mint 4 = 2 ^ 4` amplitudes (`mint_eq_two_pow`, `Nat.lt_succ_self`). -/
+theorem hexbit_trinity_hilbert_expansion :
+    mint 3 = 2 ^ 3 ∧ mint 4 = 2 ^ 4 ∧ 3 < 4 :=
+  ⟨mint_eq_two_pow 3, mint_eq_two_pow 4, Nat.lt_succ_self 3⟩
+
+/-- A `k`-hexbit quantum register (`radix = 16 = 2^4`) spans `2 ^ (4 * k)` states in `O(1)` shift arithmetic
+(`List.replicate_succ`, `Nat.pow_add`, `Nat.mul_succ`, `Nat.mul_comm`). -/
+theorem hexbit_space_eq_pow (k : Nat) : Advantage.space (List.replicate k 16) = 2 ^ (4 * k) := by
+  induction k with
+  | zero => rfl
+  | succ m ih =>
+    rw [List.replicate_succ, Advantage.space, ih, Nat.mul_succ, Nat.pow_add, Nat.mul_comm]
+
+/-- Single-instruction `O(1)` hexbit qubit extraction: shifting an address right by `4 * j` bits and masking with `15`
+equals the exact mixed-radix division and modulus `(i / 2 ^ (4 * j)) % 16`
+(`Nat.shiftRight_eq_div_pow`, `Nat.and_two_pow_sub_one_eq_mod`). -/
+theorem hexbit_digit_o1_shift (i j : Nat) : (i >>> (4 * j)) &&& 15 = (i / 2 ^ (4 * j)) % 16 := by
+  rw [Nat.shiftRight_eq_div_pow]
+  exact Nat.and_two_pow_sub_one_eq_mod (i / 2 ^ (4 * j)) 4
+
+/-- `O(1)` Bell-pair and GHZ-trinity entanglement budget for any `h`-hexbit (`4 * h`-qubit) register
+(`trinity_entanglement_scaling`). -/
+theorem hexbit_trinity_o1_budget (h : Nat) :
+    3 * choose (4 * h) 3 = (4 * h - 2) * choose (4 * h) 2 ∧ 2 * choose (4 * h) 2 = (4 * h) * (4 * h - 1) :=
+  trinity_entanglement_scaling (4 * h)
 
 /-! ## The family formulas
 
@@ -424,3 +496,190 @@ Conventions for notations in identifiers:
 theorem cliffordOrder_eq_mul (nn : Nat) : cliffordOrder nn = 2 ^ (2 * nn) * (2 ^ (nn * nn) * ∏ i ∈ Finset.range nn, (2 ^ (2 * (i + 1)) - 1)) := by
   unfold cliffordOrder
   rw [mint_eq_two_pow, symplectic_eq_mul]
+
+/-! ## Consolidated Meaning bindings (merged from Meaning/Config, Meaning/Prime, Meaning/Sum, Meaning/Totient) -/
+
+/-- Euler's totient function. This counts the number of naturals strictly less than `n` which are
+coprime with `n`. -/
+theorem totient_eq_nat_totient (n : Nat) : totient n = Nat.totient n := by
+  have aux : ∀ k acc, totientAux k n acc = acc + ∑ j ∈ Finset.Ico 1 (k + 1), if Nat.Coprime n j then 1 else 0 := by
+    intro k
+    induction k with
+    | zero => intro acc; simp [totientAux]
+    | succ k ih =>
+      intro acc
+      rw [totientAux, ih, Finset.sum_Ico_succ_top (by omega : 1 ≤ k + 1), Qpu.gcd_eq_nat_gcd]
+      by_cases h : Nat.Coprime n (k + 1)
+      · have h' : Nat.gcd (k + 1) n = 1 := Nat.Coprime.symm h
+        rw [if_pos h', if_pos h]; omega
+      · have h' : ¬ Nat.gcd (k + 1) n = 1 := fun e => h (Nat.Coprime.symm e)
+        rw [if_neg h', if_neg h]; omega
+  have ico := Nat.filter_coprime_Ico_eq_totient n 1
+  rw [Nat.add_comm 1 n] at ico
+  rw [totient, aux, Nat.zero_add, ← Finset.card_filter, ico]
+
+/-- Computes the sum of the elements of a list.
+
+Examples:
+* `[a, b, c].sum = a + (b + (c + 0))`
+* `[1, 2, 5].sum = 8`
+-/
+theorem sumZ_eq_list_sum (l : List Int) : Qpu.Federated.sumZ l = l.sum := by
+  induction l with
+  | nil => rfl
+  | cons x xs ih => rw [Qpu.Federated.sumZ, List.sum_cons, ih]
+
+/-- `Nat.Prime p` means that `p` is a prime number, that is, a natural number
+at least 2 whose only divisors are `p` and `1`.
+The theorem `Nat.prime_def` witnesses this description of a prime number. -/
+theorem isPrime_eq_decide_prime (n : Nat) : Config.isPrime n = decide (Nat.Prime n) := by
+  have key : Config.isPrime n = true ↔ Nat.Prime n := by
+    rw [Nat.prime_def_lt]
+    simp only [Config.isPrime, Bool.and_eq_true, decide_eq_true_eq, List.all_eq_true, List.mem_range,
+      Bool.or_eq_true, bne_iff_ne, ne_eq]
+    constructor
+    · rintro ⟨h2, h⟩
+      refine ⟨h2, fun m hm hd => ?_⟩
+      rcases h m hm with h1 | h1
+      · by_cases hm0 : m = 0
+        · subst hm0; exact absurd (Nat.eq_zero_of_zero_dvd hd) (by omega)
+        · omega
+      · exact absurd (Nat.mod_eq_zero_of_dvd hd) h1
+    · rintro ⟨h2, h⟩
+      refine ⟨h2, fun d hd => ?_⟩
+      by_cases hd2 : d < 2
+      · exact Or.inl hd2
+      · exact Or.inr fun hmod => by have := h d hd (Nat.dvd_of_mod_eq_zero hmod); omega
+  rw [Bool.eq_iff_iff, decide_eq_true_iff]; exact key
+
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+theorem tenants_eq_cons : Config.tenants = List.cons (Config.tenants.headD default) Config.tenants.tail := rfl
+
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+theorem agentEvents_eq_cons : Config.agentEvents = List.cons (Config.agentEvents.headD default) Config.agentEvents.tail := rfl
+
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+theorem agentWriteTools_eq_cons : Config.agentWriteTools = List.cons (Config.agentWriteTools.headD default) Config.agentWriteTools.tail := rfl
+
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+theorem agentSpawnTools_eq_cons : Config.agentSpawnTools = List.cons (Config.agentSpawnTools.headD default) Config.agentSpawnTools.tail := rfl
+
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+theorem agentConfirmRules_eq_cons : Config.agentConfirmRules = List.cons (Config.agentConfirmRules.headD default) Config.agentConfirmRules.tail := rfl
+
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+theorem catalogCollections_eq_cons : Config.catalogCollections = List.cons (Config.catalogCollections.headD default) Config.catalogCollections.tail := rfl
+
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+theorem catalogVariantTypes_eq_cons : Config.catalogVariantTypes = List.cons (Config.catalogVariantTypes.headD default) Config.catalogVariantTypes.tail := rfl
+
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+theorem sdkCollections_eq_cons : Config.sdkCollections = List.cons (Config.sdkCollections.headD default) Config.sdkCollections.tail := rfl
+
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+theorem workerRoutes_eq_cons : Config.workerRoutes = List.cons (Config.workerRoutes.headD default) Config.workerRoutes.tail := rfl
+
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+theorem payloadUiPossibilities_eq_cons : Config.payloadUiPossibilities = List.cons (Config.payloadUiPossibilities.headD default) Config.payloadUiPossibilities.tail := rfl
+
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+theorem pqcAlgorithms_eq_cons : Config.pqcAlgorithms = List.cons (Config.pqcAlgorithms.headD default) Config.pqcAlgorithms.tail := rfl
+
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+theorem proverDualities_eq_cons : Config.proverDualities = List.cons (Config.proverDualities.headD default) Config.proverDualities.tail := rfl

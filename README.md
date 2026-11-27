@@ -1,10 +1,10 @@
 # @uuidna/qpu v1.1.1: An exact quantum processing unit served over MCP
 
-One UUID is a register of 32 hexbits of 4 qubits, less 4 version and 2 variant qubits: 122 qubits in 16 bytes (Qpu.Verify.Uuid.free\_is\_122). Its high 16 qubits address 65536 hexbit programs and its low 106 carry the message (Qpu.Verify.Uuid.program\_capacity), so a machine holds one register for every 16 bytes of its memory at 122 qubits each, as the device receipt below counts. 1636 declared theorems, 2471 in the Lean 4 kernel, rest on 0 sorry, 836 are recomputed by a worked example (textbook\_expressions\_evaluate), each statement below is shown with its Lean proof and the line it stands on, and every tool is served over MCP at <https://qpu.uuidna.com/api/mcp>.
+One UUID is a register of 32 hexbits of 4 qubits, less 4 version and 2 variant qubits: 122 qubits in 16 bytes (Qpu.Verify.Uuid.free\_is\_122). Its high 16 qubits address 65536 hexbit programs and its low 106 carry the message (Qpu.Verify.Uuid.program\_capacity), so a machine holds one register for every 16 bytes of its memory at 122 qubits each, as the device receipt below counts. 1644 declared theorems, 2477 in the Lean 4 kernel, rest on 0 sorry, 840 are recomputed by a worked example (textbook\_expressions\_evaluate), each statement below is shown with its Lean proof and the line it stands on, and every tool is served over MCP at <https://qpu.uuidna.com/api/mcp>.
 
 The computer these registers make is every circuit its quantum doors build: 55 worked examples across 5 doors, each replayed on this build and each named by the kernel theorem that makes it true (textbook\_teleport\_three\_qubits is one), as the examples below list.
 
-116 of the worked examples were made by the build itself, each from a statement no hand had worked, evaluated and replayed (textbook\_expressions\_evaluate); 800 declared theorems still have no example and stay open; and no language model takes part, so every figure here is computed by the build at no token cost.
+120 of the worked examples were made by the build itself, each from a statement no hand had worked, evaluated and replayed (textbook\_expressions\_evaluate); 804 declared theorems still have no example and stay open; and no language model takes part, so every figure here is computed by the build at no token cost.
 
 ## examples
 
@@ -81,11 +81,11 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 
 | kernel | value |
 | --- | --- |
-| declared theorems | 1636 |
-| kernel theorems | 2471 |
-| generated lemmas | 835 |
+| declared theorems | 1644 |
+| kernel theorems | 2477 |
+| generated lemmas | 833 |
 | sorry | 0 |
-| recomputed by an example | 836 |
+| recomputed by an example | 840 |
 | source | <https://github.com/uuidna/qpu/tree/v1.1.1/lean> |
 
 ## use
@@ -290,10 +290,10 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 
 | text | value |
 | --- | --- |
-| uuid | ce9a72ed-2643-5525-be86-69a906dbbc5d |
-| sha256 | 1273ede7aba186b344b81ecebd7ee1cb469d94a5cc18c643b711c5adcae928a8 |
+| uuid | 07ad7a89-b700-14bd-9fb6-aed470caba92 |
+| sha256 | db5320faded044ebaeaba6f5639c3e711a2de761347e787e50eb79b44cf65bcb |
 | merge | d4c79029-a249-8b77-9f2f-b8b9d1436fc9 |
-| verify | `verify {"uuid":"ce9a72ed-2643-5525-be86-69a906dbbc5d","content":"text"}` |
+| verify | `verify {"uuid":"07ad7a89-b700-14bd-9fb6-aed470caba92","content":"text"}` |
 | mcp | <https://qpu.uuidna.com/api/mcp> |
 
 <!-- hardware -->
@@ -305,9 +305,9 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 
 | receipt | value |
 | --- | --- |
-| uuid | fe73917e-4cc2-7c5d-861c-d2250d73e492 |
-| handle | `fe73917e` |
-| sha256 | 437067a1fb6e81ed95b8f817ea7311318a24f8b7bd837a91a845ca2ebd03e00e |
+| uuid | 63770780-2c3c-2616-a96a-08f2880f502f |
+| handle | `63770780` |
+| sha256 | 4d61606195b7587e96b8d503b05c2602a597d8c28ad49beb5fc563626be233ac |
 
 | hardware | value |
 | --- | --- |
@@ -326,39 +326,39 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | cores | 10 |
 | parallelism | 10 |
 | cpuMHz | 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400 |
-| cpuUserMs | 518606650 |
+| cpuUserMs | 532099390 |
 | cpuNiceMs | 0 |
-| cpuSysMs | 243531070 |
-| cpuIdleMs | 2302201320 |
+| cpuSysMs | 248880290 |
+| cpuIdleMs | 2393292730 |
 | cpuIrqMs | 0 |
 | memoryBytes | 34359738368 |
-| freeMemoryBytes | 6487818240 |
-| load1 | 5.6181640625 |
-| load5 | 4.80224609375 |
-| load15 | 3.68994140625 |
-| uptimeS | 333673 |
+| freeMemoryBytes | 3985162240 |
+| load1 | 2.18798828125 |
+| load5 | 2.4775390625 |
+| load15 | 2.78076171875 |
+| uptimeS | 344695 |
 | diskBytes | 994662584320 |
-| diskFreeBytes | 814893703168 |
-| diskAvailableBytes | 814893703168 |
+| diskFreeBytes | 815529287680 |
+| diskAvailableBytes | 815529287680 |
 | diskBlockBytes | 4096 |
-| inodes | 7972662302 |
-| inodesFree | 7957946320 |
+| inodes | 7978875331 |
+| inodesFree | 7964153200 |
 | networkInterfaces | 10 |
 | lean | leanprover/lean4:v4.33.0 |
-| rssBytes | 367886336 |
-| heapTotalBytes | 199147520 |
-| heapUsedBytes | 86487104 |
-| externalBytes | 10252947 |
-| arrayBuffersBytes | 3837336 |
-| processUserMicros | 4194505 |
-| processSystemMicros | 102056 |
-| maxRssKb | 359280 |
-| pageFaults | 23375 |
+| rssBytes | 362414080 |
+| heapTotalBytes | 198197248 |
+| heapUsedBytes | 75688280 |
+| externalBytes | 7334885 |
+| arrayBuffersBytes | 919274 |
+| processUserMicros | 4065507 |
+| processSystemMicros | 100906 |
+| maxRssKb | 353936 |
+| pageFaults | 22897 |
 | fsReads | 0 |
 | fsWrites | 0 |
-| contextSwitches | 4459 |
-| buildMs | 2981 |
-| at | 2026-11-27T13:27:55.630Z |
+| contextSwitches | 2977 |
+| buildMs | 2908 |
+| at | 2026-11-27T16:31:37.100Z |
 
 | hardware.versions | value |
 | --- | --- |

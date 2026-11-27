@@ -177,4 +177,97 @@ theorem hook_files_distinct :
     (gitHooks.map hookFile).eraseDups.length = gitHooks.length ∧ (afterHooks.all fun hook => gitHooks.contains hook) = true := by
   decide
 
+-- The Payload ecommerce collections the catalog seeds in order.
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+def catalogCollections : List String := ["variantTypes", "variantOptions", "products", "variants"]
+
+-- The variant types every theorem product carries: worked examples, cuboctahedron witnesses and kernel theorem entanglements.
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+def catalogVariantTypes : List String := ["example", "witness", "entanglement", "duality"]
+
+-- The two Lean prover duality poles carried as product variants on every theorem product: primal (constructive proof acceptance) and dual (contrapositive refutation rejection).
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+def proverDualities : List String := ["primal", "dual"]
+
+-- Every collection the harmonized Payload and VitePress SDK serves through Cloudflare.
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+def sdkCollections : List String := ["variantTypes", "variantOptions", "products", "variants", "computations", "standards", "clauses"]
+
+-- The routes the Cloudflare Worker handles before falling back to static VitePress assets.
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+def workerRoutes : List String := ["/", "/mcp", "/api/*"]
+
+-- Every Payload CMS v3 UI possibility surfaced by the Post-Quantum Payload Studio.
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+def payloadUiPossibilities : List String :=
+  [ "graphics.Logo", "graphics.Icon", "header", "Nav", "beforeNavLinks", "afterNavLinks", "actions"
+  , "views.dashboard", "beforeDashboard", "afterDashboard", "views.account", "views.livePreview"
+  , "listView", "beforeListTable", "afterListTable", "listSearchableFields", "defaultColumns", "bulkActions", "queryBuilder", "pagination"
+  , "editView", "DocumentHeader", "DocumentTabs", "DocumentSidebar", "versionsDiff", "draftsAutosave", "apiInspector"
+  , "tabs", "blocks", "collapsible", "row", "group", "array", "relationship", "join", "richText", "code", "json", "ui"
+  , "DocumentDrawer", "ListDrawer", "CommandPalette", "Toast", "livePreviewBreakpoints", "multiTenant", "localization", "themeSwitcher" ]
+
+-- The NIST FIPS 203, 204, 205 and X-Wing post-quantum cryptography algorithms computed live by the QPU.
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+def pqcAlgorithms : List String :=
+  [ "X-Wing", "ML-KEM-512", "ML-KEM-768", "ML-KEM-1024"
+  , "ML-DSA-44", "ML-DSA-65", "ML-DSA-87"
+  , "SLH-DSA-SHA2-128s", "SLH-DSA-SHA2-128f", "SLH-DSA-SHA2-192s", "SLH-DSA-SHA2-256s" ]
+
 end Config

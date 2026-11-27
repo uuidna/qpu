@@ -41,7 +41,6 @@ theorem handle : amplitudes = mint bits ∧ mint (bits + seed) = amplitudes + am
 theorem kv : fused = faces * mint (bits + seed) ∧ mint (bits + seed) = amplitudes + amplitudes := ⟨quantum, next⟩
 theorem light : seed = mint 0 := by rw [seed_eq, mintOf_zero]
 theorem involution (face : Nat) : (face + rays + rays) % faces = face % faces := by have h : face + rays + rays = face + faces := (by rw [Nat.add_assoc, faces_harmonic]); rw [h, Nat.add_mod, Nat.mod_self, Nat.add_zero, Nat.mod_mod]
-theorem waves : mint hexbit > seed := propulsion
 theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mint (bits + seed) ∧ mint hexbit > seed ∧ mint (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨faces_harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩
 theorem next_cover : mint (bits + seed) = amplitudes + amplitudes ∧ faces * mint (bits + coins) = fused + fused := ⟨next, next_fused⟩
 theorem integrity : fused = faces * mint (bits + seed) ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩
@@ -49,7 +48,6 @@ theorem tetra : coins + coins = mint coins := by rw [coins_two]; rw [show 2 = 1 
 theorem qubits : n = 3 ∧ mint n = vertices := ⟨n_eq, rfl⟩
 theorem measurement : mint n = 8 := by rw [n_eq]; rfl
 theorem fill : mint n * faces = vertices * (coins * rays) := by rw [around]; rfl
-theorem infinite (k : Nat) : mint (k + seed) = mint k + mint k := split_coin k
 theorem distribute : fused = faces * mint (bits + seed) ∧ faces = coins * rays := ⟨quantum, around⟩
 theorem raid : faces = coins * rays ∧ faces = rays + rays := ⟨around, faces_harmonic⟩
 /-- PLANES: plane = coins * coins * rays is less than mint (rays + seed), and coins * rays = faces. -/

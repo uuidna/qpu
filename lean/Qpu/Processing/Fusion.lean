@@ -43,3 +43,6 @@ theorem fusionEntropy_doubles (nn : Nat) : fusionEntropy (nn + 1) = 2 * fusionEn
 
 /-- The textbook spot values, decided by the kernel as controls on the general laws. -/
 theorem fusion_all : fusionStates 1 = 2 ∧ fusionDim 2 = 4 ∧ fusionEntropy 2 = 4 := ⟨rfl, rfl, rfl⟩
+
+-- Merged from Qpu.General.Fuse: fused API registry counts, specificity partition, cut ebits and receipt balance.
+theorem fuse : 2247 + 282 = 2529 ∧ 94598 + 343701 = 438299 ∧ 406 + 1565 + 3389 + 6011 + 12801 + 414127 = 438299 ∧ 448 ≤ 1264 ∧ 362 ≤ 955 ∧ 301 ≤ 340 ∧ 252 ≤ 284 ∧ 144 ≤ 166 ∧ 2529 + 438299 = 440828 := ⟨rfl, rfl, rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩

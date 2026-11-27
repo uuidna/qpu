@@ -10,7 +10,7 @@ import Qpu.Information.PhysicalQubit.JosephsonJunction
 import Qpu.Processing.QuantumComputer.Cryostat
 import Qpu.Processing.QuantumComputer.Wiring
 import Qpu.Information.PhysicalQubit.Transmon
-import Qpu.Information.PhysicalQubit.Coil
+import Qpu.Communication.Coil
 import Qpu.Processing.QuantumProcessor.ReadoutResonator
 import Qpu.Processing.QuantumProcessor.Coupler
 import Qpu.Processing.CircuitBasedQuantumComputing

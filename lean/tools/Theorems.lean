@@ -16,9 +16,28 @@ open Lean Meta
 /-- Where the rendered index is written. -/
 def theoremsOut : System.FilePath := ".lake" / "build" / "theorems-index.ts"
 
+/-- Collect every declared Qpu theorem referenced by `roots`, walking through compiler-generated auxiliary proofs. -/
+private partial def kernelDeps (env : Environment) (self : Name) (declaredSet : Std.HashSet Name)
+    (roots : List Name) (visited : Std.HashSet Name := {}) (acc : Std.HashSet String := {}) : Std.HashSet String :=
+  match roots with
+  | [] => acc
+  | c :: rest =>
+    if visited.contains c then kernelDeps env self declaredSet rest visited acc else
+    let visited := visited.insert c
+    if c != self && declaredSet.contains c then
+      kernelDeps env self declaredSet rest visited (acc.insert c.toString)
+    else
+      match env.find? c with
+      | some (.thmInfo ti) =>
+        if (`Qpu).isPrefixOf ((env.getModuleIdxFor? c).map (env.header.modules[·.toNat]!.module) |>.getD .anonymous) then
+          kernelDeps env self declaredSet (ti.value.getUsedConstants.toList ++ rest) visited acc
+        else kernelDeps env self declaredSet rest visited acc
+      | _ => kernelDeps env self declaredSet rest visited acc
+
 #eval show MetaM Unit from do
   let env ← getEnv
   let declared ← Qpu.declaredTheorems
+  let declaredSet : Std.HashSet Name := declared.foldl (fun s (n, _) => s.insert n) {}
   let (all, compilerWritten) ← Qpu.theoremCounts
   let mut rows : Array String := #[]
   let mut novelties : Array Json := #[]
@@ -36,9 +55,12 @@ def theoremsOut : System.FilePath := ".lake" / "build" / "theorems-index.ts"
     typeset := typeset.insert tex statement
     let axioms ← collectAxioms name
     if axioms.contains ``sorryAx then sorried := sorried + 1
+    let valConsts := match info with | .thmInfo ti => ti.value.getUsedConstants | _ => #[]
+    let depSet := kernelDeps env name declaredSet (info.type.getUsedConstants.toList ++ valConsts.toList)
+    let deps := depSet.toArray.qsort (· < ·)
     let doc := ((← findDocString? env name).getD "").trimAscii.toString
     let fields : List (String × Json) :=
-      [("key", .str name.toString), ("module", .str module.toString), ("statement", .str statement), ("tex", .str tex), ("axioms", .arr (axioms.map fun a => Json.str a.toString))]
+      [("key", .str name.toString), ("module", .str module.toString), ("statement", .str statement), ("tex", .str tex), ("axioms", .arr (axioms.map fun a => Json.str a.toString)), ("deps", .arr (deps.map Json.str))]
       ++ (if doc.isEmpty then [] else [("doc", .str (doc.replace "\n" " "))])
     -- a novelty, a theorem with no Mathlib equivalent, with the doc that cites its prior-art dossier
     if noveltyAttr.hasTag env name then novelties := novelties.push (Json.mkObj [("key", .str name.toString), ("doc", .str doc)])
@@ -58,8 +80,8 @@ def theoremsOut : System.FilePath := ".lake" / "build" / "theorems-index.ts"
     , s!"export const GENERATED_LEMMAS = {compilerWritten}"
     , "/** the declared theorems that rest on sorry, as the kernel counts them: the index is written only when there are none */"
     , s!"export const SORRIED = {sorried}"
-    , "/** each theorem the author declared, with its statement, that statement as TeX, the axioms the kernel says it depends on, and its inline doc when it has one */"
-    , "export const THEOREMS: readonly { key: string; module: string; statement: string; tex: string; axioms: readonly string[]; doc?: string }[] = [" ]
+    , "/** each theorem the author declared, with its statement, that statement as TeX, the axioms the kernel says it depends on, its kernel entanglement dependencies, and its inline doc when it has one */"
+    , "export const THEOREMS: readonly { key: string; module: string; statement: string; tex: string; axioms: readonly string[]; deps: readonly string[]; doc?: string }[] = [" ]
     ++ rows.toList ++
     [ "]"
     , "export const THEOREM_KEYS: ReadonlySet<string> = new Set(THEOREMS.map((t) => t.key))"
