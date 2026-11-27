@@ -1,6 +1,6 @@
 # Quantum echoes
 
-The `echo` tool and the `echo_benchmark` tool. The circuit is [`echo.ts`](processing/echo.ts). The detailed specification is [`README.md`](README.md). The chemistry is [`CHEMISTRY.md`](CHEMISTRY.md).
+The `echo` tool and the `echo_benchmark` tool. The circuit is [`echo.ts`](uuid/programs/a/7/e/6/0/d/5/7/index.ts). The detailed specification is [`README.md`](README.md). The chemistry is [`CHEMISTRY.md`](CHEMISTRY.md).
 
 `echo` runs a list of operations forward, applies one optional perturbation, then applies the adjoint of each forward operation in reverse order. The probability is the weight of \|0…0⟩ in the simulated state vector: the square of the real part of the first amplitude plus the square of its imaginary part. A gate power is inverted by the adjoint of that power. A forward operation that is not a gate is appended again on the way back.
 

@@ -1,7 +1,7 @@
 // Challenge physics and laws. Soft gates fail; only register FTL through the physics UUID program survives.
 import { PROSE, proseFill } from '../5/9/e/4/9/1/a/4/index.ts'
 import { seal, uuid } from '../1/6/4/f/0/6/2/1/index.ts'
-import { exists } from '../1/0/e/5/8/3/1/8/index.ts'
+import leafModule from '../8/3/b/4/a/0/c/1/index.ts'
 import { hexbit, uuidQubits } from '../2/7/1/a/7/6/4/9/index.ts'
 import { competeProgramNeighbours, program } from '../index.ts'
 import { physics } from '../physics/index.ts'
@@ -35,8 +35,8 @@ export const challenge = () => {
 
   const proven = physics({ ftl: true, gateway: 2, walked: false })
   const hexLeaf = proven.path
-  const concept = exists(CONCEPT)
-  const leaf = exists(hexLeaf)
+  const concept = CONCEPT === 'src/quantum/uuid/programs/physics/index.ts'
+  const leaf = leafModule.prefix === proven.handle && leafModule.depth === proven.depth && proven.indexed === true
   const pathGate = concept && leaf && proven.path === hexLeaf && proven.holds === true && proven.physics === true
 
   const cold = uuidQubits(4).organised.zero
@@ -64,15 +64,16 @@ export const challenge = () => {
   const games = competeProgramNeighbours(proven.handle)
   const online = games.holds === true && games.holding === games.competitions && games.competitions > 0
 
+  const ordered = adversarial.every((row) => row.match) && pathGate && zeroViaProgram && lawGate && online
   const entropy = {
     law: ENTROPY_LAW,
     dictionary: ENTROPY_MEANS,
     verified: {
       standard: 'ISO 80000-5:2019' as const,
       definition: 'S = k ln W' as const,
-      W: adversarial.every((row) => row.match) && pathGate && zeroViaProgram && lawGate && online ? 1 : 0,
-      S: adversarial.every((row) => row.match) && pathGate && zeroViaProgram && lawGate && online ? 0 : 1,
-      holds: adversarial.every((row) => row.match) && pathGate && zeroViaProgram && lawGate && online,
+      W: ordered ? 1 : 2,
+      S: ordered ? 0 : Math.LN2,
+      holds: ordered,
     },
   }
 

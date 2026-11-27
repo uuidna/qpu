@@ -1,6 +1,6 @@
 # Witnesses
 
-The fourteen faces around a UUID, and the merge of two such sets. The faces are [`witnesses.ts`](processing/witnesses.ts). The coins are `mintWitnessCoins` in [`billing.ts`](processing/toolboxes/billing.ts). The door is `verify`. The detailed specification is [`README.md`](README.md). The Clay register is [`CLAY.md`](CLAY.md).
+The fourteen faces around a UUID, and the merge of two such sets. The faces are [`witnesses.ts`](uuid/programs/d/7/8/3/e/4/6/3/index.ts). The coins are `mintWitnessCoins` in [`billing.ts`](uuid/programs/4/5/8/2/8/f/3/f/index.ts). The door is `verify`. The detailed specification is [`README.md`](README.md). The Clay register is [`CLAY.md`](CLAY.md).
 
 A face is a UUID built from the same handle, program, and tail. Six squares rotate the program by one to six places. Eight triangles reflect exactly one of the eight handle nibbles by σ, where a nibble x becomes 15 − x. σ twice is the nibble again. A rotation is undone by rotating the rest of the way around the program. Each of the fourteen maps back to the canonical UUID, the address `uuidFromParts` rebuilds from those parts. `isCanonical` is true when the given UUID is that rebuild. A program that repeats under rotation makes two faces the same address, and `duplicates` counts them. A rotation-symmetric program puts the UUID itself among its faces.
 

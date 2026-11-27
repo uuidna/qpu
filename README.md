@@ -429,8 +429,8 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 
 | copy | value |
 | --- | --- |
-| issued | 2026-11-27T21:20:26.267Z |
-| hardware | 47ae0743-c875-5ac9-ab53-04c3e654b13a |
+| issued | 2026-11-27T21:42:19.413Z |
+| hardware | 61fab1d4-4f3f-25fc-93eb-7cd3aa27c308 |
 
 <details>
 <summary>hardware</summary>
@@ -439,9 +439,9 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 
 | receipt | value |
 | --- | --- |
-| uuid | 47ae0743-c875-5ac9-ab53-04c3e654b13a |
-| handle | `47ae0743` |
-| sha256 | 2231a130e479c22586305da232206f41f477d5d9f85033ec3381e2b84db18d10 |
+| uuid | 61fab1d4-4f3f-25fc-93eb-7cd3aa27c308 |
+| handle | `61fab1d4` |
+| sha256 | da2201b3d9dfe8ea52cdf949ceb745a67c03e72e516e82afa00d5489954c2eaf |
 
 | hardware | value |
 | --- | --- |
@@ -460,42 +460,42 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | cores | 10 |
 | parallelism | 10 |
 | cpuMHz | 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400 |
-| cpuUserMs | 553781550 |
+| cpuUserMs | 557611660 |
 | cpuNiceMs | 0 |
-| cpuSysMs | 257607380 |
-| cpuIdleMs | 2520761360 |
+| cpuSysMs | 258728620 |
+| cpuIdleMs | 2528901150 |
 | cpuIrqMs | 0 |
 | memoryBytes | 34359738368 |
-| freeMemoryBytes | 6193954816 |
-| load1 | 5.9990234375 |
-| load5 | 7.5205078125 |
-| load15 | 6.20361328125 |
-| uptimeS | 362024 |
+| freeMemoryBytes | 4624384000 |
+| load1 | 4.5654296875 |
+| load5 | 7.99365234375 |
+| load15 | 8.181640625 |
+| uptimeS | 363337 |
 | diskBytes | 994662584320 |
-| diskFreeBytes | 806048616448 |
-| diskAvailableBytes | 806048616448 |
+| diskFreeBytes | 805912752128 |
+| diskAvailableBytes | 805912752128 |
 | diskBlockBytes | 4096 |
-| inodes | 7886483741 |
-| inodesFree | 7871568520 |
+| inodes | 7885158832 |
+| inodesFree | 7870241720 |
 | networkInterfaces | 10 |
 | lean | leanprover/lean4:v4.33.0 |
-| rssBytes | 398229504 |
-| heapTotalBytes | 203800576 |
-| heapUsedBytes | 130321656 |
-| externalBytes | 7106007 |
-| arrayBuffersBytes | 689295 |
-| processUserMicros | 6524308 |
-| processSystemMicros | 173216 |
-| maxRssKb | 388912 |
-| pageFaults | 24931 |
+| rssBytes | 400048128 |
+| heapTotalBytes | 205635584 |
+| heapUsedBytes | 125690224 |
+| externalBytes | 7070402 |
+| arrayBuffersBytes | 654791 |
+| processUserMicros | 6575680 |
+| processSystemMicros | 138964 |
+| maxRssKb | 390688 |
+| pageFaults | 25067 |
 | fsReads | 0 |
 | fsWrites | 0 |
-| contextSwitches | 5900 |
+| contextSwitches | 5171 |
 | challenges | 574a161f, fb1cd940, d6d7b748, ec54afc7, bbcc2c0f, dbbc4fe8, 1feb6648, 52a07646, a7fa7c75, d8719ba7, 5d7c7a76, 4d938405, 02f60ed8, 3edf017a |
 | isoHardwareTerms | 3.3.5 physical qubit, 3.3.6 physical qudit, 3.4.8 quantum processor, 3.4.10 quantum computer, 3.4.26 circuit-based quantum computer, 3.4.27 one-way quantum computer, 3.4.28 adiabatic quantum computer |
 | quantumBehaviour | UNVERIFIED |
-| buildMs | 4968 |
-| at | 2026-11-27T21:20:26.267Z |
+| buildMs | 4950 |
+| at | 2026-11-27T21:42:19.413Z |
 
 | hardware.versions | value |
 | --- | --- |

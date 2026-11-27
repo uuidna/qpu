@@ -1,8 +1,8 @@
 # Standards
 
-The ISO dimensions this tree names, and the check that the simulator meets them. The list and the check are [`standards.ts`](processing/standards.ts). The detailed specification is [`README.md`](README.md). The witnesses are [`WITNESSES.md`](WITNESSES.md).
+The ISO dimensions this tree names, and the check that the simulator meets them. The list and the check are [`standards.ts`](uuid/programs/0/1/7/0/5/2/4/8/index.ts). The detailed specification is [`README.md`](README.md). The witnesses are [`WITNESSES.md`](WITNESSES.md).
 
-`ISO_DIMENSIONS` names the dimensions; every count of them is `ISO_DIMENSIONS.length`. A catalogue row matches a name when its reference is that name, or starts with the name plus `:` or `-`. `ISO 16` does not match `ISO 16000`. A current row has stage at least 6060 and below 9500. Among the rows that match, the one kept is current, then defining, then not a supplement, then the later year, then the higher stage. The defining row of each, with its catalogue number and stage from ISO open data, is `ISO_OPEN_DEFINITIONS` in [`iso-deliverables.ts`](processing/iso-deliverables.ts).
+`ISO_DIMENSIONS` names the dimensions; every count of them is `ISO_DIMENSIONS.length`. A catalogue row matches a name when its reference is that name, or starts with the name plus `:` or `-`. `ISO 16` does not match `ISO 16000`. A current row has stage at least 6060 and below 9500. Among the rows that match, the one kept is current, then defining, then not a supplement, then the later year, then the higher stage. The defining row of each, with its catalogue number and stage from ISO open data, is `ISO_OPEN_DEFINITIONS` in [`iso-deliverables.ts`](uuid/programs/0/b/7/1/f/2/4/6/index.ts).
 
 Entropy as a quantity is **ISO 80000-5:2019** (catalogue 64976): \(S = k \ln W\), unit J/K (natural measure uses \(k = 1\), unit nat). It is not a purpose dimension of its own. `audit { entropy }` and crypto integer fusion set \(W\) to the number of distinct microstates (fused leads) and report \(S\); vacuum is \(W = 1\), \(S = 0\). The open-data row is held beside ISO 80000-10 in `ISO_OPEN_DEFINITIONS`.
 

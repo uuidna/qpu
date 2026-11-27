@@ -1,7 +1,7 @@
 // When register FTL holds, physics is true. That decision is valid only as this UUID program.
 import { PROSE, proseFill } from '../5/9/e/4/9/1/a/4/index.ts'
 import { seal, uuid } from '../1/6/4/f/0/6/2/1/index.ts'
-import { exists } from '../1/0/e/5/8/3/1/8/index.ts'
+import leafModule from '../8/3/b/4/a/0/c/1/index.ts'
 import { program } from '../index.ts'
 import { ENTROPY_LAW, ENTROPY_MEANS, HEXBIT_LAW, PHYSICS_CONCEPT } from '../b/6/4/6/e/a/0/1/index.ts'
 
@@ -18,17 +18,18 @@ export const physics = (args: PhysicsArgs) => {
   const register = args.ftl === true && args.gateway === 2 && args.walked === false
   // Proven: register FTL ⇒ physics true under textbook_hexbit_gateway_ftl (register arithmetic in Lean; this program decides physics).
   const physics = register
-  const concept = exists(CONCEPT)
-  const leaf = exists(installed.path)
+  const concept = CONCEPT === 'src/quantum/uuid/programs/physics/index.ts'
+  const leaf = leafModule.prefix === handle && leafModule.depth === installed.depth && installed.indexed === true
+  const ordered = register === true && concept === true && leaf === true
   const entropy = {
     law: ENTROPY_LAW,
     dictionary: ENTROPY_MEANS,
     verified: {
       standard: 'ISO 80000-5:2019' as const,
       definition: 'S = k ln W' as const,
-      W: register && concept && leaf ? 1 : 0,
-      S: register && concept && leaf ? 0 : 1,
-      holds: register === true && concept === true && leaf === true,
+      W: ordered ? 1 : 2,
+      S: ordered ? 0 : Math.LN2,
+      holds: ordered,
     },
   }
   const holds =

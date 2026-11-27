@@ -1,6 +1,6 @@
 # Quantum algorithms
 
-The `algorithm` tool (ISO/IEC 4879:2024, 3.4.9). The names are the `name` enum in [`mcp.ts`](processing/mcp.ts). The circuits are [`algorithms.ts`](processing/algorithms.ts). The detailed specification is [`README.md`](README.md). The vocabulary index is [`VOCABULARY.md`](VOCABULARY.md).
+The `algorithm` tool (ISO/IEC 4879:2024, 3.4.9). The names are the `name` enum in [`mcp.ts`](uuid/programs/3/8/5/9/0/2/0/f/index.ts). The circuits are [`algorithms.ts`](uuid/programs/b/1/c/2/3/6/2/1/index.ts). The detailed specification is [`README.md`](README.md). The vocabulary index is [`VOCABULARY.md`](VOCABULARY.md).
 
 Omit `name` and the call reads the formulas. It does not run them. The phase is `discovery`, unlimited, at 432 Hz, and `ran` is false. The formulas map to `order`, `shor`, and `factor`.
 
@@ -35,4 +35,4 @@ Each result has `summary` and a table (`header`, `rows`).
 | `shor` | `N`, `a`, `order`, `repetitions`, `budget` | The register is one UUID, 122 effective qubits. The circuit width is 3⌈log₂(N+1)⌉. A base that shares a factor with N is split by Euclid before any circuit. A given `order` runs the reduction gcd(a^(r/2) ± 1, N) at any size. Omit `repetitions` and the order is the exact witness on the register. Pass `repetitions` and, when N fits a safe integer and the circuit is under 24 qubits, that many circuit samples are drawn. |
 | `factor` | `integer`, `reflections`, `from`, `witness`, `address`, `order`, `find`, `observe`, `create`, `a`, `budget` | A leading integer in `integer`, a minus allowed. The σ-reflection searches centres from ⌈√N⌉. `reflections` defaults to 4096 and `from` resumes a previous `reached`. `witness` is the centre (p+q)/2 and splits N in one step. `order` or `find` finishes a leftover part by order-finding, then the reduction. `observe` divides only by the primes 2, 3, 5, 7, 11, 13 that appear as nibbles of the address. The search count is then 0. `create` mints N = p·q from `{ p, q }` or from `{ bits, seed }`. Text that is not an integer is a meaning, sent to `imagine`. The product of the parts is checked. |
 
-A reference page under `cirq`, `cirq_google`, or `openfermion` is classified in [`OPEN.md`](OPEN.md). Chemistry is `vqe` of H₂ in STO-3G, one molecule, in [`chemistry.ts`](processing/chemistry.ts). The `vqe` name on this tool sweeps ⟨Z⟩.
+A reference page under `cirq`, `cirq_google`, or `openfermion` is classified in [`OPEN.md`](OPEN.md). Chemistry is `vqe` of H₂ in STO-3G, one molecule, in [`chemistry.ts`](uuid/programs/f/1/5/e/c/2/5/4/index.ts). The `vqe` name on this tool sweeps ⟨Z⟩.

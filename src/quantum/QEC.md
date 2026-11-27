@@ -1,6 +1,6 @@
 # Quantum error correction
 
-The `quantum-error-correction` tool (ISO/IEC 4879:2024, 3.4.6) of a logical qubit (3.3.7). The cycle is [`qec.ts`](processing/qec.ts). The detailed specification is [`README.md`](README.md). The processors are [`PROCESSORS.md`](PROCESSORS.md). The [[7,1,3]] Steane table is the `steane` name in [`ALGORITHMS.md`](ALGORITHMS.md).
+The `quantum-error-correction` tool (ISO/IEC 4879:2024, 3.4.6) of a logical qubit (3.3.7). The cycle is [`qec.ts`](uuid/programs/4/5/c/9/9/3/0/e/index.ts). The detailed specification is [`README.md`](README.md). The processors are [`PROCESSORS.md`](PROCESSORS.md). The [[7,1,3]] Steane table is the `steane` name in [`ALGORITHMS.md`](ALGORITHMS.md).
 
 The code is the three-qubit repetition code. `bit_flip` encodes \|000⟩ and \|111⟩. `phase_flip` is that code inside a Hadamard frame, so the encoded states are \|+++⟩ and \|−−−⟩. Data qubits are line 0, 1, and 2. Ancillas are line 3 and 4.
 
