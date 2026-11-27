@@ -89,3 +89,23 @@ test('the seed of the Lean algebra is the 64 hex digits of every theorem the ker
   assert.equal(ring.faces, 14)
   assert.ok(ring.holds && ring.closes && ring.refused)
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: the skills are a Payload ecommerce catalog in the plugin's own collections, a variant for each part named by its unique hexagon handle and carrying how much of its UUID's register its content fills, used and left making the register. */
+test('the skills are a Payload ecommerce catalog in the plugin\'s own collections, a variant for each part named by its unique hexagon handle and carrying how much of its UUID\'s register its content fills, used and left making the register', async () => {
+  const { handleCatalog } = await import('./index.ts')
+  const { quantumCapacity } = await import('../../../../../../../../0/8/7/0/6/d/2/8/index.ts')
+  const skills = qpuSkills(TOOLBOXES).catalogue.filter((r) => r.toolbox !== null) as unknown as { parts: unknown[] }[]
+  const c = handleCatalog(qpuSkills(TOOLBOXES).catalogue as never), qubits = quantumCapacity().register.free
+  assert.deepEqual(c.order, ['variantTypes', 'variantOptions', 'products', 'variants'])
+  assert.ok(c.unique)
+  const parts = skills.reduce((n, s) => n + s.parts.length, 0)
+  assert.deepEqual([c.collections.variantTypes.length, c.collections.products.length, c.collections.variantOptions.length, c.collections.variants.length], [1, skills.length, parts, parts])
+  const optionOf = new Map(c.collections.variantOptions.map((o) => [o.id, o.data as { value: string; variantType: string }]))
+  for (const v of c.collections.variants) {
+    const d = v.data as { product: string; options: string[]; quantum: { receipt: string; program: { handle: string }; outcome: { qubits: number; used: number; left: number; holds: boolean } } }
+    assert.ok(c.collections.products.some((p) => p.id === d.product), v.id)
+    assert.equal(optionOf.get(d.options[0]!)!.value, d.quantum.program.handle, `${v.id}: the option is the handle`)
+    assert.equal(d.quantum.receipt.slice(0, d.quantum.program.handle.length), d.quantum.program.handle)
+    assert.deepEqual([d.quantum.outcome.qubits, d.quantum.outcome.used + d.quantum.outcome.left, d.quantum.outcome.holds], [qubits, qubits, true])
+  }
+})

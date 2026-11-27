@@ -64,3 +64,13 @@ export const stabilityOf = (given: Readonly<Record<string, string>>) => {
 }
 /** The capacity at the hexbit width the axioms state, straight from the register the fold door serves. */
 export const quantumCapacity = () => capacityOf(hexbitRegister())
+/** How much of one UUID's register a content fills: its Shannon information, the bits its bytes carry by their frequencies (the sum of −c log₂(c/n)
+ *  over its byte counts), against the register's free qubits. A content that carries fewer bits leaves qubits unused; one that carries more fills the
+ *  register, and its address is a fingerprint of it. used + left is the register (textbook_capacity_conserved). */
+export const utilisationOf = (text: string) => {
+  const qubits = quantumCapacity().register.free, bytes = new TextEncoder().encode(text), counts = new Map<number, number>()
+  for (const b of bytes) counts.set(b, (counts.get(b) ?? 0) + 1)
+  const information = [...counts.values()].reduce((s, c) => s - c * Math.log2(c / bytes.length), 0)
+  const used = Math.min(qubits, Math.ceil(information)), left = qubits - used
+  return { qubits, information, used, left, utilisation: used / qubits, full: left === 0, holds: used + left === qubits, theorem: 'textbook_capacity_conserved' as const }
+}

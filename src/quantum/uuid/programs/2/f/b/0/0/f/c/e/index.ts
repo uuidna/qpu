@@ -16,6 +16,7 @@ import { catalogDoc } from '../../../../../../../../3/2/7/5/4/2/0/1/index.ts'
 import { merkleTree } from '../../../../../../../../e/1/9/1/6/4/9/c/index.ts'
 import { hexagonHandle } from '../../../../../../../../d/7/8/3/e/4/6/3/index.ts'
 import { crossWitnesses, leanAlgebraSeed } from '../../../../../../../../3/1/0/2/7/5/b/a/index.ts'
+import { utilisationOf } from '../../../../../../../../0/8/7/0/6/d/2/8/index.ts'
 import { TOOLBOXES } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
 import { AUTHOR_CLAIMS, GENERATED_LEMMAS, KERNEL_THEOREMS, NOVELTIES, THEOREMS } from '../../../../../../../../3/f/0/e/7/a/6/f/index.ts'
 import { receiptOf } from '../../../../../../../../index.ts'
@@ -97,6 +98,19 @@ const frontmatter = (name: string, description: string) => ['---', `name: ${name
 export const skillRing = (part: { uuid: string }, theorems: readonly { key: string; statement: string }[]) => {
   const seed = leanAlgebraSeed(theorems), ring = crossWitnesses({ uuid: part.uuid, seed })
   return { uuid: part.uuid, seed, holds: ring.holds, closes: ring.closes, refused: ring.refused, faces: ring.faces, links: ring.links.map((l) => ({ from: l.from, to: l.to, kem: l.kem, signature: (l as { signature?: unknown }).signature })), cost: ring.cost }
+}
+/** The skills as Payload's ecommerce plugin holds a catalog, in its own collections and the order a seeder creates them, Payload itself unchanged: one
+ *  variant type, the handle; an option for each part, its value the part's hexagon handle and its label what that handle names, read back through the
+ *  index of handles; a product for each skill, carrying its UUID and the root over its parts; and a variant for each part, carrying its UUID, its handle,
+ *  its hours on the two clocks and how much of its UUID's register its content fills. Each document sealed as catalogDoc seals the catalogue. */
+export const handleCatalog = (catalogue: readonly { name: string; toolbox: string | null; uuid: string; root?: string; parts?: readonly { kind: string; name: string; text: string; uuid: string; handle: string; hour12: number; hour24: number }[] }[]) => {
+  const skills = catalogue.filter((r) => r.toolbox !== null && r.parts)
+  const named = new Map(skills.flatMap((s) => s.parts!.map((p) => [p.handle, p] as const)))
+  const type = catalogDoc('variantTypes', { name: 'handle', label: 'Handle' })
+  const options = new Map([...named.keys()].map((handle) => [handle, catalogDoc('variantOptions', { variantType: type.id, label: `${named.get(handle)!.kind} ${named.get(handle)!.name}`, value: handle })]))
+  const products = skills.map((s) => catalogDoc('products', { title: s.name, slug: s.name, enableVariants: true, variantTypes: [type.id], _status: 'published', quantum: { receipt: s.uuid, program: { toolbox: s.toolbox, root: s.root, rfc: 6962 }, outcome: { parts: s.parts!.length } } }))
+  const variants = skills.flatMap((s, i) => s.parts!.map((p) => catalogDoc('variants', { title: `${s.name} / ${p.handle}`, product: products[i]!.id, options: [options.get(p.handle)!.id], _status: 'published', quantum: { receipt: p.uuid, program: { handle: p.handle, kind: p.kind, name: p.name }, outcome: { hour12: p.hour12, hour24: p.hour24, ...utilisationOf(p.text) } } })))
+  return { phase: 'seeds' as const, standard: '@payloadcms/plugin-ecommerce' as const, order: ['variantTypes', 'variantOptions', 'products', 'variants'] as const, collections: { variantTypes: [type], variantOptions: [...options.values()], products, variants }, handles: named.size, unique: named.size === skills.reduce((n, s) => n + s.parts!.length, 0) }
 }
 export const qpuSkills = (boxesIn: readonly SkillBox[], terms: readonly { clause: string; name: string }[] = QUANTUM_TERMS, allExamples: readonly { id: string; shows?: string; tool?: string }[] = [], checked: readonly CheckedTerm[] = quantumVocabulary()) => {
   const register = uuidQubits(4), qubits = register.effective, qubitsFormula = `32 × 4 − 4 − 2 = ${qubits}`
