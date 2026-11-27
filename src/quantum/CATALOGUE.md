@@ -6,7 +6,7 @@
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1648 products, 2 under a declared claim context and 1646 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1649 products, 2 under a declared claim context and 1647 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
 
 The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
@@ -13293,6 +13293,16 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 magicBlock = 15 ∧ magicLogical = 1 ∧ magicDistance = 3 ∧ magicCubic = 35
+```
+
+## Qpu.Processing.QasmBridge
+
+### `QasmBridge.registers_flatten`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {m : ℕ} {n : Fin m → ℕ} (a b : (i : Fin m) × Fin (n i)), ↑(finSigmaFinEquiv a) = ↑(finSigmaFinEquiv b) → a = b
 ```
 
 ## Qpu.Processing.Qft

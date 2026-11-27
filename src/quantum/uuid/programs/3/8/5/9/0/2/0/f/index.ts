@@ -175,6 +175,75 @@ const fromQsim = (text: string): { operations: OperationJson[]; measure?: Measur
   }
   return { operations, phase, ...(measured.length ? { measure: { key: 'm', qubits: measured } } : {}) }
 }
+// OpenQASM 2.0 as Cirq's own qasm importer reads it: its registers laid out one after another as a line of qubits, the qubit j of a
+// register at the sizes of the registers before it plus j, so no two qubits meet (QasmBridge.registers_flatten); a gate on a whole
+// register is that gate on each of its qubits. rx, ry and rz are Cirq's Rx, Ry and Rz, a power of the Pauli times e^{-iθ/2}, and p λ
+// is Z^{λ/π}, cp λ CZ^{λ/π} (CirqBridge.shift_phase); sdg, tdg, sx and sxdg are S⁻¹, T⁻¹, X^½ and X^-½, and id is Z⁰, the identity
+// (CirqBridge.involution_pow_zero). A gate this door does not compute keeps its OpenQASM name and is refused, never approximated
+const QASM_GATES: Readonly<Record<string, Omit<OperationJson, 'qubits'>>> = {
+  h: { gate: 'H' }, x: { gate: 'X' }, y: { gate: 'Y' }, z: { gate: 'Z' }, s: { gate: 'S' }, t: { gate: 'T' },
+  sdg: { gate: 'S', exponent: -1 }, tdg: { gate: 'T', exponent: -1 }, sx: { gate: 'X', exponent: 0.5 }, sxdg: { gate: 'X', exponent: -0.5 },
+  id: { gate: 'Z', exponent: 0 }, cx: { gate: 'CNOT' }, CX: { gate: 'CNOT' }, cz: { gate: 'CZ' }, swap: { gate: 'SWAP' }, ccx: { gate: 'TOFFOLI' },
+}
+const QASM_ROTATIONS: Readonly<Record<string, string>> = { rx: 'X', ry: 'Y', rz: 'Z' }
+// an angle as OpenQASM writes it, numbers and pi under + − × ÷, signs and brackets, read by recursive descent and never run as code
+const qasmAngle = (text: string): number => {
+  const tokens = text.match(/\d*\.?\d+(?:e[+-]?\d+)?|pi|[-+*/()]/g) ?? []
+  if (tokens.join('') !== text.replace(/\s+/g, '')) throw new ParamError(`angle ${text}`)
+  let at = 0
+  const atom = (): number => {
+    const t = tokens[at++]
+    if (t === '-') return -atom()
+    if (t === '+') return atom()
+    if (t === '(') { const v = sum(); at++; return v }
+    if (t === 'pi') return Math.PI
+    if (t === undefined || !Number.isFinite(Number(t))) throw new ParamError(`angle ${text}`)
+    return Number(t)
+  }
+  const product = (): number => { let v = atom(); while (tokens[at] === '*' || tokens[at] === '/') v = tokens[at++] === '*' ? v * atom() : v / atom(); return v }
+  const sum = (): number => { let v = product(); while (tokens[at] === '+' || tokens[at] === '-') v = tokens[at++] === '+' ? v + product() : v - product(); return v }
+  const value = sum()
+  if (at !== tokens.length) throw new ParamError(`angle ${text}`)
+  return value
+}
+const fromQasm = (text: string): { operations: OperationJson[]; measure?: MeasureJson; phase: number } => {
+  const registers = new Map<string, { offset: number; size: number }>()
+  const operations: OperationJson[] = [], measured: QubitJson[] = []
+  const line = (x: number): QubitJson => ({ kind: 'line', x })
+  let total = 0, phase = 0
+  const qubitsOf = (arg: string): number[] => {
+    const [, name = '', index] = /^(\w+)(?:\[(\d+)\])?$/.exec(arg.trim()) ?? []
+    const register = registers.get(name) ?? (() => { throw new ParamError(`register ${name}`) })()
+    return index === undefined ? Array.from({ length: register.size }, (_, i) => register.offset + i) : [register.offset + Number(index)]
+  }
+  for (const statement of text.replace(/\/\/.*$/gm, '').split(';')) {
+    const s = statement.trim()
+    if (!s || /^(OPENQASM|include|creg|barrier)\b/.test(s)) continue
+    const qreg = /^qreg\s+(\w+)\s*\[(\d+)\]$/.exec(s)
+    if (qreg) {
+      // every qubit of the register is declared, so a qubit no gate touches keeps its place in the state
+      const size = Number(qreg[2])
+      registers.set(qreg[1]!, { offset: total, size })
+      for (let i = 0; i < size; i++) operations.push({ gate: 'Z', qubits: [line(total + i)], exponent: 0 })
+      total += size
+      continue
+    }
+    const measure = /^measure\s+(.+?)\s*->/.exec(s)
+    if (measure) { measured.push(...qubitsOf(measure[1]!).map(line)); continue }
+    const [, name = '', params, args = ''] = /^(\w+)\s*(?:\((.*)\))?\s+([^()]+)$/.exec(s) ?? []
+    const angles = params === undefined ? [] : params.split(',').map(qasmAngle)
+    const targets = args.split(',').map(qubitsOf)
+    for (let k = 0; k < Math.max(...targets.map((t) => t.length)); k++) {
+      const qubits = targets.map((t) => line(t.length === 1 ? t[0]! : t[k]!))
+      const rotation = QASM_ROTATIONS[name]
+      if (rotation) { operations.push({ gate: rotation, qubits, exponent: angles[0]! / Math.PI }); phase -= angles[0]! / 2 }
+      else if (name === 'p') operations.push({ gate: 'Z', qubits, exponent: angles[0]! / Math.PI })
+      else if (name === 'cp') operations.push({ gate: 'CZ', qubits, exponent: angles[0]! / Math.PI })
+      else operations.push({ ...(QASM_GATES[name] ?? { gate: name }), qubits })
+    }
+  }
+  return { operations, phase, ...(measured.length ? { measure: { key: 'm', qubits: measured } } : {}) }
+}
 const fromCirq = (given: unknown): { operations: OperationJson[]; measure?: MeasureJson; phase: number } => {
   const c = (typeof given === 'string' ? JSON.parse(given) : given) as CirqJson
   const qubit = (q: CirqJson): QubitJson => q.cirq_type === 'GridQubit' ? { kind: 'grid', row: Number(q.row), col: Number(q.col) } : q.cirq_type === 'NamedQubit' ? { kind: 'named', name: String(q.name) } : { kind: 'line', x: Number(q.x) }
@@ -1238,6 +1307,7 @@ const OWN: Tool[] = [
         cirq: { type: ['object', 'string'], description: PROSE.quantumProcessingMcp_cirqJson },
         stim: { type: 'string', description: PROSE.quantumProcessingMcp_stimText },
         qsim: { type: 'string', description: PROSE.quantumProcessingMcp_qsimText },
+        qasm: { type: 'string', description: PROSE.quantumProcessingMcp_qasmText },
         insert: INSERT_SCHEMA,
         device: { enum: Object.keys(DEVICES), description: PROSE.quantumProcessingMcp_description100 },
         measure: MEASURE_SCHEMA,
@@ -1250,7 +1320,7 @@ const OWN: Tool[] = [
     },
     run: (args) => {
       if (isObj(args.engine)) return engineCall(args.engine as Record<string, unknown>)
-      const cirq = args.cirq !== undefined ? fromCirq(args.cirq) : typeof args.qsim === 'string' ? fromQsim(args.qsim) : null, stim = typeof args.stim === 'string' ? fromStim(args.stim) : null
+      const cirq = args.cirq !== undefined ? fromCirq(args.cirq) : typeof args.qsim === 'string' ? fromQsim(args.qsim) : typeof args.qasm === 'string' ? fromQasm(args.qasm) : null, stim = typeof args.stim === 'string' ? fromStim(args.stim) : null
       if (!cirq && !stim && !Array.isArray(args.operations)) return unlimited() as never
       const operations = cirq?.operations ?? stim?.operations ?? (args.operations as OperationJson[])
       const measurement = (args.measure ?? cirq?.measure ?? stim?.measure) as MeasureJson | undefined
@@ -1276,7 +1346,7 @@ const OWN: Tool[] = [
       }
       if (!measurement || typeof args.repetitions !== 'number') {
         const { amplitudes, qubits } = new Simulator().simulate(prepared)
-        // the global phase Cirq's shifts, or qsim's rotations and p, multiply the state by, carried exactly: e^{iφ}(re + i im)
+        // the global phase Cirq's shifts, or qsim's and OpenQASM's rotations and qsim's p, multiply the state by, carried exactly: e^{iφ}(re + i im)
         const turned = cirq?.phase ? amplitudes.map(complex).map((z) => ({ re: z.re * Math.cos(cirq.phase) - z.im * Math.sin(cirq.phase), im: z.re * Math.sin(cirq.phase) + z.im * Math.cos(cirq.phase) })) : amplitudes.map(complex)
         const phased = turned
         return { qubits: qubits.map(keyOfQubit), amplitudes: phased, ...(measurement && typeof args.repetitions !== 'number' ? { sampled: false as const } : {}) }

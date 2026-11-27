@@ -563,3 +563,29 @@ test('a circuit as cirq.to_json writes it is counted on the fault-tolerant door 
   assert.ok(t, 'QualtranBridge.z_powers_add')
   assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], 'QualtranBridge.z_powers_add')
 })
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a circuit in OpenQASM 2.0 runs on the circuit door to the state Cirq's own qasm importer and simulator give, its registers laid out in order, and a gate the door does not compute is refused. */
+test('a circuit in OpenQASM 2.0 runs on the circuit door to the state Cirq\'s own qasm importer and simulator give, its registers laid out in order, and a gate the door does not compute is refused', () => {
+  // the fixture is Cirq's own output (qasm.json): each circuit through cirq.contrib.qasm_import and cirq.final_state_vector, in Cirq's order
+  const fixture = JSON.parse(readFileSync(new URL('./qasm.json', import.meta.url), 'utf8')) as { cirq: string; circuits: Record<string, { text: string; qubits: string[]; amplitudes: { re: number; im: number }[] }> }
+  for (const [name, c] of Object.entries(fixture.circuits)) {
+    if (name.endsWith('-refused')) continue
+    const s = (call('circuit', { qasm: c.text }) as { result: { structuredContent: { amplitudes: { re: number; im: number }[] } } }).result.structuredContent
+    assert.equal(s.amplitudes.length, c.amplitudes.length, name)
+    c.amplitudes.forEach((a, k) => assert.ok(Math.abs(s.amplitudes[k]!.re - a.re) < 1e-12 && Math.abs(s.amplitudes[k]!.im - a.im) < 1e-12, `${name} ${k}: ${JSON.stringify(s.amplitudes[k])} against ${JSON.stringify(a)}`))
+  }
+  // an angle is read as OpenQASM writes it, pi and arithmetic included: rz(pi/2) is rz(1.5707963…)
+  const written = (call('circuit', { qasm: 'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[1];\nh q[0];\nrz(-(pi/4)*2) q;\n' }) as { result: { structuredContent: { amplitudes: { re: number; im: number }[] } } }).result.structuredContent.amplitudes
+  const decimal = (call('circuit', { qasm: 'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[1];\nh q[0];\nrz(-1.5707963267948966) q[0];\n' }) as { result: { structuredContent: { amplitudes: { re: number; im: number }[] } } }).result.structuredContent.amplitudes
+  written.forEach((z, k) => assert.ok(Math.abs(z.re - decimal[k]!.re) < 1e-12 && Math.abs(z.im - decimal[k]!.im) < 1e-12, `angle ${k}`))
+  // u3 is not one of the door's gates: the call is refused by its OpenQASM name, never approximated
+  const refused = call('circuit', { qasm: fixture.circuits['u3-refused']!.text })
+  assert.ok((refused as { result?: { isError?: boolean } }).result?.isError || 'error' in (refused as object), JSON.stringify(refused).slice(0, 200))
+  assert.match(JSON.stringify(refused), /gate u3 is not/)
+  const kernel = new Map(THEOREMS.map((t) => [t.key, t]))
+  for (const key of ['QasmBridge.registers_flatten', 'CirqBridge.shift_phase', 'CirqBridge.involution_pow_zero']) {
+    const t = kernel.get(key)
+    assert.ok(t, key)
+    assert.deepEqual(t!.axioms.filter((a: string) => !['propext', 'Classical.choice', 'Quot.sound'].includes(a)), [], key)
+  }
+})
