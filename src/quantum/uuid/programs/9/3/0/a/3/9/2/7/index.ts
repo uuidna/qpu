@@ -1029,8 +1029,11 @@ export class DensityMatrixSimulator {
         const noise = typeof channels === 'function' ? channels(op.gate.arity) : channels
         for (const i of indices) for (const channel of noise) branches = splitChannel(branches, channel, i)
       }
+      // Cirq's order, as the state simulator gives it: the first qubit the most significant bit of a basis index, where the branches keep
+      // it as the least (CirqBridge.cirq_order_eq_reversed)
+      const reversed = (k: bigint) => { let r = 0n; for (let b = 0; b < n; b++) if (k & (1n << BigInt(b))) r |= 1n << BigInt(n - 1 - b); return r }
       const diagonal = new Map<bigint, number>()
-      for (const state of branches) for (const [k, a] of state) diagonal.set(k, (diagonal.get(k) ?? 0) + a[0] ** 2 + a[1] ** 2)
+      for (const state of branches) for (const [native, a] of state) { const k = reversed(native); diagonal.set(k, (diagonal.get(k) ?? 0) + a[0] ** 2 + a[1] ** 2) }
       const occupied = [...diagonal.entries()].sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
       const probabilities = occupied.map(([, p]) => p)
       const trace = probabilities.reduce((s, p) => s + p, 0)
@@ -1055,6 +1058,12 @@ export class DensityMatrixSimulator {
       const noise = typeof channels === 'function' ? channels(op.gate.arity) : channels
       for (const i of indices) for (const channel of noise) rho = channelOn(rho, i, channel, n)
     }
+    // Cirq's order, as the state simulator gives it: the first qubit the most significant bit of a row and a column, where the matrix
+    // keeps it as the least; reversing the bits is a permutation, so trace and purity are kept (CirqBridge.cirq_order_eq_reversed)
+    const reversed = (k: number) => { let r = 0; for (let b = 0; b < n; b++) if (k & (1 << b)) r |= 1 << (n - 1 - b); return r }
+    const ordered = toComplexState(dim * dim)
+    for (let r = 0; r < dim; r++) for (let k = 0; k < dim; k++) { const from = reversed(r) * dim + reversed(k); ordered.re[r * dim + k] = rho.re[from]!; ordered.im[r * dim + k] = rho.im[from]! }
+    rho = ordered
     const probabilities = Array.from({ length: dim }, (_, k) => rho.re[k * dim + k]!)
     const trace = probabilities.reduce((sum, p) => sum + p, 0)
     let purity = 0
@@ -1068,7 +1077,8 @@ export class DensityMatrixSimulator {
 export const getExpectation = (result: DensityResult, observable: Record<string, 'X' | 'Y' | 'Z'>): number => {
   const n = result.qubits.length
   const dim = 1 << n
-  const index = new Map(result.qubits.map((q, i) => [qubitKey(q), i]))
+  // the density matrix is in Cirq's order, the first qubit the most significant bit, so qubit i acts on bit n − 1 − i
+  const index = new Map(result.qubits.map((q, i) => [qubitKey(q), n - 1 - i]))
   const paulis: Record<'X' | 'Y' | 'Z', Gate> = { X, Y, Z }
   let op: Matrix = toComplexState(dim * dim)
   for (let k = 0; k < dim; k++) op.re[k * dim + k] = 1

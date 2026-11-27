@@ -54,12 +54,12 @@ export const unencodedCycle = (channel: Channel, logical: LogicalState = '0'): C
   return new Circuit().append([...prepare(q, logical), noisy(channel, q), ...prepare(q, logical).reverse()])
 }
 
-/** The probability that the first qubit (line 0) of a simulated circuit is |1⟩: the sum of the basis probabilities whose
- *  lowest bit is set, since the basis order puts line 0 at bit 0. */
+/** The probability that the first qubit (line 0) of a simulated circuit is |1⟩: the sum of the basis probabilities whose bit for
+ *  line 0 is set, the simulator ordering its basis as Cirq does, the first qubit the most significant bit. */
 const countErrors = (circuit: Circuit): number => {
   const { probabilities, qubits } = new DensityMatrixSimulator().simulate(circuit)
   const index = qubits.findIndex((q) => q.kind === 'line' && q.x === 0)
-  return probabilities.reduce((sum, p, k) => ((k >> index) & 1 ? sum + p : sum), 0)
+  return probabilities.reduce((sum, p, k) => ((k >> (qubits.length - 1 - index)) & 1 ? sum + p : sum), 0)
 }
 
 /** A channel of one probability, as the three the code is tried against are named in Cirq. */
