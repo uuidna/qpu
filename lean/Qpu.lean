@@ -19,6 +19,7 @@ import Qpu.Processing.Magic
 import Qpu.Application.Qaoa
 import Qpu.Processing.Qft
 import Qpu.Processing.CirqBridge
+import Qpu.General.Schedule
 import Qpu.Application.Shor
 import Qpu.Processing.Stabilizer
 import Qpu.General.Clay

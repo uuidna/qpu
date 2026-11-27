@@ -137,24 +137,62 @@ def rendered : List (String × System.FilePath × System.FilePath) :=
   , (foldFile, ".lake" / "build" / "fold-index.ts", "site" / ".vitepress" / "theme" / "fold-index.ts")
   , (addressFile, ".lake" / "build" / "address-core.ts", "src" / "quantum" / "uuid" / "programs" / "7" / "b" / "5" / "e" / "2" / "f" / "f" / "f" / "index.ts") ]
 
-/-- Lean writes the prose index, the theorem index, the textbook index, the blueprint, the nested catalogue, the
-catalogue of claims, the thousand-bit table, the register of standards and the configuration. The tools read the same
-built tree and each writes its own file, so they run at the same time; the files are then settled in order. -/
+/-- What a tool reads: its source, the dependency hash Lake's trace keeps for every module it imports, which covers their imports
+in turn, and the toolchain. -/
+def toolInputs (file : String) : IO String := do
+  let source ← IO.FS.readFile file
+  let imports := (source.splitOn "\n").filterMap fun line =>
+    if line.startsWith "import " then some (String.ofList ((line.toList.drop 7).filter (· != ' '))) else none
+  let mut read := source
+  for m in imports do
+    let rel := (System.mkFilePath (m.splitOn ".")).toString ++ ".trace"
+    let trace : System.FilePath := ".lake" / "build" / "lib" / "lean" / rel
+    -- a module of Lean's own toolchain has no trace here: its name is its version, carried by lean-toolchain
+    let dep ← if ← trace.pathExists then IO.FS.readFile trace else pure m
+    let after := (dep.splitOn "\"depHash\": \"").getD 1 dep
+    read := read ++ "\u0000" ++ String.ofList (after.toList.takeWhile (· != '"'))
+  return read ++ "\u0000" ++ (← IO.FS.readFile "lean-toolchain")
+
+/-- The machine runner, whose step calls a door of the tree. -/
+def machineRunner : String := "src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts"
+
+/-- The witnessed address of every tool's inputs, all in one call of the seal door: the tree's own UUID of each text, a register
+of 122 qubits at hexbit width 4 (`textbook_coin_lean_sot`), which the door parts into its handle, its program of ten nibbles and
+its tail. No address is made here: an empty answer runs every tool. -/
+def sealedAddresses (texts : Array String) : IO (Array String) := do
+  let request : System.FilePath := ".lake" / "build" / "tools-seal.json"
+  IO.FS.writeFile request (Lean.Json.compress (Lean.Json.mkObj [("texts", Lean.toJson texts)]))
+  let out ← IO.Process.output { cmd := "node", args := #[machineRunner, "step", "seal", "@" ++ request.toString, "--json"] }
+  let body := String.ofList (out.stdout.toList.dropWhile (· != '{'))
+  let some items := ((Lean.Json.parse body).toOption.bind fun j => (j.getObjValAs? (Array Lean.Json) "items").toOption) | return #[]
+  return items.map fun i => (i.getObjValAs? String "address").toOption.getD ""
+
+/-- Lean writes the prose index, the theorem index, the textbook index, the blueprint, the nested catalogue, the catalogue of
+claims, the thousand-bit table, the register of standards and the configuration, each tool its own file. The tools run one after
+another, each holding the whole environment once: the memory a run needs is the largest tool's,
+never the sum of all of them (`Schedule.sequential_peak_le_parallel`). A tool whose inputs keep their address, beside an output it
+already wrote, is not run again: the same inputs give the same output. Each address is the seal door's witnessed UUID of the
+tool's inputs, 122 qubits at hexbit width 4. -/
 def renderProse (check : Bool) : IO UInt32 := do
-  let tasks ← rendered.mapM fun (file, _, _) => IO.asTask (step "lake" #["env", "lean", file])
   let mut failed : UInt32 := 0
-  for ((file, built, index), task) in rendered.zip tasks do
-    match task.get with
-    | .error e =>
-      IO.eprintln s!"{file}: {e}"
-      failed := 1
-    | .ok code =>
+  let addresses ← sealedAddresses (← rendered.toArray.mapM fun (file, _, _) => toolInputs file)
+  for ((file, built, index), k) in rendered.zipIdx do
+    let address := addresses.getD k ""
+    let mark : System.FilePath := built.toString ++ ".uuid"
+    -- the stored address is read only once both files are there: every `←` in one expression runs before the expression does
+    let present := (← built.pathExists) && (← mark.pathExists)
+    let kept ← if present && address != "" then pure ((← IO.FS.readFile mark) == address) else pure false
+    if kept then
+      IO.println s!"= {file} {address}"
+    else
+      let code ← step "lake" #["env", "lean", file]
       if code != 0 then
         IO.eprintln s!"{file}: Lean stopped with code {code}"
         failed := code
-      else
-        let settled ← settle built index check
-        if settled != 0 then failed := settled
+        continue
+      IO.FS.writeFile mark address
+    let settled ← settle built index check
+    if settled != 0 then failed := settled
   return failed
 
 /-- Wrangler's configuration and the git hooks Lean writes (lean/tools/Config.lean), compared with or installed as
