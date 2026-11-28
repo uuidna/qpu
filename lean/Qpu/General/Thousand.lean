@@ -105,4 +105,8 @@ theorem reflect_add {x : Nat} (h : x ≤ bound) : reflect x + x = bound := by
   unfold reflect
   exact Nat.sub_add_cancel h
 
+/-- Every reflection strictly below the bound is strictly positive (`Nat.sub_pos_of_lt`). -/
+theorem reflect_strict_pos {x : Nat} (h : x < bound) : 0 < reflect x :=
+  Nat.sub_pos_of_lt h
+
 end Thousand

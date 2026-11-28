@@ -58,3 +58,20 @@ jobs:
 
       - name: The doors decide what they can
         run: node src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts next --offline
+      - name: Verify live online autonomous pipeline across all tenant hosts
+        run: |
+          fail=0
+          for host in $(node -e "import('./src/quantum/uuid/programs/d/e/a/3/e/d/e/1/index.ts').then((c) => console.log(Object.keys(c.TENANTS).join(' ')))")
+          do
+            studio=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "https://$host/studio")
+            ui=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "https://$host/api/globals/payload-ui")
+            disc=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "https://$host/api/globals/google?view=discovery")
+            gqai=$(curl -sS -X POST -H 'content-type: application/json' -A 'Mozilla/5.0' --max-time 30 --data '{"action":"verify-compilation","qubits":8,"distance":7,"rawDepth":24,"benchmark":"fusion-invsqrt"}' "https://$host/api/globals/google" | node -e "const d = JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(String(d.evidenceStatus === 'supported' && d.sealed === true))")
+            pipe=$(curl -sS -X POST -H 'content-type: application/json' -A 'Mozilla/5.0' --max-time 30 "https://$host/api/globals/pipeline" | node -e "const d = JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(String(d.holds === true && d.sealed === true))")
+            echo "online host=$host studio=$studio ui=$ui disc=$disc gqai=$gqai pipe=$pipe"
+            if [ "$studio" != "200" ] || [ "$ui" != "200" ] || [ "$disc" != "200" ] || [ "$gqai" != "true" ] || [ "$pipe" != "true" ]; then fail=1; fi
+          done
+          exit "$fail"
+      - name: Verify live Lean prover and deployed MCP server
+        timeout-minutes: 20
+        run: node src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts step repository '{"deployed":{}}' --json

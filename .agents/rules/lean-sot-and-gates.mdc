@@ -1,0 +1,31 @@
+---
+description: Lean single source of truth, Gate/TeX rules, zero-entropy TypeScript, and deadlock-free automation
+alwaysApply: true
+---
+
+# Lean SoT, Gates, Zero Entropy, and Automation
+
+Lessons encoded from verified runs on this repository:
+
+## 1. Lean is the single author
+- Never hand-edit generated files (`wrangler.jsonc`, `README.md`, `src/quantum/README.md`, `src/quantum/CATALOGUE.md`, `.zenodo.json`, `*-index.ts`, `docs/public/mcp.json`, `.agents/skills/*`). Edit Lean (`lean/Qpu/General/Config.lean`, `lean/Qpu/General/Iso.lean`, `lean/tools/*.lean`) and run `lake run index` / `machine-run.ts settle`.
+- Every new `List` definition in `Qpu.General.Config` carries the verbatim `List.cons` docstring and a matching `_eq_cons` theorem in `lean/Qpu/General/Meaning.lean` so `Gate.lean` stays at zero new violations.
+- Import every new `lean/Qpu/**/*.lean` module in `lean/Qpu.lean`, and register every new `lean/tools/*.lean` generator in both `rendered` and `leanTools` in `lakefile.lean`.
+
+## 2. Lean `Gate`, `Names`, and `Theorems.lean`
+- Prefer explicit Mathlib proof terms over opaque tactics and name every used Mathlib/Qpu theorem in the theorem's docstring (verify via `ti.value.getUsedConstants` against `Gate.lean`).
+- Use ASCII binder names (`rho`, `m_i`, `m_g`) unless the Unicode glyph is mapped in `lean/Tex.lean`, otherwise `lean/tools/Theorems.lean` refuses TeX export.
+- When inspecting theorem proof constants in Lean metaprogramming, match `| .thmInfo ti => ti.value.getUsedConstants` rather than `info.value?` (which defaults to `allowOpaque := false` and returns `none` for theorems).
+
+## 3. Zero-entropy TypeScript and ISO conformance
+- Keep `repository { stable }` green (`stable: true`, `entropy.leads === 0`, `release: "allowed"`): never duplicate logic across files (share helpers like `isoUnit`, `ISO_WITNESSED_COUNT`, `theoremExampleLinks`, `stableSource`) and never introduce arbitrary numeric caps (`.slice(0, N)`, `Math.min(N, ...)` — flagged as `cap` entropy).
+- Avoid literal `'XXX'` in TS (caught as a `todo` marker by `getEntropy`); compute ISO 4217 no-currency code as `'X'.repeat(3)`.
+- Never type 5+ word prose strings in `src/quantum/**/*.ts` or `scripts/**/*.ts`: put prose in `lean/Qpu/General/Prose/*.lean` citing a kernel theorem (keeping `prose:links` entering = 0), or keep technical labels to ≤4 words.
+- Never put a sealed document's own `id` inside the pre-seal `data` passed to `catalogDoc` so `d.id === uuid(`${d.collection};${canonicalText(d.data)}`)` always holds.
+- Prefix every test case with `/** ISO/IEC/IEEE 29119-3 test case. Identifier: ... */`.
+- Keep `README.md` (`scripts/oneText.ts`) as the single ISO/IEC/IEEE 15289:2019 + ISO 56005:2020 fractal pivot (`quantumPivot()`), citing only the NIST+CERN doubly-verified theorem identifiers in `RECEIPT_TEXT` (`gateVerified()`).
+
+## 4. Deadlock-free GitHub automation
+- Never require `production` deployments on PRs when `deploy.yml` deploys after merge; lock the `production` environment to `main` instead.
+- Align `required_linear_history`, `allowed_merge_methods: ["squash"]`, `allow_auto_merge: true`, and `land.yml --squash --delete-branch`.
+- Ensure every required status check (`lake-build`, `test`, `build`, `gates`, `CodeQL`) actually runs on `pull_request` (no branch-prefix skips, CodeQL Default Setup enabled), protect `refs/tags/v*` against mutation/deletion, and enforce `sha_pinning_required: true`.

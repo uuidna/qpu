@@ -4,8 +4,9 @@ name: alpine
 # which gate it is in and how long each took; the Lean build is kept between runs, so only changed modules rebuild.
 on:
   push:
-    branches: [main, 'claude/**']
+    branches: [main]
   pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 # One build per branch and event: a newer head waits for the running one, which finishes and fills the layer cache,
@@ -17,7 +18,6 @@ concurrency:
   cancel-in-progress: false
 jobs:
   gates:
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository || !startsWith(github.head_ref, 'claude/')
     runs-on: ubuntu-latest
     timeout-minutes: 300
     steps:
@@ -68,7 +68,6 @@ jobs:
   # prover image does not build is red here, before it lands, and not after an hour of the deploy. The layers the gates
   # job keeps are read and none is kept from here: the layer that holds Mathlib is rebuilt in minutes.
   prover:
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository || !startsWith(github.head_ref, 'claude/')
     runs-on: ubuntu-latest
     timeout-minutes: 300
     steps:

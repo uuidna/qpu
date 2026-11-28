@@ -1,7 +1,8 @@
 // The quantum core. One UUID (ISO/IEC 9834-8): thirty-two nibbles, a handle, a program, a tail, and the two stamp
 // nibbles. Every result is that address. Style, presentation, and stream read it. Pure: equal calls give equal blocks.
 
-import { COIN_QUBIT_SPACE, UUID_SHAPE } from '../../../../../../../../d/e/a/3/e/d/e/1/index.ts'
+import { COIN_QUBIT_SPACE, UUID_GROUPS, UUID_SHAPE } from '../../../../../../../../d/e/a/3/e/d/e/1/index.ts'
+import { THEOREMS } from '../../../../../../../../3/f/0/e/7/a/6/f/index.ts'
 import { PROSE, proseFill } from '../../../../../../../../5/9/e/4/9/1/a/4/index.ts'
 export type BlockTests = {
   passed: boolean
@@ -531,12 +532,20 @@ const layQubits = (address: string, hexbit: number) => {
     stamp, trinities, holds,
   }
 }
+// the parts of a UUID, every offset read from the groups Lean states (UUID_GROUPS): the handle is the first group, the tail the last, and the middle
+// between them holds the version at the start of the third group and the variant at the start of the fourth
+const [HANDLE_DIGITS, SECOND, THIRD] = UUID_GROUPS, TAIL_DIGITS = UUID_GROUPS[UUID_GROUPS.length - 1]!, UUID_DIGITS = UUID_GROUPS.reduce((n, g) => n + g, 0)
+/** The register as the kernel decided it: the value textbook_coin_lean_sot states for 32 × 4 − 4 − 2, read from the theorem's own statement, so no
+ *  program types it. */
+export const LEAN_REGISTER = Number(/= (\d+)/.exec(THEOREMS.find((t) => t.key === 'textbook_coin_lean_sot')?.statement ?? '')?.[1] ?? Number.NaN)
+/** A UUID's handle: its first group, as wide as Lean states it. */
+export const handleOf = (uuid: string) => uuid.replace(/-/g, '').slice(0, HANDLE_DIGITS)
 export const channel = (uuid: string) => {
   const hex = uuid.replace(/-/g, '')
-  const handle = hex.slice(0, 8)
-  const middle = hex.slice(8, 20)
-  const tail = hex.slice(20, 32)
-  const program = [...middle].filter((_c, i) => i !== 4 && i !== 8).map((c) => parseInt(c, 16))
+  const handle = handleOf(hex)
+  const middle = hex.slice(HANDLE_DIGITS, UUID_DIGITS - TAIL_DIGITS)
+  const tail = hex.slice(UUID_DIGITS - TAIL_DIGITS, UUID_DIGITS)
+  const program = [...middle].filter((_c, i) => i !== SECOND && i !== SECOND + THIRD).map((c) => parseInt(c, 16))
   const radix = 16
   let index = 0n
   for (const digit of program) index = index * BigInt(radix) + BigInt(digit)

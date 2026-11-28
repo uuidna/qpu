@@ -17,7 +17,7 @@ export class Prover extends DurableObject<Env> {
     if (container?.running) void ctx.blockConcurrencyWhile(() => container.setInactivityTimeout(INACTIVITY_TIMEOUT_MS))
   }
 
-  async fetch(request: Request): Promise<Response> {
+  override async fetch(request: Request): Promise<Response> {
     // concurrent requests share one startup; a failed one is retried by the next
     this.starting ??= this.startAndWaitForPort().finally(() => { this.starting = undefined })
     await this.starting

@@ -10,12 +10,13 @@ import { receiptBody } from '../../../../../../../../c/6/6/e/6/f/2/6/index.ts'
 import { teleportProof } from '../../../../../../../../b/1/c/2/3/6/2/1/index.ts'
 import { EXAMPLES } from '../../../../../../../../9/d/4/f/e/4/4/2/index.ts'
 import { call } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
+import { readJson } from '../../../../../../../../0/d/b/3/5/7/8/9/index.ts'
 
 const statement = (key: string) => THEOREMS.find((t) => t.key === key)!.statement
 const register = uuidQubits(4), { digits, hexbit: width, version, variant, effective: qubits } = register
 const programs = Number(/= (\d+)$/.exec(statement('Qpu.Verify.Uuid.program_capacity'))![1]), programQubits = Math.log2(programs), bytes = (digits * width) / 8
 const doors = ['algorithm', 'circuit', 'processor', 'quantum-error-correction', 'echo'], computer = EXAMPLES.filter((e) => doors.includes(e.tool))
-const copies = [['README.md', readFileSync('README.md', 'utf8')], ['src/quantum/README.md', readFileSync('src/quantum/README.md', 'utf8')], ['RECEIPT_TEXT', RECEIPT_TEXT], ['.zenodo.json', (JSON.parse(readFileSync('.zenodo.json', 'utf8')) as { description: string }).description]] as const
+const copies = [['README.md', readFileSync('README.md', 'utf8')], ['src/quantum/README.md', readFileSync('src/quantum/README.md', 'utf8')], ['RECEIPT_TEXT', RECEIPT_TEXT], ['.zenodo.json', readJson<{ description: string }>('.zenodo.json')!.description]] as const
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the register the code builds is the register the kernel proves. */
 test('the register the code builds is the register the kernel proves', () => {

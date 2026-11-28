@@ -12,6 +12,7 @@ import { receiptBody, receiptText, receiptTheorems } from '../../../../../../../
 import { THEOREMS } from '../../../../../../../../3/f/0/e/7/a/6/f/index.ts'
 import { LICENSE } from '../../../../../../../../a/f/3/d/e/a/5/f/index.ts'
 import { handle } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
+import { readJson } from '../../../../../../../../0/d/b/3/5/7/8/9/index.ts'
 import { uuid } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 import { HARDWARE_MARK } from '../../../../../../../../0/d/b/3/5/7/8/9/index.ts'
 import { QUANTUM_TERMS } from '../../../../../../../../d/f/0/d/9/1/3/b/index.ts'
@@ -31,7 +32,7 @@ test('the README, the npm README and the Zenodo record carry the one text and it
   assert.equal(readme, readFileSync(join(root, 'src', 'quantum', 'README.md'), 'utf8'))
   assert.equal(`${readme.split('\n---\n')[0]}\n`, RECEIPT_TEXT)
   assert.ok(readme.includes(RECEIPT.uuid) && readme.includes(RECEIPT.sha256))
-  const record = JSON.parse(readFileSync(join(root, '.zenodo.json'), 'utf8')) as { title: string; description: string }
+  const record = readJson<{ title: string; description: string }>(join(root, '.zenodo.json'))!
   assert.equal(record.title, RECEIPT.title)
   assert.ok(record.description.includes(RECEIPT.uuid))
 })

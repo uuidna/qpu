@@ -579,7 +579,6 @@ def meaningBaseline : Array String := #[
   "definition theory: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",
   "definition totientAux: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",
   "definition transmon: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",
-  "definition triangular: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",
   "definition vertices: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",
   "definition waveHz: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",
   "definition witnessFaces: no Mathlib meaning (no _eq_ binding in Qpu.General.Meaning)",

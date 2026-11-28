@@ -5,13 +5,9 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
 import { orderFinding, shorReduction } from '../../../../../../../../b/1/c/2/3/6/2/1/index.ts'
-import { call } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
+import { caller } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
 
-const factor = (args: Record<string, unknown>) => {
-  const r = call('algorithm', args) as { result?: { structuredContent?: Record<string, unknown> }; error?: { message: string } }
-  if (r.error) throw new Error(r.error.message)
-  return r.result!.structuredContent as Record<string, unknown>
-}
+const factor = (args: Record<string, unknown>): Record<string, unknown> => caller('algorithm')(args)
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: orderFinding returns the least order, verified (not merely a multiple). */
 test('orderFinding returns the least order, verified (not merely a multiple)', () => {

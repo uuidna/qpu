@@ -78,4 +78,5 @@ def quantumProcessingToolboxesFlow_showsCatalog : String := "The kernel as a cat
 def quantumProcessingToolboxesFlow_showsCatalogProduct : String := "One product in full: the theorem that the value 2 ^ k needs k + 1 bits (textbook_clay_register_width), with its worked examples and each of them from fourteen witnesses, every variant a document whose id is the address of its own content."
 def quantumProcessingToolboxesFlow_showsCatalogOrder : String := "A variant ordered: its entry in the orders collection and its transaction as the ecommerce plugin holds them, at no price to the client since the public funds the work, and the receipt opens every variation of the product: each worked example as a call, from each witness (textbook_cuboctahedron_faces)."
 
+def quantumProcessingToolboxesFlow_showsAnswersHandled : String := "Phase two of the wave from the answers the runner fetched: a spent budget is handled, never left unhandled, and nothing final is lost (textbook_artifacts_verified)."
 end Prose

@@ -24,4 +24,9 @@ An example and its reflection fill the bound exactly.
 Reflecting an example twice gives it back: σ is an involution below the bound.
 \[ \forall \{x : \mathbb{N}\}, x \le \mathrm{Thousand.bound} \to \mathrm{Thousand.reflect} (\mathrm{Thousand.reflect}\ x) = x \]
 \noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Thousand.lean\#L99}
+
+\paragraph{\texttt{Thousand.reflect\_strict\_pos}}
+Every reflection strictly below the bound is strictly positive (`Nat.sub\_pos\_of\_lt`).
+\[ \forall \{x : \mathbb{N}\}, x < \mathrm{Thousand.bound} \to 0 < \mathrm{Thousand.reflect}\ x \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Thousand.lean\#L109}
 \end{document}

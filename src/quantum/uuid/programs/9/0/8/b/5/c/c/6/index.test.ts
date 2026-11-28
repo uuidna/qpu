@@ -1,15 +1,12 @@
 // Decoding the thousand bit, on every push: the reflect door's 2×7 cut of an exactly-1000-bit integer, and the σ-trapdoor at exactly 1000 bits.
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { call } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
+import { caller } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
 import { createImpossible, decodeImpossible } from '../../../../../../../../b/1/c/2/3/6/2/1/index.ts'
 import { faces } from '../../../../../../../d/1/0/1/4/3/9/index.ts'
+import { tick } from '../../../../../../../../clock/index.ts'
 
-const fold = (args: Record<string, unknown>) => {
-  const r = call('fold', args) as { result?: { structuredContent?: Record<string, unknown> }; error?: { message: string } }
-  if (r.error) throw new Error(r.error.message)
-  return r.result!.structuredContent as Record<string, unknown>
-}
+const fold = (args: Record<string, unknown>): Record<string, unknown> => caller('fold')(args)
 
 // bit 999 set: 2^999 ≤ N < 2^1000, exactly 1000 bits
 const N1000 = ((1n << 999n) + ((1n << 877n) | (1n << 613n) | (1n << 251n) | 123456789n)).toString()
@@ -31,9 +28,9 @@ test('the reflect door takes faces and 0x-hex, and its work is bounded by the va
   assert.equal(fold({ reflect: { value: '0xdeadbeefcafef00dba5eba11c0ffee' } }).exact, true)
   assert.equal(fold({ reflect: { value: '255', faces: 1e9 } }).faces, 2) // at most one face a nibble
   assert.equal(fold({ reflect: { value: '0x' + 'f'.repeat(99), faces: 1e9 } }).faces, faces) // and at most the mint's faces
-  const t = Date.now()
+  const t = tick()
   assert.equal(fold({ reflect: '0x' + 'f'.repeat(8000) }).exact, true) // 32k bits: the square root starts near √n, not at n
-  assert.ok(Date.now() - t < 2000)
+  assert.ok(tick() - t < 2000)
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the σ-trapdoor mints exactly 1000 bits and decodes by its witness in one reflection, never blind or by a neighbouring centre. */

@@ -27,4 +27,6 @@ def quantumProcessingVerifiers_accept20 : String := "application/json, text/even
 def quantumProcessingVerifiers_check21 : String := "the documentation search answers results for ⟦0⟧"
 def quantumProcessingVerifiers_check22 : String := "the summary agrees with the lead's statement"
 
+def quantumProcessingVerifiers_checkOpenAlexAuthor : String := "indexed, dated as the record, and its authorships include ⟦0⟧ (⟦1⟧) (textbook_authorship_tracked)"
+def quantumProcessingVerifiers_checkOpenAlex : String := "indexed, with the repositories that hold it (textbook_artifacts_verified)"
 end Prose

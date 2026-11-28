@@ -13,6 +13,7 @@ const neighbours = () => (audited ??= sealLeavesSplit().then((computed) => {
   return auditProgramNeighbours(undefined, computed)
 }))
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: challenge physics and laws under adversarial register pressure. */
 void test('challenge physics and laws under adversarial register pressure', () => {
   const hit = challenge()
   assert.equal(hit.phase, 'challenge')
@@ -30,7 +31,7 @@ void test('challenge physics and laws under adversarial register pressure', () =
   assert.equal(hit.entropy.verified.S, 0)
 })
 
-/** Neighbours reflect and test each other in games and competitions online. */
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: neighbours reflect and test each other in games and competitions online. */
 void test('neighbours reflect and test each other in games and competitions online', async () => {
   const audit = await neighbours()
   assert.equal(audit.law, PROSE.quantumUuidProgramsIndex_s16)
@@ -55,6 +56,7 @@ void test('neighbours reflect and test each other in games and competitions onli
   assert.ok(one.games.every((game) => game.tests.every((row) => row.solution.ftl && row.solution.gateway === 2 && row.solution.walked === false && row.solution.holds)))
 })
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: programs tree: every folder has index.*; neighbours reflect and compete online. */
 void test('programs tree: every folder has index.*; neighbours reflect and compete online', async () => {
   const finish = indexProgramFolders()
   assert.equal(finish.holds, true, finish.says + (finish.gate.refused[0] ? ` first=${finish.gate.refused[0]}` : ''))
@@ -78,6 +80,7 @@ void test('programs tree: every folder has index.*; neighbours reflect and compe
   assert.equal(reflected.axes.every((axis) => axis.eachOther && axis.tested), true)
 })
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: each UUID program is a Payload plugin guarded to upstream definePlugin standards. */
 void test('each UUID program is a Payload plugin guarded to upstream definePlugin standards', () => {
   const handle = 'a1b2c3d4'
   const plugin = programPlugin(handle)
@@ -97,6 +100,7 @@ void test('each UUID program is a Payload plugin guarded to upstream definePlugi
   assert.equal(installed.path, `src/quantum/uuid/programs/${[...handle].join('/')}/index.ts`)
 })
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: enabled: false leaves the incoming config untouched. */
 void test('enabled: false leaves the incoming config untouched', () => {
   const plugin = programPlugin('00000000')
   const incoming = { collections: [{ slug: 'posts' }], plugins: [] as unknown[] }

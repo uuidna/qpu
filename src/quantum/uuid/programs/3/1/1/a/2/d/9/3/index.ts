@@ -68,7 +68,7 @@ export const BOUND_TOOLS = ['send', 'receive', 'lean'] as const
 /** The tools whose answer to the same arguments may differ between calls, each with why; every other kernel tool is a function of its arguments. */
 export const NOT_IDEMPOTENT: Readonly<Record<string, string>> = {
   seal: PROSE.quantumProcessingContract_fresh,
-  ...Object.fromEntries(['audit', 'e2e', 'imagine', 'jsonld', 'legal', 'metrics', 'repository'].map((tool) => [tool, PROSE.quantumProcessingContract_clock])),
+  ...Object.fromEntries(['audit', 'e2e', 'imagine', 'jsonld', 'legal', 'metrics', 'repository', 'wave'].map((tool) => [tool, PROSE.quantumProcessingContract_clock])),
 }
 /** What a kernel tool writes: nothing that outlives the call. The Worker's send is the one tool that writes durably and says so itself. */
 export const KERNEL_STATE = { writes: false, says: PROSE.quantumProcessingContract_state } as const

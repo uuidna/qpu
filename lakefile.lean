@@ -79,6 +79,9 @@ def catalogueFile : String := "lean/tools/Catalogue.lean"
 /-- The Lean file that writes the connector's configuration. -/
 def configFile : String := "lean/tools/Config.lean"
 
+/-- The Lean file that writes the harmonized Payload, VitePress, Cloudflare and MCP SDK contracts. -/
+def sdkFile : String := "lean/tools/Sdk.lean"
+
 /-- The Lean file that writes the stylesheet that reads a variation by its address in CSS alone. -/
 def cssFile : String := "lean/tools/Css.lean"
 
@@ -118,6 +121,7 @@ def settle (built index : System.FilePath) (check : Bool) : IO UInt32 := do
   if check then
     IO.eprintln s!"{index} differs from what Lean writes: run lake run index and commit the result"
     return 1
+  if let some parent := index.parent then IO.FS.createDirAll parent
   IO.FS.writeFile index written
   IO.println s!"wrote {index}"
   return 0
@@ -133,6 +137,7 @@ def rendered : List (String × System.FilePath × System.FilePath) :=
   , (thousandFile, ".lake" / "build" / "thousand-index.ts", "src" / "quantum" / "uuid" / "programs" / "6" / "6" / "3" / "7" / "3" / "f" / "6" / "6" / "index.ts")
   , (isoFile, ".lake" / "build" / "iso-index.ts", "src" / "quantum" / "uuid" / "programs" / "b" / "4" / "2" / "5" / "4" / "0" / "d" / "7" / "index.ts")
   , (configFile, ".lake" / "build" / "config-index.ts", "src" / "quantum" / "uuid" / "programs" / "d" / "e" / "a" / "3" / "e" / "d" / "e" / "1" / "index.ts")
+  , (sdkFile, ".lake" / "build" / "sdk-index.ts", "src" / "quantum" / "uuid" / "programs" / "sdk" / "schema" / "index.ts")
   , (cssFile, ".lake" / "build" / "advantage.css", "site" / ".vitepress" / "theme" / "advantage.css")
   , (foldFile, ".lake" / "build" / "fold-index.ts", "site" / ".vitepress" / "theme" / "fold-index.ts")
   , (addressFile, ".lake" / "build" / "address-core.ts", "src" / "quantum" / "uuid" / "programs" / "7" / "b" / "5" / "e" / "2" / "f" / "f" / "f" / "index.ts") ]
@@ -283,7 +288,7 @@ script applications do
   steps [("lake", #["build"]), ("lake", #["env", "lean", applicationsFile])]
 
 /-- The Lean files that write rendered output; `lake run verify` runs each of them. -/
-def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile, configFile, cssFile, foldFile, pagesFile, addressFile, gapsFile]
+def leanTools : List String := [applicationsFile, proseFile, theoremsFile, textbookFile, blueprintFile, nestedFile, catalogueFile, thousandFile, isoFile, configFile, sdkFile, cssFile, foldFile, pagesFile, addressFile, gapsFile]
 
 /-- `lake run leanfiles`: no Lean file is skipped. Every `.lean` file the repository tracks is this lakefile, a module
 the build compiles, a tool `lake run verify` runs, or evidence kept under `lean/`, which is named and never removed. -/

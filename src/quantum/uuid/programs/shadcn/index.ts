@@ -2,7 +2,7 @@
 // The handle is the hex colour. The program and the three params build the UI. The tail verifies it.
 // An I Ching rosetta (eight trigrams by eight) opens a component. Nothing is fetched and nothing is written.
 import { PROSE, proseFill } from '../5/9/e/4/9/1/a/4/index.ts'
-import { channel, composition, compositionIndex, hexbit, rosetta, seal, style, uuid, uuidQubits } from '../2/7/1/a/7/6/4/9/index.ts'
+import { channel, composition, compositionIndex, hexbit, rosetta, seal, style, uuid, uuidQubits, handleOf } from '../2/7/1/a/7/6/4/9/index.ts'
 import { program } from '../index.ts'
 import { hyphenated } from '../b/6/4/6/e/a/0/1/index.ts'
 
@@ -85,7 +85,7 @@ const paint = (address: string, content: string, name: string) => {
 
 const rowOf = (name: string, content: string) => {
   const address = uuid(content)
-  const handle = address.slice(0, 8)
+  const handle = handleOf(address)
   const installed = program(handle)
   const ui = paint(address, content, name)
   const placed = installed.indexed === true && installed.depth === 7 && installed.path === `src/quantum/uuid/programs/${[...handle].join('/')}/index.ts`

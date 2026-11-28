@@ -12,53 +12,53 @@
 
 \paragraph{\texttt{choose\_five\_two}}
 \[ \mathrm{choose}\ 5\ 2 = 10 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L21}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L24}
 
 \paragraph{\texttt{choose\_pascal}}
 \[ \forall (n\ k : \mathbb{N}), \mathrm{choose} (n + 1) (k + 1) = \mathrm{choose}\ n (k + 1) + \mathrm{choose}\ n\ k \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L20}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L23}
 
 \paragraph{\texttt{choose\_symm\_small}}
 \[ \mathrm{choose}\ 5\ 2 = \mathrm{choose}\ 5\ 3 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L22}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L25}
 
 \paragraph{\texttt{choose\_zero}}
 \[ \forall (n : \mathbb{N}), \mathrm{choose}\ n\ 0 = 1 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L18}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L21}
 
 \paragraph{\texttt{choose\_zero\_succ}}
 \[ \forall (k : \mathbb{N}), \mathrm{choose}\ 0 (k + 1) = 0 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L19}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L22}
 
 \paragraph{\texttt{factorial\_succ}}
 \[ \forall (n : \mathbb{N}), \mathrm{factorial} (n + 1) = (n + 1) \cdot \mathrm{factorial}\ n \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L16}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L19}
 
 \paragraph{\texttt{factorial\_three}}
 \[ \mathrm{factorial}\ 3 = 6 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L17}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L20}
 
 \paragraph{\texttt{factorial\_zero}}
 \[ \mathrm{factorial}\ 0 = 1 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L15}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L18}
 
 \paragraph{\texttt{ramsey22\_eq}}
 \[ \forall (n : \mathbb{N}), \mathrm{ramsey22}\ n = n \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L26}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L29}
 
 \paragraph{\texttt{ramsey\_three\_three}}
 \[ \mathrm{triangular}\ 3 = 6 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L27}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L30}
 
 \paragraph{\texttt{triangular\_four}}
 \[ \mathrm{triangular}\ 4 = 10 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L25}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L28}
 
 \paragraph{\texttt{triangular\_succ}}
 \[ \forall (n : \mathbb{N}), \mathrm{triangular} (n + 1) = n + 1 + \mathrm{triangular}\ n \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L24}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L27}
 
 \paragraph{\texttt{triangular\_zero}}
 \[ \mathrm{triangular}\ 0 = 0 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L23}
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Combinatorics.lean\#L26}
 \end{document}

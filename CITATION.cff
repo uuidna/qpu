@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use or reference @uuidna/qpu or its Lean-verified 128-bit to 122-qubit UUID folding specification, please cite it using the metadata below (ISO 690:2021, ISO 26324:2025, ISO 27729:2012)."
+type: software
+title: "@uuidna/qpu: An exact quantum processing unit served over MCP"
+version: 1.1.1
+date-released: "2026-11-27"
+doi: 10.5281/zenodo.22700098
+url: "https://qpu.uuidna.com"
+repository-code: "https://github.com/uuidna/qpu"
+license: CC-BY-NC-ND-4.0
+license-url: "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode"
+authors:
+  - family-names: Rouschev
+    given-names: Tsvetan
+    orcid: "https://orcid.org/0009-0000-7312-9778"
+keywords:
+  - lean4
+  - formal-verification
+  - quantum-computing
+  - uuid
+  - iso-iec-4879
+  - iso-iec-9834-8
+  - iso-iec-ieee-15289
+  - iso-56005
+  - mcp
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.22700098
+    description: "Concept DOI for all versions of @uuidna/qpu (ISO 26324)"
+  - type: doi
+    value: 10.5281/zenodo.21781602
+    description: "Author record of precedence (ISO 26324)"
+  - type: doi
+    value: 10.5281/zenodo.23156998
+    description: "Author record of precedence (ISO 26324)"

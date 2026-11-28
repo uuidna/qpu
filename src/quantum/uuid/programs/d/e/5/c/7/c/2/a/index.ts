@@ -9,14 +9,20 @@ import { TABLES } from '../../../../../../../../1/2/a/4/3/2/a/8/index.ts'
 
 type FactKind = 'integer' | 'factors' | 'repository' | 'page' | 'preprint' | 'doi' | 'constant' | 'dataset' | 'sequence'
 export type Fact = { kind: FactKind; value: string; detail?: Record<string, string | number>; lead?: string }
-export type VerifyRequest = { verifier: string; url: string; method: 'GET' | 'POST'; body?: unknown; accept: string; check: string; via: string }
-export type Verifier = { id: string; name: string; kind: 'api' | 'page' | 'mcp'; free: true; docs: string; /** the machine-readable contract the host publishes (OpenAPI, index, OAI identify), read by the discover step */ contract?: string; verifies: readonly FactKind[]; /** narrows a kind to the facts this adaptor actually holds */ only?: (fact: Fact) => boolean; request: (fact: Fact) => { url: string; accept: string; check: string; method?: 'POST'; body?: unknown } }
+export type VerifyRequest = { verifier: string; url: string; method: 'GET' | 'POST'; body?: unknown; accept: string; check: string; via: string; /** the variable the runner holds the service's key under, sent by the runner as a bearer token */ bearer?: string }
+export type Verifier = { id: string; name: string; kind: 'api' | 'page' | 'mcp'; free: true; docs: string; /** the machine-readable contract the host publishes (OpenAPI, index, OAI identify), read by the discover step */ contract?: string; verifies: readonly FactKind[]; /** narrows a kind to the facts this adaptor actually holds */ only?: (fact: Fact) => boolean; request: (fact: Fact) => { url: string; accept: string; check: string; method?: 'POST'; body?: unknown; bearer?: string } }
 
 const VIA = PROSE.quantumProcessingVerifiers_s1
 /** A DOI's creators: the author's records include the author, any other DOI its metadata's own (textbook_authorship_tracked). */
 const creditCreators = (doi: string) => PRECEDENCE.some((p) => p.doi === doi) ? `include ${LICENSE.author} (${LICENSE.orcid})` : 'are its metadata\'s own'
 
 export const VERIFIERS: readonly Verifier[] = [
+  // OpenAlex harvests every repository it lists (openalex.org/repositories, over OAI-PMH) and every DOI registrar, so one lookup reads a
+  // record across all of them: whether it is indexed, its date, every repository that holds it and whose ORCID it carries. A lookup by
+  // DOI is free (help.openalex.org/access/example-costs); an arXiv identifier is looked up by its arXiv DOI, 10.48550/arXiv.<id>.
+  { id: 'openalex', name: 'OpenAlex', kind: 'api', free: true, docs: 'https://help.openalex.org/api/authentication', contract: 'https://api.openalex.org/', verifies: ['doi', 'preprint'],
+    request: (f) => ({ url: `https://api.openalex.org/works/doi:${f.kind === 'preprint' ? `10.48550/arXiv.${f.value}` : f.value}?select=id,doi,publication_date,authorships,locations`, accept: 'application/json', bearer: 'OPENALEX_API_KEY',
+      check: PRECEDENCE.some((p) => p.doi === f.value) ? proseFill(PROSE.quantumProcessingVerifiers_checkOpenAlexAuthor, LICENSE.author, LICENSE.orcid) : PROSE.quantumProcessingVerifiers_checkOpenAlex }) },
   { id: 'oeis', name: PROSE.quantumProcessingVerifiers_name2, kind: 'api', free: true, docs: 'https://oeis.org/wiki/JSON_Format,_Compressed_Files', verifies: ['integer', 'factors', 'sequence'],
     request: (f) => ({ url: `https://oeis.org/search?fmt=json&q=${encodeURIComponent(f.kind === 'sequence' ? `id:${f.value}` : f.value)}`, accept: 'application/json', check: f.kind === 'sequence' ? proseFill(PROSE.quantumProcessingVerifiers_s3, f.value, f.detail?.title ?? '') : f.kind === 'factors' ? proseFill(PROSE.quantumProcessingVerifiers_s4, f.value, f.detail?.factors ?? 'its factors') : proseFill(PROSE.quantumProcessingVerifiers_s5, f.value) }) },
   { id: 'github', name: PROSE.quantumProcessingVerifiers_name6, kind: 'api', free: true, docs: 'https://docs.github.com/en/rest/repos/repos', contract: 'https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json', verifies: ['repository'],

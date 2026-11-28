@@ -139,6 +139,10 @@ export const NEXT_STEPS: readonly NextStep[] = [
   { name: 'imagine', wave: 3, budgetMs: 300_000, via: 'door', tool: 'imagine', arguments: { open: 8 }, long: true },
   { name: 'leads', wave: 2, budgetMs: 300_000, via: 'door', tool: 'leads', arguments: { consistent: true } },
   { name: 'textbook', wave: 2, budgetMs: 300_000, via: 'door', tool: 'textbook', arguments: { particles: true } },
+  // the claims searched for every theorem: online, so it is skipped offline and in the fast hooks; the index it writes is committed
+  // every lead and tree fact verified across every source that can see it, OpenAlex among them: each failure has its handling or the step is red
+  { name: 'wave', wave: 3, budgetMs: 600_000, via: 'generator', tool: 'wave', arguments: {}, needs: 'online', long: true },
+  { name: 'claims:gen', wave: 3, budgetMs: 600_000, via: 'generator', tool: 'textbook', arguments: { scripts: { claims: true } }, needs: 'online', long: true },
   { name: 'e2e', wave: 3, budgetMs: 300_000, via: 'door', tool: 'e2e', arguments: { hosts: ['http://localhost:3000/api/mcp'] }, needs: 'online', long: true },
   { name: 'metrics', wave: 5, budgetMs: 300_000, via: 'door', tool: 'metrics', arguments: {}, long: true },
 ]

@@ -9,6 +9,7 @@ import DefaultTheme from 'vitepress/theme'
 import type { Theme } from 'vitepress'
 import Layout from './Layout.vue'
 import McpConsole from './McpConsole.vue'
+import PayloadQuantumStudio from './studio/index.vue'
 import QubitPrice from './QubitPrice.vue'
 import VitePressPossibilities from './VitePressPossibilities.vue'
 import './advantage.css'
@@ -18,6 +19,7 @@ export default {
   Layout,
   enhanceApp({ app }) {
     app.component('McpConsole', McpConsole)
+    app.component('PayloadQuantumStudio', PayloadQuantumStudio)
     app.component('QubitPrice', QubitPrice)
     app.component('VitePressPossibilities', VitePressPossibilities)
   },

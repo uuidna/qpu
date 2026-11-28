@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { handle, call } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
+import { callEnvelope } from '../../../../../../../../d/e/7/d/b/7/1/6/index.ts'
 import { EXAMPLES } from '../../../../../../../../9/d/4/f/e/4/4/2/index.ts'
 import { LEADS } from '../../../../../../../../7/b/0/4/c/3/6/8/index.ts'
 import { matchStatement, tokens, translateVerdict, listForeignVerdicts } from './index.ts'
@@ -84,10 +85,11 @@ test('the surface\'s own names never count as coverage: a question about uuidna 
 test('a verdict crossing the border is translated by table, and a call carries its referer in _meta', () => {
   assert.equal(translateVerdict('VERIFIED'), 'served'); assert.equal(translateVerdict('UNVERIFIED'), 'unknown'); assert.equal(translateVerdict('REFUTED'), 'impossible'); assert.equal(translateVerdict('NOT-PROVEN'), 'unknown'); assert.equal(translateVerdict('nonsense'), undefined)
   assert.deepEqual(listForeignVerdicts('impossible'), ['REFUTED'])
-  const r = handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'processor', arguments: { name: 'Willow' }, _meta: { prev: 'https://uuidna.com/docket/abc' } } }) as { result: { _meta: { prev?: string; openGraph: Record<string, string> } } }
+  const withPrev = callEnvelope('processor', { name: 'Willow' }, 1)
+  const r = handle({ ...withPrev, params: { ...withPrev.params, _meta: { prev: 'https://uuidna.com/docket/abc' } } }) as { result: { _meta: { prev?: string; openGraph: Record<string, string> } } }
   assert.equal(r.result._meta.prev, 'https://uuidna.com/docket/abc')
   assert.equal(r.result._meta.openGraph['og:see_also'], 'https://uuidna.com/docket/abc')
-  const plain = handle({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'processor', arguments: { name: 'Willow' } } }) as { result: { _meta: { prev?: string } } }
+  const plain = call('processor', { name: 'Willow' }) as { result: { _meta: { prev?: string } } }
   assert.equal(plain.result._meta.prev, undefined)
 })
 

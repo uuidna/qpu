@@ -280,6 +280,54 @@ theorem octet_bits_card (b : Nat) :
     Fintype.card (Fin b → Fin 8 → Bool) = 2 ^ (b * 8) := by
   simp only [Fintype.card_fun, Fintype.card_bool, Fintype.card_fin, pow_mul']
 
+/-- ISO 80000-10: an atomic nucleus of `z` protons and `n` neutrons spans `2 ^ (z + n)` spin-up/down microstates
+(`Fintype.card_fun`, `Fintype.card_bool`, `Fintype.card_sum`, `Fintype.card_fin`). -/
+theorem atomic_nucleon_states (z n : Nat) :
+    Fintype.card (Fin z ⊕ Fin n → Bool) = 2 ^ (z + n) := by
+  simp only [Fintype.card_fun, Fintype.card_bool, Fintype.card_sum, Fintype.card_fin]
+
+/-- ISO 22739:2024: a 256-bit distributed-ledger cryptographic digest spans `2 ^ 256` states (`Fintype.card_fun`,
+`Fintype.card_bool`, `Fintype.card_fin`). -/
+theorem dlt_digest_space :
+    Fintype.card (Fin 256 → Bool) = 2 ^ 256 := by
+  simp only [Fintype.card_fun, Fintype.card_bool, Fintype.card_fin]
+
+/-- ISO 23257:2022: the four DLT reference-architecture layers over `n` node states span `n ^ 4` configurations
+(`Fintype.card_fun`, `Fintype.card_fin`). -/
+theorem dlt_architecture_layers (n : Nat) :
+    Fintype.card (Fin 4 → Fin n) = n ^ 4 := by
+  simp only [Fintype.card_fun, Fintype.card_fin]
+
+/-- ISO/TR 23455:2019: deterministic smart-contract transitions `(Fin s × Fin a) → Fin s` span `s ^ (s * a)`
+functions (`Fintype.card_fun`, `Fintype.card_prod`, `Fintype.card_fin`). -/
+theorem smart_contract_transitions (s a : Nat) :
+    Fintype.card (Fin s × Fin a → Fin s) = s ^ (s * a) := by
+  simp only [Fintype.card_fun, Fintype.card_prod, Fintype.card_fin]
+
+/-- ISO/IEC 19770: classifying `n` software assets across the four SWID tag types (primary, patch, corpus,
+supplemental) spans `4 ^ n` assignments (`Fintype.card_fun`, `Fintype.card_fin`). -/
+theorem swid_asset_tags (n : Nat) :
+    Fintype.card (Fin n → Fin 4) = 4 ^ n := by
+  simp only [Fintype.card_fun, Fintype.card_fin]
+
+/-- ISO/IEC/IEEE 12207:2026: the thirty software life-cycle processes across four process groups span `2 ^ 30`
+tailoring profiles (`Fintype.card_fun`, `Fintype.card_bool`, `Fintype.card_fin`). -/
+theorem lifecycle_processes_states :
+    Fintype.card (Fin 30 → Bool) = 2 ^ 30 := by
+  simp only [Fintype.card_fun, Fintype.card_bool, Fintype.card_fin]
+
+/-- ISO/IEC/IEEE 42010:2022: architecture descriptions pairing `v` viewpoints, `m` views and `c` stakeholder
+concerns span `v * m * c` correspondences (`Fintype.card_prod`, `Fintype.card_fin`). -/
+theorem architecture_view_correspondences (v m c : Nat) :
+    Fintype.card ((Fin v × Fin m) × Fin c) = v * m * c := by
+  simp only [Fintype.card_prod, Fintype.card_fin]
+
+/-- ISO/IEC 25051:2014: evaluating the three RUSP deliverables across `k` quality verdicts spans `k ^ 3`
+outcomes (`Fintype.card_fun`, `Fintype.card_fin`). -/
+theorem rusp_quality_verdicts (k : Nat) :
+    Fintype.card (Fin 3 → Fin k) = k ^ 3 := by
+  simp only [Fintype.card_fun, Fintype.card_fin]
+
 /-- One standard the tree names. -/
 structure Standard where
   /-- the reference, as ISO writes it -/
@@ -290,13 +338,13 @@ structure Standard where
 /-- Every standard the tree names, with its witness when it has one. -/
 def standards : List Standard :=
   [ ⟨"ISO/IEC 4879:2024", some ``vocabulary_whole⟩
-  , ⟨"ISO 80000-10", none⟩
+  , ⟨"ISO 80000-10", some ``atomic_nucleon_states⟩
   , ⟨"ISO 80000-5:2019", some ``entropy_vacuum_log_zero⟩
   , ⟨"IEC 80000-13:2008", some ``octet_bits_card⟩
   , ⟨"ISO/IEC 9834-8", some ``Qpu.Verify.Uuid.card_128_eq_card_122_mul_fixed⟩
-  , ⟨"ISO 22739:2024", none⟩
-  , ⟨"ISO 23257:2022", none⟩
-  , ⟨"ISO/TR 23455:2019", none⟩
+  , ⟨"ISO 22739:2024", some ``dlt_digest_space⟩
+  , ⟨"ISO 23257:2022", some ``dlt_architecture_layers⟩
+  , ⟨"ISO/TR 23455:2019", some ``smart_contract_transitions⟩
   , ⟨"ISO 24165", some ``token_identifier⟩
   , ⟨"ISO 20022", some ``message_identifier⟩
   , ⟨"ISO 4217", some ``currency_codes⟩
@@ -309,19 +357,19 @@ def standards : List Standard :=
   , ⟨"ISO 56005:2020", some ``ip_disclosure_complete⟩
   , ⟨"ISO/IEC 5962:2021", some ``spdx_expression_valid⟩
   , ⟨"ISO/IEC 5230:2020", some ``openchain_audit_conserved⟩
-  , ⟨"ISO/IEC 19770", none⟩
+  , ⟨"ISO/IEC 19770", some ``swid_asset_tags⟩
   , ⟨"ISO 16", some ``tuning_octaves⟩
   , ⟨"ISO 9001", some ``quality_clauses⟩
-  , ⟨"ISO/IEC/IEEE 12207:2026", none⟩
+  , ⟨"ISO/IEC/IEEE 12207:2026", some ``lifecycle_processes_states⟩
   , ⟨"ISO/IEC/IEEE 15289:2019", some ``document_identification_states⟩
   , ⟨"ISO/IEC/IEEE 29119-3:2021", some ``test_suite_nonempty⟩
-  , ⟨"ISO/IEC/IEEE 42010:2022", none⟩
+  , ⟨"ISO/IEC/IEEE 42010:2022", some ``architecture_view_correspondences⟩
   , ⟨"ISO/IEC 25010:2023", some ``quality_characteristics⟩
-  , ⟨"ISO/IEC 25051:2014", none⟩
+  , ⟨"ISO/IEC 25051:2014", some ``rusp_quality_verdicts⟩
   , ⟨"ISO/IEC 27001:2022", some ``security_controls⟩ ]
 
-/-- The register names thirty standards, and twenty-two of them have a witness. -/
+/-- The register names thirty standards, and all thirty of them have a witness. -/
 theorem standards_count :
-    standards.length = 30 ∧ (standards.filter (·.witness.isSome)).length = 22 := by decide
+    standards.length = 30 ∧ (standards.filter (·.witness.isSome)).length = 30 := by decide
 
 end Iso

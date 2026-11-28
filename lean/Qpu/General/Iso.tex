@@ -10,6 +10,16 @@
 \maketitle
 \noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean}
 
+\paragraph{\texttt{Iso.architecture\_view\_correspondences}}
+ISO/IEC/IEEE 42010:2022: architecture descriptions pairing `v` viewpoints, `m` views and `c` stakeholder concerns span `v * m * c` correspondences (`Fintype.card\_prod`, `Fintype.card\_fin`).
+\[ \forall (v\ m\ c : \mathbb{N}), \mathrm{Fintype.card} ((\mathrm{Fin}\ v \times \mathrm{Fin}\ m) \times \mathrm{Fin}\ c) = v \cdot m \cdot c \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L321}
+
+\paragraph{\texttt{Iso.atomic\_nucleon\_states}}
+ISO 80000-10: an atomic nucleus of `z` protons and `n` neutrons spans `2 \^{} (z + n)` spin-up/down microstates (`Fintype.card\_fun`, `Fintype.card\_bool`, `Fintype.card\_sum`, `Fintype.card\_fin`).
+\[ \forall (z\ n : \mathbb{N}), \mathrm{Fintype.card} (\mathrm{Fin}\ z \oplus \mathrm{Fin}\ n \to \mathrm{Bool}) = 2 ^{(z + n)} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L285}
+
 \paragraph{\texttt{Iso.calendar\_cycle}}
 ISO 8601: four hundred years hold ninety-seven leap years and a whole number of weeks.
 \[ \mathrm{Iso.leap}\ 2024 = \mathrm{true} \land \mathrm{Iso.leap}\ 1900 = \mathrm{false} \land \mathrm{Iso.leap}\ 2000 = \mathrm{true} \land (\mathrm{List.filter}\ \mathrm{Iso.leap} (\mathrm{List.range}\ 400))\mathrm{.length} = 97 \land (400 \cdot 365 + 97) \bmod 7 = 0 \]
@@ -39,6 +49,16 @@ ISO 3166-1: a country has a code of two letters, a code of three letters and a n
 ISO 4217: a currency has a code of three letters and a number of three digits.
 \[ \mathrm{Iso.letterCodes}\ 3 = 17576 \land 10 ^{3} = 1000 \]
 \noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L186}
+
+\paragraph{\texttt{Iso.dlt\_architecture\_layers}}
+ISO 23257:2022: the four DLT reference-architecture layers over `n` node states span `n \^{} 4` configurations (`Fintype.card\_fun`, `Fintype.card\_fin`).
+\[ \forall (n : \mathbb{N}), \mathrm{Fintype.card} (\mathrm{Fin}\ 4 \to \mathrm{Fin}\ n) = n ^{4} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L297}
+
+\paragraph{\texttt{Iso.dlt\_digest\_space}}
+ISO 22739:2024: a 256-bit distributed-ledger cryptographic digest spans `2 \^{} 256` states (`Fintype.card\_fun`, `Fintype.card\_bool`, `Fintype.card\_fin`).
+\[ \mathrm{Fintype.card} (\mathrm{Fin}\ 256 \to \mathrm{Bool}) = 2 ^{256} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L291}
 
 \paragraph{\texttt{Iso.document\_identification\_states}}
 ISO/IEC/IEEE 15289:2019: the six mandatory identification attributes of a software life-cycle information item (identifier, version, author, licence, language, issued) span `2 \^{} 6` presence states. Proved with Mathlib's `Fintype.card\_fun`, `Fintype.card\_bool` and `Fintype.card\_fin`.
@@ -70,6 +90,11 @@ ISO 639-1: a language has a code of two letters.
 \[ \mathrm{Iso.letterCodes}\ 2 = 676 \]
 \noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L189}
 
+\paragraph{\texttt{Iso.lifecycle\_processes\_states}}
+ISO/IEC/IEEE 12207:2026: the thirty software life-cycle processes across four process groups span `2 \^{} 30` tailoring profiles (`Fintype.card\_fun`, `Fintype.card\_bool`, `Fintype.card\_fin`).
+\[ \mathrm{Fintype.card} (\mathrm{Fin}\ 30 \to \mathrm{Bool}) = 2 ^{30} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L315}
+
 \paragraph{\texttt{Iso.message\_identifier}}
 ISO 20022: a message is named by four letters for its business area, three digits for the message, three for the variant and two for the version, as in `pacs.008.001.08`: twelve characters between the dots.
 \[ 4 + 3 + 3 + 2 = 12 \land "\mathrm{pacs.008.001.08}"\mathrm{.length} = 12 + 3 \]
@@ -95,10 +120,20 @@ ISO 9001:2015: of its 10 clauses the first 3 set no requirement, so 7 clauses ca
 \[ 10 - 3 = 7 \]
 \noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L201}
 
+\paragraph{\texttt{Iso.rusp\_quality\_verdicts}}
+ISO/IEC 25051:2014: evaluating the three RUSP deliverables across `k` quality verdicts spans `k \^{} 3` outcomes (`Fintype.card\_fun`, `Fintype.card\_fin`).
+\[ \forall (k : \mathbb{N}), \mathrm{Fintype.card} (\mathrm{Fin}\ 3 \to \mathrm{Fin}\ k) = k ^{3} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L327}
+
 \paragraph{\texttt{Iso.security\_controls}}
 ISO/IEC 27001:2022: Annex A lists 93 controls in four themes, 37 organizational, 8 people, 14 physical and 34 technological.
 \[ 37 + 8 + 14 + 34 = 93 \]
 \noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L198}
+
+\paragraph{\texttt{Iso.smart\_contract\_transitions}}
+ISO/TR 23455:2019: deterministic smart-contract transitions `(Fin s × Fin a) → Fin s` span `s \^{} (s * a)` functions (`Fintype.card\_fun`, `Fintype.card\_prod`, `Fintype.card\_fin`).
+\[ \forall (s\ a : \mathbb{N}), \mathrm{Fintype.card} (\mathrm{Fin}\ s \times \mathrm{Fin}\ a \to \mathrm{Fin}\ s) = s ^{(s \cdot a)} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L303}
 
 \paragraph{\texttt{Iso.spdx\_expression\_valid}}
 ISO/IEC 5962:2021 (SPDX): the SPDX licence expression `"CC-BY-NC-ND-4.0"` has positive length (`15` characters). Proved via `Nat.zero\_lt\_succ`.
@@ -106,9 +141,14 @@ ISO/IEC 5962:2021 (SPDX): the SPDX licence expression `"CC-BY-NC-ND-4.0"` has po
 \noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L262}
 
 \paragraph{\texttt{Iso.standards\_count}}
-The register names thirty standards, and twenty-two of them have a witness.
-\[ \mathrm{Iso.standards.length} = 30 \land (\mathrm{List.filter} (\lambda \ x \mapsto \mathrm{x.witness.isSome}) \mathrm{Iso.standards})\mathrm{.length} = 22 \]
-\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L324}
+The register names thirty standards, and all thirty of them have a witness.
+\[ \mathrm{Iso.standards.length} = 30 \land (\mathrm{List.filter} (\lambda \ x \mapsto \mathrm{x.witness.isSome}) \mathrm{Iso.standards})\mathrm{.length} = 30 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L372}
+
+\paragraph{\texttt{Iso.swid\_asset\_tags}}
+ISO/IEC 19770: classifying `n` software assets across the four SWID tag types (primary, patch, corpus, supplemental) spans `4 \^{} n` assignments (`Fintype.card\_fun`, `Fintype.card\_fin`).
+\[ \forall (n : \mathbb{N}), \mathrm{Fintype.card} (\mathrm{Fin}\ n \to \mathrm{Fin}\ 4) = 4 ^{n} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Iso.lean\#L309}
 
 \paragraph{\texttt{Iso.test\_suite\_nonempty}}
 ISO/IEC/IEEE 29119-3:2021: every non-empty test suite of `n + 1` identified test cases has positive cardinality. Proved with Mathlib's `Fintype.card\_fin` and `Nat.zero\_lt\_succ`.

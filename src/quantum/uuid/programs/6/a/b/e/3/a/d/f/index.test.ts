@@ -14,7 +14,7 @@ const recording = (reply: Record<string, unknown> | Error, status = 200) => {
   const prover: ProverNamespace = { getByName: () => ({ fetch: async (r: Request) => { asked.push({ url: r.url, body: await r.text() }); if (reply instanceof Error) throw reply; return Response.json(reply, { status }) } }) }
   return { prover, asked }
 }
-const s = (r: { structuredContent: Record<string, unknown> }) => r.structuredContent as any
+const bodyOf = (r: { structuredContent: Record<string, unknown> }): Record<string, any> => r.structuredContent
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: a source out of bounds is refused before the container is reached, and a verdict is sealed by its content. */
 test('a source out of bounds is refused before the container is reached, and a verdict is sealed by its content', async () => {
@@ -22,7 +22,7 @@ test('a source out of bounds is refused before the container is reached, and a v
   for (const source of ['', 'x'.repeat(PROVER_LIMITS.source + 1), 7]) assert.equal((await callProver(prover, { source })).isError, true)
   assert.equal(asked.length, 0)
   const once = await callProver(prover, { source: 'theorem t : 1 + 1 = 2 := rfl' }), again = await callProver(prover, { source: 'theorem t : 1 + 1 = 2 := rfl' })
-  assert.deepEqual([once.isError, s(once).ok, s(once).receipt.address === s(again).receipt.address && s(once).receipt.sealed, asked[0]!.url, JSON.parse(asked[0]!.body).seconds], [false, true, true, 'http://prover/check', PROVER_LIMITS.seconds])
+  assert.deepEqual([once.isError, bodyOf(once).ok, bodyOf(once).receipt.address === bodyOf(again).receipt.address && bodyOf(once).receipt.sealed, asked[0]!.url, JSON.parse(asked[0]!.body).seconds], [false, true, true, 'http://prover/check', PROVER_LIMITS.seconds])
   await callProver(prover, { gaps: true })
   assert.deepEqual([asked.at(-1)!.url, PROVER_TOOLS.map((t) => t.name)], ['http://prover/gaps', ['lean']])
 })
@@ -38,13 +38,13 @@ test('the limits the lean tool states are the ones the container\'s server and i
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: a receipt is issued for Lean's verdict alone: a prover that failed, timed out, was busy or out of reach answers its code, with no ok and no receipt. */
 test('a receipt is issued for Lean\'s verdict alone: a prover that failed, timed out, was busy or out of reach answers its code, with no ok and no receipt', async () => {
   const source = 'theorem t : 1 + 1 = 2 := rfl', toolchain = 'leanprover/lean4:v4.33.0'
-  const ask = async (reply: Record<string, unknown> | Error, status = 200) => s(await callProver(recording(reply, status).prover, { source }))
+  const ask = async (reply: Record<string, unknown> | Error, status = 200) => bodyOf(await callProver(recording(reply, status).prover, { source }))
   // what the live server answered on 2026-11-24: Lean never ran, and the answer read as a rejection and was sealed
   const silent = await ask({ ok: false, timedOut: false, ms: 688, messages: [], toolchain })
   assert.deepEqual([silent.code, 'ok' in silent, 'receipt' in silent, silent.verdict, silent.retryable], ['prover_failed', false, false, null, true])
   // an HTTP status is never reported as the process's exit code: the old container answers 200 with no exit, and the answer says so
   assert.match(silent.error, /\(exit unknown, HTTP 200\)/)
-  assert.match(s(await callProver(recording({ error: 'prover_failed', exit: 1, signal: null, stderr: 'x', toolchain }, 500).prover, { source })).error, /\(exit 1\)/)
+  assert.match(bodyOf(await callProver(recording({ error: 'prover_failed', exit: 1, signal: null, stderr: 'x', toolchain }, 500).prover, { source })).error, /\(exit 1\)/)
   const failed = await ask({ error: 'prover_failed', exit: 1, signal: null, stderr: 'error: permission denied (error code: 13)\n  file: /qpu/.lake/packages/mathlib/Counterexamples/QuadraticForm.lean', toolchain }, 500)
   assert.deepEqual([failed.code, failed.exit, /permission denied/.test(failed.stderr), 'ok' in failed, 'receipt' in failed], ['prover_failed', 1, true, false, false])
   const away = await ask(new Error('There is no container application assigned to this Durable Object namespace'))
@@ -58,7 +58,7 @@ test('a receipt is issued for Lean\'s verdict alone: a prover that failed, timed
   // the two verdicts, and only they, are sealed
   const rejected = await callProver(recording({ ok: false, timedOut: false, ms: 300, messages: [{ line: 1, column: 25, severity: 'error', text: 'Type mismatch' }], toolchain }).prover, { source: 'theorem t : 1 + 1 = 3 := rfl' })
   const accepted = await callProver(recording({ ok: true, timedOut: false, ms: 300, messages: [], toolchain }).prover, { source })
-  assert.deepEqual([rejected.isError, s(rejected).ok, s(rejected).verdict, s(rejected).receipt.sealed, accepted.isError, s(accepted).ok, s(accepted).verdict, s(accepted).receipt.sealed], [true, false, 'rejected', true, false, true, 'accepted', true])
+  assert.deepEqual([rejected.isError, bodyOf(rejected).ok, bodyOf(rejected).verdict, bodyOf(rejected).receipt.sealed, accepted.isError, bodyOf(accepted).ok, bodyOf(accepted).verdict, bodyOf(accepted).receipt.sealed], [true, false, 'rejected', true, false, true, 'accepted', true])
   for (const none of [silent, failed, away, slow, busy, garbled]) assert.equal(typeof none.error, 'string')
 })
 
@@ -74,7 +74,7 @@ test('where the Worker binds the prover, lean is served over MCP like the kernel
 const lake = spawnSync('lake', ['--version']).status === 0
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the container's server returns Lean's own verdict, its messages with their place, and stops a check at its limit. */
 test('the container\'s server returns Lean\'s own verdict, its messages with their place, and stops a check at its limit', { skip: !lake }, async () => {
-  const port = 18000 + Math.floor(Math.random() * 1000)
+  const port = 18432
   const server = spawn('node', ['alpine/prover-server.ts'], { env: { ...process.env, QPU_ROOT: process.cwd(), PORT: String(port) } })
   try {
     const post = async (source: string, seconds?: number) => {
@@ -93,7 +93,7 @@ test('the container\'s server returns Lean\'s own verdict, its messages with the
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: a Lean that stops without a verdict is the prover's failure, answered 500 with its exit code and what it wrote, never ok false with no message. */
 test('a Lean that stops without a verdict is the prover\'s failure, answered 500 with its exit code and what it wrote, never ok false with no message', { skip: !lake }, async () => {
   // a lean that cannot run, first on the server's PATH: what a broken image looks like from inside
-  const bin = mkdtempSync(join(tmpdir(), 'broken-lean-')), port = 19000 + Math.floor(Math.random() * 1000)
+  const bin = mkdtempSync(join(tmpdir(), 'broken-lean-')), port = 19432
   writeFileSync(join(bin, 'lean'), '#!/bin/sh\necho "error: permission denied (error code: 13)" >&2\nexit 1\n'); chmodSync(join(bin, 'lean'), 0o755)
   const server = spawn('node', ['alpine/prover-server.ts'], { env: { ...process.env, PATH: `${bin}:${process.env.PATH}`, QPU_ROOT: process.cwd(), PORT: String(port) } })
   try {

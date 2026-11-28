@@ -7,7 +7,7 @@
 name: land
 on:
   workflow_run:
-    workflows: [lean-verify, site, alpine]
+    workflows: [lean-verify, site, alpine, test]
     types: [completed]
 permissions:
   contents: write
@@ -20,7 +20,7 @@ concurrency:
 jobs:
   land:
     if: >-
-      (github.event.workflow_run.event == 'pull_request' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.name == 'alpine')) &&
+      (github.event.workflow_run.event == 'pull_request' || github.event.workflow_run.event == 'workflow_dispatch' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.name == 'alpine')) &&
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
@@ -49,5 +49,5 @@ jobs:
       - name: merge, then start the deploy
         if: steps.pr.outputs.number != '' && steps.green.outputs.pending == '0'
         run: |
-          gh pr merge "${{ steps.pr.outputs.number }}" --merge --match-head-commit "$HEAD_SHA"
+          gh pr merge "${{ steps.pr.outputs.number }}" --squash --delete-branch --match-head-commit "$HEAD_SHA"
           gh workflow run deploy.yml --ref main

@@ -16,102 +16,102 @@ Call any tool with the arguments its schema names; every result is a block (widg
 
 ## Tools
 
-| Tool | Does | Arguments |
-| --- | --- | --- |
-| `processor` | A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures; beside the stated figures, the average connectivity computed from the couplers of the grid (2E/N) and whether error correction runs below threshold (Λ above 1). | `name`, `role` |
-| `circuit` | Compile a circuit from its operations, placed by an insert strategy, and simulate it. | `operations`, `cirq`, `stim`, `qsim`, `qasm`, `insert`, `device`, `measure`, `repetitions`, `noise`, `observables`, `device_noise`, `engine` |
-| `echo` | Quantum Echoes: run the operations forward, perturb once, run them back, and return the probability that every qubit returns to 0. | `forward`, `perturbation` |
-| `echo_benchmark` | The Quantum Echoes result as Google states it: the processor, its qubits, the speedup, and the molecules. | — |
-| `roadmap` | The Google Quantum AI roadmap: its six milestones, their physical-qubit scale, and which are achieved or in progress. | `milestone` |
-| `algorithm` | The algorithms, each at the width the call passes. | `name`, `depth`, `balanced`, `hidden`, `steps`, `integer`, `reflections`, `from`, `create`, `witness`, `address`, `order`, `budget`, `find`, `observe`, `N`, `a`, `sweep`, `recirq`, `qubits`, `input`, `theta`, `bits`, `repetitions`, `nodes`, `weights`, `alpha`, `beta` |
-| `software` | The open-source tools of the Google Quantum AI Software page, as the page describes them. | — |
-| `statements` | The statements quantumai.google, its PDFs and the quantumlib repositories make, each as the page states it: Cirq, the definition of quantum computing, progress, responsibility, the vision, the hardware and the full stack, the Willow Early Access Program, neutral atoms, the Sycamore gates, the Weber datasheet, the Quantum Echoes preprint, the campus, qsim, Qualtran, OpenFermion, the Cirq guide pages followed, the Resources, Research, journey, lab and Qubit Game pages, the QEC milestone, the APS summit pages and the sitemap. | `topic` |
-| `repositories` | The repositories of the quantumlib GitHub organization, as its list states them: name, description and primary language. | `language` |
-| `quantumlib` | The fifteen repositories of the quantumlib GitHub organization, each with what this repository implements of it: the exports of cirq.ts that stand for Cirq's classes, and the parts of qsim, OpenFermion, Qualtran, Stim and ReCirq the other tools emulate, named from the code that runs here. | `repository`, `documentation` |
-| `quantum-error-correction` | The three-qubit repetition code, simulated on the density matrix: a logical qubit encoded, a channel (bit_flip, phase_flip or depolarize) of probability p acting once on each data qubit, syndromes extracted and corrected by majority, and the logical error read from the simulated state against the raw error of an unencoded qubit, at the p given and over a sweep. | `code`, `channel`, `p`, `logical`, `sweep` |
-| `chemistry-simulation` | Molecular hydrogen in STO-3G as a variational energy evaluation by the QPU's circuit gate: the integrals are computed here from the published basis constants and checked against the energies the OpenFermion tutorial prints at 0.7 and 0.8 Å; the two-electron Hamiltonian is a two-qubit Pauli-term operator; the ansatz exp(−iθ Y⊗X) on the Hartree-Fock state is swept over θ, every energy an expectation value of the simulated state, and the minimum found is returned with the full-CI energy the same integrals give. | `bond_length`, `theta`, `steps`, `fermion`, `jordan_wigner` |
-| `fault-tolerant-design` | Resource counts read from the circuits this repository builds: the QFT on n qubits, Grover, teleportation, Shor for any N, the QAOA instance and the repetition-code cycle. | `circuit`, `qubits`, `N`, `a`, `nodes`, `cirq` |
-| `google` | The one Google door: the 14 Google Quantum AI challenges solved through the QPU's doors, each a kernel-accepted theorem and a sealed receipt; a Google call validated against its Discovery document; the Google pages, tenants, calls and keys measured. | `challenges`, `call`, `measured`, `workspace` |
+| Handle | Tool | Does | Arguments |
+| --- | --- | --- | --- |
+| `395f7995` | `processor` | A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures; beside the stated figures, the average connectivity computed from the couplers of the grid (2E/N) and whether error correction runs below threshold (Λ above 1). | `name`, `role` |
+| `4a5824c7` | `circuit` | Compile a circuit from its operations, placed by an insert strategy, and simulate it. | `operations`, `cirq`, `stim`, `qsim`, `qasm`, `insert`, `device`, `measure`, `repetitions`, `noise`, `observables`, `device_noise`, `engine` |
+| `4a66c3c4` | `echo` | Quantum Echoes: run the operations forward, perturb once, run them back, and return the probability that every qubit returns to 0. | `forward`, `perturbation` |
+| `0e2e19f8` | `echo_benchmark` | The Quantum Echoes result as Google states it: the processor, its qubits, the speedup, and the molecules. | — |
+| `20dd4b43` | `roadmap` | The Google Quantum AI roadmap: its six milestones, their physical-qubit scale, and which are achieved or in progress. | `milestone` |
+| `3ab314fb` | `algorithm` | The algorithms, each at the width the call passes. | `name`, `depth`, `balanced`, `hidden`, `steps`, `integer`, `reflections`, `from`, `create`, `witness`, `address`, `order`, `budget`, `find`, `observe`, `N`, `a`, `sweep`, `recirq`, `qubits`, `input`, `theta`, `bits`, `repetitions`, `nodes`, `weights`, `alpha`, `beta` |
+| `3131b83b` | `software` | The open-source tools of the Google Quantum AI Software page, as the page describes them. | — |
+| `d73f235b` | `statements` | The statements quantumai.google, its PDFs and the quantumlib repositories make, each as the page states it: Cirq, the definition of quantum computing, progress, responsibility, the vision, the hardware and the full stack, the Willow Early Access Program, neutral atoms, the Sycamore gates, the Weber datasheet, the Quantum Echoes preprint, the campus, qsim, Qualtran, OpenFermion, the Cirq guide pages followed, the Resources, Research, journey, lab and Qubit Game pages, the QEC milestone, the APS summit pages and the sitemap. | `topic` |
+| `1696146b` | `repositories` | The repositories of the quantumlib GitHub organization, as its list states them: name, description and primary language. | `language` |
+| `01d9cb0b` | `quantumlib` | The fifteen repositories of the quantumlib GitHub organization, each with what this repository implements of it: the exports of cirq.ts that stand for Cirq's classes, and the parts of qsim, OpenFermion, Qualtran, Stim and ReCirq the other tools emulate, named from the code that runs here. | `repository`, `documentation` |
+| `9b74de08` | `quantum-error-correction` | The three-qubit repetition code, simulated on the density matrix: a logical qubit encoded, a channel (bit_flip, phase_flip or depolarize) of probability p acting once on each data qubit, syndromes extracted and corrected by majority, and the logical error read from the simulated state against the raw error of an unencoded qubit, at the p given and over a sweep. | `code`, `channel`, `p`, `logical`, `sweep` |
+| `365ae87b` | `chemistry-simulation` | Molecular hydrogen in STO-3G as a variational energy evaluation by the QPU's circuit gate: the integrals are computed here from the published basis constants and checked against the energies the OpenFermion tutorial prints at 0.7 and 0.8 Å; the two-electron Hamiltonian is a two-qubit Pauli-term operator; the ansatz exp(−iθ Y⊗X) on the Hartree-Fock state is swept over θ, every energy an expectation value of the simulated state, and the minimum found is returned with the full-CI energy the same integrals give. | `bond_length`, `theta`, `steps`, `fermion`, `jordan_wigner` |
+| `fa550db7` | `fault-tolerant-design` | Resource counts read from the circuits this repository builds: the QFT on n qubits, Grover, teleportation, Shor for any N, the QAOA instance and the repetition-code cycle. | `circuit`, `qubits`, `N`, `a`, `nodes`, `cirq` |
+| `17f15ed0` | `google` | The one Google door: the 14 Google Quantum AI challenges solved through the QPU's doors, each a kernel-accepted theorem and a sealed receipt; a Google call validated against its Discovery document; the Google pages, tenants, calls and keys measured. | `challenges`, `call`, `measured`, `workspace` |
 
 ## Examples
 
-- `google-workspace-coverage`: readWorkspace over excerpts of the Discovery documents GOOGLE_DISCOVERY names: every Forms item and question kind has a field block (14 of 14), Lexical holds 6 of the 16 Docs structural and paragraph element kinds and Payload 12 of these 15 Drive File fields, each missing kind a lead; the list names no Sites API, so its absence is a probe lead with the list as evidence; the form builder's own blocks are named by the type they mirror and the rest are generated with the fields the schema gives (ScaleQuestion's low and high as numbers).
-- `google-workspace-form`: A Payload form of six field blocks as a Forms v1 Form and back: a text, a paragraph, a radio choice, a scale, a message and a page break become items whose questions carry the kind's own fields; read back as blocks and written again they are the same items, and the Form and the batchUpdate of createItem requests (ids left to the API) answer no violation of the schema.
-- `google-workspace-form-violations`: A Form the API would refuse is named before any call: a field Item does not define and a paragraph flag that is not a boolean violate the Discovery schema, in the Form and again in the batchUpdate that would carry it.
-- `google-workspace-response`: A Forms FormResponse as the body form-submissions takes: each answer keyed by its question id becomes a submissionData row whose field is the block's name, so a response lands where the form builder keeps submissions.
-- `google-workspace-docs`: A Lexical page as the body of a Docs v1 Document and back: a heading as HEADING_1, bold text and a link as text runs, a bulleted and a numbered list as bullets of two lists, a table, a rule and a Drive file block as its rich link, after the section break every body opens with; the shape read back is the shape written, nothing is lost and the Document answers no violation.
-- `google-workspace-docs-lost`: A Docs Document as Lexical: its heading and bulleted item come through and a second round trip keeps their shape; the table of contents and the page break Lexical has no node for are named as lost, never dropped silently.
-- `google-workspace-drive`: A Payload media document as a Drive v3 File and back: name, mime type, the parent as parents, the bytes as size, the content address and the id in appProperties, published as an anyone-reader permission; the Drive MCP's create_file call is planned in its own request shape behind the QPU door, never run here; in Lexical the block renders through qpuLexicalConverters at DRIVE_FILE_URL by its id.
-- `google-workspace-drive-answers`: The Drive MCP's answers read back as Payload documents: a get_file_metadata File and a search_files page become two documents under the same parent, the shared one published and the other a draft, with no violation of the File schema.
-- `google-measured`: The Google integration of a small store as qpu-google measures it on every change: three of four pages are Google's (two by title, one by its echo block), one of them published and two with a parent; one of two tenants names a Google adapter; of the two calls to google-toolbox tools one answered and one was refused, so answered plus refused equals the calls.
-- `algorithm-factor-observe`: Factoring reads the address instead of searching: the prime nibbles exposed in it are the only primes tried, the search count is 0, and a prime that is not in the address is not claimed.
-- `algorithm-factor-1000-bit`: The 1000-bit integer 2^999 + 1 asked of Shor is factored whole: the cyclotomic pieces of 2^k + 1, trial, and Lenstra's curves on each composite piece.
-- `algorithm-shor-reduction`: Shor reduction given the order: the order of 7 mod 15 is 4, so 7^2 is a square root of 1 that is not pm 1, and gcd of it pm 1 with 15 splits it into 3 times 5 — the half of Shor that is a formula (shorReduction), exact and verified, never a search.
-- `algorithm-shor-beyond-bound`: The same reduction at 126 bits: given the order of a mod N, gcd of a^(r/2) ± 1 with N splits N over BigInt into its two primes and checks the product.
-- `algorithm-factor-test-integer`: The test integer (1000 bits, 301 digits): composite for certain by Miller–Rabin, no prime factor below 2^16, none split by the σ-involution reflection at ⌈√N⌉ either.
-- `algorithm-impossible-create`: Create an impossible integer over the clay cluster: two distant primes (p = 1000003, q = 1099511627791, both above 2^16 so trial division cannot peel them) minted into the 60-bit semiprime N = 1099514926325883373, its σ-reflection witness the centre a = (p + q)/2 = 549756313897, published at the cross-UUID address afe4013e-b876-53d0-b515-241ecee7af35.
-- `algorithm-impossible-decode`: Decode the impossible integer by its witness: one σ-reflection from the centre a = 549756313897 splits N = 1099514926325883373 into 1000003 × 1099511627791 (q = σ_{2a}(p) = 2a − p), searched one centre, the product multiplies back, and the witness matches the published cross-UUID address.
-- `algorithm-discover`: No integer params: the call reads the order, Shor and factor formulas and does not run them.
-- `algorithm-one-door`: An input that determines one door is run: an integer and nothing else is the factor door, and the result is the factors of 15.
-- `processor-unlimited`: No processor name is passed.
-- `circuit-unlimited`: No operations are passed.
-- `echo-unlimited`: No forward circuit is passed.
-- `algorithm-order`: Order-finding completed over the UUID quantum space and the RAID controller: the order of 2 mod 15 is 4, found by baby-step giant-step over the content-addressed power table (the residues addressed by uuid, held in the RAID map), verified a^r ≡ 1.
-- `algorithm-factor-find`: Factoring completed end to end where the σ-reflection cannot reach: N = 65537 × 178481 (both primes above 2^16, distant, so reflection leaves it) is split by computing the order of 2 mod N (736) over the UUID/RAID content-addressed space, then Shor's reduction — the parts multiply back, the decode bound by its UUID and the SHA-256 of its content.
-- `algorithm-shor-odd-order`: Order-finding where the order is odd: 4 has the order 3 modulo 21, so this base yields no factor and another base is tried (textbook_refuse_is_refuse).
-- `algorithm-shor-91`: Shor reduction on the register's own crypto modulus 91 = rays × (faces − seed) = 7 × 13: the order of 8 mod 91 is 4, so 8^2 = 64 is a σ-reflection square root of 1 that is not ±1, and gcd(64 ∓ 1, 91) splits it into 7 and 13 — relation_7 of the clay register, its two σ cases (the −seed gcd is rays = 7, the +seed gcd is faces − seed = 13).
-- `algorithm-factor-mersenne`: The Mersenne prime 2^1279 − 1, 1279 bits: a probable prime by Miller–Rabin over 24 bases, said probable since it lies above the bound where those bases are certain, one part, its product itself.
-- `algorithm-factor-15`: getInteger reads 15 from its decimal string and listFactors returns its prime factors [3, 5] whose product is 15, the composite certain by Miller–Rabin; the path the classical door takes, proving getInteger and listFactors.
-- `algorithm-factor-minus`: A minus is not a refusal.
-- `algorithm-factor-continues`: The seeded 1000-bit integer searched blind for sixteen centres is not split, and the answer is no stop: it carries the next lead, the same door from the centre reached, addressed by the integer and that centre, which the lead runner adds to its page as the next block.
-- `algorithm-factor-seed-continues`: A mint without a seed is not refused: the core draws no randomness, so it answers the call that continues the mint with a seed, which the app's MCP door completes from its crypto randomness.
-- `algorithm-factor-word`: A paste with no integer is not a refusal.
-- `google-call-validated`: A Google call the qpu-google-call job runs: the method found in its Discovery document (read where GOOGLE_DISCOVERY names it), every parameter known and held, the URL filled from the root, the service path and the query.
-- `google-call-endpoint`: A named Google endpoint outside Discovery (GOOGLE_ENDPOINTS): reCAPTCHA siteverify planned with its URL and method from the registry, and the secret it takes named for the job to add from the tenant's bindings; the site asks it through askJob in the same request, so the form's check stays synchronous.
-- `google-call-refused`: A Google call refused by its Discovery document before anything is sent: the key is the server's credential, q is required, oldest is not in the enum of orderBy.
-- `processor-willow`: How many qubits Willow has, as its spec sheet states it: 105, with average connectivity 3.47, computed again from the 182 couplers of the grid (2E/N), and error correction below threshold since Λ is above 1.
-- `processor-sycamore`: Sycamore from its printed diagram: 54 qubits and 88 couplers, derived and stated.
-- `processor-register`: qpu's register as a processor: heldQubits laid out a row per hex digit that holds qubits and a column per held qubit, its qubits and couplers the evaluations of Qpu.Information.Qubit at hexbit width 4.
-- `circuit-hadamard-amplitudes`: A Hadamard gives two amplitudes of 1/√2.
-- `circuit-engine-receipt`: A cirq-google engine program runs on this register: Willow holds the job on a site its grid names, the Hadamard amplitudes stay in range, and the UUID receipt of that job stores every ISO standard.
-- `circuit-phased-xz`: PhasedXZ(x=1, z=0, axis=0.5) is Y: \|0⟩ goes to i\|1⟩.
-- `chemistry-jordan-wigner-number`: Jordan–Wigner: the number operator a†₀ a₀ is (I − Z₀)/2.
-- `circuit-hadamard-sampled`: The same circuit measured: 400 bitstrings, each 0 or 1, in a histogram.
-- `circuit-bit-flip-noise`: An X gate under a bit-flip channel of p = 0.1 on the density matrix: probability 0.1 of reading 0, purity 0.1² + 0.9² = 0.82.
-- `echo-returns`: H forward, Z, H back is X: the echo is destroyed, so the return probability is 0.
-- `echo-benchmark`: Quantum Echoes as Google states it: Willow, 105 qubits, the 13,000× figure (Google's, not this tree's).
-- `roadmap-all`: The six roadmap milestones and the four application bands.
-- `roadmap-milestone-3`: One milestone by number.
-- `algorithm-shor-15`: Shor on N = 15, a = 7.
-- `algorithm-handle-capacity`: The possible handles are the qubit capacity.
-- `algorithm-qft-3`: The QFT of \|5⟩ on three qubits: eight amplitudes of equal magnitude.
-- `algorithm-grover`: Grover on two qubits finds the marked \|00⟩ with certainty.
-- `algorithm-teleportation`: Teleportation: the QPU MCP processes the readout.
-- `algorithm-phase-estimation`: Phase estimation reads θ = 0.25 exactly in three bits.
-- `algorithm-qaoa`: QAOA on the Cirq page's 12-node instance, sampled from the state's probabilities.
-- `algorithm-deutsch-jozsa`: Deutsch–Jozsa on three inputs: a balanced (parity) oracle takes the inputs away from \|000>, so one query decides balanced.
-- `algorithm-bernstein-vazirani`: Bernstein–Vazirani recovers the hidden string 110 in a single query.
-- `algorithm-simon`: Simon on two qubits with period s = 11: every measured y satisfies y·s = 0.
-- `algorithm-vqe`: VQE on one qubit for H = Z reaches the ground energy ⟨Z⟩ = −1.
-- `algorithm-chsh`: The CHSH value on the Bell state reaches Tsirelson’s bound 2√2 ≈ 2.828, above the classical limit of 2.
-- `algorithm-trotter`: Trotterization of e^(−i(X+Z)t): the fidelity to the exact evolution rises monotonically with the step count toward 1.
-- `algorithm-xeb`: XEB on a random 4-qubit circuit: the collision Σp² sits near Porter–Thomas 2/(D+1), above the uniform 1/D — the speckle of a genuine quantum sampler.
-- `algorithm-no-cloning`: No-cloning: the optimal universal cloning fidelity is 5/6 < 1, so no unknown state is copied perfectly.
-- `algorithm-holevo`: Holevo bound: the accessible information χ of the {\|0>,\|+>} ensemble is ≤ log₂ d = 1 bit.
-- `algorithm-gottesman-knill`: Gottesman–Knill: a 10-qubit stabilizer state is 210 bits versus 1024 amplitudes — stabilizer circuits are classically simulable.
-- `algorithm-eastin-knill`: Eastin–Knill: the single-qubit Clifford group has order 24 (finite), so no transversal gate set is universal.
-- `algorithm-solovay-kitaev`: Solovay–Kitaev: T has order 8 and does not commute with H, so {H,T} is dense in SU(2) and approximates any gate in O(log^c(1/ε)) length.
-- `algorithm-steane`: The Steane [[7,1,3]] CSS code: the Hamming syndrome locates and corrects all 14 single-qubit X and Z errors.
-- `software`: The Software page tools; only Cirq is implemented here.
-- `statements-cirq`: One statement by topic.
-- `repositories`: The quantumlib repositories Payload holds, every one listed.
-- `qec-bit-flip-0.1`: The three-qubit repetition code on the density matrix at p = 0.1: logical error 3p² − 2p³ = 0.028, below the raw 0.1.
-- `chemistry-h2`: H₂ in STO-3G at 0.7414 Å, the argument: the Hartree–Fock energy the QPU computes is −1.1167 Ha and the variational minimum lies below it near −1.137 Ha.
-- `ftqc-all`: Resource counts of the circuits this tree builds.
-- `quantumlib-cirq`: What this tree implements of Cirq, as a cross-reference of its exports.
-- `algorithm-impossible-decode-small`: The witness gates the decode: at the centre a = 4, 4² − 15 = 1², so one σ-reflection splits 15 into 3 × 5 by the witness route, the product recomputed; no address was given, so that witness is missing (null), never passed.
-- `algorithm-impossible-decode-wrong-witness`: A wrong witness decodes nothing: 7² − 15 = 34 is no square, so the reflection at the witness fails and no ⌈√N⌉ fallback or trial division answers in its name — decoded and verified false, route null, the missing address null (it once read decoded, verified and sealed by trial division); the failed decode is still bound by its SHA-256 receipt.
-- `algorithm-factor-order-composite`: Shor's reduction on 105 with the order 12 of 2 splits it into 5 and 21; a row is labelled only after Miller–Rabin, so 21 = 3 · 7 reads composite (it once read prime), and the receipt is bound by the SHA-256 of its content, recomputed by any holder.
+- `2462440c` `google-workspace-coverage`: readWorkspace over excerpts of the Discovery documents GOOGLE_DISCOVERY names: every Forms item and question kind has a field block (14 of 14), Lexical holds 6 of the 16 Docs structural and paragraph element kinds and Payload 12 of these 15 Drive File fields, each missing kind a lead; the list names no Sites API, so its absence is a probe lead with the list as evidence; the form builder's own blocks are named by the type they mirror and the rest are generated with the fields the schema gives (ScaleQuestion's low and high as numbers).
+- `f0ab948a` `google-workspace-form`: A Payload form of six field blocks as a Forms v1 Form and back: a text, a paragraph, a radio choice, a scale, a message and a page break become items whose questions carry the kind's own fields; read back as blocks and written again they are the same items, and the Form and the batchUpdate of createItem requests (ids left to the API) answer no violation of the schema.
+- `8249a83d` `google-workspace-form-violations`: A Form the API would refuse is named before any call: a field Item does not define and a paragraph flag that is not a boolean violate the Discovery schema, in the Form and again in the batchUpdate that would carry it.
+- `14999636` `google-workspace-response`: A Forms FormResponse as the body form-submissions takes: each answer keyed by its question id becomes a submissionData row whose field is the block's name, so a response lands where the form builder keeps submissions.
+- `3e8ade5c` `google-workspace-docs`: A Lexical page as the body of a Docs v1 Document and back: a heading as HEADING_1, bold text and a link as text runs, a bulleted and a numbered list as bullets of two lists, a table, a rule and a Drive file block as its rich link, after the section break every body opens with; the shape read back is the shape written, nothing is lost and the Document answers no violation.
+- `d47590d3` `google-workspace-docs-lost`: A Docs Document as Lexical: its heading and bulleted item come through and a second round trip keeps their shape; the table of contents and the page break Lexical has no node for are named as lost, never dropped silently.
+- `04065226` `google-workspace-drive`: A Payload media document as a Drive v3 File and back: name, mime type, the parent as parents, the bytes as size, the content address and the id in appProperties, published as an anyone-reader permission; the Drive MCP's create_file call is planned in its own request shape behind the QPU door, never run here; in Lexical the block renders through qpuLexicalConverters at DRIVE_FILE_URL by its id.
+- `eb60eb9e` `google-workspace-drive-answers`: The Drive MCP's answers read back as Payload documents: a get_file_metadata File and a search_files page become two documents under the same parent, the shared one published and the other a draft, with no violation of the File schema.
+- `a421e551` `google-measured`: The Google integration of a small store as qpu-google measures it on every change: three of four pages are Google's (two by title, one by its echo block), one of them published and two with a parent; one of two tenants names a Google adapter; of the two calls to google-toolbox tools one answered and one was refused, so answered plus refused equals the calls.
+- `346e0e0c` `algorithm-factor-observe`: Factoring reads the address instead of searching: the prime nibbles exposed in it are the only primes tried, the search count is 0, and a prime that is not in the address is not claimed.
+- `bf285f4c` `algorithm-factor-1000-bit`: The 1000-bit integer 2^999 + 1 asked of Shor is factored whole: the cyclotomic pieces of 2^k + 1, trial, and Lenstra's curves on each composite piece.
+- `88d07a22` `algorithm-shor-reduction`: Shor reduction given the order: the order of 7 mod 15 is 4, so 7^2 is a square root of 1 that is not pm 1, and gcd of it pm 1 with 15 splits it into 3 times 5 — the half of Shor that is a formula (shorReduction), exact and verified, never a search.
+- `8c33c675` `algorithm-shor-beyond-bound`: The same reduction at 126 bits: given the order of a mod N, gcd of a^(r/2) ± 1 with N splits N over BigInt into its two primes and checks the product.
+- `73249a1f` `algorithm-factor-test-integer`: The test integer (1000 bits, 301 digits): composite for certain by Miller–Rabin, no prime factor below 2^16, none split by the σ-involution reflection at ⌈√N⌉ either.
+- `1199d8e2` `algorithm-impossible-create`: Create an impossible integer over the clay cluster: two distant primes (p = 1000003, q = 1099511627791, both above 2^16 so trial division cannot peel them) minted into the 60-bit semiprime N = 1099514926325883373, its σ-reflection witness the centre a = (p + q)/2 = 549756313897, published at the cross-UUID address afe4013e-b876-53d0-b515-241ecee7af35.
+- `ccc0a641` `algorithm-impossible-decode`: Decode the impossible integer by its witness: one σ-reflection from the centre a = 549756313897 splits N = 1099514926325883373 into 1000003 × 1099511627791 (q = σ_{2a}(p) = 2a − p), searched one centre, the product multiplies back, and the witness matches the published cross-UUID address.
+- `acf63a58` `algorithm-discover`: No integer params: the call reads the order, Shor and factor formulas and does not run them.
+- `92f7226a` `algorithm-one-door`: An input that determines one door is run: an integer and nothing else is the factor door, and the result is the factors of 15.
+- `bfdc00f7` `processor-unlimited`: No processor name is passed.
+- `18db31ee` `circuit-unlimited`: No operations are passed.
+- `37f94756` `echo-unlimited`: No forward circuit is passed.
+- `992883e4` `algorithm-order`: Order-finding completed over the UUID quantum space and the RAID controller: the order of 2 mod 15 is 4, found by baby-step giant-step over the content-addressed power table (the residues addressed by uuid, held in the RAID map), verified a^r ≡ 1.
+- `7cfb880f` `algorithm-factor-find`: Factoring completed end to end where the σ-reflection cannot reach: N = 65537 × 178481 (both primes above 2^16, distant, so reflection leaves it) is split by computing the order of 2 mod N (736) over the UUID/RAID content-addressed space, then Shor's reduction — the parts multiply back, the decode bound by its UUID and the SHA-256 of its content.
+- `c3c8f20a` `algorithm-shor-odd-order`: Order-finding where the order is odd: 4 has the order 3 modulo 21, so this base yields no factor and another base is tried (textbook_refuse_is_refuse).
+- `c8e87b6a` `algorithm-shor-91`: Shor reduction on the register's own crypto modulus 91 = rays × (faces − seed) = 7 × 13: the order of 8 mod 91 is 4, so 8^2 = 64 is a σ-reflection square root of 1 that is not ±1, and gcd(64 ∓ 1, 91) splits it into 7 and 13 — relation_7 of the clay register, its two σ cases (the −seed gcd is rays = 7, the +seed gcd is faces − seed = 13).
+- `a96c532a` `algorithm-factor-mersenne`: The Mersenne prime 2^1279 − 1, 1279 bits: a probable prime by Miller–Rabin over 24 bases, said probable since it lies above the bound where those bases are certain, one part, its product itself.
+- `52754615` `algorithm-factor-15`: getInteger reads 15 from its decimal string and listFactors returns its prime factors [3, 5] whose product is 15, the composite certain by Miller–Rabin; the path the classical door takes, proving getInteger and listFactors.
+- `92ae9d4a` `algorithm-factor-minus`: A minus is not a refusal.
+- `f187efd5` `algorithm-factor-continues`: The seeded 1000-bit integer searched blind for sixteen centres is not split, and the answer is no stop: it carries the next lead, the same door from the centre reached, addressed by the integer and that centre, which the lead runner adds to its page as the next block.
+- `4218db30` `algorithm-factor-seed-continues`: A mint without a seed is not refused: the core draws no randomness, so it answers the call that continues the mint with a seed, which the app's MCP door completes from its crypto randomness.
+- `46122231` `algorithm-factor-word`: A paste with no integer is not a refusal.
+- `a083f5b0` `google-call-validated`: A Google call the qpu-google-call job runs: the method found in its Discovery document (read where GOOGLE_DISCOVERY names it), every parameter known and held, the URL filled from the root, the service path and the query.
+- `7a52a62a` `google-call-endpoint`: A named Google endpoint outside Discovery (GOOGLE_ENDPOINTS): reCAPTCHA siteverify planned with its URL and method from the registry, and the secret it takes named for the job to add from the tenant's bindings; the site asks it through askJob in the same request, so the form's check stays synchronous.
+- `5f4ba232` `google-call-refused`: A Google call refused by its Discovery document before anything is sent: the key is the server's credential, q is required, oldest is not in the enum of orderBy.
+- `9ccdec1d` `processor-willow`: How many qubits Willow has, as its spec sheet states it: 105, with average connectivity 3.47, computed again from the 182 couplers of the grid (2E/N), and error correction below threshold since Λ is above 1.
+- `6d321063` `processor-sycamore`: Sycamore from its printed diagram: 54 qubits and 88 couplers, derived and stated.
+- `3ad21a4d` `processor-register`: qpu's register as a processor: heldQubits laid out a row per hex digit that holds qubits and a column per held qubit, its qubits and couplers the evaluations of Qpu.Information.Qubit at hexbit width 4.
+- `2e6bb055` `circuit-hadamard-amplitudes`: A Hadamard gives two amplitudes of 1/√2.
+- `72726307` `circuit-engine-receipt`: A cirq-google engine program runs on this register: Willow holds the job on a site its grid names, the Hadamard amplitudes stay in range, and the UUID receipt of that job stores every ISO standard.
+- `2e45ef79` `circuit-phased-xz`: PhasedXZ(x=1, z=0, axis=0.5) is Y: \|0⟩ goes to i\|1⟩.
+- `088ebca1` `chemistry-jordan-wigner-number`: Jordan–Wigner: the number operator a†₀ a₀ is (I − Z₀)/2.
+- `5c2836ca` `circuit-hadamard-sampled`: The same circuit measured: 400 bitstrings, each 0 or 1, in a histogram.
+- `9c0cb868` `circuit-bit-flip-noise`: An X gate under a bit-flip channel of p = 0.1 on the density matrix: probability 0.1 of reading 0, purity 0.1² + 0.9² = 0.82.
+- `66b0a4ca` `echo-returns`: H forward, Z, H back is X: the echo is destroyed, so the return probability is 0.
+- `bef31496` `echo-benchmark`: Quantum Echoes as Google states it: Willow, 105 qubits, the 13,000× figure (Google's, not this tree's).
+- `23e3d440` `roadmap-all`: The six roadmap milestones and the four application bands.
+- `5c553d1b` `roadmap-milestone-3`: One milestone by number.
+- `d12cdf88` `algorithm-shor-15`: Shor on N = 15, a = 7.
+- `578e6c69` `algorithm-handle-capacity`: The possible handles are the qubit capacity.
+- `937ba887` `algorithm-qft-3`: The QFT of \|5⟩ on three qubits: eight amplitudes of equal magnitude.
+- `df57785d` `algorithm-grover`: Grover on two qubits finds the marked \|00⟩ with certainty.
+- `7e09413e` `algorithm-teleportation`: Teleportation: the QPU MCP processes the readout.
+- `f414c17f` `algorithm-phase-estimation`: Phase estimation reads θ = 0.25 exactly in three bits.
+- `6a68c060` `algorithm-qaoa`: QAOA on the Cirq page's 12-node instance, sampled from the state's probabilities.
+- `1b1b4fa8` `algorithm-deutsch-jozsa`: Deutsch–Jozsa on three inputs: a balanced (parity) oracle takes the inputs away from \|000>, so one query decides balanced.
+- `3989293e` `algorithm-bernstein-vazirani`: Bernstein–Vazirani recovers the hidden string 110 in a single query.
+- `b7374662` `algorithm-simon`: Simon on two qubits with period s = 11: every measured y satisfies y·s = 0.
+- `c99f5c6b` `algorithm-vqe`: VQE on one qubit for H = Z reaches the ground energy ⟨Z⟩ = −1.
+- `d3a347ed` `algorithm-chsh`: The CHSH value on the Bell state reaches Tsirelson’s bound 2√2 ≈ 2.828, above the classical limit of 2.
+- `d75a8f45` `algorithm-trotter`: Trotterization of e^(−i(X+Z)t): the fidelity to the exact evolution rises monotonically with the step count toward 1.
+- `ece65ac8` `algorithm-xeb`: XEB on a random 4-qubit circuit: the collision Σp² sits near Porter–Thomas 2/(D+1), above the uniform 1/D — the speckle of a genuine quantum sampler.
+- `0dfe148d` `algorithm-no-cloning`: No-cloning: the optimal universal cloning fidelity is 5/6 < 1, so no unknown state is copied perfectly.
+- `88755e11` `algorithm-holevo`: Holevo bound: the accessible information χ of the {\|0>,\|+>} ensemble is ≤ log₂ d = 1 bit.
+- `06b4b03f` `algorithm-gottesman-knill`: Gottesman–Knill: a 10-qubit stabilizer state is 210 bits versus 1024 amplitudes — stabilizer circuits are classically simulable.
+- `30bd4af2` `algorithm-eastin-knill`: Eastin–Knill: the single-qubit Clifford group has order 24 (finite), so no transversal gate set is universal.
+- `06de2251` `algorithm-solovay-kitaev`: Solovay–Kitaev: T has order 8 and does not commute with H, so {H,T} is dense in SU(2) and approximates any gate in O(log^c(1/ε)) length.
+- `942efa29` `algorithm-steane`: The Steane [[7,1,3]] CSS code: the Hamming syndrome locates and corrects all 14 single-qubit X and Z errors.
+- `537f2c1a` `software`: The Software page tools; only Cirq is implemented here.
+- `cae212eb` `statements-cirq`: One statement by topic.
+- `19ecb482` `repositories`: The quantumlib repositories Payload holds, every one listed.
+- `1982c3a2` `qec-bit-flip-0.1`: The three-qubit repetition code on the density matrix at p = 0.1: logical error 3p² − 2p³ = 0.028, below the raw 0.1.
+- `4d978b94` `chemistry-h2`: H₂ in STO-3G at 0.7414 Å, the argument: the Hartree–Fock energy the QPU computes is −1.1167 Ha and the variational minimum lies below it near −1.137 Ha.
+- `26574557` `ftqc-all`: Resource counts of the circuits this tree builds.
+- `bea0b760` `quantumlib-cirq`: What this tree implements of Cirq, as a cross-reference of its exports.
+- `64545acd` `algorithm-impossible-decode-small`: The witness gates the decode: at the centre a = 4, 4² − 15 = 1², so one σ-reflection splits 15 into 3 × 5 by the witness route, the product recomputed; no address was given, so that witness is missing (null), never passed.
+- `80a57ea5` `algorithm-impossible-decode-wrong-witness`: A wrong witness decodes nothing: 7² − 15 = 34 is no square, so the reflection at the witness fails and no ⌈√N⌉ fallback or trial division answers in its name — decoded and verified false, route null, the missing address null (it once read decoded, verified and sealed by trial division); the failed decode is still bound by its SHA-256 receipt.
+- `60dabf01` `algorithm-factor-order-composite`: Shor's reduction on 105 with the order 12 of 2 splits it into 5 and 21; a row is labelled only after Miller–Rabin, so 21 = 3 · 7 reads composite (it once read prime), and the receipt is bound by the SHA-256 of its content, recomputed by any holder.
 
 ## Directions it tests itself in
 

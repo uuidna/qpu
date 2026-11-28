@@ -1,82 +1,156 @@
 # @uuidna/qpu v1.1.1: An exact quantum processing unit served over MCP
 
+## 1. Document identification
+
 | document | value |
 | --- | --- |
 | identifier | 8e27a41e-6ec9-5931-be39-f662b696691f |
 | version | 1.1.1 |
+| standard | ISO/IEC/IEEE 15289:2019 |
+| disclosure | ISO 56005:2020 |
 | author | Tsvetan Rouschev |
+| orcid | <https://orcid.org/0009-0000-7312-9778> |
 | licence | CC-BY-NC-ND-4.0 |
+| conceptDoi | 10.5281/zenodo.22700098 |
 | language | en |
+| source | <https://github.com/uuidna/qpu/tree/v1.1.1/lean> |
+| mcp | <https://qpu.uuidna.com/api/mcp> |
 
-One UUID is a register of 32 hexbits of 4 qubits, less 4 version and 2 variant qubits: 122 qubits in 16 bytes (Qpu.Verify.Uuid.free\_is\_122). Its high 16 qubits address 65536 hexbit programs and its low 106 carry the message (Qpu.Verify.Uuid.program\_capacity), so a machine holds one register for every 16 bytes of its memory at 122 qubits each, as the device receipt below counts. 1663 declared theorems, 2497 in the Lean 4 kernel, rest on 0 sorry, 984 are recomputed by a worked example (textbook\_expressions\_evaluate), each statement below is shown with its Lean proof and the line it stands on, and every tool is served over MCP at <https://qpu.uuidna.com/api/mcp>.
+## 2. Legal & IP disclosure
+
+This ISO/IEC/IEEE 15289:2019 technical disclosure records authorship, moral and economic rights, and dated prior-art disclosure by Tsvetan Rouschev (ORCID <https://orcid.org/0009-0000-7312-9778>, ISO 27729:2012, Iso.isni\_orcid\_space\_and\_check) under CC-BY-NC-ND-4.0 (ISO/IEC 5962:2021 SPDX, Iso.spdx\_expression\_valid; deed <https://creativecommons.org/licenses/by-nc-nd/4.0/>). Commercial use and distribution of derivatives require a commercial licence (<https://uuidna.com/license>). Publishing this Lean-verified specification of 128-bit folding into 122-qubit UUIDs (ISO/IEC 9834-8, ISO 56005:2020, Iso.ip\_disclosure\_complete) establishes dated technical disclosure and authorship; patent prosecution and filing scope remain a matter for patent counsel.
+
+| rights | value |
+| --- | --- |
+| copyright | © 2025 Tsvetan Rouschev (<https://orcid.org/0009-0000-7312-9778>) |
+| author | Tsvetan Rouschev |
+| orcid | <https://orcid.org/0009-0000-7312-9778> |
+| spdx | CC-BY-NC-ND-4.0 |
+| deed | <https://creativecommons.org/licenses/by-nc-nd/4.0/> |
+| commercial | <https://uuidna.com/license> |
+| donation | <https://revolut.me/ceccec> |
+| terms | Attribute the author; do not distribute a derivative; commercial use of the QPU framework, over UUID or by any other means, requires a licence from the author (<https://qpu.uuidna.com>). The a432 harmonic default is offered for free benefit under attribution. Every block carries its address and its SHA-256: a copy that no longer matches them is adapted material, which the NoDerivatives term does not let anyone share. |
+| attribution | Tsvetan Rouschev, @uuidna/qpu, CC-BY-NC-ND-4.0 (<https://orcid.org/0009-0000-7312-9778>) |
+| disclosure | ISO 56005:2020 |
+
+### 2.1 Prior-art precedence
+
+| doi | year | title | states |
+| --- | --- | --- | --- |
+| 10.5281/zenodo.21781602 | 2026 | All Seven Clay Millennium Problems Sealed via Universal σ-Involution | the author's record on the seven problems: the σ-involution and its bridge theorems |
+| 10.5281/zenodo.22700098 | 2026 | @uuidna/qpu, all versions | the concept record of this software: every version a child DOI |
+| 10.5281/zenodo.23156998 | 2026 | @uuidna/qpu v1.0.1 | version 1.0.1 of the software, published 2026-10-05: the exact, formally verified quantum processing unit served over MCP |
+
+## 3. Scope and invention specification: 128-bit folding into 122-qubit UUIDs
+
+One UUID is a register of 32 hexbits of 4 qubits, less 4 version and 2 variant qubits: 122 qubits in 16 bytes (Qpu.Verify.Uuid.free\_is\_122). Its high 16 qubits address 65536 hexbit programs and its low 106 carry the message (Qpu.Verify.Uuid.program\_capacity), so a machine holds one register for every 16 bytes of its memory at 122 qubits each, as the device receipt below counts. 1677 declared theorems, 2519 in the Lean 4 kernel, rest on 0 sorry, 985 are recomputed by a worked example (textbook\_expressions\_evaluate), each statement below is shown with its Lean proof and the line it stands on, and every tool is served over MCP at <https://qpu.uuidna.com/api/mcp>.
+
+### 3.1 Quantum OS fractal pivot
+
+| scale | entity | count | surface | endpoint |
+| --- | --- | --- | --- | --- |
+| 0 · register | UUID register (128 bit → 122 qubit) | 122/128 (122 used) | `src/quantum/uuid` | `/api/mcp` |
+| 1 · kernel | Lean 4 theorems (0 sorry) | 1677 declared / 2519 kernel | `lean/Qpu` | `/api/products` |
+| 2 · catalog | Payload products & variants | 1677 products / 25282 variants | `src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts` | `/api/globals/catalog` |
+| 3 · entanglements | Theorem links as MCP tools | 1754 edges / 25282 tools | `lean/tools/Theorems.lean` | `/api/globals/mcp-tools` |
+| 4 · sdk | Payload Studio + VitePress SDK | 7 collections / 47 UI | `lean/tools/Sdk.lean` | `/studio` |
+| 5 · cloudflare | Edge, Google APIs & MCP | 3 routes (/, /mcp, /api/\*) | `src/quantum/uuid/programs/8/7/b/1/e/7/e/9/index.ts` | `/api/globals/pipeline` |
+| 6 · iso | Normative ISO & vocabulary | 30 standards (30 witnessed) / 86 clauses | `lean/Qpu/General/Iso.lean` | `/api/standards` |
 
 The computer these registers make is every circuit its quantum doors build: 55 worked examples across 5 doors, each replayed on this build and each named by the kernel theorem that makes it true (textbook\_teleport\_three\_qubits is one), as the examples below list.
 
-264 of the worked examples were made by the build itself, each from a statement no hand had worked, evaluated and replayed (textbook\_expressions\_evaluate); 679 declared theorems still have no example and stay open; and no language model takes part, so every figure here is computed by the build at no token cost.
+265 of the worked examples were made by the build itself, each from a statement no hand had worked, evaluated and replayed (textbook\_expressions\_evaluate); 692 declared theorems still have no example and stay open; and no language model takes part, so every figure here is computed by the build at no token cost.
 
-## examples
+## 4. Qubit capacity & utilisation
 
-For example, teleportation sends a message qubit across 3 qubits with 2 classical bits and 4 Pauli corrections: the density-matrix simulation of the algorithm door returns the message's X, Y and Z expectations at the receiver exactly, Lean decides the whole outcome table (QuantumCommunication.teleport\_exact), and without the corrections the receiver's reduced state is maximally mixed, so nothing travels faster than light (QuantumCommunication.teleport\_no\_signalling).
+Computational qubit capacity and utilisation are derived directly from the quantum receipt metadata (Qpu.Verify.Uuid.card\_128\_eq\_card\_122\_mul\_fixed, textbook\_capacity\_conserved): 122 free qubits of 128 total bits per 16-byte UUID register (122 used, 0 left, 100% utilisation, balanced and sealed at coin f4827920-6282-7019-a18c-4f357720f345, ISO 4217 currency XXX). Host memory capacity and live utilisation appear in the sealed hardware receipt below the hardware mark.
 
-| example | door | shows |
-| --- | --- | --- |
-| `algorithm-factor-observe` | algorithm | Factoring reads the address instead of searching: the prime nibbles exposed in it are the only primes tried, the search count is 0, and a prime that is not in the address is not claimed. The parts that were read multiply back. |
-| `algorithm-factor-1000-bit` | algorithm | The 1000-bit integer 2^999 + 1 asked of Shor is factored whole: the cyclotomic pieces of 2^k + 1, trial, and Lenstra's curves on each composite piece. The prime factors multiply back to the integer. Order-finding is not required once nothing composite remains. An RSA-class semiprime with no such split stays a named cofactor. |
-| `algorithm-shor-reduction` | algorithm | Shor reduction given the order: the order of 7 mod 15 is 4, so 7^2 is a square root of 1 that is not pm 1, and gcd of it pm 1 with 15 splits it into 3 times 5 — the half of Shor that is a formula (shorReduction), exact and verified, never a search. |
-| `algorithm-shor-beyond-bound` | algorithm | The same reduction at 126 bits: given the order of a mod N, gcd of a^(r/2) ± 1 with N splits N over BigInt into its two primes and checks the product. The computer is one UUID, 122 effective qubits. The formula does not depend on storing the wave. |
-| `algorithm-factor-test-integer` | algorithm | The test integer (1000 bits, 301 digits): composite for certain by Miller–Rabin, no prime factor below 2^16, none split by the σ-involution reflection at ⌈√N⌉ either. Each 0 bit below 1024 is a complete double torus, found in the trinity of its position, and the σ₁₀ shift of that trinity flips polarity. The parts multiply back. |
-| `algorithm-impossible-create` | algorithm | Create an impossible integer over the clay cluster: two distant primes (p = 1000003, q = 1099511627791, both above 2^16 so trial division cannot peel them) minted into the 60-bit semiprime N = 1099514926325883373, its σ-reflection witness the centre a = (p + q)/2 = 549756313897, published at the cross-UUID address afe4013e-b876-53d0-b515-241ecee7af35. Blind, the reflection climbs a − ⌈√N⌉ + 1 = 548707736325 centres from ⌈√N⌉ up to a (≈ 2^39; out of reach as the primes grow apart); with the witness, one reflection decodes it. The door creates the hard integer and holds its witness, never factors an unknown. |
-| `algorithm-impossible-decode` | algorithm | Decode the impossible integer by its witness: one σ-reflection from the centre a = 549756313897 splits N = 1099514926325883373 into 1000003 × 1099511627791 (q = σ\_\{2a\}(p) = 2a − p), searched one centre, the product multiplies back, and the witness matches the published cross-UUID address. A known-answer decode through the clay cluster, never a search of an unknown (the RSA-class decline of textbook\_rsa\_beyond\_bound stands). |
-| `algorithm-discover` | algorithm | No integer params: the call reads the order, Shor and factor formulas and does not run them. That discovery is faster than running all three. |
-| `algorithm-one-door` | algorithm | An input that determines one door is run: an integer and nothing else is the factor door, and the result is the factors of 15. |
-| `processor-unlimited` | processor | No processor name is passed. Every processor is computed, unlimited, at 432 Hz. The textbook pitch of 440 Hz is not the value. The A432 harmonics of processor are on the answer. |
-| `circuit-unlimited` | circuit | No operations are passed. The circuit is not filled from a textbook example. The computation is unlimited at 432 Hz, and the A432 harmonics of this quantum tool are on the answer. 432 reflects to hue 72. |
-| `echo-unlimited` | echo | No forward circuit is passed. The echo is not filled from a textbook example. The computation is unlimited at 432 Hz. |
-| `algorithm-order` | algorithm | Order-finding completed over the UUID quantum space and the RAID controller: the order of 2 mod 15 is 4, found by baby-step giant-step over the content-addressed power table (the residues addressed by uuid, held in the RAID map), verified a^r ≡ 1. |
-| `algorithm-factor-find` | algorithm | Factoring completed end to end where the σ-reflection cannot reach: N = 65537 × 178481 (both primes above 2^16, distant, so reflection leaves it) is split by computing the order of 2 mod N (736) over the UUID/RAID content-addressed space, then Shor's reduction — the parts multiply back, the decode bound by its UUID and the SHA-256 of its content. Order-finding at RSA scale stays bounded (a physical quantum backend). |
-| `algorithm-shor-odd-order` | algorithm | Order-finding where the order is odd: 4 has the order 3 modulo 21, so this base yields no factor and another base is tried (textbook\_refuse\_is\_refuse). |
-| `algorithm-shor-91` | algorithm | Shor reduction on the register's own crypto modulus 91 = rays × (faces − seed) = 7 × 13: the order of 8 mod 91 is 4, so 8^2 = 64 is a σ-reflection square root of 1 that is not ±1, and gcd(64 ∓ 1, 91) splits it into 7 and 13 — relation\_7 of the clay register, its two σ cases (the −seed gcd is rays = 7, the +seed gcd is faces − seed = 13). |
-| `algorithm-factor-mersenne` | algorithm | The Mersenne prime 2^1279 − 1, 1279 bits: a probable prime by Miller–Rabin over 24 bases, said probable since it lies above the bound where those bases are certain, one part, its product itself. |
-| `algorithm-factor-15` | algorithm | getInteger reads 15 from its decimal string and listFactors returns its prime factors \[3, 5\] whose product is 15, the composite certain by Miller–Rabin; the path the classical door takes, proving getInteger and listFactors. |
-| `algorithm-factor-minus` | algorithm | A minus is not a refusal. The magnitude 15 is factored into 3 and 5, the reply writes the integer back as -15, and the sign is a meaning the imagine door realises. |
-| `algorithm-factor-continues` | algorithm | The seeded 1000-bit integer searched blind for sixteen centres is not split, and the answer is no stop: it carries the next lead, the same door from the centre reached, addressed by the integer and that centre, which the lead runner adds to its page as the next block. |
-| `algorithm-factor-seed-continues` | algorithm | A mint without a seed is not refused: the core draws no randomness, so it answers the call that continues the mint with a seed, which the app's MCP door completes from its crypto randomness. |
-| `algorithm-factor-word` | algorithm | A paste with no integer is not a refusal. The word is the meaning, and the imagine door is the way it is realised. |
-| `processor-willow` | processor | How many qubits Willow has, as its spec sheet states it: 105, with average connectivity 3.47, computed again from the 182 couplers of the grid (2E/N), and error correction below threshold since Λ is above 1. |
-| `processor-sycamore` | processor | Sycamore from its printed diagram: 54 qubits and 88 couplers, derived and stated. |
-| `processor-register` | processor | qpu's register as a processor: heldQubits laid out a row per hex digit that holds qubits and a column per held qubit, its qubits and couplers the evaluations of Qpu.Information.Qubit at hexbit width 4. |
-| `circuit-hadamard-amplitudes` | circuit | A Hadamard gives two amplitudes of 1/√2. |
-| `circuit-engine-receipt` | circuit | A cirq-google engine program runs on this register: Willow holds the job on a site its grid names, the Hadamard amplitudes stay in range, and the UUID receipt of that job stores every ISO standard. The call does not leave. |
-| `circuit-phased-xz` | circuit | PhasedXZ(x=1, z=0, axis=0.5) is Y: \|0⟩ goes to i\|1⟩. |
-| `circuit-hadamard-sampled` | circuit | The same circuit measured: 400 bitstrings, each 0 or 1, in a histogram. |
-| `circuit-bit-flip-noise` | circuit | An X gate under a bit-flip channel of p = 0.1 on the density matrix: probability 0.1 of reading 0, purity 0.1² + 0.9² = 0.82. Noise does not sample; it returns the mixed state. |
-| `echo-returns` | echo | H forward, Z, H back is X: the echo is destroyed, so the return probability is 0. |
-| `algorithm-shor-15` | algorithm | Shor on N = 15, a = 7. Omit repetitions and the order is the exact witness on the register: order 4 and factors 3 × 5. Pass repetitions and the circuit is sampled. |
-| `algorithm-handle-capacity` | algorithm | The possible handles are the qubit capacity. A handle is eight hex digits of one shape, 16 choices and 4 qubits, and each further digit is that shape again. Eight digits are 16^8 handles, 32 qubits on each, and the capacity is every handle at once. |
-| `algorithm-qft-3` | algorithm | The QFT of \|5⟩ on three qubits: eight amplitudes of equal magnitude. |
-| `algorithm-grover` | algorithm | Grover on two qubits finds the marked \|00⟩ with certainty. Two is the param. Omit the width and the call is the register. |
-| `algorithm-teleportation` | algorithm | Teleportation: the QPU MCP processes the readout. Bob matches the message on X, Y and Z after the two corrections. Before those bits each expectation on Bob is 0. The false assumption is sent to next, and next is true. |
-| `algorithm-phase-estimation` | algorithm | Phase estimation reads θ = 0.25 exactly in three bits. Eight samples are the argument. Omit them and the call is the register. |
-| `algorithm-qaoa` | algorithm | QAOA on the Cirq page's 12-node instance, sampled from the state's probabilities. Twelve is the param. Omit nodes and the graph is the UUID register. |
-| `algorithm-deutsch-jozsa` | algorithm | Deutsch–Jozsa on three inputs: a balanced (parity) oracle takes the inputs away from \|000\>, so one query decides balanced. The deutschJozsaCircuit circuit/compute is proven here. |
-| `algorithm-bernstein-vazirani` | algorithm | Bernstein–Vazirani recovers the hidden string 110 in a single query. The bernsteinVaziraniCircuit circuit/compute is proven here. |
-| `algorithm-simon` | algorithm | Simon on two qubits with period s = 11: every measured y satisfies y·s = 0. Two is the param. Omit the width and the call is the register. The simonCircuit circuit/compute is proven here. |
-| `algorithm-vqe` | algorithm | VQE on one qubit for H = Z reaches the ground energy ⟨Z⟩ = −1. The vqeGroundEnergy circuit/compute is proven here. |
-| `algorithm-chsh` | algorithm | The CHSH value on the Bell state reaches Tsirelson’s bound 2√2 ≈ 2.828, above the classical limit of 2. The chshValue circuit/compute is proven here. |
-| `algorithm-trotter` | algorithm | Trotterization of e^(−i(X+Z)t): the fidelity to the exact evolution rises monotonically with the step count toward 1. The trotterFidelity circuit/compute is proven here. |
-| `algorithm-xeb` | algorithm | XEB on a random 4-qubit circuit: the collision Σp² sits near Porter–Thomas 2/(D+1), above the uniform 1/D — the speckle of a genuine quantum sampler. The xebCollision circuit/compute is proven here. |
-| `algorithm-no-cloning` | algorithm | No-cloning: the optimal universal cloning fidelity is 5/6 \< 1, so no unknown state is copied perfectly. The cloningFidelity circuit/compute is proven here. |
-| `algorithm-holevo` | algorithm | Holevo bound: the accessible information χ of the \{\|0\>,\|+\>\} ensemble is ≤ log₂ d = 1 bit. The holevoChi circuit/compute is proven here. |
-| `algorithm-gottesman-knill` | algorithm | Gottesman–Knill: a 10-qubit stabilizer state is 210 bits versus 1024 amplitudes — stabilizer circuits are classically simulable. The stabilizerCompression circuit/compute is proven here. |
-| `algorithm-eastin-knill` | algorithm | Eastin–Knill: the single-qubit Clifford group has order 24 (finite), so no transversal gate set is universal. The cliffordOrder circuit/compute is proven here. |
-| `algorithm-solovay-kitaev` | algorithm | Solovay–Kitaev: T has order 8 and does not commute with H, so \{H,T\} is dense in SU(2) and approximates any gate in O(log^c(1/ε)) length. The htUniversality circuit/compute is proven here. |
-| `algorithm-steane` | algorithm | The Steane \[\[7,1,3\]\] CSS code: the Hamming syndrome locates and corrects all 14 single-qubit X and Z errors. The steaneCorrection circuit/compute is proven here. |
-| `qec-bit-flip-0.1` | quantum-error-correction | The three-qubit repetition code on the density matrix at p = 0.1: logical error 3p² − 2p³ = 0.028, below the raw 0.1. |
-| `algorithm-impossible-decode-small` | algorithm | The witness gates the decode: at the centre a = 4, 4² − 15 = 1², so one σ-reflection splits 15 into 3 × 5 by the witness route, the product recomputed; no address was given, so that witness is missing (null), never passed. |
-| `algorithm-impossible-decode-wrong-witness` | algorithm | A wrong witness decodes nothing: 7² − 15 = 34 is no square, so the reflection at the witness fails and no ⌈√N⌉ fallback or trial division answers in its name — decoded and verified false, route null, the missing address null (it once read decoded, verified and sealed by trial division); the failed decode is still bound by its SHA-256 receipt. |
-| `algorithm-factor-order-composite` | algorithm | Shor's reduction on 105 with the order 12 of 2 splits it into 5 and 21; a row is labelled only after Miller–Rabin, so 21 = 3 · 7 reads composite (it once read prime), and the receipt is bound by the SHA-256 of its content, recomputed by any holder. |
+### 4.1 Register band partition
 
-## statements
+| band | digits | bits / bit | qubits | free | fixed |
+| --- | --- | --- | --- | --- | --- |
+| handle | 8 | 32 | 32 | 32 | 0 |
+| version | 1 | 4 | 4 | 0 | 4 |
+| program | 10 | 40 | 40 | 40 | 0 |
+| variant | 1 | 4 | 4 | 2 | 2 |
+| tail | 12 | 48 | 48 | 48 | 0 |
+| total | 32 | 128 | 128 | 122 | 6 |
+
+### 4.2 Quantum receipt utilisation
+
+| metric | value |
+| --- | --- |
+| register.bits / bit | 128 |
+| register.free | 122 |
+| used | 122 |
+| left | 0 |
+| utilisation / % | 100 |
+| full | true |
+| debits | 122 |
+| credits | 122 |
+| balanced | true |
+| sealed | true |
+| coin | f4827920-6282-7019-a18c-4f357720f345 |
+| currency | XXX |
+| handles | 4294967296 |
+| programs | 1099511627776 |
+| addressable | 4722366482869645213696 |
+| onEveryHandle | 137438953472 |
+| addressGrover / bit | 61 |
+| digestGrover / bit | 128 |
+| digestMeetsFloor | true |
+
+## 5. Normative references and conformance
+
+This repository conforms to 30 normative ISO standards registered in Lean (30 witnessed by kernel-checked theorems, Iso.standards\_count) and 86 of 86 terms of ISO/IEC 4879:2024 (Iso.vocabulary\_whole).
+
+| standard | witnessed |
+| --- | --- |
+| ISO/IEC 4879:2024 | yes |
+| ISO 80000-10 | yes |
+| ISO 80000-5:2019 | yes |
+| IEC 80000-13:2008 | yes |
+| ISO/IEC 9834-8 | yes |
+| ISO 22739:2024 | yes |
+| ISO 23257:2022 | yes |
+| ISO/TR 23455:2019 | yes |
+| ISO 24165 | yes |
+| ISO 20022 | yes |
+| ISO 4217 | yes |
+| ISO 8601 | yes |
+| ISO 639-1 | yes |
+| ISO 3166-1 | yes |
+| ISO 690:2021 | yes |
+| ISO 26324:2025 | yes |
+| ISO 27729:2012 | yes |
+| ISO 56005:2020 | yes |
+| ISO/IEC 5962:2021 | yes |
+| ISO/IEC 5230:2020 | yes |
+| ISO/IEC 19770 | yes |
+| ISO 16 | yes |
+| ISO 9001 | yes |
+| ISO/IEC/IEEE 12207:2026 | yes |
+| ISO/IEC/IEEE 15289:2019 | yes |
+| ISO/IEC/IEEE 29119-3:2021 | yes |
+| ISO/IEC/IEEE 42010:2022 | yes |
+| ISO/IEC 25010:2023 | yes |
+| ISO/IEC 25051:2014 | yes |
+| ISO/IEC 27001:2022 | yes |
+
+## 6. Verification evidence and test cases
+
+### 6.1 Kernel ledger
+
+| kernel | value |
+| --- | --- |
+| declared theorems | 1677 |
+| kernel theorems | 2519 |
+| generated lemmas | 842 |
+| sorry | 0 |
+| recomputed by an example | 985 |
+| source | <https://github.com/uuidna/qpu/tree/v1.1.1/lean> |
+
+### 6.2 Verified statements
 
 | theorem | statement | lean | axioms | proof |
 | --- | --- | --- | --- | --- |
@@ -85,31 +159,35 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | `textbook_pqc_standards_three` | $202 + 1 = 203 \land 203 + 1 = 204 \land 204 + 1 = 205 \land 205 - 202 = 3 \land 384 \cdot 3 + 32 = 1184 \land 32 \cdot (10 \cdot 3 + 4) = 1088 \land 16 \cdot (1 + 14 \cdot (1 + 12) + 63 + 7 \cdot 35) = 7856$ | `theorem textbook_pqc_standards_three : 202 + 1 = 203 ∧ 203 + 1 = 204 ∧ 204 + 1 = 205 ∧ 205 - 202 = 3 ∧ 384 * 3 + 32 = 1184 ∧ 32 * (10 * 3 + 4) = 1088 ∧ 16 * (1 + 14 * (1 + 12) + 63 + 7 * 35) = 7856 := by decide` | none | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean#L2268> |
 | `textbook_coil_green` | $432 \bmod 360 + 432 / 9 = 120$ | `theorem textbook_coil_green : 432 % 360 + 432 / 9 = 120 := by decide` | none | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean#L705> |
 
-## kernel
+### 6.3 Executable quantum test cases (ISO/IEC/IEEE 29119-3)
 
-| kernel | value |
-| --- | --- |
-| declared theorems | 1663 |
-| kernel theorems | 2497 |
-| generated lemmas | 834 |
-| sorry | 0 |
-| recomputed by an example | 984 |
-| source | <https://github.com/uuidna/qpu/tree/v1.1.1/lean> |
+For example, teleportation sends a message qubit across 3 qubits with 2 classical bits and 4 Pauli corrections: the density-matrix simulation of the algorithm door returns the message's X, Y and Z expectations at the receiver exactly, Lean decides the whole outcome table (QuantumCommunication.teleport\_exact), and without the corrections the receiver's reduced state is maximally mixed, so nothing travels faster than light (QuantumCommunication.teleport\_no\_signalling).
 
-## use
+| door | count | theorems | examples |
+| --- | --- | --- | --- |
+| `algorithm` | 42 | 31 | `algorithm-factor-observe`, `algorithm-factor-1000-bit`, `algorithm-shor-reduction`, `algorithm-shor-beyond-bound`, `algorithm-factor-test-integer`, `algorithm-impossible-create`, `algorithm-impossible-decode`, `algorithm-discover`, `algorithm-one-door`, `algorithm-order`, `algorithm-factor-find`, `algorithm-shor-odd-order`, `algorithm-shor-91`, `algorithm-factor-mersenne`, `algorithm-factor-15`, `algorithm-factor-minus`, `algorithm-factor-continues`, `algorithm-factor-seed-continues`, `algorithm-factor-word`, `algorithm-shor-15`, `algorithm-handle-capacity`, `algorithm-qft-3`, `algorithm-grover`, `algorithm-teleportation`, `algorithm-phase-estimation`, `algorithm-qaoa`, `algorithm-deutsch-jozsa`, `algorithm-bernstein-vazirani`, `algorithm-simon`, `algorithm-vqe`, `algorithm-chsh`, `algorithm-trotter`, `algorithm-xeb`, `algorithm-no-cloning`, `algorithm-holevo`, `algorithm-gottesman-knill`, `algorithm-eastin-knill`, `algorithm-solovay-kitaev`, `algorithm-steane`, `algorithm-impossible-decode-small`, `algorithm-impossible-decode-wrong-witness`, `algorithm-factor-order-composite` |
+| `circuit` | 6 | 6 | `circuit-unlimited`, `circuit-hadamard-amplitudes`, `circuit-engine-receipt`, `circuit-phased-xz`, `circuit-hadamard-sampled`, `circuit-bit-flip-noise` |
+| `processor` | 4 | 4 | `processor-unlimited`, `processor-willow`, `processor-sycamore`, `processor-register` |
+| `quantum-error-correction` | 1 | 1 | `qec-bit-flip-0.1` |
+| `echo` | 2 | 2 | `echo-unlimited`, `echo-returns` |
+
+### 6.4 Protocol & online autonomous interface
 
 ```json
 {"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"metrics","arguments":{}}}
 ```
 
-| use | value |
+| surface | endpoint |
 | --- | --- |
 | mcp | <https://qpu.uuidna.com/api/mcp> |
-| method | POST |
+| studio | <https://qpu.uuidna.com/studio> |
+| payload-ui | <https://qpu.uuidna.com/api/globals/payload-ui> |
+| pipeline | <https://qpu.uuidna.com/api/globals/pipeline> |
+| google | <https://qpu.uuidna.com/api/globals/google> |
 
-## receipts
+## 7. Cryptographic and quantum receipts
 
-## qpu
+### 7.1 Merkle merge receipt
 
 | receipt | value |
 | --- | --- |
@@ -118,58 +196,24 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | sha256 | 13d5e419df192c7d30d41908841c0ecbf2b3222cec30c2c9564fe495bc534971 |
 | coin | 00000100-6ec9-6931-8e39-f662b696691f |
 | currency | XXX |
+| rfc | 6962 |
+| root | 55c57fc9f121c85e5afd4bdb43834f7c32ed581c4ed3873a78a27009dbed8f6b |
+| parts | 4 |
 | bytes / B | 256 |
 | bits / bit | 2048 |
 | tokens | 64 |
 | joules / J | 5.8797647566412266e-18 |
-| technique | `seal {"merkle":{"leaves":["uuid"]}}` |
-| author | Tsvetan Rouschev |
-| orcid | <https://orcid.org/0009-0000-7312-9778> |
-| licence | <https://creativecommons.org/licenses/by-nc-nd/4.0/> |
-| licensing | <https://uuidna.com/license> |
-| donation | <https://revolut.me/ceccec> |
-| contact | <https://revolut.me/ceccec> |
-| parts | 4 |
 
-| part | handle | uuid |
-| --- | --- | --- |
-| `textbook_sha256_fips_180_4` | `460f5805` | 460f5805-8ae0-14d0-b7fe-6d1fc9b6d8c8 |
-| `textbook_sha3_fips_202` | `e0028c71` | e0028c71-0058-43c4-b4a6-ec45d856dc94 |
-| `textbook_pqc_standards_three` | `ba853ce3` | ba853ce3-baac-583e-a382-a68856cb258a |
-| `textbook_coil_green` | `cdb22ab5` | cdb22ab5-7757-3466-bae4-81f905bf740a |
+### 7.2 Verified theorem receipts
 
-| qpu | value |
-| --- | --- |
-| rfc | 6962 |
-| root | 55c57fc9f121c85e5afd4bdb43834f7c32ed581c4ed3873a78a27009dbed8f6b |
-| parts | 460f5805-8ae0-14d0-b7fe-6d1fc9b6d8c8, e0028c71-0058-43c4-b4a6-ec45d856dc94, ba853ce3-baac-583e-a382-a68856cb258a, cdb22ab5-7757-3466-bae4-81f905bf740a |
+| theorem | handle | uuid | formula | bytes / B | bits / bit | joules / J |
+| --- | --- | --- | --- | --- | --- | --- |
+| `textbook_sha256_fips_180_4` | `460f5805` | 460f5805-8ae0-14d0-b7fe-6d1fc9b6d8c8 | $\forall (m\ k : \mathbb{N}), \mathrm{Fintype.card} (\mathrm{Fin} (m \cdot k) \to \mathrm{Bool}) = \mathrm{Fintype.card} (\mathrm{Fin}\ m \to \mathrm{Fin}\ k \to \mathrm{Bool})$ | 1960 | 15680 | 4.501694891803439e-17 |
+| `textbook_sha3_fips_202` | `e0028c71` | e0028c71-0058-43c4-b4a6-ec45d856dc94 | $1600 - 512 = 1088 \land 512 = 2 \cdot 256 \land 1600 - 1024 = 576 \land 1024 = 2 \cdot 512$ | 1911 | 15288 | 4.389152519508353e-17 |
+| `textbook_pqc_standards_three` | `ba853ce3` | ba853ce3-baac-583e-a382-a68856cb258a | $202 + 1 = 203 \land 203 + 1 = 204 \land 204 + 1 = 205 \land 205 - 202 = 3 \land 384 \cdot 3 + 32 = 1184 \land 32 \cdot (10 \cdot 3 + 4) = 1088 \land 16 \cdot (1 + 14 \cdot (1 + 12) + 63 + 7 \cdot 35) = 7856$ | 1923 | 15384 | 4.416713916805109e-17 |
+| `textbook_coil_green` | `cdb22ab5` | cdb22ab5-7757-3466-bae4-81f905bf740a | $432 \bmod 360 + 432 / 9 = 120$ | 1905 | 15240 | 4.3753718208599755e-17 |
 
-## textbook\_sha256\_fips\_180\_4
-
-| receipt | value |
-| --- | --- |
-| uuid | 460f5805-8ae0-14d0-b7fe-6d1fc9b6d8c8 |
-| handle | `460f5805` |
-| sha256 | 8d17358d56238ce1c5492f5c6e41a85aaace6a2948645030d1942804c10c5891 |
-| coin | 000007a8-8ae0-44d0-87fe-6d1fc9b6d8c8 |
-| currency | XXX |
-| bytes / B | 1960 |
-| bits / bit | 15680 |
-| tokens | 490 |
-| joules / J | 4.501694891803439e-17 |
-| technique | `lean/tools/Theorems.lean, seal {"nist":true}, seal {"nist":{"reverse":true,"via":"cern"}}` |
-
-| textbook\_sha256\_fips\_180\_4 | value |
-| --- | --- |
-| theorem | `textbook_sha256_fips_180_4` |
-| module | Qpu.General.Textbook |
-| source | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
-| axioms | propext, Classical.choice, Quot.sound |
-
-| textbook\_sha256\_fips\_180\_4.nist | value |
-| --- | --- |
-| host | qpu.uuidna.com |
-| holds | true |
+### 7.3 Verification probes
 
 ### textbook\_sha256\_fips\_180\_4.nist.probes
 
@@ -186,12 +230,6 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | nist-codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
 | crt-sh | <https://crt.sh/?q=qpu.uuidna.com&output=json> |
 
-| textbook\_sha256\_fips\_180\_4.cern | value |
-| --- | --- |
-| host | opendata.cern.ch |
-| via | cern |
-| holds | true |
-
 ### textbook\_sha256\_fips\_180\_4.cern.probes
 
 | id | url |
@@ -205,39 +243,6 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | ct-sth | <https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth> |
 | nist-beacon | <https://beacon.nist.gov/beacon/2.0/pulse/last> |
 | crt-sh | <https://crt.sh/?q=opendata.cern.ch&output=json> |
-
-### textbook\_sha256\_fips\_180\_4.formula
-
-| theorem | formula | bytes / B | bits / bit | tokens | joules / J | coin | currency | source |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `textbook_sha256_fips_180_4` | $\forall (m\ k : \mathbb{N}), \mathrm{Fintype.card} (\mathrm{Fin} (m \cdot k) \to \mathrm{Bool}) = \mathrm{Fintype.card} (\mathrm{Fin}\ m \to \mathrm{Fin}\ k \to \mathrm{Bool})$ | 175 | 1400 | 44 | 4.0193704391102135e-18 | 000000af-f5c6-63f2-8613-45eb992d2fe6 | XXX | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
-
-## textbook\_sha3\_fips\_202
-
-| receipt | value |
-| --- | --- |
-| uuid | e0028c71-0058-43c4-b4a6-ec45d856dc94 |
-| handle | `e0028c71` |
-| sha256 | 81a592cf17b3805c5fd1d071d0e3fb485d9fa4f2a4d778c95cfeb98ecda555ee |
-| coin | 00000777-0058-63c4-84a6-ec45d856dc94 |
-| currency | XXX |
-| bytes / B | 1911 |
-| bits / bit | 15288 |
-| tokens | 478 |
-| joules / J | 4.389152519508353e-17 |
-| technique | `lean/tools/Theorems.lean, seal {"nist":true}, seal {"nist":{"reverse":true,"via":"cern"}}` |
-
-| textbook\_sha3\_fips\_202 | value |
-| --- | --- |
-| theorem | `textbook_sha3_fips_202` |
-| module | Qpu.General.Textbook |
-| source | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
-| axioms |  |
-
-| textbook\_sha3\_fips\_202.nist | value |
-| --- | --- |
-| host | qpu.uuidna.com |
-| holds | true |
 
 ### textbook\_sha3\_fips\_202.nist.probes
 
@@ -254,12 +259,6 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | nist-codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
 | crt-sh | <https://crt.sh/?q=qpu.uuidna.com&output=json> |
 
-| textbook\_sha3\_fips\_202.cern | value |
-| --- | --- |
-| host | opendata.cern.ch |
-| via | cern |
-| holds | true |
-
 ### textbook\_sha3\_fips\_202.cern.probes
 
 | id | url |
@@ -273,39 +272,6 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | ct-sth | <https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth> |
 | nist-beacon | <https://beacon.nist.gov/beacon/2.0/pulse/last> |
 | crt-sh | <https://crt.sh/?q=opendata.cern.ch&output=json> |
-
-### textbook\_sha3\_fips\_202.formula
-
-| theorem | formula | bytes / B | bits / bit | tokens | joules / J | coin | currency | source |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `textbook_sha3_fips_202` | $1600 - 512 = 1088 \land 512 = 2 \cdot 256 \land 1600 - 1024 = 576 \land 1024 = 2 \cdot 512$ | 90 | 720 | 23 | 2.0671047972566813e-18 | 0000005a-e5e3-600f-88e4-fa974e4b3cf7 | XXX | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
-
-## textbook\_pqc\_standards\_three
-
-| receipt | value |
-| --- | --- |
-| uuid | ba853ce3-baac-583e-a382-a68856cb258a |
-| handle | `ba853ce3` |
-| sha256 | a8801ecccfc22b5cbfce544926d5f99ba15554b5eb7924ea8bc133dc92131d99 |
-| coin | 00000783-baac-283e-8382-a68856cb258a |
-| currency | XXX |
-| bytes / B | 1923 |
-| bits / bit | 15384 |
-| tokens | 481 |
-| joules / J | 4.416713916805109e-17 |
-| technique | `lean/tools/Theorems.lean, seal {"nist":true}, seal {"nist":{"reverse":true,"via":"cern"}}` |
-
-| textbook\_pqc\_standards\_three | value |
-| --- | --- |
-| theorem | `textbook_pqc_standards_three` |
-| module | Qpu.General.Textbook |
-| source | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
-| axioms |  |
-
-| textbook\_pqc\_standards\_three.nist | value |
-| --- | --- |
-| host | qpu.uuidna.com |
-| holds | true |
 
 ### textbook\_pqc\_standards\_three.nist.probes
 
@@ -322,12 +288,6 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | nist-codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
 | crt-sh | <https://crt.sh/?q=qpu.uuidna.com&output=json> |
 
-| textbook\_pqc\_standards\_three.cern | value |
-| --- | --- |
-| host | opendata.cern.ch |
-| via | cern |
-| holds | true |
-
 ### textbook\_pqc\_standards\_three.cern.probes
 
 | id | url |
@@ -341,39 +301,6 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | ct-sth | <https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth> |
 | nist-beacon | <https://beacon.nist.gov/beacon/2.0/pulse/last> |
 | crt-sh | <https://crt.sh/?q=opendata.cern.ch&output=json> |
-
-### textbook\_pqc\_standards\_three.formula
-
-| theorem | formula | bytes / B | bits / bit | tokens | joules / J | coin | currency | source |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `textbook_pqc_standards_three` | $202 + 1 = 203 \land 203 + 1 = 204 \land 204 + 1 = 205 \land 205 - 202 = 3 \land 384 \cdot 3 + 32 = 1184 \land 32 \cdot (10 \cdot 3 + 4) = 1088 \land 16 \cdot (1 + 14 \cdot (1 + 12) + 63 + 7 \cdot 35) = 7856$ | 206 | 1648 | 52 | 4.731373202609737e-18 | 000000ce-c7be-3aef-8508-9bd7711f2bb0 | XXX | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
-
-## textbook\_coil\_green
-
-| receipt | value |
-| --- | --- |
-| uuid | cdb22ab5-7757-3466-bae4-81f905bf740a |
-| handle | `cdb22ab5` |
-| sha256 | 64917fbf82f88e96f19f53da058d29de5d908598f4073636ff1d40dc17d54550 |
-| coin | 00000771-7757-6466-8ae4-81f905bf740a |
-| currency | XXX |
-| bytes / B | 1905 |
-| bits / bit | 15240 |
-| tokens | 477 |
-| joules / J | 4.3753718208599755e-17 |
-| technique | `lean/tools/Theorems.lean, seal {"nist":true}, seal {"nist":{"reverse":true,"via":"cern"}}` |
-
-| textbook\_coil\_green | value |
-| --- | --- |
-| theorem | `textbook_coil_green` |
-| module | Qpu.General.Textbook |
-| source | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
-| axioms |  |
-
-| textbook\_coil\_green.nist | value |
-| --- | --- |
-| host | qpu.uuidna.com |
-| holds | true |
 
 ### textbook\_coil\_green.nist.probes
 
@@ -390,12 +317,6 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | nist-codata | <https://physics.nist.gov/cuu/Constants/Table/allascii.txt> |
 | crt-sh | <https://crt.sh/?q=qpu.uuidna.com&output=json> |
 
-| textbook\_coil\_green.cern | value |
-| --- | --- |
-| host | opendata.cern.ch |
-| via | cern |
-| holds | true |
-
 ### textbook\_coil\_green.cern.probes
 
 | id | url |
@@ -409,28 +330,22 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | ct-sth | <https://ct.googleapis.com/logs/us1/argon2026h2/ct/v1/get-sth> |
 | nist-beacon | <https://beacon.nist.gov/beacon/2.0/pulse/last> |
 | crt-sh | <https://crt.sh/?q=opendata.cern.ch&output=json> |
-
-### textbook\_coil\_green.formula
-
-| theorem | formula | bytes / B | bits / bit | tokens | joules / J | coin | currency | source |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `textbook_coil_green` | $432 \bmod 360 + 432 / 9 = 120$ | 29 | 232 | 8 | 6.660671013382639e-19 | 0000001d-a774-129f-876b-f5812d543cda | XXX | <https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Textbook.lean> |
 ---
 
 | text | value |
 | --- | --- |
-| uuid | 4118997c-e7a3-3d3f-83d3-04cc786c37f7 |
-| sha256 | 8dceaea191a49eb6f6b23ad31d64a96a61108ee755eb4c42598304f358fee521 |
+| uuid | c331df08-3871-3a91-af3f-5b98e302d852 |
+| sha256 | 5838afe81e78633b022094e6b4f02771215f8e6c6b701a1b9083b4acf83472a7 |
 | merge | 8e27a41e-6ec9-5931-be39-f662b696691f |
-| verify | `verify {"uuid":"4118997c-e7a3-3d3f-83d3-04cc786c37f7","content":"text"}` |
+| verify | `verify {"uuid":"c331df08-3871-3a91-af3f-5b98e302d852","content":"text"}` |
 | mcp | <https://qpu.uuidna.com/api/mcp> |
 
 <!-- hardware -->
 
 | copy | value |
 | --- | --- |
-| issued | 2026-11-27T21:42:19.413Z |
-| hardware | 61fab1d4-4f3f-25fc-93eb-7cd3aa27c308 |
+| issued | 2026-11-28T15:40:50.239Z |
+| hardware | 87215fc4-5ea5-59fa-a6ff-85003989e234 |
 
 <details>
 <summary>hardware</summary>
@@ -439,16 +354,24 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 
 | receipt | value |
 | --- | --- |
-| uuid | 61fab1d4-4f3f-25fc-93eb-7cd3aa27c308 |
-| handle | `61fab1d4` |
-| sha256 | da2201b3d9dfe8ea52cdf949ceb745a67c03e72e516e82afa00d5489954c2eaf |
+| uuid | 87215fc4-5ea5-59fa-a6ff-85003989e234 |
+| handle | `87215fc4` |
+| sha256 | 44b6c5ef7a79af81e49a29448c5e1620289c77a1a654c035ba89683f3a994dd5 |
 
 | hardware | value |
 | --- | --- |
+| issued | 2026-11-28T15:40:50.239Z |
 | registerBytes | 16 |
 | registerQubits | 122 |
 | registersInMemory | 2147483648 |
 | registerQubitsInMemory | 261993005056 |
+| freeMemoryRegisters | 341200896 |
+| freeMemoryQubits | 41626509312 |
+| usedMemoryRegisters | 1806282752 |
+| usedMemoryQubits | 220366495744 |
+| memoryUtilisationPct | 84.11 |
+| processRssRegisters | 25862144 |
+| processRssQubits | 3155181568 |
 | platform | darwin |
 | type | Darwin |
 | release | 27.2.0 |
@@ -460,42 +383,42 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | cores | 10 |
 | parallelism | 10 |
 | cpuMHz | 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400 |
-| cpuUserMs | 557611660 |
+| cpuUserMs | 635833420 |
 | cpuNiceMs | 0 |
-| cpuSysMs | 258728620 |
-| cpuIdleMs | 2528901150 |
+| cpuSysMs | 284881290 |
+| cpuIdleMs | 3026529930 |
 | cpuIrqMs | 0 |
 | memoryBytes | 34359738368 |
-| freeMemoryBytes | 4624384000 |
-| load1 | 4.5654296875 |
-| load5 | 7.99365234375 |
-| load15 | 8.181640625 |
-| uptimeS | 363337 |
+| freeMemoryBytes | 5459214336 |
+| load1 | 2.91162109375 |
+| load5 | 3.87744140625 |
+| load15 | 3.8974609375 |
+| uptimeS | 428048 |
 | diskBytes | 994662584320 |
-| diskFreeBytes | 805912752128 |
-| diskAvailableBytes | 805912752128 |
+| diskFreeBytes | 796942405632 |
+| diskAvailableBytes | 796942405632 |
 | diskBlockBytes | 4096 |
-| inodes | 7885158832 |
-| inodesFree | 7870241720 |
+| inodes | 7797880192 |
+| inodesFree | 7782640680 |
 | networkInterfaces | 10 |
 | lean | leanprover/lean4:v4.33.0 |
-| rssBytes | 400048128 |
-| heapTotalBytes | 205635584 |
-| heapUsedBytes | 125690224 |
-| externalBytes | 7070402 |
-| arrayBuffersBytes | 654791 |
-| processUserMicros | 6575680 |
-| processSystemMicros | 138964 |
-| maxRssKb | 390688 |
-| pageFaults | 25067 |
+| rssBytes | 413794304 |
+| heapTotalBytes | 221102080 |
+| heapUsedBytes | 107776872 |
+| externalBytes | 6801904 |
+| arrayBuffersBytes | 385192 |
+| processUserMicros | 6525854 |
+| processSystemMicros | 157243 |
+| maxRssKb | 404112 |
+| pageFaults | 26149 |
 | fsReads | 0 |
 | fsWrites | 0 |
-| contextSwitches | 5171 |
+| contextSwitches | 6187 |
 | challenges | 574a161f, fb1cd940, d6d7b748, ec54afc7, bbcc2c0f, dbbc4fe8, 1feb6648, 52a07646, a7fa7c75, d8719ba7, 5d7c7a76, 4d938405, 02f60ed8, 3edf017a |
 | isoHardwareTerms | 3.3.5 physical qubit, 3.3.6 physical qudit, 3.4.8 quantum processor, 3.4.10 quantum computer, 3.4.26 circuit-based quantum computer, 3.4.27 one-way quantum computer, 3.4.28 adiabatic quantum computer |
 | quantumBehaviour | UNVERIFIED |
-| buildMs | 4950 |
-| at | 2026-11-27T21:42:19.413Z |
+| buildMs | 4921 |
+| at | 2026-11-28T15:40:50.239Z |
 
 | hardware.versions | value |
 | --- | --- |
