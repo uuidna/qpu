@@ -1,0 +1,42 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Physics.EquivalencePrinciple}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EquivalencePrinciple.lean}
+
+\paragraph{\texttt{Qpu.Physics.EquivalencePrinciple.cern\_alpha\_g\_rules\_out\_antigravity}}
+CERN ALPHA-g (*Nature* 621, 716–722, 2023) empirical antihydrogen free-fall measurement `ḡ/g = 0.75 ± 0.13 ± 0.16` (scaled by 100): the conservative linear-sum uncertainty `13 + 16 = 29` leaves lower bound `75 - 29 = 46 > 0` (antihydrogen falls downward) and excludes repulsive antigravity (`-100`) by `75 + 100 = 175 > 5 * 29 = 145` (> 5σ). Proved via `Nat.zero\_lt\_succ` and `Nat.lt\_of\_sub\_ne\_zero`.
+\[ 0 < 75 - (13 + 16) \land 5 \cdot (13 + 16) < 75 + 100 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EquivalencePrinciple.lean\#L71}
+
+\paragraph{\texttt{Qpu.Physics.EquivalencePrinciple.de\_sitter\_vacuum\_violates\_sec}}
+General Relativity de Sitter vacuum equation of state (`p = -rho`): the Strong Energy Condition trace `rho + (-rho + -rho + -rho)` equals `-(rho + rho)`, which is strictly negative for any positive vacuum energy density `rho > 0` (cosmic acceleration via cosmological constant Lambda, not negative-mass antigravity). Proved with Mathlib's `add\_neg\_cancel\_left`, `neg\_add`, `neg\_lt\_zero`, `add\_pos`, `IsLeftCancelAdd.addLeftStrictMono\_of\_addLeftMono`, `instIsLeftCancelAddOfAddLeftReflectLE`, `AddGroup.addLeftReflectLE\_of\_addLeftMono` and `Rat.instAddLeftMono`.
+\[ \forall (\mathrm{rho} : \mathbb{Q}), 0 < \mathrm{rho} \to \mathrm{rho} + (-\mathrm{rho} + (-\mathrm{rho} + -\mathrm{rho})) < 0 \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EquivalencePrinciple.lean\#L55}
+
+\paragraph{\texttt{Qpu.Physics.EquivalencePrinciple.newton\_attractive\_sign}}
+Positivity of Newtonian gravitational force for positive `G`, `M`, `m` and non-zero separation `r`: gravity between positive-mass bodies is strictly attractive (`0 < G * M * m / (r * r)`). Proved with Mathlib's `div\_pos`, `mul\_pos`, `mul\_self\_pos`, `PosMulReflectLE.toPosMulReflectLT`, `PosMulStrictMono.toPosMulReflectLE`, `IsStrictOrderedRing.toPosMulStrictMono`, `Rat.instIsStrictOrderedRing`, `AddGroup.existsAddOfLE`, `IsStrictOrderedRing.toMulPosStrictMono`, `IsLeftCancelAdd.addLeftStrictMono\_of\_addLeftMono`, `instIsLeftCancelAddOfAddLeftReflectLE`, `AddGroup.addLeftReflectLE\_of\_addLeftMono`, `Rat.instAddLeftMono` and `contravariant\_lt\_of\_covariant\_le`.
+\[ \forall (G\ M\ m\ r : \mathbb{Q}), 0 < G \to 0 < M \to 0 < m \to r \ne 0 \to 0 < G \cdot M \cdot m / (r \cdot r) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EquivalencePrinciple.lean\#L37}
+
+\paragraph{\texttt{Qpu.Physics.EquivalencePrinciple.nist\_codata\_G\_positive\_interval}}
+NIST CODATA 2022 Newtonian constant of gravitation `G = 6.67430(15) × 10⁻¹¹ m³ kg⁻¹ s⁻²`: the 1σ mantissa interval `[667415, 667445]` is strictly positive and symmetric around `667430`. Proved via `Nat.zero\_lt\_succ` and `Nat.lt\_of\_sub\_ne\_zero`.
+\[ 0 < 667430 - 15 \land 667430 - 15 < 667430 \land 667430 < 667430 + 15 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EquivalencePrinciple.lean\#L63}
+
+\paragraph{\texttt{Qpu.Physics.EquivalencePrinciple.strong\_energy\_condition\_nonneg}}
+Strong Energy Condition for non-negative energy density `rho ≥ 0` and non-negative pressure `p ≥ 0`: `0 ≤ rho + (p + p + p)` (i.e. `rho + 3p ≥ 0`), so gravitational focusing is non-repulsive. Proved with Mathlib's `add\_nonneg` and `Rat.instAddLeftMono`.
+\[ \forall (\mathrm{rho}\ p : \mathbb{Q}), 0 \le \mathrm{rho} \to 0 \le p \to 0 \le \mathrm{rho} + (p + p + p) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EquivalencePrinciple.lean\#L45}
+
+\paragraph{\texttt{Qpu.Physics.EquivalencePrinciple.weak\_equivalence\_mass\_cancels}}
+Weak Equivalence Principle (mass cancellation): whenever inertial mass equals gravitational mass (`m\_i = m\_g ≠ 0`), the Newtonian gravitational acceleration `a = G * M / (r * r)` is strictly independent of the test body's mass. Proved with Mathlib's `mul\_div\_right\_comm`, `mul\_comm`, `mul\_left\_cancel₀`, `IsCancelMulZero.toIsLeftCancelMulZero`, `IsDomain.toIsCancelMulZero` and `Rat.isDomain`.
+\[ \forall (G\ M\ r\ \mathrm{m\_i}\ \mathrm{m\_g}\ a : \mathbb{Q}), \mathrm{m\_i} \ne 0 \to \mathrm{m\_i} = \mathrm{m\_g} \to \mathrm{m\_i} \cdot a = G \cdot M \cdot \mathrm{m\_g} / (r \cdot r) \to a = G \cdot M / (r \cdot r) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EquivalencePrinciple.lean\#L24}
+\end{document}

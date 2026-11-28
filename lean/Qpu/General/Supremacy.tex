@@ -1,0 +1,32 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Supremacy}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Supremacy.lean}
+
+\paragraph{\texttt{Supremacy.lanes\_le\_cores}}
+\[ \forall \{\mathrm{cores} : \mathbb{N}\} (\mathrm{share} : \mathbb{N}), 1 \le \mathrm{cores} \to \mathrm{max}\ 1 (\mathrm{min}\ \mathrm{cores}\ \mathrm{share}) \le \mathrm{cores} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Supremacy.lean\#L35}
+
+\paragraph{\texttt{Supremacy.lanes\_pos}}
+\[ \forall (\mathrm{share} : \mathbb{N}), 1 \le \mathrm{max}\ 1\ \mathrm{share} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Supremacy.lean\#L33}
+
+\paragraph{\texttt{Supremacy.separation}}
+\[ \forall \{\mathrm{tq}\ b\ \mathrm{tc} : \mathbb{N}\}, \mathrm{tq} \le b \to b < \mathrm{tc} \to \mathrm{tq} < \mathrm{tc} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Supremacy.lean\#L25}
+
+\paragraph{\texttt{Supremacy.sycamore\_rcs\_within}}
+\[ 15 \cdot 3600 \le 13787000000 \cdot 31557600 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Supremacy.lean\#L30}
+
+\paragraph{\texttt{Supremacy.willow\_rcs}}
+\[ 300 < 10 ^{25} \cdot 31557600 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Supremacy.lean\#L27}
+\end{document}

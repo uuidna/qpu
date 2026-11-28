@@ -1,0 +1,60 @@
+# The tree run on a schedule by its own doors: every generator, door, selftest and test of next, offline, with no key and no language
+# model. What the doors can decide they decide here every day; a step that turns red turns the run red, and the receipt is the last line.
+name: cron
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+jobs:
+  next:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 2
+
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Cache elan toolchains
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.elan/toolchains
+          key: elan-${{ hashFiles('lean-toolchain') }}
+
+      - name: Cache Lake packages
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .lake/packages
+          key: lake-packages-${{ hashFiles('lake-manifest.json', 'lean-toolchain') }}
+
+      - name: Fetch the Mathlib build cache
+        run: lake exe cache get
+
+      - name: Cache the tree's Lean build
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: .lake/build
+          key: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ hashFiles('lakefile.lean', 'lean/**/*.lean') }}
+          restore-keys: |
+            lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 10.34.9
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 26
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: The doors decide what they can
+        run: node src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts next --offline

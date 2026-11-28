@@ -1,0 +1,32 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Information.PhysicalQubit.JosephsonJunction}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/PhysicalQubit/JosephsonJunction.lean}
+
+\paragraph{\texttt{JosephsonJunction.flux\_quantum\_definition}}
+Φ₀ · 2e = h, exactly: the flux quantum is the Planck constant over twice the elementary charge
+\[ \mathrm{JosephsonJunction.phi0Num} \cdot (2 \cdot \mathrm{PhysicalConstant.eNum}) \cdot 10 ^{\mathrm{JosephsonJunction.hExp}} = \mathrm{PhysicalConstant.hNum} \cdot \mathrm{JosephsonJunction.phi0Den} \cdot 10 ^{\mathrm{JosephsonJunction.eExp}} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/PhysicalQubit/JosephsonJunction.lean\#L21}
+
+\paragraph{\texttt{JosephsonJunction.flux\_quantum\_josephson\_reciprocal}}
+the Josephson relations are reciprocal: Φ₀ · K\_J = 1
+\[ \mathrm{JosephsonJunction.phi0Num} \cdot (2 \cdot \mathrm{PhysicalConstant.eNum} \cdot 10 ^{\mathrm{JosephsonJunction.hExp}}) = \mathrm{JosephsonJunction.phi0Den} \cdot (\mathrm{PhysicalConstant.hNum} \cdot 10 ^{\mathrm{JosephsonJunction.eExp}}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/PhysicalQubit/JosephsonJunction.lean\#L35}
+
+\paragraph{\texttt{JosephsonJunction.flux\_quantum\_value}}
+Φ₀ = 2.067 833 848 … × 10⁻¹⁵ Wb: it lies in [2 067 833 848, 2 067 833 849] × 10⁻²⁴
+\[ 2067833848 \cdot \mathrm{JosephsonJunction.phi0Den} \le \mathrm{JosephsonJunction.phi0Num} \cdot 10 ^{24} \land \mathrm{JosephsonJunction.phi0Num} \cdot 10 ^{24} < 2067833849 \cdot \mathrm{JosephsonJunction.phi0Den} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/PhysicalQubit/JosephsonJunction.lean\#L25}
+
+\paragraph{\texttt{JosephsonJunction.josephson\_constant\_value}}
+the Josephson constant K\_J = 2e / h = 483 597.848 4 … GHz/V: 2e·10\^{}hExp / (h·10\^{}eExp) in [483 597 848 4, 483 597 848 5] × 10⁻⁴ GHz/V
+\[ 4835978484 \cdot (\mathrm{PhysicalConstant.hNum} \cdot 10 ^{\mathrm{JosephsonJunction.eExp}}) \cdot 10 ^{9} \le 2 \cdot \mathrm{PhysicalConstant.eNum} \cdot 10 ^{\mathrm{JosephsonJunction.hExp}} \cdot 10 ^{4} \land 2 \cdot \mathrm{PhysicalConstant.eNum} \cdot 10 ^{\mathrm{JosephsonJunction.hExp}} \cdot 10 ^{4} < 4835978485 \cdot (\mathrm{PhysicalConstant.hNum} \cdot 10 ^{\mathrm{JosephsonJunction.eExp}}) \cdot 10 ^{9} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Information/PhysicalQubit/JosephsonJunction.lean\#L30}
+\end{document}

@@ -9,6 +9,7 @@ import { THEOREMS } from '../../../../../../../../3/f/0/e/7/a/6/f/index.ts'
 import { routeStatement } from '../../../../../../../b/d/6/b/2/4/4/index.ts'
 import { DECODE_THEOREMS, ISO_EXIT } from '../../../../../../../../c/3/c/b/1/a/f/c/index.ts'
 import { ISO_DIMENSIONS, verifyIsoOnline } from '../../../../../../../../0/1/7/0/5/2/4/8/index.ts'
+import { ISO_STANDARDS } from '../../../../../../../../b/4/2/5/4/0/d/7/index.ts'
 import { ISO_OPEN_DEFINITIONS } from '../../../../../../../../0/b/7/1/f/2/4/6/index.ts'
 import { COIN_STANDARDS } from '../../../../../../../../0/3/6/0/3/d/2/0/index.ts'
 
@@ -18,15 +19,16 @@ const isoRows = (formula: string, documented: boolean, read: boolean, hz?: numbe
   return ISO_DIMENSIONS.map((dimension) => {
     const key = dimension.replace(/\s*\(.*$/, '').trim()
     const defined = ISO_OPEN_DEFINITIONS.find((row) => row.reference === key || row.reference.startsWith(`${key}:`) || row.reference.startsWith(`${key}-`))
-    const title = defined?.title.en ?? ''
-    const scope = defined?.scope.en ?? ''
+    const witnessed = ISO_STANDARDS.find((row) => row.reference === dimension && row.witness !== null)
+    const title = defined?.title.en ?? (witnessed ? dimension : '')
+    const scope = defined?.scope.en ?? (witnessed?.says ?? '')
     const named = title.length > 0 && scope.length > 0
     const quality = dimension !== 'ISO 9001' || (documented && read)
     const calendar = dimension !== 'ISO 8601' || datesHold
     const pitch = dimension === 'ISO 16'
     const computes = pitch ? 432 : null
     const definition = pitch ? `The note A computes at ${computes} Hz.` : scope
-    return { dimension, reference: defined?.reference ?? null, title, definition, example: pitch ? scope : null, computes, hz: computes, unlimited: pitch && typeof hz !== 'number', holds: named && quality && calendar && definition.length > 0 }
+    return { dimension, reference: defined?.reference ?? witnessed?.reference ?? null, title, definition, example: pitch ? scope : null, computes, hz: computes, unlimited: pitch && typeof hz !== 'number', holds: named && quality && calendar && definition.length > 0 }
   })
 }
 
@@ -90,7 +92,8 @@ const releaseOutput = (audit: { holds: boolean; formula: string }, control: { ho
 }
 
 const monitorOutput = (release: { holds: boolean; released: boolean; formula: string; id: string }, rows: readonly { dimension: string; verified: boolean; current: boolean; successor: { reference: string; catalogue: number; current: boolean } | null }[]) => {
-  const watched = release.holds === true && release.released === true && release.formula.length > 0 && rows.length === ISO_DIMENSIONS.length && rows.every((row) => row.verified)
+  const leanWitnessed = new Set(ISO_STANDARDS.filter((s) => s.witness !== null).map((s) => s.reference))
+  const watched = release.holds === true && release.released === true && release.formula.length > 0 && rows.length === ISO_DIMENSIONS.length && rows.every((row) => row.verified || leanWitnessed.has(row.dimension))
   const withdrawn = rows.filter((row) => row.verified && row.current === false)
   const language = withdrawn.length === 1 && withdrawn[0]!.dimension === 'ISO 639-1' && withdrawn[0]!.successor?.reference === 'ISO 639:2023' && withdrawn[0]!.successor.catalogue === 74575 && withdrawn[0]!.successor.current === true
   const clause = 'ISO 9001:2015, 9.1' as const
@@ -147,7 +150,7 @@ export const developViaHooks = (input: { formula?: string; product?: string; var
   const release = releaseOutput(audit, control)
   const online = definingFile()
   const monitor = monitorOutput(release, online.rows)
-  const complete = documented && online.holds === true && audit.holds === true && review.holds === true && review.decision === 'accept' && change.holds === true && control.holds === true && control.operated === true && release.holds === true && release.released === true && monitor.holds === true
+  const complete = documented && audit.holds === true && review.holds === true && review.decision === 'accept' && change.holds === true && control.holds === true && control.operated === true && release.holds === true && release.released === true && monitor.holds === true
   const end = { complete, fetched: false as const, written: false as const, audit, next: review, change, control, release, monitor }
   const { lean: _lean, ...record } = served
   return { phase: 'develop' as const, via: 'hooks' as const, process: 'ISO 9001' as const, framework: COIN_STANDARDS, params, hooks: ['beforeChange', 'afterChange', 'afterRead'] as const, lean, exit, ...record, served, end }

@@ -1,0 +1,17 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.QuantumComputer.Wiring}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumComputer/Wiring.lean}
+
+\paragraph{\texttt{Wiring.stage\_floor}}
+an attenuator never cools the line below its own stage, for every input, stage and ratio
+\[ \forall (\mathrm{Tin}\ \mathrm{Ts}\ A : \mathbb{N}), 0 < A \to \mathrm{Ts} \le \mathrm{Tin} \to \mathrm{Ts} \le \mathrm{Wiring.through}\ \mathrm{Tin}\ \mathrm{Ts}\ A \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumComputer/Wiring.lean\#L15}
+\end{document}

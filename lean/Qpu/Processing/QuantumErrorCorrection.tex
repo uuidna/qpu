@@ -1,0 +1,37 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.QuantumErrorCorrection}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumErrorCorrection.lean}
+
+\paragraph{\texttt{QuantumErrorCorrection.distance\_corrects}}
+at distance d ≥ 2t + 1, two error patterns of weight at most t never span d: a code of that distance corrects t errors
+\[ \forall (d\ t\ e_{1} e_{2} : \mathbb{N}), 2 \cdot t + 1 \le d \to e_{1} \le t \to e_{2} \le t \to e_{1} + e_{2} < d \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumErrorCorrection.lean\#L42}
+
+\paragraph{\texttt{QuantumErrorCorrection.repetition\_corrects}}
+the repetition code corrects every single bit flip, and no flip at all
+\[ \forall (b : \mathrm{Bool}), \forall e < 4, \mathrm{QuantumErrorCorrection.decode} (\mathrm{QuantumErrorCorrection.flip}\ e (\mathrm{QuantumErrorCorrection.encode}\ b)) = b \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumErrorCorrection.lean\#L19}
+
+\paragraph{\texttt{QuantumErrorCorrection.shor\_nine}}
+Shor: every single bit flip trips its own syndrome, and every single phase flip names its block
+\[ (\forall a < 9, \mathrm{QuantumErrorCorrection.flags}\ \mathrm{QuantumErrorCorrection.bitChecks}\ a \ne \mathrm{QuantumErrorCorrection.flags}\ \mathrm{QuantumErrorCorrection.bitChecks}\ 9 \land \forall b < 9, \mathrm{QuantumErrorCorrection.flags}\ \mathrm{QuantumErrorCorrection.bitChecks}\ a = \mathrm{QuantumErrorCorrection.flags}\ \mathrm{QuantumErrorCorrection.bitChecks}\ b \to a = b) \land \forall a < 9, \mathrm{QuantumErrorCorrection.flags}\ \mathrm{QuantumErrorCorrection.phaseChecks}\ a \ne \mathrm{QuantumErrorCorrection.flags}\ \mathrm{QuantumErrorCorrection.phaseChecks}\ 9 \land \forall b < 9, \mathrm{QuantumErrorCorrection.flags}\ \mathrm{QuantumErrorCorrection.phaseChecks}\ a = \mathrm{QuantumErrorCorrection.flags}\ \mathrm{QuantumErrorCorrection.phaseChecks}\ b \leftrightarrow a / 3 = b / 3 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumErrorCorrection.lean\#L38}
+
+\paragraph{\texttt{QuantumErrorCorrection.steane\_corrects}}
+Steane: each single-qubit error trips its own nonzero syndrome, the position it names
+\[ \forall i < 7, \mathrm{QuantumErrorCorrection.syndrome}\ i = i + 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumErrorCorrection.lean\#L27}
+
+\paragraph{\texttt{QuantumErrorCorrection.steane\_css}}
+Steane is CSS: every pair of checks overlaps on an even number of qubits, so the X and Z checks commute
+\[ \forall a < 3, \forall b < 3, (\mathrm{List.filter} (\lambda \ i \mapsto \mathrm{QuantumErrorCorrection.hamming}\ a\ i \land \mathrm{QuantumErrorCorrection.hamming}\ b\ i) (\mathrm{List.range}\ 7))\mathrm{.length} \bmod 2 = 0 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumErrorCorrection.lean\#L29}
+\end{document}

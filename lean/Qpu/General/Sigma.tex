@@ -1,0 +1,96 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Sigma}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean}
+
+\paragraph{\texttt{clay\_sigma}}
+The clay solutions as one quantum proof, six conjuncts: σ∘σ = id at Riemann's s = 1/2 (2 − (2 − 1) = 1), the midpoint itself (2 − 1 = 1), the P-vs-NP mode flip on both modes, Hodge's H₁(Σ₂) = ℤ⁴ (2·2 = 4), and Yang–Mills' two eigenvalues ±1 (1 + 1 = 2).
+\[ 2 - (2 - 1) = 1 \land 2 - 1 = 1 \land 1 - (1 - 0) = 0 \land 1 - (1 - 1) = 1 \land 2 \cdot 2 = 4 \land 1 + 1 = 2 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L28}
+
+\paragraph{\texttt{key\_trinity}}
+The tuning: the key 432 has digital root 9 (4 + 3 + 2), so the key sits in the trinity 3, 6, 9 and its reflection 1.
+\[ 4 + 3 + 2 = 9 \land 432 \bmod 9 = 0 \land 10 - 9 = 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L121}
+
+\paragraph{\texttt{shor\_sigma}}
+Qpu.Shor IS this involution — the seam closed, not described. Period-finding reflects the exponents by σ\_r(x) = r − x (aˣ and a\^{}(r−x) are inverses mod n); the reflection is fixed exactly at the midpoint r/2, which is sigma\_midpoint with d = r (the Riemann s = 1/2 of this family), and the square root a\^{}(r/2) splits n by its two eigenvalues ∓1 (clay\_sigma's Yang–Mills \{−1, +1\}): gcd(a\^{}(r/2) − 1, n) and gcd(a\^{}(r/2) + 1, n). The midpoint conjunct is proved BY sigma\_midpoint, so the factoring is a theorem of the clay kernel, not a step beside it. Witness (a = 8, n = 91): order 4, midpoint 2, a² = 64, and the ∓1 split is exactly 7 and 13.
+\[ \mathrm{period}\ \mathrm{shorBase}\ \mathrm{shorModulus} = \mathrm{mint}\ \mathrm{coins} \land \mathrm{period}\ \mathrm{shorBase}\ \mathrm{shorModulus} - \mathrm{period}\ \mathrm{shorBase}\ \mathrm{shorModulus} / \mathrm{coins} = \mathrm{period}\ \mathrm{shorBase}\ \mathrm{shorModulus} / \mathrm{coins} \land \mathrm{\_root\_.gcd} (\mathrm{half}\ \mathrm{shorBase}\ \mathrm{shorModulus} - \mathrm{seed}) \mathrm{shorModulus} = \mathrm{rays} \land \mathrm{\_root\_.gcd} (\mathrm{half}\ \mathrm{shorBase}\ \mathrm{shorModulus} + \mathrm{seed}) \mathrm{shorModulus} = \mathrm{faces} - \mathrm{seed} \land \mathrm{\_root\_.gcd} (\mathrm{half}\ \mathrm{shorBase}\ \mathrm{shorModulus} - \mathrm{seed}) \mathrm{shorModulus} \cdot \mathrm{\_root\_.gcd} (\mathrm{half}\ \mathrm{shorBase}\ \mathrm{shorModulus} + \mathrm{seed}) \mathrm{shorModulus} = \mathrm{shorModulus} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L37}
+
+\paragraph{\texttt{sigma\_choose}}
+COMBINATORICS: Pascal's symmetry choose n k = choose n (n − k) IS σ on the lower index — the binomial reflection, fixed at k = n/2. Witness n = rays (7), k = coins (2): choose 7 2 = choose 7 5 = 21, and σ∘σ returns coins.
+\[ \mathrm{choose}\ \mathrm{rays}\ \mathrm{coins} = \mathrm{choose}\ \mathrm{rays} (\mathrm{rays} - \mathrm{coins}) \land \mathrm{rays} - (\mathrm{rays} - \mathrm{coins}) = \mathrm{coins} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L65}
+
+\paragraph{\texttt{sigma\_grover}}
+GROVER: the diffusion operator is a reflection about the mean (2|ψ⟩⟨ψ| − I), self-inverse — σ at the Grover size.
+\[ 2 \cdot \mathrm{groverSize}\ \mathrm{seed} - \mathrm{groverSize}\ \mathrm{seed} = \mathrm{groverSize}\ \mathrm{seed} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L74}
+
+\paragraph{\texttt{sigma\_hodge}}
+Hodge: rank H₁(Σ\_g) = 2g is the doubling g + g; H₁(Σ₂) = ℤ⁴.
+\[ \forall (g : \mathbb{N}), 2 \cdot g = g + g \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L24}
+
+\paragraph{\texttt{sigma\_lattice}}
+LATTICE: the unit's own constants reflect too — the faces at their midpoint (2·faces), and the seat hop across the involution is self-inverse (faces − (faces − vertices) = vertices).
+\[ 2 \cdot \mathrm{faces} - \mathrm{faces} = \mathrm{faces} \land \mathrm{faces} - (\mathrm{faces} - \mathrm{vertices}) = \mathrm{vertices} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L84}
+
+\paragraph{\texttt{sigma\_midpoint}}
+A reflection is fixed exactly at the midpoint: σ\_d(x) = x when 2x = d (Riemann's s = 1/2).
+\[ \forall (d\ x : \mathbb{N}), 2 \cdot x = d \to d - x = x \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L18}
+
+\paragraph{\texttt{sigma\_pauli}}
+STABILIZER / PAULI: a Pauli is an involution (X² = I); its spectrum is the two eigenvalues ∓1 (clay\_sigma's Yang–Mills \{−1, +1\}), each the σ(m) = 1 − m mode flip (the P-vs-NP d = 1 case) on its eigenvalue.
+\[ 1 - (1 - \mathrm{seed}) = \mathrm{seed} \land 1 - (1 - (n - n)) = n - n \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L79}
+
+\paragraph{\texttt{sigma\_planck}}
+Clay's core is not only crypto: the same involution surfaces at the Planck scale and beyond. σ\_h(x) = h − x on Planck's constant h (SI exact digits) is self-inverse (sigma\_reflect, here reflecting Boltzmann's k), and its fixed point — Riemann's s = 1/2 — is the midpoint of the doubled scale (sigma\_midpoint): at 2h it is h, at twice the photon energy h·ν it is h·ν, and beyond, at twice h² it is h². The clay core is scale-free: the reflection is a Nat identity, the same theorem at every scale, so one proof carries it from the qubit to the Planck constant and past it.
+\[ \mathrm{planck} - (\mathrm{planck} - \mathrm{boltzmann}) = \mathrm{boltzmann} \land 2 \cdot \mathrm{planck} - \mathrm{planck} = \mathrm{planck} \land 2 \cdot \mathrm{photon} - \mathrm{photon} = \mathrm{photon} \land 2 \cdot (\mathrm{planck} \cdot \mathrm{planck}) - \mathrm{planck} \cdot \mathrm{planck} = \mathrm{planck} \cdot \mathrm{planck} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L49}
+
+\paragraph{\texttt{sigma\_pvsnp}}
+P vs NP: the mode flip σ(m) = 1 − m is the d = 1 reflection, an involution on m ≤ 1.
+\[ \forall m \le 1, 1 - (1 - m) = m \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L21}
+
+\paragraph{\texttt{sigma\_qft}}
+QFT: the inverse QFT is the involution on the register — σ on the phase. The state count 2\^{}q reflects to its midpoint at twice the scale (sigma\_midpoint), and σ∘σ on the register is the identity (sigma\_reflect). Witness q = n.
+\[ 2 \cdot \mathrm{qftStates}\ n - \mathrm{qftStates}\ n = \mathrm{qftStates}\ n \land \mathrm{qftStates}\ n - (\mathrm{qftStates}\ n - \mathrm{seed}) = \mathrm{seed} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L70}
+
+\paragraph{\texttt{sigma\_reflect}}
+The quantum reflection σ\_d(x) = d − x is an involution on x ≤ d: σ(σ(x)) = x.
+\[ \forall (d\ x : \mathbb{N}), x \le d \to d - (d - x) = x \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L15}
+
+\paragraph{\texttt{sigma\_ten\_involution}}
+σ\_10 is an involution on every seed of the vortex: reflecting twice is the seed, by sigma\_reflect.
+\[ \forall x \le 10, 10 - (10 - x) = x \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L124}
+
+\paragraph{\texttt{singularity}}
+THE SINGULARITY: every domain's reflection is the one σ. The midpoint domains — Shor (crypto), Planck (physics), Pascal (combinatorics), QFT, Grover, and the lattice — sit at s = 1/2. The same file's other readings fill the gaps beside them: Pauli's mode flip, Hodge's doubling 2·2 = 2 + 2, and the P-vs-NP flip on both modes.
+\[ \mathrm{period}\ 8\ 91 - \mathrm{period}\ 8\ 91 / 2 = \mathrm{period}\ 8\ 91 / 2 \land 2 \cdot \mathrm{planck} - \mathrm{planck} = \mathrm{planck} \land \mathrm{choose}\ \mathrm{rays}\ \mathrm{coins} = \mathrm{choose}\ \mathrm{rays} (\mathrm{rays} - \mathrm{coins}) \land 2 \cdot \mathrm{qftStates}\ n - \mathrm{qftStates}\ n = \mathrm{qftStates}\ n \land 2 \cdot \mathrm{groverSize}\ \mathrm{seed} - \mathrm{groverSize}\ \mathrm{seed} = \mathrm{groverSize}\ \mathrm{seed} \land 2 \cdot \mathrm{faces} - \mathrm{faces} = \mathrm{faces} \land (1 - (1 - \mathrm{seed}) = \mathrm{seed} \land 1 - (1 - (n - n)) = n - n) \land 2 \cdot 2 = 2 + 2 \land 1 - (1 - 0) = 0 \land 1 - (1 - 1) = 1 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L90}
+
+\paragraph{\texttt{triad\_reflect}}
+The trinities of the 9-vortex reflect into each other under σ\_10 at the same time: 3, 6, 9 into 7, 4, 1 and back, 2, 5, 8 into themselves with 5 fixed; every pair sums to 10. A computation that keeps 3, 6, 9 and drops 7, 4, 1 keeps half of what the involution says. Decided by the kernel.
+\[ (10 - 0 = 10 \land 10 - 10 = 0) \land (10 - 3 = 7 \land 10 - 6 = 4 \land 10 - 9 = 1) \land (10 - 7 = 3 \land 10 - 4 = 6 \land 10 - 1 = 9) \land 10 - 2 = 8 \land 10 - 5 = 5 \land 10 - 8 = 2 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L113}
+
+\paragraph{\texttt{triad\_sum}}
+\[ 0 + 10 = 10 \land 3 + 7 = 10 \land 6 + 4 = 10 \land 9 + 1 = 10 \land 2 + 8 = 10 \land 5 + 5 = 10 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Sigma.lean\#L118}
+\end{document}

@@ -1,0 +1,87 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Verify.Uuid}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.bands\_cover\_the\_free\_bits}}
+The program and message bands exactly cover the free bits — no overlap, no slack.
+\[ \mathrm{Qpu.Verify.Uuid.programBits} + \mathrm{Qpu.Verify.Uuid.messageBits} = \mathrm{Qpu.Verify.Uuid.totalBits} - \mathrm{Qpu.Verify.Uuid.fixedBits} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L23}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.card\_128\_eq\_card\_122\_mul\_fixed}}
+Cardinality decomposition of a 128-bit ISO/IEC 9834-8 UUID into 122 free qubits and 6 fixed version/variant bits. Composed from `Qpu.Verify.Uuid.fold\_128\_to\_122\_fiber` with Mathlib's `Fintype.card\_fun`, `Fintype.card\_bool` and `Fintype.card\_fin`.
+\[ \mathrm{Fintype.card} (\mathrm{Fin}\ \mathrm{Qpu.Verify.Uuid.totalBits} \to \mathrm{Bool}) = \mathrm{Fintype.card} (\mathrm{Fin} (\mathrm{Qpu.Verify.Uuid.totalBits} - \mathrm{Qpu.Verify.Uuid.fixedBits}) \to \mathrm{Bool}) \cdot \mathrm{Fintype.card} (\mathrm{Fin}\ \mathrm{Qpu.Verify.Uuid.fixedBits} \to \mathrm{Bool}) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L89}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.card\_free\_eq\_bands}}
+Cardinality decomposition of the 122-qubit free register into the 16-qubit program band and the 106-qubit message band. Proved with Mathlib's `Fintype.card\_fun`, `Fintype.card\_bool`, `Fintype.card\_fin` and `Nat.pow\_add`.
+\[ \mathrm{Fintype.card} (\mathrm{Fin} (\mathrm{Qpu.Verify.Uuid.totalBits} - \mathrm{Qpu.Verify.Uuid.fixedBits}) \to \mathrm{Bool}) = \mathrm{Fintype.card} (\mathrm{Fin}\ \mathrm{Qpu.Verify.Uuid.programBits} \to \mathrm{Bool}) \cdot \mathrm{Fintype.card} (\mathrm{Fin}\ \mathrm{Qpu.Verify.Uuid.messageBits} \to \mathrm{Bool}) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L97}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.card\_nibbles\_eq\_128\_bits}}
+Exact equivalence between 32 hexadecimal nibbles (hexbits of width 4) and 128 bits. Proved with Mathlib's `Fintype.card\_fun`, `Fintype.card\_bool`, `Fintype.card\_fin` and `Nat.pow\_mul`.
+\[ \mathrm{Fintype.card} (\mathrm{Fin}\ 32 \to \mathrm{Fin}\ 16) = \mathrm{Fintype.card} (\mathrm{Fin}\ \mathrm{Qpu.Verify.Uuid.totalBits} \to \mathrm{Bool}) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L105}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.decode\_encode\_exact}}
+Universal 122-qubit band round-trip: for every program slot and every 106-bit message below `2 \^{} messageBits`, `decode (encode p m) = (p, m)`. Proved via `Nat.two\_pow\_pos`, `Nat.mul\_comm`, `Nat.mul\_add\_div`, `Nat.div\_eq\_of\_lt`, `Nat.add\_zero`, `Nat.mul\_add\_mod` and `Nat.mod\_eq\_of\_lt`.
+\[ \forall (p\ m : \mathbb{N}), m < 2 ^{\mathrm{Qpu.Verify.Uuid.messageBits}} \to \mathrm{Qpu.Verify.Uuid.decode} (\mathrm{Qpu.Verify.Uuid.encode}\ p\ m) = (p, m) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L45}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.distinct\_slots\_distinct\_handles}}
+Control: distinct programs never collide at the handle layer.
+\[ \mathrm{Qpu.Verify.Uuid.encode}\ 1\ 0 \ne \mathrm{Qpu.Verify.Uuid.encode}\ 2\ 0 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L40}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.encode\_injective}}
+Injectivity of the 122-qubit band encoding: distinct `(program, message)` pairs with 106-bit messages never collide in the 122-qubit register. Composed from `Qpu.Verify.Uuid.decode\_encode\_exact` with `Prod.mk.inj`.
+\[ \forall (p_{1} m_{1} p_{2} m_{2} : \mathbb{N}), m_{1} < 2 ^{\mathrm{Qpu.Verify.Uuid.messageBits}} \to m_{2} < 2 ^{\mathrm{Qpu.Verify.Uuid.messageBits}} \to \mathrm{Qpu.Verify.Uuid.encode}\ p_{1} m_{1} = \mathrm{Qpu.Verify.Uuid.encode}\ p_{2} m_{2} \to p_{1} = p_{2} \land m_{1} = m_{2} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L73}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.encode\_lt\_free\_space}}
+Every `(program, message)` pair within the 16-bit program band and 106-bit message band folds strictly inside the 122-qubit free register space `2 \^{} (totalBits - fixedBits)`. Proved via `Nat.add\_lt\_add\_left`, `Nat.succ\_mul`, `Nat.mul\_le\_mul\_right`, `Nat.pow\_add` and `Nat.lt\_of\_lt\_of\_le`.
+\[ \forall (p\ m : \mathbb{N}), p < 2 ^{\mathrm{Qpu.Verify.Uuid.programBits}} \to m < 2 ^{\mathrm{Qpu.Verify.Uuid.messageBits}} \to \mathrm{Qpu.Verify.Uuid.encode}\ p\ m < 2 ^{(\mathrm{Qpu.Verify.Uuid.totalBits} - \mathrm{Qpu.Verify.Uuid.fixedBits})} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L58}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.fold\_128\_to\_122\_fiber}}
+Exact 128-bit to 122-qubit folding fiber: the 128-bit UUID state space factors exactly as the 122-qubit free register space times the `2 \^{} 6 = 64` fixed ISO/IEC 9834-8 protocol states. Proved via `Nat.pow\_add`.
+\[ 2 ^{\mathrm{Qpu.Verify.Uuid.totalBits}} = 2 ^{(\mathrm{Qpu.Verify.Uuid.totalBits} - \mathrm{Qpu.Verify.Uuid.fixedBits})} \cdot 2 ^{\mathrm{Qpu.Verify.Uuid.fixedBits}} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L82}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.free\_is\_122}}
+The handle carries 122 bits of free entropy.
+\[ \mathrm{Qpu.Verify.Uuid.totalBits} - \mathrm{Qpu.Verify.Uuid.fixedBits} = 122 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L19}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.program\_capacity}}
+Program band capacity: 16 bits address 65 536 program slots.
+\[ 2 ^{\mathrm{Qpu.Verify.Uuid.programBits}} = 65536 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L26}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.slot\_round\_trips}}
+A slot round-trips: decode ∘ encode is the identity on small inputs.
+\[ \mathrm{Qpu.Verify.Uuid.decode} (\mathrm{Qpu.Verify.Uuid.encode}\ 3\ 7) = (3, 7) \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L35}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.slot\_round\_trips\_max\_program}}
+The round trip also holds at the program band's upper edge.
+\[ \mathrm{Qpu.Verify.Uuid.decode} (\mathrm{Qpu.Verify.Uuid.encode}\ 65535\ 42) = (65535, 42) \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L37}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.variant\_nibble\_valid}}
+ISO/IEC 9834-8 variant prefix invariant: the RFC 4122/9562 variant nibble `8 + v \% 4` always lies in `8..11` (`0x8..0xb`, binary `10xx`) for every low nibble `v`. Proved via `Nat.le\_add\_right`, `Nat.mod\_lt`, `Nat.zero\_lt\_succ`, `Nat.le\_of\_lt\_succ` and `Nat.add\_le\_add\_left`.
+\[ \forall (v : \mathbb{N}), 8 \le 8 + v \bmod 4 \land 8 + v \bmod 4 \le 11 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L123}
+
+\paragraph{\texttt{Qpu.Verify.Uuid.version\_nibble\_valid}}
+ISO/IEC 9834-8 version seal invariant: the modular-power version nibble `1 + ((r \^{} 7) \% 91) \% 8` always lies in `1..8` for every folded residue `r`. Proved via `Nat.le\_add\_right`, `Nat.mod\_lt`, `Nat.zero\_lt\_succ` and `Nat.add\_comm`.
+\[ \forall (r : \mathbb{N}), 1 \le 1 + r ^{7} \bmod 91 \bmod 8 \land 1 + r ^{7} \bmod 91 \bmod 8 \le 8 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Uuid.lean\#L114}
+\end{document}

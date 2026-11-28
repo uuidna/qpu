@@ -1,0 +1,62 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Qft}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Qft.lean}
+
+\paragraph{\texttt{qftDepth\_monotone}}
+Depth never shrinks as the register grows, for all register pairs.
+\[ \forall \{q\ q' : \mathbb{N}\}, q \le q' \to \mathrm{qftDepth}\ q \le \mathrm{qftDepth}\ q' \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Qft.lean\#L80}
+
+\paragraph{\texttt{qftDepth\_succ}}
+The next qubit adds exactly two layers of depth, once the register is nonempty — the q = 0 edge, where truncated subtraction fires, is excluded.
+\[ \forall (q : \mathbb{N}), 0 < q \to \mathrm{qftDepth} (q + 1) = \mathrm{qftDepth}\ q + 2 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Qft.lean\#L86}
+
+\paragraph{\texttt{qftGates\_pos}}
+Any nonempty register pays at least one gate, for every q ≥ 1.
+\[ \forall (q : \mathbb{N}), 0 < q \to 0 < \mathrm{qftGates}\ q \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Qft.lean\#L64}
+
+\paragraph{\texttt{qftGates\_succ}}
+The triangular recurrence: the QFT on q+1 qubits costs exactly q+1 more gates than on q, for every q.
+\[ \forall (q : \mathbb{N}), \mathrm{qftGates} (q + 1) = \mathrm{qftGates}\ q + (q + 1) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Qft.lean\#L57}
+
+\paragraph{\texttt{qftStates\_growth}}
+One more qubit doubles the state space, for every q.
+\[ \forall (q : \mathbb{N}), \mathrm{qftStates} (q + 1) = 2 \cdot \mathrm{qftStates}\ q \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Qft.lean\#L46}
+
+\paragraph{\texttt{qftStates\_pos}}
+The output dimension is never zero, for every qubit count.
+\[ \forall (q : \mathbb{N}), 0 < \mathrm{qftStates}\ q \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Qft.lean\#L43}
+
+\paragraph{\texttt{qftStates\_strict\_growth}}
+The state space strictly grows with every added qubit, at every size.
+\[ \forall (q : \mathbb{N}), \mathrm{qftStates}\ q < \mathrm{qftStates} (q + 1) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Qft.lean\#L50}
+
+\paragraph{\texttt{qftSwaps\_le}}
+Swaps never exceed half the register, for every q.
+\[ \forall (q : \mathbb{N}), \mathrm{qftSwaps}\ q \le q \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Qft.lean\#L70}
+
+\paragraph{\texttt{qftSwaps\_monotone}}
+More qubits never mean fewer swaps, for all register pairs.
+\[ \forall \{q\ q' : \mathbb{N}\}, q \le q' \to \mathrm{qftSwaps}\ q \le \mathrm{qftSwaps}\ q' \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Qft.lean\#L75}
+
+\paragraph{\texttt{qft\_all}}
+The textbook spot values, decided by the kernel as controls on the general laws.
+\[ \mathrm{qftGates}\ 3 = 6 \land \mathrm{qftGates}\ 4 = 10 \land \mathrm{qftSwaps}\ 4 = 2 \land \mathrm{qftDepth}\ 4 = 7 \land \mathrm{qftStates}\ 4 = 16 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Qft.lean\#L91}
+\end{document}

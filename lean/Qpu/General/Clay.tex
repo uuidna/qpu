@@ -1,0 +1,212 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Clay}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean}
+
+\paragraph{\texttt{clay\_wings}}
+Every discovered relation at once, with the tautological rows removed and the two Shor/RSA relations folded in: the families of formulas that meet.
+\[ (\mathrm{vertices} = \mathrm{hybridSpeed} \land \mathrm{vertices} = \mathrm{mint}\ n) \land (\mathrm{magicBlock} = \mathrm{glProd}\ \mathrm{hexbit}\ \mathrm{seed} \land \mathrm{magicBlock} = \mathrm{qftDepth}\ \mathrm{vertices}) \land (\mathrm{mint}\ \mathrm{hexbit} = \mathrm{powMod}\ \mathrm{coins}\ \mathrm{rays}\ \mathrm{plane} \land \mathrm{mint}\ \mathrm{hexbit} = \mathrm{powMod}\ \mathrm{coins}\ \mathrm{hexbit}\ \mathrm{bits}) \land (\mathrm{bits} = \mathrm{chimera}\ \mathrm{coins} \land \mathrm{bits} = \mathrm{qaoaZz}\ \mathrm{vertices}\ \mathrm{hexbit}) \land (\mathrm{mint}\ \mathrm{rays} = \mathrm{chimera}\ \mathrm{hexbit} \land \mathrm{mint}\ \mathrm{rays} = \mathrm{isingFusion}\ \mathrm{vertices}) \land \mathrm{plane} = \mathrm{choose}\ \mathrm{vertices}\ \mathrm{coins} \land (\mathrm{mint}\ \mathrm{vertices} = \mathrm{groverSize}\ \mathrm{hexbit} \land \mathrm{mint}\ \mathrm{vertices} = \mathrm{qaoaZz}\ \mathrm{vertices}\ \mathrm{bits}) \land \mathrm{triangular}\ \mathrm{hexbit} = \mathrm{qftGates}\ \mathrm{hexbit} \land (\mathrm{faces} = \mathrm{coil} \land \mathrm{faces} = \mathrm{qaoaParams}\ \mathrm{rays}) \land (\mathrm{choose}\ \mathrm{rays}\ \mathrm{coins} = \mathrm{fibFusion}\ \mathrm{vertices} \land \mathrm{choose}\ \mathrm{rays}\ \mathrm{coins} = \mathrm{powMod}\ \mathrm{rays}\ \mathrm{coins}\ \mathrm{plane}) \land (\mathrm{powMod}\ n\ \mathrm{hexbit}\ \mathrm{plane} = \mathrm{powMod}\ n\ \mathrm{faces}\ \mathrm{bits} \land \mathrm{powMod}\ n\ \mathrm{hexbit}\ \mathrm{plane} = \mathrm{powMod}\ n\ \mathrm{plane}\ \mathrm{plane}) \land (\mathrm{isingFusion}\ \mathrm{rays} = \mathrm{groverSize}\ n \land \mathrm{isingFusion}\ \mathrm{rays} = \mathrm{qaoaParams}\ \mathrm{bits}) \land (\mathrm{mint}\ \mathrm{faces} = \mathrm{groverSize}\ \mathrm{rays} \land \mathrm{mint}\ \mathrm{faces} = \mathrm{qftStates}\ \mathrm{faces}) \land (\mathrm{fibFusion}\ \mathrm{rays} = \mathrm{powMod}\ n\ n\ \mathrm{faces} \land \mathrm{fibFusion}\ \mathrm{rays} = \mathrm{half}\ n\ \mathrm{faces}) \land (\mathrm{powMod}\ \mathrm{faces}\ n\ \mathrm{bits} = \mathrm{cliffordOrder}\ \mathrm{seed} \land \mathrm{powMod}\ \mathrm{faces}\ n\ \mathrm{bits} = \mathrm{factorial}\ \mathrm{hexbit}) \land (\mathrm{magicCubic} = \mathrm{choose}\ \mathrm{rays}\ n \land \mathrm{magicCubic} = \mathrm{choose}\ \mathrm{rays}\ \mathrm{hexbit}) \land \mathrm{triangular}\ \mathrm{faces} = \mathrm{qftGates}\ \mathrm{faces} \land (\mathrm{mint}\ \mathrm{plane} = \mathrm{groverSize}\ \mathrm{faces} \land \mathrm{mint}\ \mathrm{plane} = \mathrm{qftStates}\ \mathrm{plane}) \land (\mathrm{amplitudes} = \mathrm{mint}\ \mathrm{bits} \land \mathrm{amplitudes} = \mathrm{qftStates}\ \mathrm{bits}) \land (\mathrm{powMod}\ n\ \mathrm{coins}\ \mathrm{bits} = \mathrm{powMod}\ n\ \mathrm{coins}\ \mathrm{faces} \land \mathrm{powMod}\ n\ \mathrm{coins}\ \mathrm{bits} = \mathrm{powMod}\ n\ \mathrm{coins}\ \mathrm{plane}) \land (\mathrm{groverIters}\ \mathrm{hexbit} = \mathrm{qaoaZz}\ n\ \mathrm{hexbit} \land \mathrm{groverIters}\ \mathrm{hexbit} = \mathrm{qaoaZz}\ \mathrm{hexbit}\ n) \land (\mathrm{powMod}\ n\ \mathrm{hexbit}\ \mathrm{bits} = \mathrm{powMod}\ n\ \mathrm{plane}\ \mathrm{bits} \land \mathrm{powMod}\ n\ \mathrm{hexbit}\ \mathrm{bits} = \mathrm{powMod}\ \mathrm{rays}\ \mathrm{coins}\ \mathrm{bits}) \land \mathrm{choose}\ \mathrm{vertices}\ n = \mathrm{qaoaParams}\ \mathrm{plane} \land (\mathrm{qaoaZz}\ \mathrm{bits}\ \mathrm{bits} = \mathrm{qaoaX}\ \mathrm{bits}\ \mathrm{bits} \land \mathrm{qaoaZz}\ \mathrm{bits}\ \mathrm{bits} = \mathrm{paulis}\ \mathrm{hexbit}) \land (\mathrm{powMod}\ n\ n\ \mathrm{bits} = \mathrm{powMod}\ n\ n\ \mathrm{plane} \land \mathrm{powMod}\ n\ n\ \mathrm{bits} = \mathrm{half}\ n\ \mathrm{plane}) \land (\mathrm{triangular}\ \mathrm{vertices} = \mathrm{qftGates}\ \mathrm{vertices} \land \mathrm{triangular}\ \mathrm{vertices} = \mathrm{totient}\ 74) \land (\mathrm{glProd}\ n\ \mathrm{coins} = \mathrm{qaoaZz}\ n\ \mathrm{faces} \land \mathrm{glProd}\ n\ \mathrm{coins} = \mathrm{qaoaZz}\ \mathrm{faces}\ n) \land \mathrm{qaoaZz}\ \mathrm{rays}\ \mathrm{rays} = \mathrm{qaoaX}\ \mathrm{rays}\ \mathrm{rays} \land (\mathrm{qaoaZz}\ n\ \mathrm{bits} = \mathrm{qaoaZz}\ \mathrm{bits}\ n \land \mathrm{qaoaZz}\ n\ \mathrm{bits} = \mathrm{qaoaX}\ n\ \mathrm{bits}) \land (\mathrm{qaoaZz}\ \mathrm{rays}\ \mathrm{plane} = \mathrm{qaoaZz}\ \mathrm{faces}\ \mathrm{faces} \land \mathrm{qaoaZz}\ \mathrm{rays}\ \mathrm{plane} = \mathrm{qaoaZz}\ \mathrm{plane}\ \mathrm{rays}) \land (\mathrm{qaoaZz}\ \mathrm{rays}\ \mathrm{bits} = \mathrm{qaoaZz}\ \mathrm{vertices}\ \mathrm{plane} \land \mathrm{qaoaZz}\ \mathrm{rays}\ \mathrm{bits} = \mathrm{qaoaZz}\ \mathrm{bits}\ \mathrm{rays}) \land (\mathrm{chimera}\ \mathrm{rays} = \mathrm{qaoaZz}\ \mathrm{faces}\ \mathrm{plane} \land \mathrm{chimera}\ \mathrm{rays} = \mathrm{qaoaZz}\ \mathrm{plane}\ \mathrm{faces}) \land \mathrm{triangular}\ \mathrm{plane} = \mathrm{qftGates}\ \mathrm{plane} \land \mathrm{triangular}\ \mathrm{bits} = \mathrm{qftGates}\ \mathrm{bits} \land \mathrm{chimera}\ \mathrm{bits} = \mathrm{isingFusion}\ \mathrm{faces} \land \mathrm{choose}\ \mathrm{bits}\ \mathrm{hexbit} = \mathrm{choose}\ \mathrm{bits}\ \mathrm{plane} \land \mathrm{groverSize}\ \mathrm{vertices} = \mathrm{paulis}\ \mathrm{rays} \land (\mathrm{rays} = \mathrm{\_root\_.gcd} (\mathrm{half}\ \mathrm{shorBase}\ \mathrm{shorModulus} - \mathrm{seed}) \mathrm{shorModulus} \land \mathrm{faces} - \mathrm{seed} = \mathrm{\_root\_.gcd} (\mathrm{half}\ \mathrm{shorBase}\ \mathrm{shorModulus} + \mathrm{seed}) \mathrm{shorModulus}) \land \mathrm{shorModulus} = \mathrm{\_root\_.gcd} (\mathrm{half}\ \mathrm{shorBase}\ \mathrm{shorModulus} - \mathrm{seed}) \mathrm{shorModulus} \cdot \mathrm{\_root\_.gcd} (\mathrm{half}\ \mathrm{shorBase}\ \mathrm{shorModulus} + \mathrm{seed}) \mathrm{shorModulus} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L108}
+
+\paragraph{\texttt{relation\_10}}
+Combinatorics, Mint, Qaoa, Qft, Shor meet at 10.
+\[ \mathrm{triangular}\ \mathrm{hexbit} = \mathrm{qftGates}\ \mathrm{hexbit} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L39}
+
+\paragraph{\texttt{relation\_1024}}
+Grover, Qaoa, Stabilizer meet at 1024.
+\[ \mathrm{qaoaZz}\ \mathrm{bits}\ \mathrm{bits} = \mathrm{qaoaX}\ \mathrm{bits}\ \mathrm{bits} \land \mathrm{qaoaZz}\ \mathrm{bits}\ \mathrm{bits} = \mathrm{paulis}\ \mathrm{hexbit} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L71}
+
+\paragraph{\texttt{relation\_105}}
+Combinatorics, Mint, Qaoa, Qft meet at 105.
+\[ \mathrm{triangular}\ \mathrm{faces} = \mathrm{qftGates}\ \mathrm{faces} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L57}
+
+\paragraph{\texttt{relation\_12}}
+Grover, Qaoa, Shor meet at 12.
+\[ \mathrm{groverIters}\ \mathrm{hexbit} = \mathrm{qaoaZz}\ n\ \mathrm{hexbit} \land \mathrm{groverIters}\ \mathrm{hexbit} = \mathrm{qaoaZz}\ \mathrm{hexbit}\ n \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L65}
+
+\paragraph{\texttt{relation\_128}}
+Annealing, Anyon, Mint, Qaoa, Qft, Shor, Stabilizer meet at 128.
+\[ \mathrm{mint}\ \mathrm{rays} = \mathrm{chimera}\ \mathrm{hexbit} \land \mathrm{mint}\ \mathrm{rays} = \mathrm{isingFusion}\ \mathrm{vertices} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L33}
+
+\paragraph{\texttt{relation\_13}}
+Anyon, Qft, Shor, Surfacecode meet at 13.
+\[ \mathrm{fibFusion}\ \mathrm{rays} = \mathrm{powMod}\ n\ n\ \mathrm{faces} \land \mathrm{fibFusion}\ \mathrm{rays} = \mathrm{half}\ n\ \mathrm{faces} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L51}
+
+\paragraph{\texttt{relation\_14}}
+Coil, Lattice, Qaoa, Qft, Shor meet at 14.
+\[ \mathrm{faces} = \mathrm{coil} \land \mathrm{faces} = \mathrm{qaoaParams}\ \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L41}
+
+\paragraph{\texttt{relation\_15}}
+Combinatorics, Galois, Magic, Qaoa, Qft, Stabilizer, Surfacecode meet at 15.
+\[ \mathrm{magicBlock} = \mathrm{glProd}\ \mathrm{hexbit}\ \mathrm{seed} \land \mathrm{magicBlock} = \mathrm{qftDepth}\ \mathrm{vertices} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L27}
+
+\paragraph{\texttt{relation\_16}}
+Anyon, Grover, Mint, Qaoa, Qft, Shor, Stabilizer meet at 16.
+\[ \mathrm{mint}\ \mathrm{hexbit} = \mathrm{powMod}\ \mathrm{coins}\ \mathrm{rays}\ \mathrm{plane} \land \mathrm{mint}\ \mathrm{hexbit} = \mathrm{powMod}\ \mathrm{coins}\ \mathrm{hexbit}\ \mathrm{bits} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L29}
+
+\paragraph{\texttt{relation\_16384}}
+Anyon, Grover, Mint, Qft, Stabilizer meet at 16384.
+\[ \mathrm{mint}\ \mathrm{faces} = \mathrm{groverSize}\ \mathrm{rays} \land \mathrm{mint}\ \mathrm{faces} = \mathrm{qftStates}\ \mathrm{faces} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L49}
+
+\paragraph{\texttt{relation\_17}}
+Qft, Shor, Surfacecode meet at 17.
+\[ \mathrm{powMod}\ n\ \mathrm{hexbit}\ \mathrm{bits} = \mathrm{powMod}\ n\ \mathrm{plane}\ \mathrm{bits} \land \mathrm{powMod}\ n\ \mathrm{hexbit}\ \mathrm{bits} = \mathrm{powMod}\ \mathrm{rays}\ \mathrm{coins}\ \mathrm{bits} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L67}
+
+\paragraph{\texttt{relation\_196}}
+Qaoa, Shor meet at 196.
+\[ \mathrm{qaoaZz}\ \mathrm{rays}\ \mathrm{plane} = \mathrm{qaoaZz}\ \mathrm{faces}\ \mathrm{faces} \land \mathrm{qaoaZz}\ \mathrm{rays}\ \mathrm{plane} = \mathrm{qaoaZz}\ \mathrm{plane}\ \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L88}
+
+\paragraph{\texttt{relation\_21}}
+Anyon, Combinatorics, Mint, Qaoa, Shor meet at 21.
+\[ \mathrm{choose}\ \mathrm{rays}\ \mathrm{coins} = \mathrm{fibFusion}\ \mathrm{vertices} \land \mathrm{choose}\ \mathrm{rays}\ \mathrm{coins} = \mathrm{powMod}\ \mathrm{rays}\ \mathrm{coins}\ \mathrm{plane} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L43}
+
+\paragraph{\texttt{relation\_224}}
+Qaoa, Shor meet at 224.
+\[ \mathrm{qaoaZz}\ \mathrm{rays}\ \mathrm{bits} = \mathrm{qaoaZz}\ \mathrm{vertices}\ \mathrm{plane} \land \mathrm{qaoaZz}\ \mathrm{rays}\ \mathrm{bits} = \mathrm{qaoaZz}\ \mathrm{bits}\ \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L90}
+
+\paragraph{\texttt{relation\_24}}
+Clifford, Combinatorics, Qaoa, Shor meet at 24.
+\[ \mathrm{powMod}\ \mathrm{faces}\ n\ \mathrm{bits} = \mathrm{cliffordOrder}\ \mathrm{seed} \land \mathrm{powMod}\ \mathrm{faces}\ n\ \mathrm{bits} = \mathrm{factorial}\ \mathrm{hexbit} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L53}
+
+\paragraph{\texttt{relation\_25}}
+Grover, Physics, Qaoa, Shor, Surfacecode meet at 25.
+\[ \mathrm{powMod}\ n\ \mathrm{hexbit}\ \mathrm{plane} = \mathrm{powMod}\ n\ \mathrm{faces}\ \mathrm{bits} \land \mathrm{powMod}\ n\ \mathrm{hexbit}\ \mathrm{plane} = \mathrm{powMod}\ n\ \mathrm{plane}\ \mathrm{plane} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L45}
+
+\paragraph{\texttt{relation\_256}}
+Grover, Mint, Qaoa, Qft, Shor, Stabilizer meet at 256.
+\[ \mathrm{mint}\ \mathrm{vertices} = \mathrm{groverSize}\ \mathrm{hexbit} \land \mathrm{mint}\ \mathrm{vertices} = \mathrm{qaoaZz}\ \mathrm{vertices}\ \mathrm{bits} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L37}
+
+\paragraph{\texttt{relation\_268435456}}
+Grover, Mint, Qft, Stabilizer meet at 268435456.
+\[ \mathrm{mint}\ \mathrm{plane} = \mathrm{groverSize}\ \mathrm{faces} \land \mathrm{mint}\ \mathrm{plane} = \mathrm{qftStates}\ \mathrm{plane} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L59}
+
+\paragraph{\texttt{relation\_27}}
+Qft, Shor meet at 27.
+\[ \mathrm{powMod}\ n\ n\ \mathrm{bits} = \mathrm{powMod}\ n\ n\ \mathrm{plane} \land \mathrm{powMod}\ n\ n\ \mathrm{bits} = \mathrm{half}\ n\ \mathrm{plane} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L73}
+
+\paragraph{\texttt{relation\_28}}
+Combinatorics, Lattice, Mint, Qaoa, Qft, Shor meet at 28 (duplicate conjunct collapsed).
+\[ \mathrm{plane} = \mathrm{choose}\ \mathrm{vertices}\ \mathrm{coins} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L35}
+
+\paragraph{\texttt{relation\_32}}
+Annealing, Lattice, Mint, Qaoa, Qft, Shor, Stabilizer meet at 32.
+\[ \mathrm{bits} = \mathrm{chimera}\ \mathrm{coins} \land \mathrm{bits} = \mathrm{qaoaZz}\ \mathrm{vertices}\ \mathrm{hexbit} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L31}
+
+\paragraph{\texttt{relation\_35}}
+Combinatorics, Magic, Mint, Qaoa meet at 35.
+\[ \mathrm{magicCubic} = \mathrm{choose}\ \mathrm{rays}\ n \land \mathrm{magicCubic} = \mathrm{choose}\ \mathrm{rays}\ \mathrm{hexbit} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L55}
+
+\paragraph{\texttt{relation\_35960}}
+Combinatorics, Mint meet at 35960 (trivial self-equality conjunct dropped).
+\[ \mathrm{choose}\ \mathrm{bits}\ \mathrm{hexbit} = \mathrm{choose}\ \mathrm{bits}\ \mathrm{plane} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L100}
+
+\paragraph{\texttt{relation\_36}}
+Combinatorics, Qft, Crypto meet at 36: the thousand-bit integer 2\^{}999+1 has a cyclotomic factor Φ₇₄ of degree φ(74) = totient 74 = 36, the register's triangular vertices = qftGates vertices. Crypto's cyclotomic degree bridges to Combinatorics and Qft, scale-free.
+\[ \mathrm{triangular}\ \mathrm{vertices} = \mathrm{qftGates}\ \mathrm{vertices} \land \mathrm{triangular}\ \mathrm{vertices} = \mathrm{totient}\ 74 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L75}
+
+\paragraph{\texttt{relation\_392}}
+Annealing, Qaoa meet at 392.
+\[ \mathrm{chimera}\ \mathrm{rays} = \mathrm{qaoaZz}\ \mathrm{faces}\ \mathrm{plane} \land \mathrm{chimera}\ \mathrm{rays} = \mathrm{qaoaZz}\ \mathrm{plane}\ \mathrm{faces} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L92}
+
+\paragraph{\texttt{relation\_406}}
+Combinatorics, Qft meet at 406.
+\[ \mathrm{triangular}\ \mathrm{plane} = \mathrm{qftGates}\ \mathrm{plane} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L94}
+
+\paragraph{\texttt{relation\_42}}
+Galois, Qaoa meet at 42.
+\[ \mathrm{glProd}\ n\ \mathrm{coins} = \mathrm{qaoaZz}\ n\ \mathrm{faces} \land \mathrm{glProd}\ n\ \mathrm{coins} = \mathrm{qaoaZz}\ \mathrm{faces}\ n \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L77}
+
+\paragraph{\texttt{relation\_4294967296}}
+Lattice, Mint, Qft, Stabilizer meet at 4294967296.
+\[ \mathrm{amplitudes} = \mathrm{mint}\ \mathrm{bits} \land \mathrm{amplitudes} = \mathrm{qftStates}\ \mathrm{bits} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L61}
+
+\paragraph{\texttt{relation\_49}}
+Qaoa, Shor meet at 49.
+\[ \mathrm{qaoaZz}\ \mathrm{rays}\ \mathrm{rays} = \mathrm{qaoaX}\ \mathrm{rays}\ \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L79}
+
+\paragraph{\texttt{relation\_528}}
+Combinatorics, Qft meet at 528.
+\[ \mathrm{triangular}\ \mathrm{bits} = \mathrm{qftGates}\ \mathrm{bits} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L96}
+
+\paragraph{\texttt{relation\_56}}
+Combinatorics, Mint, Qaoa meet at 56 (trivial self-equality conjunct dropped).
+\[ \mathrm{choose}\ \mathrm{vertices}\ n = \mathrm{qaoaParams}\ \mathrm{plane} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L69}
+
+\paragraph{\texttt{relation\_64}}
+Anyon, Grover, Qaoa, Shor, Stabilizer meet at 64.
+\[ \mathrm{isingFusion}\ \mathrm{rays} = \mathrm{groverSize}\ n \land \mathrm{isingFusion}\ \mathrm{rays} = \mathrm{qaoaParams}\ \mathrm{bits} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L47}
+
+\paragraph{\texttt{relation\_65536}}
+Grover, Stabilizer meet at 65536.
+\[ \mathrm{groverSize}\ \mathrm{vertices} = \mathrm{paulis}\ \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L102}
+
+\paragraph{\texttt{relation\_7}}
+Crypto (Shor), Lattice meet at 7: Shor factors the modulus 91 = 7·13 by gcd(a\^{}(r/2) ± seed, N), and the two prime factors it extracts are the register's own constants — the smaller is rays, the larger is faces − seed. The crypto family meets the lattice.
+\[ \mathrm{rays} = \mathrm{\_root\_.gcd} (\mathrm{half}\ \mathrm{shorBase}\ \mathrm{shorModulus} - \mathrm{seed}) \mathrm{shorModulus} \land \mathrm{faces} - \mathrm{seed} = \mathrm{\_root\_.gcd} (\mathrm{half}\ \mathrm{shorBase}\ \mathrm{shorModulus} + \mathrm{seed}) \mathrm{shorModulus} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L104}
+
+\paragraph{\texttt{relation\_8}}
+Annealing, Anyon, Hybrid, Lattice, Mint, Qaoa, Qft, Shor, Stabilizer meet at 8.
+\[ \mathrm{vertices} = \mathrm{hybridSpeed} \land \mathrm{vertices} = \mathrm{mint}\ n \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L25}
+
+\paragraph{\texttt{relation\_8192}}
+Annealing, Anyon meet at 8192.
+\[ \mathrm{chimera}\ \mathrm{bits} = \mathrm{isingFusion}\ \mathrm{faces} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L98}
+
+\paragraph{\texttt{relation\_9}}
+Qaoa, Qft, Shor meet at 9.
+\[ \mathrm{powMod}\ n\ \mathrm{coins}\ \mathrm{bits} = \mathrm{powMod}\ n\ \mathrm{coins}\ \mathrm{faces} \land \mathrm{powMod}\ n\ \mathrm{coins}\ \mathrm{bits} = \mathrm{powMod}\ n\ \mathrm{coins}\ \mathrm{plane} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L63}
+
+\paragraph{\texttt{relation\_96}}
+Qaoa, Shor meet at 96.
+\[ \mathrm{qaoaZz}\ n\ \mathrm{bits} = \mathrm{qaoaZz}\ \mathrm{bits}\ n \land \mathrm{qaoaZz}\ n\ \mathrm{bits} = \mathrm{qaoaX}\ n\ \mathrm{bits} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L86}
+
+\paragraph{\texttt{relation\_rsa}}
+Crypto (Shor), Lattice meet at 91: factoring is the σ-involution. The modulus `rays·(faces−seed)` equals the product of the two gcds the involution finds, `gcd (a\^{}(r/2) ∓ seed, modulus)` — a cross formula over the register's own constants and the Shor reduction, closed by `rfl`, never a hardcoded `91 = 7·13`. The quantum step (order-finding) is reached only for this small modulus; no bound is bypassed (`textbook\_rsa\_beyond\_bound`).
+\[ \mathrm{shorModulus} = \mathrm{\_root\_.gcd} (\mathrm{half}\ \mathrm{shorBase}\ \mathrm{shorModulus} - \mathrm{seed}) \mathrm{shorModulus} \cdot \mathrm{\_root\_.gcd} (\mathrm{half}\ \mathrm{shorBase}\ \mathrm{shorModulus} + \mathrm{seed}) \mathrm{shorModulus} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Clay.lean\#L84}
+\end{document}

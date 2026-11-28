@@ -1,0 +1,27 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.CircuitBasedQuantumComputing}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CircuitBasedQuantumComputing.lean}
+
+\paragraph{\texttt{CircuitBasedQuantumComputing.stabilizer\_cnot}}
+CNOT acts on every Pauli string exactly as its tableau rule says
+\[ \mathrm{CircuitBasedQuantumComputing.Exact}\ \mathrm{QuantumGate.CNOT}\ \mathrm{CircuitBasedQuantumComputing.ruleCNOT}\ 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CircuitBasedQuantumComputing.lean\#L64}
+
+\paragraph{\texttt{CircuitBasedQuantumComputing.stabilizer\_hadamard}}
+H on either qubit acts on every Pauli string exactly as its tableau rule says (times the factor 2 its scale carries)
+\[ \mathrm{CircuitBasedQuantumComputing.Exact} (\mathrm{Operator.kron}\ 2\ \mathrm{QuantumGate.H}\ \mathrm{Operator.idm}) \mathrm{CircuitBasedQuantumComputing.ruleH0}\ 2 \land \mathrm{CircuitBasedQuantumComputing.Exact} (\mathrm{Operator.kron}\ 2\ \mathrm{Operator.idm}\ \mathrm{QuantumGate.H}) \mathrm{CircuitBasedQuantumComputing.ruleH1}\ 2 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CircuitBasedQuantumComputing.lean\#L60}
+
+\paragraph{\texttt{CircuitBasedQuantumComputing.stabilizer\_phase}}
+S on either qubit acts on every Pauli string exactly as its tableau rule says
+\[ \mathrm{CircuitBasedQuantumComputing.Exact} (\mathrm{Operator.kron}\ 2\ \mathrm{QuantumGate.S}\ \mathrm{Operator.idm}) \mathrm{CircuitBasedQuantumComputing.ruleS0}\ 1 \land \mathrm{CircuitBasedQuantumComputing.Exact} (\mathrm{Operator.kron}\ 2\ \mathrm{Operator.idm}\ \mathrm{QuantumGate.S}) \mathrm{CircuitBasedQuantumComputing.ruleS1}\ 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/CircuitBasedQuantumComputing.lean\#L62}
+\end{document}

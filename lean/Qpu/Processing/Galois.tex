@@ -1,0 +1,37 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Galois}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Galois.lean}
+
+\paragraph{\texttt{galois\_all}}
+The textbook spot values, decided by the kernel as controls on the general laws.
+\[ \mathrm{gl2}\ 2 = 6 \land \mathrm{gl2}\ 3 = 168 \land \mathrm{gl2}\ 4 = 20160 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Galois.lean\#L38}
+
+\paragraph{\texttt{gl2\_pos}}
+GL(n, 2) is a nonempty group, for every n ≥ 1: the last factor is a strict doubling gap and the earlier ones are covered by glProd\_pos.
+\[ \forall (\mathrm{nn} : \mathbb{N}), 0 < \mathrm{nn} \to 0 < \mathrm{gl2}\ \mathrm{nn} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Galois.lean\#L30}
+
+\paragraph{\texttt{gl2\_zero}}
+GL(0, 2) is the trivial group of order one.
+\[ \mathrm{gl2}\ 0 = 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Galois.lean\#L26}
+
+\paragraph{\texttt{glProd\_pos}}
+While i stays below n every factor is positive, so the partial product never vanishes — by induction on i, for all i < n.
+\[ \forall (i\ \mathrm{nn} : \mathbb{N}), i < \mathrm{nn} \to 0 < \mathrm{glProd}\ \mathrm{nn}\ i \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Galois.lean\#L17}
+
+\paragraph{\texttt{glProd\_step}}
+One GL factor, for every n, i.
+\[ \forall (\mathrm{nn}\ i : \mathbb{N}), \mathrm{glProd}\ \mathrm{nn} (i + 1) = (\mathrm{mint}\ \mathrm{nn} - \mathrm{mint}\ i) \cdot \mathrm{glProd}\ \mathrm{nn}\ i \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Galois.lean\#L13}
+\end{document}

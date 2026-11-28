@@ -1,0 +1,42 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Anyon}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Anyon.lean}
+
+\paragraph{\texttt{anyon\_all}}
+The textbook spot values, decided by the kernel as controls on the general laws.
+\[ \mathrm{fibFusion}\ 5 = 5 \land \mathrm{fibFusion}\ 10 = 55 \land \mathrm{isingFusion}\ 3 = 4 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Anyon.lean\#L51}
+
+\paragraph{\texttt{fibAux\_step}}
+One Fibonacci step, for every fuel, seed pair.
+\[ \forall (a\ b\ k : \mathbb{N}), \mathrm{fibAux} (k + 1) a\ b = \mathrm{fibAux}\ k\ b (a + b) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Anyon.lean\#L27}
+
+\paragraph{\texttt{fibFusion\_seed\_step}}
+Unfolded at the fusion seed: the next Fibonacci count starts from (seed, seed).
+\[ \forall (\mathrm{nn} : \mathbb{N}), \mathrm{fibFusion} (\mathrm{nn} + 1) = \mathrm{fibAux}\ \mathrm{nn}\ \mathrm{seed}\ \mathrm{seed} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Anyon.lean\#L30}
+
+\paragraph{\texttt{isingFusion\_pos}}
+Every Ising-anyon pair dimension is at least one state, for every m.
+\[ \forall (m : \mathbb{N}), 0 < \mathrm{isingFusion}\ m \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Anyon.lean\#L33}
+
+\paragraph{\texttt{isingFusion\_strict\_growth}}
+Ising growth is strict at every nonempty count: a pair genuinely doubles.
+\[ \forall (m : \mathbb{N}), 0 < m \to \mathrm{isingFusion}\ m < \mathrm{isingFusion} (m + 1) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Anyon.lean\#L45}
+
+\paragraph{\texttt{isingFusion\_succ}}
+One more Ising pair doubles the fusion space, for every nonempty m — the doubling is exact, from mintOf\_succ.
+\[ \forall (m : \mathbb{N}), 0 < m \to \mathrm{isingFusion} (m + 1) = 2 \cdot \mathrm{isingFusion}\ m \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Anyon.lean\#L37}
+\end{document}

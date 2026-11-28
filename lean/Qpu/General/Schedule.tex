@@ -1,0 +1,17 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Schedule}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Schedule.lean}
+
+\paragraph{\texttt{Schedule.sequential\_peak\_le\_parallel}}
+Run one after another, the tools never need more memory at once than run together: every footprint is at most the sum of all of them. From Mathlib's `List.single\_le\_sum`, with Lean's `Nat.zero\_le` and the instance `Nat.instIsOrderedAddMonoid`.
+\[ \forall (\mathrm{footprints} : \mathrm{List} \mathbb{N}), \forall m \in \mathrm{footprints}, m \le \mathrm{footprints.sum} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Schedule.lean\#L14}
+\end{document}

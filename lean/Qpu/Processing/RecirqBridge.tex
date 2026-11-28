@@ -1,0 +1,17 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.RecirqBridge}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/RecirqBridge.lean}
+
+\paragraph{\texttt{RecirqBridge.ising\_cut}}
+The Ising energy is the total weight less twice the cut: `Σ w (1 - 2c) = Σ w - 2 Σ w c` over any set of edges, `c` the cut indicator of each edge. Twice a sum is the sum of the doubled terms (`Finset.mul\_sum`), a sum of differences is the difference of the sums (`Finset.sum\_sub\_distrib`), and term by term the sums agree (`Finset.sum\_congr`): `w (1 - 2c) = w - 2 (w c)` (`mul\_sub`, `mul\_one`, `mul\_left\_comm`), the literal two read through `Nat.instAtLeastTwoHAddOfNat`.
+\[ \forall \{E : \mathrm{Type}\ \mathrm{u\_1}\} (s : \mathrm{Finset}\ E) (w\ c : E \to \mathbb{R}), \sum e \in s, w\ e \cdot (1 - 2 \cdot c\ e) = \sum e \in s, w\ e - 2 \cdot \sum e \in s, w\ e \cdot c\ e \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/RecirqBridge.lean\#L17}
+\end{document}

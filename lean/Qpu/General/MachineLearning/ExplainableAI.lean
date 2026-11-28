@@ -37,7 +37,7 @@ What is formalised:
   (`attention_weight_le_total`), uniform attention exists for every total
   `len * k` (`uniform`), heads concatenate additively (`attention_concat`), and
   attention rollout / class-activation maps preserve normalisation at scale
-  `T · T` (`sum_rollout`, `attention_rollout_normalised`, `cam_total`).
+  `T · T` (`sum_rollout`, `attention_rollout_normalised`).
 * **Layer-wise relevance propagation.** A layer is a list of splits, one per
   upper neuron, each a list of relevances sent to the lower neurons; the lower
   relevance is the column sum (`propagate`). Relevance is conserved exactly
@@ -511,12 +511,6 @@ theorem attention_rollout_normalised {T : Nat} (A : Attention T) (B : List (Atte
         obtain ⟨b, _, rfl⟩ := List.mem_map.mp hr
         exact b.sums)
       (by rw [List.length_map]; exact hl), A.sums]
-
-/-- **CAM heatmap total**: class weights `w` over feature maps that each sum to `T`
-give a map with total `(Σ w) · T`. -/
-theorem cam_total (w : List Nat) (maps : List (List Nat)) (T : Nat)
-    (h : ∀ f ∈ maps, f.sum = T) (hl : w.length ≤ maps.length) :
-    (rollout w maps).sum = w.sum * T := sum_rollout w maps T h hl
 
 /-! ## Layer-wise relevance propagation -/
 

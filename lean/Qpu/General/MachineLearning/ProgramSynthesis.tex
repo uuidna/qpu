@@ -1,0 +1,292 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.MachineLearning.ProgramSynthesis}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.cegis\_eliminates}}
+Sketch "cegis\_refinement" (second half): adding the counterexample eliminates the candidate from the domain.
+\[ \forall \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\} \{\mathrm{ex} : \mathrm{Qpu.ProgramSynthesis.Example}\} \{c : \mathrm{List}\ \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.eval}\ e\ \mathrm{ex.1} \ne \mathrm{ex.2} \to e \notin \mathrm{Qpu.ProgramSynthesis.prune}\ \mathrm{ex}\ c \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L330}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.checkLower\_complete}}
+Sketch "bidirectional\_check" (completeness): a program meeting the bound everywhere passes.
+\[ \forall \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\} \{\mathrm{bound} : \mathbb{N}\}, (\forall (x : \mathbb{N}), \mathrm{bound} \le \mathrm{Qpu.ProgramSynthesis.eval}\ e\ x) \to \mathrm{Qpu.ProgramSynthesis.checkLower}\ e\ \mathrm{bound} = \mathrm{true} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L451}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.checkLower\_sound}}
+Sketch "bidirectional\_check" (soundness): a program passing the check meets the bound on every input.
+\[ \forall \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\} \{\mathrm{bound} : \mathbb{N}\}, \mathrm{Qpu.ProgramSynthesis.checkLower}\ e\ \mathrm{bound} = \mathrm{true} \to \forall (x : \mathbb{N}), \mathrm{bound} \le \mathrm{Qpu.ProgramSynthesis.eval}\ e\ x \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L446}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.complete\_complete}}
+Sketch completion is complete up to the bound.
+\[ \forall \{k : \mathbb{N}\} \{\mathrm{sk} : \mathrm{Qpu.ProgramSynthesis.Sketch}\} \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\} \{w : \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.satisfies} (\mathrm{Qpu.ProgramSynthesis.fill}\ \mathrm{sk}\ w) s \to \mathrm{Qpu.ProgramSynthesis.size}\ w \le k \to \exists e, \mathrm{Qpu.ProgramSynthesis.complete}\ k\ \mathrm{sk}\ s = \mathrm{some}\ e \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L655}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.complete\_hole}}
+Plain synthesis is completion of the bare hole.
+\[ \forall (k : \mathbb{N}) (s : \mathrm{Qpu.ProgramSynthesis.Spec}), \mathrm{Qpu.ProgramSynthesis.complete}\ k\ \mathrm{Qpu.ProgramSynthesis.Sketch.hole}\ s = \mathrm{Qpu.ProgramSynthesis.synth}\ k\ s \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L665}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.complete\_sound}}
+Sketch "sketch\_has\_completion" (soundness of completion).
+\[ \forall \{k : \mathbb{N}\} \{\mathrm{sk} : \mathrm{Qpu.ProgramSynthesis.Sketch}\} \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\} \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.complete}\ k\ \mathrm{sk}\ s = \mathrm{some}\ e \to \mathrm{Qpu.ProgramSynthesis.satisfies} (\mathrm{Qpu.ProgramSynthesis.fill}\ \mathrm{sk}\ e) s \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L648}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.counterexample\_of\_not\_satisfies}}
+Sketch "cegis\_refinement" (first half): a candidate that fails the spec admits a counterexample inside the spec.
+\[ \forall \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\} \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\}, \neg \mathrm{Qpu.ProgramSynthesis.satisfies}\ e\ s \to \exists \mathrm{ex} \in s, \mathrm{Qpu.ProgramSynthesis.eval}\ e\ \mathrm{ex.1} \ne \mathrm{ex.2} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L318}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.double\_equiv}}
+Labelled worked example: `x + x` and `2 * x` are observationally equivalent.
+\[ \mathrm{Qpu.ProgramSynthesis.Equiv} (\mathrm{Qpu.ProgramSynthesis.Expr.var.add}\ \mathrm{Qpu.ProgramSynthesis.Expr.var}) ((\mathrm{Qpu.ProgramSynthesis.Expr.lit}\ 2)\mathrm{.mul}\ \mathrm{Qpu.ProgramSynthesis.Expr.var}) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L347}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.double\_propagate}}
+Worked example: pruning the size-3 space by the first doubling example leaves exactly the programs with `1 ↦ 2`, and propagating both examples leaves exactly `x + x`.
+\[ \mathrm{Qpu.ProgramSynthesis.propagate}\ \mathrm{Qpu.ProgramSynthesis.doubleSpec} (\mathrm{Qpu.ProgramSynthesis.upTo}\ 3) = [\mathrm{Qpu.ProgramSynthesis.Expr.var.add}\ \mathrm{Qpu.ProgramSynthesis.Expr.var}] \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L689}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.double\_synth}}
+Worked example: the synthesiser returns `x + x` (size 3), not the equivalent `2 * x` (size 5), and minimality confirms it.
+\[ \mathrm{Qpu.ProgramSynthesis.synth}\ 3\ \mathrm{Qpu.ProgramSynthesis.doubleSpec} = \mathrm{some} (\mathrm{Qpu.ProgramSynthesis.Expr.var.add}\ \mathrm{Qpu.ProgramSynthesis.Expr.var}) \land \mathrm{Qpu.ProgramSynthesis.size} (\mathrm{Qpu.ProgramSynthesis.Expr.var.add}\ \mathrm{Qpu.ProgramSynthesis.Expr.var}) \le \mathrm{Qpu.ProgramSynthesis.size} ((\mathrm{Qpu.ProgramSynthesis.Expr.lit}\ 2)\mathrm{.mul}\ \mathrm{Qpu.ProgramSynthesis.Expr.var}) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L681}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.equiv\_satisfies\_trace}}
+Any program equivalent to the traced one satisfies the learned spec.
+\[ \forall \{e_{1} e_{2} : \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.Equiv}\ e_{1} e_{2} \to \forall (\mathrm{inputs} : \mathrm{List} \mathbb{N}), \mathrm{Qpu.ProgramSynthesis.satisfies}\ e_{2} (\mathrm{Qpu.ProgramSynthesis.trace}\ e_{1} \mathrm{inputs}) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L381}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.eval\_affine}}
+\[ \forall (a\ b\ x : \mathbb{N}), \mathrm{Qpu.ProgramSynthesis.eval} (\mathrm{Qpu.ProgramSynthesis.affine}\ a\ b) x = a \cdot x + b \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L464}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.eval\_mono}}
+Sketch "lambda\_turing\_complete", replaced by the honest limitation: every program of this language is monotone in its input, so the language is far from Turing complete.
+\[ \forall (e : \mathrm{Qpu.ProgramSynthesis.Expr}) \{x\ y : \mathbb{N}\}, x \le y \to \mathrm{Qpu.ProgramSynthesis.eval}\ e\ x \le \mathrm{Qpu.ProgramSynthesis.eval}\ e\ y \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L396}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.eval\_replace}}
+Congruence: a patch agreeing with the old subterm on `x` leaves the whole program's value at `x` unchanged.
+\[ \forall (e : \mathrm{Qpu.ProgramSynthesis.Expr}) (p : \mathrm{Qpu.ProgramSynthesis.Pos}) \{\mathrm{old}\ \mathrm{new} : \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.get}? e\ p = \mathrm{some}\ \mathrm{old} \to \forall \{x : \mathbb{N}\}, \mathrm{Qpu.ProgramSynthesis.eval}\ \mathrm{new}\ x = \mathrm{Qpu.ProgramSynthesis.eval}\ \mathrm{old}\ x \to \mathrm{Qpu.ProgramSynthesis.eval} (\mathrm{Qpu.ProgramSynthesis.replace}\ e\ p\ \mathrm{new}) x = \mathrm{Qpu.ProgramSynthesis.eval}\ e\ x \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L504}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.eval\_zero}}
+Sketch "type\_inference\_sound" (exactness): the inferred bound is the value at input `0`.
+\[ \forall (e : \mathrm{Qpu.ProgramSynthesis.Expr}), \mathrm{Qpu.ProgramSynthesis.eval}\ e\ 0 = \mathrm{Qpu.ProgramSynthesis.lower}\ e \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L428}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.fill\_of\_holes\_zero}}
+Sketch "hof\_unification\_exists", replaced by rigidity: a hole-free sketch denotes one program whatever it is instantiated with.
+\[ \forall (\mathrm{sk} : \mathrm{Qpu.ProgramSynthesis.Sketch}), \mathrm{Qpu.ProgramSynthesis.holes}\ \mathrm{sk} = 0 \to \forall (e\ e' : \mathrm{Qpu.ProgramSynthesis.Expr}), \mathrm{Qpu.ProgramSynthesis.fill}\ \mathrm{sk}\ e = \mathrm{Qpu.ProgramSynthesis.fill}\ \mathrm{sk}\ e' \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L630}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.holds\_iff}}
+Sketch "input\_output\_consistency": the per-example check decides exactly consistency.
+\[ \forall (e : \mathrm{Qpu.ProgramSynthesis.Expr}) (\mathrm{ex} : \mathrm{Qpu.ProgramSynthesis.Example}), \mathrm{Qpu.ProgramSynthesis.holds}\ e\ \mathrm{ex} = \mathrm{true} \leftrightarrow \mathrm{Qpu.ProgramSynthesis.eval}\ e\ \mathrm{ex.1} = \mathrm{ex.2} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L87}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.inconsistent\_spec}}
+Labelled counterexample: an inconsistent spec (two outputs for one input) has no program.
+\[ \forall (e : \mathrm{Qpu.ProgramSynthesis.Expr}), \neg \mathrm{Qpu.ProgramSynthesis.satisfies}\ e [(0, 0), (0, 1)] \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L417}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.lower\_le\_eval}}
+Sketch "refinement\_type\_synthesis" / "abstraction\_preserves\_safety" / "typed\_program\_valid": the inferred refinement `\{v | lower e ≤ v\}` is sound for every input.
+\[ \forall (e : \mathrm{Qpu.ProgramSynthesis.Expr}) (x : \mathbb{N}), \mathrm{Qpu.ProgramSynthesis.lower}\ e \le \mathrm{Qpu.ProgramSynthesis.eval}\ e\ x \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L437}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.mem\_propagate}}
+Sketch "constraint\_propagation" completeness and soundness in one: the propagated domain is exactly the candidates satisfying the whole spec.
+\[ \forall \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\} \{c : \mathrm{List}\ \mathrm{Qpu.ProgramSynthesis.Expr}\} \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\}, e \in \mathrm{Qpu.ProgramSynthesis.propagate}\ s\ c \leftrightarrow e \in c \land \mathrm{Qpu.ProgramSynthesis.satisfies}\ e\ s \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L272}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.mem\_prune}}
+\[ \forall \{\mathrm{ex} : \mathrm{Qpu.ProgramSynthesis.Example}\} \{c : \mathrm{List}\ \mathrm{Qpu.ProgramSynthesis.Expr}\} \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\}, e \in \mathrm{Qpu.ProgramSynthesis.prune}\ \mathrm{ex}\ c \leftrightarrow e \in c \land \mathrm{Qpu.ProgramSynthesis.eval}\ e\ \mathrm{ex.1} = \mathrm{ex.2} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L257}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.mem\_upTo\_of\_size\_le}}
+Sketch "program\_space\_bounded" (other half) and "enumeration\_complete": the finite list `upTo k` contains every program of size `≤ k`.
+\[ \forall \{k : \mathbb{N}\} (e : \mathrm{Qpu.ProgramSynthesis.Expr}), \mathrm{Qpu.ProgramSynthesis.size}\ e \le k \to e \in \mathrm{Qpu.ProgramSynthesis.upTo}\ k \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L135}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.programs\_unbounded}}
+Sketch "modular\_synthesis": the program space is unbounded in size.
+\[ \forall (k : \mathbb{N}), \exists e, k < \mathrm{Qpu.ProgramSynthesis.size}\ e \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L168}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.propagate\_append\_subset}}
+More examples prune at least as much (monotone convergence of the domain).
+\[ \forall \{s\ t : \mathrm{Qpu.ProgramSynthesis.Spec}\} \{c : \mathrm{List}\ \mathrm{Qpu.ProgramSynthesis.Expr}\} \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\}, e \in \mathrm{Qpu.ProgramSynthesis.propagate} (s ++ t) c \to e \in \mathrm{Qpu.ProgramSynthesis.propagate}\ s\ c \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L294}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.propagate\_length\_le}}
+Sketch "inductive\_synthesis\_converges" / "constraint\_propagation\_reduces": propagation of any number of examples never grows the candidate domain.
+\[ \forall (s : \mathrm{Qpu.ProgramSynthesis.Spec}) (c : \mathrm{List}\ \mathrm{Qpu.ProgramSynthesis.Expr}), (\mathrm{Qpu.ProgramSynthesis.propagate}\ s\ c)\mathrm{.length} \le \mathrm{c.length} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L289}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.propagate\_nil\_iff}}
+Propagation empties the bounded domain exactly when the synthesiser fails.
+\[ \forall (k : \mathbb{N}) (s : \mathrm{Qpu.ProgramSynthesis.Spec}), \mathrm{Qpu.ProgramSynthesis.propagate}\ s (\mathrm{Qpu.ProgramSynthesis.upTo}\ k) = [] \leftrightarrow \mathrm{Qpu.ProgramSynthesis.synth}\ k\ s = \mathrm{none} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L305}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.prune\_keeps}}
+Constraint propagation never removes a program satisfying the spec.
+\[ \forall \{\mathrm{ex} : \mathrm{Qpu.ProgramSynthesis.Example}\} \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\} \{c : \mathrm{List}\ \mathrm{Qpu.ProgramSynthesis.Expr}\} \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.satisfies}\ e\ s \to \mathrm{ex} \in s \to e \in c \to e \in \mathrm{Qpu.ProgramSynthesis.prune}\ \mathrm{ex}\ c \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L266}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.prune\_length\_le}}
+Sketch "constraint\_propagation\_reduces": one propagation step never grows the domain.
+\[ \forall (\mathrm{ex} : \mathrm{Qpu.ProgramSynthesis.Example}) (c : \mathrm{List}\ \mathrm{Qpu.ProgramSynthesis.Expr}), (\mathrm{Qpu.ProgramSynthesis.prune}\ \mathrm{ex}\ c)\mathrm{.length} \le \mathrm{c.length} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L262}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.repair\_preserves}}
+Sketch "repair\_patch\_exists" / "example\_driven\_repair": a one-substitution repair preserves every test on whose input the patch agrees with the replaced subterm.
+\[ \forall \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\} \{p : \mathrm{Qpu.ProgramSynthesis.Pos}\} \{\mathrm{old}\ \mathrm{new} : \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.get}? e\ p = \mathrm{some}\ \mathrm{old} \to \forall \{\mathrm{ex} : \mathrm{Qpu.ProgramSynthesis.Example}\}, \mathrm{Qpu.ProgramSynthesis.eval}\ e\ \mathrm{ex.1} = \mathrm{ex.2} \to \mathrm{Qpu.ProgramSynthesis.eval}\ \mathrm{new}\ \mathrm{ex.1} = \mathrm{Qpu.ProgramSynthesis.eval}\ \mathrm{old}\ \mathrm{ex.1} \to \mathrm{Qpu.ProgramSynthesis.eval} (\mathrm{Qpu.ProgramSynthesis.replace}\ e\ p\ \mathrm{new}) \mathrm{ex.1} = \mathrm{ex.2} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L560}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.repair\_preserves\_spec}}
+The whole-spec form: tests unaffected by the patch keep passing.
+\[ \forall \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\} \{p : \mathrm{Qpu.ProgramSynthesis.Pos}\} \{\mathrm{old}\ \mathrm{new} : \mathrm{Qpu.ProgramSynthesis.Expr}\} \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\}, \mathrm{Qpu.ProgramSynthesis.get}? e\ p = \mathrm{some}\ \mathrm{old} \to \mathrm{Qpu.ProgramSynthesis.satisfies}\ e\ s \to (\forall \mathrm{ex} \in s, \mathrm{Qpu.ProgramSynthesis.eval}\ \mathrm{new}\ \mathrm{ex.1} = \mathrm{Qpu.ProgramSynthesis.eval}\ \mathrm{old}\ \mathrm{ex.1}) \to \mathrm{Qpu.ProgramSynthesis.satisfies} (\mathrm{Qpu.ProgramSynthesis.replace}\ e\ p\ \mathrm{new}) s \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L567}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.repair\_root}}
+Sketch "example\_driven\_repair": any single failing test is fixed by one root patch.
+\[ \forall (e : \mathrm{Qpu.ProgramSynthesis.Expr}) (\mathrm{ex} : \mathrm{Qpu.ProgramSynthesis.Example}), \mathrm{Qpu.ProgramSynthesis.eval} (\mathrm{Qpu.ProgramSynthesis.replace}\ e\ \mathrm{Qpu.ProgramSynthesis.Pos.here} (\mathrm{Qpu.ProgramSynthesis.Expr.lit}\ \mathrm{ex.2})) \mathrm{ex.1} = \mathrm{ex.2} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L573}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.satisfiable\_iff}}
+Sketch "constraints\_satisfiable" / "repair\_patch\_exists": bounded satisfiability is decided exactly by running the synthesiser.
+\[ \forall (k : \mathbb{N}) (s : \mathrm{Qpu.ProgramSynthesis.Spec}), \mathrm{Qpu.ProgramSynthesis.satisfiable}\ k\ s = \mathrm{true} \leftrightarrow \exists e, \mathrm{Qpu.ProgramSynthesis.size}\ e \le k \land \mathrm{Qpu.ProgramSynthesis.satisfies}\ e\ s \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L228}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.satisfiable\_monotone}}
+Sketch "correct\_program\_exists" is false in general: a satisfiable spec must be monotone.
+\[ \forall \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\} \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\}, \mathrm{Qpu.ProgramSynthesis.satisfies}\ e\ s \to \forall \{x\ y\ x'\ y' : \mathbb{N}\}, (x, y) \in s \to (x', y') \in s \to x \le x' \to y \le y' \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L404}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.satisfiesB\_iff}}
+Sketch "smt\_decidable" / "witness\_generation": the Boolean checker agrees with the Prop, so satisfaction of a finite specification is decidable.
+\[ \forall (e : \mathrm{Qpu.ProgramSynthesis.Expr}) (s : \mathrm{Qpu.ProgramSynthesis.Spec}), \mathrm{Qpu.ProgramSynthesis.satisfiesB}\ e\ s = \mathrm{true} \leftrightarrow \mathrm{Qpu.ProgramSynthesis.satisfies}\ e\ s \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L92}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.satisfies\_append}}
+Sketch "top\_down\_decomposition": a specification splits into conjunctive subgoals.
+\[ \forall \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\} (s\ t : \mathrm{Qpu.ProgramSynthesis.Spec}), \mathrm{Qpu.ProgramSynthesis.satisfies}\ e (s ++ t) \leftrightarrow \mathrm{Qpu.ProgramSynthesis.satisfies}\ e\ s \land \mathrm{Qpu.ProgramSynthesis.satisfies}\ e\ t \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L359}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.satisfies\_of\_equiv}}
+Sketch "observational\_equiv\_testable": equivalent programs satisfy the same specs.
+\[ \forall \{e_{1} e_{2} : \mathrm{Qpu.ProgramSynthesis.Expr}\} \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\}, \mathrm{Qpu.ProgramSynthesis.Equiv}\ e_{1} e_{2} \to (\mathrm{Qpu.ProgramSynthesis.satisfies}\ e_{1} s \leftrightarrow \mathrm{Qpu.ProgramSynthesis.satisfies}\ e_{2} s) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L340}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.satisfies\_trace}}
+Sketch "trace\_based\_synthesis": the traced program satisfies its own learned spec.
+\[ \forall (e : \mathrm{Qpu.ProgramSynthesis.Expr}) (\mathrm{inputs} : \mathrm{List} \mathbb{N}), \mathrm{Qpu.ProgramSynthesis.satisfies}\ e (\mathrm{Qpu.ProgramSynthesis.trace}\ e\ \mathrm{inputs}) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L374}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.singleton\_satisfiable}}
+Sketch "input\_output\_consistency" at the level of a single example: a one-example specification is always satisfiable, by the constant program.
+\[ \forall (\mathrm{ex} : \mathrm{Qpu.ProgramSynthesis.Example}), \mathrm{Qpu.ProgramSynthesis.satisfies} (\mathrm{Qpu.ProgramSynthesis.Expr.lit}\ \mathrm{ex.2}) [\mathrm{ex}] \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L241}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.size\_affine}}
+\[ \forall (a\ b : \mathbb{N}), \mathrm{Qpu.ProgramSynthesis.size} (\mathrm{Qpu.ProgramSynthesis.affine}\ a\ b) = a + b + 5 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L466}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.size\_compose}}
+Sketch "bottom\_up\_composition": the size of a composed program is the sum of its parts plus one, for both constructors.
+\[ \forall (a\ b : \mathrm{Qpu.ProgramSynthesis.Expr}), \mathrm{Qpu.ProgramSynthesis.size} (\mathrm{a.add}\ b) = \mathrm{Qpu.ProgramSynthesis.size}\ a + \mathrm{Qpu.ProgramSynthesis.size}\ b + 1 \land \mathrm{Qpu.ProgramSynthesis.size} (\mathrm{a.mul}\ b) = \mathrm{Qpu.ProgramSynthesis.size}\ a + \mathrm{Qpu.ProgramSynthesis.size}\ b + 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L365}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.size\_fill}}
+Size law for filling.
+\[ \forall (\mathrm{sk} : \mathrm{Qpu.ProgramSynthesis.Sketch}) (e : \mathrm{Qpu.ProgramSynthesis.Expr}), \mathrm{Qpu.ProgramSynthesis.size} (\mathrm{Qpu.ProgramSynthesis.fill}\ \mathrm{sk}\ e) = \mathrm{Qpu.ProgramSynthesis.skeleton}\ \mathrm{sk} + \mathrm{Qpu.ProgramSynthesis.holes}\ \mathrm{sk} \cdot \mathrm{Qpu.ProgramSynthesis.size}\ e \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L611}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.size\_le\_of\_mem\_upTo}}
+Sketch "program\_space\_bounded" (half): everything enumerated at bound `k` has size `≤ k`.
+\[ \forall \{k : \mathbb{N}\} \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\}, e \in \mathrm{Qpu.ProgramSynthesis.upTo}\ k \to \mathrm{Qpu.ProgramSynthesis.size}\ e \le k \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L125}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.size\_of\_mem\_layer}}
+\[ \forall \{k : \mathbb{N}\} \{\mathrm{prev} : \mathrm{List}\ \mathrm{Qpu.ProgramSynthesis.Expr}\} \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\}, e \in \mathrm{Qpu.ProgramSynthesis.layer}\ k\ \mathrm{prev} \to \mathrm{Qpu.ProgramSynthesis.size}\ e = k + 1 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L111}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.size\_pos}}
+\[ \forall (e : \mathrm{Qpu.ProgramSynthesis.Expr}), 0 < \mathrm{Qpu.ProgramSynthesis.size}\ e \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L71}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.size\_replace}}
+Sketch "sketch\_has\_completion" (size accounting of a patch): size is conserved up to the exchanged subterms.
+\[ \forall (e : \mathrm{Qpu.ProgramSynthesis.Expr}) (p : \mathrm{Qpu.ProgramSynthesis.Pos}) \{\mathrm{old}\ \mathrm{new} : \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.get}? e\ p = \mathrm{some}\ \mathrm{old} \to \mathrm{Qpu.ProgramSynthesis.size} (\mathrm{Qpu.ProgramSynthesis.replace}\ e\ p\ \mathrm{new}) + \mathrm{Qpu.ProgramSynthesis.size}\ \mathrm{old} = \mathrm{Qpu.ProgramSynthesis.size}\ e + \mathrm{Qpu.ProgramSynthesis.size}\ \mathrm{new} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L530}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.sketch\_completion\_size}}
+Sketch "sketch\_has\_completion": filling the holes with the variable yields a program of size skeleton + holes.
+\[ \forall (\mathrm{sk} : \mathrm{Qpu.ProgramSynthesis.Sketch}), \mathrm{Qpu.ProgramSynthesis.size} (\mathrm{Qpu.ProgramSynthesis.fill}\ \mathrm{sk}\ \mathrm{Qpu.ProgramSynthesis.Expr.var}) = \mathrm{Qpu.ProgramSynthesis.skeleton}\ \mathrm{sk} + \mathrm{Qpu.ProgramSynthesis.holes}\ \mathrm{sk} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L625}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.succ\_synth}}
+Worked example: at bound 4 the synthesiser finds `x + 1`, and nothing of size `≤ 3` fits.
+\[ \mathrm{Qpu.ProgramSynthesis.synth}\ 4\ \mathrm{Qpu.ProgramSynthesis.succSpec} = \mathrm{some} (\mathrm{Qpu.ProgramSynthesis.Expr.var.add} (\mathrm{Qpu.ProgramSynthesis.Expr.lit}\ 1)) \land \mathrm{Qpu.ProgramSynthesis.synth}\ 3\ \mathrm{Qpu.ProgramSynthesis.succSpec} = \mathrm{none} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L673}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.synth\_complete}}
+Sketch "enumeration\_complete" / "correct\_program\_exists": completeness up to the bound, a spec with a witness of size `≤ k` is solved by `synth k`.
+\[ \forall \{k : \mathbb{N}\} \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\} \{w : \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.satisfies}\ w\ s \to \mathrm{Qpu.ProgramSynthesis.size}\ w \le k \to \exists e, \mathrm{Qpu.ProgramSynthesis.synth}\ k\ s = \mathrm{some}\ e \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L194}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.synth\_mem\_propagate}}
+The synthesiser's answer survives propagation of the whole spec.
+\[ \forall \{k : \mathbb{N}\} \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\} \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.synth}\ k\ s = \mathrm{some}\ e \to e \in \mathrm{Qpu.ProgramSynthesis.propagate}\ s (\mathrm{Qpu.ProgramSynthesis.upTo}\ k) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L300}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.synth\_minimal}}
+Sketch "minimal\_program\_exists" / "flipping\_synthesis": the size-ordered search returns a program no larger than any program satisfying the spec.
+\[ \forall \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\} \{k : \mathbb{N}\} \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.synth}\ k\ s = \mathrm{some}\ e \to \forall (w : \mathrm{Qpu.ProgramSynthesis.Expr}), \mathrm{Qpu.ProgramSynthesis.satisfies}\ w\ s \to \mathrm{Qpu.ProgramSynthesis.size}\ e \le \mathrm{Qpu.ProgramSynthesis.size}\ w \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L205}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.synth\_size}}
+A returned program respects the size bound.
+\[ \forall \{k : \mathbb{N}\} \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\} \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.synth}\ k\ s = \mathrm{some}\ e \to \mathrm{Qpu.ProgramSynthesis.size}\ e \le k \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L189}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.synth\_sound}}
+Sketch "functional\_correctness\_proof" / "generated\_code\_type\_safe": soundness, a returned program satisfies the specification.
+\[ \forall \{k : \mathbb{N}\} \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\} \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.synth}\ k\ s = \mathrm{some}\ e \to \mathrm{Qpu.ProgramSynthesis.satisfies}\ e\ s \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L183}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.synth\_trace}}
+Sketch "trace\_based\_synthesis": a learned spec is always solved by the bounded synthesiser at the size of its source program, with a result no larger than the source.
+\[ \forall (e : \mathrm{Qpu.ProgramSynthesis.Expr}) (\mathrm{inputs} : \mathrm{List} \mathbb{N}), \exists e', \mathrm{Qpu.ProgramSynthesis.synth} (\mathrm{Qpu.ProgramSynthesis.size}\ e) (\mathrm{Qpu.ProgramSynthesis.trace}\ e\ \mathrm{inputs}) = \mathrm{some}\ e' \land \mathrm{Qpu.ProgramSynthesis.size}\ e' \le \mathrm{Qpu.ProgramSynthesis.size}\ e \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L387}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.synth\_typed}}
+Sketch "generated\_code\_type\_safe": whatever the synthesiser returns is a total, monotone program satisfying the spec and the size bound.
+\[ \forall \{k : \mathbb{N}\} \{s : \mathrm{Qpu.ProgramSynthesis.Spec}\} \{e : \mathrm{Qpu.ProgramSynthesis.Expr}\}, \mathrm{Qpu.ProgramSynthesis.synth}\ k\ s = \mathrm{some}\ e \to \mathrm{Qpu.ProgramSynthesis.satisfies}\ e\ s \land \mathrm{Qpu.ProgramSynthesis.size}\ e \le k \land \forall (x\ y : \mathbb{N}), x \le y \to \mathrm{Qpu.ProgramSynthesis.eval}\ e\ x \le \mathrm{Qpu.ProgramSynthesis.eval}\ e\ y \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L457}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.testing\_incomplete}}
+Labelled worked example: testing is sound but not complete, `x * x` and `x + x` agree on the tests `0 ↦ 0`, `2 ↦ 4` yet differ at `1`.
+\[ \mathrm{Qpu.ProgramSynthesis.satisfies} (\mathrm{Qpu.ProgramSynthesis.Expr.var.mul}\ \mathrm{Qpu.ProgramSynthesis.Expr.var}) [(0, 0), (2, 4)] \land \mathrm{Qpu.ProgramSynthesis.satisfies} (\mathrm{Qpu.ProgramSynthesis.Expr.var.add}\ \mathrm{Qpu.ProgramSynthesis.Expr.var}) [(0, 0), (2, 4)] \land \neg \mathrm{Qpu.ProgramSynthesis.Equiv} (\mathrm{Qpu.ProgramSynthesis.Expr.var.mul}\ \mathrm{Qpu.ProgramSynthesis.Expr.var}) (\mathrm{Qpu.ProgramSynthesis.Expr.var.add}\ \mathrm{Qpu.ProgramSynthesis.Expr.var}) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L353}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.unsatisfiable\_spec}}
+Labelled counterexample: no program maps `0 ↦ 1` and `1 ↦ 0`.
+\[ \forall (e : \mathrm{Qpu.ProgramSynthesis.Expr}), \neg \mathrm{Qpu.ProgramSynthesis.satisfies}\ e [(0, 1), (1, 0)] \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L412}
+
+\paragraph{\texttt{Qpu.ProgramSynthesis.upTo\_counts}}
+Labelled worked example: exact counts of the search space for small bounds.
+\[ (\mathrm{Qpu.ProgramSynthesis.upTo}\ 1)\mathrm{.length} = 2 \land (\mathrm{Qpu.ProgramSynthesis.upTo}\ 2)\mathrm{.length} = 3 \land (\mathrm{Qpu.ProgramSynthesis.upTo}\ 3)\mathrm{.length} = 12 \land (\mathrm{Qpu.ProgramSynthesis.upTo}\ 4)\mathrm{.length} = 21 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ProgramSynthesis.lean\#L172}
+\end{document}

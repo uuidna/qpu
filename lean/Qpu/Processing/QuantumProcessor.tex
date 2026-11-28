@@ -1,0 +1,27 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.QuantumProcessor}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor.lean}
+
+\paragraph{\texttt{QuantumProcessor.connected}}
+every site of the register's grid is reached from (0, 0): the coupling graph is connected
+\[ \forall x \in \mathrm{QuantumProcessor.sites}\ \mathrm{hexbit}, x \in \mathrm{QuantumProcessor.reach}\ \mathrm{hexbit} ((\mathrm{Qubit.rows}\ \mathrm{hexbit})\mathrm{.length} + 4) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor.lean\#L41}
+
+\paragraph{\texttt{QuantumProcessor.degree\_bounds}}
+every site has at least two and at most four couplers
+\[ \forall x \in \mathrm{QuantumProcessor.sites}\ \mathrm{hexbit}, 2 \le \mathrm{QuantumProcessor.degree}\ \mathrm{hexbit}\ x \land \mathrm{QuantumProcessor.degree}\ \mathrm{hexbit}\ x \le 4 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor.lean\#L47}
+
+\paragraph{\texttt{QuantumProcessor.sites\_count}}
+the register's grid has `effective hexbit` sites
+\[ (\mathrm{QuantumProcessor.sites}\ \mathrm{hexbit})\mathrm{.length} = \mathrm{Qubit.effective}\ \mathrm{hexbit} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor.lean\#L38}
+\end{document}

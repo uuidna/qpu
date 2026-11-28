@@ -1,0 +1,32 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Application.Grover}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Grover.lean}
+
+\paragraph{\texttt{groverSize\_growth}}
+Unlimited growth: the database for k+1 qubit pairs is exactly four times the k-pair one, for every k — no bound is hidden in a spot value.
+\[ \forall (k : \mathbb{N}), \mathrm{groverSize} (k + 1) = 4 \cdot \mathrm{groverSize}\ k \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Grover.lean\#L36}
+
+\paragraph{\texttt{groverSize\_pos}}
+For every k the database is nonempty: there is always something to search.
+\[ \forall (k : \mathbb{N}), 0 < \mathrm{groverSize}\ k \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Grover.lean\#L41}
+
+\paragraph{\texttt{groverSize\_strict\_growth}}
+Growth is strict at every size: adding a qubit pair strictly enlarges the database.
+\[ \forall (k : \mathbb{N}), \mathrm{groverSize}\ k < \mathrm{groverSize} (k + 1) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Grover.lean\#L44}
+
+\paragraph{\texttt{grover\_all}}
+The textbook spot values, decided by the kernel as controls on the growth theorems.
+\[ \mathrm{groverIters}\ 2 = 3 \land \mathrm{groverIters}\ 5 = 25 \land \mathrm{groverSize}\ 5 = 1024 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Application/Grover.lean\#L48}
+\end{document}

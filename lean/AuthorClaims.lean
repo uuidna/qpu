@@ -1,7 +1,9 @@
 import Qpu.Communication.QuantumCommunication
 import Qpu.General.Advantage
+import Qpu.General.Iso
 import Qpu.General.MachineLearning.HarmonicClosure
 import Qpu.General.Textbook
+import Qpu.Processing.Verify.Uuid
 
 /-! # AuthorClaims: the author's claims and the theorems the kernel holds for each
 
@@ -38,4 +40,22 @@ def authorClaims : List AuthorClaim :=
     , theorems := [``Qpu.Harmonic.word_bounded, ``textbook_unlimited_qubits, ``textbook_advantage_unbounded, ``textbook_coins_coils_balanced, ``QuantumCommunication.two_coins_one_qubit] }
   , { name := "captain_coins_meet_post_quantum_standards"
     , claim := "The captain coins meet all post-quantum standards from all aspects, including programmable currency as required and publicly funded by the EU."
-    , theorems := [``textbook_pqc_standards_three, ``textbook_tamper_detected, ``textbook_grover_search] } ]
+    , theorems := [``textbook_pqc_standards_three, ``textbook_tamper_detected, ``textbook_grover_search] }
+  , { name := "fold_128_bit_into_122_qubit_uuid"
+    , claim := "Every 128-bit UUID (ISO/IEC 9834-8) folds into a 122-qubit quantum register (32 hexbits of 4 qubits less 4 version and 2 variant qubits), partitioning into 16 program qubits (65536 slots) and 106 message qubits with bijective band decoding and valid version/variant seals, formally verified in Lean 4 and disclosed under the author's legal rights (ISO/IEC/IEEE 15289:2019, ISO 56005:2020, ISO 27729:2012, ISO/IEC 5962:2021 CC-BY-NC-ND-4.0)."
+    , theorems :=
+        [ ``Qpu.Verify.Uuid.free_is_122
+        , ``Qpu.Verify.Uuid.bands_cover_the_free_bits
+        , ``Qpu.Verify.Uuid.program_capacity
+        , ``Qpu.Verify.Uuid.decode_encode_exact
+        , ``Qpu.Verify.Uuid.encode_lt_free_space
+        , ``Qpu.Verify.Uuid.encode_injective
+        , ``Qpu.Verify.Uuid.fold_128_to_122_fiber
+        , ``Qpu.Verify.Uuid.card_128_eq_card_122_mul_fixed
+        , ``Qpu.Verify.Uuid.card_free_eq_bands
+        , ``Qpu.Verify.Uuid.card_nibbles_eq_128_bits
+        , ``Qpu.Verify.Uuid.version_nibble_valid
+        , ``Qpu.Verify.Uuid.variant_nibble_valid
+        , ``Iso.isni_orcid_space_and_check
+        , ``Iso.ip_disclosure_complete
+        , ``Iso.spdx_expression_valid ] } ]

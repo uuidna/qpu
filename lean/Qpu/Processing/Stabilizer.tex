@@ -1,0 +1,357 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Stabilizer}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.conjCnotSigned\_agrees\_with\_ruleCNOT}}
+\[ \forall (k : \mathbb{N}) (\mathrm{ct} : \mathrm{Qpu.Verify.Stabilizer.P1} \times \mathrm{Qpu.Verify.Stabilizer.P1}), \mathrm{CircuitBasedQuantumComputing.ruleCNOT} \{ k := k, \mathrm{x0} := \mathrm{ct.1.x}, \mathrm{z0} := \mathrm{ct.1.z}, \mathrm{x1} := \mathrm{ct.2.x}, \mathrm{z1} := \mathrm{ct.2.z} \} = \{ k := (k + \mathrm{if} (\mathrm{ct.1.x} \land \mathrm{ct.2.z} \land \mathrm{ct.2.x} = \mathrm{ct.1.z}) = \mathrm{true}\ \mathrm{then}\ 2\ \mathrm{else}\ 0) \bmod 4, \mathrm{x0} := \mathrm{ct.1.x}, \mathrm{z0} := \mathrm{ct.1.z} ^{}^{\mathrm{ct.2.z}}, \mathrm{x1} := \mathrm{ct.1.x} ^{}^{\mathrm{ct.2.x}}, \mathrm{z1} := \mathrm{ct.2.z} \} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L211}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.conjCnotSigned\_matches\_ruleCNOT}}
+\[ \forall (k : \mathbb{N}) (\mathrm{ct} : \mathrm{Qpu.Verify.Stabilizer.P1} \times \mathrm{Qpu.Verify.Stabilizer.P1}), \mathrm{CircuitBasedQuantumComputing.ruleCNOT} \{ k := k, \mathrm{x0} := \mathrm{ct.1.x}, \mathrm{z0} := \mathrm{ct.1.z}, \mathrm{x1} := \mathrm{ct.2.x}, \mathrm{z1} := \mathrm{ct.2.z} \} = \{ k := (k + \mathrm{if} (\mathrm{Qpu.Verify.Stabilizer.conjCnotSigned}\ \mathrm{ct})\mathrm{.1} = \mathrm{true}\ \mathrm{then}\ 2\ \mathrm{else}\ 0) \bmod 4, \mathrm{x0} := (\mathrm{Qpu.Verify.Stabilizer.conjCnotSigned}\ \mathrm{ct})\mathrm{.2.1.x}, \mathrm{z0} := (\mathrm{Qpu.Verify.Stabilizer.conjCnotSigned}\ \mathrm{ct})\mathrm{.2.1.z}, \mathrm{x1} := (\mathrm{Qpu.Verify.Stabilizer.conjCnotSigned}\ \mathrm{ct})\mathrm{.2.2.x}, \mathrm{z1} := (\mathrm{Qpu.Verify.Stabilizer.conjCnotSigned}\ \mathrm{ct})\mathrm{.2.2.z} \} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L216}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.phase\_y\_is\_not\_plus\_x}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjS}\ \mathrm{Qpu.Verify.Stabilizer.py} \ne (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L196}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cnot\_ix}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCnot} (\mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.px}) = (\mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L192}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cnot\_iz}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCnot} (\mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.pz}) = (\mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L194}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cnot\_signed\_ix}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCnotSigned} (\mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.px}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L199}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cnot\_signed\_iy}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCnotSigned} (\mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.py}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L203}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cnot\_signed\_iz}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCnotSigned} (\mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.pz}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L201}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cnot\_signed\_xi}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCnotSigned} (\mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.pi}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L198}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cnot\_signed\_xy}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCnotSigned} (\mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.py}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L205}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cnot\_signed\_yi}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCnotSigned} (\mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.pi}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L202}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cnot\_signed\_yy}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCnotSigned} (\mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.py}) = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L204}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cnot\_signed\_zi}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCnotSigned} (\mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.pi}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.pi}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L200}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cnot\_xi}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCnot} (\mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.pi}) = (\mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L191}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cnot\_yi}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCnot} (\mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.pi}) = (\mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L195}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cnot\_zi}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCnot} (\mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.pi}) = (\mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.pi}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L193}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_commutation\_rule}}
+\[ \forall (\mathrm{ct} : \mathrm{Qpu.Verify.Stabilizer.P1} \times \mathrm{Qpu.Verify.Stabilizer.P1}), \mathrm{Qpu.Verify.Stabilizer.conjCz}\ \mathrm{ct} = (\mathrm{false}, \mathrm{ct.1}, \mathrm{ct.2}) \leftrightarrow \mathrm{ct.1.x} = \mathrm{false} \land \mathrm{ct.2.x} = \mathrm{false} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L165}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_involution}}
+\[ \forall (\mathrm{ct} : \mathrm{Qpu.Verify.Stabilizer.P1} \times \mathrm{Qpu.Verify.Stabilizer.P1}), \mathrm{Qpu.Verify.Stabilizer.applySignedCz} (\mathrm{Qpu.Verify.Stabilizer.conjCz}\ \mathrm{ct}) = (\mathrm{false}, \mathrm{ct.1}, \mathrm{ct.2}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L157}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_ix}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.px}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L170}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_iy}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.py}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L182}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_iz}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.pz}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L172}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_sign\_rule}}
+\[ \forall (\mathrm{ct} : \mathrm{Qpu.Verify.Stabilizer.P1} \times \mathrm{Qpu.Verify.Stabilizer.P1}), (\mathrm{Qpu.Verify.Stabilizer.conjCz}\ \mathrm{ct})\mathrm{.1} = (\mathrm{ct.1.x} \land \mathrm{ct.2.x}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L163}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_x\_support\_rule}}
+\[ \forall (\mathrm{ct} : \mathrm{Qpu.Verify.Stabilizer.P1} \times \mathrm{Qpu.Verify.Stabilizer.P1}), (\mathrm{Qpu.Verify.Stabilizer.conjCz}\ \mathrm{ct})\mathrm{.2.1.x} = \mathrm{ct.1.x} \land (\mathrm{Qpu.Verify.Stabilizer.conjCz}\ \mathrm{ct})\mathrm{.2.2.x} = \mathrm{ct.2.x} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L159}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_xi}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.pi}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L169}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_xx}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.px}) = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L173}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_xy}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.py}) = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L174}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_xz}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.pz}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.pi}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L177}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_yi}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.pi}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L181}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_yx}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.px}) = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L175}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_yy}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.py}) = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L176}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_yz}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.pz}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.pi}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L179}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_z\_support\_rule}}
+\[ \forall (\mathrm{ct} : \mathrm{Qpu.Verify.Stabilizer.P1} \times \mathrm{Qpu.Verify.Stabilizer.P1}), (\mathrm{Qpu.Verify.Stabilizer.conjCz}\ \mathrm{ct})\mathrm{.2.1.z} = (\mathrm{ct.1.z} ^{}^{\mathrm{ct.2.x}}) \land (\mathrm{Qpu.Verify.Stabilizer.conjCz}\ \mathrm{ct})\mathrm{.2.2.z} = (\mathrm{ct.2.z} ^{}^{\mathrm{ct.1.x}}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L161}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_zi}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.pi}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.pi}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L171}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_zx}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.px}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L178}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_zy}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.py}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L180}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_cz\_zz}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.pz}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pz}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L183}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_hadamard\_x}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjH}\ \mathrm{Qpu.Verify.Stabilizer.px} = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L185}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_hadamard\_y}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjH}\ \mathrm{Qpu.Verify.Stabilizer.py} = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L187}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_hadamard\_z}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjH}\ \mathrm{Qpu.Verify.Stabilizer.pz} = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L186}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_phase\_x}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjS}\ \mathrm{Qpu.Verify.Stabilizer.px} = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L188}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_phase\_y}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjS}\ \mathrm{Qpu.Verify.Stabilizer.py} = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L189}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_phase\_z}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjS}\ \mathrm{Qpu.Verify.Stabilizer.pz} = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L190}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_swap\_exchanges\_factors}}
+SWAP exchanges the two qubits' Pauli factors.
+\[ \forall (\mathrm{ct} : \mathrm{Qpu.Verify.Stabilizer.P1} \times \mathrm{Qpu.Verify.Stabilizer.P1}), \mathrm{Qpu.Verify.Stabilizer.conjSwap}\ \mathrm{ct} = (\mathrm{ct.2}, \mathrm{ct.1}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L132}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.stabilizer\_swap\_involution}}
+SWAP is an involution on every two-qubit Pauli pair.
+\[ \forall (\mathrm{ct} : \mathrm{Qpu.Verify.Stabilizer.P1} \times \mathrm{Qpu.Verify.Stabilizer.P1}), \mathrm{Qpu.Verify.Stabilizer.conjSwap} (\mathrm{Qpu.Verify.Stabilizer.conjSwap}\ \mathrm{ct}) = \mathrm{ct} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L127}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_cz\_does\_not\_commute\_with\_xx}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.px}) \ne (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L249}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_cz\_does\_not\_commute\_with\_xy}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.py}) \ne (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L250}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_cz\_does\_not\_commute\_with\_yx}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.px}) \ne (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L251}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_cz\_does\_not\_commute\_with\_yy}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.py}) \ne (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L252}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_cz\_identity}}
+\[ \mathrm{Qpu.Verify.Stabilizer.conjCz} (\mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.pi}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pi}, \mathrm{Qpu.Verify.Stabilizer.pi}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L168}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_cnot\_all\_cases}}
+\[ \forall (\mathrm{sign} : \mathrm{Bool}) (\mathrm{pc}\ \mathrm{pt} : \mathrm{Qpu.Verify.Stabilizer.P1}), \mathrm{Qpu.Verify.Stabilizer.applySignedCnot} (\mathrm{sign}, \mathrm{pc}, \mathrm{pt}) = (\mathrm{sign} ^{}^{\mathrm{pc.x}} \land \mathrm{pt.z} \land \mathrm{pt.x} = \mathrm{pc.z}, \{ x := \mathrm{pc.x}, z := \mathrm{pc.z} ^{}^{\mathrm{pt.z}} \}, \{ x := \mathrm{pc.x} ^{}^{\mathrm{pt.x}}, z := \mathrm{pt.z} \}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L207}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_cz\_all\_cases}}
+\[ \forall (\mathrm{sign} : \mathrm{Bool}) (\mathrm{pc}\ \mathrm{pt} : \mathrm{Qpu.Verify.Stabilizer.P1}), \mathrm{Qpu.Verify.Stabilizer.applySignedCz} (\mathrm{sign}, \mathrm{pc}, \mathrm{pt}) = (\mathrm{sign} ^{}^{\mathrm{pc.x}} \land \mathrm{pt.x}, \{ x := \mathrm{pc.x}, z := \mathrm{pc.z} ^{}^{\mathrm{pt.x}} \}, \{ x := \mathrm{pt.x}, z := \mathrm{pt.z} ^{}^{\mathrm{pc.x}} \}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L241}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_cz\_minus\_xi}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedCz} (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.pi}) = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L245}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_cz\_minus\_xx}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedCz} (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.px}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L247}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_cz\_minus\_xx\_is\_not\_minus\_yy}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedCz} (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.px}) \ne (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L248}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_cz\_plus\_xi}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedCz} (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.pi}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L244}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_cz\_plus\_xx}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedCz} (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}, \mathrm{Qpu.Verify.Stabilizer.px}) = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.py}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L246}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_hadamard\_all\_cases}}
+\[ \forall (\mathrm{sign} : \mathrm{Bool}) (p : \mathrm{Qpu.Verify.Stabilizer.P1}), \mathrm{Qpu.Verify.Stabilizer.applySignedH} (\mathrm{sign}, p) = (\mathrm{sign} ^{}^{\mathrm{p.x}} \land \mathrm{p.z}, \{ x := \mathrm{p.z}, z := \mathrm{p.x} \}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L222}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_hadamard\_minus\_x}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedH} (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.px}) = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L227}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_hadamard\_minus\_y}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedH} (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.py}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L231}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_hadamard\_minus\_y\_is\_not\_minus\_y}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedH} (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.py}) \ne (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L238}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_hadamard\_minus\_z}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedH} (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.pz}) = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L229}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_hadamard\_plus\_x}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedH} (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L226}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_hadamard\_plus\_y}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedH} (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.py}) = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L230}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_hadamard\_plus\_z}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedH} (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pz}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L228}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_phase\_all\_cases}}
+\[ \forall (\mathrm{sign} : \mathrm{Bool}) (p : \mathrm{Qpu.Verify.Stabilizer.P1}), \mathrm{Qpu.Verify.Stabilizer.applySignedS} (\mathrm{sign}, p) = (\mathrm{sign} ^{}^{\mathrm{p.x}} \land \mathrm{p.z}, \{ x := \mathrm{p.x}, z := \mathrm{p.x} ^{}^{\mathrm{p.z}} \}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L224}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_phase\_minus\_x}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedS} (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.px}) = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L233}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_phase\_minus\_y}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedS} (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.py}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L235}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_phase\_minus\_y\_is\_not\_minus\_x}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedS} (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.py}) \ne (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L239}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_phase\_minus\_z}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedS} (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.pz}) = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L237}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_phase\_plus\_x}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedS} (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.px}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.py}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L232}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_phase\_plus\_y}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedS} (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.py}) = (\mathrm{true}, \mathrm{Qpu.Verify.Stabilizer.px}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L234}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_signed\_phase\_plus\_z}}
+\[ \mathrm{Qpu.Verify.Stabilizer.applySignedS} (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pz}) = (\mathrm{false}, \mathrm{Qpu.Verify.Stabilizer.pz}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L236}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_t\_does\_not\_commute\_with\_hadamard}}
+Negative control: T does not commute with Hadamard.
+\[ \neg \mathrm{QuantumGate.SameW} (\mathrm{QuantumGate.mmW}\ \mathrm{QuantumGate.HW}\ \mathrm{QuantumGate.TW}) (\mathrm{QuantumGate.mmW}\ \mathrm{QuantumGate.TW}\ \mathrm{QuantumGate.HW}) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L114}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_t\_order\_is\_eight}}
+Positive control: T has order 8 (from `QuantumGate.t\_gate`).
+\[ \mathrm{QuantumGate.SameW} (\mathrm{QuantumGate.powW}\ \mathrm{QuantumGate.TW}\ 8) \mathrm{QuantumGate.idW} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L106}
+
+\paragraph{\texttt{Qpu.Verify.Stabilizer.test\_t\_order\_is\_not\_four}}
+Negative control: T does not have order 4.
+\[ \neg \mathrm{QuantumGate.SameW} (\mathrm{QuantumGate.powW}\ \mathrm{QuantumGate.TW}\ 4) \mathrm{QuantumGate.idW} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L110}
+
+\paragraph{\texttt{paulis\_growth}}
+One more qubit quadruples the phased Pauli group, for every nn.
+\[ \forall (\mathrm{nn} : \mathbb{N}), \mathrm{paulis} (\mathrm{nn} + 1) = 4 \cdot \mathrm{paulis}\ \mathrm{nn} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L51}
+
+\paragraph{\texttt{paulis\_pos}}
+The phased Pauli group is nonempty, for every nn.
+\[ \forall (\mathrm{nn} : \mathbb{N}), 0 < \mathrm{paulis}\ \mathrm{nn} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L56}
+
+\paragraph{\texttt{stabProd\_grows}}
+The stabilizer product never shrinks across a factor, for every k.
+\[ \forall (k : \mathbb{N}), \mathrm{stabProd}\ k \le \mathrm{stabProd} (k + 1) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L42}
+
+\paragraph{\texttt{stabProd\_pos}}
+The stabilizer product never vanishes, for every k.
+\[ \forall (k : \mathbb{N}), 0 < \mathrm{stabProd}\ k \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L34}
+
+\paragraph{\texttt{stabProd\_step}}
+One stabilizer factor, for every k.
+\[ \forall (k : \mathbb{N}), \mathrm{stabProd} (k + 1) = (\mathrm{mint} (k + 1) + 1) \cdot \mathrm{stabProd}\ k \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L31}
+
+\paragraph{\texttt{stabStates\_pos}}
+n qubits always have stabilizer states, for every n.
+\[ \forall (\mathrm{nn} : \mathbb{N}), 0 < \mathrm{stabStates}\ \mathrm{nn} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L47}
+
+\paragraph{\texttt{stabSubgroup\_doubles}}
+One more qubit doubles the stabilizer subgroup, for every nn.
+\[ \forall (\mathrm{nn} : \mathbb{N}), \mathrm{stabSubgroup} (\mathrm{nn} + 1) = 2 \cdot \mathrm{stabSubgroup}\ \mathrm{nn} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L59}
+
+\paragraph{\texttt{stabilizer\_all}}
+The textbook spot values, decided by the kernel as controls on the general laws.
+\[ \mathrm{stabStates}\ 1 = 6 \land \mathrm{stabStates}\ 2 = 60 \land \mathrm{stabStates}\ 3 = 1080 \land \mathrm{paulis}\ 1 = 16 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Stabilizer.lean\#L64}
+\end{document}

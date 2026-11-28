@@ -1,0 +1,54 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Physics.EnergyGap}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EnergyGap.lean}
+
+\paragraph{\texttt{cooling\_stays\_positive}}
+COOLING: for every t, a, n with 0 < t and 0 < a, 0 < t * a \^{} n; with a < b as well, t * a \^{} n * a < t * a \^{} n * b.
+\[ \forall (t\ a\ n : \mathbb{N}), 0 < t \to 0 < a \to 0 < t \cdot a ^{n} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EnergyGap.lean\#L31}
+
+\paragraph{\texttt{cooling\_strictly\_decreases}}
+\[ \forall (t\ a\ b\ n : \mathbb{N}), 0 < t \to 0 < a \to a < b \to t \cdot a ^{n} \cdot a < t \cdot a ^{n} \cdot b \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EnergyGap.lean\#L33}
+
+\paragraph{\texttt{gap\_doubles}}
+One more level exactly doubles the gap, for every k.
+\[ \forall (k : \mathbb{N}), \mathrm{levelGap} (k + 1) = 2 \cdot \mathrm{levelGap}\ k \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EnergyGap.lean\#L57}
+
+\paragraph{\texttt{gap\_monotone}}
+The gap never shrinks with level, for all level pairs.
+\[ \forall \{k\ k' : \mathbb{N}\}, k \le k' \to \mathrm{levelGap}\ k \le \mathrm{levelGap}\ k' \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EnergyGap.lean\#L45}
+
+\paragraph{\texttt{gap\_pos}}
+Every level has a positive gap, for every k.
+\[ \forall (k : \mathbb{N}), 0 < \mathrm{levelGap}\ k \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EnergyGap.lean\#L51}
+
+\paragraph{\texttt{gap\_strict}}
+The gap strictly grows with level, for every k.
+\[ \forall (k : \mathbb{N}), \mathrm{levelGap}\ k < \mathrm{levelGap} (k + 1) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EnergyGap.lean\#L54}
+
+\paragraph{\texttt{physics\_all}}
+The textbook spot values, decided by the kernel as controls on the general laws.
+\[ \mathrm{levelGap}\ 0 = 1 \land \mathrm{levelGap}\ 1 = 2 \land \mathrm{levelGap}\ 2 = 4 \land \mathrm{levelGap}\ 3 = 8 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EnergyGap.lean\#L62}
+
+\paragraph{\texttt{superconductivity}}
+\[ \mathrm{aluminium} > 10 \land \mathrm{niobium} > \mathrm{aluminium} \land \mathrm{bcs} / 100 = 3 \land \mathrm{gap}\ \mathrm{aluminium} = 88 \land \mathrm{gap}\ \mathrm{aluminium} > \mathrm{transmon} \land \mathrm{gap}\ \mathrm{niobium} = 679 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EnergyGap.lean\#L29}
+
+\paragraph{\texttt{temperature}}
+\[ \mathrm{photon} / \mathrm{thermal}\ 10 = 23 \land \mathrm{photon} / \mathrm{thermal}\ 100 = 2 \land \mathrm{photon} / \mathrm{thermal}\ 4000 = 0 \land 4000 / 100 = 40 \land 100 / 10 = 10 \land 10 < 35 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/EnergyGap.lean\#L24}
+\end{document}

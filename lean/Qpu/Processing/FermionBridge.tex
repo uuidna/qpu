@@ -1,0 +1,32 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.FermionBridge}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/FermionBridge.lean}
+
+\paragraph{\texttt{FermionBridge.anticommutator\_expand}}
+The anticommutator of a sum and a difference: `(u + v)(u - v) + (u - v)(u + v) = 2u² - 2v²` in any ring. Each difference is a sum with a negation (`sub\_eq\_add\_neg`), both products expand (`mul\_add`, `add\_mul`, through `Distrib.leftDistribClass` and `Distrib.rightDistribClass`), the signs leave the products (`mul\_neg`, `neg\_mul`, `neg\_add`), the four sums regroup (`add\_add\_add\_comm`), and the cross terms cancel (`add\_neg\_cancel`, `neg\_add\_cancel`, `add\_zero`, `zero\_add`).
+\[ \forall \{A : \mathrm{Type}\ \mathrm{u\_1}\} [\mathrm{inst} : \mathrm{Ring}\ A] (u\ v : A), (u + v) \cdot (u - v) + (u - v) \cdot (u + v) = u \cdot u + u \cdot u - (v \cdot v + v \cdot v) \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/FermionBridge.lean\#L22}
+
+\paragraph{\texttt{FermionBridge.ladder\_anticommute}}
+The ladders of a mode anticommute to the identity: `a a† + a† a = 1` whenever `X` and `Y` square to the identity. The halves leave the products (`smul\_mul\_assoc`, `mul\_smul\_comm`, `smul\_add`, with `IsScalarTower.right` and `Algebra.to\_smulCommClass`), the anticommutator expands (`FermionBridge.anticommutator\_expand`), `(iY)² = i²Y² = -1` (`smul\_mul\_smul\_comm`, `IsScalarTower.left`, `Complex.I\_mul\_I`, `neg\_one\_smul`), the four units add (`neg\_add`, `sub\_neg\_eq\_add`, `two\_smul`, with `Nat.instAtLeastTwoHAddOfNat`), and the two halves cancel the two twos (`one\_div`, `inv\_smul\_smul₀`, `two\_ne\_zero`, through `CharZero.NeZero.two` and `Complex.instCharZero`).
+\[ \forall \{A : \mathrm{Type}\ \mathrm{u\_1}\} [\mathrm{inst} : \mathrm{Ring}\ A] [\mathrm{inst\_1} : \mathrm{Algebra} \mathbb{C} A] (X\ Y : A), X \cdot X = 1 \to Y \cdot Y = 1 \to (1 / 2) \bullet (X + \mathrm{Complex.I} \bullet Y) \cdot (1 / 2) \bullet (X - \mathrm{Complex.I} \bullet Y) + (1 / 2) \bullet (X - \mathrm{Complex.I} \bullet Y) \cdot (1 / 2) \bullet (X + \mathrm{Complex.I} \bullet Y) = 1 \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/FermionBridge.lean\#L42}
+
+\paragraph{\texttt{FermionBridge.ladder\_square\_zero}}
+A ladder squares to nothing: `a a = 0` whenever `X` and `Y` square to the identity and anticommute. The halves leave the product (`smul\_mul\_smul\_comm`, with `IsScalarTower.right`, `IsScalarTower.left`, `Algebra.to\_smulCommClass` and `Nat.instAtLeastTwoHAddOfNat`), `X` and `iY` anticommute (`mul\_smul\_comm`, `smul\_mul\_assoc`, `smul\_neg`), so the square is `X² + (iY)²` (`FermionBridge.square\_expand`), and `1 + i²·1 = 0` (`Complex.I\_mul\_I`, `neg\_one\_smul`, `add\_neg\_cancel`, `smul\_zero`).
+\[ \forall \{A : \mathrm{Type}\ \mathrm{u\_1}\} [\mathrm{inst} : \mathrm{Ring}\ A] [\mathrm{inst\_1} : \mathrm{Algebra} \mathbb{C} A] (X\ Y : A), X \cdot X = 1 \to Y \cdot Y = 1 \to X \cdot Y = -(Y \cdot X) \to (1 / 2) \bullet (X + \mathrm{Complex.I} \bullet Y) \cdot (1 / 2) \bullet (X + \mathrm{Complex.I} \bullet Y) = 0 \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/FermionBridge.lean\#L53}
+
+\paragraph{\texttt{FermionBridge.square\_expand}}
+The square of a sum of anticommuting elements: `(u + v)² = u² + v²` whenever `uv = -vu`. The square expands (`add\_mul`, `mul\_add`, through `Distrib.rightDistribClass` and `Distrib.leftDistribClass`), and with `uv = -vu` the cross terms cancel (`add\_assoc`, `neg\_add\_cancel\_left`).
+\[ \forall \{A : \mathrm{Type}\ \mathrm{u\_1}\} [\mathrm{inst} : \mathrm{Ring}\ A] (u\ v : A), u \cdot v = -(v \cdot u) \to (u + v) \cdot (u + v) = u \cdot u + v \cdot v \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/FermionBridge.lean\#L31}
+\end{document}

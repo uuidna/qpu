@@ -10,9 +10,15 @@ import { readFileSync, statfsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import * as os from 'node:os'
 const started = performance.now()
-import { THEOREMS, THEOREM_KEYS } from '../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
-import { handle } from '../src/quantum/uuid/programs/3/8/5/9/0/2/0/f/index.ts'
-import { uuid } from '../src/quantum/uuid/programs/2/7/1/a/7/6/4/9/index.ts'
+import { GENERATED_LEMMAS, KERNEL_THEOREMS, SORRIED, THEOREMS, THEOREM_KEYS } from '../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
+import { PROSE, proseFill } from '../src/quantum/uuid/programs/5/9/e/4/9/1/a/4/index.ts'
+import { leanPath, proofLines } from '../src/quantum/uuid/programs/e/1/c/6/d/e/b/3/index.ts'
+import { catalogSummary } from '../src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts'
+import { EXAMPLES } from '../src/quantum/uuid/programs/9/d/4/f/e/4/4/2/index.ts'
+import { call, handle } from '../src/quantum/uuid/programs/3/8/5/9/0/2/0/f/index.ts'
+import { uuid, uuidQubits } from '../src/quantum/uuid/programs/2/7/1/a/7/6/4/9/index.ts'
+import { teleportProof } from '../src/quantum/uuid/programs/b/1/c/2/3/6/2/1/index.ts'
+import { TEXTBOOK_THEOREMS } from '../src/quantum/uuid/programs/3/4/7/e/0/c/e/0/index.ts'
 import { RELEASE_REPOSITORY } from '../src/quantum/uuid/programs/6/6/5/9/1/f/5/8/index.ts'
 import { callEnvelope } from '../src/quantum/uuid/programs/d/e/7/d/b/7/1/6/index.ts'
 import { HARDWARE_MARK, readJson } from '../src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts'
@@ -59,7 +65,7 @@ const combination = receiptJsonLd({ kind: 'qpu', technique: asked('seal', { merk
 export const receipts: Json[] = [combination, ...parts]
 
 // rendering: a receipt's JSON-LD to blocks, and blocks to Markdown and HTML; an inline token is a code span, a formula, a URL or plain text
-type Block = { kind: 'h2' | 'h3' | 'table'; text?: string; head?: string[]; rows?: string[][] }
+type Block = { kind: 'h2' | 'h3' | 'p' | 'code' | 'table'; text?: string; head?: string[]; rows?: string[][] }
 type Property = { name: string; value: unknown }
 const code = (s: string) => `\`${s}\``
 const word = (v: unknown) => (v === null || v === undefined ? '' : typeof v !== 'string' ? String(v) : (/[_.]/.test(v) && THEOREM_KEYS.has(v)) || /^[{[]/.test(v) ? code(v) : v)
@@ -67,7 +73,7 @@ const cell = (v: unknown) => (isProperties(v) ? code(JSON.stringify(receiptBody(
 const tablesOf = (path: string, properties: Property[]): Block[] => {
   const flat = properties.filter((p) => !isProperties(p.value)), nested = properties.filter((p) => isProperties(p.value)) as (Property & { value: Property[] })[]
   return [
-    ...(flat.length ? [{ kind: 'table' as const, head: [path, ''], rows: flat.map((p) => [p.name, cell(p.value)]) }] : []),
+    ...(flat.length ? [{ kind: 'table' as const, head: [path, 'value'], rows: flat.map((p) => [p.name, cell(p.value)]) }] : []),
     ...nested.flatMap((p): Block[] => {
       if (!isRows(p.value)) return tablesOf(`${path}.${p.name}`, p.value)
       const rows = p.value.map((r) => (isProperties(r.value) ? r.value : [{ name: p.name, value: r.value }])), head = [...new Set(rows.flatMap((r) => r.map((c) => c.name)))]
@@ -84,10 +90,11 @@ const blocksOf = (r: Json, variables: 'variableMeasured' | 'additionalProperty' 
   const kind = String(r.alternateName ?? r.name), id = named(r.identifier), size = r.size ? named(r.size) : {}, formulas = (r.isBasedOn ?? []) as (Json & { size: Property[] })[], creator = r.creator as Json | undefined
   return [
     { kind: 'h2', text: kind },
-    { kind: 'table', head: ['receipt', ''], rows: [
+    { kind: 'table', head: ['receipt', 'value'], rows: [
       ...Object.entries(id).flatMap(([k, v]) => [[k, k === 'handle' ? code(String(v)) : String(v)], ...(k === 'coin' ? [['currency', ISO_4217_COIN.unit]] : [])]), ...Object.entries(size).map(([k, v]) => [unit(k), String(v)]),
       ...(r.measurementTechnique ? [['technique', code(String(r.measurementTechnique))]] : []),
-      ...(creator ? [['author', String(creator.name)], ['orcid', String(creator.identifier)], ['licence', String(r.license)], ['licensing', String(r.acquireLicensePage)], ['donation', String((r.potentialAction as Json).target)], ['contact', String((creator.contactPoint as Json).url)]] : []),
+      // the author, the licence and the donation link stand once, on the merge, and not again on every part
+      ...(creator && r.hasPart ? [['author', String(creator.name)], ['orcid', String(creator.identifier)], ['licence', String(r.license)], ['licensing', String(r.acquireLicensePage)], ['donation', String((r.potentialAction as Json).target)], ['contact', String((creator.contactPoint as Json).url)]] : []),
       ...(r.hasPart ? [['parts', String((r.hasPart as unknown[]).length)]] : []),
     ] },
     ...(r.hasPart ? [{ kind: 'table' as const, head: ['part', 'handle', 'uuid'], rows: (r.hasPart as Json[]).map((x) => [code(String(x.name)), code(String(x.identifier).slice(0, 8)), String(x.identifier)]) }] : []),
@@ -103,14 +110,47 @@ const inlineMarkdown = (s: string) => tokens(s).map((t) => t.kind === 'code' ? `
 // a bar inside a code span or a formula would end the cell: it is escaped, as a table reads it back
 const barred = (s: string) => s.replace(/\|/g, '\\|')
 const cellMarkdown = (s: string) => tokens(s).map((t) => t.kind === 'code' ? `\`${barred(t.text)}\`` : t.kind === 'math' ? `$${barred(t.text)}$` : inlineMarkdown(t.text)).join('').replace(/\n/g, ' ')
-const blockMarkdown = (b: Block) => b.kind === 'h2' ? `## ${inlineMarkdown(b.text!)}` : b.kind === 'h3' ? `### ${inlineMarkdown(b.text!)}` : [`| ${b.head!.map(cellMarkdown).join(' | ')} |`, `|${b.head!.map(() => ' --- ').join('|')}|`, ...b.rows!.map((r) => `| ${r.map(cellMarkdown).join(' | ')} |`)].join('\n')
-const blockHtml = (b: Block) => b.kind === 'h2' ? `<h2>${inlineHtml(b.text!)}</h2>` : b.kind === 'h3' ? `<h3>${inlineHtml(b.text!)}</h3>` : `<table><thead><tr>${b.head!.map((c) => `<th>${inlineHtml(c)}</th>`).join('')}</tr></thead><tbody>${b.rows!.map((r) => `<tr>${r.map((c) => `<td>${inlineHtml(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`
+const blockMarkdown = (b: Block) => b.kind === 'p' ? inlineMarkdown(b.text!) : b.kind === 'code' ? ['```json', b.text!, '```'].join('\n') : b.kind === 'h2' ? `## ${inlineMarkdown(b.text!)}` : b.kind === 'h3' ? `### ${inlineMarkdown(b.text!)}` : [`| ${b.head!.map(cellMarkdown).join(' | ')} |`, `|${b.head!.map(() => ' --- ').join('|')}|`, ...b.rows!.map((r) => `| ${r.map(cellMarkdown).join(' | ')} |`)].join('\n')
+const blockHtml = (b: Block) => b.kind === 'p' ? `<p>${inlineHtml(b.text!)}</p>` : b.kind === 'code' ? `<pre><code>${escapeHtml(b.text!)}</code></pre>` : b.kind === 'h2' ? `<h2>${inlineHtml(b.text!)}</h2>` : b.kind === 'h3' ? `<h3>${inlineHtml(b.text!)}</h3>` : `<table><thead><tr>${b.head!.map((c) => `<th>${inlineHtml(c)}</th>`).join('')}</tr></thead><tbody>${b.rows!.map((r) => `<tr>${r.map((c) => `<td>${inlineHtml(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`
 
 export const title = `${pkg.name} v${pkg.version}: ${pkg.description}`
+// what the text states first: the summary in the numbers Lean wrote, every statement the parts prove with the line of its proof, the kernel
+// counted, and one call to make; then the receipts the text is loaded from
+const stated = receipts.slice(1).flatMap((r) => ((r.isBasedOn ?? []) as Json[]).map((f) => ({ key: String(f.name), tex: String(f.text), url: String(f.url) })))
+const kernelOf = new Map(THEOREMS.map((t) => [t.key, t]))
+const leanFiles = Object.fromEntries([...new Set(stated.map((s) => kernelOf.get(s.key)!.module))].map((m) => [leanPath(m), readFileSync(leanPath(m), 'utf8')]))
+const lines = proofLines(stated.map((s) => kernelOf.get(s.key)!), leanFiles)
+const recomputed = catalogSummary(EXAMPLES).claimed
+// the capacity the abstract states, read from the register the code builds and the kernel's own statements, never a number typed here
+const uuidRegister = uuidQubits(4), { digits, hexbit: width, version, variant, effective: qubits } = uuidRegister
+const programs = Number(/= (\d+)$/.exec(kernelOf.get('Qpu.Verify.Uuid.program_capacity')!.statement)![1]), programQubits = Math.log2(programs), uuidBytes = (digits * width) / 8
+const teleport = teleportProof()
+// the computer the abstract defines: every worked example of the quantum doors, replayed on this build, each named by the theorem that makes it true
+const COMPUTER = ['algorithm', 'circuit', 'processor', 'quantum-error-correction', 'echo']
+const computer = EXAMPLES.filter((e) => COMPUTER.includes(e.tool)).map((e) => ({ e, verdict: e.expect(call(e.tool, e.arguments).result?.structuredContent) }))
+const failing = computer.filter((c) => c.verdict !== null).map((c) => c.e.id)
+if (failing.length || computer.some((c) => !c.e.theorem)) throw new Error(`computer: ${failing.join(', ')}`)
+if (digits * width - version - variant !== qubits || !teleport.holds) throw new Error(`capacity ${qubits}; teleport holds ${teleport.holds}`)
+const lead: Block[] = [
+  { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_summary, digits, width, version, variant, qubits, uuidBytes, programQubits, programs, qubits - programQubits, THEOREMS.length, KERNEL_THEOREMS, SORRIED, recomputed, MCP) },
+  { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_computer, computer.length, COMPUTER.length) },
+  { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_solved, EXAMPLES.filter((e) => e.made).length, THEOREMS.length - recomputed) },
+  { kind: 'h2', text: 'examples' },
+  { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_teleport, teleport.qubits, teleport.bits, teleport.corrections) },
+  { kind: 'table', head: ['example', 'door', 'shows'], rows: computer.map(({ e }) => [code(e.id), e.tool, e.shows]) },
+  { kind: 'h2', text: 'statements' },
+  { kind: 'table', head: ['theorem', 'statement', 'lean', 'axioms', 'proof'], rows: stated.map((s) => [code(s.key), `$${s.tex}$`, code(TEXTBOOK_THEOREMS.find((t) => t.key === s.key)?.lean ?? kernelOf.get(s.key)!.statement), kernelOf.get(s.key)!.axioms.join(', ') || 'none', `${s.url}#L${lines.get(s.key)}`]) },
+  { kind: 'h2', text: 'kernel' },
+  { kind: 'table', head: ['kernel', 'value'], rows: [['declared theorems', String(THEOREMS.length)], ['kernel theorems', String(KERNEL_THEOREMS)], ['generated lemmas', String(GENERATED_LEMMAS)], ['sorry', String(SORRIED)], ['recomputed by an example', String(recomputed)], ['source', `${REPO}/tree/${TAG}/lean`]] },
+  { kind: 'h2', text: 'use' },
+  { kind: 'code', text: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'metrics', arguments: {} } }) },
+  { kind: 'table', head: ['use', 'value'], rows: [['mcp', MCP], ['method', 'POST']] },
+  { kind: 'h2', text: 'receipts' },
+]
 // the information item identified as ISO/IEC/IEEE 15289 asks: the merge it is, its version, author, licence and language; the date a copy is
 // issued is the date its build ran, so it stands below the mark with the hardware that built it
-const identification: Block = { kind: 'table', head: ['document', ''], rows: [['identifier', mergedItem!.address], ['version', pkg.version], ['author', LICENSE.author], ['licence', LICENSE.spdx], ['language', DOCUMENT_LANGUAGE]] }
-const blocks = [identification, ...receipts.flatMap((r) => blocksOf(r))]
+const identification: Block = { kind: 'table', head: ['document', 'value'], rows: [['identifier', mergedItem!.address], ['version', pkg.version], ['author', LICENSE.author], ['licence', LICENSE.spdx], ['language', DOCUMENT_LANGUAGE]] }
+const blocks = [identification, ...lead, ...receipts.flatMap((r) => blocksOf(r))]
 /** The text as Markdown, the content its receipt addresses. */
 export const markdown = blocks.map(blockMarkdown).join('\n\n') + '\n'
 /** The text a verifier reads: everything above the rule of any Markdown copy, the title included. */
@@ -118,7 +158,7 @@ export const above = `# ${inlineMarkdown(title)}\n\n${markdown}`
 /** The receipt of the text: the address of the Markdown above the rule, which verify { uuid, content } decides over MCP, and its SHA-256,
  *  with the merge it is loaded from and the parts of that merge by kind, handle and UUID. */
 export const receipt = { uuid: uuid(above), sha256: createHash('sha256').update(above).digest('hex'), mcp: MCP, merge: { uuid: mergedItem!.address, handle: mergedItem!.address.slice(0, 8), root, rfc: 6962 }, parts: bodies.map((b, i) => ({ kind: b.kind, handle: addresses[i]!.slice(0, 8), uuid: addresses[i]! })) }
-const signed: Block = { kind: 'table', head: ['text', ''], rows: [['uuid', receipt.uuid], ['sha256', receipt.sha256], ['merge', receipt.merge.uuid], ['verify', code(asked('verify', { uuid: receipt.uuid, content: 'text' }))], ['mcp', MCP]] }
+const signed: Block = { kind: 'table', head: ['text', 'value'], rows: [['uuid', receipt.uuid], ['sha256', receipt.sha256], ['merge', receipt.merge.uuid], ['verify', code(asked('verify', { uuid: receipt.uuid, content: 'text' }))], ['mcp', MCP]] }
 /** The text as HTML, block for block, with the receipt: the Zenodo description and the release note. */
 export const html = [...blocks.map(blockHtml), '<hr>', blockHtml(signed)].join('')
 
@@ -159,12 +199,24 @@ const facts = {
 const [deviceItem] = await sealAll([receiptText('hardware', facts)])
 /** The device as a schema.org Product, sealed like every receipt, and its readings. */
 export const hardware = { uuid: deviceItem!.address, sha256: deviceItem!.sha256, facts, jsonLd: deviceJsonLd({ kind: 'hardware', body: facts, address: deviceItem!.address, sha256: deviceItem!.sha256, site: SITE }) }
-const hardwareBlocks = blocksOf(hardware.jsonLd, 'additionalProperty')
-/** Where the hardware begins in every copy: the one text is compared up to this mark, never past it. */
+/** Where the hardware begins in every copy: what is above it is recomputed, what is below it is the device receipt, verified by its seal. */
 export { HARDWARE_MARK }
-const issued: Block = { kind: 'table', head: ['copy', ''], rows: [['issued', String(facts.at)], ['hardware', hardware.uuid]] }
-export const htmlWithHardware = `${html}${HARDWARE_MARK}${[issued, ...hardwareBlocks, ...challengeBlocks].map(blockHtml).join('')}`
+// what stands below the mark of every copy: when the copy was issued and by which hardware, the device receipt, and the challenges it computed
+const issuedOf = (device: Json): Block => {
+  const id = Object.fromEntries((device.identifier as { name: string; value: string }[]).map((p) => [p.name, p.value])), read = receiptBody(device.additionalProperty) as Json
+  return { kind: 'table', head: ['copy', 'value'], rows: [['issued', String(read.at)], ['hardware', String(id.uuid)]] }
+}
+/** The text as HTML with a device receipt below the mark: the Zenodo description and the release note. */
+export const htmlWithDevice = (device: Json) => `${html}${HARDWARE_MARK}${blockHtml(issuedOf(device))}<details><summary>hardware</summary>${blocksOf(device, 'additionalProperty').map(blockHtml).join('')}</details>${challengeBlocks.map(blockHtml).join('')}`
+/** The page every Markdown copy is with a device receipt: the title, the text, the receipt under a rule, and the device below the mark. */
+export const pageWithDevice = (device: Json) => `${above}---\n\n${blockMarkdown(signed)}\n\n${HARDWARE_MARK}\n\n${blockMarkdown(issuedOf(device))}\n\n<details>\n<summary>hardware</summary>\n\n${blocksOf(device, 'additionalProperty').map(blockMarkdown).join('\n\n')}\n\n</details>\n\n${challengeBlocks.map(blockMarkdown).join('\n\n')}\n`
+/** A device receipt verified by its own content: its UUID is the address, and its SHA-256 the digest, of the body its properties carry. */
+export const deviceVerifies = (device: Json) => {
+  const id = Object.fromEntries((device.identifier as { name: string; value: string }[]).map((p) => [p.name, p.value])), text = receiptText(String(device.name), receiptBody(device.additionalProperty))
+  return { uuid: id.uuid as string, sha256: id.sha256 as string, holds: id.uuid === uuid(text) && id.sha256 === createHash('sha256').update(text).digest('hex') }
+}
+export const htmlWithHardware = htmlWithDevice(hardware.jsonLd)
 /** The page every Markdown copy is: the title, the text, the receipt under a rule, and the hardware receipt of the build. */
-export const page = `${above}---\n\n${blockMarkdown(signed)}\n\n${HARDWARE_MARK}\n\n${[issued, ...hardwareBlocks, ...challengeBlocks].map(blockMarkdown).join('\n\n')}\n`
-/** A copy as the check compares it: everything before the hardware mark. */
+export const page = pageWithDevice(hardware.jsonLd)
+/** A copy above its mark: what is recomputed, the device receipt below it being verified by its seal. */
 export const beforeHardware = (text: string) => text.split(HARDWARE_MARK)[0]!

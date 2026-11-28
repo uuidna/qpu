@@ -1,0 +1,49 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Communication.Coil}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/Coil.lean}
+
+\paragraph{\texttt{Coil.periodic}}
+the qubit reads the flux modulo one flux quantum: a whole flux quantum added leaves it unchanged, for every M and every current
+\[ \forall (M\ I\ k : \mathbb{N}), (\mathrm{Coil.flux}\ M\ I + k \cdot (\mathrm{PhysicalConstant.hNum} \cdot 10 ^{10})) \bmod (\mathrm{PhysicalConstant.hNum} \cdot 10 ^{10}) = \mathrm{Coil.flux}\ M\ I \bmod (\mathrm{PhysicalConstant.hNum} \cdot 10 ^{10}) \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/Coil.lean\#L34}
+
+\paragraph{\texttt{clay}}
+\[ \mathrm{coins} \cdot \mathrm{rays} = (\mathrm{seed} + (\mathrm{mint}\ n - \mathrm{coins})) \cdot \mathrm{coins} \land (\mathrm{seed} + (\mathrm{mint}\ n - \mathrm{coins})) \cdot \mathrm{coins} = \mathrm{coil} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/Coil.lean\#L24}
+
+\paragraph{\texttt{coil\_efficiency}}
+\[ \mathrm{coil} = \mathrm{faces} \land \mathrm{faces} = \mathrm{rays} + \mathrm{rays} \land \mathrm{coins} \cdot \mathrm{rays} = \mathrm{faces} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/Coil.lean\#L20}
+
+\paragraph{\texttt{coil\_is\_faces}}
+\[ \mathrm{coil} = \mathrm{faces} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/Coil.lean\#L19}
+
+\paragraph{\texttt{follow\_the\_coins}}
+\[ \forall (\mathrm{app} : \mathbb{N}), \mathrm{app} + \mathrm{coins} = \mathrm{app} + \mathrm{theory} + \mathrm{practice} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/Coil.lean\#L18}
+
+\paragraph{\texttt{fusion}}
+\[ \mathrm{fused} = \mathrm{faces} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{seed}) \land \mathrm{faces} = \mathrm{rays} + \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/Coil.lean\#L25}
+
+\paragraph{\texttt{next\_coil}}
+\[ \mathrm{coil} \cdot \mathrm{mint} (\mathrm{bits} + \mathrm{coins}) = \mathrm{fused} + \mathrm{fused} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/Coil.lean\#L21}
+
+\paragraph{\texttt{one\_plus\_six}}
+\[ \mathrm{seed} + (\mathrm{mint}\ n - \mathrm{coins}) = \mathrm{rays} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/Coil.lean\#L22}
+
+\paragraph{\texttt{two\_x\_seven\_coins}}
+\[ \mathrm{coins} \cdot \mathrm{rays} = (\mathrm{seed} + (\mathrm{mint}\ n - \mathrm{coins})) \cdot \mathrm{coins} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/Coil.lean\#L23}
+\end{document}

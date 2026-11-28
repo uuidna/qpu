@@ -1,0 +1,243 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.MachineLearning.ZeroShotLearning}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean}
+
+\paragraph{\texttt{Qpu.ZeroShot.agree\_comm}}
+\[ \forall (a\ b : \mathrm{Qpu.ZeroShot.Attr}), \mathrm{Qpu.ZeroShot.agree}\ a\ b = \mathrm{Qpu.ZeroShot.agree}\ b\ a \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L69}
+
+\paragraph{\texttt{Qpu.ZeroShot.agree\_eq\_length\_iff}}
+Full agreement of equal-length vectors is equality.
+\[ \forall (a\ b : \mathrm{Qpu.ZeroShot.Attr}), \mathrm{List.length}\ a = \mathrm{List.length}\ b \to (\mathrm{Qpu.ZeroShot.agree}\ a\ b = \mathrm{List.length}\ a \leftrightarrow a = b) \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L97}
+
+\paragraph{\texttt{Qpu.ZeroShot.agree\_le\_length\_left}}
+\[ \forall (a\ b : \mathrm{Qpu.ZeroShot.Attr}), \mathrm{Qpu.ZeroShot.agree}\ a\ b \le \mathrm{List.length}\ a \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L82}
+
+\paragraph{\texttt{Qpu.ZeroShot.agree\_le\_length\_right}}
+\[ \forall (a\ b : \mathrm{Qpu.ZeroShot.Attr}), \mathrm{Qpu.ZeroShot.agree}\ a\ b \le \mathrm{List.length}\ b \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L93}
+
+\paragraph{\texttt{Qpu.ZeroShot.agree\_lt\_of\_ne}}
+\[ \forall (a\ b : \mathrm{Qpu.ZeroShot.Attr}), \mathrm{List.length}\ a = \mathrm{List.length}\ b \to a \ne b \to \mathrm{Qpu.ZeroShot.agree}\ a\ b < \mathrm{List.length}\ a \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L112}
+
+\paragraph{\texttt{Qpu.ZeroShot.agree\_nil\_right}}
+\[ \forall (a : \mathrm{Qpu.ZeroShot.Attr}), \mathrm{Qpu.ZeroShot.agree}\ a [] = 0 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L66}
+
+\paragraph{\texttt{Qpu.ZeroShot.agree\_self}}
+\[ \forall (a : \mathrm{Qpu.ZeroShot.Attr}), \mathrm{Qpu.ZeroShot.agree}\ a\ a = \mathrm{List.length}\ a \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L77}
+
+\paragraph{\texttt{Qpu.ZeroShot.agree\_triangle}}
+Two vectors agreeing with a third: the triangle inequality for Hamming distance, written for agreement (`n - agree` is the distance).
+\[ \forall (a\ b\ c : \mathrm{Qpu.ZeroShot.Attr}), \mathrm{List.length}\ a = \mathrm{List.length}\ b \to \mathrm{List.length}\ b = \mathrm{List.length}\ c \to \mathrm{Qpu.ZeroShot.agree}\ a\ b + \mathrm{Qpu.ZeroShot.agree}\ b\ c \le \mathrm{List.length}\ a + \mathrm{Qpu.ZeroShot.agree}\ a\ c \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L120}
+
+\paragraph{\texttt{Qpu.ZeroShot.allClasses\_distinct}}
+\[ \forall (d : \mathbb{N}), \mathrm{Qpu.ZeroShot.Distinct} (\mathrm{Qpu.ZeroShot.allClasses}\ d) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L490}
+
+\paragraph{\texttt{Qpu.ZeroShot.allClasses\_length}}
+\[ \forall (d : \mathbb{N}), (\mathrm{Qpu.ZeroShot.allClasses}\ d)\mathrm{.length} = \mathrm{mint}\ d \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L482}
+
+\paragraph{\texttt{Qpu.ZeroShot.allClasses\_uniform}}
+\[ \forall (d : \mathbb{N}), \mathrm{Qpu.ZeroShot.Uniform}\ d (\mathrm{Qpu.ZeroShot.allClasses}\ d) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L485}
+
+\paragraph{\texttt{Qpu.ZeroShot.allVecs\_complete}}
+\[ \forall (v : \mathrm{Qpu.ZeroShot.Attr}), v \in \mathrm{Qpu.ZeroShot.allVecs} (\mathrm{List.length}\ v) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L456}
+
+\paragraph{\texttt{Qpu.ZeroShot.allVecs\_length}}
+\[ \forall (d : \mathbb{N}), (\mathrm{Qpu.ZeroShot.allVecs}\ d)\mathrm{.length} = \mathrm{mint}\ d \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L443}
+
+\paragraph{\texttt{Qpu.ZeroShot.allVecs\_nodup}}
+\[ \forall (d : \mathbb{N}), (\mathrm{Qpu.ZeroShot.allVecs}\ d)\mathrm{.Nodup} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L465}
+
+\paragraph{\texttt{Qpu.ZeroShot.allVecs\_uniform}}
+\[ \forall (d : \mathbb{N}), \forall v \in \mathrm{Qpu.ZeroShot.allVecs}\ d, \mathrm{List.length}\ v = d \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L448}
+
+\paragraph{\texttt{Qpu.ZeroShot.best\_attained}}
+The maximum is attained by some candidate whenever there is one.
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{cs} \ne [] \to \exists c \in \mathrm{cs}, \mathrm{Qpu.ZeroShot.score}\ q\ c = \mathrm{Qpu.ZeroShot.best}\ q\ \mathrm{cs} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L273}
+
+\paragraph{\texttt{Qpu.ZeroShot.best\_cons\_ge}}
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) (c : \mathrm{Qpu.ZeroShot.Class}) (\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}), \mathrm{Qpu.ZeroShot.best}\ q\ \mathrm{cs} \le \mathrm{Qpu.ZeroShot.best}\ q (c :: \mathrm{cs}) \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L214}
+
+\paragraph{\texttt{Qpu.ZeroShot.best\_ge\_score}}
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{c : \mathrm{Qpu.ZeroShot.Class}\} \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\}, c \in \mathrm{cs} \to \mathrm{Qpu.ZeroShot.score}\ q\ c \le \mathrm{Qpu.ZeroShot.best}\ q\ \mathrm{cs} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L197}
+
+\paragraph{\texttt{Qpu.ZeroShot.best\_le\_length}}
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) (\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}), \mathrm{Qpu.ZeroShot.best}\ q\ \mathrm{cs} \le \mathrm{List.length}\ q \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L207}
+
+\paragraph{\texttt{Qpu.ZeroShot.code\_inj}}
+\[ \forall (a\ b : \mathrm{Qpu.ZeroShot.Attr}), \mathrm{List.length}\ a = \mathrm{List.length}\ b \to \mathrm{Qpu.ZeroShot.code}\ a = \mathrm{Qpu.ZeroShot.code}\ b \to a = b \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L375}
+
+\paragraph{\texttt{Qpu.ZeroShot.code\_lt}}
+\[ \forall (a : \mathrm{Qpu.ZeroShot.Attr}), \mathrm{Qpu.ZeroShot.code}\ a < \mathrm{mint} (\mathrm{List.length}\ a) \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L368}
+
+\paragraph{\texttt{Qpu.ZeroShot.dim\_insufficient}}
+Honest replacement of the sketch's `dim\_sufficiency` (`embedding\_dim ≥ log num\_distinctions`): with fewer than `cs.length` codes available, two classes share an attribute vector.
+\[ \forall \{\mathrm{dim} : \mathbb{N}\} \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{Qpu.ZeroShot.Uniform}\ \mathrm{dim}\ \mathrm{cs} \to \mathrm{mint}\ \mathrm{dim} < \mathrm{cs.length} \to \neg \mathrm{Qpu.ZeroShot.Distinct}\ \mathrm{cs} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L434}
+
+\paragraph{\texttt{Qpu.ZeroShot.distinct\_attr\_inj}}
+In a list of pairwise distinct vectors, a shared vector means the same class.
+\[ \forall \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{Qpu.ZeroShot.Distinct}\ \mathrm{cs} \to \forall \{c\ d : \mathrm{Qpu.ZeroShot.Class}\}, c \in \mathrm{cs} \to d \in \mathrm{cs} \to \mathrm{c.attr} = \mathrm{d.attr} \to c = d \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L326}
+
+\paragraph{\texttt{Qpu.ZeroShot.distinct\_le\_mint}}
+The pigeonhole bound: pairwise distinct attribute vectors of length `dim` number at most `mint dim = 2\^{}dim`.
+\[ \forall \{\mathrm{dim} : \mathbb{N}\} \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{Qpu.ZeroShot.Uniform}\ \mathrm{dim}\ \mathrm{cs} \to \mathrm{Qpu.ZeroShot.Distinct}\ \mathrm{cs} \to \mathrm{cs.length} \le \mathrm{mint}\ \mathrm{dim} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L416}
+
+\paragraph{\texttt{Qpu.ZeroShot.dot\_comm}}
+\[ \forall (a\ b : \mathrm{List} \mathbb{N}), \mathrm{Qpu.ZeroShot.dot}\ a\ b = \mathrm{Qpu.ZeroShot.dot}\ b\ a \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L162}
+
+\paragraph{\texttt{Qpu.ZeroShot.dot\_indicator\_le\_agree}}
+The dot product of indicator vectors counts shared `true` attributes, which are in particular agreements.
+\[ \forall (a\ b : \mathrm{Qpu.ZeroShot.Attr}), \mathrm{Qpu.ZeroShot.dot} (\mathrm{Qpu.ZeroShot.indicator}\ a) (\mathrm{Qpu.ZeroShot.indicator}\ b) \le \mathrm{Qpu.ZeroShot.agree}\ a\ b \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L152}
+
+\paragraph{\texttt{Qpu.ZeroShot.exact\_match\_best}}
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{c : \mathrm{Qpu.ZeroShot.Class}\} \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\}, c \in \mathrm{cs} \to \mathrm{c.attr} = q \to \mathrm{Qpu.ZeroShot.best}\ q\ \mathrm{cs} = \mathrm{List.length}\ q \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L308}
+
+\paragraph{\texttt{Qpu.ZeroShot.exact\_match\_predicted}}
+Uniform length and distinct vectors: an exact match is *the* prediction.
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{c : \mathrm{Qpu.ZeroShot.Class}\} \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{Qpu.ZeroShot.Uniform} (\mathrm{List.length}\ q) \mathrm{cs} \to \mathrm{Qpu.ZeroShot.Distinct}\ \mathrm{cs} \to c \in \mathrm{cs} \to \mathrm{c.attr} = q \to \mathrm{Qpu.ZeroShot.predict}\ q\ \mathrm{cs} = \mathrm{some}\ c \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L341}
+
+\paragraph{\texttt{Qpu.ZeroShot.exact\_match\_predicted\_attr}}
+With uniform attribute length, the predicted class carries the query's vector.
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{c\ d : \mathrm{Qpu.ZeroShot.Class}\} \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{Qpu.ZeroShot.Uniform} (\mathrm{List.length}\ q) \mathrm{cs} \to c \in \mathrm{cs} \to \mathrm{c.attr} = q \to \mathrm{Qpu.ZeroShot.predict}\ q\ \mathrm{cs} = \mathrm{some}\ d \to \mathrm{d.attr} = q \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L318}
+
+\paragraph{\texttt{Qpu.ZeroShot.exact\_match\_predicted\_score}}
+A class whose vector equals the query ties with the prediction at the maximum.
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{c\ d : \mathrm{Qpu.ZeroShot.Class}\} \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\}, c \in \mathrm{cs} \to \mathrm{c.attr} = q \to \mathrm{Qpu.ZeroShot.predict}\ q\ \mathrm{cs} = \mathrm{some}\ d \to \mathrm{Qpu.ZeroShot.score}\ q\ d = \mathrm{List.length}\ q \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L313}
+
+\paragraph{\texttt{Qpu.ZeroShot.indistinguishable}}
+Equal attribute vectors are indistinguishable by every query.
+\[ \forall \{c\ d : \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{c.attr} = \mathrm{d.attr} \to \forall (q : \mathrm{Qpu.ZeroShot.Attr}), \mathrm{Qpu.ZeroShot.score}\ q\ c = \mathrm{Qpu.ZeroShot.score}\ q\ d \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L352}
+
+\paragraph{\texttt{Qpu.ZeroShot.mem\_unseen}}
+The unseen candidates are exactly the pool members the predicate rejects.
+\[ \forall (\mathrm{isSeen} : \mathrm{Qpu.ZeroShot.Class} \to \mathrm{Bool}) (\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}) (c : \mathrm{Qpu.ZeroShot.Class}), c \in (\mathrm{Qpu.ZeroShot.split}\ \mathrm{isSeen}\ \mathrm{cs})\mathrm{.2} \leftrightarrow c \in \mathrm{cs} \land \mathrm{isSeen}\ c = \mathrm{false} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L524}
+
+\paragraph{\texttt{Qpu.ZeroShot.nodup\_lt\_length\_le}}
+Pigeonhole on naturals: a duplicate-free list of numbers below `m` has at most `m` entries.
+\[ \forall (m : \mathbb{N}) (l : \mathrm{List} \mathbb{N}), \mathrm{l.Nodup} \to (\forall x \in l, x < m) \to \mathrm{l.length} \le m \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L392}
+
+\paragraph{\texttt{Qpu.ZeroShot.predict\_cons\_of\_ge}}
+Tie-breaking: a head class that is at least as good as every other candidate is the prediction.
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{c : \mathrm{Qpu.ZeroShot.Class}\} \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\}, (\forall d \in \mathrm{cs}, \mathrm{Qpu.ZeroShot.score}\ q\ d \le \mathrm{Qpu.ZeroShot.score}\ q\ c) \to \mathrm{Qpu.ZeroShot.predict}\ q (c :: \mathrm{cs}) = \mathrm{some}\ c \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L280}
+
+\paragraph{\texttt{Qpu.ZeroShot.predict\_cons\_of\_gt}}
+A new class scoring strictly above the pool's best is predicted.
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{c : \mathrm{Qpu.ZeroShot.Class}\} \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{Qpu.ZeroShot.best}\ q\ \mathrm{cs} < \mathrm{Qpu.ZeroShot.score}\ q\ c \to \mathrm{Qpu.ZeroShot.predict}\ q (c :: \mathrm{cs}) = \mathrm{some}\ c \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L290}
+
+\paragraph{\texttt{Qpu.ZeroShot.predict\_exists}}
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{cs} \ne [] \to \exists c, \mathrm{Qpu.ZeroShot.predict}\ q\ \mathrm{cs} = \mathrm{some}\ c \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L228}
+
+\paragraph{\texttt{Qpu.ZeroShot.predict\_is\_argmax}}
+The predicted class dominates every candidate.
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\} \{c : \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{Qpu.ZeroShot.predict}\ q\ \mathrm{cs} = \mathrm{some}\ c \to \forall d \in \mathrm{cs}, \mathrm{Qpu.ZeroShot.score}\ q\ d \le \mathrm{Qpu.ZeroShot.score}\ q\ c \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L266}
+
+\paragraph{\texttt{Qpu.ZeroShot.predict\_mem}}
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\} \{c : \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{Qpu.ZeroShot.predict}\ q\ \mathrm{cs} = \mathrm{some}\ c \to c \in \mathrm{cs} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L233}
+
+\paragraph{\texttt{Qpu.ZeroShot.predict\_none\_iff}}
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) (\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}), \mathrm{Qpu.ZeroShot.predict}\ q\ \mathrm{cs} = \mathrm{none} \leftrightarrow \mathrm{cs} = [] \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L217}
+
+\paragraph{\texttt{Qpu.ZeroShot.predict\_score}}
+The predicted class attains the maximum score.
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\} \{c : \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{Qpu.ZeroShot.predict}\ q\ \mathrm{cs} = \mathrm{some}\ c \to \mathrm{Qpu.ZeroShot.score}\ q\ c = \mathrm{Qpu.ZeroShot.best}\ q\ \mathrm{cs} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L246}
+
+\paragraph{\texttt{Qpu.ZeroShot.predict\_unseen\_cons\_seen}}
+Zero-shot prediction over the unseen classes is unchanged by adding a seen class.
+\[ \forall (\mathrm{isSeen} : \mathrm{Qpu.ZeroShot.Class} \to \mathrm{Bool}) (q : \mathrm{Qpu.ZeroShot.Attr}) (\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}) \{s : \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{isSeen}\ s = \mathrm{true} \to \mathrm{Qpu.ZeroShot.predict}\ q (\mathrm{Qpu.ZeroShot.split}\ \mathrm{isSeen} (s :: \mathrm{cs}))\mathrm{.2} = \mathrm{Qpu.ZeroShot.predict}\ q (\mathrm{Qpu.ZeroShot.split}\ \mathrm{isSeen}\ \mathrm{cs})\mathrm{.2} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L534}
+
+\paragraph{\texttt{Qpu.ZeroShot.predict\_unseen\_cons\_unseen}}
+Adding an unseen class with a strictly better score changes the prediction to it.
+\[ \forall (\mathrm{isSeen} : \mathrm{Qpu.ZeroShot.Class} \to \mathrm{Bool}) (q : \mathrm{Qpu.ZeroShot.Attr}) (\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}) \{u : \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{isSeen}\ u = \mathrm{false} \to \mathrm{Qpu.ZeroShot.best}\ q (\mathrm{Qpu.ZeroShot.split}\ \mathrm{isSeen}\ \mathrm{cs})\mathrm{.2} < \mathrm{Qpu.ZeroShot.score}\ q\ u \to \mathrm{Qpu.ZeroShot.predict}\ q (\mathrm{Qpu.ZeroShot.split}\ \mathrm{isSeen} (u :: \mathrm{cs}))\mathrm{.2} = \mathrm{some}\ u \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L540}
+
+\paragraph{\texttt{Qpu.ZeroShot.score\_exact}}
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{c : \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{c.attr} = q \to \mathrm{Qpu.ZeroShot.score}\ q\ c = \mathrm{List.length}\ q \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L194}
+
+\paragraph{\texttt{Qpu.ZeroShot.score\_le\_length}}
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) (c : \mathrm{Qpu.ZeroShot.Class}), \mathrm{Qpu.ZeroShot.score}\ q\ c \le \mathrm{List.length}\ q \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L191}
+
+\paragraph{\texttt{Qpu.ZeroShot.score\_of\_attr\_eq}}
+\[ \forall (q : \mathrm{Qpu.ZeroShot.Attr}) \{c\ d : \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{c.attr} = \mathrm{d.attr} \to \mathrm{Qpu.ZeroShot.score}\ q\ c = \mathrm{Qpu.ZeroShot.score}\ q\ d \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L188}
+
+\paragraph{\texttt{Qpu.ZeroShot.semantic\_transitivity}}
+Honest replacement of the sketch's "semantic transitivity": if `a` agrees with `b` and `b` with `c` on all but `k` attributes each, then `a` agrees with `c` on all but `2k`. (The sketch asserted `0.8, 0.8 → 0.6` for undefined real similarities.)
+\[ \forall (a\ b\ c : \mathrm{Qpu.ZeroShot.Attr}) (k : \mathbb{N}), \mathrm{List.length}\ a = \mathrm{List.length}\ b \to \mathrm{List.length}\ b = \mathrm{List.length}\ c \to \mathrm{List.length}\ a \le \mathrm{Qpu.ZeroShot.agree}\ a\ b + k \to \mathrm{List.length}\ a \le \mathrm{Qpu.ZeroShot.agree}\ b\ c + k \to \mathrm{List.length}\ a \le \mathrm{Qpu.ZeroShot.agree}\ a\ c + 2 \cdot k \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L143}
+
+\paragraph{\texttt{Qpu.ZeroShot.separable}}
+Distinct vectors of equal length are separated by the class's own vector as query.
+\[ \forall \{c\ d : \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{List.length}\ \mathrm{c.attr} = \mathrm{List.length}\ \mathrm{d.attr} \to \mathrm{c.attr} \ne \mathrm{d.attr} \to \mathrm{Qpu.ZeroShot.score}\ \mathrm{c.attr}\ d < \mathrm{Qpu.ZeroShot.score}\ \mathrm{c.attr}\ c \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L356}
+
+\paragraph{\texttt{Qpu.ZeroShot.split\_cover}}
+\[ \forall (\mathrm{isSeen} : \mathrm{Qpu.ZeroShot.Class} \to \mathrm{Bool}) \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\} \{c : \mathrm{Qpu.ZeroShot.Class}\}, c \in \mathrm{cs} \to c \in (\mathrm{Qpu.ZeroShot.split}\ \mathrm{isSeen}\ \mathrm{cs})\mathrm{.1} \lor c \in (\mathrm{Qpu.ZeroShot.split}\ \mathrm{isSeen}\ \mathrm{cs})\mathrm{.2} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L510}
+
+\paragraph{\texttt{Qpu.ZeroShot.split\_disjoint}}
+\[ \forall (\mathrm{isSeen} : \mathrm{Qpu.ZeroShot.Class} \to \mathrm{Bool}) (\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}) \{c : \mathrm{Qpu.ZeroShot.Class}\}, c \in (\mathrm{Qpu.ZeroShot.split}\ \mathrm{isSeen}\ \mathrm{cs})\mathrm{.1} \to c \notin (\mathrm{Qpu.ZeroShot.split}\ \mathrm{isSeen}\ \mathrm{cs})\mathrm{.2} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L505}
+
+\paragraph{\texttt{Qpu.ZeroShot.split\_length}}
+\[ \forall (\mathrm{isSeen} : \mathrm{Qpu.ZeroShot.Class} \to \mathrm{Bool}) (\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}), (\mathrm{Qpu.ZeroShot.split}\ \mathrm{isSeen}\ \mathrm{cs})\mathrm{.1.length} + (\mathrm{Qpu.ZeroShot.split}\ \mathrm{isSeen}\ \mathrm{cs})\mathrm{.2.length} = \mathrm{cs.length} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L515}
+
+\paragraph{\texttt{Qpu.ZeroShot.split\_unseen\_cons\_seen}}
+Adding a seen class to the pool leaves the unseen candidate list untouched.
+\[ \forall (\mathrm{isSeen} : \mathrm{Qpu.ZeroShot.Class} \to \mathrm{Bool}) (\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}) \{s : \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{isSeen}\ s = \mathrm{true} \to (\mathrm{Qpu.ZeroShot.split}\ \mathrm{isSeen} (s :: \mathrm{cs}))\mathrm{.2} = (\mathrm{Qpu.ZeroShot.split}\ \mathrm{isSeen}\ \mathrm{cs})\mathrm{.2} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L529}
+
+\paragraph{\texttt{Qpu.ZeroShot.vertices\_bound}}
+On the lattice: `n` binary attributes distinguish at most `vertices = mint n` classes.
+\[ \forall \{\mathrm{cs} : \mathrm{List}\ \mathrm{Qpu.ZeroShot.Class}\}, \mathrm{Qpu.ZeroShot.Uniform}\ n\ \mathrm{cs} \to \mathrm{Qpu.ZeroShot.Distinct}\ \mathrm{cs} \to \mathrm{cs.length} \le \mathrm{vertices} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/ZeroShotLearning.lean\#L495}
+\end{document}

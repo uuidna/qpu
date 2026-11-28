@@ -1,0 +1,57 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Physics.QuantumEntanglement}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/QuantumEntanglement.lean}
+
+\paragraph{\texttt{Qpu.Verify.Entangle.chsh\_bound\_is\_tight}}
+Control: the bound is tight.
+\[ \mathrm{Qpu.Verify.Entangle.chshWins}\ \mathrm{false}\ \mathrm{false}\ \mathrm{false}\ \mathrm{false} = 3 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/QuantumEntanglement.lean\#L64}
+
+\paragraph{\texttt{Qpu.Verify.Entangle.chsh\_classical\_bound}}
+Classical bound: no local deterministic strategy wins all four rounds.
+\[ \forall (\mathrm{a0}\ \mathrm{a1}\ \mathrm{b0}\ \mathrm{b1} : \mathrm{Bool}), \mathrm{Qpu.Verify.Entangle.chshWins}\ \mathrm{a0}\ \mathrm{a1}\ \mathrm{b0}\ \mathrm{b1} \le 3 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/QuantumEntanglement.lean\#L30}
+
+\paragraph{\texttt{Qpu.Verify.Entangle.ghz\_classical\_bound}}
+Mermin's bound: no deterministic classical strategy wins all four.
+\[ \forall (\mathrm{a0}\ \mathrm{a1}\ \mathrm{b0}\ \mathrm{b1}\ \mathrm{c0}\ \mathrm{c1} : \mathrm{Bool}), \mathrm{Qpu.Verify.Entangle.ghzWins}\ \mathrm{a0}\ \mathrm{a1}\ \mathrm{b0}\ \mathrm{b1}\ \mathrm{c0}\ \mathrm{c1} \le 3 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/QuantumEntanglement.lean\#L77}
+
+\paragraph{\texttt{Qpu.Verify.Entangle.ghz\_quantum\_wins\_all\_four}}
+The entangled GHZ trinity strategy wins 4/4 — strictly above the classical ceiling of 3.
+\[ \mathrm{Qpu.Verify.Entangle.quantumCheck}\ 0\ \mathrm{false}\ \mathrm{false}\ \mathrm{false} + \mathrm{Qpu.Verify.Entangle.quantumCheck}\ 1\ \mathrm{false}\ \mathrm{true}\ \mathrm{true} + \mathrm{Qpu.Verify.Entangle.quantumCheck}\ 2\ \mathrm{true}\ \mathrm{false}\ \mathrm{true} + \mathrm{Qpu.Verify.Entangle.quantumCheck}\ 3\ \mathrm{true}\ \mathrm{true}\ \mathrm{false} = 4 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/QuantumEntanglement.lean\#L93}
+
+\paragraph{\texttt{Qpu.Verify.Entangle.ghz\_uniform\_strategy\_loses}}
+Negative control: a representative local strategy loses.
+\[ \mathrm{Qpu.Verify.Entangle.ghzWins}\ \mathrm{false}\ \mathrm{false}\ \mathrm{false}\ \mathrm{false}\ \mathrm{false}\ \mathrm{false} < 4 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/QuantumEntanglement.lean\#L100}
+
+\paragraph{\texttt{QuantumEntanglement.bell\_state}}
+the Bell state is supported on exactly 00 and 11, with equal weight
+\[ (\forall r < 4, \mathrm{QuantumEntanglement.bell}\ r \ne 0 \leftrightarrow r = 0 \lor r = 3) \land (\mathrm{QuantumEntanglement.bell}\ 0)\mathrm{.normSq} = (\mathrm{QuantumEntanglement.bell}\ 3)\mathrm{.normSq} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/QuantumEntanglement.lean\#L16}
+
+\paragraph{\texttt{QuantumEntanglement.chsh\_classical\_bound}}
+every assignment of definite values gives |S| = 2: the classical bound
+\[ \forall (\mathrm{a0}\ \mathrm{a1}\ \mathrm{b0}\ \mathrm{b1} : \mathrm{Bool}), \mathrm{QuantumEntanglement.chshClassical}\ \mathrm{a0}\ \mathrm{a1}\ \mathrm{b0}\ \mathrm{b1} = 2 \lor \mathrm{QuantumEntanglement.chshClassical}\ \mathrm{a0}\ \mathrm{a1}\ \mathrm{b0}\ \mathrm{b1} = -2 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/QuantumEntanglement.lean\#L30}
+
+\paragraph{\texttt{QuantumEntanglement.chsh\_quantum\_value}}
+the Bell state gives S² = 8: the scaled sum is 8 = S · ⟨Φ|Φ⟩ · √2, so S² = 8² / (2² · 2) = 8, beyond the classical 2² = 4
+\[ \mathrm{QuantumEntanglement.chshBell} = 8 \land 8 ^{2} = 8 \cdot (2 ^{2} \cdot 2) \land 2 ^{2} < 8 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/QuantumEntanglement.lean\#L41}
+
+\paragraph{\texttt{QuantumEntanglement.ghz\_state}}
+the GHZ state is supported on exactly 000 and 111, with equal weight
+\[ (\forall r < 8, \mathrm{QuantumEntanglement.ghz}\ r \ne 0 \leftrightarrow r = 0 \lor r = 7) \land (\mathrm{QuantumEntanglement.ghz}\ 0)\mathrm{.normSq} = (\mathrm{QuantumEntanglement.ghz}\ 7)\mathrm{.normSq} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Physics/QuantumEntanglement.lean\#L22}
+\end{document}

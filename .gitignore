@@ -70,6 +70,16 @@ playwright-report/index.html
 public/media
 /legacy/.next/
 .lake/
+# the disclosure scripts/disclosure.ts writes: local, never published by the build
+.disclosure/
+# the PDFs scripts/moduleTex.ts --pdf builds beside each module's .tex
+lean/**/*.pdf
+lean/**/*.aux
+lean/**/*.log
+lean/**/*.out
+lean/**/*.fls
+lean/**/*.fdb_latexmk
+lean/**/*.xdv
 # the VitePress site is rendered from the seeds and from Lean (lake run seed); only its config and the routes of its catalog are kept
 site/*
 !site/.vitepress/

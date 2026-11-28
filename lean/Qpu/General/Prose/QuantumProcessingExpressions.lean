@@ -6,6 +6,8 @@ namespace Prose
 
 def quantumProcessingExpressions_s1 : String := "a quantified statement: the arithmetic reads a bounded one, and this one is not"
 def quantumProcessingExpressions_reason2 : String := "a quantified statement: the kernel proves it for all values; evaluate it by its instances"
+def quantumProcessingExpressions_kernelBinder : String := "a binder over a type other than the naturals or the booleans: the kernel's statement is not arithmetic this evaluator reads (textbook_expressions_evaluate)"
+def quantumProcessingExpressions_kernelUnbound : String := "names no evaluator here computes, Lean definitions only the kernel unfolds (textbook_expressions_evaluate): ⟦0⟧"
 def quantumProcessingExpressions_s3 : String := "the premises hold and so does the conclusion, as the kernel proved"
 def quantumProcessingExpressions_s4 : String := "the premises hold and the conclusion fails: the statement does not match the kernel"
 def quantumProcessingExpressions_s5 : String := "a premise fails for these values: the theorem says nothing about them"

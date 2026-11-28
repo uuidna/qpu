@@ -4,11 +4,7 @@ import Qpu.Processing.QuantumGate
 ---
 component: quantum entanglement (ISO/IEC 4879:2024 3.2.10)
 ---
-Entangled states in exact amplitudes, and the test that separates them from definite values. The Bell state is supported on
-exactly 00 and 11 and the GHZ state on exactly 000 and 111, each with equal weight. Every assignment of definite ±1 values to a CHSH
-test gives |S| = 2, while the Bell state gives S² = 8, beyond the bound. A register shows quantum-mechanical behaviour (ISO/IEC
-4879:2024, introduction) when its measured outcomes violate this bound; registers whose contents are definite bits compute these
-numbers without showing them. -/
+Unified entanglement module (merging exact Bell/GHZ amplitude proofs and finite CHSH/GHZ-Mermin games from `Qpu.Verify.Entangle`). -/
 
 namespace QuantumEntanglement
 open HilbertSpace Operator QuantumGate
@@ -45,3 +41,62 @@ def chshBell : GI := corr Z bobPlus + corr Z bobMinus + corr X bobPlus + -(corr 
 theorem chsh_quantum_value : chshBell = 8 ∧ (8 : Nat) ^ 2 = 8 * (2 ^ 2 * 2) ∧ (2 : Nat) ^ 2 < 8 := by decide +kernel
 
 end QuantumEntanglement
+
+/-! ## Qpu.Verify.Entangle (merged into QuantumEntanglement)
+CHSH and GHZ/Mermin game bounds as finite combinatorics. -/
+namespace Qpu.Verify.Entangle
+
+/-- One CHSH round: won iff `a ⊕ b = x ∧ y`. -/
+def chshRoundWon (a b x y : Bool) : Bool := (a ^^ b) == (x && y)
+
+/-- Wins of a deterministic classical strategy over the four CHSH rounds. -/
+def chshWins (a0 a1 b0 b1 : Bool) : Nat :=
+  (if chshRoundWon a0 b0 false false then 1 else 0) +
+  (if chshRoundWon a0 b1 false true then 1 else 0) +
+  (if chshRoundWon a1 b0 true false then 1 else 0) +
+  (if chshRoundWon a1 b1 true true then 1 else 0)
+
+/-- Classical bound: no local deterministic strategy wins all four rounds. -/
+theorem chsh_classical_bound (a0 a1 b0 b1 : Bool) : chshWins a0 a1 b0 b1 ≤ 3 := by
+  cases a0 <;> cases a1 <;> cases b0 <;> cases b1 <;> decide
+
+/-- Control: the bound is tight. -/
+theorem chsh_bound_is_tight : chshWins false false false false = 3 := by decide
+
+/-- One GHZ/Mermin round (input parity zero): won iff a⊕b⊕c = x∨y∨z. -/
+def ghzRoundWon (a b c x y z : Bool) : Bool := (a ^^ b ^^ c) == (x || y || z)
+
+/-- Wins of a deterministic classical strategy over the four GHZ rounds. -/
+def ghzWins (a0 a1 b0 b1 c0 c1 : Bool) : Nat :=
+  (if ghzRoundWon a0 b0 c0 false false false then 1 else 0) +
+  (if ghzRoundWon a0 b1 c1 false true true then 1 else 0) +
+  (if ghzRoundWon a1 b0 c1 true false true then 1 else 0) +
+  (if ghzRoundWon a1 b1 c0 true true false then 1 else 0)
+
+/-- Mermin's bound: no deterministic classical strategy wins all four. -/
+theorem ghz_classical_bound (a0 a1 b0 b1 c0 c1 : Bool) : ghzWins a0 a1 b0 b1 c0 c1 ≤ 3 := by
+  cases a0 <;> cases a1 <;> cases b0 <;> cases b1 <;> cases c0 <;> cases c1 <;> decide
+
+/-- GHZ response table for three-qubit trinity X/Y measurements. -/
+def ghzQuantumOutput : Nat → Bool × Bool × Bool
+  | 0 => (false, false, false)
+  | 1 => (false, false, true)
+  | 2 => (false, true, false)
+  | _ => (true, false, false)
+
+/-- Score one quantum-table row against question triple `(x, y, z)`. -/
+def quantumCheck (r : Nat) (x y z : Bool) : Nat :=
+  match ghzQuantumOutput r with
+  | (a, b, c) => if ghzRoundWon a b c x y z then 1 else 0
+
+/-- The entangled GHZ trinity strategy wins 4/4 — strictly above the classical ceiling of 3. -/
+theorem ghz_quantum_wins_all_four :
+    quantumCheck 0 false false false +
+    quantumCheck 1 false true true +
+    quantumCheck 2 true false true +
+    quantumCheck 3 true true false = 4 := by decide
+
+/-- Negative control: a representative local strategy loses. -/
+theorem ghz_uniform_strategy_loses : ghzWins false false false false false false < 4 := by decide
+
+end Qpu.Verify.Entangle

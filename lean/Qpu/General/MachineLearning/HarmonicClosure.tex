@@ -1,0 +1,103 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.MachineLearning.HarmonicClosure}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean}
+
+\paragraph{\texttt{Qpu.Harmonic.L1\_range}}
+\[ \forall (t : \mathbb{N}), 1 \le \mathrm{Qpu.Harmonic.L1}\ t \land \mathrm{Qpu.Harmonic.L1}\ t \le 60 \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L20}
+
+\paragraph{\texttt{Qpu.Harmonic.L2\_range}}
+\[ \forall (t : \mathbb{N}), 1 \le \mathrm{Qpu.Harmonic.L2}\ t \land \mathrm{Qpu.Harmonic.L2}\ t \le 30 \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L21}
+
+\paragraph{\texttt{Qpu.Harmonic.closing\_count}}
+Of the inputs below 107, exactly eighteen close: 23..28, 53..58 and 83..88.
+\[ (\mathrm{List.filter} (\lambda \ t \mapsto \mathrm{Qpu.Harmonic.Involute}\ t = 100) (\mathrm{List.range}\ 107))\mathrm{.length} = 18 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L45}
+
+\paragraph{\texttt{Qpu.Harmonic.closing\_set}}
+\[ \mathrm{List.filter} (\lambda \ t \mapsto \mathrm{Qpu.Harmonic.Involute}\ t = 100) (\mathrm{List.range}\ 107) = [23, 24, 25, 26, 27, 28, 53, 54, 55, 56, 57, 58, 83, 84, 85, 86, 87, 88] \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L47}
+
+\paragraph{\texttt{Qpu.Harmonic.fold\_harmonic}}
+Every harmonic of 440 less two from each of its four 110s is the same harmonic of 432, by `Nat.mul\_sub`.
+\[ \forall (n : \mathbb{N}), n \cdot 432 = n \cdot 440 - n \cdot (4 \cdot 2) \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L57}
+
+\paragraph{\texttt{Qpu.Harmonic.fold\_never\_grows}}
+The folded harmonic never exceeds the harmonic it starts from, by `Nat.mul\_le\_mul\_left` and `Nat.sub\_le`.
+\[ \forall (n : \mathbb{N}), n \cdot 432 \le n \cdot 440 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L63}
+
+\paragraph{\texttt{Qpu.Harmonic.fold\_reflection}}
+The reflection about the sum of the two ladders is its own inverse at every harmonic, by `Nat.sub\_sub\_self`.
+\[ \forall (n\ x : \mathbb{N}), x \le n \cdot 872 \to n \cdot 872 - (n \cdot 872 - x) = x \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L73}
+
+\paragraph{\texttt{Qpu.Harmonic.fold\_reflects}}
+That reflection sends each harmonic of 440 to the same harmonic of 432, by `Nat.mul\_sub`.
+\[ \forall (n : \mathbb{N}), n \cdot 432 = n \cdot 872 - n \cdot 440 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L76}
+
+\paragraph{\texttt{Qpu.Harmonic.fold\_within\_64}}
+A harmonic of 440 that fits in 64 bits folds to one that fits in them, by `Qpu.Harmonic.fold\_never\_grows` and `Nat.lt\_of\_le\_of\_lt`.
+\[ \forall (n : \mathbb{N}), n \cdot 440 < 2 ^{64} \to n \cdot 432 < 2 ^{64} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L67}
+
+\paragraph{\texttt{Qpu.Harmonic.involute\_eq\_100\_iff}}
+The chain returns 100 exactly when the residue of `t` modulo 60 lies in `[23, 28]` or `[53, 58]` (so that `L2 (L1 t) ≥ 25`, i.e. `L3 ≥ 600`); otherwise it returns 0.
+\[ \forall (t : \mathbb{N}), \mathrm{Qpu.Harmonic.Involute}\ t = 100 \leftrightarrow 23 \le t \bmod 60 \land t \bmod 60 \le 28 \lor 53 \le t \bmod 60 \land t \bmod 60 \le 58 \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L25}
+
+\paragraph{\texttt{Qpu.Harmonic.involute\_values}}
+\[ \forall (t : \mathbb{N}), \mathrm{Qpu.Harmonic.Involute}\ t = 100 \lor \mathrm{Qpu.Harmonic.Involute}\ t = 0 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L37}
+
+\paragraph{\texttt{Qpu.Harmonic.merkaba\_cell\_inside}}
+The cell of every natural number is inside the frame, by `Nat.mod\_lt`, `Nat.mul\_pos` and `Nat.succ\_pos`.
+\[ \forall (n : \mathbb{N}), n \bmod (6 \cdot 7) < 6 \cdot 7 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L92}
+
+\paragraph{\texttt{Qpu.Harmonic.merkaba\_cells\_covered}}
+Every cell of the frame is the cell of a natural number, itself, so the frame leaves no cell uncovered, by `Nat.mod\_eq\_of\_lt`.
+\[ \forall c < 6 \cdot 7, c \bmod (6 \cdot 7) = c \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L96}
+
+\paragraph{\texttt{Qpu.Harmonic.merkaba\_fits}}
+Every natural number is its quotient times the frame plus its cell, so the frame loses nothing of it, by `Nat.div\_add\_mod'`.
+\[ \forall (n : \mathbb{N}), n / (6 \cdot 7) \cdot (6 \cdot 7) + n \bmod (6 \cdot 7) = n \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L89}
+
+\paragraph{\texttt{Qpu.Harmonic.merkaba\_frames\_agree}}
+The 6 × 7 frame and the 7 × 6 frame hold the same count of cells, by `Nat.mul\_comm`.
+\[ 6 \cdot 7 = 7 \cdot 6 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L85}
+
+\paragraph{\texttt{Qpu.Harmonic.merkaba\_spins\_meet}}
+A cell and the cell the counter spin sends it to complete the frame, by `Nat.add\_sub\_of\_le`.
+\[ \forall c \le 6 \cdot 7, c + (6 \cdot 7 - c) = 6 \cdot 7 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L102}
+
+\paragraph{\texttt{Qpu.Harmonic.merkaba\_turn\_returns}}
+A full turn of the frame returns every number to its cell, by `Nat.add\_mod\_right`.
+\[ \forall (c : \mathbb{N}), (c + 6 \cdot 7) \bmod (6 \cdot 7) = c \bmod (6 \cdot 7) \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L99}
+
+\paragraph{\texttt{Qpu.Harmonic.unfold\_harmonic}}
+The unfold gives the two back to each 110, by `Nat.mul\_add`.
+\[ \forall (n : \mathbb{N}), n \cdot 440 = n \cdot 432 + n \cdot (4 \cdot 2) \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L60}
+
+\paragraph{\texttt{Qpu.Harmonic.word\_bounded}}
+A value a 64-bit word holds is below 2 \^{} 64, by `Fin.is\_lt`.
+\[ \forall (x : \mathrm{Fin} (2 ^{64})), \uparrow x < 2 ^{64} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/MachineLearning/HarmonicClosure.lean\#L70}
+\end{document}

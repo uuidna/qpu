@@ -1,0 +1,97 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Verify.Correct}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean}
+
+\paragraph{\texttt{Qpu.Verify.Correct.repetition\_corrects\_clean}}
+A clean codeword decodes to itself.
+\[ \forall (b : \mathrm{Bool}), \mathrm{Qpu.Verify.Correct.maj3}\ b\ b\ b = b \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L12}
+
+\paragraph{\texttt{Qpu.Verify.Correct.repetition\_corrects\_flip0}}
+A flip in position 0 is repaired by the two healthy copies.
+\[ \forall (b : \mathrm{Bool}), \mathrm{Qpu.Verify.Correct.maj3} (\neg b) b\ b = b \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L15}
+
+\paragraph{\texttt{Qpu.Verify.Correct.repetition\_corrects\_flip1}}
+A flip in position 1 is repaired.
+\[ \forall (b : \mathrm{Bool}), \mathrm{Qpu.Verify.Correct.maj3}\ b (\neg b) b = b \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L18}
+
+\paragraph{\texttt{Qpu.Verify.Correct.repetition\_corrects\_flip2}}
+A flip in position 2 is repaired.
+\[ \forall (b : \mathrm{Bool}), (\mathrm{Qpu.Verify.Correct.maj3}\ b\ b \neg b) = b \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L21}
+
+\paragraph{\texttt{Qpu.Verify.Correct.repetition\_fails\_on\_two\_flips}}
+Failure control: two flips defeat the repetition code — the majority votes for the wrong bit.
+\[ \forall (b : \mathrm{Bool}), \mathrm{Qpu.Verify.Correct.maj3} (\neg b) (\neg b) b = \neg b \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L25}
+
+\paragraph{\texttt{Qpu.Verify.Correct.shor\_nine\_corrects\_one}}
+Shor-style nesting: each inner block decoded by `maj3`, blocks by `maj3`, still corrects one inner flip (the 9-qubit structure at the decoder level).
+\[ \forall (b : \mathrm{Bool}), \mathrm{Qpu.Verify.Correct.maj3} (\mathrm{Qpu.Verify.Correct.maj3} (\neg b) b\ b) (\mathrm{Qpu.Verify.Correct.maj3}\ b\ b\ b) (\mathrm{Qpu.Verify.Correct.maj3}\ b\ b\ b) = b \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L30}
+
+\paragraph{\texttt{Qpu.Verify.Correct.steane\_cannot\_correct\_two}}
+Control: distance 3 cannot promise two corrections.
+\[ 3 < 2 \cdot 2 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L87}
+
+\paragraph{\texttt{Qpu.Verify.Correct.steane\_corrects\_one}}
+Distance arithmetic: d = 2t + 1 pins t = 1 for Steane's d = 3.
+\[ 3 = 2 \cdot 1 + 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L85}
+
+\paragraph{\texttt{Qpu.Verify.Correct.steane\_miscorrects\_double\_error}}
+Failure control: a two-bit error is miscorrected to a third position — this is exactly why Steane has distance 3, not 4.
+\[ \mathrm{Qpu.Verify.Correct.recover} (\mathrm{List.zipWith} (\lambda \ \mathrm{x1}\ \mathrm{x2} \mapsto \mathrm{x1} ^{}^{\mathrm{x2}}) (\mathrm{Qpu.Verify.Correct.errAt}\ 0) (\mathrm{Qpu.Verify.Correct.errAt}\ 1)) = 2 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L81}
+
+\paragraph{\texttt{Qpu.Verify.Correct.steane\_no\_error\_is\_silent}}
+Control: no error gives the zero syndrome (index 7 is out of range, hence the all-false vector).
+\[ \mathrm{Qpu.Verify.Correct.syndrome} (\mathrm{Qpu.Verify.Correct.errAt}\ 7) = [\mathrm{false}, \mathrm{false}, \mathrm{false}] \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L77}
+
+\paragraph{\texttt{Qpu.Verify.Correct.steane\_recovers\_0}}
+A flip on qubit 0 is located exactly.
+\[ \mathrm{Qpu.Verify.Correct.recover} (\mathrm{Qpu.Verify.Correct.errAt}\ 0) = 0 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L61}
+
+\paragraph{\texttt{Qpu.Verify.Correct.steane\_recovers\_1}}
+A flip on qubit 1 is located exactly.
+\[ \mathrm{Qpu.Verify.Correct.recover} (\mathrm{Qpu.Verify.Correct.errAt}\ 1) = 1 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L63}
+
+\paragraph{\texttt{Qpu.Verify.Correct.steane\_recovers\_2}}
+A flip on qubit 2 is located exactly.
+\[ \mathrm{Qpu.Verify.Correct.recover} (\mathrm{Qpu.Verify.Correct.errAt}\ 2) = 2 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L65}
+
+\paragraph{\texttt{Qpu.Verify.Correct.steane\_recovers\_3}}
+A flip on qubit 3 is located exactly.
+\[ \mathrm{Qpu.Verify.Correct.recover} (\mathrm{Qpu.Verify.Correct.errAt}\ 3) = 3 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L67}
+
+\paragraph{\texttt{Qpu.Verify.Correct.steane\_recovers\_4}}
+A flip on qubit 4 is located exactly.
+\[ \mathrm{Qpu.Verify.Correct.recover} (\mathrm{Qpu.Verify.Correct.errAt}\ 4) = 4 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L69}
+
+\paragraph{\texttt{Qpu.Verify.Correct.steane\_recovers\_5}}
+A flip on qubit 5 is located exactly.
+\[ \mathrm{Qpu.Verify.Correct.recover} (\mathrm{Qpu.Verify.Correct.errAt}\ 5) = 5 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L71}
+
+\paragraph{\texttt{Qpu.Verify.Correct.steane\_recovers\_6}}
+A flip on qubit 6 is located exactly.
+\[ \mathrm{Qpu.Verify.Correct.recover} (\mathrm{Qpu.Verify.Correct.errAt}\ 6) = 6 \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Correct.lean\#L73}
+\end{document}

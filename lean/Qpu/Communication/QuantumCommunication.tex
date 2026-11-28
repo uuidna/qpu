@@ -1,0 +1,32 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Communication.QuantumCommunication}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/QuantumCommunication.lean}
+
+\paragraph{\texttt{QuantumCommunication.superdense\_exact}}
+each of the four messages decodes to exactly its own basis state: one qubit carries two classical bits
+\[ \forall m < 4, \forall r < 4, \mathrm{QuantumCommunication.superdense}\ m\ r \ne 0 \leftrightarrow r = m \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/QuantumCommunication.lean\#L55}
+
+\paragraph{\texttt{QuantumCommunication.teleport\_exact}}
+every outcome of qubits 0 and 1 leaves qubit 2 holding the input, with equal weight
+\[ \forall b < 2, \forall r < 8, \mathrm{QuantumCommunication.teleport}\ b\ r = \mathrm{if}\ r \bmod 2 = b\ \mathrm{then}\ 1\ \mathrm{else}\ 0 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/QuantumCommunication.lean\#L43}
+
+\paragraph{\texttt{QuantumCommunication.teleport\_no\_signalling}}
+no signalling: before the corrections, qubit 2 alone is in the same state for every Pauli eigenstate input, diagonal with equal weights
+\[ \forall s < 6, \mathrm{QuantumCommunication.reduced2} (\mathrm{QuantumCommunication.sentFrom} (\mathrm{QuantumCommunication.pauliEigen}\ s)) 0\ 1 = 0 \land \mathrm{QuantumCommunication.reduced2} (\mathrm{QuantumCommunication.sentFrom} (\mathrm{QuantumCommunication.pauliEigen}\ s)) 1\ 0 = 0 \land \mathrm{QuantumCommunication.reduced2} (\mathrm{QuantumCommunication.sentFrom} (\mathrm{QuantumCommunication.pauliEigen}\ s)) 0\ 0 = \mathrm{QuantumCommunication.reduced2} (\mathrm{QuantumCommunication.sentFrom} (\mathrm{QuantumCommunication.pauliEigen}\ s)) 1\ 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/QuantumCommunication.lean\#L46}
+
+\paragraph{\texttt{QuantumCommunication.two\_coins\_one\_qubit}}
+over one shared Bell pair, superdense coding and teleportation exchange one qubit for two classical bits both ways
+\[ \mathrm{QuantumCommunication.TwoCoins} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Communication/QuantumCommunication.lean\#L62}
+\end{document}

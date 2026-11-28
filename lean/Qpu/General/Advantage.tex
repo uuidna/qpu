@@ -1,0 +1,72 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Advantage}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean}
+
+\paragraph{\texttt{Advantage.advantage\_unbounded}}
+The advantage has no bound: for every number of reads there is a space at least two to that power.
+\[ \forall (k : \mathbb{N}), (\mathrm{List.replicate}\ k\ 2)\mathrm{.length} = k \land 2 ^{k} \le \mathrm{Advantage.space} (\mathrm{List.replicate}\ k\ 2) \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean\#L133}
+
+\paragraph{\texttt{Advantage.fold\_unfold}}
+The fold that closes a block opens it again: the mirror of the mirror of a place is the place. By Fin.rev\_rev.
+\[ \forall (n : \mathbb{N}) (i : \mathrm{Fin}\ n), \mathrm{i.rev.rev} = i \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean\#L82}
+
+\paragraph{\texttt{Advantage.fold\_upper\_onto\_lower}}
+A fold in half sends the upper half of a block onto the lower half, and only the upper half: a place of a block of `2 * h` places is in the upper half exactly when its mirror `Fin.rev` is in the lower. The site's icon folds by this (lean/tools/Fold.lean). By Fin.val\_rev.
+\[ \forall (h : \mathbb{N}) (i : \mathrm{Fin} (2 \cdot h)), h \le \uparrow i \leftrightarrow \uparrow \mathrm{i.rev} < h \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean\#L78}
+
+\paragraph{\texttt{Advantage.rank\_unrank}}
+The address is recovered exactly: the digits of the variation at `i` rank back to `i`, for every address in the space.
+\[ \forall (\mathrm{sizes} : \mathrm{List} \mathbb{N}), \forall i < \mathrm{Advantage.space}\ \mathrm{sizes}, \mathrm{Advantage.rank}\ \mathrm{sizes} (\mathrm{Advantage.unrank}\ \mathrm{sizes}\ i) = i \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean\#L40}
+
+\paragraph{\texttt{Advantage.reads\_lt\_space}}
+The reads are always fewer than the space holds: reading by address beats walking, whatever the sides.
+\[ \forall (\mathrm{sizes} : \mathrm{List} \mathbb{N}), (\forall s \in \mathrm{sizes}, 2 \le s) \to \mathrm{sizes.length} < \mathrm{Advantage.space}\ \mathrm{sizes} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean\#L129}
+
+\paragraph{\texttt{Advantage.receipt\_exact}}
+A receipt that holds leads back to exactly its address: checking it needs its digits and no walk.
+\[ \forall (r : \mathrm{Advantage.Receipt}), \mathrm{r.holds} = \mathrm{true} \to \mathrm{Advantage.rank}\ \mathrm{r.sizes}\ \mathrm{r.digits} = \mathrm{r.index} \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean\#L103}
+
+\paragraph{\texttt{Advantage.receipt\_reads}}
+A receipt that holds made exactly one read for each side.
+\[ \forall (r : \mathrm{Advantage.Receipt}), \mathrm{r.holds} = \mathrm{true} \to \mathrm{r.digits.length} = \mathrm{r.reads} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean\#L112}
+
+\paragraph{\texttt{Advantage.two\_pow\_le\_space}}
+The space is at least two to the power of the reads, when every side offers at least two choices.
+\[ \forall (\mathrm{sizes} : \mathrm{List} \mathbb{N}), (\forall s \in \mathrm{sizes}, 2 \le s) \to 2 ^{\mathrm{sizes.length}} \le \mathrm{Advantage.space}\ \mathrm{sizes} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean\#L119}
+
+\paragraph{\texttt{Advantage.unrank\_cons\_address}}
+Every digit is read from the address itself: the digit of a side is the address over the space of the sides after it, modulo the side, and the sides after it read the same address. No remainder is carried from side to side, so each digit is one division and one remainder, the form a stylesheet computes (lean/tools/Css.lean). By Advantage.unrank\_mod.
+\[ \forall (s : \mathbb{N}) (\mathrm{rest} : \mathrm{List} \mathbb{N}) (i : \mathbb{N}), \mathrm{Advantage.unrank} (s :: \mathrm{rest}) i = i / \mathrm{Advantage.space}\ \mathrm{rest} \bmod s :: \mathrm{Advantage.unrank}\ \mathrm{rest}\ i \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean\#L71}
+
+\paragraph{\texttt{Advantage.unrank\_length}}
+Reading by address makes one read for each side.
+\[ \forall (\mathrm{sizes} : \mathrm{List} \mathbb{N}) (i : \mathbb{N}), (\mathrm{Advantage.unrank}\ \mathrm{sizes}\ i)\mathrm{.length} = \mathrm{sizes.length} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean\#L34}
+
+\paragraph{\texttt{Advantage.unrank\_mod}}
+Reading an address reduced modulo any multiple of the space gives the same variation: the digits depend on the address modulo the space alone. By Nat.mod\_mul\_right\_div\_self and Nat.mod\_mul\_left\_mod.
+\[ \forall (\mathrm{sizes} : \mathrm{List} \mathbb{N}) (k\ i : \mathbb{N}), \mathrm{Advantage.unrank}\ \mathrm{sizes} (i \bmod (k \cdot \mathrm{Advantage.space}\ \mathrm{sizes})) = \mathrm{Advantage.unrank}\ \mathrm{sizes}\ i \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean\#L60}
+
+\paragraph{\texttt{Advantage.uuid\_address}}
+A UUID is an address: thirty-two digits read it, one for each side, in a space of two to the power 128. A walk to the same address steps through the space; the read costs its thirty-two digits.
+\[ \mathrm{Advantage.uuidGroups.sum} = 32 \land \mathrm{Advantage.uuidSides.length} = 32 \land \mathrm{Advantage.space}\ \mathrm{Advantage.uuidSides} = 2 ^{128} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Advantage.lean\#L146}
+\end{document}

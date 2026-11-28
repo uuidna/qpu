@@ -19,6 +19,8 @@ import { listFactors } from '../../../../../../../../b/1/c/2/3/6/2/1/index.ts'
 import { LEAD_ROWS } from '../../../../../../../../f/3/5/3/8/2/1/2/index.ts'
 import { gateProseLinks, nextUnlinked } from '../../../../../../7/1/0/4/b/e/index.ts'
 import { PROSE_UNLINKED } from '../../../../../../../../3/7/2/f/3/1/1/5/index.ts'
+import { RECEIPT } from '../../../../../../../../2/b/c/0/d/1/3/d/index.ts'
+import { leanPath, proofLines } from '../../../../../../../../e/1/c/6/d/e/b/3/index.ts'
 
 /** Qpu/General/Textbook.lean is written in Lean. This door renders nothing: it names the file and counts what the index read from it. */
 const textbookLean = () => {
@@ -256,6 +258,8 @@ const SCRIPT_INVOKE = {
   scripts_skills: { tool: 'textbook', args: '{ scripts: { skills } }', via: PROSE.quantumProcessingScriptDoors_via29, npm: 'next step skills:gen' },
   scripts_prose_links: { tool: 'textbook', args: '{ scripts: { proseLinks } }', via: 'src/quantum/uuid/programs/3/7/2/f/3/1/1/5/index.ts', npm: 'next step prose:links' },
   scripts_outputs: { tool: 'textbook', args: '{ scripts: { outputs } }', via: 'src/quantum/uuid/programs/f/e/e/2/8/4/4/7/index.ts', npm: 'next step outputs:gen' },
+  scripts_module_tex: { tool: 'textbook', args: '{ scripts: { moduleTex: { lean } } }', via: 'lean/**/*.tex', npm: 'next step tex:gen' },
+  scripts_disclosure: { tool: 'textbook', args: '{ scripts: { disclosure: { lean } } }', via: '.disclosure/disclosure.md', npm: 'step textbook' },
   scripts_theorems_index: { tool: 'textbook', args: '{ scripts: { theoremsIndex: { output } } }', via: PROSE.quantumProcessingScriptDoors_via30, npm: 'next step theorems:index' },
   leads: { tool: 'leads', via: PROSE.quantumProcessingScriptDoors_via31, npm: 'next steps' },
   clay: { tool: 'clay', via: PROSE.quantumProcessingScriptDoors_via32, npm: 'npm run clay:gen' },
@@ -326,6 +330,56 @@ const scriptsCatalog = () => ({
   says: proseFill(PROSE.quantumProcessingScriptDoors_says37, Object.keys(SCRIPT_INVOKE).length),
 })
 
+
+// Each Lean module's theorems as a LaTeX document beside its source (lean/<Module/Path>.tex): every statement the TeX Lean wrote, with the
+// axioms the kernel says it rests on, its inline doc and the line of its proof at the release tag. Pure: the Lean texts come in ($lean).
+const TAG = `v${RECEIPT.version}`, REPO = `https://github.com/${RELEASE_REPOSITORY}`
+const latex = (s: string) => s.replace(/[\\{}$&#^_%~]/g, (c) => (c === '\\' ? '\\textbackslash{}' : c === '^' ? '\\^{}' : c === '~' ? '\\~{}' : `\\${c}`))
+const moduleTex = (lean: Readonly<Record<string, string>>) => {
+  const lines = proofLines(THEOREMS, lean), modules = Map.groupBy(THEOREMS, (t) => t.module)
+  const files = [...modules.keys()].sort().map((module) => ({ path: leanPath(module).replace(/\.lean$/, '.tex'), text: [
+    '\\documentclass[11pt]{article}', '\\usepackage[a4paper,margin=2cm]{geometry}', '\\usepackage{amsmath,amssymb}', '\\usepackage[hidelinks]{hyperref}', '\\allowdisplaybreaks',
+    `\\title{${latex(module)}}`, `\\author{${latex(LICENSE.author)}}`, `\\date{${latex(`${RECEIPT.title.split(':')[0]}, ${LICENSE.spdx}`)}}`,
+    '\\begin{document}', '\\maketitle', `\\noindent\\url{${REPO}/blob/${TAG}/${leanPath(module)}}`,
+    ...modules.get(module)!.flatMap((t) => ['', `\\paragraph{\\texttt{${latex(t.key)}}}`, ...(t.doc ? [latex(t.doc)] : []), `\\[ ${t.tex} \\]`,
+      [`\\noindent axioms: ${t.axioms.length ? t.axioms.map((a) => `\\texttt{${latex(a)}}`).join(', ') : 'none'}`, `proof: \\url{${REPO}/blob/${TAG}/${leanPath(module)}\\#L${lines.get(t.key)}}`].join('; ')]),
+    '\\end{document}', '',
+  ].join('\n') }))
+  return { phase: 'scripts-module-tex' as const, files, modules: files.length, theorems: THEOREMS.length, holds: files.length === modules.size }
+}
+
+// The disclosure: every declared theorem by module, with its TeX, axioms, the worked examples that recompute it and its proof line, then every
+// lead still open; written to .disclosure/, which git ignores, and never part of the README, the Zenodo record, the site or a release.
+const disclosure = (lean: Readonly<Record<string, string>>, examples: readonly { id: string; theorem?: string }[]) => {
+  const lines = proofLines(THEOREMS, lean), ids = new Set(examples.map((e) => e.id)), linked = new Map<string, Set<string>>()
+  const link = (key: string, id: string) => { if (ids.has(id)) linked.set(key, (linked.get(key) ?? new Set()).add(id)) }
+  for (const e of examples) if (e.theorem) link(e.theorem, e.id)
+  for (const t of TEXTBOOK_THEOREMS) for (const id of t.examples) link(t.key, id)
+  for (const t of THEOREMS) for (const id of (/\(examples: ([^)]*)\)/.exec(t.doc ?? '')?.[1] ?? '').split(',')) link(t.key, id.trim())
+  const rows = THEOREMS.map((t) => ({ t, line: lines.get(t.key)!, examples: [...(linked.get(t.key) ?? [])].sort() }))
+  const byName = <T>(entries: Iterable<[string, T]>) => [...entries].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+  const modules = Map.groupBy(rows, (r) => r.t.module), open = LEAD_ROWS.filter((l) => l.status !== 'served' && l.status !== 'out_of_scope'), status = Map.groupBy(LEAD_ROWS, (l) => l.status)
+  const claimed = rows.filter((r) => r.examples.length).length
+  type Block = { kind: 'h1' | 'h2' | 'h3' | 'table'; text?: string; head?: string[]; rows?: string[][] }
+  const blocks: Block[] = [
+    { kind: 'h1', text: `${RECEIPT.title.split(':')[0]} disclosure` },
+    { kind: 'h2', text: 'identification' },
+    { kind: 'table', head: ['identification', ''], rows: [['version', TAG], ['receipt', RECEIPT.uuid], ['sha256', RECEIPT.sha256], ['author', LICENSE.author], ['orcid', LICENSE.orcid], ['licence', LICENSE.spdx], ['source', `${REPO}/tree/${TAG}/lean`], ['mcp', RECEIPT.mcp], ['standard', 'ISO/IEC/IEEE 15289:2019'], ['publication', 'unpublished']] },
+    { kind: 'h2', text: 'scope' },
+    { kind: 'table', head: ['scope', ''], rows: [['kernel theorems', String(KERNEL_THEOREMS)], ['declared theorems', String(THEOREMS.length)], ['generated lemmas', String(GENERATED_LEMMAS)], ['modules', String(modules.size)], ['recomputed', String(claimed)], ['not recomputed', String(THEOREMS.length - claimed)], ['leads', String(LEAD_ROWS.length)], ...byName(status).map(([s, ls]) => [`leads ${s}`, String(ls.length)])] },
+    { kind: 'h2', text: 'theorems' },
+    ...byName(modules).flatMap(([module, rs]): Block[] => [{ kind: 'h3', text: module }, { kind: 'table', head: ['theorem', 'statement', 'axioms', 'example', 'proof'], rows: rs.map((r) => [`\`${r.t.key}\``, `$${r.t.tex}$`, r.t.axioms.join(', ') || 'none', r.examples.map((id) => `\`${id}\``).join(', ') || 'none', `${REPO}/blob/${TAG}/${leanPath(module)}#L${r.line}`]) }]),
+    { kind: 'h2', text: 'open' },
+    { kind: 'table', head: ['lead', 'status', 'statement', 'reason'], rows: open.map((l) => [`\`${l.id}\``, l.status, l.statement, l.reason ?? '']) },
+  ]
+  const bar = (s: string) => s.replace(/(?<!\\)(\\*)\|/g, (_, b: string) => `${b}${b}\\|`).replace(/\n/g, ' '), esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+  const md = (b: Block) => b.kind === 'table' ? [`| ${b.head!.join(' | ')} |`, `|${b.head!.map(() => ' --- ').join('|')}|`, ...b.rows!.map((r) => `| ${r.map(bar).join(' | ')} |`)].join('\n') : `${'#'.repeat(Number(b.kind[1]))} ${b.text}`
+  const cell = (s: string) => /^\$.*\$$/.test(s) ? `<code class="tex">${esc(s.slice(1, -1))}</code>` : /^https:\/\/\S+$/.test(s) ? `<a href="${esc(s)}">${esc(s)}</a>` : esc(s).replace(/`([^`]+)`/g, '<code>$1</code>')
+  const html = (b: Block) => b.kind === 'table' ? `<table><thead><tr>${b.head!.map((h) => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${b.rows!.map((r) => `<tr>${r.map((c) => `<td>${cell(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>` : `<${b.kind}>${esc(b.text!)}</${b.kind}>`
+  const files = [{ path: '.disclosure/disclosure.md', text: blocks.map(md).join('\n\n') + '\n' }, { path: '.disclosure/disclosure.html', text: `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(blocks[0]!.text!)}</title></head><body>${blocks.map(html).join('')}</body></html>\n` }]
+  return { phase: 'scripts-disclosure' as const, files, blocks, theorems: THEOREMS.length, kernel: KERNEL_THEOREMS, modules: modules.size, claimed, open: open.length, holds: rows.length === THEOREMS.length }
+}
+
 // The QPU as an agent plugin for every harness, from one source: one name, version, description, author, licence, repository, the skills the
 // generator writes and the hosted MCP server, each written in the form its vendor documents. Agent Plugins 1.0 (agent-plugins.org: root plugin.json,
 // root mcp.json, skills/), which OpenAI Codex, Cursor, VS Code and the Copilot CLI read; Claude Code (.claude-plugin/plugin.json and its marketplace);
@@ -371,6 +425,8 @@ export type ScriptsArgs = {
   factors?: boolean
   outputs?: boolean
   proseLinks?: boolean | { seed?: boolean }
+  moduleTex?: { lean?: Record<string, string> }
+  disclosure?: { lean?: Record<string, string> }
 }
 
 /** payload { scripts } — one fused door for relocated script work. */
@@ -384,6 +440,8 @@ export const scripts = (args: ScriptsArgs, ctx?: { examples?: readonly { id: str
   if (args.factors === true && ctx?.examples) return factorsIndex(ctx.examples)
   if (args.outputs === true && ctx?.call && ctx.examples) return outputs({ examples: ctx.examples, call: ctx.call })
   if (args.proseLinks !== undefined && args.proseLinks !== false) { const names = nextUnlinked(PROSE_UNLINKED, typeof args.proseLinks === 'object' && args.proseLinks.seed === true), gate = gateProseLinks(names); return { phase: 'scripts-prose-links' as const, path: 'src/quantum/uuid/programs/3/7/2/f/3/1/1/5/index.ts', text: [PROSE.quantumProcessingScriptDoors_unlinkedHead, `export const PROSE_UNLINKED: readonly string[] = ${JSON.stringify(names)}`, ''].join('\n'), sentences: gate.sentences, linked: gate.linked, listed: names.length, entering: gate.entering.length, holds: gate.holds } }
+  if (args.moduleTex && typeof args.moduleTex.lean === 'object') return moduleTex(args.moduleTex.lean)
+  if (args.disclosure && typeof args.disclosure.lean === 'object' && ctx?.examples) return disclosure(args.disclosure.lean, ctx.examples as readonly { id: string; theorem?: string }[])
   if (args.theoremsIndex && typeof args.theoremsIndex === 'object') return theoremsIndex()
   if (args.leadsIndex && Array.isArray(args.leadsIndex.rows)) return leadsIndex(args.leadsIndex.rows)
   // new leads merged into the record this build holds, so one call of the runner deposits a lead; a lead already recorded is kept as it is,

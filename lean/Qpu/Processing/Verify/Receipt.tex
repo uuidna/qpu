@@ -1,0 +1,37 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.Verify.Receipt}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Receipt.lean}
+
+\paragraph{\texttt{Qpu.Verify.Receipt.address\_cheaper\_once}}
+Even the first run is cheaper: lookup beats evaluation.
+\[ \mathrm{Qpu.Verify.Receipt.sealed}\ 1\ \mathrm{Qpu.Verify.Receipt.checkDs}\ 0 < \mathrm{Qpu.Verify.Receipt.rerun}\ 1\ \mathrm{Qpu.Verify.Receipt.evalDs} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Receipt.lean\#L23}
+
+\paragraph{\texttt{Qpu.Verify.Receipt.breaks\_even\_by\_run\_two}}
+Break-even arrives by run two: caching is already net-positive on the first repeat.
+\[ \mathrm{Qpu.Verify.Receipt.sealed}\ 2\ \mathrm{Qpu.Verify.Receipt.checkDs}\ 0 < \mathrm{Qpu.Verify.Receipt.rerun}\ 2\ \mathrm{Qpu.Verify.Receipt.evalDs} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Receipt.lean\#L27}
+
+\paragraph{\texttt{Qpu.Verify.Receipt.caching\_has\_a\_cost}}
+Control: caching is itself not free — the address check has nonzero cost.
+\[ 0 < \mathrm{Qpu.Verify.Receipt.checkDs} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Receipt.lean\#L34}
+
+\paragraph{\texttt{Qpu.Verify.Receipt.fold\_is\_order\_sensitive}}
+Control: the fold is order-dependent, so swapping two leaves changes the root — a tamper-evident receipt cannot commute silently.
+\[ \mathrm{Qpu.Verify.Receipt.merkleFold} [1, 2] \ne \mathrm{Qpu.Verify.Receipt.merkleFold} [2, 1] \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Receipt.lean\#L44}
+
+\paragraph{\texttt{Qpu.Verify.Receipt.speedup\_is\_thirtyfold}}
+\~{}30× speedup: 15·30 ≤ 459 < 15·31, so the ledger factor is bracketed between 30 and 31 for the reference bundle.
+\[ 30 \cdot \mathrm{Qpu.Verify.Receipt.checkDs} \le \mathrm{Qpu.Verify.Receipt.evalDs} \land \mathrm{Qpu.Verify.Receipt.evalDs} < 31 \cdot \mathrm{Qpu.Verify.Receipt.checkDs} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/Verify/Receipt.lean\#L31}
+\end{document}

@@ -1,0 +1,42 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.General.Config}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Config.lean}
+
+\paragraph{\texttt{Config.coin\_qubit\_space}}
+The coins are 2, the hexbit they mint is 4 qubits, and those span 16 states.
+\[ \mathrm{coins} = 2 \land \mathrm{hexbit} = 4 \land \mathrm{Config.coinQubitSpace} = 16 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Config.lean\#L88}
+
+\paragraph{\texttt{Config.config\_consistent}}
+The configuration is consistent: nine plugins, each named once; three tools served first; and the default insert strategy is one of the strategies.
+\[ \mathrm{Config.officialPlugins.length} = 9 \land \mathrm{Config.officialPlugins.eraseDups.length} = 9 \land \mathrm{Config.clayFirst.length} = 3 \land \mathrm{Config.insertStrategies.contains}\ \mathrm{Config.insertDefault} = \mathrm{true} \land \mathrm{Config.formulas.length} = 3 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Config.lean\#L79}
+
+\paragraph{\texttt{Config.git\_hooks\_are\_workflows}}
+Every git hook is a workflow, every agent hook is a workflow git does not start, and every other workflow is one CI or the deploy starts.
+\[ (\mathrm{Config.gitHooks.all}\ \lambda \ \mathrm{hook} \mapsto \mathrm{Config.workflows.contains}\ \mathrm{hook}) = \mathrm{true} \land (\mathrm{Config.agentEvents.all}\ \lambda \ \mathrm{hook} \mapsto \mathrm{Config.workflows.contains}\ \mathrm{hook.1} \land \neg \mathrm{Config.gitHooks.contains}\ \mathrm{hook.1}) = \mathrm{true} \land \mathrm{List.filter} (\lambda \ w \mapsto \neg \mathrm{Config.gitHooks.contains}\ w \land \neg (\mathrm{List.map} (\lambda \ x \mapsto \mathrm{x.1}) \mathrm{Config.agentEvents})\mathrm{.contains}\ w) \mathrm{Config.workflows} = ["\mathrm{ci}", "\mathrm{pre}-\mathrm{deploy}"] \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Config.lean\#L171}
+
+\paragraph{\texttt{Config.hook\_files\_distinct}}
+Every workflow git starts has its own hook file, and the workflows after the act are among those git starts.
+\[ (\mathrm{List.map}\ \mathrm{Config.hookFile}\ \mathrm{Config.gitHooks})\mathrm{.eraseDups.length} = \mathrm{Config.gitHooks.length} \land (\mathrm{Config.afterHooks.all}\ \lambda \ \mathrm{hook} \mapsto \mathrm{Config.gitHooks.contains}\ \mathrm{hook}) = \mathrm{true} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Config.lean\#L176}
+
+\paragraph{\texttt{Config.nibble\_primes}}
+The primes below sixteen are these six.
+\[ \mathrm{Config.nibblePrimes} = [2, 3, 5, 7, 11, 13] \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Config.lean\#L24}
+
+\paragraph{\texttt{Config.password\_hash\_fits}}
+The count is one Payload offers, the Worker runs it, and Payload's default does not fit the Worker.
+\[ \mathrm{Config.passwordHashIterations} = 100000 \land \mathrm{Config.passwordHashChoices.contains}\ \mathrm{Config.passwordHashIterations} = \mathrm{true} \land \mathrm{Config.passwordHashIterations} \le \mathrm{Config.workerHashLimit} \land \mathrm{Config.workerHashLimit} < \mathrm{List.foldl}\ \mathrm{max}\ 0\ \mathrm{Config.passwordHashChoices} \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/General/Config.lean\#L101}
+\end{document}

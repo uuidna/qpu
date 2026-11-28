@@ -1,0 +1,27 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.QuantumProcessor.Layers}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor/Layers.lean}
+
+\paragraph{\texttt{QuantumProcessor.Layers.layers\_bipartite}}
+every coupler joins the two colours: the coupling graph is bipartite
+\[ \forall e \in \mathrm{QuantumProcessor.Layers.edges}\ \mathrm{hexbit}, \mathrm{QuantumProcessor.Layers.colour}\ \mathrm{e.1} \ne \mathrm{QuantumProcessor.Layers.colour}\ \mathrm{e.2} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor/Layers.lean\#L34}
+
+\paragraph{\texttt{QuantumProcessor.Layers.layers\_count}}
+the couplers so counted are the register's couplers at hexbit width
+\[ (\mathrm{QuantumProcessor.Layers.edges}\ \mathrm{hexbit})\mathrm{.length} = \mathrm{Qubit.couplers}\ \mathrm{hexbit} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor/Layers.lean\#L47}
+
+\paragraph{\texttt{QuantumProcessor.Layers.layers\_four}}
+every coupler sits in one of four layers, and within a layer no qubit is touched twice: four rounds drive every coupler
+\[ (\forall e \in \mathrm{QuantumProcessor.Layers.edges}\ \mathrm{hexbit}, \mathrm{QuantumProcessor.Layers.layer}\ e < 4) \land \forall x \in \mathrm{QuantumProcessor.sites}\ \mathrm{hexbit}, \forall l < 4, \mathrm{QuantumProcessor.Layers.touching}\ \mathrm{hexbit}\ l\ x \le 1 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumProcessor/Layers.lean\#L39}
+\end{document}

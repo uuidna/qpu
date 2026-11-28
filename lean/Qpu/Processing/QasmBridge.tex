@@ -1,0 +1,17 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.QasmBridge}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QasmBridge.lean}
+
+\paragraph{\texttt{QasmBridge.registers\_flatten}}
+The registers flatten without collision: two qubits laid out at the same position are the same qubit of the same register. The position is `finSigmaFinEquiv`'s, which Mathlib proves to be the sizes of the registers before plus the index (`finSigmaFinEquiv\_apply`). An equivalence is injective (`Equiv.injective`), so equal images mean equal qubits (`Function.Injective.eq\_iff`), and equal positions are equal elements of `Fin` (`Fin.ext\_iff`).
+\[ \forall \{m : \mathbb{N}\} \{n : \mathrm{Fin}\ m \to \mathbb{N}\} (a\ b : (i : \mathrm{Fin}\ m) \times \mathrm{Fin} (n\ i)), \uparrow (\mathrm{finSigmaFinEquiv}\ a) = \uparrow (\mathrm{finSigmaFinEquiv}\ b) \to a = b \]
+\noindent axioms: \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QasmBridge.lean\#L17}
+\end{document}

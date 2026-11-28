@@ -1,0 +1,27 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.QuantumComputer.Cryostat}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumComputer/Cryostat.lean}
+
+\paragraph{\texttt{Cryostat.qubit\_cold\_at\_ten\_millikelvin}}
+at a mixing chamber of 10 mK, a qubit at 5 GHz, the floor of the 5-7 GHz band Sycamore operates in (arXiv:1910.11333, SI VI.2.1),, has h·f at least 19 times k\_B·T
+\[ \mathrm{Cryostat.coldEnough}\ 5000000000\ 10000\ 19 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumComputer/Cryostat.lean\#L20}
+
+\paragraph{\texttt{Cryostat.qubit\_cold\_below}}
+the margin grows as the stage gets colder or the qubit higher: at every T ≤ 10 mK and every f ≥ 5 GHz, h·f ≥ 19 · k\_B·T
+\[ \forall (f\ T : \mathbb{N}), 5000000000 \le f \to T \le 10000 \to \mathrm{Cryostat.coldEnough}\ f\ T\ 19 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumComputer/Cryostat.lean\#L23}
+
+\paragraph{\texttt{Cryostat.qubit\_hot\_at\_room\_temperature}}
+at room temperature (300 K) the same qubit is far from cold: h·f is below k\_B·T
+\[ \neg \mathrm{Cryostat.coldEnough}\ 5000000000\ 300000000\ 1 \]
+\noindent axioms: none; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumComputer/Cryostat.lean\#L32}
+\end{document}

@@ -9,6 +9,7 @@ import {
   unlockHiddenPerspectives,
 } from '../../../../../../../../0/b/7/1/f/2/4/6/index.ts'
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: NIST CERN and Clay trinities unlock each hidden perspective. */
 void test('NIST CERN and Clay trinities unlock each hidden perspective', () => {
   const unlocked = unlockHiddenPerspectives(true)
   assert.equal(unlocked.holds, true)
@@ -25,6 +26,7 @@ void test('NIST CERN and Clay trinities unlock each hidden perspective', () => {
   assert.deepEqual([...unlocked.unlocked].sort(), [...HIDDEN_PERSPECTIVES].sort())
 })
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: a single trinity leaves the other perspectives hidden. */
 void test('a single trinity leaves the other perspectives hidden', () => {
   const onlyNist = unlockHiddenPerspectives({ bits: 0b001 })
   assert.equal(onlyNist.active.on.join(), 'nist')
@@ -34,6 +36,7 @@ void test('a single trinity leaves the other perspectives hidden', () => {
   assert.equal(onlyNist.holds, true)
 })
 
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: extract ISO standards from NIST and CERN producing, Clay unlocks perspectives. */
 void test('extract ISO standards from NIST and CERN producing, Clay unlocks perspectives', () => {
   const plan = extractIsoFromProducers(true)
   assert.equal(plan.holds, true)

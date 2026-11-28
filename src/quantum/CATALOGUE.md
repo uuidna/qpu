@@ -4,11 +4,24 @@
 
 # Catalogue of claims
 
+| document | value |
+| --- | --- |
+| standard | ISO/IEC/IEEE 15289:2019 |
+| disclosure | ISO 56005:2020 |
+| author | Tsvetan Rouschev |
+| orcid | https://orcid.org/0009-0000-7312-9778 |
+| licence | CC-BY-NC-ND-4.0 |
+| conceptDoi | 10.5281/zenodo.22700098 |
+| language | en |
+| products | 1663 |
+| standards | 30 (22 witnessed) |
+| vocabulary | ISO/IEC 4879:2024 (86/86) |
+
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1650 products, 2 under a declared claim context and 1648 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 6 claims in the author's own words are listed at the end with their theorems.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1663 products, 2 under a declared claim context and 1661 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 7 claims in the author's own words are listed at the end with their theorems.
 
-The catalogue covers 20 standards, 12 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
+The catalogue covers 30 standards, 22 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
 This catalogue records authorship and the date of each release. It is a publication, not a patent application: publishing a statement discloses it, and what is filed as a patent, and when, is for a patent attorney to decide before it is published.
 
@@ -31,12 +44,30 @@ Iso.clauses.length =
 
 Named by the tree.
 
-### ISO/IEC 9834-8
+### ISO 80000-5:2019
 
-Witness: `Qpu.Verify.Uuid.free_is_122`.
+Witness: `Iso.entropy_vacuum_log_zero`.
 
 ```lean
-Qpu.Verify.Uuid.totalBits - Qpu.Verify.Uuid.fixedBits = 122
+Nat.log 2 1 = 0
+```
+
+### IEC 80000-13:2008
+
+Witness: `Iso.octet_bits_card`.
+
+```lean
+∀ (b : ℕ), Fintype.card (Fin b → Fin 8 → Bool) = 2 ^ (b * 8)
+```
+
+### ISO/IEC 9834-8
+
+Witness: `Qpu.Verify.Uuid.card_128_eq_card_122_mul_fixed`.
+
+```lean
+Fintype.card (Fin Qpu.Verify.Uuid.totalBits → Bool) =
+  Fintype.card (Fin (Qpu.Verify.Uuid.totalBits - Qpu.Verify.Uuid.fixedBits) → Bool) *
+    Fintype.card (Fin Qpu.Verify.Uuid.fixedBits → Bool)
 ```
 
 ### ISO 22739:2024
@@ -101,6 +132,56 @@ Witness: `Iso.country_codes`.
 Iso.letterCodes 2 = 676 ∧ Iso.letterCodes 3 = 17576 ∧ 10 ^ 3 = 1000
 ```
 
+### ISO 690:2021
+
+Witness: `Iso.citation_elements_states`.
+
+```lean
+Fintype.card (Fin 4 → Bool) = 2 ^ 4
+```
+
+### ISO 26324:2025
+
+Witness: `Iso.doi_registrant_length`.
+
+```lean
+∀ (s : String), ("10.5281/" ++ s).length = 8 + s.length
+```
+
+### ISO 27729:2012
+
+Witness: `Iso.isni_orcid_space_and_check`.
+
+```lean
+Fintype.card (Fin 16 → Fin 10) = 10 ^ 16 ∧
+  (12 - List.foldl (fun acc d => (acc + d) * 2) 0 [0, 0, 0, 9, 0, 0, 0, 0, 7, 3, 1, 2, 9, 7, 7] % 11) % 11 = 8
+```
+
+### ISO 56005:2020
+
+Witness: `Iso.ip_disclosure_complete`.
+
+```lean
+∀ (claimed open_ : ℕ),
+  Fintype.card (Fin (claimed + open_) → Bool) = Fintype.card (Fin claimed → Bool) * Fintype.card (Fin open_ → Bool)
+```
+
+### ISO/IEC 5962:2021
+
+Witness: `Iso.spdx_expression_valid`.
+
+```lean
+0 < "CC-BY-NC-ND-4.0".length
+```
+
+### ISO/IEC 5230:2020
+
+Witness: `Iso.openchain_audit_conserved`.
+
+```lean
+Fintype.card (Fin 6 → Fin 3) = 3 ^ 6
+```
+
 ### ISO/IEC 19770
 
 Named by the tree.
@@ -124,6 +205,22 @@ Witness: `Iso.quality_clauses`.
 ### ISO/IEC/IEEE 12207:2026
 
 Named by the tree.
+
+### ISO/IEC/IEEE 15289:2019
+
+Witness: `Iso.document_identification_states`.
+
+```lean
+Fintype.card (Fin 6 → Bool) = 2 ^ 6
+```
+
+### ISO/IEC/IEEE 29119-3:2021
+
+Witness: `Iso.test_suite_nonempty`.
+
+```lean
+∀ (n : ℕ), 0 < Fintype.card (Fin (n + 1))
+```
 
 ### ISO/IEC/IEEE 42010:2022
 
@@ -1035,6 +1132,16 @@ period 2 35 = 12 ∧
 
 ## Qpu.Communication.Coil
 
+### `Coil.periodic`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (M I k : ℕ),
+  (Coil.flux M I + k * (PhysicalConstant.hNum * 10 ^ 10)) % (PhysicalConstant.hNum * 10 ^ 10) =
+    Coil.flux M I % (PhysicalConstant.hNum * 10 ^ 10)
+```
+
 ### `clay`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -1089,14 +1196,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 seed + (mint n - coins) = rays
-```
-
-### `two_coins_make_a_coil`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-QuantumCommunication.TwoCoins
 ```
 
 ### `two_x_seven_coins`
@@ -1824,30 +1923,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 faces = coins * rays ∧ faces = rays + rays ∧ coil = faces ∧ amplitudes = mint bits ∧ fused = faces * mint (bits + seed)
 ```
 
-### `all_product`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-faces = coins * rays
-```
-
-### `all_sum`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-faces = rays + rays
-```
-
-### `amplitudes_as_sum`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-mint (bits + seed) = amplitudes + amplitudes
-```
-
 ### `amplitudes_from_sum`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -1872,14 +1947,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 bits = mint (n + coins)
 ```
 
-### `bits_multiplicative`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-bits = vertices * hexbit
-```
-
 ### `coins_bridges_forms`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -1894,30 +1961,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (x : ℕ), x + x = 2 * x
-```
-
-### `faces_additive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-faces = rays + rays
-```
-
-### `faces_both_forms`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-faces = coins * rays ∧ faces = rays + rays
-```
-
-### `faces_multiplicative`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-faces = coins * rays
 ```
 
 ### `fused_additive_form`
@@ -1936,14 +1979,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 fused = faces * mint (bits + seed) ∧ fused + fused = faces * mint (bits + coins)
 ```
 
-### `fused_multiplicative_form`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-fused = faces * mint (bits + seed)
-```
-
 ## Qpu.General.Cyclotomic
 
 ### `Polynomial.prod_cyclotomic_eq_X_pow_add_one`
@@ -1955,19 +1990,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
   0 < n →
     ∀ (R : Type u_1) [inst : CommRing R],
       ∏ d ∈ (2 * n).divisors \ n.divisors, Polynomial.cyclotomic d R = Polynomial.X ^ n + 1
-```
-
-## Qpu.General.Fuse
-
-### `fuse`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-2247 + 282 = 2529 ∧
-  94598 + 343701 = 438299 ∧
-    406 + 1565 + 3389 + 6011 + 12801 + 414127 = 438299 ∧
-      448 ≤ 1264 ∧ 362 ≤ 955 ∧ 301 ≤ 340 ∧ 252 ≤ 284 ∧ 144 ≤ 166 ∧ 2529 + 438299 = 440828
 ```
 
 ## Qpu.General.Hybrid
@@ -2006,6 +2028,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Iso.leap 2024 = true ∧
   Iso.leap 1900 = false ∧
     Iso.leap 2000 = true ∧ (List.filter Iso.leap (List.range 400)).length = 97 ∧ (400 * 365 + 97) % 7 = 0
+```
+
+### `Iso.citation_elements_states`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Fintype.card (Fin 4 → Bool) = 2 ^ 4
 ```
 
 ### `Iso.clauses_count`
@@ -2051,6 +2081,48 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Iso.letterCodes 3 = 17576 ∧ 10 ^ 3 = 1000
 ```
 
+### `Iso.document_identification_states`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Fintype.card (Fin 6 → Bool) = 2 ^ 6
+```
+
+### `Iso.doi_registrant_length`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (s : String), ("10.5281/" ++ s).length = 8 + s.length
+```
+
+### `Iso.entropy_vacuum_log_zero`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Nat.log 2 1 = 0
+```
+
+### `Iso.ip_disclosure_complete`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (claimed open_ : ℕ),
+  Fintype.card (Fin (claimed + open_) → Bool) = Fintype.card (Fin claimed → Bool) * Fintype.card (Fin open_ → Bool)
+```
+
+### `Iso.isni_orcid_space_and_check`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Fintype.card (Fin 16 → Fin 10) = 10 ^ 16 ∧
+  (12 - List.foldl (fun acc d => (acc + d) * 2) 0 [0, 0, 0, 9, 0, 0, 0, 0, 7, 3, 1, 2, 9, 7, 7] % 11) % 11 = 8
+```
+
 ### `Iso.language_codes`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -2065,6 +2137,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 4 + 3 + 3 + 2 = 12 ∧ "pacs.008.001.08".length = 12 + 3
+```
+
+### `Iso.octet_bits_card`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (b : ℕ), Fintype.card (Fin b → Fin 8 → Bool) = 2 ^ (b * 8)
+```
+
+### `Iso.openchain_audit_conserved`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Fintype.card (Fin 6 → Fin 3) = 3 ^ 6
 ```
 
 ### `Iso.quality_characteristics`
@@ -2091,12 +2179,28 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 37 + 8 + 14 + 34 = 93
 ```
 
+### `Iso.spdx_expression_valid`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+0 < "CC-BY-NC-ND-4.0".length
+```
+
 ### `Iso.standards_count`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-Iso.standards.length = 20 ∧ (List.filter (fun x => x.witness.isSome) Iso.standards).length = 12
+Iso.standards.length = 30 ∧ (List.filter (fun x => x.witness.isSome) Iso.standards).length = 22
+```
+
+### `Iso.test_suite_nonempty`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), 0 < Fintype.card (Fin (n + 1))
 ```
 
 ### `Iso.token_identifier`
@@ -2244,14 +2348,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 0 < hexbit
-```
-
-### `infinite`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (k : ℕ), mint (k + seed) = mint k + mint k
 ```
 
 ### `integrity`
@@ -2428,14 +2524,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 coins + coins = mint coins
-```
-
-### `waves`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-mint hexbit > seed
 ```
 
 ## Qpu.General.MachineLearning.CausalInference
@@ -2832,15 +2920,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (w x b : List ℤ), x.length = b.length → (Qpu.Xai.attr w x b).sum = Qpu.Xai.dot w x - Qpu.Xai.dot w b
-```
-
-### `Qpu.Xai.cam_total`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (w : List ℕ) (maps : List (List ℕ)) (T : ℕ),
-  (∀ f ∈ maps, f.sum = T) → w.length ≤ maps.length → (Qpu.Xai.rollout w maps).sum = w.sum * T
 ```
 
 ### `Qpu.Xai.counterfactual_exists`
@@ -4890,6 +4969,54 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (a b : ℕ), _root_.gcd a b = a.gcd b
 ```
 
+### `agentConfirmRules_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentConfirmRules = Config.agentConfirmRules.headD default :: Config.agentConfirmRules.tail
+```
+
+### `agentEvents_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentEvents = Config.agentEvents.headD default :: Config.agentEvents.tail
+```
+
+### `agentSpawnTools_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentSpawnTools = Config.agentSpawnTools.headD default :: Config.agentSpawnTools.tail
+```
+
+### `agentWriteTools_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.agentWriteTools = Config.agentWriteTools.headD default :: Config.agentWriteTools.tail
+```
+
+### `catalogCollections_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.catalogCollections = Config.catalogCollections.headD default :: Config.catalogCollections.tail
+```
+
+### `catalogVariantTypes_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.catalogVariantTypes = Config.catalogVariantTypes.headD default :: Config.catalogVariantTypes.tail
+```
+
 ### `chimera_eq_mul`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -4904,6 +5031,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (n k : ℕ), choose n k = n.choose k
+```
+
+### `choose_fast_step`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n k : ℕ), (k + 1) * choose n (k + 1) = (n - k) * choose n k
 ```
 
 ### `choose_three_succ`
@@ -4994,12 +5129,60 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (k : ℕ), groverSize k = 2 ^ (2 * k)
 ```
 
+### `hexbit_digit_o1_shift`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (i j : ℕ), i >>> (4 * j) &&& 15 = i / 2 ^ (4 * j) % 16
+```
+
 ### `hexbit_paired_completely`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
 hexbit = 4 ∧ choose hexbit 2 = 6 ∧ choose hexbit 3 = 4 ∧ choose hexbit 3 * choose 3 2 = 2 * choose hexbit 2
+```
+
+### `hexbit_space_eq_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), Advantage.space (List.replicate k 16) = 2 ^ (4 * k)
+```
+
+### `hexbit_trinity_entanglement_complete`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+3 * choose 4 3 = (4 - 2) * choose 4 2 ∧ 2 * choose 4 2 = 4 * (4 - 1)
+```
+
+### `hexbit_trinity_hilbert_expansion`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+mint 3 = 2 ^ 3 ∧ mint 4 = 2 ^ 4 ∧ 3 < 4
+```
+
+### `hexbit_trinity_o1_budget`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (h : ℕ), 3 * choose (4 * h) 3 = (4 * h - 2) * choose (4 * h) 2 ∧ 2 * choose (4 * h) 2 = 4 * h * (4 * h - 1)
+```
+
+### `isPrime_eq_decide_prime`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), Config.isPrime n = decide (Nat.Prime n)
 ```
 
 ### `isingFusion_eq_two_pow`
@@ -5042,6 +5225,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (nn : ℕ), paulis nn = 2 ^ (2 * nn + 2)
 ```
 
+### `payloadUiPossibilities_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.payloadUiPossibilities = Config.payloadUiPossibilities.headD default :: Config.payloadUiPossibilities.tail
+```
+
 ### `pegasus_eq_mul`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -5064,6 +5255,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (a e m : ℕ), powMod a e m = a ^ e % m
+```
+
+### `pqcAlgorithms_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.pqcAlgorithms = Config.pqcAlgorithms.headD default :: Config.pqcAlgorithms.tail
+```
+
+### `proverDualities_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.proverDualities = Config.proverDualities.headD default :: Config.proverDualities.tail
 ```
 
 ### `qaoaParams_eq_mul`
@@ -5106,6 +5313,30 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (q : ℕ), qftSwaps q = q / 2
 ```
 
+### `qubit_pair_trinity_incidence`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (t : ℕ), 3 * choose t 3 = (t - 2) * choose t 2
+```
+
+### `register_122_trinity_entanglement`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+3 * choose 122 3 = (122 - 2) * choose 122 2 ∧ 2 * choose 122 2 = 122 * (122 - 1)
+```
+
+### `sdkCollections_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.sdkCollections = Config.sdkCollections.headD default :: Config.sdkCollections.tail
+```
+
 ### `six_mul_choose_three_eq_trinities`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -5136,6 +5367,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (nn : ℕ), stabStates nn = 2 ^ nn * ∏ i ∈ Finset.range nn, (2 ^ (i + 1) + 1)
+```
+
+### `sumZ_eq_list_sum`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (l : List ℤ), Qpu.Federated.sumZ l = l.sum
 ```
 
 ### `surfaceCorrectable_eq_div`
@@ -5170,6 +5409,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (nn : ℕ), symplectic nn = 2 ^ (nn * nn) * ∏ i ∈ Finset.range nn, (2 ^ (2 * (i + 1)) - 1)
 ```
 
+### `tenants_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.tenants = Config.tenants.headD default :: Config.tenants.tail
+```
+
 ### `thermal_eq_mul`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -5178,12 +5425,28 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (millikelvin : ℕ), thermal millikelvin = 1380649 * millikelvin * 10
 ```
 
+### `totient_eq_nat_totient`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), totient n = n.totient
+```
+
 ### `trinities_of_pairs`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
 ∀ (t : ℕ), t * choose (t - 1) 2 = 3 * choose t 3
+```
+
+### `trinity_entanglement_scaling`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (t : ℕ), 3 * choose t 3 = (t - 2) * choose t 2 ∧ 2 * choose t 2 = t * (t - 1)
 ```
 
 ### `trinity_pairs_differ`
@@ -5202,76 +5465,12 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (t : ℕ), 2 * t.choose 2 = t * (t - 1)
 ```
 
-## Qpu.General.Meaning.Config
-
-### `agentConfirmRules_eq_cons`
+### `workerRoutes_eq_cons`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-Config.agentConfirmRules = Config.agentConfirmRules.headD default :: Config.agentConfirmRules.tail
-```
-
-### `agentEvents_eq_cons`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Config.agentEvents = Config.agentEvents.headD default :: Config.agentEvents.tail
-```
-
-### `agentSpawnTools_eq_cons`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Config.agentSpawnTools = Config.agentSpawnTools.headD default :: Config.agentSpawnTools.tail
-```
-
-### `agentWriteTools_eq_cons`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Config.agentWriteTools = Config.agentWriteTools.headD default :: Config.agentWriteTools.tail
-```
-
-### `tenants_eq_cons`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Config.tenants = Config.tenants.headD default :: Config.tenants.tail
-```
-
-## Qpu.General.Meaning.Prime
-
-### `isPrime_eq_decide_prime`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (n : ℕ), Config.isPrime n = decide (Nat.Prime n)
-```
-
-## Qpu.General.Meaning.Sum
-
-### `sumZ_eq_list_sum`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (l : List ℤ), Qpu.Federated.sumZ l = l.sum
-```
-
-## Qpu.General.Meaning.Totient
-
-### `totient_eq_nat_totient`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (n : ℕ), totient n = n.totient
+Config.workerRoutes = Config.workerRoutes.headD default :: Config.workerRoutes.tail
 ```
 
 ## Qpu.General.Mint
@@ -5298,14 +5497,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 mint 0 = 1
-```
-
-### `multiply`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (a b : ℕ), mint (a + b) = mint a * mint b
 ```
 
 ## Qpu.General.Pi
@@ -5336,14 +5527,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 faces + vertices = 22
-```
-
-### `pi_floor`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-mint coins - seed = 3
 ```
 
 ### `pi_half_turn`
@@ -5410,22 +5593,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 mint n - seed = 7
-```
-
-### `prime_three`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-n = 3
-```
-
-### `prime_two`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-coins = 2
 ```
 
 ### `primes_all`
@@ -12523,18 +12690,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ {p q a b : ℕ}, Nat.Prime p → Nat.Prime q → p ≤ q → (a - b) * (a + b) = p * q → 1 < a - b → a - b = p ∧ a + b = q
 ```
 
-## Qpu.Information.PhysicalQubit.Coil
-
-### `Coil.periodic`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (M I k : ℕ),
-  (Coil.flux M I + k * (PhysicalConstant.hNum * 10 ^ 10)) % (PhysicalConstant.hNum * 10 ^ 10) =
-    Coil.flux M I % (PhysicalConstant.hNum * 10 ^ 10)
-```
-
 ## Qpu.Information.PhysicalQubit.JosephsonJunction
 
 ### `JosephsonJunction.flux_quantum_definition`
@@ -12614,14 +12769,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (k w : ℕ), (List.replicate k (Qubit.effective w)).sum = k * Qubit.effective w
-```
-
-### `Qubit.coins_two`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-coins = 2
 ```
 
 ### `Qubit.couplers_formula`
@@ -12770,6 +12917,56 @@ photon / thermal 10 = 23 ∧
   photon / thermal 100 = 2 ∧ photon / thermal 4000 = 0 ∧ 4000 / 100 = 40 ∧ 100 / 10 = 10 ∧ 10 < 35
 ```
 
+## Qpu.Physics.EquivalencePrinciple
+
+### `Qpu.Physics.EquivalencePrinciple.cern_alpha_g_rules_out_antigravity`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+0 < 75 - (13 + 16) ∧ 5 * (13 + 16) < 75 + 100
+```
+
+### `Qpu.Physics.EquivalencePrinciple.de_sitter_vacuum_violates_sec`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (rho : ℚ), 0 < rho → rho + (-rho + (-rho + -rho)) < 0
+```
+
+### `Qpu.Physics.EquivalencePrinciple.newton_attractive_sign`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (G M m r : ℚ), 0 < G → 0 < M → 0 < m → r ≠ 0 → 0 < G * M * m / (r * r)
+```
+
+### `Qpu.Physics.EquivalencePrinciple.nist_codata_G_positive_interval`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+0 < 667430 - 15 ∧ 667430 - 15 < 667430 ∧ 667430 < 667430 + 15
+```
+
+### `Qpu.Physics.EquivalencePrinciple.strong_energy_condition_nonneg`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (rho p : ℚ), 0 ≤ rho → 0 ≤ p → 0 ≤ rho + (p + p + p)
+```
+
+### `Qpu.Physics.EquivalencePrinciple.weak_equivalence_mass_cancels`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (G M r m_i m_g a : ℚ), m_i ≠ 0 → m_i = m_g → m_i * a = G * M * m_g / (r * r) → a = G * M / (r * r)
+```
+
 ## Qpu.Physics.HilbertSpace
 
 ### `HilbertSpace.GI.add_im`
@@ -12829,6 +13026,49 @@ HilbertSpace.GI.re 0 = 0
 ```
 
 ## Qpu.Physics.QuantumEntanglement
+
+### `Qpu.Verify.Entangle.chsh_bound_is_tight`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Entangle.chshWins false false false false = 3
+```
+
+### `Qpu.Verify.Entangle.chsh_classical_bound`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (a0 a1 b0 b1 : Bool), Qpu.Verify.Entangle.chshWins a0 a1 b0 b1 ≤ 3
+```
+
+### `Qpu.Verify.Entangle.ghz_classical_bound`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (a0 a1 b0 b1 c0 c1 : Bool), Qpu.Verify.Entangle.ghzWins a0 a1 b0 b1 c0 c1 ≤ 3
+```
+
+### `Qpu.Verify.Entangle.ghz_quantum_wins_all_four`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Entangle.quantumCheck 0 false false false + Qpu.Verify.Entangle.quantumCheck 1 false true true +
+      Qpu.Verify.Entangle.quantumCheck 2 true false true +
+    Qpu.Verify.Entangle.quantumCheck 3 true true false =
+  4
+```
+
+### `Qpu.Verify.Entangle.ghz_uniform_strategy_loses`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Entangle.ghzWins false false false false false false < 4
+```
 
 ### `QuantumEntanglement.bell_state`
 
@@ -13186,6 +13426,17 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```
 
 ## Qpu.Processing.Fusion
+
+### `fuse`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+2247 + 282 = 2529 ∧
+  94598 + 343701 = 438299 ∧
+    406 + 1565 + 3389 + 6011 + 12801 + 414127 = 438299 ∧
+      448 ≤ 1264 ∧ 362 ≤ 955 ∧ 301 ≤ 340 ∧ 252 ≤ 284 ∧ 144 ≤ 166 ∧ 2529 + 438299 = 440828
+```
 
 ### `fusionDim_doubles`
 
@@ -13578,6 +13829,96 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ## Qpu.Processing.QuantumGate
 
+### `Qpu.Verify.Gate.cnot_is_an_involution`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Gate.cnot * Qpu.Verify.Gate.cnot = Qpu.Verify.Gate.id4
+```
+
+### `Qpu.Verify.Gate.cnot_is_not_swap`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Gate.cnot ≠ Qpu.Verify.Gate.swap
+```
+
+### `Qpu.Verify.Gate.h_unitary`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Gate.scaledH * Qpu.Verify.Gate.scaledH = Qpu.Verify.Gate.M2.two
+```
+
+### `Qpu.Verify.Gate.h_x_h_is_not_two_y`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Gate.scaledH * Qpu.Verify.Gate.matX * Qpu.Verify.Gate.scaledH ≠
+  { a00 := Qpu.Verify.Gate.g 0, a01 := { re := 0, im := -2 }, a10 := { re := 0, im := 2 }, a11 := Qpu.Verify.Gate.g 0 }
+```
+
+### `Qpu.Verify.Gate.h_z_h_is_two_x`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Gate.scaledH * Qpu.Verify.Gate.matZ * Qpu.Verify.Gate.scaledH =
+  { a00 := Qpu.Verify.Gate.g 0, a01 := Qpu.Verify.Gate.g 2, a10 := Qpu.Verify.Gate.g 2, a11 := Qpu.Verify.Gate.g 0 }
+```
+
+### `Qpu.Verify.Gate.s_fourth_is_identity`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Gate.matS * Qpu.Verify.Gate.matS * (Qpu.Verify.Gate.matS * Qpu.Verify.Gate.matS) = Qpu.Verify.Gate.matI
+```
+
+### `Qpu.Verify.Gate.s_squared_is_z`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Gate.matS * Qpu.Verify.Gate.matS = Qpu.Verify.Gate.matZ
+```
+
+### `Qpu.Verify.Gate.swap_is_an_involution`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Gate.swap * Qpu.Verify.Gate.swap = Qpu.Verify.Gate.id4
+```
+
+### `Qpu.Verify.Gate.x_squared`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Gate.matX * Qpu.Verify.Gate.matX = Qpu.Verify.Gate.matI
+```
+
+### `Qpu.Verify.Gate.y_squared`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Gate.matY * Qpu.Verify.Gate.matY = Qpu.Verify.Gate.matI
+```
+
+### `Qpu.Verify.Gate.z_squared`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Gate.matZ * Qpu.Verify.Gate.matZ = Qpu.Verify.Gate.matI
+```
+
 ### `QuantumGate.cnot`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -13742,545 +14083,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```
 
 ## Qpu.Processing.Stabilizer
-
-### `paulis_growth`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (nn : ℕ), paulis (nn + 1) = 4 * paulis nn
-```
-
-### `paulis_pos`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (nn : ℕ), 0 < paulis nn
-```
-
-### `stabProd_grows`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (k : ℕ), stabProd k ≤ stabProd (k + 1)
-```
-
-### `stabProd_pos`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (k : ℕ), 0 < stabProd k
-```
-
-### `stabProd_step`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (k : ℕ), stabProd (k + 1) = (mint (k + 1) + 1) * stabProd k
-```
-
-### `stabStates_pos`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (nn : ℕ), 0 < stabStates nn
-```
-
-### `stabSubgroup_doubles`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (nn : ℕ), stabSubgroup (nn + 1) = 2 * stabSubgroup nn
-```
-
-### `stabilizer_all`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-stabStates 1 = 6 ∧ stabStates 2 = 60 ∧ stabStates 3 = 1080 ∧ paulis 1 = 16
-```
-
-## Qpu.Processing.Surfacecode
-
-### `sq_ge`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (d : ℕ), d ≤ d ^ 2
-```
-
-### `surfaceCorrectable_le`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (d : ℕ), surfaceCorrectable d ≤ d
-```
-
-### `surfaceCorrectable_monotone`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ {d₁ d₂ : ℕ}, d₁ ≤ d₂ → surfaceCorrectable d₁ ≤ surfaceCorrectable d₂
-```
-
-### `surfacePhysical_pos`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (d : ℕ), 0 < surfacePhysical d
-```
-
-### `surfacecode_all`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-surfacePhysical 3 = 13 ∧ surfaceCorrectable 5 = 2 ∧ surfaceLogical = 2
-```
-
-## Qpu.Processing.Verify.Correct
-
-### `Qpu.Verify.Correct.repetition_corrects_clean`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (b : Bool), Qpu.Verify.Correct.maj3 b b b = b
-```
-
-### `Qpu.Verify.Correct.repetition_corrects_flip0`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (b : Bool), Qpu.Verify.Correct.maj3 (!b) b b = b
-```
-
-### `Qpu.Verify.Correct.repetition_corrects_flip1`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (b : Bool), Qpu.Verify.Correct.maj3 b (!b) b = b
-```
-
-### `Qpu.Verify.Correct.repetition_corrects_flip2`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (b : Bool), (Qpu.Verify.Correct.maj3 b b !b) = b
-```
-
-### `Qpu.Verify.Correct.repetition_fails_on_two_flips`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (b : Bool), Qpu.Verify.Correct.maj3 (!b) (!b) b = !b
-```
-
-### `Qpu.Verify.Correct.shor_nine_corrects_one`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (b : Bool),
-  Qpu.Verify.Correct.maj3 (Qpu.Verify.Correct.maj3 (!b) b b) (Qpu.Verify.Correct.maj3 b b b)
-      (Qpu.Verify.Correct.maj3 b b b) =
-    b
-```
-
-### `Qpu.Verify.Correct.steane_cannot_correct_two`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-3 < 2 * 2
-```
-
-### `Qpu.Verify.Correct.steane_corrects_one`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-3 = 2 * 1 + 1
-```
-
-### `Qpu.Verify.Correct.steane_miscorrects_double_error`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Correct.recover
-    (List.zipWith (fun x1 x2 => x1 ^^ x2) (Qpu.Verify.Correct.errAt 0) (Qpu.Verify.Correct.errAt 1)) =
-  2
-```
-
-### `Qpu.Verify.Correct.steane_no_error_is_silent`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Correct.syndrome (Qpu.Verify.Correct.errAt 7) = [false, false, false]
-```
-
-### `Qpu.Verify.Correct.steane_recovers_0`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 0) = 0
-```
-
-### `Qpu.Verify.Correct.steane_recovers_1`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 1) = 1
-```
-
-### `Qpu.Verify.Correct.steane_recovers_2`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 2) = 2
-```
-
-### `Qpu.Verify.Correct.steane_recovers_3`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 3) = 3
-```
-
-### `Qpu.Verify.Correct.steane_recovers_4`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 4) = 4
-```
-
-### `Qpu.Verify.Correct.steane_recovers_5`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 5) = 5
-```
-
-### `Qpu.Verify.Correct.steane_recovers_6`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 6) = 6
-```
-
-## Qpu.Processing.Verify.Cost
-
-### `Qpu.Verify.Cost.digest_collision_at_category_two`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Cost.collision 256 = Qpu.Verify.Cost.category2
-```
-
-### `Qpu.Verify.Cost.digest_preimage_at_category_five`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Cost.preimage 256 = Qpu.Verify.Cost.category5
-```
-
-### `Qpu.Verify.Cost.forging_costs_more_than_verifying`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (bits seams : ℕ), Qpu.Verify.Cost.verify ≤ Qpu.Verify.Cost.chained (Qpu.Verify.Cost.preimage (bits + 1)) (seams + 1)
-```
-
-### `Qpu.Verify.Cost.sha224_collision_below_category_one`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Cost.collision 224 < Qpu.Verify.Cost.category1
-```
-
-### `Qpu.Verify.Cost.the_anchor_holds`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Cost.category2 ≤ Qpu.Verify.Cost.chained (Qpu.Verify.Cost.collision 256) 1
-```
-
-### `Qpu.Verify.Cost.three_uuid_seams_clear_category_one`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Cost.category1 ≤ Qpu.Verify.Cost.chained (Qpu.Verify.Cost.collision 122) 3
-```
-
-### `Qpu.Verify.Cost.two_uuid_seams_are_still_short`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Cost.chained (Qpu.Verify.Cost.collision 122) 2 < Qpu.Verify.Cost.category1
-```
-
-### `Qpu.Verify.Cost.uuid_handle_collides_below_category_one`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Cost.collision 122 < Qpu.Verify.Cost.category1
-```
-
-## Qpu.Processing.Verify.Entangle
-
-### `Qpu.Verify.Entangle.chsh_bound_is_tight`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Entangle.chshWins false false false false = 3
-```
-
-### `Qpu.Verify.Entangle.chsh_classical_bound`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (a0 a1 b0 b1 : Bool), Qpu.Verify.Entangle.chshWins a0 a1 b0 b1 ≤ 3
-```
-
-### `Qpu.Verify.Entangle.ghz_classical_bound`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ (a0 a1 b0 b1 c0 c1 : Bool), Qpu.Verify.Entangle.ghzWins a0 a1 b0 b1 c0 c1 ≤ 3
-```
-
-### `Qpu.Verify.Entangle.ghz_quantum_wins_all_four`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Entangle.quantumCheck 0 false false false + Qpu.Verify.Entangle.quantumCheck 1 false true true +
-      Qpu.Verify.Entangle.quantumCheck 2 true false true +
-    Qpu.Verify.Entangle.quantumCheck 3 true true false =
-  4
-```
-
-### `Qpu.Verify.Entangle.ghz_uniform_strategy_loses`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Entangle.ghzWins false false false false false false < 4
-```
-
-## Qpu.Processing.Verify.Gate
-
-### `Qpu.Verify.Gate.cnot_is_an_involution`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Gate.cnot * Qpu.Verify.Gate.cnot = Qpu.Verify.Gate.id4
-```
-
-### `Qpu.Verify.Gate.cnot_is_not_swap`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Gate.cnot ≠ Qpu.Verify.Gate.swap
-```
-
-### `Qpu.Verify.Gate.h_unitary`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Gate.scaledH * Qpu.Verify.Gate.scaledH = Qpu.Verify.Gate.M2.two
-```
-
-### `Qpu.Verify.Gate.h_x_h_is_not_two_y`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Gate.scaledH * Qpu.Verify.Gate.matX * Qpu.Verify.Gate.scaledH ≠
-  { a00 := Qpu.Verify.Gate.g 0, a01 := { re := 0, im := -2 }, a10 := { re := 0, im := 2 }, a11 := Qpu.Verify.Gate.g 0 }
-```
-
-### `Qpu.Verify.Gate.h_z_h_is_two_x`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Gate.scaledH * Qpu.Verify.Gate.matZ * Qpu.Verify.Gate.scaledH =
-  { a00 := Qpu.Verify.Gate.g 0, a01 := Qpu.Verify.Gate.g 2, a10 := Qpu.Verify.Gate.g 2, a11 := Qpu.Verify.Gate.g 0 }
-```
-
-### `Qpu.Verify.Gate.s_fourth_is_identity`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Gate.matS * Qpu.Verify.Gate.matS * (Qpu.Verify.Gate.matS * Qpu.Verify.Gate.matS) = Qpu.Verify.Gate.matI
-```
-
-### `Qpu.Verify.Gate.s_squared_is_z`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Gate.matS * Qpu.Verify.Gate.matS = Qpu.Verify.Gate.matZ
-```
-
-### `Qpu.Verify.Gate.swap_is_an_involution`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Gate.swap * Qpu.Verify.Gate.swap = Qpu.Verify.Gate.id4
-```
-
-### `Qpu.Verify.Gate.x_squared`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Gate.matX * Qpu.Verify.Gate.matX = Qpu.Verify.Gate.matI
-```
-
-### `Qpu.Verify.Gate.y_squared`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Gate.matY * Qpu.Verify.Gate.matY = Qpu.Verify.Gate.matI
-```
-
-### `Qpu.Verify.Gate.z_squared`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Gate.matZ * Qpu.Verify.Gate.matZ = Qpu.Verify.Gate.matI
-```
-
-## Qpu.Processing.Verify.Hexbit
-
-### `Qpu.Verify.Hexbit.gap_is_rejected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Hexbit.unhexCode 58 = 256
-```
-
-### `Qpu.Verify.Hexbit.hex_roundtrips`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-∀ n < 16, Qpu.Verify.Hexbit.unhexCode (Qpu.Verify.Hexbit.hexCode n) = n
-```
-
-### `Qpu.Verify.Hexbit.non_hex_is_rejected`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Hexbit.unhexCode 103 = 256
-```
-
-### `Qpu.Verify.Hexbit.prefix_is_high_half`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-1311768467294899695 / 4294967296 = 305419896
-```
-
-### `Qpu.Verify.Hexbit.prefix_width`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-305419896 < 2 ^ (8 * 4)
-```
-
-## Qpu.Processing.Verify.Receipt
-
-### `Qpu.Verify.Receipt.address_cheaper_once`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Receipt.sealed 1 Qpu.Verify.Receipt.checkDs 0 < Qpu.Verify.Receipt.rerun 1 Qpu.Verify.Receipt.evalDs
-```
-
-### `Qpu.Verify.Receipt.breaks_even_by_run_two`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Receipt.sealed 2 Qpu.Verify.Receipt.checkDs 0 < Qpu.Verify.Receipt.rerun 2 Qpu.Verify.Receipt.evalDs
-```
-
-### `Qpu.Verify.Receipt.caching_has_a_cost`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-0 < Qpu.Verify.Receipt.checkDs
-```
-
-### `Qpu.Verify.Receipt.fold_is_order_sensitive`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Receipt.merkleFold [1, 2] ≠ Qpu.Verify.Receipt.merkleFold [2, 1]
-```
-
-### `Qpu.Verify.Receipt.speedup_is_thirtyfold`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-30 * Qpu.Verify.Receipt.checkDs ≤ Qpu.Verify.Receipt.evalDs ∧
-  Qpu.Verify.Receipt.evalDs < 31 * Qpu.Verify.Receipt.checkDs
-```
-
-## Qpu.Processing.Verify.Stabilizer
 
 ### `Qpu.Verify.Stabilizer.conjCnotSigned_agrees_with_ruleCNOT`
 
@@ -14675,17 +14477,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
   Qpu.Verify.Stabilizer.conjSwap (Qpu.Verify.Stabilizer.conjSwap ct) = ct
 ```
 
-### `Qpu.Verify.Stabilizer.stabilizer_t_gate`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-QuantumGate.SameW (QuantumGate.mmW QuantumGate.TW (QuantumGate.dagW QuantumGate.TW)) QuantumGate.idW ∧
-  QuantumGate.SameW (QuantumGate.powW QuantumGate.TW 8) QuantumGate.idW ∧
-    ¬QuantumGate.SameW (QuantumGate.powW QuantumGate.TW 4) QuantumGate.idW ∧
-      ¬QuantumGate.SameW (QuantumGate.mmW QuantumGate.HW QuantumGate.TW) (QuantumGate.mmW QuantumGate.TW QuantumGate.HW)
-```
-
 ### `Qpu.Verify.Stabilizer.test_cz_does_not_commute_with_xx`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -14729,141 +14520,6 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ```lean
 Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.pi, Qpu.Verify.Stabilizer.pi) =
   (false, Qpu.Verify.Stabilizer.pi, Qpu.Verify.Stabilizer.pi)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_ix`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.pi, Qpu.Verify.Stabilizer.px) =
-  (false, Qpu.Verify.Stabilizer.pz, Qpu.Verify.Stabilizer.px)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_iy`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.pi, Qpu.Verify.Stabilizer.py) =
-  (false, Qpu.Verify.Stabilizer.pz, Qpu.Verify.Stabilizer.py)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_iz`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.pi, Qpu.Verify.Stabilizer.pz) =
-  (false, Qpu.Verify.Stabilizer.pi, Qpu.Verify.Stabilizer.pz)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_xi`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.px, Qpu.Verify.Stabilizer.pi) =
-  (false, Qpu.Verify.Stabilizer.px, Qpu.Verify.Stabilizer.pz)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_xx`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.px, Qpu.Verify.Stabilizer.px) =
-  (true, Qpu.Verify.Stabilizer.py, Qpu.Verify.Stabilizer.py)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_xy`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.px, Qpu.Verify.Stabilizer.py) =
-  (true, Qpu.Verify.Stabilizer.py, Qpu.Verify.Stabilizer.px)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_xz`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.px, Qpu.Verify.Stabilizer.pz) =
-  (false, Qpu.Verify.Stabilizer.px, Qpu.Verify.Stabilizer.pi)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_yi`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.py, Qpu.Verify.Stabilizer.pi) =
-  (false, Qpu.Verify.Stabilizer.py, Qpu.Verify.Stabilizer.pz)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_yx`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.py, Qpu.Verify.Stabilizer.px) =
-  (true, Qpu.Verify.Stabilizer.px, Qpu.Verify.Stabilizer.py)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_yy`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.py, Qpu.Verify.Stabilizer.py) =
-  (true, Qpu.Verify.Stabilizer.px, Qpu.Verify.Stabilizer.px)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_yz`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.py, Qpu.Verify.Stabilizer.pz) =
-  (false, Qpu.Verify.Stabilizer.py, Qpu.Verify.Stabilizer.pi)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_zi`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.pz, Qpu.Verify.Stabilizer.pi) =
-  (false, Qpu.Verify.Stabilizer.pz, Qpu.Verify.Stabilizer.pi)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_zx`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.pz, Qpu.Verify.Stabilizer.px) =
-  (false, Qpu.Verify.Stabilizer.pi, Qpu.Verify.Stabilizer.px)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_zy`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.pz, Qpu.Verify.Stabilizer.py) =
-  (false, Qpu.Verify.Stabilizer.pi, Qpu.Verify.Stabilizer.py)
-```
-
-### `Qpu.Verify.Stabilizer.test_cz_zz`
-
-Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
-
-```lean
-Qpu.Verify.Stabilizer.conjCz (Qpu.Verify.Stabilizer.pz, Qpu.Verify.Stabilizer.pz) =
-  (false, Qpu.Verify.Stabilizer.pz, Qpu.Verify.Stabilizer.pz)
 ```
 
 ### `Qpu.Verify.Stabilizer.test_signed_cnot_all_cases`
@@ -15085,6 +14741,529 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ¬QuantumGate.SameW (QuantumGate.powW QuantumGate.TW 4) QuantumGate.idW
 ```
 
+### `paulis_growth`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), paulis (nn + 1) = 4 * paulis nn
+```
+
+### `paulis_pos`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), 0 < paulis nn
+```
+
+### `stabProd_grows`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), stabProd k ≤ stabProd (k + 1)
+```
+
+### `stabProd_pos`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), 0 < stabProd k
+```
+
+### `stabProd_step`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), stabProd (k + 1) = (mint (k + 1) + 1) * stabProd k
+```
+
+### `stabStates_pos`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), 0 < stabStates nn
+```
+
+### `stabSubgroup_doubles`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (nn : ℕ), stabSubgroup (nn + 1) = 2 * stabSubgroup nn
+```
+
+### `stabilizer_all`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+stabStates 1 = 6 ∧ stabStates 2 = 60 ∧ stabStates 3 = 1080 ∧ paulis 1 = 16
+```
+
+## Qpu.Processing.Surfacecode
+
+### `sq_ge`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (d : ℕ), d ≤ d ^ 2
+```
+
+### `surfaceCorrectable_le`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (d : ℕ), surfaceCorrectable d ≤ d
+```
+
+### `surfaceCorrectable_monotone`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {d₁ d₂ : ℕ}, d₁ ≤ d₂ → surfaceCorrectable d₁ ≤ surfaceCorrectable d₂
+```
+
+### `surfacePhysical_pos`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (d : ℕ), 0 < surfacePhysical d
+```
+
+### `surfacecode_all`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+surfacePhysical 3 = 13 ∧ surfaceCorrectable 5 = 2 ∧ surfaceLogical = 2
+```
+
+## Qpu.Processing.Verify.Correct
+
+### `Qpu.Verify.Correct.repetition_corrects_clean`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (b : Bool), Qpu.Verify.Correct.maj3 b b b = b
+```
+
+### `Qpu.Verify.Correct.repetition_corrects_flip0`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (b : Bool), Qpu.Verify.Correct.maj3 (!b) b b = b
+```
+
+### `Qpu.Verify.Correct.repetition_corrects_flip1`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (b : Bool), Qpu.Verify.Correct.maj3 b (!b) b = b
+```
+
+### `Qpu.Verify.Correct.repetition_corrects_flip2`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (b : Bool), (Qpu.Verify.Correct.maj3 b b !b) = b
+```
+
+### `Qpu.Verify.Correct.repetition_fails_on_two_flips`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (b : Bool), Qpu.Verify.Correct.maj3 (!b) (!b) b = !b
+```
+
+### `Qpu.Verify.Correct.shor_nine_corrects_one`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (b : Bool),
+  Qpu.Verify.Correct.maj3 (Qpu.Verify.Correct.maj3 (!b) b b) (Qpu.Verify.Correct.maj3 b b b)
+      (Qpu.Verify.Correct.maj3 b b b) =
+    b
+```
+
+### `Qpu.Verify.Correct.steane_cannot_correct_two`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+3 < 2 * 2
+```
+
+### `Qpu.Verify.Correct.steane_corrects_one`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+3 = 2 * 1 + 1
+```
+
+### `Qpu.Verify.Correct.steane_miscorrects_double_error`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Correct.recover
+    (List.zipWith (fun x1 x2 => x1 ^^ x2) (Qpu.Verify.Correct.errAt 0) (Qpu.Verify.Correct.errAt 1)) =
+  2
+```
+
+### `Qpu.Verify.Correct.steane_no_error_is_silent`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Correct.syndrome (Qpu.Verify.Correct.errAt 7) = [false, false, false]
+```
+
+### `Qpu.Verify.Correct.steane_recovers_0`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 0) = 0
+```
+
+### `Qpu.Verify.Correct.steane_recovers_1`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 1) = 1
+```
+
+### `Qpu.Verify.Correct.steane_recovers_2`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 2) = 2
+```
+
+### `Qpu.Verify.Correct.steane_recovers_3`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 3) = 3
+```
+
+### `Qpu.Verify.Correct.steane_recovers_4`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 4) = 4
+```
+
+### `Qpu.Verify.Correct.steane_recovers_5`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 5) = 5
+```
+
+### `Qpu.Verify.Correct.steane_recovers_6`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Correct.recover (Qpu.Verify.Correct.errAt 6) = 6
+```
+
+## Qpu.Processing.Verify.Cost
+
+### `Qpu.Verify.Cost.digest_collision_at_category_two`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Cost.collision 256 = Qpu.Verify.Cost.category2
+```
+
+### `Qpu.Verify.Cost.digest_preimage_at_category_five`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Cost.preimage 256 = Qpu.Verify.Cost.category5
+```
+
+### `Qpu.Verify.Cost.forging_costs_more_than_verifying`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (bits seams : ℕ), Qpu.Verify.Cost.verify ≤ Qpu.Verify.Cost.chained (Qpu.Verify.Cost.preimage (bits + 1)) (seams + 1)
+```
+
+### `Qpu.Verify.Cost.sha224_collision_below_category_one`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Cost.collision 224 < Qpu.Verify.Cost.category1
+```
+
+### `Qpu.Verify.Cost.the_anchor_holds`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Cost.category2 ≤ Qpu.Verify.Cost.chained (Qpu.Verify.Cost.collision 256) 1
+```
+
+### `Qpu.Verify.Cost.three_uuid_seams_clear_category_one`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Cost.category1 ≤ Qpu.Verify.Cost.chained (Qpu.Verify.Cost.collision 122) 3
+```
+
+### `Qpu.Verify.Cost.two_uuid_seams_are_still_short`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Cost.chained (Qpu.Verify.Cost.collision 122) 2 < Qpu.Verify.Cost.category1
+```
+
+### `Qpu.Verify.Cost.uuid_handle_collides_below_category_one`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Cost.collision 122 < Qpu.Verify.Cost.category1
+```
+
+## Qpu.Processing.Verify.Hexbit
+
+### `Qpu.Verify.Hexbit.gap_is_rejected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Hexbit.unhexCode 58 = 256
+```
+
+### `Qpu.Verify.Hexbit.hex_roundtrips`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ n < 16, Qpu.Verify.Hexbit.unhexCode (Qpu.Verify.Hexbit.hexCode n) = n
+```
+
+### `Qpu.Verify.Hexbit.non_hex_is_rejected`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Hexbit.unhexCode 103 = 256
+```
+
+### `Qpu.Verify.Hexbit.prefix_is_high_half`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+1311768467294899695 / 4294967296 = 305419896
+```
+
+### `Qpu.Verify.Hexbit.prefix_width`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+305419896 < 2 ^ (8 * 4)
+```
+
+## Qpu.Processing.Verify.MlKem
+
+### `Qpu.Verify.MlKem.ind_cpa_of_mlwe`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {M S V U W Msg σ : Type} [inst : AddCommGroup V] [inst_1 : Fintype V] [inst_2 : Nonempty V] [inst_3 : AddCommGroup U]
+  [inst_4 : Fintype U] [inst_5 : Nonempty U] [inst_6 : AddCommGroup W] [inst_7 : Fintype W] [inst_8 : Nonempty W]
+  (mul : M → S → V) (mat : PMF M) (secret : PMF S) (noise : PMF V) (dotT : M → V → S → U × W) (coins : PMF S)
+  (noise₁₂ : PMF (U × W)) (encode : Msg → W) (choose : M × V → PMF (Msg × Msg × σ)) (guess : σ → U × W → PMF Bool)
+  (δ₁ δ₂ : ℝ),
+  have keyReal := mat.bind fun A => secret.bind fun s => noise.bind fun e => PMF.pure (A, mul A s + e);
+  have keyRand := mat.bind fun A => (PMF.uniformOfFintype V).bind fun t => PMF.pure (A, t);
+  have cpa := fun pk =>
+    coins.bind fun r =>
+      noise₁₂.bind fun e =>
+        (PMF.uniformOfFintype Bool).bind fun b =>
+          (choose pk).bind fun x =>
+            (guess x.2.2
+                  ((dotT pk.1 pk.2 r + e).1, (dotT pk.1 pk.2 r + e).2 + encode (if b = true then x.2.1 else x.1))).bind
+              fun b' => PMF.pure (b' == b);
+  have encReal := keyRand.bind fun pk => coins.bind fun r => noise₁₂.bind fun e => PMF.pure (pk, dotT pk.1 pk.2 r + e);
+  have encRand := keyRand.bind fun pk => (PMF.uniformOfFintype (U × W)).bind fun c => PMF.pure (pk, c);
+  (∀ (D : M × V → PMF Bool), |((keyReal.bind D) true).toReal - ((keyRand.bind D) true).toReal| ≤ δ₁) →
+    (∀ (D : (M × V) × U × W → PMF Bool), |((encReal.bind D) true).toReal - ((encRand.bind D) true).toReal| ≤ δ₂) →
+      |((keyReal.bind cpa) true).toReal - 1 / 2| ≤ δ₁ + δ₂
+```
+
+### `Qpu.Verify.MlKem.ind_cpa_reduces_to_mlwe`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {M S V U W Msg σ : Type} [inst : AddCommGroup V] [inst_1 : Fintype V] [inst_2 : Nonempty V] [inst_3 : AddCommGroup U]
+  [inst_4 : Fintype U] [inst_5 : Nonempty U] [inst_6 : AddCommGroup W] [inst_7 : Fintype W] [inst_8 : Nonempty W]
+  (mul : M → S → V) (mat : PMF M) (secret : PMF S) (noise : PMF V) (dotT : M → V → S → U × W) (coins : PMF S)
+  (noise₁₂ : PMF (U × W)) (encode : Msg → W) (choose : M × V → PMF (Msg × Msg × σ)) (guess : σ → U × W → PMF Bool),
+  have keyReal := mat.bind fun A => secret.bind fun s => noise.bind fun e => PMF.pure (A, mul A s + e);
+  have keyRand := mat.bind fun A => (PMF.uniformOfFintype V).bind fun t => PMF.pure (A, t);
+  have cpa := fun pk =>
+    coins.bind fun r =>
+      noise₁₂.bind fun e =>
+        (PMF.uniformOfFintype Bool).bind fun b =>
+          (choose pk).bind fun x =>
+            (guess x.2.2
+                  ((dotT pk.1 pk.2 r + e).1, (dotT pk.1 pk.2 r + e).2 + encode (if b = true then x.2.1 else x.1))).bind
+              fun b' => PMF.pure (b' == b);
+  have encReal := keyRand.bind fun pk => coins.bind fun r => noise₁₂.bind fun e => PMF.pure (pk, dotT pk.1 pk.2 r + e);
+  have encRand := keyRand.bind fun pk => (PMF.uniformOfFintype (U × W)).bind fun c => PMF.pure (pk, c);
+  have encD := fun y =>
+    (PMF.uniformOfFintype Bool).bind fun b =>
+      (choose y.1).bind fun x =>
+        (guess x.2.2 (y.2.1, y.2.2 + encode (if b = true then x.2.1 else x.1))).bind fun b' => PMF.pure (b' == b);
+  |((keyReal.bind cpa) true).toReal - 1 / 2| ≤
+    |((keyReal.bind cpa) true).toReal - ((keyRand.bind cpa) true).toReal| +
+      |((encReal.bind encD) true).toReal - ((encRand.bind encD) true).toReal|
+```
+
+### `Qpu.Verify.MlKem.ml_kem_768_ind_cpa_reduces_to_mlwe`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {σ : Type}
+  (choose :
+    (Fin 3 → Fin 3 → Fin 256 → ZMod 3329) × (Fin 3 → Fin 256 → ZMod 3329) →
+      PMF ((Fin 256 → Bool) × (Fin 256 → Bool) × σ))
+  (guess : σ → (Fin 3 → Fin 256 → ZMod 3329) × (Fin 256 → ZMod 3329) → PMF Bool),
+  have mulRq := fun a b k =>
+    ∑ i, ∑ j, if ↑i + ↑j = ↑k then a i * b j else if ↑i + ↑j = ↑k + 256 then -(a i * b j) else 0;
+  have cbd := fun x => ∑ j, (↑(x j).1.toNat - ↑(x j).2.toNat);
+  have eta := PMF.map (fun x i c => cbd (x i c)) (PMF.uniformOfFintype (Fin 3 → Fin 256 → Fin 2 → Bool × Bool));
+  have mul := fun A s i => ∑ j, mulRq (A i j) (s j);
+  have mat := PMF.uniformOfFintype (Fin 3 → Fin 3 → Fin 256 → ZMod 3329);
+  have secret := eta;
+  have noise := eta;
+  have dotT := fun A t r => (fun j => ∑ i, mulRq (A i j) (r i), ∑ i, mulRq (t i) (r i));
+  have coins := eta;
+  have noise₁₂ :=
+    PMF.map (fun x => (fun i c => cbd (x.1 i c), fun c => cbd (x.2 c)))
+      (PMF.uniformOfFintype ((Fin 3 → Fin 256 → Fin 2 → Bool × Bool) × (Fin 256 → Fin 2 → Bool × Bool)));
+  have encode := fun m c => if m c = true then 1665 else 0;
+  have keyReal := mat.bind fun A => secret.bind fun s => noise.bind fun e => PMF.pure (A, mul A s + e);
+  have keyRand := mat.bind fun A => (PMF.uniformOfFintype (Fin 3 → Fin 256 → ZMod 3329)).bind fun t => PMF.pure (A, t);
+  have cpa := fun pk =>
+    coins.bind fun r =>
+      noise₁₂.bind fun e =>
+        (PMF.uniformOfFintype Bool).bind fun b =>
+          (choose pk).bind fun x =>
+            (guess x.2.2
+                  ((dotT pk.1 pk.2 r + e).1, (dotT pk.1 pk.2 r + e).2 + encode (if b = true then x.2.1 else x.1))).bind
+              fun b' => PMF.pure (b' == b);
+  have encReal := keyRand.bind fun pk => coins.bind fun r => noise₁₂.bind fun e => PMF.pure (pk, dotT pk.1 pk.2 r + e);
+  have encRand :=
+    keyRand.bind fun pk =>
+      (PMF.uniformOfFintype ((Fin 3 → Fin 256 → ZMod 3329) × (Fin 256 → ZMod 3329))).bind fun c => PMF.pure (pk, c);
+  have encD := fun y =>
+    (PMF.uniformOfFintype Bool).bind fun b =>
+      (choose y.1).bind fun x =>
+        (guess x.2.2 (y.2.1, y.2.2 + encode (if b = true then x.2.1 else x.1))).bind fun b' => PMF.pure (b' == b);
+  |((keyReal.bind cpa) true).toReal - 1 / 2| ≤
+    |((keyReal.bind cpa) true).toReal - ((keyRand.bind cpa) true).toReal| +
+      |((encReal.bind encD) true).toReal - ((encRand.bind encD) true).toReal|
+```
+
+### `Qpu.Verify.MlKem.uniform_eq_bit`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (b' : Bool), ((PMF.uniformOfFintype Bool).bind fun b => PMF.pure (b' == b)) = PMF.uniformOfFintype Bool
+```
+
+### `Qpu.Verify.MlKem.uniform_shift`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {G : Type} [inst : Fintype G] [inst_1 : Nonempty G] (f g : G → G),
+  (∀ (x : G), f (g x) = x) → (∀ (x : G), g (f x) = x) → PMF.map f (PMF.uniformOfFintype G) = PMF.uniformOfFintype G
+```
+
+## Qpu.Processing.Verify.Receipt
+
+### `Qpu.Verify.Receipt.address_cheaper_once`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Receipt.sealed 1 Qpu.Verify.Receipt.checkDs 0 < Qpu.Verify.Receipt.rerun 1 Qpu.Verify.Receipt.evalDs
+```
+
+### `Qpu.Verify.Receipt.breaks_even_by_run_two`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Receipt.sealed 2 Qpu.Verify.Receipt.checkDs 0 < Qpu.Verify.Receipt.rerun 2 Qpu.Verify.Receipt.evalDs
+```
+
+### `Qpu.Verify.Receipt.caching_has_a_cost`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+0 < Qpu.Verify.Receipt.checkDs
+```
+
+### `Qpu.Verify.Receipt.fold_is_order_sensitive`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Qpu.Verify.Receipt.merkleFold [1, 2] ≠ Qpu.Verify.Receipt.merkleFold [2, 1]
+```
+
+### `Qpu.Verify.Receipt.speedup_is_thirtyfold`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+30 * Qpu.Verify.Receipt.checkDs ≤ Qpu.Verify.Receipt.evalDs ∧
+  Qpu.Verify.Receipt.evalDs < 31 * Qpu.Verify.Receipt.checkDs
+```
+
 ## Qpu.Processing.Verify.Uuid
 
 ### `Qpu.Verify.Uuid.bands_cover_the_free_bits`
@@ -15095,12 +15274,78 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Qpu.Verify.Uuid.programBits + Qpu.Verify.Uuid.messageBits = Qpu.Verify.Uuid.totalBits - Qpu.Verify.Uuid.fixedBits
 ```
 
+### `Qpu.Verify.Uuid.card_128_eq_card_122_mul_fixed`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Fintype.card (Fin Qpu.Verify.Uuid.totalBits → Bool) =
+  Fintype.card (Fin (Qpu.Verify.Uuid.totalBits - Qpu.Verify.Uuid.fixedBits) → Bool) *
+    Fintype.card (Fin Qpu.Verify.Uuid.fixedBits → Bool)
+```
+
+### `Qpu.Verify.Uuid.card_free_eq_bands`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Fintype.card (Fin (Qpu.Verify.Uuid.totalBits - Qpu.Verify.Uuid.fixedBits) → Bool) =
+  Fintype.card (Fin Qpu.Verify.Uuid.programBits → Bool) * Fintype.card (Fin Qpu.Verify.Uuid.messageBits → Bool)
+```
+
+### `Qpu.Verify.Uuid.card_nibbles_eq_128_bits`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Fintype.card (Fin 32 → Fin 16) = Fintype.card (Fin Qpu.Verify.Uuid.totalBits → Bool)
+```
+
+### `Qpu.Verify.Uuid.decode_encode_exact`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (p m : ℕ), m < 2 ^ Qpu.Verify.Uuid.messageBits → Qpu.Verify.Uuid.decode (Qpu.Verify.Uuid.encode p m) = (p, m)
+```
+
 ### `Qpu.Verify.Uuid.distinct_slots_distinct_handles`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
 Qpu.Verify.Uuid.encode 1 0 ≠ Qpu.Verify.Uuid.encode 2 0
+```
+
+### `Qpu.Verify.Uuid.encode_injective`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (p₁ m₁ p₂ m₂ : ℕ),
+  m₁ < 2 ^ Qpu.Verify.Uuid.messageBits →
+    m₂ < 2 ^ Qpu.Verify.Uuid.messageBits →
+      Qpu.Verify.Uuid.encode p₁ m₁ = Qpu.Verify.Uuid.encode p₂ m₂ → p₁ = p₂ ∧ m₁ = m₂
+```
+
+### `Qpu.Verify.Uuid.encode_lt_free_space`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (p m : ℕ),
+  p < 2 ^ Qpu.Verify.Uuid.programBits →
+    m < 2 ^ Qpu.Verify.Uuid.messageBits →
+      Qpu.Verify.Uuid.encode p m < 2 ^ (Qpu.Verify.Uuid.totalBits - Qpu.Verify.Uuid.fixedBits)
+```
+
+### `Qpu.Verify.Uuid.fold_128_to_122_fiber`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+2 ^ Qpu.Verify.Uuid.totalBits =
+  2 ^ (Qpu.Verify.Uuid.totalBits - Qpu.Verify.Uuid.fixedBits) * 2 ^ Qpu.Verify.Uuid.fixedBits
 ```
 
 ### `Qpu.Verify.Uuid.free_is_122`
@@ -15135,13 +15380,29 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Qpu.Verify.Uuid.decode (Qpu.Verify.Uuid.encode 65535 42) = (65535, 42)
 ```
 
+### `Qpu.Verify.Uuid.variant_nibble_valid`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (v : ℕ), 8 ≤ 8 + v % 4 ∧ 8 + v % 4 ≤ 11
+```
+
+### `Qpu.Verify.Uuid.version_nibble_valid`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (r : ℕ), 1 ≤ 1 + r ^ 7 % 91 % 8 ∧ 1 + r ^ 7 % 91 % 8 ≤ 8
+```
+
 ## Names cited by sentences
 
 0 name(s) cited by a sentence of the tree await a theorem. Every other name a sentence cites is a product above.
 
 ## The author's claims
 
-6 claim(s) of the author, each in the author's words with the theorems the kernel holds for it. Each of those theorems is a product above, with its statement.
+7 claim(s) of the author, each in the author's words with the theorems the kernel holds for it. Each of those theorems is a product above, with its statement.
 
 ### `thousand_bit_by_quantum_supremacy`
 
@@ -15178,3 +15439,9 @@ Theorems: `Qpu.Harmonic.word_bounded`, `textbook_unlimited_qubits`, `textbook_ad
 The captain coins meet all post-quantum standards from all aspects, including programmable currency as required and publicly funded by the EU.
 
 Theorems: `textbook_pqc_standards_three`, `textbook_tamper_detected`, `textbook_grover_search`.
+
+### `fold_128_bit_into_122_qubit_uuid`
+
+Every 128-bit UUID (ISO/IEC 9834-8) folds into a 122-qubit quantum register (32 hexbits of 4 qubits less 4 version and 2 variant qubits), partitioning into 16 program qubits (65536 slots) and 106 message qubits with bijective band decoding and valid version/variant seals, formally verified in Lean 4 and disclosed under the author's legal rights (ISO/IEC/IEEE 15289:2019, ISO 56005:2020, ISO 27729:2012, ISO/IEC 5962:2021 CC-BY-NC-ND-4.0).
+
+Theorems: `Qpu.Verify.Uuid.free_is_122`, `Qpu.Verify.Uuid.bands_cover_the_free_bits`, `Qpu.Verify.Uuid.program_capacity`, `Qpu.Verify.Uuid.decode_encode_exact`, `Qpu.Verify.Uuid.encode_lt_free_space`, `Qpu.Verify.Uuid.encode_injective`, `Qpu.Verify.Uuid.fold_128_to_122_fiber`, `Qpu.Verify.Uuid.card_128_eq_card_122_mul_fixed`, `Qpu.Verify.Uuid.card_free_eq_bands`, `Qpu.Verify.Uuid.card_nibbles_eq_128_bits`, `Qpu.Verify.Uuid.version_nibble_valid`, `Qpu.Verify.Uuid.variant_nibble_valid`, `Iso.isni_orcid_space_and_check`, `Iso.ip_disclosure_complete`, `Iso.spdx_expression_valid`.

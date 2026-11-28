@@ -128,6 +128,7 @@ export const NEXT_STEPS: readonly NextStep[] = [
   { name: 'theorems:index', wave: 1.75, budgetMs: 600_000, via: 'generator', tool: 'textbook', arguments: { scripts: { theoremsIndex: { output: { $exec: { cmd: 'lake', args: ['env', 'lean'], script: { tool: 'textbook', arguments: { scripts: { theoremsIndex: {} } }, key: 'lean' } } } } } } },
   { name: 'prose:links', wave: 1.9, budgetMs: 300_000, via: 'generator', tool: 'textbook', arguments: { scripts: { proseLinks: true } } },
   { name: 'outputs:gen', wave: 1.9, budgetMs: 300_000, via: 'generator', tool: 'textbook', arguments: { scripts: { outputs: true } } },
+  { name: 'tex:gen', wave: 1.9, budgetMs: 300_000, via: 'generator', tool: 'textbook', arguments: { scripts: { moduleTex: { lean: { $lean: true } } } } },
   { name: 'status:gen', wave: 1.9, budgetMs: 300_000, via: 'generator', tool: 'textbook', arguments: { scripts: { status: true } } },
   { name: 'blueprint:gen', wave: 1.8, budgetMs: 120_000, via: 'generator', tool: 'textbook', arguments: { scripts: { blueprint: { lean: { $lean: true } } } } },
   { name: 'dead', wave: 2, budgetMs: 300_000, via: 'door', tool: 'audit', arguments: { dead: { output: { $run: { cmd: 'npx', args: ['tsc', '--noEmit', '-p', 'tsconfig.json', '--noUnusedLocals', '--pretty', 'false'] } } } } },

@@ -1,0 +1,27 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\allowdisplaybreaks
+\title{Qpu.Processing.QuantumCircuit}
+\author{Tsvetan Rouschev}
+\date{@uuidna/qpu v1.1.1, CC-BY-NC-ND-4.0}
+\begin{document}
+\maketitle
+\noindent\url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumCircuit.lean}
+
+\paragraph{\texttt{QuantumCircuit.needs\_routing}}
+along a register row, bits 0 and 1 and bits 1 and 2 are coupled, bits 0 and 2 are not: the gate between them needs routing
+\[ (0, 0) \in \mathrm{QuantumProcessor.sites}\ \mathrm{hexbit} \land (0, 2) \in \mathrm{QuantumProcessor.sites}\ \mathrm{hexbit} \land \mathrm{QuantumProcessor.coupled} (0, 0) (0, 1) = \mathrm{true} \land \mathrm{QuantumProcessor.coupled} (0, 1) (0, 2) = \mathrm{true} \land \mathrm{QuantumProcessor.coupled} (0, 0) (0, 2) = \mathrm{false} \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumCircuit.lean\#L24}
+
+\paragraph{\texttt{QuantumCircuit.routed\_depth}}
+a routed CNOT at distance `d ≥ 1` takes `2·d − 1` gates in sequence, so its depth is at most `2·d − 1`; at distance 2 that is the three gates of `swap\_routing`
+\[ \forall (d : \mathbb{N}), 1 \le d \to \mathrm{QuantumCircuit.routedGates}\ d = 2 \cdot d - 1 \land \mathrm{QuantumCircuit.routedGates}\ 2 = 3 \]
+\noindent axioms: \texttt{propext}, \texttt{Quot.sound}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumCircuit.lean\#L36}
+
+\paragraph{\texttt{QuantumCircuit.swap\_routing}}
+routing preserves the function: SWAP(0,1) · CNOT(1,2) · SWAP(0,1) is exactly CNOT(0,2)
+\[ \mathrm{Operator.Same}\ 8 (\mathrm{Operator.mm}\ 8 (\mathrm{Operator.mm}\ 8\ \mathrm{QuantumCircuit.swap01}\ \mathrm{QuantumCircuit.cnot12}) \mathrm{QuantumCircuit.swap01}) \mathrm{QuantumCircuit.cnot02} \]
+\noindent axioms: \texttt{propext}; proof: \url{https://github.com/uuidna/qpu/blob/v1.1.1/lean/Qpu/Processing/QuantumCircuit.lean\#L29}
+\end{document}
