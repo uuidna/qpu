@@ -6,6 +6,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 # One build per branch and event: a newer head waits for the running one, which finishes and fills the layer cache,

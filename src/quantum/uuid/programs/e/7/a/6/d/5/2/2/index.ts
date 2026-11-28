@@ -3,7 +3,7 @@ import alpine from '../../../../../../../../7/e/f/9/8/4/6/8/index.ts'
 import { portPackages } from '../../../../../../../../2/4/a/2/d/a/5/c/index.ts'
 import debian from '../../../../../../../e/c/c/f/9/b/a/index.ts'
 import ubuntu from '../../../../../../../../c/a/a/c/7/1/f/b/index.ts'
-import { uuid, reflection, seal, style, neighbours, block, verify, coins, organiseQubits } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { uuid, reflection, seal, style, neighbours, block, verify, coins, organiseQubits, LEAN_REGISTER } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 import { quantumCapacity, stabilityOf, stableSource } from '../../../../../../../../0/8/7/0/6/d/2/8/index.ts'
 import { catalogClay1000Bit, catalogClayDuality, catalogInteract, catalogMcpTools, catalogOrder, catalogProduct, catalogSeeds, catalogSummary } from '../../../../../../../../3/2/7/5/4/2/0/1/index.ts'
 import {
@@ -64,7 +64,7 @@ export const quantumPivot = (): {
     licence: LICENSE.spdx,
     registerQubits: cap.register.free,
     rows: [
-      { scale: '0 · register', entity: 'UUID register (128 bit → 122 qubit)', count: `${cap.register.free}/${cap.register.bits} (${cap.used} used)`, surface: 'src/quantum/uuid', endpoint: `${SDK_API_PREFIX}/mcp` },
+      { scale: '0 · register', entity: `UUID register (128 bit → ${LEAN_REGISTER} qubit)`, count: `${cap.register.free}/${cap.register.bits} (${cap.used} used)`, surface: 'src/quantum/uuid', endpoint: `${SDK_API_PREFIX}/mcp` },
       { scale: '1 · kernel', entity: 'Lean 4 theorems (0 sorry)', count: `${THEOREMS.length} declared / ${KERNEL_THEOREMS} kernel`, surface: 'lean/Qpu', endpoint: `${SDK_API_PREFIX}/products` },
       { scale: '2 · catalog', entity: 'Payload products & variants', count: `${summary.products} products / ${summary.variants} variants`, surface: 'src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts', endpoint: `${SDK_API_PREFIX}/globals/catalog` },
       { scale: '3 · entanglements', entity: 'Theorem links as MCP tools', count: `${summary.entanglements} edges / ${summary.mcpTools} tools`, surface: 'lean/tools/Theorems.lean', endpoint: `${SDK_API_PREFIX}/globals/mcp-tools` },

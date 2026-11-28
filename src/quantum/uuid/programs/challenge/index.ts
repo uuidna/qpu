@@ -2,7 +2,7 @@
 import { PROSE, proseFill } from '../5/9/e/4/9/1/a/4/index.ts'
 import { seal, uuid } from '../1/6/4/f/0/6/2/1/index.ts'
 import leafModule from '../8/3/b/4/a/0/c/1/index.ts'
-import { hexbit, uuidQubits } from '../2/7/1/a/7/6/4/9/index.ts'
+import { hexbit, uuidQubits, handleOf } from '../2/7/1/a/7/6/4/9/index.ts'
 import { competeProgramNeighbours, program } from '../index.ts'
 import { physics } from '../physics/index.ts'
 import { ENTROPY_LAW, ENTROPY_MEANS, HEXBIT_LAW, PHYSICS_CONCEPT } from '../b/6/4/6/e/a/0/1/index.ts'
@@ -13,7 +13,7 @@ const CONCEPT = PHYSICS_CONCEPT, LAW = HEXBIT_LAW
 export const challenge = () => {
   const key = 'challenge;physics;laws'
   const address = uuid(key)
-  const handle = address.slice(0, 8)
+  const handle = handleOf(address)
   const installed = program(handle)
 
   const adversarial = [

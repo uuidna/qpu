@@ -17,7 +17,8 @@ import { availableParallelism, freemem, homedir, tmpdir, totalmem } from 'node:o
 import { fileURLToPath } from 'node:url'
 import { MACHINE_ACTIONS, MACHINE_RUNNER, NEXT_STEPS, forecastTimes, redact, type NextStep } from '../../../../../../../../3/3/0/8/2/1/e/a/index.ts'
 import { clock, stamp } from '../../../../../../../../clock/index.ts'
-import { canonicalText, uuid } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { canonicalText, uuid, handleOf } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { hexagonHandle } from '../../../../../../../../d/7/8/3/e/4/6/3/index.ts'
 
 export type MachineProgress = { progress: number; total?: number; message: string }
 type Run = { status: number | null; stdout: string; stderr: string; ms: number; timedOut: boolean }
@@ -75,6 +76,30 @@ const resolveArgs = async (x: unknown, cwd: string, call: Call): Promise<unknown
 // ISO/IEC 4879:2024 3.4.29 quantum memory on the filesystem: each answer the door measured (3.2.16) is written under its content address,
 // in a folder named by the code that computed it, so a later process on the same code reads it back instead of computing it again
 type Block = { address: string; structured: unknown; widget: string }
+// Every final answer a source gives is sealed under the hexbit address of the request that asked it (the UUID of its method, URL and body,
+// never a key, with the hexagon's handle: the SHA-256 of its program's six rotations over its tail), in the folder of that address's first eight hexbits, with the SHA-256 of what came back. While the source's own validity
+// holds (its Cache-Control max-age, else one day) the answer is read back by its address and verified by its digest, not fetched again: a
+// verification costs one fetch per address per validity. Only a lookup is sealed (a GET: a POST calls a live service, whose answer is its
+// own each time), and only what is final (2xx, 404 and 410); a refusal or a failure is left to the handling that asks it again, and a
+// request the door asks again is fetched afresh, never read back, since it is asked again because its last answer did not hold.
+type SealedAnswer = { address: string; sha256: string; status: number; text: string; etag: string | null; until: string }
+const answerAt = (cwd: string, q: { method: string; url: string; body?: unknown }) => {
+  const address = hexagonHandle(uuid(`${q.method} ${q.url}\n${q.body === undefined ? '' : JSON.stringify(q.body)}`)).uuid
+  return { address, file: join(cwd, '.qpu', 'answers', ...address.replace(/-/g, '').slice(0, 8), `${address}.json`) }
+}
+const sealedAnswer = (cwd: string, q: { method: string; url: string; body?: unknown }): SealedAnswer | null => {
+  if (q.method !== 'GET') return null
+  const { file } = answerAt(cwd, q)
+  if (!existsSync(file)) return null
+  try { const a = JSON.parse(readFileSync(file, 'utf8')) as SealedAnswer; return stamp() < a.until && createHash('sha256').update(a.text).digest('hex') === a.sha256 ? a : null } catch { return null }
+}
+const sealAnswer = (cwd: string, q: { method: string; url: string; body?: unknown }, a: { status: number; text: string; etag: string | null }, cacheControl: string | null) => {
+  if (q.method !== 'GET' || !((a.status >= 200 && a.status < 300) || a.status === 404 || a.status === 410)) return
+  const { address, file } = answerAt(cwd, q), maxAge = Number(/max-age=(\d+)/.exec(cacheControl ?? '')?.[1] ?? 86_400)
+  mkdirSync(dirname(file), { recursive: true })
+  writeFileSync(file, JSON.stringify({ address, sha256: createHash('sha256').update(a.text).digest('hex'), status: a.status, text: a.text, etag: a.etag, until: new Date(Date.parse(stamp()) + maxAge * 1000).toISOString() } satisfies SealedAnswer))
+}
+
 const memoryOf = (cwd: string) => {
   const root = join(cwd, 'src/quantum'), code = createHash('sha256')
   for (const f of (readdirSync(root, { recursive: true }) as string[]).filter((f) => /\.(ts|js|json)$/.test(f)).sort()) code.update(f).update(readFileSync(join(root, f)))
@@ -109,8 +134,9 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
   let s = r.result?.structuredContent ?? null
   // a door that answers with requests has them fetched, eight at a time, then answers again with them: e2e decodes here, every other door is asked with answers
   if (Array.isArray(s?.requestList) && !(args as { answers?: unknown }).answers) {
-    type Asked = { url: string; method: string; accept: string; headers?: Record<string, string>; body?: unknown; timeoutMs?: number }
-    const fetchAll = async (requests: Asked[]) => { const list = [...requests], answers: unknown[] = []; await Promise.all(Array.from({ length: 8 }, async () => { for (let q = list.shift(); q; q = list.shift()) { const t0 = performance.now(); try { const res = await fetch(q.url, { method: q.method, headers: { 'content-type': 'application/json', accept: q.accept, ...q.headers }, body: q.body === undefined ? undefined : JSON.stringify(q.body), signal: within(q.timeoutMs ?? 20000) }); answers.push({ ...q, status: res.status, ms: performance.now() - t0, text: await res.text(), etag: res.headers.get('etag') }) } catch (e) { answers.push({ ...q, status: 0, ms: performance.now() - t0, text: String(e) }) } } })); return answers }
+    // a request may name the variable its service's key is held under (bearer): the runner, the client, sends it when it holds one; the door never sees it
+    type Asked = { url: string; method: string; accept: string; headers?: Record<string, string>; body?: unknown; timeoutMs?: number; bearer?: string }
+    const fetchAll = async (requests: Asked[], afresh = false) => { const list = [...requests], answers: unknown[] = []; await Promise.all(Array.from({ length: 8 }, async () => { for (let q = list.shift(); q; q = list.shift()) { const held = afresh ? null : sealedAnswer(cwd, { ...q, method: q.method ?? 'GET' }); if (held) { answers.push({ ...q, status: held.status, ms: 0, text: held.text, etag: held.etag, sealed: held.address }); continue } const t0 = performance.now(); try { const res = await fetch(q.url, { method: q.method, headers: { 'content-type': 'application/json', accept: q.accept, ...q.headers, ...(q.bearer && process.env[q.bearer] ? { authorization: `Bearer ${process.env[q.bearer]}` } : {}) }, body: q.body === undefined ? undefined : JSON.stringify(q.body), signal: within(q.timeoutMs ?? 20000) }); const answer = { status: res.status, text: await res.text(), etag: res.headers.get('etag') }; sealAnswer(cwd, { ...q, method: q.method ?? 'GET' }, answer, res.headers.get('cache-control')); answers.push({ ...q, ...answer, ms: performance.now() - t0 }) } catch (e) { answers.push({ ...q, status: 0, ms: performance.now() - t0, text: String(e) }) } } })); return answers }
     let answers = await fetchAll(s.requestList as Asked[])
     // in this process: the door's wrapper re-serialises e2e's bodies past a string's length
     if (tool === 'e2e') { const d = (await import('../../../../../../../../f/4/1/9/b/9/0/e/index.ts')).decodeE2e(answers as never); s = { phase: 'decoded', ...d.outcomes, combos: d.combos, copies: d.copies, uncorrectableLeads: d.leads.filter((l) => l.id.startsWith('e2e-uncorrectable')).map((l) => l.id).join(' ') } }
@@ -122,7 +148,7 @@ const runStepChild = async (tool: string, argsJson: string, write: boolean, cwd:
         if (!Array.isArray(s?.requestList) || !Array.isArray(s?.retry) || attempt >= 8) break
         for (const r of s.retry as { says?: string }[]) console.log(`retry ${r.says ?? JSON.stringify(r)}`)
         await new Promise((done) => setTimeout(done, typeof s.waitMs === 'number' ? s.waitMs : 0))
-        answers = [...(Array.isArray(s.kept) ? s.kept : []), ...await fetchAll(s.requestList as Asked[])]
+        answers = [...(Array.isArray(s.kept) ? s.kept : []), ...await fetchAll(s.requestList as Asked[], true)]
       }
       // requests still owed when the attempts ran out are a gate that did not hold
       if (Array.isArray(s?.requestList) && Array.isArray(s?.retry)) process.exitCode = 1
@@ -551,7 +577,7 @@ const runIntake = async (roots: readonly string[], cwd: string): Promise<number>
   const sizes = new Map(files.map((f) => [f.sha256, f.bytes])), distinct = [...sizes.keys()].sort(), total = files.reduce((n, f) => n + f.bytes, 0)
   const merged = call('seal', { merkle: { leaves: distinct, hex: true } }); if (merged.error) throw new Error(merged.error.message)
   const root = String(merged.result!.structuredContent.root), held = [...sizes.values()].reduce((n, b) => n + b, 0)
-  const address = uuid(`intake;${canonicalText({ rfc: 6962, root, distinct: distinct.length, bytes: held })}`), handle = address.slice(0, 8)
+  const address = uuid(`intake;${canonicalText({ rfc: 6962, root, distinct: distinct.length, bytes: held })}`), handle = handleOf(address)
   const ranked = (of: Record<string, number>) => Object.entries(of).sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
   const covering = (command: string) => { const [cmd, sub] = command.split(' '); return MACHINE_ACTIONS.find((a) => a.cmd === cmd && a.args[0] === sub)?.id ?? null }
   const ms = clock() - started

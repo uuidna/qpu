@@ -12,9 +12,17 @@ import { aes256gcmDecrypt, aes256gcmEncrypt, hex, hkdfExpand, hkdfExtract, sha25
 import { checkWitnesses } from '../../../../../../../../d/7/8/3/e/4/6/3/index.ts'
 import { costToFake, quantumCapacity } from '../../../../../../../../0/8/7/0/6/d/2/8/index.ts'
 import { fromHex } from '../../../../../../../../e/1/9/1/6/4/9/c/index.ts'
+import { canonicalText } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 
 const join = (...parts: Uint8Array[]) => { const out = new Uint8Array(parts.reduce((n, p) => n + p.length, 0)); let at = 0; for (const p of parts) { out.set(p, at); at += p.length } return out }
 const flipped = (b: Uint8Array) => { const out = Uint8Array.from(b); out[0] = out[0]! ^ 1; return out }
+
+/** The seed of the Lean algebra: the SHA-256 of every theorem the kernel holds, by key and statement in the order of their keys, as 64 hex digits.
+ *  The same algebra gives the same seed and a changed statement another, so a ring made from it is anchored to the algebra that made it. It is not a
+ *  secret: anyone remakes the ring from the public algebra, so a ring tells a change by comparison with the ring and the algebra published, not by a
+ *  key only one holds. */
+export const leanAlgebraSeed = (theorems: readonly { key: string; statement: string }[]) =>
+  hex(sha256(utf8(canonicalText([...theorems].sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0)).map((t) => [t.key, t.statement])))))
 
 /** The ring of a UUID's witnesses, each sealed to the next and signed, from a seed (hex, a fresh one without). */
 export const crossWitnesses = (raw: unknown) => {

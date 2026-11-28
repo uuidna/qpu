@@ -10,7 +10,7 @@ import { blockJsonLd } from '../../../../../../../../1/9/a/6/8/a/6/f/index.ts'
 import { LICENSE } from '../../../../../../../../a/f/3/d/e/a/5/f/index.ts'
 import { accountBytes, measureContext } from '../../../../../../../../4/5/8/2/8/f/3/f/index.ts'
 import { getBill } from '../../../../../../../../5/b/3/0/7/9/e/2/index.ts'
-import { canonicalText } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { canonicalText, handleOf } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 
 export type Json = Record<string, unknown>
 const byKey = new Map(THEOREMS.map((t) => [t.key, t]))
@@ -63,10 +63,10 @@ export const formulaJsonLd = (key: string, source: (module: string) => string) =
 
 type Sealed = { kind: string; body: Json; address: string; sha256: string }
 type Place = { site: string; version: string; source: (module: string) => string }
-const receiptUrl = (site: string, address: string) => `${site}/receipts/${address.slice(0, 8)}`
+const receiptUrl = (site: string, address: string) => `${site}/receipts/${handleOf(address)}`
 
 /** The device that minted a receipt, as a schema.org Product: every reading a property value. */
-export const deviceJsonLd = (p: Sealed & { site: string }) => ({ '@type': 'Product', '@id': receiptUrl(p.site, p.address), name: p.kind, identifier: [property('uuid', p.address), property('handle', p.address.slice(0, 8)), property('sha256', p.sha256)], additionalProperty: propertyValues(p.body) })
+export const deviceJsonLd = (p: Sealed & { site: string }) => ({ '@type': 'Product', '@id': receiptUrl(p.site, p.address), name: p.kind, identifier: [property('uuid', p.address), property('handle', handleOf(p.address)), property('sha256', p.sha256)], additionalProperty: propertyValues(p.body) })
 
 /** A sealed body as a schema.org Dataset on the tree's own block: identified by its UUID, handle, SHA-256 and coin, its variables the
  *  body, based on the formulas the body names, sized by what it costs to carry; a combination has its parts. */
@@ -79,7 +79,7 @@ export const receiptJsonLd = (p: Sealed & Place & { technique: string; parts?: r
     ...block, '@type': 'Dataset', alternateName: p.kind, url, version: p.version, measurementTechnique: p.technique,
     license: LICENSE.deed, acquireLicensePage: LICENSE.url, copyrightNotice: LICENSE.copyright, creditText: LICENSE.attribution, conditionsOfAccess: LICENSE.terms,
     creator, potentialAction: { '@type': 'DonateAction', name: 'donation', target: LICENSE.donation, recipient: creator },
-    identifier: [property('uuid', p.address), property('handle', p.address.slice(0, 8)), property('sha256', p.sha256), property('coin', cost.coin)],
+    identifier: [property('uuid', p.address), property('handle', handleOf(p.address)), property('sha256', p.sha256), property('coin', cost.coin)],
     distribution: { '@type': 'DataDownload', encodingFormat: 'text/plain', contentUrl: `${url}.txt`, contentSize: `${cost.bytes} B`, sha256: p.sha256 },
     size: quantities(cost),
     variableMeasured: propertyValues(p.body),

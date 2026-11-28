@@ -6,7 +6,7 @@ import { TEXTBOOK_THEOREMS } from '../../3/4/7/e/0/c/e/0/index.ts'
 import { THOUSAND, THOUSAND_SHARED, THOUSAND_WALK } from '../../6/6/3/7/3/f/6/6/index.ts'
 import { LICENSE } from '../../a/f/3/d/e/a/5/f/index.ts'
 import { hex, sha256, utf8 } from '../../9/e/8/6/7/0/6/8/index.ts'
-import { canonicalText, seal, uuid } from '../../2/7/1/a/7/6/4/9/index.ts'
+import { canonicalText, seal, uuid, handleOf } from '../../2/7/1/a/7/6/4/9/index.ts'
 import { recomputeClayPravets } from '../index.ts'
 import { trimTrailingSlashes } from '../../sdk/path/index.ts'
 
@@ -216,7 +216,7 @@ export const clay1000Research = (origin = 'https://qpu.uuidna.com') => {
   return {
     ...summary,
     address,
-    handle: address.slice(0, 8),
+    handle: handleOf(address),
     sha256: hex(sha256(utf8(canonical))),
     sealed: seal(address).valid,
     standard: 'ISO/IEC 4879:2024' as const,

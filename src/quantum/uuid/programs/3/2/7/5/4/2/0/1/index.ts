@@ -12,7 +12,7 @@ import { listFactors } from '../../../../../../../../b/1/c/2/3/6/2/1/index.ts'
 import { hexbitRegister } from '../../../../../../../../9/d/1/0/1/4/3/9/index.ts'
 import { merkleTree } from '../../../../../../../../e/1/9/1/6/4/9/c/index.ts'
 import { LICENSE } from '../../../../../../../../a/f/3/d/e/a/5/f/index.ts'
-import { canonicalText, uuid } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
+import { canonicalText, uuid, handleOf } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 import type { Example } from '../../../../../../../../9/d/4/f/e/4/4/2/index.ts'
 import {
   CATALOG_COLLECTIONS,
@@ -129,7 +129,7 @@ const build = (examples: readonly Example[]) => {
 const catalog = (examples: readonly Example[]): Built => { const had = built.get(examples); if (had) return had; const made = build(examples); built.set(examples, made); return made }
 
 const witnessTool = (theorem: string, productId: string, example: Example, witness: string, address: string): McpClientTool => ({
-  name: `qpu_${example.tool}_${address.slice(0, 8)}`,
+  name: `qpu_${example.tool}_${handleOf(address)}`,
   title: `${theorem} · ${example.id} · ${witness}`,
   description: `${example.tool} (${theorem}, ${witness})`,
   kind: 'witness',
@@ -142,7 +142,7 @@ const witnessTool = (theorem: string, productId: string, example: Example, witne
 })
 
 const entanglementTool = (theorem: string, productId: string, target: string, targetProductId: string, direction: 'uses' | 'usedBy', address: string): McpClientTool => ({
-  name: `entangle_${direction}_${address.slice(0, 8)}`,
+  name: `entangle_${direction}_${handleOf(address)}`,
   title: `${theorem} ${direction} ${target}`,
   description: `${theorem} -> ${target} (${direction})`,
   kind: 'entanglement',
@@ -172,7 +172,7 @@ const dualityTool = (theorem: string, module: string, productId: string, pole: P
   const verdict = pole === 'primal' ? 'accept' as const : 'reject' as const
   const code = dualityCode(module, theorem, pole)
   return {
-    name: `duality_${pole}_${address.slice(0, 8)}`,
+    name: `duality_${pole}_${handleOf(address)}`,
     title: `${theorem} · ${pole} (${verdict})`,
     description: `${pole} ${verdict} (${theorem})`,
     kind: 'duality',
@@ -584,7 +584,7 @@ export const catalogOrder = (examples: readonly Example[], asked: { product?: un
     phase: 'order' as const,
     order,
     transaction,
-    receipt: { uuid: order.id, handle: order.id.slice(0, 8) },
+    receipt: { uuid: order.id, handle: handleOf(order.id) },
     price: 0,
     funding: { by: 'public' as const, donation: LICENSE.donation },
     use: {

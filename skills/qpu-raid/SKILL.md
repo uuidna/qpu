@@ -16,14 +16,14 @@ A client that is a database adapter (Payload's mongodb adapter interface) reads 
 
 ## Tools
 
-| Tool | Does | Arguments |
-| --- | --- | --- |
-| `mongo` | The ported MongoDB over the docket, pure. | `op`, `association`, `validation`, `files`, `copies`, `collection`, `docs`, `filter`, `update`, `sort`, `skip`, `limit`, `selftest` |
+| Handle | Tool | Does | Arguments |
+| --- | --- | --- | --- |
+| `a2264aa0` | `mongo` | The ported MongoDB over the docket, pure. | `op`, `association`, `validation`, `files`, `copies`, `collection`, `docs`, `filter`, `update`, `sort`, `skip`, `limit`, `selftest` |
 
 ## Examples
 
-- `mongo-find`: A Mongo filter over documents read from the docket: operators, array membership, sort; the match is computed here, the storage is the docket.
-- `mongo-update`: An update computed as a new document and a new entry linked to the one it replaces: entries are immutable and content-addressed, so history is kept.
+- `79dea909` `mongo-find`: A Mongo filter over documents read from the docket: operators, array membership, sort; the match is computed here, the storage is the docket.
+- `4e62c38b` `mongo-update`: An update computed as a new document and a new entry linked to the one it replaces: entries are immutable and content-addressed, so history is kept.
 
 ## Directions it tests itself in
 

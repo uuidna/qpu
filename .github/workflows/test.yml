@@ -5,6 +5,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 # a newer push to the same pull request makes the run of the older head useless: it is cancelled; runs on main are kept

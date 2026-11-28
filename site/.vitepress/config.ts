@@ -14,6 +14,7 @@ import { coilColour, rgbOfHsl, toFrames } from '../../src/quantum/uuid/programs/
 import { style } from '../../src/quantum/uuid/programs/2/7/1/a/7/6/4/9/index.ts'
 import type { CatalogRouteParams } from '../../src/quantum/uuid/programs/sdk/schema/index.ts'
 import { THEOREMS } from '../../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
+import { fusionReceipt } from '../../src/quantum/uuid/programs/c/f/5/8/f/d/5/b/index.ts'
 import { FOLD } from './theme/fold-index.ts'
 
 // The sidebar is written beside this file by scripts/site.ts from the seed waves; the theme beside it
@@ -251,7 +252,9 @@ export default defineConfig({
   buildEnd: async (siteConfig) => {
     if (!pages.size) throw new Error('transformHead saw no page: llms.txt would be empty')
     const { SDK_COLLECTIONS, SDK_GLOBALS, sdkCollection, sdkFindById, sdkFindGlobal, sdkSummary } = await import('../../src/quantum/uuid/programs/sdk/index.ts')
-    const out = (path: string, text: string | Buffer) => { mkdirSync(dirname(join(siteConfig.outDir, path)), { recursive: true }); writeFileSync(join(siteConfig.outDir, path), text) }
+    // every file the build writes is recorded, so the build's receipt seals them all at its end
+    const written: { path: string; text: string | Uint8Array }[] = []
+    const out = (path: string, text: string | Buffer) => { mkdirSync(dirname(join(siteConfig.outDir, path)), { recursive: true }); writeFileSync(join(siteConfig.outDir, path), text); written.push({ path, text }) }
     out('favicon.svg', markSvg())
     out('og.png', markPng(IMAGE.width, IMAGE.height))
     const card = {
@@ -321,6 +324,10 @@ export default defineConfig({
     // a page a route wrote has no file of its own: its Markdown is the route's content
     const routed = new Map(siteConfig.dynamicRoutes.map((r) => [r.path, r.content ?? '']))
     out('llms-full.txt', sorted.map(([path, p]) => `<!-- ${p.url} -->\n${(routed.get(path) ?? readFileSync(join(siteConfig.srcDir, path), 'utf8')).replace(/^---\n[\s\S]*?\n---\n/, '').trim()}\n`).join('\n'))
+    // the build sealed as Clay cases: each file by its UUID and SHA-256, rays cast so no two collide, packed as coins of the register
+    const receipt = fusionReceipt(written)
+    if (!receipt.holds) throw new Error(`build receipt: written twice ${[...receipt.duplicates.paths, ...receipt.duplicates.uuids].join(', ')}`)
+    out('receipts/build.json', `${JSON.stringify(receipt, null, 2)}\n`)
   },
   themeConfig: {
     logo: { src: '/favicon.svg', alt: NAME },

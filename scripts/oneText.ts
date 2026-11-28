@@ -16,7 +16,7 @@ import { leanPath, proofLines } from '../src/quantum/uuid/programs/e/1/c/6/d/e/b
 import { catalogSummary } from '../src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts'
 import { EXAMPLES } from '../src/quantum/uuid/programs/9/d/4/f/e/4/4/2/index.ts'
 import { call, handle } from '../src/quantum/uuid/programs/3/8/5/9/0/2/0/f/index.ts'
-import { uuid, uuidQubits } from '../src/quantum/uuid/programs/2/7/1/a/7/6/4/9/index.ts'
+import { uuid, uuidQubits, handleOf, LEAN_REGISTER } from '../src/quantum/uuid/programs/2/7/1/a/7/6/4/9/index.ts'
 import { teleportProof } from '../src/quantum/uuid/programs/b/1/c/2/3/6/2/1/index.ts'
 import { TEXTBOOK_THEOREMS } from '../src/quantum/uuid/programs/3/4/7/e/0/c/e/0/index.ts'
 import { RELEASE_REPOSITORY } from '../src/quantum/uuid/programs/6/6/5/9/1/f/5/8/index.ts'
@@ -176,7 +176,7 @@ const doorSummaryRows = (cases: readonly { e: (typeof EXAMPLES)[number] }[]) =>
 const lead: IsoBlock[] = [
   ...iso.identification,
   ...iso.legal,
-  { kind: 'h2', text: '3. Scope and invention specification: 128-bit folding into 122-qubit UUIDs' },
+  { kind: 'h2', text: `3. Scope and invention specification: 128-bit folding into ${LEAN_REGISTER}-qubit UUIDs` },
   { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_summary, digits, width, version, variant, qubits, uuidBytes, programQubits, programs, qubits - programQubits, THEOREMS.length, KERNEL_THEOREMS, SORRIED, recomputed, MCP) },
   { kind: 'h3', text: '3.1 Quantum OS fractal pivot' },
   { kind: 'table', head: ['scale', 'entity', 'count', 'surface', 'endpoint'], rows: pivot.rows.map((r) => [r.scale, r.entity, r.count, code(r.surface), code(r.endpoint)]) },
@@ -207,7 +207,7 @@ export const markdown = blocks.map(blockMarkdown).join('\n\n') + '\n'
 export const above = `# ${inlineMarkdown(title)}\n\n${markdown}`
 /** The receipt of the text: the address of the Markdown above the rule, which verify { uuid, content } decides over MCP, and its SHA-256,
  *  with the merge it is loaded from and the parts of that merge by kind, handle and UUID. */
-export const receipt = { uuid: uuid(above), sha256: createHash('sha256').update(above).digest('hex'), mcp: MCP, merge: { uuid: mergedItem!.address, handle: mergedItem!.address.slice(0, 8), root, rfc: 6962 }, parts: bodies.map((b, i) => ({ kind: b.kind, handle: addresses[i]!.slice(0, 8), uuid: addresses[i]! })) }
+export const receipt = { uuid: uuid(above), sha256: createHash('sha256').update(above).digest('hex'), mcp: MCP, merge: { uuid: mergedItem!.address, handle: handleOf(mergedItem!.address), root, rfc: 6962 }, parts: bodies.map((b, i) => ({ kind: b.kind, handle: addresses[i]!.slice(0, 8), uuid: addresses[i]! })) }
 const signed: Block = { kind: 'table', head: ['text', 'value'], rows: [['uuid', receipt.uuid], ['sha256', receipt.sha256], ['merge', receipt.merge.uuid], ['verify', code(asked('verify', { uuid: receipt.uuid, content: 'text' }))], ['mcp', MCP]] }
 /** The text as HTML, block for block, with the receipt: the Zenodo description and the release note. */
 export const html = [...blocks.map(blockHtml), '<hr>', blockHtml(signed)].join('')
@@ -251,7 +251,7 @@ const facts = {
   versions: { ...process.versions }, lean,
   rssBytes: used.rss, heapTotalBytes: used.heapTotal, heapUsedBytes: used.heapUsed, externalBytes: used.external, arrayBuffersBytes: used.arrayBuffers,
   processUserMicros: spent.userCPUTime, processSystemMicros: spent.systemCPUTime, maxRssKb: spent.maxRSS, pageFaults: spent.majorPageFault + spent.minorPageFault, fsReads: spent.fsRead, fsWrites: spent.fsWrite, contextSwitches: spent.voluntaryContextSwitches + spent.involuntaryContextSwitches,
-  challenges: challengeItems.map((i) => i.address.slice(0, 8)), isoHardwareTerms: physicalEvidence().terms.map((t) => `${t.clause} ${t.name}`), quantumBehaviour: physicalEvidence().quantumBehaviour,
+  challenges: challengeItems.map((i) => handleOf(i.address)), isoHardwareTerms: physicalEvidence().terms.map((t) => `${t.clause} ${t.name}`), quantumBehaviour: physicalEvidence().quantumBehaviour,
   buildMs: Math.round(performance.now() - started), at: issued,
 }
 const [deviceItem] = await sealAll([receiptText('hardware', facts)])

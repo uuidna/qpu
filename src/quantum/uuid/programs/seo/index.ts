@@ -1,6 +1,6 @@
 // @payloadcms/plugin-seo attached to @payloadcms/plugin-ecommerce (and any target) as MCP: whatever SEO is attached to IS the toolbox.
 import { CATALOG_COLLECTIONS, catalogSeeds } from '../3/2/7/5/4/2/0/1/index.ts'
-import { canonicalText, optimise, seal, uuid } from '../2/7/1/a/7/6/4/9/index.ts'
+import { canonicalText, optimise, seal, uuid, handleOf } from '../2/7/1/a/7/6/4/9/index.ts'
 import { hex, sha256, utf8 } from '../9/e/8/6/7/0/6/8/index.ts'
 import { LICENSE } from '../a/f/3/d/e/a/5/f/index.ts'
 import { THEOREMS } from '../3/f/0/e/7/a/6/f/index.ts'
@@ -244,7 +244,7 @@ export const attachSeoToolbox = (attachment: SeoAttachment, origin = 'https://qp
     audit,
     jsonLd,
     address,
-    handle: address.slice(0, 8),
+    handle: handleOf(address),
     sha256: hex(sha256(utf8(canonical))),
     sealed: seal(address).valid,
     standard: SDK_VOCABULARY,
@@ -374,7 +374,7 @@ export const ecommerceSeoToolboxes = (examples: readonly Example[], origin = 'ht
     toolboxes,
     tools,
     address,
-    handle: address.slice(0, 8),
+    handle: handleOf(address),
     sha256: hex(sha256(utf8(canonical))),
     sealed: seal(address).valid,
     standard: SDK_VOCABULARY,

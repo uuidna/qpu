@@ -54,9 +54,9 @@ test('the verifiers registry covers every fact kind and only free sources', () =
   for (const k of ['integer', 'factors', 'repository', 'page', 'preprint', 'doi', 'constant']) assert.ok(kinds.has(k as never), k)
   assert.ok(VERIFIERS.every((v) => v.free))
   const reqs = createVerifyRequests({ kind: 'doi', value: '10.5281/zenodo.23156998' })
-  assert.deepEqual(reqs.map((r) => r.verifier).sort(), ['datacite', 'doi-org', 'zenodo'])
+  assert.deepEqual(reqs.map((r) => r.verifier).sort(), ['datacite', 'doi-org', 'openalex', 'zenodo'])
   const cern = createVerifyRequests({ kind: 'doi', value: '10.7483/OPENDATA.CMS.53FG.V2S9' })
-  assert.deepEqual(cern.map((r) => r.verifier).sort(), ['cern-opendata', 'datacite', 'doi-org'])
+  assert.deepEqual(cern.map((r) => r.verifier).sort(), ['cern-opendata', 'datacite', 'doi-org', 'openalex'])
   const repo = LEADS.find((l) => l.id.startsWith('repo-'))
   if (repo) assert.ok(extractFacts(repo).some((f) => f.kind === 'repository'))
 })
@@ -84,8 +84,8 @@ test('every tool result carries an Open Graph block and a shadcn registry item w
   assert.notEqual(block('a', {}, 1, '', '').id, block('b', {}, 1, '', '').id)
 })
 
-/** ISO/IEC/IEEE 29119-3 test case. Identifier: small: blocks and receipts are named by content-addressed RFC 9562 v8 UUIDs over FNV-1a 64, and DOIs are verified by a trinity. */
-test('small: blocks and receipts are named by content-addressed RFC 9562 v8 UUIDs over FNV-1a 64, and DOIs are verified by a trinity', () => {
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: small: blocks and receipts are named by content-addressed RFC 9562 v8 UUIDs over FNV-1a 64, and DOIs are verified by a trinity and by OpenAlex across every repository it harvests. */
+test('small: blocks and receipts are named by content-addressed RFC 9562 v8 UUIDs over FNV-1a 64, and DOIs are verified by a trinity and by OpenAlex across every repository it harvests', () => {
   const fnv = (t: string) => [...Array(t.length).keys()].reduce((h, i) => ((h ^ BigInt(t.charCodeAt(i))) * 0x100000001b3n) % 2n ** 64n, 0xcbf29ce484222325n).toString(16).padStart(16, '0')
   for (const t of ['', 'qpu', 'Ⰰ漢字', 'x'.repeat(4096)]) assert.equal(fold(t), fnv(t))
   const u = uuid('qpu')
@@ -93,7 +93,7 @@ test('small: blocks and receipts are named by content-addressed RFC 9562 v8 UUID
   assert.equal(u, uuid('qpu'))
   assert.notEqual(u, uuid('qpu '))
   const doi = TREE_FACTS.find((f) => f.kind === 'doi')!
-  assert.deepEqual(createVerifyRequests(doi).map((r) => r.verifier).sort(), ['datacite', 'doi-org', 'zenodo'])
+  assert.deepEqual(createVerifyRequests(doi).map((r) => r.verifier).sort(), ['datacite', 'doi-org', 'openalex', 'zenodo'])
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the stylesheet derives from the key 432 and each block takes its accent from the middle of its UUID as CMYK. */

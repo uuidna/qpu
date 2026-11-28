@@ -8,7 +8,7 @@ import { LICENSE } from '../a/f/3/d/e/a/5/f/index.ts'
 import { VERSION } from '../c/0/7/0/9/8/4/3/index.ts'
 import { hex, sha256, utf8 } from '../9/e/8/6/7/0/6/8/index.ts'
 import { SDK_API_PREFIX, SDK_VOCABULARY } from '../sdk/schema/index.ts'
-import { canonicalText, seal, uuid } from '../2/7/1/a/7/6/4/9/index.ts'
+import { canonicalText, seal, uuid, handleOf } from '../2/7/1/a/7/6/4/9/index.ts'
 import { trimTrailingSlashes } from '../sdk/path/index.ts'
 
 export type EvidenceStatus = 'supported' | 'blocked' | 'not_supported' | 'unverified'
@@ -165,7 +165,7 @@ export const verifyCompilationMetrics = (input: CompilationInput) => {
       isCompilationValid: false,
       reason: 'invalid-parameters',
       address,
-      handle: address.slice(0, 8),
+      handle: handleOf(address),
       sealed: seal(address).valid,
       standard: SDK_VOCABULARY,
       licence: LICENSE.spdx,
@@ -204,7 +204,7 @@ export const verifyCompilationMetrics = (input: CompilationInput) => {
     ...core,
     witnesses: ['Vocabulary.basis_length', 'qftDepth_eq_sub', 'surfacePhysical_eq_add', 'surfaceCorrectable_eq_div', 'Coupler.willow'] as const,
     address,
-    handle: address.slice(0, 8),
+    handle: handleOf(address),
     sha256: hex(sha256(utf8(canonical))),
     sealed: seal(address).valid,
     standard: SDK_VOCABULARY,
@@ -245,7 +245,7 @@ export const gqaiChallengeMatrix = (origin = 'https://qpu.uuidna.com') => {
     extraWitnesses: [...GQAI_EXTRA_WITNESSES],
     challenges,
     address,
-    handle: address.slice(0, 8),
+    handle: handleOf(address),
     sha256: hex(sha256(utf8(canonical))),
     sealed: seal(address).valid,
   }
@@ -297,7 +297,7 @@ export const gqaiAppsScript = (origin = 'https://qpu.uuidna.com') => {
     standard: SDK_VOCABULARY,
     licence: LICENSE.spdx,
     address,
-    handle: address.slice(0, 8),
+    handle: handleOf(address),
     sha256: hex(sha256(utf8(code))),
     sealed: seal(address).valid,
     code,

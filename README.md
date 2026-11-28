@@ -51,8 +51,8 @@ One UUID is a register of 32 hexbits of 4 qubits, less 4 version and 2 variant q
 | --- | --- | --- | --- | --- |
 | 0 · register | UUID register (128 bit → 122 qubit) | 122/128 (122 used) | `src/quantum/uuid` | `/api/mcp` |
 | 1 · kernel | Lean 4 theorems (0 sorry) | 1677 declared / 2519 kernel | `lean/Qpu` | `/api/products` |
-| 2 · catalog | Payload products & variants | 1677 products / 25268 variants | `src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts` | `/api/globals/catalog` |
-| 3 · entanglements | Theorem links as MCP tools | 1754 edges / 25268 tools | `lean/tools/Theorems.lean` | `/api/globals/mcp-tools` |
+| 2 · catalog | Payload products & variants | 1677 products / 25282 variants | `src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts` | `/api/globals/catalog` |
+| 3 · entanglements | Theorem links as MCP tools | 1754 edges / 25282 tools | `lean/tools/Theorems.lean` | `/api/globals/mcp-tools` |
 | 4 · sdk | Payload Studio + VitePress SDK | 7 collections / 47 UI | `lean/tools/Sdk.lean` | `/studio` |
 | 5 · cloudflare | Edge, Google APIs & MCP | 3 routes (/, /mcp, /api/\*) | `src/quantum/uuid/programs/8/7/b/1/e/7/e/9/index.ts` | `/api/globals/pipeline` |
 | 6 · iso | Normative ISO & vocabulary | 30 standards (30 witnessed) / 86 clauses | `lean/Qpu/General/Iso.lean` | `/api/standards` |
@@ -334,18 +334,18 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 
 | text | value |
 | --- | --- |
-| uuid | cd57d85b-7b02-843b-bfa4-6e062feb251a |
-| sha256 | db3cb2d130767e7188cfb1771c40c6117dd86d603a001705412fdbb98fe3fe7e |
+| uuid | c331df08-3871-3a91-af3f-5b98e302d852 |
+| sha256 | 5838afe81e78633b022094e6b4f02771215f8e6c6b701a1b9083b4acf83472a7 |
 | merge | 8e27a41e-6ec9-5931-be39-f662b696691f |
-| verify | `verify {"uuid":"cd57d85b-7b02-843b-bfa4-6e062feb251a","content":"text"}` |
+| verify | `verify {"uuid":"c331df08-3871-3a91-af3f-5b98e302d852","content":"text"}` |
 | mcp | <https://qpu.uuidna.com/api/mcp> |
 
 <!-- hardware -->
 
 | copy | value |
 | --- | --- |
-| issued | 2026-11-28T05:05:23.735Z |
-| hardware | 5cb1b71c-aeb5-5c88-9c28-7e3de7063600 |
+| issued | 2026-11-28T15:40:50.239Z |
+| hardware | 87215fc4-5ea5-59fa-a6ff-85003989e234 |
 
 <details>
 <summary>hardware</summary>
@@ -354,24 +354,24 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 
 | receipt | value |
 | --- | --- |
-| uuid | 5cb1b71c-aeb5-5c88-9c28-7e3de7063600 |
-| handle | `5cb1b71c` |
-| sha256 | 1bf773f18648b3a0f078b93bde974d2583d313e40d13719d1df1f8e5f364361d |
+| uuid | 87215fc4-5ea5-59fa-a6ff-85003989e234 |
+| handle | `87215fc4` |
+| sha256 | 44b6c5ef7a79af81e49a29448c5e1620289c77a1a654c035ba89683f3a994dd5 |
 
 | hardware | value |
 | --- | --- |
-| issued | 2026-11-28T05:05:23.735Z |
+| issued | 2026-11-28T15:40:50.239Z |
 | registerBytes | 16 |
 | registerQubits | 122 |
 | registersInMemory | 2147483648 |
 | registerQubitsInMemory | 261993005056 |
-| freeMemoryRegisters | 195076096 |
-| freeMemoryQubits | 23799283712 |
-| usedMemoryRegisters | 1952407552 |
-| usedMemoryQubits | 238193721344 |
-| memoryUtilisationPct | 90.92 |
-| processRssRegisters | 25397248 |
-| processRssQubits | 3098464256 |
+| freeMemoryRegisters | 341200896 |
+| freeMemoryQubits | 41626509312 |
+| usedMemoryRegisters | 1806282752 |
+| usedMemoryQubits | 220366495744 |
+| memoryUtilisationPct | 84.11 |
+| processRssRegisters | 25862144 |
+| processRssQubits | 3155181568 |
 | platform | darwin |
 | type | Darwin |
 | release | 27.2.0 |
@@ -383,42 +383,42 @@ For example, teleportation sends a message qubit across 3 qubits with 2 classica
 | cores | 10 |
 | parallelism | 10 |
 | cpuMHz | 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400, 2400 |
-| cpuUserMs | 571023420 |
+| cpuUserMs | 635833420 |
 | cpuNiceMs | 0 |
-| cpuSysMs | 264752370 |
-| cpuIdleMs | 2775089330 |
+| cpuSysMs | 284881290 |
+| cpuIdleMs | 3026529930 |
 | cpuIrqMs | 0 |
 | memoryBytes | 34359738368 |
-| freeMemoryBytes | 3121217536 |
-| load1 | 3.99462890625 |
-| load5 | 7.70556640625 |
-| load15 | 7.74365234375 |
-| uptimeS | 389921 |
+| freeMemoryBytes | 5459214336 |
+| load1 | 2.91162109375 |
+| load5 | 3.87744140625 |
+| load15 | 3.8974609375 |
+| uptimeS | 428048 |
 | diskBytes | 994662584320 |
-| diskFreeBytes | 806443954176 |
-| diskAvailableBytes | 806443954176 |
+| diskFreeBytes | 796942405632 |
+| diskAvailableBytes | 796942405632 |
 | diskBlockBytes | 4096 |
-| inodes | 7890265029 |
-| inodesFree | 7875429240 |
+| inodes | 7797880192 |
+| inodesFree | 7782640680 |
 | networkInterfaces | 10 |
 | lean | leanprover/lean4:v4.33.0 |
-| rssBytes | 406355968 |
-| heapTotalBytes | 212189184 |
-| heapUsedBytes | 111674160 |
-| externalBytes | 6698773 |
-| arrayBuffersBytes | 282061 |
-| processUserMicros | 6602862 |
-| processSystemMicros | 142547 |
-| maxRssKb | 396848 |
-| pageFaults | 25420 |
+| rssBytes | 413794304 |
+| heapTotalBytes | 221102080 |
+| heapUsedBytes | 107776872 |
+| externalBytes | 6801904 |
+| arrayBuffersBytes | 385192 |
+| processUserMicros | 6525854 |
+| processSystemMicros | 157243 |
+| maxRssKb | 404112 |
+| pageFaults | 26149 |
 | fsReads | 0 |
 | fsWrites | 0 |
-| contextSwitches | 6127 |
+| contextSwitches | 6187 |
 | challenges | 574a161f, fb1cd940, d6d7b748, ec54afc7, bbcc2c0f, dbbc4fe8, 1feb6648, 52a07646, a7fa7c75, d8719ba7, 5d7c7a76, 4d938405, 02f60ed8, 3edf017a |
 | isoHardwareTerms | 3.3.5 physical qubit, 3.3.6 physical qudit, 3.4.8 quantum processor, 3.4.10 quantum computer, 3.4.26 circuit-based quantum computer, 3.4.27 one-way quantum computer, 3.4.28 adiabatic quantum computer |
 | quantumBehaviour | UNVERIFIED |
-| buildMs | 4957 |
-| at | 2026-11-28T05:05:23.735Z |
+| buildMs | 4921 |
+| at | 2026-11-28T15:40:50.239Z |
 
 | hardware.versions | value |
 | --- | --- |

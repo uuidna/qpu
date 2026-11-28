@@ -16,24 +16,24 @@ Per tenant the author sets two wrangler secrets, STRIPE_SECRET_KEY_<TENANT> and 
 
 ## Tools
 
-| Tool | Does | Arguments |
-| --- | --- | --- |
-| `stripe` | Stripe per tenant, pure, the QPU as a product with its variants. | `op`, `currency`, `calls`, `settled`, `journal`, `mint`, `ideas`, `royalty`, `tools`, `currencies`, `from`, `to`, `transactions`, `tenant`, `host`, `checkout`, `payload`, `signature`, `secret`, `now`, `entries`, `subject`, `domain`, `selftest` |
-| `currency` | Currency: plan free rate APIs; harmonise medians/pegs (BGN 1.95583); market qubit-shot USD/EUR/BGN (ISO 4217); forged QPU refused. | `op`, `answers`, `symbols`, `amounts`, `tenant`, `domain`, `selftest` |
+| Handle | Tool | Does | Arguments |
+| --- | --- | --- | --- |
+| `d349dd06` | `stripe` | Stripe per tenant, pure, the QPU as a product with its variants. | `op`, `currency`, `calls`, `settled`, `journal`, `mint`, `ideas`, `royalty`, `tools`, `currencies`, `from`, `to`, `transactions`, `tenant`, `host`, `checkout`, `payload`, `signature`, `secret`, `now`, `entries`, `subject`, `domain`, `selftest` |
+| `6ab3c48b` | `currency` | Currency: plan free rate APIs; harmonise medians/pegs (BGN 1.95583); market qubit-shot USD/EUR/BGN (ISO 4217); forged QPU refused. | `op`, `answers`, `symbols`, `amounts`, `tenant`, `domain`, `selftest` |
 
 ## Examples
 
-- `currency-plan`: Free rate APIs, pegs, related MCPs; forged QPU refused.
-- `currency-market`: market median qubit-shot USD/EUR (ISO 4217); forged QPU refused.
-- `currency-refuse-qpu`: forged QPU currency refused (not ISO 4217).
-- `currency-harmonise`: Median rates (USD agree, BGN peg); 432 € → every currency; .bg is EUR.
-- `stripe-fusion`: Coins fuse to coils both ways (double torus); pure algebra stays a coin; commercial coils need a licence.
-- `stripe-plan`: A checkout plan for a yearly commercial licence of acme on two domains, bought at tenant psg: the form Stripe takes, the metadata the webhook brings back, the tenant secret the Worker alone holds.
-- `stripe-margins`: Catalogue margins vs fixture provider costs; missing cost is a lead.
-- `stripe-usecases`: Stripe API resources vs MCP combinations; identity/tax/terminal are leads.
-- `stripe-catalogue`: The QPU as a product line for tenant uuidna: seven variants over five products, each a Stripe price form in two currencies, the a432 default at zero.
-- `stripe-combinations`: Plugins that share a trinity collide and merge.
-- `stripe-webhook`: A checkout completed at tenant psg, its signature verified with psg's webhook secret, read into one licence entry granting acme on both domains.
+- `2db9c30d` `currency-plan`: Free rate APIs, pegs, related MCPs; forged QPU refused.
+- `60428dec` `currency-market`: market median qubit-shot USD/EUR (ISO 4217); forged QPU refused.
+- `eb4d9751` `currency-refuse-qpu`: forged QPU currency refused (not ISO 4217).
+- `9216e06d` `currency-harmonise`: Median rates (USD agree, BGN peg); 432 € → every currency; .bg is EUR.
+- `6fb739bc` `stripe-fusion`: Coins fuse to coils both ways (double torus); pure algebra stays a coin; commercial coils need a licence.
+- `345bc449` `stripe-plan`: A checkout plan for a yearly commercial licence of acme on two domains, bought at tenant psg: the form Stripe takes, the metadata the webhook brings back, the tenant secret the Worker alone holds.
+- `0486dba8` `stripe-margins`: Catalogue margins vs fixture provider costs; missing cost is a lead.
+- `da1d6be8` `stripe-usecases`: Stripe API resources vs MCP combinations; identity/tax/terminal are leads.
+- `182788fa` `stripe-catalogue`: The QPU as a product line for tenant uuidna: seven variants over five products, each a Stripe price form in two currencies, the a432 default at zero.
+- `cb568045` `stripe-combinations`: Plugins that share a trinity collide and merge.
+- `42d390ad` `stripe-webhook`: A checkout completed at tenant psg, its signature verified with psg's webhook secret, read into one licence entry granting acme on both domains.
 
 ## Directions it tests itself in
 

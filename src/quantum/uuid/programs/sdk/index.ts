@@ -21,7 +21,7 @@ import { gqaiAppsScript, gqaiChallengeMatrix, verifyCompilationMetrics } from '.
 import { clay1000Research } from '../clay/thousand/index.ts'
 import { ecommerceSeoMcp } from '../seo/index.ts'
 import { rbacAudit, rbacCheck } from '../rbac/index.ts'
-import { canonicalText, seal, uuid } from '../2/7/1/a/7/6/4/9/index.ts'
+import { canonicalText, seal, uuid, LEAN_REGISTER, handleOf } from '../2/7/1/a/7/6/4/9/index.ts'
 import { catalogClay1000Bit, catalogClayDuality, catalogDoc, catalogInteract, catalogMcpTools, catalogProduct, catalogSeeds, catalogSummary } from '../3/2/7/5/4/2/0/1/index.ts'
 import {
   CATALOG_COLLECTIONS,
@@ -272,7 +272,7 @@ export const sdkCompute = async (tool: string, args: Record<string, unknown> = {
   const toolbox = toolboxOfTool.get(tool) ?? 'flow'
   const address = uuid(`${tool}${canonicalText(args)}`)
   const data: ComputationData = {
-    title: `${tool}:${address.slice(0, 8)}`,
+    title: `${tool}:${handleOf(address)}`,
     tool,
     toolbox,
     address,
@@ -503,7 +503,7 @@ export const googleIntegrations = (origin = 'https://qpu.uuidna.com') => {
       { surface: 'antigravity-mcp-toolbox', protocol: 'streamable-http-mcp', qpuEndpoint: `${SDK_API_PREFIX}/mcp`, improves: 'Lean kernel verification' },
       { surface: 'quantum-ai-cirq', protocol: 'payload-mcp-connector', qpuEndpoint: `${SDK_API_PREFIX}/mcp`, improves: 'exact deterministic simulation' },
       { surface: 'google-quantum-ai-challenges', protocol: 'kickmix-xprize-lean', qpuEndpoint: `${gGlobal}?view=challenges`, improves: 'verifiable circuit bounds' },
-      { surface: 'workspace-cloud-audit', protocol: 'content-addressed-receipts', qpuEndpoint: gGlobal, improves: '122-qubit UUID sealing' },
+      { surface: 'workspace-cloud-audit', protocol: 'content-addressed-receipts', qpuEndpoint: gGlobal, improves: `${LEAN_REGISTER}-qubit UUID sealing` },
     ],
   }
 }
@@ -523,7 +523,7 @@ export const googleEnhance = (input: { api?: unknown; payload?: unknown; theorem
     phase: 'google-enhanced' as const,
     api,
     address,
-    handle: address.slice(0, 8),
+    handle: handleOf(address),
     sha256: digest,
     sealed,
     standard: SDK_VOCABULARY,
@@ -723,7 +723,7 @@ export const payloadUiManifest = (origin = 'https://qpu.uuidna.com') => {
     blocks: [
       { slug: 'pqc-workbench', label: 'PQC Lab', standard: 'FIPS 203/204/205' },
       { slug: 'theorem-entangler', label: 'Theorem Entangler', standard: 'Lean 4' },
-      { slug: 'register-telemetry', label: '122-Qubit Register', standard: 'ISO/IEC 4879:2024' },
+      { slug: 'register-telemetry', label: `${LEAN_REGISTER}-Qubit Register`, standard: 'ISO/IEC 4879:2024' },
       { slug: 'circuit-echoes', label: 'Circuit Echoes', standard: 'Cirq / Willow' },
       { slug: 'iso-matrix', label: 'ISO Matrix', standard: '30 Standards' },
       { slug: 'mcp-playground', label: 'MCP Playground', standard: 'Streamable HTTP' },
@@ -812,7 +812,7 @@ export const runAutonomousPipeline = (origin = 'https://qpu.uuidna.com') => {
     passed,
     total: stages.length,
     address,
-    handle: address.slice(0, 8),
+    handle: handleOf(address),
     sha256: hex(sha256(utf8(canonical))),
     sealed: seal(address).valid,
     standard: SDK_VOCABULARY,

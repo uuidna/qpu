@@ -8,6 +8,7 @@ import { ENTROPY_LAW } from '../../../../../../../../b/6/4/6/e/a/0/1/index.ts'
 import { LICENSE, PRECEDENCE } from '../../../../../../../../a/f/3/d/e/a/5/f/index.ts'
 import type { quantumCapacity } from '../../../../../../../8/7/0/6/d/2/8/index.ts'
 import { UNIT_CONCEPT_DOI } from '../../../../../../../../6/6/5/9/1/f/5/8/index.ts'
+import { LEAN_REGISTER } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 
 /** The ISO dimensions this tree names, as Lean lists them in Qpu.General.Iso. Quantum purity is gated on each of them. */
 export { ISO_DIMENSIONS }
@@ -97,7 +98,7 @@ export const ISO_22739 = {
 export const ISO_4217_COIN = {
   standard: 'ISO 4217' as const,
   currencies: ['EUR', 'USD', 'BGN'] as const,
-  register: 122 as const,
+  register: LEAN_REGISTER,
   theorem: 'textbook_coin_lean_sot' as const,
   market: 'textbook_market_iso_4217' as const,
   forged: { code: 'QPU' as const, iso4217: false as const, refused: true as const },
@@ -247,8 +248,8 @@ export const isoConformance = (files: Readonly<Record<string, string>>) => {
     row('ISO 27729', [...docs, ...manifests].flatMap(([p, t]) => { const ids = [...t.matchAll(ORCID_RE)].map((m) => m[1]!); return ids.length === 0 ? [`${p}: no orcid`] : ids.filter((id) => !orcidCheckValid(id)).map((id) => `${p}: ${id}`) })),
     row('ISO/IEC 5962', [...docs, ...manifests].flatMap(([p, t]) => (/CC-BY-NC-ND-4\.0/i.test(t) ? [] : [`${p}: no spdx`]))),
     row('ISO 690 / ISO 26324', [...docs, ...citationManifests].flatMap(([p, t]) => (/10\.5281\/zenodo\.22700098/.test(t) ? [] : [`${p}: no doi`]))),
-    row('ISO 56005', docs.flatMap(([p, t]) => (/ISO 56005/.test(t) && /128/.test(t) && /122/.test(t) ? [] : [`${p}: no disclosure`]))),
-    row('ISO/IEC 9834-8', releaseDocs.flatMap(([p, t]) => (/122 qubits in 16 bytes/.test(t) && /65536/.test(t) && /106/.test(t) ? [] : [`${p}: no register`]))),
+    row('ISO 56005', docs.flatMap(([p, t]) => (/ISO 56005/.test(t) && /128/.test(t) && new RegExp(`${LEAN_REGISTER}`).test(t) ? [] : [`${p}: no disclosure`]))),
+    row('ISO/IEC 9834-8', releaseDocs.flatMap(([p, t]) => (new RegExp(`${LEAN_REGISTER} qubits in 16 bytes`).test(t) && /65536/.test(t) && /106/.test(t) ? [] : [`${p}: no register`]))),
   ]
 }
 

@@ -1,7 +1,7 @@
 // Google Standards RBAC (CanCanCan + rolify + Directory API + ML-DSA-65 provenance attestations).
 import { checkAccess, getAccess, listRolesFromGroups, type Ability, type ScopedRole } from '../c/3/d/1/3/3/a/8/index.ts'
 import { dsaRound } from '../4/3/a/3/9/a/e/6/index.ts'
-import { canonicalText, seal, uuid } from '../2/7/1/a/7/6/4/9/index.ts'
+import { canonicalText, seal, uuid, handleOf } from '../2/7/1/a/7/6/4/9/index.ts'
 import { hex, sha256, utf8 } from '../9/e/8/6/7/0/6/8/index.ts'
 import { LICENSE } from '../a/f/3/d/e/a/5/f/index.ts'
 import { SDK_VOCABULARY } from '../sdk/schema/index.ts'
@@ -225,7 +225,7 @@ export const rbacAudit = (origin = 'https://qpu.uuidna.com') => {
   return {
     ...summary,
     address,
-    handle: address.slice(0, 8),
+    handle: handleOf(address),
     sha256: hex(sha256(utf8(canonical))),
     sealed: seal(address).valid,
     standard: SDK_VOCABULARY,

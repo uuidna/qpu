@@ -3,6 +3,7 @@
 // Fused on the payload tool as payload { scripts: … }; never a new tools/list door (connect bill stays the existing catalogue).
 
 import { PROSE, proseFill } from '../../../../../../../../5/9/e/4/9/1/a/4/index.ts'
+import { runClaims } from '../../../../../../../../2/3/3/6/7/5/e/f/index.ts'
 import { VERSION } from '../../../../../../../../c/0/7/0/9/8/4/3/index.ts'
 import { LICENSE } from '../../../../../../../../a/f/3/d/e/a/5/f/index.ts'
 import { RELEASE_REPOSITORY } from '../../../../../../../../6/6/5/9/1/f/5/8/index.ts'
@@ -12,6 +13,11 @@ type ClayRelation = { name: string; statement: string; families: string[] }
 import { TEXTBOOK_THEOREMS } from '../../../../../../../../3/4/7/e/0/c/e/0/index.ts'
 import { QUANTUM_TERMS, quantumVocabulary } from '../../../../../../../../d/f/0/d/9/1/3/b/index.ts'
 import { canonicalText, seal, uuid, uuidQubits } from '../../../../../../../7/1/a/7/6/4/9/index.ts'
+import { catalogDoc } from '../../../../../../../../3/2/7/5/4/2/0/1/index.ts'
+import { merkleTree } from '../../../../../../../../e/1/9/1/6/4/9/c/index.ts'
+import { hexagonHandle } from '../../../../../../../../d/7/8/3/e/4/6/3/index.ts'
+import { crossWitnesses, leanAlgebraSeed } from '../../../../../../../../3/1/0/2/7/5/b/a/index.ts'
+import { utilisationOf } from '../../../../../../../../0/8/7/0/6/d/2/8/index.ts'
 import { TOOLBOXES } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
 import { AUTHOR_CLAIMS, GENERATED_LEMMAS, KERNEL_THEOREMS, NOVELTIES, THEOREMS } from '../../../../../../../../3/f/0/e/7/a/6/f/index.ts'
 import { receiptOf } from '../../../../../../../../index.ts'
@@ -92,6 +98,26 @@ const termRe = (name: string) => new RegExp(`\\b${name.replace(/, (adjective|nou
 const sentence = (s: string) => { const m = /^(.+?[.!?])(\s|$)/.exec(s.trim()); const one = (m ? m[1]! : s.trim()).replace(/\s+/g, ' '); return /[.!?]$/.test(one) ? one : one + '.' }
 const cell = (s: string) => s.replace(/\|/g, '\\|').replace(/\n+/g, ' ')
 const frontmatter = (name: string, description: string) => ['---', `name: ${name}`, `description: ${description.replace(/\n+/g, ' ')}`, `license: ${SKILL_LICENSE}`, '---', '']
+/** A part's coin sealed in the post-quantum witness ring: its fourteen witnesses each encrypted to the next (ML-KEM-768) and signed (ML-DSA-65), from
+ *  the seed of the Lean algebra, so the ring is remade by anyone from the algebra and tells a changed part by comparison (textbook_tamper_detected). A
+ *  ring costs about half a second, so the seeder seals each part once rather than every generation. */
+export const skillRing = (part: { uuid: string }, theorems: readonly { key: string; statement: string }[]) => {
+  const seed = leanAlgebraSeed(theorems), ring = crossWitnesses({ uuid: part.uuid, seed })
+  return { uuid: part.uuid, seed, holds: ring.holds, closes: ring.closes, refused: ring.refused, faces: ring.faces, links: ring.links.map((l) => ({ from: l.from, to: l.to, kem: l.kem, signature: (l as { signature?: unknown }).signature })), cost: ring.cost }
+}
+/** The skills as Payload's ecommerce plugin holds a catalog, in its own collections and the order a seeder creates them, Payload itself unchanged: one
+ *  variant type, the handle; an option for each part, its value the part's hexagon handle and its label what that handle names, read back through the
+ *  index of handles; a product for each skill, carrying its UUID and the root over its parts; and a variant for each part, carrying its UUID, its handle,
+ *  its hours on the two clocks and how much of its UUID's register its content fills. Each document sealed as catalogDoc seals the catalogue. */
+export const handleCatalog = (catalogue: readonly { name: string; toolbox: string | null; uuid: string; root?: string; parts?: readonly { kind: string; name: string; text: string; uuid: string; handle: string; hour12: number; hour24: number }[] }[]) => {
+  const skills = catalogue.filter((r) => r.toolbox !== null && r.parts)
+  const named = new Map(skills.flatMap((s) => s.parts!.map((p) => [p.handle, p] as const)))
+  const type = catalogDoc('variantTypes', { name: 'handle', label: 'Handle' })
+  const options = new Map([...named.keys()].map((handle) => [handle, catalogDoc('variantOptions', { variantType: type.id, label: `${named.get(handle)!.kind} ${named.get(handle)!.name}`, value: handle })]))
+  const products = skills.map((s) => catalogDoc('products', { title: s.name, slug: s.name, enableVariants: true, variantTypes: [type.id], _status: 'published', quantum: { receipt: s.uuid, program: { toolbox: s.toolbox, root: s.root, rfc: 6962 }, outcome: { parts: s.parts!.length } } }))
+  const variants = skills.flatMap((s, i) => s.parts!.map((p) => catalogDoc('variants', { title: `${s.name} / ${p.handle}`, product: products[i]!.id, options: [options.get(p.handle)!.id], _status: 'published', quantum: { receipt: p.uuid, program: { handle: p.handle, kind: p.kind, name: p.name }, outcome: { hour12: p.hour12, hour24: p.hour24, ...utilisationOf(p.text) } } })))
+  return { phase: 'seeds' as const, standard: '@payloadcms/plugin-ecommerce' as const, order: ['variantTypes', 'variantOptions', 'products', 'variants'] as const, collections: { variantTypes: [type], variantOptions: [...options.values()], products, variants }, handles: named.size, unique: named.size === skills.reduce((n, s) => n + s.parts!.length, 0) }
+}
 export const qpuSkills = (boxesIn: readonly SkillBox[], terms: readonly { clause: string; name: string }[] = QUANTUM_TERMS, allExamples: readonly { id: string; shows?: string; tool?: string }[] = [], checked: readonly CheckedTerm[] = quantumVocabulary()) => {
   const register = uuidQubits(4), qubits = register.effective, qubitsFormula = `32 × 4 − 4 − 2 = ${qubits}`
   // a toolbox that lists no examples of its own has the examples of the registry that call its tools; the toolbox holding the circuit gate is the one through which the QPU computed every term
@@ -106,17 +132,27 @@ export const qpuSkills = (boxesIn: readonly SkillBox[], terms: readonly { clause
     // the selftest a client runs first: the toolbox's tool whose schema names selftest, else the clone door, which runs the toolbox's selftest and answers selftestPassed
     const slug = `qpu-${b.name}`, tested = b.tools.find((t) => 'selftest' in (t.inputSchema?.properties ?? {}))
     const selftestCall = tested ? `${tested.name} { selftest: true }` : `clone { toolbox: '${b.name}' }`, selftestAnswer = tested ? '{ passed, checks }' : '{ selftestPassed, tools, examples }'
+    // each part of the skill sealed as the catalogue seals its documents, the address of its collection and canonical data, a register of 122 qubits,
+    // whose hexbit handle is its hexagon's: the six rotations of its program run over its tail, so the handle is its own and reads its hour on the
+    // 12- and 24-hour clocks; the skill is the RFC 6962 root over its parts, so a changed part changes it
+    const parts = [
+      { kind: 'idea', name: b.name, text: b.idea }, { kind: 'instructions', name: b.name, text: b.skill.instructions },
+      ...b.tools.map((t) => ({ kind: 'tool', name: t.name, text: t.description })), ...b.examples.map((e) => ({ kind: 'example', name: e.id, text: e.shows ?? '' })),
+      ...b.skill.directions.map((d, i) => ({ kind: 'direction', name: String(i + 1), text: d })),
+    ].map((p) => { const h = hexagonHandle(catalogDoc('skillParts', { skill: slug, ...p }).id); return { ...p, uuid: h.uuid, handle: h.handle, hour12: h.clock.hour12, hour24: h.clock.hour24 } })
+    const root = (merkleTree({ leaves: parts.map((p) => p.uuid.replace(/-/g, '')), hex: true }) as { root: string }).root
+    const handleOf = (kind: string, name: string) => parts.find((p) => p.kind === kind && p.name === name)!.handle
     const md = [
       ...frontmatter(slug, proseFill(PROSE.quantumProcessingScriptDoors_s9, b.name, sentence(b.idea), selftestCall)),
       `# QPU · ${b.name}`, '', b.idea, '', proseFill(PROSE.quantumProcessingScriptDoors_s10, b.tools.length, b.examples.length, b.skill.directions.length), '',
       '## How a client uses it', '', b.skill.instructions, '',
-      '## Tools', '', '| Tool | Does | Arguments |', '| --- | --- | --- |', ...b.tools.map((t) => `| \`${t.name}\` | ${cell(sentence(t.description))} | ${Object.keys(t.inputSchema?.properties ?? {}).map((k) => `\`${k}\``).join(', ') || '—'} |`), '',
-      '## Examples', '', ...b.examples.map((e) => `- \`${e.id}\`${e.shows ? `: ${cell(sentence(e.shows))}` : ''}`), '',
+      '## Tools', '', '| Handle | Tool | Does | Arguments |', '| --- | --- | --- | --- |', ...b.tools.map((t) => `| \`${handleOf('tool', t.name)}\` | \`${t.name}\` | ${cell(sentence(t.description))} | ${Object.keys(t.inputSchema?.properties ?? {}).map((k) => `\`${k}\``).join(', ') || '—'} |`), '',
+      '## Examples', '', ...b.examples.map((e) => `- \`${handleOf('example', e.id)}\` \`${e.id}\`${e.shows ? `: ${cell(sentence(e.shows))}` : ''}`), '',
       '## Directions it tests itself in', '', ...b.skill.directions.map((d) => `- ${d}`), '', proseFill(PROSE.quantumProcessingScriptDoors_s11, selftestCall, selftestAnswer), '',
       '## Vocabulary (ISO/IEC 4879:2024)', '', ...(checks.length ? [proseFill(PROSE.quantumProcessingScriptDoors_s12, checks.filter((c) => c.holds).length, checks.length), '', '| Clause | Term | Holds | UUID |', '| --- | --- | --- | --- |', ...checks.map((c) => `| ${c.clause} | ${c.name} | ${c.holds ? 'yes' : 'no'} | \`${c.uuid}\` |`)] : named.length ? ['| Clause | Term |', '| --- | --- |', ...named.map((t) => `| ${t.clause} | ${t.name} |`)] : [PROSE.quantumProcessingScriptDoors_s13]), '',
       '## Register', '', proseFill(PROSE.quantumProcessingScriptDoors_s14, address, qubits, qubitsFormula), '',
     ].join('\n')
-    return { name: slug, toolbox: b.name, path: `${SKILL_ROOT}/${slug}/SKILL.md`, links: skillLinks(slug), uuid: address, sealed: seal(address).valid, qubits, terms: named.map((t) => t.clause), byText: byText.length, checked: checks.filter((c) => c.holds).length, tools: b.tools.length, examples: b.examples.length, directions: b.skill.directions.length, complete, text: md }
+    return { name: slug, toolbox: b.name, path: `${SKILL_ROOT}/${slug}/SKILL.md`, links: skillLinks(slug), uuid: address, sealed: seal(address).valid, qubits, parts, root, terms: named.map((t) => t.clause), byText: byText.length, checked: checks.filter((c) => c.holds).length, tools: b.tools.length, examples: b.examples.length, directions: b.skill.directions.length, complete, text: md }
   })
   const namedClauses = new Set(rows.flatMap((r) => r.terms)), unnamed = terms.filter((t) => !namedClauses.has(t.clause)).map((t) => `${t.clause} ${t.name}`)
   const indexAddress = uuid(canonicalText({ skill: 'qpu', skills: rows.map((r) => r.uuid) }))
@@ -135,6 +171,11 @@ export const qpuSkills = (boxesIn: readonly SkillBox[], terms: readonly { clause
 }
 
 type LeadRow = Record<string, unknown>
+/** New leads merged into the record this build holds; a lead already recorded is kept as it is, since a lead changes only by its own row. */
+const addLeads = (add: readonly LeadRow[]) => {
+  const known = new Set(LEAD_ROWS.map((l) => l.id)), fresh = add.filter((l) => typeof l.id === 'string' && typeof l.statement === 'string' && typeof l.status === 'string' && !known.has(l.id) && known.add(l.id))
+  return { ...leadsIndex([...LEAD_ROWS, ...fresh]), added: fresh.map((l) => String(l.id)), kept: add.length - fresh.length }
+}
 /** Lead records Payload holds → leads-index.ts. Formerly node scripts/mcp.ts leads-sync (the write-back half). */
 export const leadsIndex = (rows: readonly LeadRow[]) => {
   const keys = ['id', 'source', 'statement', 'status', 'tool', 'reason', 'lastmod'] as const
@@ -260,6 +301,7 @@ const SCRIPT_INVOKE = {
   scripts_textbook_lean: { tool: 'textbook', args: '{ scripts: { textbookLean } }', via: PROSE.quantumProcessingScriptDoors_via28, npm: 'next step docs:gen' },
   scripts_skills: { tool: 'textbook', args: '{ scripts: { skills } }', via: PROSE.quantumProcessingScriptDoors_via29, npm: 'next step skills:gen' },
   scripts_prose_links: { tool: 'textbook', args: '{ scripts: { proseLinks } }', via: 'src/quantum/uuid/programs/3/7/2/f/3/1/1/5/index.ts', npm: 'next step prose:links' },
+  scripts_claims: { tool: 'textbook', args: '{ scripts: { claims } }', via: 'src/quantum/uuid/programs/2/3/3/6/7/5/e/f/index.ts', npm: 'next step claims:gen' },
   scripts_outputs: { tool: 'textbook', args: '{ scripts: { outputs } }', via: 'src/quantum/uuid/programs/f/e/e/2/8/4/4/7/index.ts', npm: 'next step outputs:gen' },
   scripts_module_tex: { tool: 'textbook', args: '{ scripts: { moduleTex: { lean } } }', via: 'lean/**/*.tex', npm: 'next step tex:gen' },
   scripts_disclosure: { tool: 'textbook', args: '{ scripts: { disclosure: { lean } } }', via: '.disclosure/disclosure.md', npm: 'step textbook' },
@@ -430,6 +472,10 @@ export type ScriptsArgs = {
   proseLinks?: boolean | { seed?: boolean }
   moduleTex?: { lean?: Record<string, string> }
   disclosure?: { lean?: Record<string, string> }
+  claims?: boolean | { refresh?: boolean }
+  // what the runner hands back to a door that answered with requests: the answers, and which attempt this is
+  answers?: { id: string; status: number; text: string }[]
+  attempt?: number
 }
 
 /** payload { scripts } — one fused door for relocated script work. */
@@ -445,20 +491,19 @@ export const scripts = (args: ScriptsArgs, ctx?: { examples?: readonly { id: str
   if (args.proseLinks !== undefined && args.proseLinks !== false) { const names = nextUnlinked(PROSE_UNLINKED, typeof args.proseLinks === 'object' && args.proseLinks.seed === true), gate = gateProseLinks(names); return { phase: 'scripts-prose-links' as const, path: 'src/quantum/uuid/programs/3/7/2/f/3/1/1/5/index.ts', text: [PROSE.quantumProcessingScriptDoors_unlinkedHead, `export const PROSE_UNLINKED: readonly string[] = ${JSON.stringify(names)}`, ''].join('\n'), sentences: gate.sentences, linked: gate.linked, listed: names.length, entering: gate.entering.length, holds: gate.holds } }
   if (args.moduleTex && typeof args.moduleTex.lean === 'object') return moduleTex(args.moduleTex.lean)
   if (args.disclosure && typeof args.disclosure.lean === 'object' && ctx?.examples) return disclosure(args.disclosure.lean, ctx.examples as readonly { id: string; theorem?: string }[])
+  // the claims index, and the leads it found deposited into the lead record beside it (a lead already recorded is kept as it is)
+  if (args.claims) { const r = runClaims(args.answers, args.attempt ?? 0, typeof args.claims === 'object' && args.claims.refresh === true); const found = (r as { leads?: readonly LeadRow[] }).leads; return Array.isArray(found) ? { ...r, leads: found.length, files: [addLeads(found)] } : r }
   if (args.theoremsIndex && typeof args.theoremsIndex === 'object') return theoremsIndex()
   if (args.leadsIndex && Array.isArray(args.leadsIndex.rows)) return leadsIndex(args.leadsIndex.rows)
   // new leads merged into the record this build holds, so one call of the runner deposits a lead; a lead already recorded is kept as it is,
   // since a lead changes only by its own row and leaves only by a verdict
-  if (args.leadsIndex && Array.isArray(args.leadsIndex.add)) {
-    const known = new Set(LEAD_ROWS.map((l) => l.id)), fresh = args.leadsIndex.add.filter((l) => typeof l.id === 'string' && typeof l.statement === 'string' && typeof l.status === 'string' && !known.has(l.id) && known.add(l.id))
-    return { ...leadsIndex([...LEAD_ROWS, ...fresh]), added: fresh.map((l) => String(l.id)), kept: args.leadsIndex.add.length - fresh.length }
-  }
+  if (args.leadsIndex && Array.isArray(args.leadsIndex.add)) return addLeads(args.leadsIndex.add)
   if (args.tablesIndex && args.tablesIndex.tables && typeof args.tablesIndex.tables === 'object') {
     return tablesIndex(args.tablesIndex.tables, args.tablesIndex.prior ?? {}, args.tablesIndex.dry === true)
   }
   return {
     phase: 'scripts-plan' as const,
-    doors: ['catalog', 'clay', 'leadsIndex', 'tablesIndex', 'textbookLean', 'blueprint', 'theoremsIndex', 'skills', 'status', 'factors'] as const,
+    doors: ['catalog', 'clay', 'leadsIndex', 'tablesIndex', 'textbookLean', 'blueprint', 'theoremsIndex', 'skills', 'status', 'factors', 'claims'] as const,
     invoke: SCRIPT_INVOKE,
     says: PROSE.quantumProcessingScriptDoors_says38,
   }
