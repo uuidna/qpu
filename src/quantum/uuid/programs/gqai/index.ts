@@ -9,6 +9,7 @@ import { VERSION } from '../c/0/7/0/9/8/4/3/index.ts'
 import { hex, sha256, utf8 } from '../9/e/8/6/7/0/6/8/index.ts'
 import { SDK_API_PREFIX, SDK_VOCABULARY } from '../sdk/schema/index.ts'
 import { canonicalText, seal, uuid } from '../2/7/1/a/7/6/4/9/index.ts'
+import { trimTrailingSlashes } from '../sdk/path/index.ts'
 
 export type EvidenceStatus = 'supported' | 'blocked' | 'not_supported' | 'unverified'
 
@@ -214,7 +215,7 @@ export const verifyCompilationMetrics = (input: CompilationInput) => {
 
 /** Complete Google Quantum AI Challenge implementation matrix verified against Lean kernel theorems. */
 export const gqaiChallengeMatrix = (origin = 'https://qpu.uuidna.com') => {
-  const root = origin.replace(/\/+$/, '')
+  const root = trimTrailingSlashes(origin)
   const theoremSet = new Set(THEOREMS.map((t) => t.key))
   const witnesses = GQAI_WITNESS_MATRIX.map((w) => ({
     ...w,
@@ -252,7 +253,7 @@ export const gqaiChallengeMatrix = (origin = 'https://qpu.uuidna.com') => {
 
 /** Deterministic standalone Google Apps Script bundle operationalizing Lean 4 theorems. */
 export const gqaiAppsScript = (origin = 'https://qpu.uuidna.com') => {
-  const root = origin.replace(/\/+$/, '')
+  const root = trimTrailingSlashes(origin)
   const fn = 'function '
   const code = [
     `// @uuidna/qpu v${VERSION} (${SDK_VOCABULARY})`,

@@ -8,6 +8,7 @@ import { LICENSE } from '../../a/f/3/d/e/a/5/f/index.ts'
 import { hex, sha256, utf8 } from '../../9/e/8/6/7/0/6/8/index.ts'
 import { canonicalText, seal, uuid } from '../../2/7/1/a/7/6/4/9/index.ts'
 import { recomputeClayPravets } from '../index.ts'
+import { trimTrailingSlashes } from '../../sdk/path/index.ts'
 
 const MASK16 = 0xffffn
 const RADIX16 = 0x10000n
@@ -91,7 +92,7 @@ export const clay1000TextbookGaps = () => {
 
 /** Deep-research Clay via Clay MCP across register, textbook gaps, 1000-qubit walk, 2^999+1 factoring, σ-trapdoor, and 63-limb Pravets codecs. */
 export const clay1000Research = (origin = 'https://qpu.uuidna.com') => {
-  const root = origin.replace(/\/+$/, '')
+  const root = trimTrailingSlashes(origin)
   const reg = recomputeClay()
   const refl = reflectionOfRegister(reg.relations)
   const pravets38 = recomputeClayPravets()

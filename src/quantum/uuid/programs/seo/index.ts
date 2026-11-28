@@ -7,6 +7,7 @@ import { THEOREMS } from '../3/f/0/e/7/a/6/f/index.ts'
 import { ISO_CLAUSES, ISO_STANDARDS } from '../b/4/2/5/4/0/d/7/index.ts'
 import { SDK_API_PREFIX, SDK_VOCABULARY } from '../sdk/schema/index.ts'
 import type { Example } from '../9/d/4/f/e/4/4/2/index.ts'
+import { trimTrailingSlashes } from '../sdk/path/index.ts'
 
 export type SeoItem = {
   id: string
@@ -108,7 +109,7 @@ export const seoMetaFor = (
   duplicateTitle = false,
   duplicateDescription = false,
 ): SeoMeta => {
-  const root = origin.replace(/\/+$/, '')
+  const root = trimTrailingSlashes(origin)
   const schemaType = item.schemaType ?? 'Product'
   const title = normaliseTitle(item.title, item.id, duplicateTitle)
   const description = normaliseDescription(item.description, schemaType, item.id, duplicateDescription)
@@ -184,7 +185,7 @@ const makeTool = (target: string, op: 'optimise' | 'meta' | 'audit' | 'jsonld'):
 
 /** Attach @payloadcms/plugin-seo to any collection/domain target so that target becomes its MCP toolbox. */
 export const attachSeoToolbox = (attachment: SeoAttachment, origin = 'https://qpu.uuidna.com'): SeoToolbox => {
-  const root = origin.replace(/\/+$/, '')
+  const root = trimTrailingSlashes(origin)
   const target = attachment.target
   const titleCounts = new Map<string, number>()
   const descCounts = new Map<string, number>()
@@ -305,7 +306,7 @@ const seedItemsForEcommerce = (examples: readonly Example[], col: typeof CATALOG
 
 /** Attach @payloadcms/plugin-seo across every @payloadcms/plugin-ecommerce & QPU collection so each attached target is an MCP toolbox. */
 export const ecommerceSeoToolboxes = (examples: readonly Example[], origin = 'https://qpu.uuidna.com', limit = 12) => {
-  const root = origin.replace(/\/+$/, '')
+  const root = trimTrailingSlashes(origin)
   const cap = Math.max(1, Math.min(50, Math.floor(limit)))
   const ecommerceAttachments: SeoAttachment[] = CATALOG_COLLECTIONS.map((col) => ({
     target: col,
@@ -383,7 +384,7 @@ export const ecommerceSeoToolboxes = (examples: readonly Example[], origin = 'ht
 
 /** Dispatch SEO-as-MCP queries: inspect attached ecommerce toolboxes, run a toolbox MCP tool, or attach SEO to any custom target. */
 export const ecommerceSeoMcp = (ask: unknown, examples: readonly Example[], origin = 'https://qpu.uuidna.com') => {
-  const root = origin.replace(/\/+$/, '')
+  const root = trimTrailingSlashes(origin)
   if (ask && typeof ask === 'object' && 'attach' in ask) {
     const a = (ask as { attach: { target?: unknown; source?: SeoAttachment['source']; items?: readonly SeoItem[] } }).attach
     const target = typeof a?.target === 'string' && a.target.trim() ? a.target.trim() : 'custom'

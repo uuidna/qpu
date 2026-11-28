@@ -5,6 +5,7 @@ import { canonicalText, seal, uuid } from '../2/7/1/a/7/6/4/9/index.ts'
 import { hex, sha256, utf8 } from '../9/e/8/6/7/0/6/8/index.ts'
 import { LICENSE } from '../a/f/3/d/e/a/5/f/index.ts'
 import { SDK_VOCABULARY } from '../sdk/schema/index.ts'
+import { trimTrailingSlashes } from '../sdk/path/index.ts'
 
 export type { Ability, ScopedRole }
 
@@ -164,7 +165,7 @@ export const rbacCheck = (input: {
 
 /** Execute all 8 Google Standards RBAC self-checks (positive grants + negative controls) and seal receipt. */
 export const rbacAudit = (origin = 'https://qpu.uuidna.com') => {
-  const root = origin.replace(/\/+$/, '')
+  const root = trimTrailingSlashes(origin)
   const tsRoles = listRolesFromGroups(WORKSPACE_GROUP_ROLES, [{ email: 'group:ts-readability' }])
   const readAllowed = tsRoles.phase === 'roles' && checkAccess(RBAC_ABILITIES, tsRoles.roles, 'gts-style', 'approve', { id: 'typescript' })
   const wrongScopeDenied = tsRoles.phase === 'roles' && !checkAccess(RBAC_ABILITIES, tsRoles.roles, 'gts-style', 'approve', { id: 'python' })

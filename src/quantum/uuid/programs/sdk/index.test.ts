@@ -239,8 +239,8 @@ test('Autonomous online pipeline, Clay duality, and 1000-bit factoring are serve
   assert.equal(manifest.phase, 'pipeline')
   assert.equal(manifest.autonomous, true)
   assert.equal(manifest.stages.length, 8)
-  assert.ok(manifest.onlineEndpoints.includes('https://qpu.uuidna.com/studio'))
-  assert.ok(manifest.onlineEndpoints.includes('https://qpu.uuidna.com/api/globals/pipeline'))
+  assert.ok(new Set(manifest.onlineEndpoints).has('https://qpu.uuidna.com/studio'))
+  assert.ok(new Set(manifest.onlineEndpoints).has('https://qpu.uuidna.com/api/globals/pipeline'))
 
   const runRes = await serveSdk(new Request('https://qpu.uuidna.com/api/globals/pipeline', { method: 'POST' }))
   assert.equal(runRes.status, 200)
