@@ -19,7 +19,7 @@ test('the disclosure lists every declared theorem once, each with the line its m
   assert.equal(rows.length, THEOREMS.length)
   assert.equal(new Set(rows.map((r) => r[0])).size, THEOREMS.length)
   const lines = proofLines(THEOREMS, lean)
-  for (const r of rows) { const key = r[0]!.slice(1, -1); assert.ok(r[4]!.endsWith(`#L${lines.get(key)}`), key); assert.ok(lean[/(lean\/.+\.lean)#/.exec(r[4]!)![1]!]!.split('\n')[lines.get(key)! - 1]!.includes(key.slice(key.lastIndexOf('.') + 1)), key) }
+  for (const r of rows) { const key = r[0]!.slice(1, -1); assert.ok(r[4]!.endsWith(`#L${lines.get(key)}`), key); assert.ok(lean[r[4]!.slice(r[4]!.indexOf('/lean/') + 1, r[4]!.lastIndexOf('#'))]!.split('\n')[lines.get(key)! - 1]!.includes(key.slice(key.lastIndexOf('.') + 1)), key) }
   assert.deepEqual(answer.files.map((f) => f.path), ['.disclosure/disclosure.md', '.disclosure/disclosure.html'])
 })
 

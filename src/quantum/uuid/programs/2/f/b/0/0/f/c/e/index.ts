@@ -372,7 +372,7 @@ const disclosure = (lean: Readonly<Record<string, string>>, examples: readonly {
     { kind: 'h2', text: 'open' },
     { kind: 'table', head: ['lead', 'status', 'statement', 'reason'], rows: open.map((l) => [`\`${l.id}\``, l.status, l.statement, l.reason ?? '']) },
   ]
-  const bar = (s: string) => s.replace(/\|/g, '\\|').replace(/\n/g, ' '), esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  const bar = (s: string) => s.replace(/(?<!\\)(\\*)\|/g, (_, b: string) => `${b}${b}\\|`).replace(/\n/g, ' '), esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
   const md = (b: Block) => b.kind === 'table' ? [`| ${b.head!.join(' | ')} |`, `|${b.head!.map(() => ' --- ').join('|')}|`, ...b.rows!.map((r) => `| ${r.map(bar).join(' | ')} |`)].join('\n') : `${'#'.repeat(Number(b.kind[1]))} ${b.text}`
   const cell = (s: string) => /^\$.*\$$/.test(s) ? `<code class="tex">${esc(s.slice(1, -1))}</code>` : /^https:\/\/\S+$/.test(s) ? `<a href="${esc(s)}">${esc(s)}</a>` : esc(s).replace(/`([^`]+)`/g, '<code>$1</code>')
   const html = (b: Block) => b.kind === 'table' ? `<table><thead><tr>${b.head!.map((h) => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${b.rows!.map((r) => `<tr>${r.map((c) => `<td>${cell(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>` : `<${b.kind}>${esc(b.text!)}</${b.kind}>`
