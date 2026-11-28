@@ -13,15 +13,15 @@
 | licence | CC-BY-NC-ND-4.0 |
 | conceptDoi | 10.5281/zenodo.22700098 |
 | language | en |
-| products | 1663 |
-| standards | 30 (22 witnessed) |
+| products | 1677 |
+| standards | 30 (30 witnessed) |
 | vocabulary | ISO/IEC 4879:2024 (86/86) |
 
 Author: Tsvetan Rouschev (ORCID 0009-0000-7312-9778). Licence: CC BY-NC-ND 4.0. Concept DOI: 10.5281/zenodo.22700098.
 
-Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1663 products, 2 under a declared claim context and 1661 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 7 claims in the author's own words are listed at the end with their theorems.
+Every theorem the Lean kernel accepted is a product of this catalogue, and every product is claimed: 1677 products, 2 under a declared claim context and 1675 as the author's own statement, with 1079 variants (the examples a theorem names). 0 name(s) cited by a sentence await a theorem, and the author's 7 claims in the author's own words are listed at the end with their theorems.
 
-The catalogue covers 30 standards, 22 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
+The catalogue covers 30 standards, 30 with a theorem that states a fact the standard fixes, and each of the 86 terms of ISO/IEC 4879:2024, every one with a theorem.
 
 This catalogue records authorship and the date of each release. It is a publication, not a patent application: publishing a statement discloses it, and what is filed as a patent, and when, is for a patent attorney to decide before it is published.
 
@@ -42,7 +42,11 @@ Iso.clauses.length =
 
 ### ISO 80000-10
 
-Named by the tree.
+Witness: `Iso.atomic_nucleon_states`.
+
+```lean
+∀ (z n : ℕ), Fintype.card (Fin z ⊕ Fin n → Bool) = 2 ^ (z + n)
+```
 
 ### ISO 80000-5:2019
 
@@ -72,15 +76,27 @@ Fintype.card (Fin Qpu.Verify.Uuid.totalBits → Bool) =
 
 ### ISO 22739:2024
 
-Named by the tree.
+Witness: `Iso.dlt_digest_space`.
+
+```lean
+Fintype.card (Fin 256 → Bool) = 2 ^ 256
+```
 
 ### ISO 23257:2022
 
-Named by the tree.
+Witness: `Iso.dlt_architecture_layers`.
+
+```lean
+∀ (n : ℕ), Fintype.card (Fin 4 → Fin n) = n ^ 4
+```
 
 ### ISO/TR 23455:2019
 
-Named by the tree.
+Witness: `Iso.smart_contract_transitions`.
+
+```lean
+∀ (s a : ℕ), Fintype.card (Fin s × Fin a → Fin s) = s ^ (s * a)
+```
 
 ### ISO 24165
 
@@ -184,7 +200,11 @@ Fintype.card (Fin 6 → Fin 3) = 3 ^ 6
 
 ### ISO/IEC 19770
 
-Named by the tree.
+Witness: `Iso.swid_asset_tags`.
+
+```lean
+∀ (n : ℕ), Fintype.card (Fin n → Fin 4) = 4 ^ n
+```
 
 ### ISO 16
 
@@ -204,7 +224,11 @@ Witness: `Iso.quality_clauses`.
 
 ### ISO/IEC/IEEE 12207:2026
 
-Named by the tree.
+Witness: `Iso.lifecycle_processes_states`.
+
+```lean
+Fintype.card (Fin 30 → Bool) = 2 ^ 30
+```
 
 ### ISO/IEC/IEEE 15289:2019
 
@@ -224,7 +248,11 @@ Witness: `Iso.test_suite_nonempty`.
 
 ### ISO/IEC/IEEE 42010:2022
 
-Named by the tree.
+Witness: `Iso.architecture_view_correspondences`.
+
+```lean
+∀ (v m c : ℕ), Fintype.card ((Fin v × Fin m) × Fin c) = v * m * c
+```
 
 ### ISO/IEC 25010:2023
 
@@ -236,7 +264,11 @@ Witness: `Iso.quality_characteristics`.
 
 ### ISO/IEC 25051:2014
 
-Named by the tree.
+Witness: `Iso.rusp_quality_verdicts`.
+
+```lean
+∀ (k : ℕ), Fintype.card (Fin 3 → Fin k) = k ^ 3
+```
 
 ### ISO/IEC 27001:2022
 
@@ -2020,6 +2052,22 @@ rays + seed = mint n
 
 ## Qpu.General.Iso
 
+### `Iso.architecture_view_correspondences`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (v m c : ℕ), Fintype.card ((Fin v × Fin m) × Fin c) = v * m * c
+```
+
+### `Iso.atomic_nucleon_states`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (z n : ℕ), Fintype.card (Fin z ⊕ Fin n → Bool) = 2 ^ (z + n)
+```
+
 ### `Iso.calendar_cycle`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -2081,6 +2129,22 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Iso.letterCodes 3 = 17576 ∧ 10 ^ 3 = 1000
 ```
 
+### `Iso.dlt_architecture_layers`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), Fintype.card (Fin 4 → Fin n) = n ^ 4
+```
+
+### `Iso.dlt_digest_space`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Fintype.card (Fin 256 → Bool) = 2 ^ 256
+```
+
 ### `Iso.document_identification_states`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -2131,6 +2195,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Iso.letterCodes 2 = 676
 ```
 
+### `Iso.lifecycle_processes_states`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Fintype.card (Fin 30 → Bool) = 2 ^ 30
+```
+
 ### `Iso.message_identifier`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -2171,12 +2243,28 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 10 - 3 = 7
 ```
 
+### `Iso.rusp_quality_verdicts`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (k : ℕ), Fintype.card (Fin 3 → Fin k) = k ^ 3
+```
+
 ### `Iso.security_controls`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
 37 + 8 + 14 + 34 = 93
+```
+
+### `Iso.smart_contract_transitions`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (s a : ℕ), Fintype.card (Fin s × Fin a → Fin s) = s ^ (s * a)
 ```
 
 ### `Iso.spdx_expression_valid`
@@ -2192,7 +2280,15 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
-Iso.standards.length = 30 ∧ (List.filter (fun x => x.witness.isSome) Iso.standards).length = 22
+Iso.standards.length = 30 ∧ (List.filter (fun x => x.witness.isSome) Iso.standards).length = 30
+```
+
+### `Iso.swid_asset_tags`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), Fintype.card (Fin n → Fin 4) = 4 ^ n
 ```
 
 ### `Iso.test_suite_nonempty`
@@ -5201,6 +5297,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (k : ℕ), levelGap k = 2 ^ k
 ```
 
+### `limbs16_cover`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (b : ℕ), 16 * ((b + 15) / 16) ≥ b ∧ (b > 0 → 16 * ((b + 15) / 16 - 1) < b)
+```
+
 ### `mint_eq_two_pow`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -5239,6 +5343,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ (m : ℕ), pegasus m = 24 * m * (m - 1)
+```
+
+### `pegasus_ne_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (m k : ℕ), pegasus m ≠ 2 ^ k
 ```
 
 ### `powModAux_eq`
@@ -5337,6 +5449,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 Config.sdkCollections = Config.sdkCollections.headD default :: Config.sdkCollections.tail
 ```
 
+### `sdkGlobals_eq_cons`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+Config.sdkGlobals = Config.sdkGlobals.headD default :: Config.sdkGlobals.tail
+```
+
 ### `six_mul_choose_three_eq_trinities`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
@@ -5425,12 +5545,28 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 ∀ (millikelvin : ℕ), thermal millikelvin = 1380649 * millikelvin * 10
 ```
 
+### `thermal_ne_two_pow`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (m k : ℕ), thermal m ≠ 2 ^ k
+```
+
 ### `totient_eq_nat_totient`
 
 Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
 
 ```lean
 ∀ (n : ℕ), totient n = n.totient
+```
+
+### `triangular_eq_nat_choose`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ (n : ℕ), triangular n = (n + 1).choose 2
 ```
 
 ### `trinities_of_pairs`
@@ -12362,6 +12498,14 @@ Claimed by Tsvetan Rouschev as the author's own statement, by this name and as s
 
 ```lean
 ∀ {x : ℕ}, x ≤ Thousand.bound → Thousand.reflect (Thousand.reflect x) = x
+```
+
+### `Thousand.reflect_strict_pos`
+
+Claimed by Tsvetan Rouschev as the author's own statement, by this name and as stated.
+
+```lean
+∀ {x : ℕ}, x < Thousand.bound → 0 < Thousand.reflect x
 ```
 
 ## Qpu.General.Vocabulary

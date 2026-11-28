@@ -6,6 +6,9 @@ import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { call, handle } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
+import { callEnvelope, listEnvelope } from '../../../../../../../../d/e/7/d/b/7/1/6/index.ts'
+import { jsonKind } from '../../../../../../../../2/f/b/0/0/f/c/e/index.ts'
+import { readJson } from '../../../../../../../../0/d/b/3/5/7/8/9/index.ts'
 import { EXAMPLES } from '../../../../../../../../9/d/4/f/e/4/4/2/index.ts'
 import { ALTERNATIVES, BOUND_TOOLS, ERROR_KINDS, NOT_IDEMPOTENT, codeOfThrown, findAmbiguity } from '../../../../../../../../3/1/1/a/2/d/9/3/index.ts'
 import { VERSION } from '../../../../../../../../c/0/7/0/9/8/4/3/index.ts'
@@ -14,11 +17,11 @@ import { MESSAGING_TOOLS } from '../../../../../../../../1/6/e/c/4/7/3/b/index.t
 import { PROVER_TOOLS } from '../../../../../../../../6/a/b/e/3/a/d/f/index.ts'
 
 type Listed = { name: string; description: string; inputSchema: { properties?: Record<string, { description?: string; type?: unknown; anyOf?: unknown; enum?: unknown; examples?: unknown[] }>; 'x-alternatives'?: { oneOf: { inputs: string[]; with: string[] }[] } }; outputSchema?: { type?: string; description?: string; properties?: Record<string, { type?: unknown }> }; annotations?: { readOnlyHint?: boolean; idempotentHint?: boolean }; _meta?: { state?: { writes?: boolean; idempotent?: boolean } } }
-const listed = (params?: object) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list', ...(params ? { params } : {}) }) as { result: { tools: Listed[]; _meta: { context: { tokens: number; fullTokens: number; saved: number } } } }).result
+const listed = (params?: Record<string, unknown>) => (handle(listEnvelope(params)) as { result: { tools: Listed[]; _meta: { context: { tokens: number; fullTokens: number; saved: number } } } }).result
 const kernel = listed().tools
 /** The contract with every key and worked example: the list where the tools are named. */
 const detailed = listed({ tools: kernel.map((t) => t.name) }).tools
-const failed = (name: string, args: object) => (handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) as { error?: { code: number; message: string; data: { code: string; kind: string; error: string } } }).error
+const failed = (name: string, args: object) => (handle(callEnvelope(name, args)) as { error?: { code: number; message: string; data: { code: string; kind: string; error: string } } }).error
 const bound = { PROVER: { getByName: () => ({ fetch: async () => Response.json({ ok: true, timedOut: false, ms: 1, messages: [], toolchain: 'x' }) }) }, MAILBOX: { getByName: () => ({ post: async () => ({ seq: 1 }), read: async () => [] }) } }
 const post = (body: object, accept: string, env: Record<string, unknown> = bound) => serveMcp(new Request('https://qpu.uuidna.com/api/mcp', { method: 'POST', headers: { host: 'qpu.uuidna.com', 'content-type': 'application/json', accept }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, ...body }) }), env)
 
@@ -50,10 +53,9 @@ test('tools/list alone is readable: every description is a whole sentence, every
 test('the output schemas and input examples are the ones the worked examples witness today, and every example\'s answer has only stated types', () => {
   const written = call('textbook', { scripts: { outputs: true } }).result!.structuredContent as { path: string; text: string }
   assert.equal(readFileSync(written.path, 'utf8'), written.text, 'run: node src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts step textbook \'{"scripts":{"outputs":true}}\' --write')
-  const kind = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v === 'number' ? (Number.isInteger(v) ? 'integer' : 'number') : typeof v)
   const e = EXAMPLES.find((x) => x.id === 'seal-merkle') ?? EXAMPLES.find((x) => x.tool === 'seal')!, s = call(e.tool, e.arguments).result!.structuredContent as Record<string, unknown>
   const stated = detailed.find((t) => t.name === e.tool)!.outputSchema!.properties!
-  for (const [k, v] of Object.entries(s)) { const t = [stated[k]?.type].flat(); assert.ok(t.includes(kind(v)) || (kind(v) === 'integer' && t.includes('number')), `${e.tool}.${k}: ${kind(v)} not in ${t}`) }
+  for (const [k, v] of Object.entries(s)) { const t = [stated[k]?.type].flat(); assert.ok(t.includes(jsonKind(v)) || (jsonKind(v) === 'integer' && t.includes('number')), `${e.tool}.${k}: ${jsonKind(v)} not in ${t}`) }
 })
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: alternatives named together are refused by name, an input beside an alternative it does not combine with is refused, and every worked example still passes. */
@@ -124,7 +126,7 @@ test('one count of tools everywhere, one version, and a client that accepts JSON
   assert.equal(Number(/## tools\/list \((\d+)\)/.exec(doc)?.[1]), kernel.length)
   assert.deepEqual(kernel.filter((t) => !doc.includes(`| \`${t.name}\` |`)).map((t) => t.name), [])
   assert.match(doc, new RegExp(`answers ${kernel.length + BOUND_TOOLS.length}\\.`))
-  const pkg = (path: string) => (JSON.parse(readFileSync(path, 'utf8')) as { version: string }).version
+  const pkg = (path: string) => readJson<{ version: string }>(path)!.version
   assert.deepEqual([pkg('package.json'), pkg('src/quantum/package.json')], [VERSION, VERSION])
   // Accept: application/json alone, which the transport answered 406 on 2026-11-24
   const plain = await post({ method: 'tools/list' }, 'application/json')

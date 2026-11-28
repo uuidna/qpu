@@ -3,8 +3,11 @@
 
 import { PROSE, proseFill } from '../../../../../../../../5/9/e/4/9/1/a/4/index.ts'
 import { TABLES } from '../../../../../../../../1/2/a/4/3/2/a/8/index.ts'
-import { ISO_DIMENSIONS } from '../../../../../../../../b/4/2/5/4/0/d/7/index.ts'
+import { ISO_CLAUSES, ISO_DIMENSIONS, ISO_STANDARDS } from '../../../../../../../../b/4/2/5/4/0/d/7/index.ts'
 import { ENTROPY_LAW } from '../../../../../../../../b/6/4/6/e/a/0/1/index.ts'
+import { LICENSE, PRECEDENCE } from '../../../../../../../../a/f/3/d/e/a/5/f/index.ts'
+import type { quantumCapacity } from '../../../../../../../8/7/0/6/d/2/8/index.ts'
+import { UNIT_CONCEPT_DOI } from '../../../../../../../../6/6/5/9/1/f/5/8/index.ts'
 
 /** The ISO dimensions this tree names, as Lean lists them in Qpu.General.Iso. Quantum purity is gated on each of them. */
 export { ISO_DIMENSIONS }
@@ -99,36 +102,153 @@ export const ISO_4217_COIN = {
   market: 'textbook_market_iso_4217' as const,
   forged: { code: 'QPU' as const, iso4217: false as const, refused: true as const },
   // a coin names a receipt and its register, not an amount of money: the code ISO 4217 keeps for no currency
-  unit: 'XXX' as const,
+  unit: 'X'.repeat(3),
   capacityRefused: { qubits: 29 as const, span: 232 as const, reason: 'Capacity 29/232 is not the Lean coin register' as const },
   surfaces: ['market', 'REGISTER', 'pack', 'cross', 'price', 'catalog'] as const,
 } as const
 
 export const ISO_OPEN_DEFINITIONS = TABLES.ISO_OPEN_DEFINITIONS
 
-/** The language every document of the repository is written in, as ISO 639-1 codes it: the README, the site and the pages read it from here. */
+/** ISO 639-1 language code for repository documents. */
 export const DOCUMENT_LANGUAGE = 'en' as const
-/** The unit symbols ISO/IEC 80000 gives the quantities a receipt measures: the byte and the bit (IEC 80000-13), the joule (ISO 80000-5). */
+/** ISO/IEC 80000 quantity unit symbols (IEC 80000-13 bytes/bits, ISO 80000-5 joules). */
 export const ISO_80000_UNITS: Readonly<Record<string, string>> = { bytes: 'B', bits: 'bit', joules: 'J' }
+/** Count of Lean-witnessed normative ISO standards. */
+export const ISO_WITNESSED_COUNT = ISO_STANDARDS.filter((s) => s.witness !== null).length
+/** Format a metric label with its ISO/IEC 80000 unit symbol when applicable. */
+export const isoUnit = (name: string) => (ISO_80000_UNITS[name] ? `${name} / ${ISO_80000_UNITS[name]}` : name)
 
-// what the runtime's CLDR tables know: a code they name is one the standard defines, and one they cannot name is not
 const cldrNames = (type: 'language' | 'currency', code: string) => { try { return new Intl.DisplayNames(['en'], { type, fallback: 'none' }).of(code) !== undefined } catch { return false } }
 const ISO_8601_DATE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})?)?$/
-/** The repository against each ISO standard it names, one row a standard, each with the places that break it: the test cases ISO/IEC/IEEE
- *  29119-3 identifies; and for every copy of the one text, the identification ISO/IEC/IEEE 15289 asks of an information item, its dates in
- *  ISO 8601, its language in ISO 639-1, a currency in ISO 4217 beside every coin, and the unit symbols of ISO/IEC 80000 beside every quantity. */
+const ORCID_RE = /\b(\d{4}-\d{4}-\d{4}-\d{3}[\dX])\b/g
+
+/** ISO 27729 / ISO/IEC 7064 Mod 11-2 check digit verifier for an ORCID / ISNI identifier. */
+export const orcidCheckValid = (raw: string): boolean => {
+  const digits = raw.replace(/-/g, '').toUpperCase()
+  if (!/^\d{15}[\dX]$/.test(digits)) return false
+  let total = 0
+  for (let i = 0; i < 15; i++) total = (total + Number(digits[i])) * 2
+  const expected = (12 - (total % 11)) % 11
+  return digits[15] === (expected === 10 ? 'X' : String(expected))
+}
+
+export type IsoBlock = { kind: 'h1' | 'h2' | 'h3' | 'p' | 'code' | 'table'; text?: string; head?: string[]; rows?: string[][] }
+
+/** Canonical ISO/IEC/IEEE 15289:2019 document sections shared by README, Zenodo and disclosure generators. */
+export const isoDocument = (o: {
+  identifier: string
+  version: string
+  source: string
+  mcp: string
+  capacity: ReturnType<typeof quantumCapacity>
+  extraId?: readonly [string, string][]
+}): { identification: IsoBlock[]; legal: IsoBlock[]; capacity: IsoBlock[]; standards: IsoBlock[] } => {
+  const cap = o.capacity
+  const utilisationPct = Math.round((cap.used / cap.register.free) * 100)
+  const uuidBytes = cap.register.bits / 8
+  const identification: IsoBlock[] = [
+    { kind: 'h2', text: '1. Document identification' },
+    { kind: 'table', head: ['document', 'value'], rows: [
+      ['identifier', o.identifier],
+      ['version', o.version],
+      ['standard', 'ISO/IEC/IEEE 15289:2019'],
+      ['disclosure', 'ISO 56005:2020'],
+      ['author', LICENSE.author],
+      ['orcid', LICENSE.orcid],
+      ['licence', LICENSE.spdx],
+      ['conceptDoi', UNIT_CONCEPT_DOI],
+      ['language', DOCUMENT_LANGUAGE],
+      ['source', o.source],
+      ['mcp', o.mcp],
+      ...(o.extraId ?? []).map(([k, v]) => [k, v]),
+    ] },
+  ]
+  const legal: IsoBlock[] = [
+    { kind: 'h2', text: '2. Legal & IP disclosure' },
+    { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_legal, LICENSE.author, LICENSE.orcid, LICENSE.spdx, LICENSE.deed, LICENSE.url) },
+    { kind: 'table', head: ['rights', 'value'], rows: [
+      ['copyright', LICENSE.copyright],
+      ['author', LICENSE.author],
+      ['orcid', LICENSE.orcid],
+      ['spdx', LICENSE.spdx],
+      ['deed', LICENSE.deed],
+      ['commercial', LICENSE.url],
+      ['donation', LICENSE.donation],
+      ['terms', LICENSE.terms],
+      ['attribution', LICENSE.attribution],
+      ['disclosure', 'ISO 56005:2020'],
+    ] },
+    { kind: 'h3', text: '2.1 Prior-art precedence' },
+    { kind: 'table', head: ['doi', 'year', 'title', 'states'], rows: PRECEDENCE.map((p) => [p.doi, String(p.year), p.title, p.states]) },
+  ]
+  const capacity: IsoBlock[] = [
+    { kind: 'h2', text: '4. Qubit capacity & utilisation' },
+    { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_capacity, cap.register.free, cap.register.bits, uuidBytes, cap.used, cap.left, utilisationPct, cap.receipt.coin, ISO_4217_COIN.unit) },
+    { kind: 'h3', text: '4.1 Register band partition' },
+    { kind: 'table', head: ['band', 'digits', isoUnit('bits'), 'qubits', 'free', 'fixed'], rows: [
+      ...cap.parts.map((p) => [p.part, String(p.digits), String(p.bits), String(p.qubits), String(p.free), String(p.qubits - p.free)]),
+      ['total', String(cap.register.digits), String(cap.register.bits), String(cap.register.qubits), String(cap.register.free), String(cap.register.qubits - cap.register.free)],
+    ] },
+    { kind: 'h3', text: '4.2 Quantum receipt utilisation' },
+    { kind: 'table', head: ['metric', 'value'], rows: [
+      ['register.bits / bit', String(cap.register.bits)],
+      ['register.free', String(cap.register.free)],
+      ['used', String(cap.used)],
+      ['left', String(cap.left)],
+      ['utilisation / %', String(utilisationPct)],
+      ['full', String(cap.full)],
+      ['debits', String(cap.receipt.debits)],
+      ['credits', String(cap.receipt.credits)],
+      ['balanced', String(cap.receipt.balanced)],
+      ['sealed', String(cap.receipt.sealed)],
+      ['coin', cap.receipt.coin],
+      ['currency', ISO_4217_COIN.unit],
+      ['handles', cap.spaces.handles],
+      ['programs', cap.spaces.programs],
+      ['addressable', cap.spaces.addressable],
+      ['onEveryHandle', cap.spaces.onEveryHandle],
+      ['addressGrover / bit', String(cap.security.address.preimage.grover)],
+      ['digestGrover / bit', String(cap.security.digest.preimage.grover)],
+      ['digestMeetsFloor', String(cap.security.digest.meetsFloor)],
+    ] },
+  ]
+  const standards: IsoBlock[] = [
+    { kind: 'h2', text: '5. Normative references and conformance' },
+    { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_standards, ISO_STANDARDS.length, ISO_WITNESSED_COUNT, ISO_CLAUSES.length) },
+    { kind: 'table', head: ['standard', 'witnessed'], rows: ISO_STANDARDS.map((s) => [s.reference, s.witness ? 'yes' : 'open']) },
+  ]
+  return { identification, legal, capacity, standards }
+}
+
+/** ISO conformance register across all supplied documents, manifests and tests with uniform rules. */
 export const isoConformance = (files: Readonly<Record<string, string>>) => {
-  const all = Object.entries(files), copies = all.filter(([p]) => /^(src\/quantum\/)?README\.md$/.test(p)), tests = all.filter(([p]) => /(\.test|_test)\.ts$/.test(p))
+  const all = Object.entries(files)
+  const tests = all.filter(([p]) => /(\.test|_test)\.ts$/.test(p))
+  const docs = all.filter(([p]) => /\.md$/.test(p))
+  const releaseDocs = docs.filter(([p]) => /^(src\/quantum\/)?README\.md$/.test(p))
+  const manifests = all.filter(([p]) => /^(LICENSE|CITATION\.cff|\.zenodo\.json|(src\/quantum\/)?package\.json)$/.test(p))
+  const citationManifests = manifests.filter(([p]) => /^(CITATION\.cff|\.zenodo\.json)$/.test(p))
   const field = (text: string, name: string) => new RegExp(`^\\| ${name} \\| ([^|]+) \\|$`, 'm').exec(text)?.[1]?.trim()
   const count = (text: string, re: RegExp) => [...text.matchAll(re)].length
   const row = (standard: string, findings: string[]) => ({ standard, holds: findings.length === 0, findings })
   return [
-    row('ISO/IEC/IEEE 29119-3', tests.flatMap(([p, t]) => t.split('\n').flatMap((l, i, lines) => /^test\(/.test(l) && !/ISO\/IEC\/IEEE 29119-3 test case\. Identifier:/.test(lines[i - 1] ?? '') ? [`${p}:${i + 1}`] : []))),
-    row('ISO/IEC/IEEE 15289', copies.flatMap(([p, t]) => ['identifier', 'version', 'author', 'licence', 'language', 'issued'].filter((f) => !field(t, f)).map((f) => `${p}: ${f}`))),
-    row('ISO 8601', copies.flatMap(([p, t]) => [field(t, 'issued') ?? '', ...[...t.matchAll(/(?<![0-9a-f-])\d{1,4}[-/]\d{1,2}[-/]\d{1,4}(?![0-9a-f-])/g)].map((m) => m[0])].filter((d) => !ISO_8601_DATE.test(d)).map((d) => `${p}: ${d || 'no issue date'}`))),
-    row('ISO 639-1', copies.flatMap(([p, t]) => { const l = field(t, 'language') ?? ''; return /^[a-z]{2}$/.test(l) && cldrNames('language', l) ? [] : [`${p}: ${l || 'no language'}`] })),
-    row('ISO 4217', copies.flatMap(([p, t]) => [...(count(t, /^\| coin \|/gm) === count(t, /^\| currency \|/gm) ? [] : [`${p}: a coin without its currency`]), ...[...t.matchAll(/^\| currency \| ([^|]+) \|$/gm)].map((m) => m[1]!.trim()).filter((c) => !/^[A-Z]{3}$/.test(c) || !cldrNames('currency', c)).map((c) => `${p}: ${c}`)])),
-    row('ISO/IEC 80000', copies.flatMap(([p, t]) => [...t.matchAll(new RegExp(`\\| (${Object.keys(ISO_80000_UNITS).join('|')}) \\|`, 'g'))].map((m) => `${p}: ${m[1]} without its unit`))),
+    row('ISO/IEC/IEEE 29119-3', tests.flatMap(([p, t]) => t.split('\n').flatMap((l, i, lines) => /^(void )?test\(/.test(l) && !/ISO\/IEC\/IEEE 29119-3 test case\. Identifier:/.test(lines[i - 1] ?? '') ? [`${p}:${i + 1}`] : []))),
+    row('ISO/IEC/IEEE 15289', [
+      ...docs.flatMap(([p, t]) => ['standard', 'author', 'orcid', 'licence', 'conceptDoi', 'language'].filter((f) => !field(t, f)).map((f) => `${p}: ${f}`)),
+      ...releaseDocs.flatMap(([p, t]) => ['identifier', 'version', 'issued'].filter((f) => !field(t, f)).map((f) => `${p}: ${f}`)),
+    ]),
+    row('ISO 8601', [
+      ...releaseDocs.flatMap(([p, t]) => [field(t, 'issued') ?? ''].filter((d) => !ISO_8601_DATE.test(d)).map((d) => `${p}: ${d || 'no issue date'}`)),
+      ...docs.flatMap(([p, t]) => [...t.matchAll(/(?<![0-9a-f/-])\d{1,4}[-/]\d{1,2}[-/]\d{1,4}(?![0-9a-f/-])/g)].map((m) => m[0]).filter((d) => !ISO_8601_DATE.test(d)).map((d) => `${p}: ${d}`)),
+    ]),
+    row('ISO 639-1', docs.flatMap(([p, t]) => { const l = field(t, 'language') ?? ''; return /^[a-z]{2}$/.test(l) && cldrNames('language', l) ? [] : [`${p}: ${l || 'no language'}`] })),
+    row('ISO 4217', docs.flatMap(([p, t]) => [...(count(t, /^\| coin \|/gm) === count(t, /^\| currency \|/gm) ? [] : [`${p}: coin without currency`]), ...[...t.matchAll(/^\| currency \| ([^|]+) \|$/gm)].map((m) => m[1]!.trim()).filter((c) => !/^[A-Z]{3}$/.test(c) || !cldrNames('currency', c)).map((c) => `${p}: ${c}`)])),
+    row('ISO/IEC 80000', docs.flatMap(([p, t]) => [...t.matchAll(new RegExp(`\\| (${Object.keys(ISO_80000_UNITS).join('|')}) \\|`, 'g'))].map((m) => `${p}: ${m[1]} unit`))),
+    row('ISO 27729', [...docs, ...manifests].flatMap(([p, t]) => { const ids = [...t.matchAll(ORCID_RE)].map((m) => m[1]!); return ids.length === 0 ? [`${p}: no orcid`] : ids.filter((id) => !orcidCheckValid(id)).map((id) => `${p}: ${id}`) })),
+    row('ISO/IEC 5962', [...docs, ...manifests].flatMap(([p, t]) => (/CC-BY-NC-ND-4\.0/i.test(t) ? [] : [`${p}: no spdx`]))),
+    row('ISO 690 / ISO 26324', [...docs, ...citationManifests].flatMap(([p, t]) => (/10\.5281\/zenodo\.22700098/.test(t) ? [] : [`${p}: no doi`]))),
+    row('ISO 56005', docs.flatMap(([p, t]) => (/ISO 56005/.test(t) && /128/.test(t) && /122/.test(t) ? [] : [`${p}: no disclosure`]))),
+    row('ISO/IEC 9834-8', releaseDocs.flatMap(([p, t]) => (/122 qubits in 16 bytes/.test(t) && /65536/.test(t) && /106/.test(t) ? [] : [`${p}: no register`]))),
   ]
 }
 

@@ -1,7 +1,9 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { handle, call } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
+import { listEnvelope } from '../../../../../../../../d/e/7/d/b/7/1/6/index.ts'
+import { readJson } from '../../../../../../../../0/d/b/3/5/7/8/9/index.ts'
 import { EXAMPLES } from '../../../../../../../../9/d/4/f/e/4/4/2/index.ts'
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the MCP surface audits itself through tools/call and every check passes. */
@@ -21,8 +23,8 @@ test('the MCP surface audits itself through tools/call and every check passes', 
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the published manifest equals tools/list byte for byte, its proof included. */
 test('the published manifest equals tools/list byte for byte, its proof included', () => {
-  const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
-  const manifest = JSON.parse(readFileSync(new URL('../../../../../../../../../../../../docs/public/mcp.json', import.meta.url), 'utf8'))
+  const list = handle(listEnvelope())
+  const manifest = readJson<{ tools: unknown; proof: unknown }>(fileURLToPath(new URL('../../../../../../../../../../../../docs/public/mcp.json', import.meta.url)))!
   assert.deepEqual(manifest.tools, (list as { result: { tools: unknown } }).result.tools)
   // the page that fetches the manifest gets the proof in the same request: the one tools/list carries, read from the sealed receipts
   assert.deepEqual(manifest.proof, (list as { result: { _meta: { proof: unknown } } }).result._meta.proof)
@@ -40,7 +42,7 @@ test('the quantum advantage is unlimited by default and needs no interaction to 
   assert.equal(some?.unbounded, false)
   assert.equal(some?.ratio, 4.7)
   assert.equal(metrics({}), null, 'no run, no magnitude: never a default cap')
-  const list = (handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string; inputSchema: { properties?: Record<string, unknown> } }[] } }).result.tools
+  const list = (handle(listEnvelope()) as { result: { tools: { name: string; inputSchema: { properties?: Record<string, unknown> } }[] } }).result.tools
   const schema = list.find((t) => t.name === 'metrics')!.inputSchema.properties ?? {}
   assert.deepEqual(Object.keys(schema), ['artefacts'], 'the metric takes the run and nothing else: no token, no approval')
 })

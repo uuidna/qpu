@@ -9,6 +9,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ts from 'typescript'
 import { defineLoader } from 'vitepress'
+import { readJson } from '../../../src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts'
 import config from '../config.ts'
 
 export type Possibility = { kind: string; name: string; used: boolean; how: string }
@@ -53,6 +54,6 @@ export default defineLoader({
       ...values('theme').map(named('vitepress/theme', (name) => (name === 'default' ? importers(/^vitepress\/theme$/, 'DefaultTheme') : members(name)))),
       ...slots.map(named('slot', fillers)),
     ].sort((a, b) => a.kind.localeCompare(b.kind) || a.name.localeCompare(b.name))
-    return { vitepress: JSON.parse(readFileSync(join(pkg, 'package.json'), 'utf8')).version, rows }
+    return { vitepress: readJson<{ version: string }>(join(pkg, 'package.json'))!.version, rows }
   },
 })

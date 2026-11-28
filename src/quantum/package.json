@@ -34,7 +34,14 @@
     "./iso": "./uuid/programs/b/4/2/5/4/0/d/7/index.ts",
     "./nested": "./uuid/programs/1/8/a/3/8/3/8/c/index.ts",
     "./waves": "./uuid/programs/8/d/7/0/6/e/9/6/index.ts",
-    "./mcp-apps": "./uuid/programs/c/d/6/5/1/d/5/8/index.ts"
+    "./mcp-apps": "./uuid/programs/c/d/6/5/1/d/5/8/index.ts",
+    "./sdk": "./uuid/programs/sdk/index.ts",
+    "./sdk-index": "./uuid/programs/sdk/schema/index.ts",
+    "./gqai": "./uuid/programs/gqai/index.ts",
+    "./clay": "./uuid/programs/clay/thousand/index.ts",
+    "./seo": "./uuid/programs/seo/index.ts",
+    "./rbac": "./uuid/programs/rbac/index.ts",
+    "./os": "./uuid/programs/e/7/a/6/d/5/2/2/index.ts"
   },
   "dependencies": {
     "agents": "0.34.0",

@@ -4,14 +4,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
-import { call } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
+import { caller } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
 import { uuid } from '../../../../../../../../2/7/1/a/7/6/4/9/index.ts'
 
-const factor = (args: Record<string, unknown>) => {
-  const r = call('algorithm', { name: 'factor', ...args }) as { result?: { structuredContent?: Record<string, unknown> }; error?: { message: string } }
-  if (r.error) throw new Error(r.error.message)
-  return r.result!.structuredContent as Record<string, unknown>
-}
+const algo = caller('algorithm')
+const factor = (args: Record<string, unknown>): Record<string, unknown> => algo({ name: 'factor', ...args })
 const sealed = (d: Record<string, unknown>) => { const text = JSON.stringify({ decode: d.integer, factors: d.factors, via: d.via }); assert.deepEqual([d.receipt, d.sha256], [uuid(text), createHash('sha256').update(text).digest('hex')]) }
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the witness channel decodes a minted integer in one reflection and seals the receipt. */

@@ -7,7 +7,8 @@ import { ISO_CLAUSES, ISO_GROUPS, ISO_STANDARDS, ISO_VOCABULARY } from '../src/q
 import { THEOREMS } from '../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
 import { page } from './oneText.ts'
 import { listEnvelope } from '../src/quantum/uuid/programs/d/e/7/d/b/7/1/6/index.ts'
-import { catalogProduct, catalogSummary } from '../src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts'
+import { catalogProduct } from '../src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts'
+import { SDK_API_PREFIX, SDK_COLLECTIONS, sdkSummary, type VitePressSidebarGroup } from '../src/quantum/uuid/programs/sdk/index.ts'
 import { EXAMPLES } from '../src/quantum/uuid/programs/9/d/4/f/e/4/4/2/index.ts'
 
 type Proof = { key: string; module: string; statement: string; axioms: readonly string[] }
@@ -66,7 +67,7 @@ const sections: Section[] = [
   },
 ]
 
-const sidebar: { text: string; collapsed: boolean; items: { text: string; link: string }[] }[] = []
+const sidebar: VitePressSidebarGroup[] = []
 let pages = 0, proofs = 0
 for (const section of sections) {
   for (const page of section.pages) {
@@ -88,9 +89,24 @@ const listed = (handle(listEnvelope()) as { result: { tools: unknown; _meta: { p
 write(join(out, 'public', 'mcp.json'), JSON.stringify({ live: 'POST /api/mcp', says: PROSE.scriptsSite_says1, tools, proof: listed._meta.proof }, null, 2))
 write(join('docs', 'public', 'mcp.json'), JSON.stringify({ tools: listed.tools, proof: listed._meta.proof }, null, 2))
 write(join(out, '.vitepress', 'sidebar.json'), JSON.stringify(sidebar))
-// the catalog's index: its count as the catalog states it, then every product by module, each a link to the page its route writes
-const counted = catalogSummary(EXAMPLES)
-const facts: [string, string][] = [['products', String(counted.products)], ['examples', String(counted.examples)], ['witnesses', String(counted.witnesses)], ['variants', String(counted.variants)], ['walked', String(counted.walked)], ['discovered', counted.discovered], ['unclaimed', String(counted.unclaimed.products)], ['price', String(counted.funding.price)], ['funding', counted.funding.donation], ['root', `\`${counted.receipt.root}\``], ['receipt', `\`${counted.receipt.address}\``], ['documents', ['/api/catalog', ...counted.order.filter((c) => c !== 'variants').map((c) => `/api/${c}`)].join(' ')]]
+// the catalog's index: its count as the harmonized SDK states it, then every product by module, each a link to the page its route writes
+const counted = sdkSummary()
+const facts: [string, string][] = [
+  ['products', String(counted.products)],
+  ['examples', String(counted.examples)],
+  ['witnesses', String(counted.witnesses)],
+  ['entanglements', String(counted.entanglements)],
+  ['variants', String(counted.variants)],
+  ['mcpTools', String(counted.mcpTools)],
+  ['walked', String(counted.walked)],
+  ['discovered', counted.discovered],
+  ['unclaimed', String(counted.unclaimed.products)],
+  ['price', String(counted.funding.price)],
+  ['funding', counted.funding.donation],
+  ['root', `\`${counted.receipt.root}\``],
+  ['receipt', `\`${counted.receipt.address}\``],
+  ['documents', [`${SDK_API_PREFIX}/globals/catalog`, `${SDK_API_PREFIX}/globals/mcp-tools`, ...SDK_COLLECTIONS.filter((c) => c !== 'variants').map((c) => `${SDK_API_PREFIX}/${c}`)].join(' ')],
+]
 write(join(out, 'catalog', 'index.md'), ['---', 'title: "Products"', `description: ${yaml(counted.says)}`, '---', '', '# Products', '', '| | |', '|---|---|', ...facts.map(([k, v]) => `| ${k} | ${v} |`), '', ...[...Map.groupBy(THEOREMS, (t) => t.module)].flatMap(([module, rows]) => [`## ${plain(module)}`, '', ...rows.map((t) => `- [${plain(t.key)}](/catalog/${catalogProduct(EXAMPLES, t.key).product.id})`), ''])].join('\n'))
 // the page every product is routed through (site/catalog/[product].paths.ts): its heading is the theorem and its body the route's content
 write(join(out, 'catalog', '[product].md'), ['---', 'layout: doc', '---', '', '# {{ $params.theorem }}', '', '<!-- @content -->', ''].join('\n'))

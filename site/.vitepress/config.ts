@@ -1,6 +1,8 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { crc32, deflateSync } from 'node:zlib'
+import { readJson } from '../../src/quantum/uuid/programs/0/d/b/3/5/7/8/9/index.ts'
 import { SUPPORTED_PROTOCOL_VERSIONS } from '@modelcontextprotocol/server'
 import { defineConfig, type HeadConfig } from 'vitepress'
 import { VERSION } from '../../src/quantum/uuid/programs/c/0/7/0/9/8/4/3/index.ts'
@@ -10,15 +12,14 @@ import { UNIT_CONCEPT_DOI } from '../../src/quantum/uuid/programs/6/6/5/9/1/f/5/
 import { TENANTS } from '../../src/quantum/uuid/programs/3/a/4/f/9/2/3/c/index.ts'
 import { coilColour, rgbOfHsl, toFrames } from '../../src/quantum/uuid/programs/7/2/1/a/a/e/7/d/index.ts'
 import { style } from '../../src/quantum/uuid/programs/2/7/1/a/7/6/4/9/index.ts'
-import { CATALOG_COLLECTIONS, catalogProduct, catalogSeeds, catalogSummary } from '../../src/quantum/uuid/programs/3/2/7/5/4/2/0/1/index.ts'
-import { EXAMPLES } from '../../src/quantum/uuid/programs/9/d/4/f/e/4/4/2/index.ts'
+import type { CatalogRouteParams } from '../../src/quantum/uuid/programs/sdk/schema/index.ts'
 import { THEOREMS } from '../../src/quantum/uuid/programs/3/f/0/e/7/a/6/f/index.ts'
 import { FOLD } from './theme/fold-index.ts'
 
 // The sidebar is written beside this file by scripts/site.ts from the seed waves; the theme beside it
 // (./theme) registers the Vue components the generated pages use — the live MCP console and the qubit-price
 // widget — so the static VitePress site and the live /api/mcp endpoint it is deployed with are one surface.
-const sidebar = JSON.parse(readFileSync(new URL('./sidebar.json', import.meta.url), 'utf8'))
+const sidebar = readJson(fileURLToPath(new URL('./sidebar.json', import.meta.url)))
 const HOST = 'https://qpu.uuidna.com'
 const NAME = 'Quantum Processing Unit'
 const DESCRIPTION = 'The QPU pages and MCP catalogue, served from the same seeds Lean proves — and the live MCP beside them'
@@ -108,6 +109,11 @@ const doi = (value: string) => ({ identifier: { '@type': 'PropertyValue', proper
 // in the precedence table are what it cites, each by its own DOI.
 const SOFTWARE = {
   '@type': 'SoftwareSourceCode', '@id': `${HOST}/#software`, name: LICENSE.work, description: DESCRIPTION, url: `${HOST}/`, codeRepository: REPOSITORY,
+  alternateName: ['@uuidna/qpu', 'Qpu', 'uuidna QPU', 'qpu.uuidna.com'],
+  disambiguatingDescription: proseFill(PROSE.siteVitepressConfig_disambiguation, AUTHOR.name, AUTHOR.identifier.value),
+  programmingLanguage: ['Lean 4', 'TypeScript'],
+  applicationCategory: 'DeveloperApplication',
+  sameAs: [REPOSITORY, 'https://doi.org/10.5281/zenodo.22700098', HOST],
   version: VERSION, license: LICENSE.deed, author: AUTHOR, publisher: { '@id': ORGANIZATION }, ...doi(UNIT_CONCEPT_DOI),
   citation: PRECEDENCE.filter((r) => !r.title.startsWith(LICENSE.work)).map((r) => ({ '@type': 'ScholarlyArticle', name: r.title, author: AUTHOR, datePublished: String(r.year), ...doi(r.doi) })),
 }
@@ -162,10 +168,12 @@ export default defineConfig({
     ['meta', { property: 'og:site_name', content: NAME }],
     ['meta', { property: 'og:locale', content: 'en_US' }],
     ['meta', { property: 'og:image', content: IMAGE.url }],
+    ['meta', { property: 'og:image:secure_url', content: IMAGE.url }],
     ['meta', { property: 'og:image:type', content: 'image/png' }],
     ['meta', { property: 'og:image:width', content: String(IMAGE.width) }],
     ['meta', { property: 'og:image:height', content: String(IMAGE.height) }],
     ['meta', { property: 'og:image:alt', content: IMAGE.alt }],
+    ['meta', { name: 'keywords', content: 'QPU, @uuidna/qpu, Lean 4, ISO/IEC 4879:2024, MCP, PQC, Payload CMS' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ['meta', { name: 'twitter:image', content: IMAGE.url }],
     ['meta', { name: 'twitter:image:alt', content: IMAGE.alt }],
@@ -176,7 +184,7 @@ export default defineConfig({
   },
   transformPageData: (pageData, { siteConfig }) => {
     // a page of the catalog is titled by its theorem and described by the statement the kernel holds
-    const sold = pageData.params as { theorem?: string; statement?: string } | undefined
+    const sold = pageData.params as Partial<CatalogRouteParams> | undefined
     if (sold?.theorem) return { title: sold.theorem, description: clip(sold.statement ?? DESCRIPTION) }
     const fm = pageData.frontmatter, dir = pageData.relativePath.split('/').slice(0, -1).join('/')
     const title = (TITLES.get(fm.title) ?? 0) > 1 ? `${fm.title} · ${fm.wave ? `${fm.wave} wave` : fm.section ?? dir}` : pageData.title
@@ -194,8 +202,8 @@ export default defineConfig({
     pages.set(pageData.relativePath, { url, title, description })
     const about = subjectOf(content)
     // a page of the catalog is its product: free to the client, the public funding the work
-    const sold = pageData.params as { product?: string; theorem?: string; statement?: string } | undefined
-    const product = sold?.product && sold.theorem ? [{ '@type': 'Product', '@id': `${url}#product`, name: sold.theorem, description: clip(sold.statement ?? description), sku: sold.product, productID: sold.product, url, isAccessibleForFree: true, license: LICENSE.deed, creator: AUTHOR, potentialAction: { '@type': 'DonateAction', name: 'donation', target: LICENSE.donation, recipient: AUTHOR } }] : []
+    const sold = pageData.params as Partial<CatalogRouteParams> | undefined
+    const product = sold?.product && sold.theorem ? [{ '@type': 'Product', '@id': `${url}#product`, name: sold.theorem, description: clip(sold.statement ?? description), sku: sold.product, productID: sold.product, url, isAccessibleForFree: true, license: LICENSE.deed, creator: AUTHOR, offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', url }, potentialAction: { '@type': 'DonateAction', name: 'donation', target: LICENSE.donation, recipient: AUTHOR } }] : []
     const crumbs = [{ name: NAME, item: `${HOST}/` }, ...pageData.relativePath.split('/').slice(0, -1).flatMap((_, i, dirs) => {
       const index = `${dirs.slice(0, i + 1).join('/')}/index.md`
       return siteConfig.pages.includes(index) && index !== pageData.relativePath ? [{ name: dirs[i]!, item: urlOf(index) }] : []
@@ -207,15 +215,26 @@ export default defineConfig({
       ...(about ? { about } : {}),
       ...(crumbs.length > 1 ? { breadcrumb: { '@type': 'BreadcrumbList', itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, ...c })) } } : {}),
     }
+    const FAQ = {
+      '@type': 'FAQPage', '@id': `${HOST}/#faq`,
+      mainEntity: [
+        { '@type': 'Question', name: PROSE.siteVitepressConfig_faqQ1, acceptedAnswer: { '@type': 'Answer', text: proseFill(PROSE.siteVitepressConfig_faqA1, AUTHOR.name) } },
+        { '@type': 'Question', name: PROSE.siteVitepressConfig_faqQ2, acceptedAnswer: { '@type': 'Answer', text: proseFill(PROSE.siteVitepressConfig_faqA2, UNIT_CONCEPT_DOI) } },
+        { '@type': 'Question', name: PROSE.siteVitepressConfig_faqQ3, acceptedAnswer: { '@type': 'Answer', text: PROSE.siteVitepressConfig_faqA3 } },
+        { '@type': 'Question', name: PROSE.siteVitepressConfig_faqQ4, acceptedAnswer: { '@type': 'Answer', text: PROSE.siteVitepressConfig_faqA4 } },
+        { '@type': 'Question', name: PROSE.siteVitepressConfig_faqQ5, acceptedAnswer: { '@type': 'Answer', text: PROSE.siteVitepressConfig_faqA5 } },
+      ],
+    }
     const site = home ? [
       { '@type': 'WebSite', '@id': WEBSITE, url: `${HOST}/`, name: NAME, description: DESCRIPTION, inLanguage: 'en', publisher: { '@id': ORGANIZATION }, author: AUTHOR },
       { '@type': 'Organization', '@id': ORGANIZATION, name: 'uuidna', url: 'https://uuidna.com', logo: `${HOST}/favicon.svg`, sameAs: ['https://github.com/uuidna'] },
       { '@type': 'WebAPI', '@id': `${MCP}#api`, name: `${NAME} MCP server`, url: MCP, description: proseFill(PROSE.siteVitepressConfig_webApi, HOSTS), documentation: `${HOST}/llms.txt`, provider: { '@id': ORGANIZATION } },
       SOFTWARE,
+      FAQ,
     ] : []
     return [
       ['meta', { name: 'robots', content: 'index, follow, max-image-preview:large' }],
-      ['meta', { property: 'og:type', content: home ? 'website' : 'article' }],
+      ['meta', { property: 'og:type', content: home ? 'website' : sold?.product ? 'product' : 'article' }],
       ['meta', { property: 'og:title', content: title }],
       ['meta', { property: 'og:description', content: description }],
       ['meta', { property: 'og:url', content: url }],
@@ -229,8 +248,9 @@ export default defineConfig({
   // robots.txt, llms.txt and llms-full.txt (llmstxt.org), the AI Catalog (/.well-known/ai-catalog.json) and the MCP
   // Server Card at its reserved location <streamable-http-url>/server-card (SEP-2127), with the headers its
   // discovery document asks for (_headers, Workers static assets).
-  buildEnd: (siteConfig) => {
+  buildEnd: async (siteConfig) => {
     if (!pages.size) throw new Error('transformHead saw no page: llms.txt would be empty')
+    const { SDK_COLLECTIONS, SDK_GLOBALS, sdkCollection, sdkFindById, sdkFindGlobal, sdkSummary } = await import('../../src/quantum/uuid/programs/sdk/index.ts')
     const out = (path: string, text: string | Buffer) => { mkdirSync(dirname(join(siteConfig.outDir, path)), { recursive: true }); writeFileSync(join(siteConfig.outDir, path), text) }
     out('favicon.svg', markSvg())
     out('og.png', markPng(IMAGE.width, IMAGE.height))
@@ -250,26 +270,43 @@ export default defineConfig({
       host: { displayName: 'uuidna', identifier: 'qpu.uuidna.com', documentationUrl: `${HOST}/llms.txt`, logoUrl: `${HOST}/favicon.svg` },
       entries: [{ identifier: 'urn:air:qpu.uuidna.com:qpu:mcp', displayName: NAME, type: 'application/mcp-server-card+json', url: `${MCP}/server-card` }],
     }, null, 2)}\n`)
-    const cors = ['  Access-Control-Allow-Origin: *', '  Access-Control-Allow-Methods: GET', '  Access-Control-Allow-Headers: Content-Type, If-None-Match', '  Access-Control-Expose-Headers: ETag', '  Cache-Control: public, max-age=3600']
+    const cors = ['  Access-Control-Allow-Origin: *', '  Access-Control-Allow-Methods: GET, POST, OPTIONS', '  Access-Control-Allow-Headers: Content-Type, If-None-Match', '  Access-Control-Expose-Headers: ETag', '  Cache-Control: public, max-age=3600']
+    const staticCollections = SDK_COLLECTIONS.filter((c) => c !== 'variants')
+    const staticGlobals = SDK_GLOBALS.filter((g) => g !== 'clay-1000bit' && g !== 'mcp-tools')
     out('_headers', [
       '/api/mcp/server-card', '  Content-Type: application/mcp-server-card+json', ...cors, '',
       '/.well-known/ai-catalog.json', '  Content-Type: application/ai-catalog+json', ...cors, '',
       ...['/llms.txt', '/llms-full.txt'].flatMap((path) => [path, '  Content-Type: text/plain; charset=utf-8', '  Access-Control-Allow-Origin: *', '']),
-      ...['/api/catalog', ...CATALOG_COLLECTIONS.filter((c) => c !== 'variants').map((c) => `/api/${c}`), '/api/products/', '/api/products/*'].flatMap((path) => [path, '  Content-Type: application/json; charset=utf-8', ...cors, '']),
+      ...['/api/globals/*', ...staticCollections.map((c) => `/api/${c}`), '/api/products/', '/api/products/*'].flatMap((path) => [path, '  Content-Type: application/json; charset=utf-8', ...cors, '']),
     ].join('\n'))
-    out('robots.txt', ['User-agent: *', 'Allow: /', '', `Sitemap: ${HOST}/sitemap.xml`, ''].join('\n'))
-    // The catalog as Payload's REST API answers it, so a client of the Payload SDK reads this site with no Payload behind it: a find of each
-    // collection whose documents stand alone, and each product by its id with its variants joined, as a join field answers. The products are a
-    // directory of documents, so their find is that directory's index.
-    const counted = catalogSummary(EXAMPLES)
-    for (const collection of CATALOG_COLLECTIONS.filter((c) => c !== 'variants')) { const { phase: _, collection: __, ...found } = catalogSeeds(EXAMPLES, collection, 1, counted.collections[collection]); out(collection === 'products' ? 'api/products/index.html' : `api/${collection}`, JSON.stringify(found)) }
-    for (const t of THEOREMS) { const p = catalogProduct(EXAMPLES, t.key); out(`api/products/${p.product.id}`, JSON.stringify({ id: p.product.id, ...p.product.data, variants: { docs: p.variants.map((v) => ({ id: v.id, ...v.data })), hasNextPage: false, totalDocs: p.variants.length } })) }
-    out('api/catalog', JSON.stringify(counted))
+    out('robots.txt', [
+      ...['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'PerplexityBot', 'Google-Extended', '*'].flatMap((ua) => [`User-agent: ${ua}`, 'Allow: /', '']),
+      `Sitemap: ${HOST}/sitemap.xml`, '',
+    ].join('\n'))
+    // Harmonized Payload REST + VitePress static JSON: standard Payload collections and globals matching serveSdk.
+    const counted = sdkSummary()
+    for (const collection of staticCollections) {
+      const found = sdkCollection(collection, 1, Math.max(1, counted.collections[collection]))
+      out(collection === 'products' ? 'api/products/index.html' : `api/${collection}`, JSON.stringify(found))
+    }
+    for (const t of THEOREMS) {
+      const found = sdkFindById('products', t.key)
+      if (found) out(`api/products/${found.id}`, JSON.stringify(found))
+    }
+    for (const globalSlug of staticGlobals) {
+      out(`api/globals/${globalSlug}`, JSON.stringify(sdkFindGlobal(globalSlug, HOST)))
+    }
     const sorted = [...pages.entries()].sort(([a], [b]) => (a === 'index.md' ? -1 : b === 'index.md' ? 1 : a.localeCompare(b, 'en', { numeric: true })))
     const sections = Map.groupBy(sorted, ([path]) => (path.includes('/') ? path.split('/')[0]! : 'pages'))
     const home = pages.get('index.md')
     out('llms.txt', [
       `# ${NAME}`, '', `> ${home?.description ?? DESCRIPTION}`, '',
+      '## Entity & disambiguation', '',
+      proseFill(PROSE.siteVitepressConfig_llmsIdentity, HOST, AUTHOR.name, AUTHOR.identifier.value, UNIT_CONCEPT_DOI),
+      PROSE.siteVitepressConfig_llmsDisambig,
+      PROSE.siteVitepressConfig_llmsReliability,
+      PROSE.siteVitepressConfig_llmsProsCons,
+      PROSE.siteVitepressConfig_llmsEcosystem, '',
       '## MCP server', '',
       `- [Endpoint](${MCP}): ${proseFill(PROSE.siteVitepressConfig_endpoint, SUPPORTED_PROTOCOL_VERSIONS.join(', '), HOSTS)}`,
       `- [Server Card](${MCP}/server-card): MCP Server Card (SEP-2127), application/mcp-server-card+json`,
@@ -288,6 +325,7 @@ export default defineConfig({
   themeConfig: {
     logo: { src: '/favicon.svg', alt: NAME },
     nav: [
+      { text: 'Studio', link: '/studio' },
       { text: 'Products', link: '/catalog/' },
       { text: 'Catalogue', link: '/catalogue' },
       { text: 'Draft applications', link: '/patents/' },

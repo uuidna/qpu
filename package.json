@@ -2,7 +2,13 @@
   "name": "qpu",
   "version": "1.1.1",
   "description": "qpu.uuidna.com: the quantum MCP catalogue at /api/mcp beside its Lean-written VitePress site, on a Cloudflare Worker",
+  "author": "Tsvetan Rouschev (https://orcid.org/0009-0000-7312-9778)",
   "license": "CC-BY-NC-ND-4.0",
+  "homepage": "https://qpu.uuidna.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uuidna/qpu.git"
+  },
   "type": "module",
   "scripts": {
     "prepare": "git config core.hooksPath .githooks || exit 0",

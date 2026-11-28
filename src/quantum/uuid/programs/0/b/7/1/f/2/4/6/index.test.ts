@@ -10,7 +10,7 @@ const tracked = execFileSync('git', ['ls-files'], { cwd: root, encoding: 'utf8' 
 
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: the repository conforms to every ISO standard its register names, and the register refuses each break by place. */
 test('the repository conforms to every ISO standard its register names, and the register refuses each break by place', () => {
-  const files = Object.fromEntries(tracked.filter((f) => /README\.md$|(\.test|_test)\.ts$/.test(f)).map((f) => [f, readFileSync(join(root, f), 'utf8')]))
+  const files = Object.fromEntries(tracked.filter((f) => /^(src\/quantum\/)?README\.md$|(\.test|_test)\.ts$/.test(f)).map((f) => [f, readFileSync(join(root, f), 'utf8')]))
   const rows = isoConformance(files)
   for (const r of rows) assert.deepEqual(r.findings, [], r.standard)
   // each standard refuses what breaks it, by the place it breaks

@@ -5,7 +5,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { availableParallelism, tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { lanesNow } from './index.ts'
+import { lanesNow, runNext } from './index.ts'
 import { THEOREMS } from '../../../../../../../../3/f/0/e/7/a/6/f/index.ts'
 import { TABLES } from '../../../../../../../../1/2/a/4/3/2/a/8/index.ts'
 import { call } from '../../../../../../../../3/8/5/9/0/2/0/f/index.ts'
@@ -134,4 +134,46 @@ test('the work once done by hand is the door\'s: settle, sync, ratchet and intak
     // with no directory named there is nothing to take in
     assert.equal(spawnSync(process.execPath, [runner, 'intake'], { cwd: dir, encoding: 'utf8', env: { ...process.env, QPU_SCRATCH: '' } }).status, 1)
   } finally { rmSync(dir, { recursive: true, force: true }) }
+})
+
+/** ISO/IEC/IEEE 29119-3 test case. Identifier: each test file a package script names is a step of its own kept under the address of the files it reads, so a test whose reads did not change reads its receipt in 0 seconds and only a test whose reads changed computes, a red one never kept. */
+test('each test file a package script names is a step of its own kept under the address of the files it reads, so a test whose reads did not change reads its receipt in 0 seconds and only a test whose reads changed computes, a red one never kept', async () => {
+  const repo = mkdtempSync(join(tmpdir(), 'qpu-kept-test-'))
+  const { GIT_DIR: _d, GIT_INDEX_FILE: _i, GIT_WORK_TREE: _w, ...env } = process.env
+  const git = (...a: string[]) => execFileSync('git', a, { cwd: repo, env, encoding: 'utf8' })
+  const files: Record<string, string> = {
+    'package.json': JSON.stringify({ type: 'module', scripts: { test: 'node --test "t/**/*_test.ts"' } }),
+    'a.ts': 'export const a = 1\n',
+    'b.ts': "import { readFileSync } from 'node:fs'\nexport const b = () => readFileSync('data/b.txt', 'utf8').trim()\n",
+    'data/b.txt': 'two\n',
+    'loose.txt': 'read by no test\n',
+    't/a_test.ts': "import { test } from 'node:test'\nimport assert from 'node:assert/strict'\nimport { a } from '../a.ts'\ntest('a', () => assert.equal(a, 1))\n",
+    't/b_test.ts': "import { test } from 'node:test'\nimport assert from 'node:assert/strict'\nimport { b } from '../b.ts'\ntest('b', () => assert.equal(b(), 'two'))\n",
+    // c lists a directory, so it reads what no literal names: the whole tree
+    'c.ts': "import { readdirSync } from 'node:fs'\nexport const c = () => readdirSync('.').length > 0\n",
+    't/c_test.ts': "import { test } from 'node:test'\nimport assert from 'node:assert/strict'\nimport { c } from '../c.ts'\ntest('c', () => assert.ok(c()))\n",
+    '.gitignore': '.qpu/\n',
+  }
+  const write = (f: string, t: string) => { mkdirSync(join(repo, f, '..'), { recursive: true }); writeFileSync(join(repo, f), t) }
+  const run = async () => {
+    // a test process this test starts runs as a test of its own, not as a child reporting to this runner
+    const context = process.env.NODE_TEST_CONTEXT; delete process.env.NODE_TEST_CONTEXT
+    const lines: string[] = [], r = await runNext({ cwd: repo, only: ['test'], onLine: (l) => lines.push(l) }).finally(() => { if (context !== undefined) process.env.NODE_TEST_CONTEXT = context })
+    const state = (name: string) => { const s = r.steps.filter((x) => x.name === name).pop(); return !s ? 'absent' : s.status !== 'green' ? s.status : lines.some((l) => l.startsWith(`✓ ${name} (receipt `)) ? 'kept' : 'computed' }
+    return { a: state('test:t/a_test.ts'), b: state('test:t/b_test.ts'), c: state('test:t/c_test.ts'), whole: state('test') }
+  }
+  try {
+    git('init', '-q'); git('config', 'user.email', 'kept@example.invalid'); git('config', 'user.name', 'kept'); git('config', 'commit.gpgsign', 'false')
+    for (const [f, t] of Object.entries(files)) write(f, t)
+    git('add', '.'); git('commit', '-q', '-m', 'first')
+    assert.deepEqual(await run(), { a: 'computed', b: 'computed', c: 'computed', whole: 'absent' }, 'the script is one step for each test file, each computed once')
+    assert.deepEqual(await run(), { a: 'kept', b: 'kept', c: 'kept', whole: 'absent' }, 'nothing read changed: every step reads its receipt')
+    write('loose.txt', 'still read by no test\n')
+    assert.deepEqual(await run(), { a: 'kept', b: 'kept', c: 'computed', whole: 'absent' }, 'a file no literal names changes no address but that of a test which lists the tree')
+    write('data/b.txt', 'three\n')
+    assert.deepEqual(await run(), { a: 'kept', b: 'red', c: 'computed', whole: 'absent' }, 'the data b reads by a literal path changed: b computes and is red, a reads its receipt')
+    assert.deepEqual(await run(), { a: 'kept', b: 'red', c: 'kept', whole: 'absent' }, 'a red step is never kept: it computes again')
+    write('data/b.txt', 'two\n')
+    assert.deepEqual(await run(), { a: 'kept', b: 'kept', c: 'kept', whole: 'absent' }, 'back to the green content: its receipt is read again')
+  } finally { rmSync(repo, { recursive: true, force: true }) }
 })

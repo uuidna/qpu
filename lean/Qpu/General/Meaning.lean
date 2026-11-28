@@ -31,6 +31,14 @@ argument. A reader who knows Mathlib reads `mint` as `2 ^ k`, `choose` as `Nat.c
 `powMod` as `a ^ e % m`, `fibFusion` as `Nat.fib` and `qftGates` as `Nat.choose (q + 1) 2`, and each reading is
 a theorem. The names follow Mathlib's convention: `definition_eq_notion`. -/
 
+/-- `choose n k` is the number of `k`-element subsets in an `n`-element set. Also known as binomial
+coefficients. For the fact that this is the number of `k`-element-subsets of an `n`-element
+set, see `Finset.card_powersetCard`. -/
+theorem triangular_eq_nat_choose (n : Nat) : triangular n = (n + 1).choose 2 := by
+  induction n with
+  | zero => rfl
+  | succ n ih => rw [triangular, ih, Nat.choose_succ_succ (n + 1) 1, Nat.choose_one_right]
+
 /-- `a ^ b` computes `a` to the power of `b`.
 The meaning of this notation is type-dependent. 
 
@@ -649,6 +657,17 @@ Conventions for notations in identifiers:
  * The recommended spelling of `::` in identifiers is `cons`.
 
  * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+theorem sdkGlobals_eq_cons : Config.sdkGlobals = List.cons (Config.sdkGlobals.headD default) Config.sdkGlobals.tail := rfl
+
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
 theorem workerRoutes_eq_cons : Config.workerRoutes = List.cons (Config.workerRoutes.headD default) Config.workerRoutes.tail := rfl
 
 /-- The list whose first element is `head`, where `tail` is the rest of the list.
@@ -683,3 +702,34 @@ Conventions for notations in identifiers:
 
  * The recommended spelling of `[a]` in identifiers is `singleton`.-/
 theorem proverDualities_eq_cons : Config.proverDualities = List.cons (Config.proverDualities.headD default) Config.proverDualities.tail := rfl
+
+/-- Every Pegasus size is divisible by 3, so `pegasus m` never equals `2 ^ k` (`pegasus_eq_mul`, `Nat.pow_succ`). -/
+theorem pegasus_ne_two_pow (m k : Nat) : pegasus m ≠ 2 ^ k := by
+  have h2 : 2 ^ k % 3 ≠ 0 := by
+    induction k with
+    | zero => decide
+    | succ k ih => rw [Nat.pow_succ]; omega
+  have hp : pegasus m % 3 = 0 := by
+    rw [pegasus_eq_mul, show (24 : Nat) = 3 * 8 from rfl, Nat.mul_assoc 3 8 m, Nat.mul_assoc 3 (8 * m) (m - 1)]
+    omega
+  intro h
+  rw [h] at hp
+  exact h2 hp
+
+/-- Every thermal energy value is divisible by 5, so `thermal m` never equals `2 ^ k` (`thermal_eq_mul`, `Nat.pow_succ`). -/
+theorem thermal_ne_two_pow (m k : Nat) : thermal m ≠ 2 ^ k := by
+  have h2 : 2 ^ k % 5 ≠ 0 := by
+    induction k with
+    | zero => decide
+    | succ k ih => rw [Nat.pow_succ]; omega
+  have ht : thermal m % 5 = 0 := by
+    rw [thermal_eq_mul]
+    omega
+  intro h
+  rw [h] at ht
+  exact h2 ht
+
+/-- Minimal 16-bit Pravets limb cover for any `b`-bit integer: `⌈b / 16⌉` limbs cover `b` bits tightly (`Nat.div_add_mod`). -/
+theorem limbs16_cover (b : Nat) : 16 * ((b + 15) / 16) ≥ b ∧ (b > 0 → 16 * ((b + 15) / 16 - 1) < b) := by
+  have h := Nat.div_add_mod (b + 15) 16
+  omega

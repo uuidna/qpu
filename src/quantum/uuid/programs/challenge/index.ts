@@ -35,7 +35,8 @@ export const challenge = () => {
 
   const proven = physics({ ftl: true, gateway: 2, walked: false })
   const hexLeaf = proven.path
-  const concept = CONCEPT === 'src/quantum/uuid/programs/physics/index.ts'
+  // the concept's path is the physics program's to hold: its verdict names the concept it checked, and this challenge names the same one
+  const concept = proven.concept === CONCEPT && proven.holds === true
   const leaf = leafModule.prefix === proven.handle && leafModule.depth === proven.depth && proven.indexed === true
   const pathGate = concept && leaf && proven.path === hexLeaf && proven.holds === true && proven.physics === true
 

@@ -225,6 +225,18 @@ Conventions for notations in identifiers:
  * The recommended spelling of `[a]` in identifiers is `singleton`.-/
 def sdkCollections : List String := ["variantTypes", "variantOptions", "products", "variants", "computations", "standards", "clauses"]
 
+-- Every Payload Global served through standard Payload REST (/api/globals/{slug}), eliminating manual custom routes.
+/-- The list whose first element is `head`, where `tail` is the rest of the list.
+Usually written `head :: tail`.
+
+
+Conventions for notations in identifiers:
+
+ * The recommended spelling of `::` in identifiers is `cons`.
+
+ * The recommended spelling of `[a]` in identifiers is `singleton`.-/
+def sdkGlobals : List String := ["catalog", "payload-ui", "pipeline", "clay-duality", "clay-1000bit", "google", "mcp-tools"]
+
 -- The routes the Cloudflare Worker handles before falling back to static VitePress assets.
 /-- The list whose first element is `head`, where `tail` is the rest of the list.
 Usually written `head :: tail`.

@@ -20,6 +20,9 @@ import { LEAD_ROWS } from '../../../../../../../../f/3/5/3/8/2/1/2/index.ts'
 import { gateProseLinks, nextUnlinked } from '../../../../../../7/1/0/4/b/e/index.ts'
 import { PROSE_UNLINKED } from '../../../../../../../../3/7/2/f/3/1/1/5/index.ts'
 import { RECEIPT } from '../../../../../../../../2/b/c/0/d/1/3/d/index.ts'
+import { isoDocument, type IsoBlock } from '../../../../../../../../0/b/7/1/f/2/4/6/index.ts'
+import { quantumCapacity } from '../../../../../../../../0/8/7/0/6/d/2/8/index.ts'
+import { theoremExampleLinks } from '../../../../../../../../3/2/7/5/4/2/0/1/index.ts'
 import { leanPath, proofLines } from '../../../../../../../../e/1/c/6/d/e/b/3/index.ts'
 
 /** Qpu/General/Textbook.lean is written in Lean. This door renders nothing: it names the file and counts what the index read from it. */
@@ -301,13 +304,15 @@ const factorsIndex = (examples: readonly { theorem?: string; arguments?: unknown
 /** The contract the worked examples witness, written as outputs-index.ts: for each tool the keys its examples answer with and the JSON types
  *  seen for each (the tool's outputSchema), and for each input the smallest argument an example passes (the input's example). Nothing is
  *  typed here: a key is listed because an example answered it. */
+/** JSON Schema primitive kind of a runtime value (shared across output schema inference and contract tests). */
+export const jsonKind = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v === 'number' ? (Number.isInteger(v) ? 'integer' : 'number') : typeof v)
+
 const outputs = (ctx: StatusContext) => {
-  const kind = (v: unknown) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v === 'number' ? (Number.isInteger(v) ? 'integer' : 'number') : typeof v)
   const seen: Record<string, { examples: number; keys: Record<string, Set<string>> }> = {}, inputs: Record<string, Record<string, unknown>> = {}
   for (const e of ctx.examples) {
     if (!e.tool) continue
     const s = ctx.call(e.tool, e.arguments as Record<string, unknown>) as unknown
-    if (s !== null && typeof s === 'object' && !Array.isArray(s)) { const row = (seen[e.tool] ??= { examples: 0, keys: {} }); row.examples += 1; for (const [k, v] of Object.entries(s)) if (v !== undefined) (row.keys[k] ??= new Set()).add(kind(v)) }
+    if (s !== null && typeof s === 'object' && !Array.isArray(s)) { const row = (seen[e.tool] ??= { examples: 0, keys: {} }); row.examples += 1; for (const [k, v] of Object.entries(s)) if (v !== undefined) (row.keys[k] ??= new Set()).add(jsonKind(v)) }
     for (const [k, v] of Object.entries((e.arguments ?? {}) as Record<string, unknown>)) { const text = JSON.stringify(v); if (text === undefined || text.length > 200) continue; const held = (inputs[e.tool] ??= {}); if (!(k in held) || text.length < JSON.stringify(held[k]).length) held[k] = v }
   }
   const sorted = <T>(o: Record<string, T>) => Object.fromEntries(Object.keys(o).sort().map((k) => [k, o[k]!]))
@@ -351,31 +356,29 @@ const moduleTex = (lean: Readonly<Record<string, string>>) => {
 // The disclosure: every declared theorem by module, with its TeX, axioms, the worked examples that recompute it and its proof line, then every
 // lead still open; written to .disclosure/, which git ignores, and never part of the README, the Zenodo record, the site or a release.
 const disclosure = (lean: Readonly<Record<string, string>>, examples: readonly { id: string; theorem?: string }[]) => {
-  const lines = proofLines(THEOREMS, lean), ids = new Set(examples.map((e) => e.id)), linked = new Map<string, Set<string>>()
-  const link = (key: string, id: string) => { if (ids.has(id)) linked.set(key, (linked.get(key) ?? new Set()).add(id)) }
-  for (const e of examples) if (e.theorem) link(e.theorem, e.id)
-  for (const t of TEXTBOOK_THEOREMS) for (const id of t.examples) link(t.key, id)
-  for (const t of THEOREMS) for (const id of (/\(examples: ([^)]*)\)/.exec(t.doc ?? '')?.[1] ?? '').split(',')) link(t.key, id.trim())
+  const lines = proofLines(THEOREMS, lean), linked = theoremExampleLinks(examples)
   const rows = THEOREMS.map((t) => ({ t, line: lines.get(t.key)!, examples: [...(linked.get(t.key) ?? [])].sort() }))
   const byName = <T>(entries: Iterable<[string, T]>) => [...entries].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
   const modules = Map.groupBy(rows, (r) => r.t.module), open = LEAD_ROWS.filter((l) => l.status !== 'served' && l.status !== 'out_of_scope'), status = Map.groupBy(LEAD_ROWS, (l) => l.status)
   const claimed = rows.filter((r) => r.examples.length).length
-  type Block = { kind: 'h1' | 'h2' | 'h3' | 'table'; text?: string; head?: string[]; rows?: string[][] }
-  const blocks: Block[] = [
+  const iso = isoDocument({ identifier: RECEIPT.uuid, version: TAG, source: `${REPO}/tree/${TAG}/lean`, mcp: RECEIPT.mcp, capacity: quantumCapacity(), extraId: [['receipt', RECEIPT.uuid], ['sha256', RECEIPT.sha256], ['publication', 'unpublished']] })
+  const blocks: IsoBlock[] = [
     { kind: 'h1', text: `${RECEIPT.title.split(':')[0]} disclosure` },
-    { kind: 'h2', text: 'identification' },
-    { kind: 'table', head: ['identification', ''], rows: [['version', TAG], ['receipt', RECEIPT.uuid], ['sha256', RECEIPT.sha256], ['author', LICENSE.author], ['orcid', LICENSE.orcid], ['licence', LICENSE.spdx], ['source', `${REPO}/tree/${TAG}/lean`], ['mcp', RECEIPT.mcp], ['standard', 'ISO/IEC/IEEE 15289:2019'], ['publication', 'unpublished']] },
-    { kind: 'h2', text: 'scope' },
+    ...iso.identification,
+    ...iso.legal,
+    { kind: 'h2', text: '3. Scope' },
     { kind: 'table', head: ['scope', ''], rows: [['kernel theorems', String(KERNEL_THEOREMS)], ['declared theorems', String(THEOREMS.length)], ['generated lemmas', String(GENERATED_LEMMAS)], ['modules', String(modules.size)], ['recomputed', String(claimed)], ['not recomputed', String(THEOREMS.length - claimed)], ['leads', String(LEAD_ROWS.length)], ...byName(status).map(([s, ls]) => [`leads ${s}`, String(ls.length)])] },
-    { kind: 'h2', text: 'theorems' },
-    ...byName(modules).flatMap(([module, rs]): Block[] => [{ kind: 'h3', text: module }, { kind: 'table', head: ['theorem', 'statement', 'axioms', 'example', 'proof'], rows: rs.map((r) => [`\`${r.t.key}\``, `$${r.t.tex}$`, r.t.axioms.join(', ') || 'none', r.examples.map((id) => `\`${id}\``).join(', ') || 'none', `${REPO}/blob/${TAG}/${leanPath(module)}#L${r.line}`]) }]),
-    { kind: 'h2', text: 'open' },
+    ...iso.capacity,
+    ...iso.standards,
+    { kind: 'h2', text: '6. Declared Lean theorems' },
+    ...byName(modules).flatMap(([module, rs]): IsoBlock[] => [{ kind: 'h3', text: module }, { kind: 'table', head: ['theorem', 'statement', 'axioms', 'example', 'proof'], rows: rs.map((r) => [`\`${r.t.key}\``, `$${r.t.tex}$`, r.t.axioms.join(', ') || 'none', r.examples.map((id) => `\`${id}\``).join(', ') || 'none', `${REPO}/blob/${TAG}/${leanPath(module)}#L${r.line}`]) }]),
+    { kind: 'h2', text: '7. Open leads' },
     { kind: 'table', head: ['lead', 'status', 'statement', 'reason'], rows: open.map((l) => [`\`${l.id}\``, l.status, l.statement, l.reason ?? '']) },
   ]
-  const bar = (s: string) => s.replace(/\|/g, '\\|').replace(/\n/g, ' '), esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  const md = (b: Block) => b.kind === 'table' ? [`| ${b.head!.join(' | ')} |`, `|${b.head!.map(() => ' --- ').join('|')}|`, ...b.rows!.map((r) => `| ${r.map(bar).join(' | ')} |`)].join('\n') : `${'#'.repeat(Number(b.kind[1]))} ${b.text}`
+  const bar = (s: string) => s.replace(/(?<!\\)(\\*)\|/g, (_, b: string) => `${b}${b}\\|`).replace(/\n/g, ' '), esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+  const md = (b: IsoBlock) => b.kind === 'p' ? b.text! : b.kind === 'code' ? `\`\`\`json\n${b.text!}\n\`\`\`` : b.kind === 'table' ? [`| ${b.head!.join(' | ')} |`, `|${b.head!.map(() => ' --- ').join('|')}|`, ...b.rows!.map((r) => `| ${r.map(bar).join(' | ')} |`)].join('\n') : `${'#'.repeat(Number(b.kind[1]))} ${b.text}`
   const cell = (s: string) => /^\$.*\$$/.test(s) ? `<code class="tex">${esc(s.slice(1, -1))}</code>` : /^https:\/\/\S+$/.test(s) ? `<a href="${esc(s)}">${esc(s)}</a>` : esc(s).replace(/`([^`]+)`/g, '<code>$1</code>')
-  const html = (b: Block) => b.kind === 'table' ? `<table><thead><tr>${b.head!.map((h) => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${b.rows!.map((r) => `<tr>${r.map((c) => `<td>${cell(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>` : `<${b.kind}>${esc(b.text!)}</${b.kind}>`
+  const html = (b: IsoBlock) => b.kind === 'p' ? `<p>${esc(b.text!)}</p>` : b.kind === 'code' ? `<pre><code>${esc(b.text!)}</code></pre>` : b.kind === 'table' ? `<table><thead><tr>${b.head!.map((h) => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${b.rows!.map((r) => `<tr>${r.map((c) => `<td>${cell(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>` : `<${b.kind}>${esc(b.text!)}</${b.kind}>`
   const files = [{ path: '.disclosure/disclosure.md', text: blocks.map(md).join('\n\n') + '\n' }, { path: '.disclosure/disclosure.html', text: `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(blocks[0]!.text!)}</title></head><body>${blocks.map(html).join('')}</body></html>\n` }]
   return { phase: 'scripts-disclosure' as const, files, blocks, theorems: THEOREMS.length, kernel: KERNEL_THEOREMS, modules: modules.size, claimed, open: open.length, holds: rows.length === THEOREMS.length }
 }

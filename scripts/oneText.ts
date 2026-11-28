@@ -25,8 +25,9 @@ import { HARDWARE_MARK, readJson } from '../src/quantum/uuid/programs/0/d/b/3/5/
 import { deviceJsonLd, isProperties, isRows, receiptBody, receiptJsonLd, receiptText, type Json } from '../src/quantum/uuid/programs/c/6/6/e/6/f/2/6/index.ts'
 import { verifiedByBoth } from '../src/quantum/uuid/programs/e/5/1/d/e/c/1/5/index.ts'
 import { isoTermsOf, physicalEvidence } from '../src/quantum/uuid/programs/d/f/0/d/9/1/3/b/index.ts'
-import { DOCUMENT_LANGUAGE, ISO_4217_COIN, ISO_80000_UNITS } from '../src/quantum/uuid/programs/0/b/7/1/f/2/4/6/index.ts'
-import { LICENSE } from '../src/quantum/uuid/programs/a/f/3/d/e/a/5/f/index.ts'
+import { ISO_4217_COIN, ISO_80000_UNITS, isoDocument, isoUnit, type IsoBlock } from '../src/quantum/uuid/programs/0/b/7/1/f/2/4/6/index.ts'
+import { quantumCapacity } from '../src/quantum/uuid/programs/0/8/7/0/6/d/2/8/index.ts'
+import { quantumPivot } from '../src/quantum/uuid/programs/e/7/a/6/d/5/2/2/index.ts'
 
 export const pkg = readJson<{ name: string; version: string; description: string }>('src/quantum/package.json')!
 const SITE = 'https://qpu.uuidna.com', MCP = `${SITE}/api/mcp`, REPO = `https://github.com/${RELEASE_REPOSITORY}`, TAG = `v${pkg.version}`
@@ -65,7 +66,7 @@ const combination = receiptJsonLd({ kind: 'qpu', technique: asked('seal', { merk
 export const receipts: Json[] = [combination, ...parts]
 
 // rendering: a receipt's JSON-LD to blocks, and blocks to Markdown and HTML; an inline token is a code span, a formula, a URL or plain text
-type Block = { kind: 'h2' | 'h3' | 'p' | 'code' | 'table'; text?: string; head?: string[]; rows?: string[][] }
+type Block = IsoBlock
 type Property = { name: string; value: unknown }
 const code = (s: string) => `\`${s}\``
 const word = (v: unknown) => (v === null || v === undefined ? '' : typeof v !== 'string' ? String(v) : (/[_.]/.test(v) && THEOREM_KEYS.has(v)) || /^[{[]/.test(v) ? code(v) : v)
@@ -131,26 +132,75 @@ const computer = EXAMPLES.filter((e) => COMPUTER.includes(e.tool)).map((e) => ({
 const failing = computer.filter((c) => c.verdict !== null).map((c) => c.e.id)
 if (failing.length || computer.some((c) => !c.e.theorem)) throw new Error(`computer: ${failing.join(', ')}`)
 if (digits * width - version - variant !== qubits || !teleport.holds) throw new Error(`capacity ${qubits}; teleport holds ${teleport.holds}`)
-const lead: Block[] = [
+const iso = isoDocument({ identifier: mergedItem!.address, version: pkg.version, source: `${REPO}/tree/${TAG}/lean`, mcp: MCP, capacity: quantumCapacity() })
+const pivot = quantumPivot()
+const compactReceipts = (merge: Json, partReceipts: readonly Json[]): Block[] => {
+  const mid = named(merge.identifier), msize = merge.size ? named(merge.size) : {}
+  const partRows = partReceipts.map((r) => {
+    const id = named(r.identifier), size = r.size ? named(r.size) : {}, f = ((r.isBasedOn ?? []) as Json[])[0]
+    return [
+      code(String(r.alternateName ?? r.name)),
+      code(String(id.handle ?? '')),
+      String(id.uuid ?? ''),
+      f ? `$${String(f.text)}$` : '—',
+      String(size.bytes ?? ''),
+      String(size.bits ?? ''),
+      String(size.joules ?? ''),
+    ]
+  })
+  return [
+    { kind: 'h3', text: '7.1 Merkle merge receipt' },
+    { kind: 'table', head: ['receipt', 'value'], rows: [
+      ['uuid', String(mid.uuid ?? '')],
+      ['handle', code(String(mid.handle ?? ''))],
+      ['sha256', String(mid.sha256 ?? '')],
+      ['coin', String(mid.coin ?? '')],
+      ['currency', ISO_4217_COIN.unit],
+      ['rfc', '6962'],
+      ['root', root],
+      ['parts', String(partReceipts.length)],
+      [isoUnit('bytes'), String(msize.bytes ?? '')],
+      [isoUnit('bits'), String(msize.bits ?? '')],
+      ['tokens', String(msize.tokens ?? '')],
+      [isoUnit('joules'), String(msize.joules ?? '')],
+    ] },
+    { kind: 'h3', text: '7.2 Verified theorem receipts' },
+    { kind: 'table', head: ['theorem', 'handle', 'uuid', 'formula', isoUnit('bytes'), isoUnit('bits'), isoUnit('joules')], rows: partRows },
+  ]
+}
+const doorSummaryRows = (cases: readonly { e: (typeof EXAMPLES)[number] }[]) =>
+  COMPUTER.map((door) => {
+    const group = cases.filter((c) => c.e.tool === door)
+    return [code(door), String(group.length), String(new Set(group.map((g) => g.e.theorem).filter(Boolean)).size), group.map((g) => code(g.e.id)).join(', ')]
+  })
+const lead: IsoBlock[] = [
+  ...iso.identification,
+  ...iso.legal,
+  { kind: 'h2', text: '3. Scope and invention specification: 128-bit folding into 122-qubit UUIDs' },
   { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_summary, digits, width, version, variant, qubits, uuidBytes, programQubits, programs, qubits - programQubits, THEOREMS.length, KERNEL_THEOREMS, SORRIED, recomputed, MCP) },
+  { kind: 'h3', text: '3.1 Quantum OS fractal pivot' },
+  { kind: 'table', head: ['scale', 'entity', 'count', 'surface', 'endpoint'], rows: pivot.rows.map((r) => [r.scale, r.entity, r.count, code(r.surface), code(r.endpoint)]) },
   { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_computer, computer.length, COMPUTER.length) },
   { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_solved, EXAMPLES.filter((e) => e.made).length, THEOREMS.length - recomputed) },
-  { kind: 'h2', text: 'examples' },
-  { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_teleport, teleport.qubits, teleport.bits, teleport.corrections) },
-  { kind: 'table', head: ['example', 'door', 'shows'], rows: computer.map(({ e }) => [code(e.id), e.tool, e.shows]) },
-  { kind: 'h2', text: 'statements' },
-  { kind: 'table', head: ['theorem', 'statement', 'lean', 'axioms', 'proof'], rows: stated.map((s) => [code(s.key), `$${s.tex}$`, code(TEXTBOOK_THEOREMS.find((t) => t.key === s.key)?.lean ?? kernelOf.get(s.key)!.statement), kernelOf.get(s.key)!.axioms.join(', ') || 'none', `${s.url}#L${lines.get(s.key)}`]) },
-  { kind: 'h2', text: 'kernel' },
+  ...iso.capacity,
+  ...iso.standards,
+  { kind: 'h2', text: '6. Verification evidence and test cases' },
+  { kind: 'h3', text: '6.1 Kernel ledger' },
   { kind: 'table', head: ['kernel', 'value'], rows: [['declared theorems', String(THEOREMS.length)], ['kernel theorems', String(KERNEL_THEOREMS)], ['generated lemmas', String(GENERATED_LEMMAS)], ['sorry', String(SORRIED)], ['recomputed by an example', String(recomputed)], ['source', `${REPO}/tree/${TAG}/lean`]] },
-  { kind: 'h2', text: 'use' },
+  { kind: 'h3', text: '6.2 Verified statements' },
+  { kind: 'table', head: ['theorem', 'statement', 'lean', 'axioms', 'proof'], rows: stated.map((s) => [code(s.key), `$${s.tex}$`, code(TEXTBOOK_THEOREMS.find((t) => t.key === s.key)?.lean ?? kernelOf.get(s.key)!.statement), kernelOf.get(s.key)!.axioms.join(', ') || 'none', `${s.url}#L${lines.get(s.key)}`]) },
+  { kind: 'h3', text: '6.3 Executable quantum test cases (ISO/IEC/IEEE 29119-3)' },
+  { kind: 'p', text: proseFill(PROSE.scriptsDoiRecord_teleport, teleport.qubits, teleport.bits, teleport.corrections) },
+  { kind: 'table', head: ['door', 'count', 'theorems', 'examples'], rows: doorSummaryRows(computer) },
+  { kind: 'h3', text: '6.4 Protocol & online autonomous interface' },
   { kind: 'code', text: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'metrics', arguments: {} } }) },
-  { kind: 'table', head: ['use', 'value'], rows: [['mcp', MCP], ['method', 'POST']] },
-  { kind: 'h2', text: 'receipts' },
+  { kind: 'table', head: ['surface', 'endpoint'], rows: [['mcp', MCP], ['studio', `${SITE}/studio`], ['payload-ui', `${SITE}/api/globals/payload-ui`], ['pipeline', `${SITE}/api/globals/pipeline`], ['google', `${SITE}/api/globals/google`]] },
+  { kind: 'h2', text: '7. Cryptographic and quantum receipts' },
 ]
-// the information item identified as ISO/IEC/IEEE 15289 asks: the merge it is, its version, author, licence and language; the date a copy is
-// issued is the date its build ran, so it stands below the mark with the hardware that built it
-const identification: Block = { kind: 'table', head: ['document', 'value'], rows: [['identifier', mergedItem!.address], ['version', pkg.version], ['author', LICENSE.author], ['licence', LICENSE.spdx], ['language', DOCUMENT_LANGUAGE]] }
-const blocks = [identification, ...lead, ...receipts.flatMap((r) => blocksOf(r))]
+// the links the NIST and CERN doors probe, each table as the receipt carries it, so the one text names every link a door reads
+const probeBlocks = (rs: readonly Json[]): Block[] => rs.flatMap((r) => { const bs = tablesOf(String(r.alternateName ?? r.name), (r.variableMeasured ?? []) as Property[]); return bs.flatMap((b, i) => (b.kind === 'h3' && b.text!.endsWith('.probes') ? [b, bs[i + 1]!] : [])) })
+const probes = probeBlocks(receipts)
+const blocks = [...lead, ...compactReceipts(combination, parts), ...(probes.length ? [{ kind: 'h3' as const, text: '7.3 Verification probes' }, ...probes] : [])]
 /** The text as Markdown, the content its receipt addresses. */
 export const markdown = blocks.map(blockMarkdown).join('\n\n') + '\n'
 /** The text a verifier reads: everything above the rule of any Markdown copy, the title included. */
@@ -181,20 +231,28 @@ const lean = readFileSync('lean-toolchain', 'utf8').trim()
 const memoryBytes = os.totalmem(), cpus = os.cpus(), used = process.memoryUsage(), spent = process.resourceUsage(), disk = statfsSync('.')
 const registerQubits = Number(register.free), registerBytes = Number(register.bits) / 8
 const registersInMemory = Math.floor(memoryBytes / registerBytes), registerQubitsInMemory = registersInMemory * registerQubits
+const freeMemoryBytes = os.freemem(), freeMemoryRegisters = Math.floor(freeMemoryBytes / registerBytes), freeMemoryQubits = freeMemoryRegisters * registerQubits
+const usedMemoryRegisters = registersInMemory - freeMemoryRegisters, usedMemoryQubits = usedMemoryRegisters * registerQubits
+const memoryUtilisationPct = Number((((memoryBytes - freeMemoryBytes) / memoryBytes) * 100).toFixed(2))
+const processRssRegisters = Math.floor(used.rss / registerBytes), processRssQubits = processRssRegisters * registerQubits
+const issued = new Date().toISOString()
 const sum = (of: (c: os.CpuInfo) => number) => cpus.reduce((n, c) => n + of(c), 0)
 const facts = {
+  issued,
   registerBytes, registerQubits, registersInMemory, registerQubitsInMemory,
+  freeMemoryRegisters, freeMemoryQubits, usedMemoryRegisters, usedMemoryQubits, memoryUtilisationPct,
+  processRssRegisters, processRssQubits,
   platform: os.platform(), type: os.type(), release: os.release(), version: os.version(), arch: os.arch(), machine: os.machine(), endianness: os.endianness(),
   cpu: cpus[0]?.model ?? '', cores: cpus.length, parallelism: os.availableParallelism(), cpuMHz: cpus.map((c) => c.speed),
   cpuUserMs: sum((c) => c.times.user), cpuNiceMs: sum((c) => c.times.nice), cpuSysMs: sum((c) => c.times.sys), cpuIdleMs: sum((c) => c.times.idle), cpuIrqMs: sum((c) => c.times.irq),
-  memoryBytes, freeMemoryBytes: os.freemem(), load1: os.loadavg()[0], load5: os.loadavg()[1], load15: os.loadavg()[2], uptimeS: Math.round(os.uptime()),
+  memoryBytes, freeMemoryBytes, load1: os.loadavg()[0], load5: os.loadavg()[1], load15: os.loadavg()[2], uptimeS: Math.round(os.uptime()),
   diskBytes: disk.blocks * disk.bsize, diskFreeBytes: disk.bfree * disk.bsize, diskAvailableBytes: disk.bavail * disk.bsize, diskBlockBytes: disk.bsize, inodes: disk.files, inodesFree: disk.ffree,
   networkInterfaces: Object.keys(os.networkInterfaces()).length,
   versions: { ...process.versions }, lean,
   rssBytes: used.rss, heapTotalBytes: used.heapTotal, heapUsedBytes: used.heapUsed, externalBytes: used.external, arrayBuffersBytes: used.arrayBuffers,
   processUserMicros: spent.userCPUTime, processSystemMicros: spent.systemCPUTime, maxRssKb: spent.maxRSS, pageFaults: spent.majorPageFault + spent.minorPageFault, fsReads: spent.fsRead, fsWrites: spent.fsWrite, contextSwitches: spent.voluntaryContextSwitches + spent.involuntaryContextSwitches,
   challenges: challengeItems.map((i) => i.address.slice(0, 8)), isoHardwareTerms: physicalEvidence().terms.map((t) => `${t.clause} ${t.name}`), quantumBehaviour: physicalEvidence().quantumBehaviour,
-  buildMs: Math.round(performance.now() - started), at: new Date().toISOString(),
+  buildMs: Math.round(performance.now() - started), at: issued,
 }
 const [deviceItem] = await sealAll([receiptText('hardware', facts)])
 /** The device as a schema.org Product, sealed like every receipt, and its readings. */

@@ -52,16 +52,21 @@ jobs:
       # held back by it, and an image that does not build leaves the Worker and the site deployed.
       - name: Lean writes the pages, VitePress builds them, Wrangler deploys the Worker and the site
         run: pnpm run deploy --containers-rollout=none
-      - name: smoke /api/mcp and the site on both hostnames
+      - name: smoke all online capabilities on both hostnames
         run: |
           fail=0
           for host in $(node -e "import('./src/quantum/uuid/programs/d/e/a/3/e/d/e/1/index.ts').then((c) => console.log(Object.keys(c.TENANTS).join(' ')))")
           do
             site=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "https://$host/")
+            studio=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "https://$host/studio")
+            ui=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "https://$host/api/globals/payload-ui")
+            disc=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 30 "https://$host/api/globals/google?view=discovery")
+            gqai=$(curl -sS -X POST -H 'content-type: application/json' -A 'Mozilla/5.0' --max-time 30 --data '{"action":"verify-compilation","qubits":8,"distance":7,"rawDepth":24,"benchmark":"fusion-invsqrt"}' "https://$host/api/globals/google" | node -e "const d = JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(String(d.evidenceStatus === 'supported' && d.sealed === true))")
+            pipe=$(curl -sS -X POST -H 'content-type: application/json' -A 'Mozilla/5.0' --max-time 30 "https://$host/api/globals/pipeline" | node -e "const d = JSON.parse(require('fs').readFileSync(0,'utf8')); process.stdout.write(String(d.holds === true && d.sealed === true))")
             # Streamable HTTP answers a plain GET with 405: the endpoint is asked what it serves, as a client asks
             mcp=$(curl -sS -o /dev/null -w '%{http_code}' -A 'Mozilla/5.0' --max-time 60 -X POST -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' --data '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' "https://$host/api/mcp")
-            echo "site $site mcp $mcp $host"
-            if [ "$site" != "200" ] || [ "$mcp" != "200" ]; then fail=1; fi
+            echo "site=$site studio=$studio ui=$ui disc=$disc mcp=$mcp gqai=$gqai pipe=$pipe host=$host"
+            if [ "$site" != "200" ] || [ "$studio" != "200" ] || [ "$ui" != "200" ] || [ "$disc" != "200" ] || [ "$mcp" != "200" ] || [ "$gqai" != "true" ] || [ "$pipe" != "true" ]; then fail=1; fi
           done
           exit "$fail"
       - name: Wrangler builds the image of the Lean container and deploys it

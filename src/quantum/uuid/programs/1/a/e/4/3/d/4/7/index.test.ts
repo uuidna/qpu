@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { readJson } from '../../../../../../../../0/d/b/3/5/7/8/9/index.ts'
 
 // the names the Payload MCP tool (payload.qpu.mcp.ts, a consumer of @uuidna/qpu) imports from the machine subpaths: a name dropped by a purge throws
 // only when the tool is called, so the package's own exports map is read here and every name the tool imports is resolved through it
@@ -13,7 +13,7 @@ const CONSUMED: Record<string, Record<string, 'function' | 'object' | 'string'>>
 /** ISO/IEC/IEEE 29119-3 test case. Identifier: every name the Payload MCP tool imports from @uuidna/qpu/machine and @uuidna/qpu/machine-run resolves through the package's exports map to an export of that kind, runMachine a function of machine-run. */
 test("every name the Payload MCP tool imports from @uuidna/qpu/machine and @uuidna/qpu/machine-run resolves through the package's exports map to an export of that kind, runMachine a function of machine-run", async () => {
   const pkgUrl = new URL('../../../../../../../../../../package.json', import.meta.url)
-  const pkg = JSON.parse(readFileSync(fileURLToPath(pkgUrl), 'utf8')) as { name: string; exports: Record<string, string> }
+  const pkg = readJson<{ name: string; exports: Record<string, string> }>(fileURLToPath(pkgUrl))!
   assert.equal(pkg.name, '@uuidna/qpu')
   for (const [sub, names] of Object.entries(CONSUMED)) {
     const target = pkg.exports[sub]
